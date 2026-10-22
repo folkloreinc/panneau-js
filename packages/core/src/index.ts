@@ -70,6 +70,7 @@ export {
     loadMessages,
     resolveTheme,
 } from './plugins';
+export { type PreviewProps } from './preview';
 export {
     PanneauProvider,
     type PanneauContextValue,

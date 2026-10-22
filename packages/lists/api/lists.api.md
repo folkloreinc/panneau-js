@@ -141,6 +141,21 @@ export function isAllowedOn(action: Action, item: ListItem): boolean;
 export function isItemSelected(selection: ListSelection, id: string): boolean;
 
 // @public
+export function ItemDetails(input: ItemDetailsProps): JSX.Element;
+
+// @public (undocumented)
+export interface ItemDetailsProps {
+    // (undocumented)
+    'aria-label'?: string;
+    // (undocumented)
+    className?: string;
+    columns: readonly ListColumn[];
+    displays?: Readonly<Record<string, DisplayEntry>>;
+    // (undocumented)
+    item: ListItem;
+}
+
+// @public
 export function List(input: ListProps): JSX.Element;
 
 // @public
@@ -203,6 +218,7 @@ export interface ListLayoutProps {
     columns: readonly ListColumn[];
     getItemHref?: ((item: ListItem) => string | null) | undefined;
     getItemLabel: (item: ListItem) => string;
+    isCurrent?: ((item: ListItem) => boolean) | undefined;
     // (undocumented)
     isSelected: (item: ListItem) => boolean;
     // (undocumented)
@@ -247,6 +263,7 @@ export interface ListViewProps {
     className?: string;
     // (undocumented)
     columns: readonly ListColumn[];
+    currentItemId?: string | null;
     displays?: Readonly<Record<string, DisplayEntry>>;
     emptyMessage?: ReactNode;
     error?: Error | null;

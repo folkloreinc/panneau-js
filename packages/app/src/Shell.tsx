@@ -74,19 +74,21 @@ function Page({
                 return notFound;
             }
             const resolved = resolveResource(resource);
-            if (route.name === 'resource.index') {
+            if (route.name === 'resource.index' || route.name === 'resource.show') {
+                // The show route is the list with the item's details in a panel: the same page,
+                // so the list keeps its state while the panel opens, closes or changes item.
                 return resolved.abilities.viewAny ? (
                     <ResourceListPage
                         key={resource.id}
                         resolved={resolved}
                         basePath={basePath}
                         locale={definition.locale}
+                        selectedId={route.name === 'resource.show' ? route.id : null}
                     />
                 ) : (
                     notFound
                 );
             }
-            // The show page is the edit form until Phase 2 adds read-only pages.
             return (
                 <ResourceFormPage
                     key={`${resource.id}/${route.name === 'resource.create' ? '' : route.id}`}

@@ -8,7 +8,13 @@ import {
     toSearchParams,
     validate,
 } from '@panneau/protocol';
-import type { Item, ListResponse, SearchResponse, Session } from '@panneau/protocol';
+import type {
+    Item,
+    ListResponse,
+    PreviewResponse,
+    SearchResponse,
+    Session,
+} from '@panneau/protocol';
 
 import type { ActionResponse, DataAdapter } from './adapter';
 import { type ApiError, InvalidResponseError, createApiError } from './errors';
@@ -252,6 +258,14 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
             await send({ method: 'POST', path: '/auth/logout', signal });
         },
 
+        previewItem(resource, id, values, { signal } = {}) {
+            return json<PreviewResponse>({
+                method: 'POST',
+                path: `/resources/${encode(resource)}/${encode(id)}/preview`,
+                body: values,
+                signal,
+            });
+        },
         search(q, { signal } = {}) {
             return json<SearchResponse>({
                 path: '/search',

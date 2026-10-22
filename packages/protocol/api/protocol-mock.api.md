@@ -12,7 +12,7 @@ import { z } from 'zod';
 export function createExampleDefinition(): DefinitionInput;
 
 // @public
-export function createMockBackend(input: MockBackendOptions): MockBackend;
+export function createMockBackend(options: MockBackendOptions): MockBackend;
 
 // @public (undocumented)
 export interface MockBackend {
@@ -26,6 +26,10 @@ export interface MockBackendOptions {
     definition: DefinitionInput;
     // Warning: (ae-forgotten-export) The symbol "Values" needs to be exported by the entry point index.d.ts
     items?: Record<string, Values[]>;
+    previewUrl?: (context: {
+        resource: string;
+        item: Item;
+    }) => string;
 }
 
 // (No @packageDocumentation comment for this package)

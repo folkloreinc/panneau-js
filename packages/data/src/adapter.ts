@@ -6,6 +6,7 @@ import type {
     Item,
     ListQuery,
     ListResponse,
+    PreviewResponse,
     SearchResponse,
     Session,
 } from '@panneau/protocol';
@@ -94,6 +95,18 @@ export interface DataAdapter {
     login(credentials: LoginCredentials, options?: RequestOptions): Promise<Session>;
     /** Logs out. */
     logout(options?: RequestOptions): Promise<void>;
+
+    /**
+     * A short-lived URL of the item's page on the site, rendered with these values, for the iframe
+     * previews of resources whose `features.preview` is `{ "mode": "iframe" }` (decision 0009).
+     * Optional: without it, iframe previews are not shown.
+     */
+    previewItem?(
+        resource: string,
+        id: string,
+        values: Values,
+        options?: RequestOptions,
+    ): Promise<PreviewResponse>;
 
     /** Searches every searchable resource. */
     search(q: string, options?: RequestOptions): Promise<SearchResponse>;

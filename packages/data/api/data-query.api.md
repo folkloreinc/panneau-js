@@ -13,6 +13,7 @@ import type { Item } from '@panneau/protocol';
 import { JSX } from 'react';
 import type { ListQuery } from '@panneau/protocol';
 import type { ListResponse } from '@panneau/protocol';
+import type { PreviewResponse } from '@panneau/protocol';
 import type { QueryClient } from '@tanstack/react-query';
 import { QueryKey } from '@tanstack/react-query';
 import { ReactNode } from 'react';
@@ -50,6 +51,11 @@ export function invalidateActionResult(client: QueryClient, resource: string, re
 // @public
 export function isRunFinished(run: ActionRun): boolean;
 
+// Warning: (ae-forgotten-export) The symbol "Values" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function itemPreviewQueryOptions(adapter: DataAdapter, resource: string, id: string, values?: Values): DataQueryOptions<PreviewResponse, ReturnType<typeof queryKeys.itemPreview>>;
+
 // @public
 export type QueryHookOptions<TData, TKey extends readonly unknown[]> = Omit<UseQueryOptions<TData, Error, TData, TKey>, 'queryKey' | 'queryFn'>;
 
@@ -62,6 +68,7 @@ export const queryKeys: {
     list: (resource: string, query?: ListQuery) => readonly ["panneau", "resources", string, "list", ListQuery];
     items: (resource: string) => readonly ["panneau", "resources", string, "item"];
     item: (resource: string, id: string) => readonly ["panneau", "resources", string, "item", string];
+    itemPreview: (resource: string, id: string, values?: Record<string, unknown>) => readonly ["panneau", "resources", string, "item", string, "preview", Record<string, unknown>];
     actionRuns: () => readonly ["panneau", "actions", "runs"];
     actionRun: (id: string) => readonly ["panneau", "actions", "runs", string];
 };
@@ -80,7 +87,6 @@ export interface RunActionVariables extends ActionRequest {
 // @public (undocumented)
 export interface UpdateItemVariables {
     id: string;
-    // Warning: (ae-forgotten-export) The symbol "Values" needs to be exported by the entry point index.d.ts
     values: Values;
     version?: string | null;
 }
@@ -104,6 +110,9 @@ export function useDefinition(options?: QueryHookOptions<Definition, ReturnType<
 
 // @public
 export function useDeleteItem(resource: string): UseMutationResult<void, Error, string>;
+
+// @public
+export function useItemPreview(resource: string, id: string, values?: Values, options?: QueryHookOptions<PreviewResponse, ReturnType<typeof queryKeys.itemPreview>>): UseQueryResult<PreviewResponse>;
 
 // @public
 export function useOptionalDataAdapter(): DataAdapter | null;

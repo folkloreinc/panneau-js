@@ -15,6 +15,7 @@ import type {
     Item,
     ListQuery,
     ListResponse,
+    PreviewResponse,
 } from '@panneau/protocol';
 
 import type { ActionResponse, Values } from '../adapter';
@@ -22,6 +23,7 @@ import { useDataAdapter } from './context';
 import { queryKeys } from './keys';
 import {
     definitionQueryOptions,
+    itemPreviewQueryOptions,
     resourceItemQueryOptions,
     resourceListQueryOptions,
 } from './options';
@@ -62,6 +64,20 @@ export function useResourceItem(
     const adapter = useDataAdapter();
     const query = resourceItemQueryOptions(adapter, resource, id ?? '');
     return useQuery({ ...query, queryFn: id == null ? skipToken : query.queryFn, ...options });
+}
+
+/**
+ * The iframe preview of an item: a short-lived URL of its page on the site, rendered with
+ * `values` (`{}` for the saved item). Pass `enabled: false` until the preview is shown.
+ */
+export function useItemPreview(
+    resource: string,
+    id: string,
+    values: Values = {},
+    options: QueryHookOptions<PreviewResponse, ReturnType<typeof queryKeys.itemPreview>> = {},
+): UseQueryResult<PreviewResponse> {
+    const adapter = useDataAdapter();
+    return useQuery({ ...itemPreviewQueryOptions(adapter, resource, id, values), ...options });
 }
 
 /** Creates an item, then refetches the lists of the resource. */

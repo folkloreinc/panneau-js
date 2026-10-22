@@ -99,6 +99,23 @@ export const appMessages: {
     itemLoadError: PanneauMessage<    {
     resource: string;
     }>;
+    itemPanel: PanneauMessage<    {
+    resource: string;
+    }>;
+    editItem: PanneauMessage<Record<never, never>>;
+    preview: PanneauMessage<Record<never, never>>;
+    details: PanneauMessage<Record<never, never>>;
+    previewOf: PanneauMessage<    {
+    title: string;
+    }>;
+    previewError: PanneauMessage<Record<never, never>>;
+    previewMissing: PanneauMessage<    {
+    component: string;
+    }>;
+    openPreview: PanneauMessage<Record<never, never>>;
+    widenPanel: PanneauMessage<Record<never, never>>;
+    narrowPanel: PanneauMessage<Record<never, never>>;
+    closePanel: PanneauMessage<Record<never, never>>;
     notFound: PanneauMessage<Record<never, never>>;
     notFoundText: PanneauMessage<Record<never, never>>;
     backHome: PanneauMessage<Record<never, never>>;

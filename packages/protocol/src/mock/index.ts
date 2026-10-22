@@ -7,6 +7,7 @@ import type {
     Item,
     MediaInfo,
     MediaReference,
+    PreviewResponse,
     Problem,
     Selection,
     StoredFile,
@@ -23,6 +24,11 @@ export interface MockBackendOptions {
     definition: DefinitionInput;
     /** Initial values of the items, per resource id. Items without an `id` get one. */
     items?: Record<string, Values[]>;
+    /**
+     * The URL that `POST /resources/{resource}/{id}/preview` returns, for the item with the posted
+     * values. Defaults to a `data:` URL of a plain page with the item's values.
+     */
+    previewUrl?: (context: { resource: string; item: Item }) => string;
 }
 
 export interface MockBackend {
@@ -33,6 +39,23 @@ export interface MockBackend {
 }
 
 const RESERVED_KEYS = new Set(['id', 'version', 'abilities']);
+
+function escapeHtml(text: string): string {
+    return text.replace(/[&<>"']/g, (character) => `&#${character.charCodeAt(0)};`);
+}
+
+/** A plain page with the values of an item, as a `data:` URL, for iframe previews. */
+function defaultPreviewUrl(item: Item): string {
+    const rows = Object.entries(item)
+        .filter(([key]) => !RESERVED_KEYS.has(key))
+        .map(
+            ([key, value]) =>
+                `<dt>${escapeHtml(key)}</dt><dd>${escapeHtml(typeof value === 'string' ? value : JSON.stringify(value))}</dd>`,
+        )
+        .join('');
+    const html = `<!doctype html><meta charset="utf-8"><title>Preview</title><body style="font-family:system-ui;margin:2rem"><h1>Item ${escapeHtml(item.id)}</h1><dl>${rows}</dl></body>`;
+    return `data:text/html;charset=utf-8,${encodeURIComponent(html)}`;
+}
 
 const DEFAULT_MESSAGES: Record<string, (failure: RuleFailure) => string> = {
     required: () => 'This field is required.',
@@ -169,7 +192,8 @@ function mediaOf(file: StoredFile): MediaInfo {
  * with the portable rules. Used to test the conformance kit, and to develop frontends without a
  * real backend.
  */
-export function createMockBackend({ definition, items = {} }: MockBackendOptions): MockBackend {
+export function createMockBackend(options: MockBackendOptions): MockBackend {
+    const { definition, items = {} } = options;
     const store = new Map<string, Item[]>();
     let nextId = 1;
 
@@ -542,6 +566,24 @@ export function createMockBackend({ definition, items = {} }: MockBackendOptions
                 refresh: 'list',
             };
             return json(200, result);
+        }
+
+        if (segments.length === 4 && segments[3] === 'preview' && segments[2] !== undefined) {
+            const current = list.find((item) => item.id === segments[2]);
+            if (current === undefined) {
+                return problem(404, 'Item not found.');
+            }
+            if (method !== 'POST') {
+                return problem(405, 'Method not allowed.');
+            }
+            const body = await readBody();
+            const item: Item = { ...current, ...(isRecord(body) ? body : {}) };
+            const url =
+                options.previewUrl?.({ resource: resource.id, item }) ?? defaultPreviewUrl(item);
+            return json(200, {
+                url,
+                expiresAt: new Date(Date.now() + 5 * 60_000).toISOString(),
+            } satisfies PreviewResponse);
         }
 
         if (segments.length !== 3 || segments[2] === undefined) {

@@ -61,6 +61,41 @@ export const appMessages = {
         id: 'panneau.app.itemLoadError',
         defaultMessage: 'The {resource} could not be loaded.',
     }),
+    itemPanel: defineMessage<{ resource: string }>({
+        id: 'panneau.app.itemPanel',
+        defaultMessage: 'Details of the {resource}',
+    }),
+    editItem: defineMessage({ id: 'panneau.app.editItem', defaultMessage: 'Edit' }),
+    preview: defineMessage({ id: 'panneau.app.preview', defaultMessage: 'Preview' }),
+    details: defineMessage({ id: 'panneau.app.details', defaultMessage: 'Details' }),
+    previewOf: defineMessage<{ title: string }>({
+        id: 'panneau.app.previewOf',
+        defaultMessage: 'Preview of “{title}”',
+    }),
+    previewError: defineMessage({
+        id: 'panneau.app.previewError',
+        defaultMessage: 'The preview could not be loaded.',
+    }),
+    previewMissing: defineMessage<{ component: string }>({
+        id: 'panneau.app.previewMissing',
+        defaultMessage: 'No plugin provides the preview “{component}”.',
+    }),
+    openPreview: defineMessage({
+        id: 'panneau.app.openPreview',
+        defaultMessage: 'Open in a new tab',
+    }),
+    widenPanel: defineMessage({
+        id: 'panneau.app.widenPanel',
+        defaultMessage: 'Widen the details',
+    }),
+    narrowPanel: defineMessage({
+        id: 'panneau.app.narrowPanel',
+        defaultMessage: 'Narrow the details',
+    }),
+    closePanel: defineMessage({
+        id: 'panneau.app.closePanel',
+        defaultMessage: 'Close the details',
+    }),
     notFound: defineMessage({ id: 'panneau.app.notFound', defaultMessage: 'Page not found' }),
     notFoundText: defineMessage({
         id: 'panneau.app.notFoundText',

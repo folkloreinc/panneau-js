@@ -37,6 +37,11 @@ export interface PanneauPlugin {
     widgets?: Record<string, PluginComponent>;
     /** Layout node components, for `component` nodes of form layouts. */
     components?: Record<string, PluginComponent>;
+    /**
+     * Previews of items, by name, for resources whose `features.preview` is a `component`
+     * (`{ "mode": "component", "component": "page" }`). They get `PreviewProps`.
+     */
+    previews?: Record<string, PluginComponent>;
     /** UI messages, by locale. Messages of later plugins override earlier ones. */
     locales?: Record<string, MessagesLoader>;
     /** Themes, by id, that the theme of the definition can extend. */
@@ -45,7 +50,14 @@ export interface PanneauPlugin {
 
 /** The kinds of components a plugin can provide. */
 export type PluginComponentKind =
-    'fields' | 'displays' | 'listLayouts' | 'actions' | 'pages' | 'widgets' | 'components';
+    | 'fields'
+    | 'displays'
+    | 'listLayouts'
+    | 'actions'
+    | 'pages'
+    | 'widgets'
+    | 'components'
+    | 'previews';
 
 const COMPONENT_KINDS: PluginComponentKind[] = [
     'fields',
@@ -55,6 +67,7 @@ const COMPONENT_KINDS: PluginComponentKind[] = [
     'pages',
     'widgets',
     'components',
+    'previews',
 ];
 
 /** Everything the plugins provide, merged. A later plugin overrides an earlier one. */
@@ -68,6 +81,7 @@ export interface PluginRegistry {
     pages: ReadonlyMap<string, PluginComponent>;
     widgets: ReadonlyMap<string, PluginComponent>;
     components: ReadonlyMap<string, PluginComponent>;
+    previews: ReadonlyMap<string, PluginComponent>;
     /** Message loaders of each locale, in plugin order. */
     locales: ReadonlyMap<string, readonly MessagesLoader[]>;
     themes: ReadonlyMap<string, Theme>;

@@ -75,6 +75,15 @@ describe('createRestAdapter', () => {
         await expect(adapter.get('pages', created.id)).rejects.toBeInstanceOf(NotFoundError);
     });
 
+    it('gets the preview URL of an item with unsaved values', async () => {
+        const { adapter, backend } = setup();
+        const preview = await adapter.previewItem?.('pages', '1', { status: 'published' });
+        expect(preview?.url.startsWith('data:text/html')).toBe(true);
+        const request = backend.requests.at(-1);
+        expect(request?.method).toBe('POST');
+        expect(new URL(request?.url ?? '').pathname).toBe('/panneau/api/resources/pages/1/preview');
+    });
+
     it('sends the item version as If-Match', async () => {
         const { adapter, backend } = setup();
         await adapter.update('pages', '1', { status: 'draft' }, { version: '1' });

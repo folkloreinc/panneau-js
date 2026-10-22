@@ -13,6 +13,9 @@ export const queryKeys = {
         ['panneau', 'resources', resource, 'list', query] as const,
     items: (resource: string) => ['panneau', 'resources', resource, 'item'] as const,
     item: (resource: string, id: string) => ['panneau', 'resources', resource, 'item', id] as const,
+    /** Under the item's key: refetching or invalidating the item refreshes its preview. */
+    itemPreview: (resource: string, id: string, values: Record<string, unknown> = {}) =>
+        ['panneau', 'resources', resource, 'item', id, 'preview', values] as const,
     actionRuns: () => ['panneau', 'actions', 'runs'] as const,
     actionRun: (id: string) => ['panneau', 'actions', 'runs', id] as const,
 };

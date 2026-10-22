@@ -10,6 +10,7 @@ import { navigate } from '../location';
 import { capitalize } from '../navigation';
 import { routePath } from '../routes';
 import { PageHeader } from './PageHeader';
+import { getItemTitle } from './itemTitle';
 import styles from './pages.module.css';
 
 export interface ResourceFormPageProps {
@@ -18,19 +19,6 @@ export interface ResourceFormPageProps {
     basePath: string;
     /** The item to edit, or `null` to create one. */
     id: string | null;
-}
-
-function getTitle(item: Item | undefined, itemTitle: string | undefined, locale: string) {
-    const value = itemTitle !== undefined ? item?.[itemTitle] : undefined;
-    if (typeof value === 'string') {
-        return value;
-    }
-    if (value !== null && typeof value === 'object') {
-        const localized = (value as Record<string, unknown>)[locale];
-        const first = localized ?? Object.values(value)[0];
-        return typeof first === 'string' ? first : null;
-    }
-    return null;
 }
 
 /**
@@ -52,7 +40,7 @@ export function ResourceFormPage({ definition, resolved, basePath, id }: Resourc
     const title =
         mode === 'create'
             ? intl.formatMessage(appMessages.create, { resource: singular })
-            : (getTitle(item, resource.itemTitle, definition.locale) ??
+            : (getItemTitle(item, resource.itemTitle, definition.locale) ??
               intl.formatMessage(appMessages.edit, { resource: singular }));
     const back = {
         href: routePath({ name: 'resource.index', resource: resource.id }, basePath),
