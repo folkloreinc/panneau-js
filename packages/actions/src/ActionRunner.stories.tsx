@@ -127,7 +127,10 @@ export const Parameters: Story = {
         await userEvent.click(within(confirm).getByRole('button', { name: 'Publish' }));
         const dialog = await body.findByRole('dialog', { name: 'Publish' });
         await userEvent.click(within(dialog).getByRole('button', { name: 'Publish' }));
-        await expect(await within(dialog).findByText('This field is required.')).toBeVisible();
+        // Retried: the dialog may still be entering (its overlay fades in from no opacity).
+        await waitFor(() =>
+            expect(within(dialog).getByText('This field is required.')).toBeVisible(),
+        );
         await userEvent.type(
             within(dialog).getByRole('textbox', { name: 'Note to the authors' }),
             'Ready to go.',
