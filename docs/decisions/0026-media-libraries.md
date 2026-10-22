@@ -1,6 +1,6 @@
 # 0026: Media libraries are resources
 
-- Status: accepted
+- Status: accepted, amended by [0027](0027-media-picker.md): a `media` field can allow several libraries
 - Date: 2026-10-21
 - Amends: [0010](0010-media.md), [0025](0025-presigned-uploads.md)
 
