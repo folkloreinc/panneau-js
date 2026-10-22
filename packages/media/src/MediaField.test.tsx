@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -9,6 +9,7 @@ import { FieldsProvider, type UploadSource, type UploadedFile } from '@panneau/f
 import type { Definition, Item, MediaInfo, MediaReference } from '@panneau/protocol';
 
 import { type MediaAdapter, MediaField, MediaFieldEntry } from './MediaField';
+import { createMemorySource, libraryMedia } from './__fixtures__/mediaSources';
 import { Controlled, file, fileInput, renderInRoot } from './__fixtures__/render';
 import { mediaPlugin } from './plugin';
 
@@ -177,6 +178,29 @@ describe('MediaField', () => {
         expect(onChange).toHaveBeenCalledWith([expect.objectContaining({ id: 'med_2' })]);
     });
 
+    it('removes only the media of its library when two libraries have the same id', async () => {
+        const onChange = vi.fn();
+        renderInRoot(
+            <MediaField
+                label="Files"
+                resource="media"
+                multiple
+                adapter={{ create: vi.fn(), get: vi.fn() }}
+                value={[
+                    reference({}, { resource: 'media', label: 'clip.mp4' }),
+                    reference({}, { resource: 'documents', label: 'notes.pdf' }),
+                ]}
+                onChange={onChange}
+            />,
+        );
+
+        await userEvent.click(screen.getByRole('button', { name: 'Remove clip.mp4' }));
+
+        expect(onChange).toHaveBeenCalledWith([
+            expect.objectContaining({ id: 'med_1', resource: 'documents' }),
+        ]);
+    });
+
     it('is read-only without an adapter, and says so', () => {
         renderInRoot(
             <MediaField
@@ -298,6 +322,132 @@ describe('MediaField', () => {
             expect(onChange).toHaveBeenCalledWith([
                 expect.objectContaining({ id: 'med_1', resource: 'documents' }),
             ]),
+        );
+    });
+
+    it('opens the picker on its sources, and replaces its media with the one picked', async () => {
+        const onChange = vi.fn();
+        const media = createMemorySource({ id: 'media', label: 'Media', items: libraryMedia });
+        renderInRoot(
+            <MediaField
+                label="Cover"
+                resource="media"
+                adapter={{ create: vi.fn(), get: vi.fn() }}
+                sources={[media]}
+                value={reference({}, { id: 'med_03', resource: 'media', label: 'autumn forest' })}
+                onChange={onChange}
+            />,
+        );
+
+        expect(screen.getByRole('button', { name: 'Upload a file' })).toBeInTheDocument();
+        await userEvent.click(screen.getByRole('button', { name: 'Choose media' }));
+        const dialog = screen.getByRole('dialog', { name: 'Choose media' });
+        // The media of the value is marked as current.
+        expect(
+            within(await within(dialog).findByRole('row', { name: 'autumn forest' })).getAllByText(
+                'Current',
+            ),
+        ).not.toHaveLength(0);
+        await userEvent.click(within(dialog).getByRole('row', { name: 'team portrait' }));
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Select' }));
+
+        expect(onChange).toHaveBeenCalledWith(
+            expect.objectContaining({ id: 'med_02', resource: 'media', label: 'team portrait' }),
+        );
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
+
+    it('adds the media picked to a multiple value, each once', async () => {
+        const onChange = vi.fn();
+        const media = createMemorySource({ id: 'media', label: 'Media', items: libraryMedia });
+        renderInRoot(
+            <MediaField
+                label="Gallery"
+                resource="media"
+                multiple
+                adapter={null}
+                sources={[media]}
+                value={[reference({}, { id: 'med_03', label: 'autumn forest' })]}
+                onChange={onChange}
+            />,
+        );
+
+        await userEvent.click(screen.getByRole('button', { name: 'Add media' }));
+        const dialog = screen.getByRole('dialog', { name: 'Add media' });
+        await userEvent.click(await within(dialog).findByRole('row', { name: 'autumn forest' }));
+        await userEvent.click(within(dialog).getByRole('row', { name: 'team portrait' }));
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Select' }));
+
+        expect(onChange).toHaveBeenCalledWith([
+            expect.objectContaining({ id: 'med_03', label: 'autumn forest' }),
+            expect.objectContaining({ id: 'med_02', resource: 'media' }),
+        ]);
+    });
+
+    it('can neither pick nor upload when it is read-only', () => {
+        const media = createMemorySource({ id: 'media', label: 'Media', items: libraryMedia });
+        renderInRoot(
+            <MediaField
+                label="Cover"
+                resource="media"
+                readOnly
+                adapter={{ create: vi.fn(), get: vi.fn() }}
+                sources={[media]}
+                value={reference()}
+            />,
+        );
+
+        expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    });
+
+    it('opens the picker on the libraries the field allows, through the adapter', async () => {
+        const list = vi.fn<DataAdapter['list']>().mockImplementation((resource) =>
+            Promise.resolve({
+                data: [item({ type: 'image' }, { id: `${resource}_1`, title: `${resource} one` })],
+                meta: { page: 1, perPage: 24, total: 1, lastPage: 1 },
+            } as unknown as Awaited<ReturnType<DataAdapter['list']>>),
+        );
+        const adapter = { list, create: vi.fn(), get: vi.fn() } as unknown as DataAdapter;
+        const definition = {
+            resources: [
+                ...library.resources,
+                {
+                    ...library.resources[0],
+                    id: 'documents',
+                    label: { singular: 'document', plural: 'documents' },
+                },
+            ],
+        } as unknown as Definition;
+        const onChange = vi.fn();
+        renderInRoot(
+            <PanneauProvider definition={definition}>
+                <DataAdapterProvider adapter={adapter}>
+                    <MediaFieldEntry
+                        field={{
+                            name: 'cover',
+                            type: 'media',
+                            label: 'Cover',
+                            resource: ['documents', 'media'],
+                        }}
+                        path="cover"
+                        value={null}
+                        onChange={onChange}
+                    />
+                </DataAdapterProvider>
+            </PanneauProvider>,
+        );
+
+        await userEvent.click(screen.getByRole('button', { name: 'Choose media' }));
+        const dialog = screen.getByRole('dialog', { name: 'Choose media' });
+        expect(within(dialog).getByRole('radio', { name: 'documents' })).toBeChecked();
+        await userEvent.click(within(dialog).getByRole('radio', { name: 'media' }));
+        await userEvent.click(await within(dialog).findByRole('row', { name: 'media one' }));
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Select' }));
+
+        expect(list).toHaveBeenCalledWith('documents', expect.anything(), expect.anything());
+        expect(list).toHaveBeenCalledWith('media', expect.anything(), expect.anything());
+        expect(onChange).toHaveBeenCalledWith(
+            expect.objectContaining({ id: 'media_1', resource: 'media', label: 'media one' }),
         );
     });
 

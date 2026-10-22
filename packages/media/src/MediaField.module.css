@@ -66,3 +66,14 @@
     font-size: var(--panneau-font-size-md);
     color: var(--panneau-color-text-muted);
 }
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--panneau-space-2);
+}
+
+.upload {
+    flex: 1 1 16rem;
+}

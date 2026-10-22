@@ -1,4 +1,4 @@
-import { FileImage, X } from 'lucide-react';
+import { FileImage, Images, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 import { usePanneau } from '@panneau/core';
@@ -21,15 +21,21 @@ import {
 import { fieldsMessages, mediaMessages as messages } from '@panneau/intl';
 import type { Definition, Item, MediaInfo, MediaReference } from '@panneau/protocol';
 import { getMediaLibraries } from '@panneau/protocol/runtime';
-import { Badge, Fieldset, IconButton, Spinner, usePanneauIntl } from '@panneau/ui';
+import { Badge, Button, Fieldset, IconButton, Spinner, usePanneauIntl } from '@panneau/ui';
 
 import styles from './MediaField.module.css';
+import { MediaPicker } from './picker/MediaPicker';
+import type { MediaSource } from './picker/types';
+import { createResourceMediaSource } from './resourceSource';
 
 /** What the media field needs from an adapter: `@panneau/data`'s `DataAdapter` has it. */
 export type MediaAdapter = Pick<DataAdapter, 'create' | 'get'>;
 
 export interface MediaFieldBaseProps extends Omit<FieldProps<never>, 'value' | 'onChange'> {
-    /** The library: a resource of kind `media`, whose items the field references. */
+    /**
+     * The library the field uploads to: a resource of kind `media`. References without a
+     * `resource` are media of it.
+     */
     resource: string;
     /** The field that titles the media of the library, for the label of new references. Defaults to `name`. */
     itemTitle?: string;
@@ -48,6 +54,13 @@ export interface MediaFieldBaseProps extends Omit<FieldProps<never>, 'value' | '
     maxSize?: number | null;
     /** How often to read a media again until it is ready, in milliseconds. Defaults to 3 s. */
     refreshInterval?: number;
+    /**
+     * The libraries the media picker browses, in the order of its switcher ("Choose media",
+     * "Add media"). Without any, the field only uploads.
+     */
+    sources?: readonly MediaSource[];
+    /** Keeps what the user browsed in the picker between openings (see `MediaPicker`). */
+    stateKey?: string;
 }
 
 export interface SingleMediaFieldProps extends MediaFieldBaseProps {
@@ -106,6 +119,10 @@ export function toMediaReferences(value: unknown, itemTitle?: string): MediaRefe
         .map((entry) => toMediaReference(entry, itemTitle))
         .filter((reference): reference is MediaReference => reference !== null);
 }
+
+/** The key of a reference: its library and its id, which are unique only together. */
+const keyOf = (reference: MediaReference, resource: string) =>
+    `${reference.resource ?? resource}\n${reference.id}`;
 
 /** Whether the file of a media is still being processed. */
 export function isProcessing(reference: MediaReference): boolean {
@@ -181,12 +198,12 @@ function useMediaRefresh(
 }
 
 /**
- * Media of a library (the `media` type, decision 0026): a file chosen or dropped becomes a media
- * of the library, an item of its resource (`create(resource, { file })`), sent directly to storage
- * first when there is an upload source. Values are references to the media, with their `media`
- * and their `transform` for this use. The field shows each media with its thumbnail and its
- * status, and reads it again until its file is processed. Picking media already in the library
- * comes with the media picker.
+ * Media of libraries (the `media` type, decisions 0026 and 0027). "Choose media" ("Add media"
+ * with `multiple`) opens the media picker on the `sources`, and a file chosen or dropped becomes
+ * a media of the library, an item of its resource (`create(resource, { file })`), sent directly
+ * to storage first when there is an upload source. Values are references to the media, with
+ * their library, their `media` and their `transform` for this use. The field shows each media
+ * with its thumbnail and its status, and reads it again until its file is processed.
  */
 export function MediaField(props: MediaFieldProps) {
     const intl = usePanneauIntl();
@@ -200,6 +217,8 @@ export function MediaField(props: MediaFieldProps) {
         refreshInterval = 3000,
         resource,
         itemTitle = 'name',
+        sources = [],
+        stateKey,
         label,
         description,
         errors = [],
@@ -213,7 +232,10 @@ export function MediaField(props: MediaFieldProps) {
     } = props;
     const multiple = props.multiple === true;
     const media = toMediaReferences(props.value, itemTitle);
-    const editable = adapter !== null && disabled !== true && readOnly !== true;
+    const enabled = disabled !== true && readOnly !== true;
+    const canUpload = adapter !== null && enabled;
+    const canPick = sources.length > 0 && enabled;
+    const [picking, setPicking] = useState(false);
     const [problems, setProblems] = useState<string[]>([]);
     const [creating, setCreating] = useState<string[]>([]);
     const rejectionMessage = useRejectionMessage(maxSize);
@@ -331,7 +353,7 @@ export function MediaField(props: MediaFieldProps) {
                             const name = item.label ?? item.id;
                             const size = item.media?.size;
                             return (
-                                <li key={item.id} className={styles.item}>
+                                <li key={keyOf(item, resource)} className={styles.item}>
                                     <span className={styles.thumbnail}>
                                         {typeof item.media?.thumbnailUrl === 'string' ? (
                                             <img src={item.media.thumbnailUrl} alt="" />
@@ -351,7 +373,7 @@ export function MediaField(props: MediaFieldProps) {
                                             {statusBadge(item)}
                                         </span>
                                     </span>
-                                    {editable ? (
+                                    {canUpload || canPick ? (
                                         <IconButton
                                             icon={X}
                                             size="sm"
@@ -361,7 +383,9 @@ export function MediaField(props: MediaFieldProps) {
                                             onPress={() =>
                                                 set(
                                                     latest.current.filter(
-                                                        (entry) => entry.id !== item.id,
+                                                        (entry) =>
+                                                            keyOf(entry, resource) !==
+                                                            keyOf(item, resource),
                                                     ),
                                                 )
                                             }
@@ -387,38 +411,105 @@ export function MediaField(props: MediaFieldProps) {
                         {intl.formatMessage(fieldsMessages.uploadCompleting)} {creating.join(', ')}
                     </span>
                 ) : null}
-                {editable ? (
-                    <FilePicker
-                        accept={accept}
-                        multiple={multiple}
-                        onSelect={(selected) => {
-                            setProblems([]);
-                            upload.add(selected);
-                        }}
-                    />
+                {canPick || canUpload ? (
+                    <div className={styles.actions}>
+                        {canPick ? (
+                            <Button
+                                size="sm"
+                                appearance="outline"
+                                icon={Images}
+                                onPress={() => setPicking(true)}
+                            >
+                                {intl.formatMessage(
+                                    multiple ? messages.addMedia : messages.chooseMedia,
+                                )}
+                            </Button>
+                        ) : null}
+                        {canUpload ? (
+                            <FilePicker
+                                accept={accept}
+                                multiple={multiple}
+                                className={styles.upload}
+                                {...(canPick
+                                    ? {
+                                          label: intl.formatMessage(
+                                              multiple ? messages.uploadFiles : messages.uploadFile,
+                                          ),
+                                      }
+                                    : {})}
+                                onSelect={(selected) => {
+                                    setProblems([]);
+                                    upload.add(selected);
+                                }}
+                            />
+                        ) : null}
+                    </div>
                 ) : null}
             </div>
+            {canPick ? (
+                <MediaPicker
+                    isOpen={picking}
+                    onOpenChange={setPicking}
+                    sources={sources}
+                    multiple={multiple}
+                    accept={accept}
+                    maxSize={maxSize}
+                    value={media}
+                    title={intl.formatMessage(multiple ? messages.addMedia : messages.chooseMedia)}
+                    uploadSource={uploadSource}
+                    refreshInterval={refreshInterval}
+                    {...(stateKey !== undefined ? { stateKey } : {})}
+                    onSelect={(picked) => {
+                        setProblems([]);
+                        // A single pick replaces the media; several are added to the list, once.
+                        const known = new Set(
+                            latest.current.map((entry) => keyOf(entry, resource)),
+                        );
+                        set(
+                            multiple
+                                ? [
+                                      ...latest.current,
+                                      ...picked.filter(
+                                          (entry) => !known.has(keyOf(entry, resource)),
+                                      ),
+                                  ]
+                                : picked.slice(0, 1),
+                        );
+                    }}
+                />
+            ) : null}
         </Fieldset>
     );
 }
 
 /**
- * The registry entry of the `media` type: the field's first library (`getLibrary()`), which it
- * uploads to, `multiple`, `accept` (or its `accept` rule) and `maxSize` rule,
- * with the adapter of `@panneau/data` and the upload source of the fields context. Without a
- * library, the field shows its media and can't add any.
+ * The registry entry of the `media` type: the picker on the libraries the field allows
+ * (`getMediaLibraries()`), uploads to the first one (`getLibrary()`), `multiple`, `accept` (or
+ * its `accept` rule) and `maxSize` rule, with the adapter of `@panneau/data` and the upload source
+ * of the fields context. The picker opens again where the user left it in the same libraries.
+ * Without a library, the field shows its media and can't add any.
  */
 export function MediaFieldEntry(props: FieldEntryProps) {
     const { field, value, onChange } = props;
     const { definition } = usePanneau();
+    const adapter = useOptionalDataAdapter();
     const library = getLibrary(definition, field.resource);
     const itemTitle = library?.itemTitle ?? 'name';
+    const libraries = getMediaLibraries(definition, field).flatMap(
+        (id) => definition?.resources.find((candidate) => candidate.id === id) ?? [],
+    );
+    const sources =
+        adapter !== null
+            ? libraries.map((candidate) => createResourceMediaSource(adapter, candidate))
+            : [];
     const common = {
         ...getFieldProps(props),
         resource: library?.id ?? (typeof field.resource === 'string' ? field.resource : ''),
         itemTitle,
         accept: getAccept(field),
         maxSize: getMaxSize(field),
+        sources,
+        stateKey: `panneau.media.${libraries.map((candidate) => candidate.id).join(',')}`,
         ...(library === null ? { adapter: null } : {}),
     };
     const references = toMediaReferences(value, itemTitle);
