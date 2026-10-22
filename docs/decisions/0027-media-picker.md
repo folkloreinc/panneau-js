@@ -4,7 +4,7 @@
 - Date: 2026-10-22
 - Issue: [#91](https://github.com/folkloreinc/panneau-js/issues/91)
 - Amends: [0026](0026-media-libraries.md), for a `media` field that allows several libraries
-- Mockups: [#89](https://github.com/folkloreinc/panneau-js/pull/89), in `mockups/media-picker/` and [`docs/mockups/media-picker/`](../mockups/media-picker/)
+- Mockups: [#89](https://github.com/folkloreinc/panneau-js/pull/89), deleted once the picker was built. Their screenshots are in [`docs/mockups/media-picker/`](https://github.com/folkloreinc/panneau-js/tree/282e968603690ad1e62afe76c88f981c55a65cca/docs/mockups/media-picker) at the commit that merged them.
 
 ## Context
 

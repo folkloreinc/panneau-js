@@ -44,6 +44,8 @@ export interface MediaFieldBaseProps extends Omit<FieldProps<never>, 'value' | '
     maxSize?: number | null;
     refreshInterval?: number;
     resource: string;
+    sources?: readonly MediaSource_2[];
+    stateKey?: string;
     uploadSource?: UploadSource | null;
 }
 

@@ -381,6 +381,10 @@ export const mediaMessages: {
     statusProcessing: PanneauMessage<Record<never, never>>;
     statusFailed: PanneauMessage<Record<never, never>>;
     unavailable: PanneauMessage<Record<never, never>>;
+    chooseMedia: PanneauMessage<Record<never, never>>;
+    addMedia: PanneauMessage<Record<never, never>>;
+    uploadFile: PanneauMessage<Record<never, never>>;
+    uploadFiles: PanneauMessage<Record<never, never>>;
     pickerTitle: PanneauMessage<Record<never, never>>;
     pickerSelect: PanneauMessage<Record<never, never>>;
     pickerCancel: PanneauMessage<Record<never, never>>;

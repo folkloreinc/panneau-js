@@ -19,6 +19,10 @@ export const mediaMessages = {
         id: 'panneau.media.unavailable',
         defaultMessage: 'Files can’t be uploaded here.',
     }),
+    chooseMedia: defineMessage({ id: 'panneau.media.chooseMedia', defaultMessage: 'Choose media' }),
+    addMedia: defineMessage({ id: 'panneau.media.addMedia', defaultMessage: 'Add media' }),
+    uploadFile: defineMessage({ id: 'panneau.media.uploadFile', defaultMessage: 'Upload a file' }),
+    uploadFiles: defineMessage({ id: 'panneau.media.uploadFiles', defaultMessage: 'Upload files' }),
     // The media picker (`@panneau/media/picker`, decision 0027).
     pickerTitle: defineMessage({
         id: 'panneau.media.picker.title',

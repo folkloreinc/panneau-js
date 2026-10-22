@@ -1,10 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { expect, screen, userEvent, waitFor, within } from 'storybook/test';
 
 import type { Item, MediaInfo, MediaReference } from '@panneau/protocol';
 
 import { type MediaAdapter, MediaField } from './MediaField';
+import {
+    createMemorySource,
+    documentMedia,
+    instantUploadSource,
+    libraryMedia,
+} from './__fixtures__/mediaSources';
 
 const reference = (
     media: Partial<MediaInfo> = {},
@@ -131,6 +137,78 @@ export const Gallery: Story = {
         await userEvent.click(canvas.getByRole('button', { name: 'Remove broken.jpg' }));
         await expect(canvas.queryByText('broken.jpg')).not.toBeInTheDocument();
         await expect(canvas.getByText('poster.jpg')).toBeVisible();
+    },
+};
+
+/** "Choose media" opens the picker on the library: the media picked replaces the current one. */
+export const ChooseMedia: Story = {
+    render: function Render() {
+        const [adapter] = useState(createExampleAdapter);
+        const [sources] = useState(() => [
+            createMemorySource({ id: 'media', label: 'Media', items: libraryMedia }),
+        ]);
+        const [value, setValue] = useState<MediaReference | null>(null);
+        return (
+            <MediaField
+                label="Cover"
+                resource="media"
+                adapter={adapter}
+                sources={sources}
+                uploadSource={instantUploadSource}
+                accept={['image/*']}
+                value={value}
+                onChange={setValue}
+            />
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await userEvent.click(canvas.getByRole('button', { name: 'Choose media' }));
+        const dialog = within(await screen.findByRole('dialog', { name: 'Choose media' }));
+        await userEvent.click(await dialog.findByRole('row', { name: 'autumn forest' }));
+        await userEvent.click(dialog.getByRole('button', { name: 'Select' }));
+
+        await expect(await canvas.findByText('autumn forest')).toBeVisible();
+        await expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    },
+};
+
+/** "Add media" adds media of two libraries to a gallery. */
+export const AddFromLibraries: Story = {
+    render: function Render() {
+        const [adapter] = useState(createExampleAdapter);
+        const [sources] = useState(() => [
+            createMemorySource({ id: 'media', label: 'Media', items: libraryMedia }),
+            createMemorySource({ id: 'documents', label: 'Documents', items: documentMedia }),
+        ]);
+        const [value, setValue] = useState<MediaReference[] | null>([
+            reference({ type: 'image', size: 320_000 }, { id: 'med_1', resource: 'media' }),
+        ]);
+        return (
+            <MediaField
+                label="Gallery"
+                resource="media"
+                multiple
+                adapter={adapter}
+                sources={sources}
+                uploadSource={instantUploadSource}
+                value={value}
+                onChange={setValue}
+            />
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await userEvent.click(canvas.getByRole('button', { name: 'Add media' }));
+        const dialog = within(await screen.findByRole('dialog', { name: 'Add media' }));
+        await userEvent.click(await dialog.findByRole('row', { name: 'autumn forest' }));
+        await userEvent.click(dialog.getByRole('radio', { name: 'Documents' }));
+        await userEvent.click(await dialog.findByRole('row', { name: 'annual report 2025' }));
+        await userEvent.click(dialog.getByRole('button', { name: 'Select' }));
+
+        await expect(await canvas.findByText('annual report 2025')).toBeVisible();
+        await expect(canvas.getByText('autumn forest')).toBeVisible();
+        await expect(canvas.getByText('interview.mp4')).toBeVisible();
     },
 };
 
