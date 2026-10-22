@@ -56,6 +56,8 @@ export const sidebarTokens = defineComponentTokens('sidebar', {
 export const itemPanelTokens = defineComponentTokens('item-panel', {
     /** Width, beside the list or over it. */
     width: '24rem',
+    /** Width once widened, for previews: a share of the page, or a length. */
+    'width-wide': '50%',
     /** Background. */
     bg: 'var(--panneau-color-surface)',
     /** Corner radius, beside the list. */

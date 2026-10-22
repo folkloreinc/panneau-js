@@ -14,6 +14,11 @@
     outline: none;
 }
 
+/* Widened, for previews. */
+.wide {
+    width: min(100%, var(--panneau-item-panel-width-wide, 50%));
+}
+
 .panel:focus-visible {
     box-shadow:
         var(--panneau-shadow-lg),
@@ -26,6 +31,12 @@
     justify-content: space-between;
     gap: var(--panneau-space-2);
     padding: var(--panneau-space-4) var(--panneau-space-4) var(--panneau-space-2);
+}
+
+.headerButtons {
+    display: flex;
+    flex: none;
+    gap: var(--panneau-space-1);
 }
 
 .title {
@@ -66,10 +77,65 @@
 }
 
 .body {
+    display: flex;
     flex: 1 1 auto;
+    flex-direction: column;
     min-height: 0;
     padding: var(--panneau-space-4);
     overflow-y: auto;
+}
+
+.tabs {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: var(--panneau-space-3);
+    min-height: 0;
+}
+
+.tabPanel {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.preview {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: var(--panneau-space-2);
+    min-height: 0;
+}
+
+.previewLink {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-end;
+    gap: var(--panneau-space-1);
+    border-radius: var(--panneau-radius-sm);
+    color: var(--panneau-color-link);
+    font-size: var(--panneau-font-size-sm);
+    text-decoration: none;
+    outline: none;
+}
+
+.previewLink[data-hovered] {
+    text-decoration: underline;
+}
+
+.previewLink[data-focus-visible] {
+    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+}
+
+/* The page of the site, as tall as the panel allows. */
+.frame {
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 28rem;
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-radius-md);
+    background: var(--panneau-color-surface);
 }
 
 /* From the `xl` width of the root: beside the list, in the flow of the page. */
@@ -80,9 +146,14 @@
         z-index: auto;
         width: auto;
         max-height: calc(100dvh - 2 * var(--panneau-space-4));
+        min-height: min(40rem, calc(100dvh - 2 * var(--panneau-space-4)));
         border: var(--panneau-border-width) solid var(--panneau-color-border);
         border-radius: var(--panneau-item-panel-radius, var(--panneau-radius-lg));
         box-shadow: var(--panneau-item-panel-shadow, var(--panneau-shadow-md));
+    }
+
+    .wide {
+        width: auto;
     }
 
     .panel:focus-visible {

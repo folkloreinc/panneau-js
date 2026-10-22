@@ -309,6 +309,35 @@ describe('createMockBackend', () => {
         });
     });
 
+    it('returns a preview URL of an item with the posted values', async () => {
+        const backend = createBackend();
+        const [first] = backend.items('pages');
+        const response = await backend.fetch(
+            `/panneau/api/resources/pages/${first?.id ?? ''}/preview`,
+            json({ title: { fr: 'Accueil <modifié>' } }, { method: 'POST' }),
+        );
+        expect(response.status).toBe(200);
+        const { url, expiresAt } = (await response.json()) as { url: string; expiresAt: string };
+        expect(url.startsWith('data:text/html')).toBe(true);
+        expect(decodeURIComponent(url)).toContain('Accueil &#60;modifié&#62;');
+        expect(Number.isNaN(Date.parse(expiresAt))).toBe(false);
+
+        const custom = createMockBackend({
+            definition: createDefinition(),
+            items: { pages: [{ id: '1', title: { fr: 'Accueil' } }] },
+            previewUrl: ({ resource, item }) => `https://example.com/${resource}/${item.id}`,
+        });
+        const answer = await custom.fetch(
+            '/panneau/api/resources/pages/1/preview',
+            json({}, { method: 'POST' }),
+        );
+        expect(await answer.json()).toMatchObject({ url: 'https://example.com/pages/1' });
+        expect(
+            (await custom.fetch('/panneau/api/resources/pages/2/preview', { method: 'POST' }))
+                .status,
+        ).toBe(404);
+    });
+
     it('answers unknown routes with a 404 problem', async () => {
         const response = await createBackend().fetch('/panneau/api/resources/unknown');
         expect(response.status).toBe(404);

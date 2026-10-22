@@ -14,6 +14,7 @@ export {
     useCreateItem,
     useDefinition,
     useDeleteItem,
+    useItemPreview,
     useResourceItem,
     useResourceList,
     useRunAction,
@@ -23,6 +24,7 @@ export { queryKeys } from './keys';
 export {
     type DataQueryOptions,
     definitionQueryOptions,
+    itemPreviewQueryOptions,
     resourceItemQueryOptions,
     resourceListQueryOptions,
 } from './options';

@@ -6,9 +6,9 @@ import {
     queryOptions,
 } from '@tanstack/react-query';
 
-import type { Definition, Item, ListQuery, ListResponse } from '@panneau/protocol';
+import type { Definition, Item, ListQuery, ListResponse, PreviewResponse } from '@panneau/protocol';
 
-import type { DataAdapter } from '../adapter';
+import type { DataAdapter, Values } from '../adapter';
 import { queryKeys } from './keys';
 
 /**
@@ -56,5 +56,30 @@ export function resourceItemQueryOptions(
     return queryOptions({
         queryKey: queryKeys.item(resource, id),
         queryFn: ({ signal }) => adapter.get(resource, id, { signal }),
+    });
+}
+
+/**
+ * Query options of the iframe preview of an item: a short-lived URL of its page on the site,
+ * rendered with `values` (`{}` for the saved item). The previous URL stays while the next one
+ * loads, so the iframe doesn't blink. Fails when the adapter has no `previewItem()`.
+ */
+export function itemPreviewQueryOptions(
+    adapter: DataAdapter,
+    resource: string,
+    id: string,
+    values: Values = {},
+): DataQueryOptions<PreviewResponse, ReturnType<typeof queryKeys.itemPreview>> {
+    return queryOptions({
+        queryKey: queryKeys.itemPreview(resource, id, values),
+        queryFn: ({ signal }) => {
+            if (adapter.previewItem === undefined) {
+                throw new Error('The data adapter has no previewItem().');
+            }
+            return adapter.previewItem(resource, id, values, { signal });
+        },
+        placeholderData: keepPreviousData,
+        // Preview URLs are signed for a short time: a new one when the panel opens again later.
+        staleTime: 60_000,
     });
 }

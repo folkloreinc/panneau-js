@@ -47,6 +47,7 @@ export function createPlaygroundDefinition(): DefinitionInput {
                 ...pages,
                 icon: 'file-text',
                 description: 'The pages of the site, with their blocks.',
+                features: { preview: { mode: 'component', component: 'page' } },
                 actions: [...(pages.actions ?? []).filter(({ id }) => id !== 'edit'), DELETE],
             },
             {
@@ -54,6 +55,7 @@ export function createPlaygroundDefinition(): DefinitionInput {
                 label: { singular: 'article', plural: 'articles' },
                 description: 'News and stories, by category.',
                 icon: 'newspaper',
+                features: { preview: { mode: 'iframe' } },
                 itemTitle: 'title',
                 fields: [
                     { name: 'title', type: 'text', label: 'Title', rules: [{ rule: 'required' }] },
@@ -273,13 +275,22 @@ export function createPlaygroundItems(): Record<string, Values[]> {
             status: index < 3 ? 'published' : 'draft',
             ...(index < 3 ? { published_at: '2026-09-01T13:30:00Z' } : {}),
             author: reference(pick(authors, 0)),
-            blocks: [],
+            blocks: [
+                {
+                    type: 'text',
+                    body: `<p>${title}: everything you need to know about the Northwind Journal, its team and the city it covers.</p>`,
+                },
+                { type: 'image', image: null },
+            ],
             updated: `2026-10-${String(10 + index).padStart(2, '0')}`,
         })),
         articles: TITLES.map((title, index) => ({
             id: String(index + 1),
             title,
-            summary: '',
+            summary:
+                index % 2 === 0
+                    ? 'The city turns out for a weekend of music, food and boats on the water.'
+                    : '',
             status: STATUSES[index % STATUSES.length],
             category: reference(pick(categories, index)),
             author: reference(pick(authors, index)),

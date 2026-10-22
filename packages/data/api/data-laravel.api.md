@@ -11,6 +11,7 @@ import type { Definition } from '@panneau/protocol';
 import type { Item } from '@panneau/protocol';
 import type { ListQuery } from '@panneau/protocol';
 import type { ListResponse } from '@panneau/protocol';
+import type { PreviewResponse } from '@panneau/protocol';
 import { Problem } from '@panneau/protocol';
 import type { SearchResponse } from '@panneau/protocol';
 import type { Session } from '@panneau/protocol';

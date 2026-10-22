@@ -28,6 +28,12 @@ describe('plugins', () => {
         expect(registry.plugins.map((plugin) => plugin.id)).toEqual(['base', 'project']);
     });
 
+    it('register previews of items, by name', () => {
+        const PagePreview = () => null;
+        const registry = createPluginRegistry([{ id: 'site', previews: { page: PagePreview } }]);
+        expect(registry.previews.get('page')).toBe(PagePreview);
+    });
+
     it('need unique ids', () => {
         expect(() => createPluginRegistry([{ id: 'a' }, { id: 'a' }])).toThrow(/a/);
     });

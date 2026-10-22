@@ -3,6 +3,7 @@ import { createRestAdapter } from '@panneau/data';
 import { createMockBackend } from '@panneau/protocol/mock';
 
 import { createPlaygroundDefinition, createPlaygroundItems } from './definition';
+import { PagePreview, articlePreviewUrl } from './previews';
 import { flatTheme } from './themes';
 
 // The dev server answers every path with the page. A build can be served from any folder: its base
@@ -25,7 +26,11 @@ const definition = {
     ...createPlaygroundDefinition(),
     ...(theme === 'flat' ? { theme: { extends: 'flat' } } : {}),
 };
-const backend = createMockBackend({ definition, items: createPlaygroundItems() });
+const backend = createMockBackend({
+    definition,
+    items: createPlaygroundItems(),
+    previewUrl: ({ item }) => articlePreviewUrl(item),
+});
 
 const element = document.getElementById('panneau');
 if (element === null) {
@@ -34,7 +39,7 @@ if (element === null) {
 
 createPanneauApp({
     element,
-    plugins: [{ id: 'playground', themes: { flat: flatTheme } }],
+    plugins: [{ id: 'playground', themes: { flat: flatTheme }, previews: { page: PagePreview } }],
     adapter: createRestAdapter({ baseUrl: definition.api.baseUrl, fetch: backend.fetch }),
     config: { protocol: 1, apiBaseUrl: definition.api.baseUrl, basePath, locale: 'en', definition },
 });

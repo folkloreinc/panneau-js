@@ -260,6 +260,7 @@ export interface PanneauPlugin {
     listLayouts?: Record<string, PluginComponent>;
     locales?: Record<string, MessagesLoader>;
     pages?: Record<string, PluginComponent>;
+    previews?: Record<string, PluginComponent>;
     themes?: Record<string, Theme>;
     widgets?: Record<string, PluginComponent>;
 }
@@ -286,7 +287,7 @@ export function partitionByAction(action: Action, items: readonly Item[]): {
 export type PluginComponent = ComponentType<any>;
 
 // @public
-export type PluginComponentKind = 'fields' | 'displays' | 'listLayouts' | 'actions' | 'pages' | 'widgets' | 'components';
+export type PluginComponentKind = 'fields' | 'displays' | 'listLayouts' | 'actions' | 'pages' | 'widgets' | 'components' | 'previews';
 
 // @public
 export interface PluginRegistry {
@@ -305,9 +306,19 @@ export interface PluginRegistry {
     pages: ReadonlyMap<string, PluginComponent>;
     plugins: readonly PanneauPlugin[];
     // (undocumented)
+    previews: ReadonlyMap<string, PluginComponent>;
+    // (undocumented)
     themes: ReadonlyMap<string, Theme>;
     // (undocumented)
     widgets: ReadonlyMap<string, PluginComponent>;
+}
+
+// @public
+export interface PreviewProps {
+    item: Item;
+    locale: string;
+    // (undocumented)
+    resource: Resource;
 }
 
 // @public

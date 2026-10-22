@@ -11,6 +11,7 @@ import type { Definition } from '@panneau/protocol';
 import type { Item } from '@panneau/protocol';
 import type { ListQuery } from '@panneau/protocol';
 import type { ListResponse } from '@panneau/protocol';
+import type { PreviewResponse } from '@panneau/protocol';
 import { Problem } from '@panneau/protocol';
 import type { SearchResponse } from '@panneau/protocol';
 import type { Session } from '@panneau/protocol';
@@ -67,6 +68,7 @@ export interface DataAdapter {
     presignedUploads?(options?: {
         endpoint?: string;
     }): PresignedUploads;
+    previewItem?(resource: string, id: string, values: Values, options?: RequestOptions): Promise<PreviewResponse>;
     runAction(resource: string, action: string, request: ActionRequest, options?: RequestOptions): Promise<ActionResponse>;
     search(q: string, options?: RequestOptions): Promise<SearchResponse>;
     update(resource: string, id: string, values: Values, options?: UpdateOptions): Promise<Item>;

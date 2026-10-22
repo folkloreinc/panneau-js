@@ -1,4 +1,4 @@
-import { ExternalLink, Pencil, X } from 'lucide-react';
+import { ExternalLink, Maximize2, Minimize2, Pencil, X } from 'lucide-react';
 import { type KeyboardEvent, useEffect, useRef } from 'react';
 import { Link } from 'react-aria-components';
 
@@ -6,15 +6,33 @@ import type { ResolvedResource } from '@panneau/core';
 import { useResourceItem } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
 import { ItemDetails, type ListColumn, getActionHref, isAllowedOn } from '@panneau/lists';
-import { Alert, Button, Heading, Icon, IconButton, Spinner, usePanneauIntl } from '@panneau/ui';
+import {
+    Alert,
+    Button,
+    Heading,
+    Icon,
+    IconButton,
+    Spinner,
+    Tab,
+    TabList,
+    TabPanel,
+    Tabs,
+    usePanneauIntl,
+} from '@panneau/ui';
 
+import { cx } from '../cx';
 import { navigate } from '../location';
+import { usePreference } from '../preferences';
 import { routePath } from '../routes';
 import styles from './ItemPanel.module.css';
+import { ItemPreview } from './ItemPreview';
 import { getItemTitle } from './itemTitle';
 
 /** Fields that hold other fields, shown in the form rather than in the details. */
 const NESTED_TYPES = new Set(['group', 'repeater']);
+
+const SIZES = ['normal', 'wide'] as const;
+const TABS = ['preview', 'details'] as const;
 
 export interface ItemPanelProps {
     resolved: ResolvedResource;
@@ -28,13 +46,18 @@ export interface ItemPanelProps {
 /**
  * The details of an item next to its list (the show route): its values with the displays of the
  * lists, a link to edit it, and the `link` actions of the resource, such as its page on the site.
- * Escape closes it.
+ * A resource with a `features.preview` gets a preview tab first: a component of a plugin, or its
+ * page on the site. The panel can be widened, for previews, and remembers it. Escape closes it.
  */
 export function ItemPanel({ resolved, basePath, locale, id, closeHref }: ItemPanelProps) {
     const intl = usePanneauIntl();
     const { resource } = resolved;
     const { data: item, isError, refetch } = useResourceItem(resource.id, id);
     const panel = useRef<HTMLElement>(null);
+    const [size, setSize] = usePreference('item-panel-size', SIZES);
+    const [tab, setTab] = usePreference('item-panel-tab', TABS);
+    const wide = size === 'wide';
+    const hasPreview = (resource.features?.preview ?? null) !== null;
     const singular = resource.label.singular;
     const label = intl.formatMessage(appMessages.itemPanel, { resource: singular });
     const title =
@@ -81,7 +104,27 @@ export function ItemPanel({ resolved, basePath, locale, id, closeHref }: ItemPan
             <Spinner showLabel />
         );
     } else {
-        content = <ItemDetails item={item} columns={columns} />;
+        const details = <ItemDetails item={item} columns={columns} />;
+        content = hasPreview ? (
+            <Tabs
+                selectedKey={tab ?? 'preview'}
+                onSelectionChange={(key) => setTab(key === 'details' ? 'details' : 'preview')}
+                className={styles.tabs}
+            >
+                <TabList aria-label={label}>
+                    <Tab id="preview">{intl.formatMessage(appMessages.preview)}</Tab>
+                    <Tab id="details">{intl.formatMessage(appMessages.details)}</Tab>
+                </TabList>
+                <TabPanel id="preview" className={styles.tabPanel}>
+                    <ItemPreview resource={resource} item={item} title={title} locale={locale} />
+                </TabPanel>
+                <TabPanel id="details" className={styles.tabPanel}>
+                    {details}
+                </TabPanel>
+            </Tabs>
+        ) : (
+            details
+        );
     }
 
     return (
@@ -89,19 +132,31 @@ export function ItemPanel({ resolved, basePath, locale, id, closeHref }: ItemPan
             ref={panel}
             tabIndex={-1}
             aria-label={label}
-            className={styles.panel}
+            className={cx(styles.panel, wide && styles.wide)}
+            data-wide={wide || undefined}
             onKeyDown={onKeyDown}
         >
             <header className={styles.header}>
                 <Heading level={2} className={styles.title}>
                     {title}
                 </Heading>
-                <IconButton
-                    icon={X}
-                    label={intl.formatMessage(appMessages.closePanel)}
-                    size="sm"
-                    onPress={() => navigate(closeHref)}
-                />
+                <div className={styles.headerButtons}>
+                    <IconButton
+                        icon={wide ? Minimize2 : Maximize2}
+                        label={intl.formatMessage(
+                            wide ? appMessages.narrowPanel : appMessages.widenPanel,
+                        )}
+                        size="sm"
+                        className={styles.widen}
+                        onPress={() => setSize(wide ? 'normal' : 'wide')}
+                    />
+                    <IconButton
+                        icon={X}
+                        label={intl.formatMessage(appMessages.closePanel)}
+                        size="sm"
+                        onPress={() => navigate(closeHref)}
+                    />
+                </div>
             </header>
             {item !== undefined ? (
                 <div className={styles.actions}>

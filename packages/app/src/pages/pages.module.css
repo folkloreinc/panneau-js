@@ -26,6 +26,11 @@
     .withPanel .split {
         grid-template-columns: minmax(0, 1fr) var(--panneau-item-panel-width, 24rem);
     }
+
+    /* A widened panel, for previews. */
+    .withPanel .split:has(> [data-wide]) {
+        grid-template-columns: minmax(0, 1fr) var(--panneau-item-panel-width-wide, 50%);
+    }
 }
 
 .header {
