@@ -6,12 +6,21 @@
 
 import type { DataAdapter } from '@panneau/data';
 import type { Definition } from '@panneau/protocol';
+import type { Field } from '@panneau/protocol';
 import type { FieldEntry } from '@panneau/fields';
 import { FieldEntryProps } from '@panneau/fields';
 import { FieldProps } from '@panneau/fields';
+import type { Filter } from '@panneau/protocol';
+import type { FilterValue } from '@panneau/protocol';
 import { JSX } from 'react';
+import type { MediaInfo } from '@panneau/protocol';
 import type { MediaReference } from '@panneau/protocol';
+import type { Resource } from '@panneau/protocol';
+import type { UploadedFile } from '@panneau/fields';
 import { UploadSource } from '@panneau/fields';
+
+// @public
+export function createResourceMediaSource(adapter: MediaSourceAdapter, library: MediaLibrary): MediaSource_2;
 
 // @public
 export function getLibrary(definition: Pick<Definition, 'resources'> | null, resource: string | readonly string[] | undefined): Definition['resources'][number] | null;
@@ -45,10 +54,67 @@ export function MediaFieldEntry(props: FieldEntryProps): JSX.Element;
 export type MediaFieldProps = SingleMediaFieldProps | MultipleMediaFieldProps;
 
 // @public
+export type MediaLibrary = Pick<Resource, 'id' | 'label' | 'itemTitle' | 'fields' | 'list' | 'abilities'>;
+
+// @public (undocumented)
+export interface MediaPage {
+    // (undocumented)
+    items: PickerMedia[];
+    nextCursor: string | null;
+    total?: number | null;
+}
+
+// @public
 export const mediaPlugin: {
     id: string;
     fields: Readonly<Record<string, FieldEntry>>;
 };
+
+// @public (undocumented)
+export interface MediaQuery {
+    cursor?: string | null;
+    filter?: Record<string, FilterValue>;
+    // (undocumented)
+    q?: string;
+    sort?: string;
+}
+
+// @public (undocumented)
+export interface MediaRequestOptions {
+    // (undocumented)
+    signal?: AbortSignal;
+}
+
+// @public
+export interface MediaSort {
+    id: string;
+    label?: string;
+}
+
+// @public
+interface MediaSource_2 {
+    accept?: readonly string[] | null;
+    canCreate: boolean;
+    create(file: UploadedFile | File, options?: MediaRequestOptions): Promise<PickerMedia>;
+    fields?: readonly Field[];
+    filters?: readonly Filter[];
+    get(id: string, options?: MediaRequestOptions): Promise<PickerMedia>;
+    id: string;
+    label: string;
+    // (undocumented)
+    list(query: MediaQuery, options?: MediaRequestOptions): Promise<MediaPage>;
+    // (undocumented)
+    maxSize?: number | null;
+    sorts?: readonly MediaSort[];
+    update?(id: string, values: Record<string, unknown>, options?: MediaRequestOptions): Promise<PickerMedia>;
+}
+export { MediaSource_2 as MediaSource }
+
+// @public
+export type MediaSourceAdapter = Pick<DataAdapter, 'list' | 'get' | 'create' | 'update'>;
+
+// @public
+export type MediaType = 'image' | 'video' | 'audio' | 'document' | 'other';
 
 // @public (undocumented)
 export interface MultipleMediaFieldProps extends MediaFieldBaseProps {
@@ -57,6 +123,18 @@ export interface MultipleMediaFieldProps extends MediaFieldBaseProps {
     onChange?: (value: MediaReference[] | null) => void;
     // (undocumented)
     value?: readonly MediaReference[] | null;
+}
+
+// @public
+export interface PickerMedia {
+    createdAt?: string | null;
+    fileName?: string | null;
+    // (undocumented)
+    id: string;
+    label: string;
+    // (undocumented)
+    media: MediaInfo;
+    values?: Record<string, unknown>;
 }
 
 // @public (undocumented)

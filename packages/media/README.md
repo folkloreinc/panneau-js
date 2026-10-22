@@ -1,14 +1,15 @@
 # @panneau/media
 
-The media of Panneau: the media field, which references media of a library, makes media of uploads and follows their processing. The media picker and the library come here too.
+The media of Panneau: the media field, which references media of a library, makes media of uploads and follows their processing, and the media picker, which browses libraries and uploads to them.
 
 ```bash
 npm install @panneau/media@^5.0.0-alpha.0 @tanstack/react-query react-aria-components react-intl
 ```
 
-| Export           | Content                                                                                                                       |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `@panneau/media` | `MediaField`, `MediaFieldEntry`, `mediaPlugin`, `getLibrary()`, `toMediaReference()`, `toMediaReferences()`, `isProcessing()` |
+| Export                  | Content                                                                                                                                                      |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `@panneau/media`        | `MediaField`, `MediaFieldEntry`, `mediaPlugin`, `createResourceMediaSource()`, `getLibrary()`, `toMediaReference()`, `toMediaReferences()`, `isProcessing()` |
+| `@panneau/media/picker` | `MediaPicker`, and the types of its sources: `MediaSource`, `MediaQuery`, `MediaPage`, `PickerMedia`, `MediaSort`                                            |
 
 ## The media field
 
@@ -40,6 +41,42 @@ const uploadSource =
         …
     </FieldsProvider>
 </DataAdapterProvider>;
+```
+
+## The media picker
+
+`MediaPicker` (`@panneau/media/picker`, [decision 0027](../../docs/decisions/0027-media-picker.md)) is a dialog to browse libraries, upload to them, and pick one media, or several with `multiple`. It reads `MediaSource`s, one per library, and returns references with their library (`{ id, resource, label, media }`). This entry point only imports `@panneau/ui`, `@panneau/fields`, `@panneau/intl` and the runtime of `@panneau/protocol`: a product opens the picker from its own screens without loading `@panneau/data` or `@panneau/core`.
+
+- **Library tab:** search, the type filter, the sorts and filters of the source and of the opener, infinite scroll, and the details of the last media selected, which edit the source's `fields` with `update()`.
+- **Upload tab:** files become media of the library shown (`create()`), and are selected. With `confirmOnUpload` and a single media, the picker confirms as soon as the media exists.
+- **What the opener chooses:**
+    - `sources`: the libraries;
+    - `accept` and `maxSize`: media that don't match are greyed out, with the reason;
+    - `filter`: filters the user can't change, shown as locked;
+    - `filters` and `sorts`: more of them;
+    - `value`: the current media;
+    - `title` and `confirmLabel`;
+    - `stateKey`: keeps the query, the pages and the scroll position of each library across openings.
+- Media being processed can be picked, and are read again (`get()`) until they are ready. A media whose processing failed can't be picked.
+
+`createResourceMediaSource(adapter, library)` gives the source of a library resource: `GET /resources/{library}` with `q`, `filter`, `sort` and the page as the cursor, `POST` from an upload, and `PATCH` for the details. A product implements `MediaSource` on its own API.
+
+```tsx
+import { createResourceMediaSource } from '@panneau/media';
+import { MediaPicker } from '@panneau/media/picker';
+
+const sources = definition.resources
+    .filter((resource) => resource.kind === 'media')
+    .map((library) => createResourceMediaSource(adapter, library));
+
+<MediaPicker
+    isOpen={isOpen}
+    onOpenChange={setOpen}
+    sources={sources}
+    accept={['image/*']}
+    confirmLabel="Insert"
+    onSelect={([media]) => insertImage(media)}
+/>;
 ```
 
 `mediaPlugin` gives the `media` type to `@panneau/core`: pass it after `fieldsPlugin`. The `file` type is built into `@panneau/fields`.

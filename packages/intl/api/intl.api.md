@@ -321,6 +321,129 @@ export const mediaMessages: {
     statusProcessing: PanneauMessage<Record<never, never>>;
     statusFailed: PanneauMessage<Record<never, never>>;
     unavailable: PanneauMessage<Record<never, never>>;
+    pickerTitle: PanneauMessage<Record<never, never>>;
+    pickerSelect: PanneauMessage<Record<never, never>>;
+    pickerCancel: PanneauMessage<Record<never, never>>;
+    pickerLibraries: PanneauMessage<Record<never, never>>;
+    pickerTabs: PanneauMessage<Record<never, never>>;
+    pickerTabLibrary: PanneauMessage<Record<never, never>>;
+    pickerTabUpload: PanneauMessage<Record<never, never>>;
+    pickerCannotUpload: PanneauMessage<    {
+    library: string;
+    }>;
+    pickerSearch: PanneauMessage<Record<never, never>>;
+    pickerSearchPlaceholder: PanneauMessage<Record<never, never>>;
+    pickerType: PanneauMessage<Record<never, never>>;
+    pickerTypeAll: PanneauMessage<Record<never, never>>;
+    pickerTypeImage: PanneauMessage<Record<never, never>>;
+    pickerTypeVideo: PanneauMessage<Record<never, never>>;
+    pickerTypeAudio: PanneauMessage<Record<never, never>>;
+    pickerTypeDocument: PanneauMessage<Record<never, never>>;
+    pickerTypeOther: PanneauMessage<Record<never, never>>;
+    pickerSort: PanneauMessage<Record<never, never>>;
+    pickerSortNewest: PanneauMessage<Record<never, never>>;
+    pickerSortOldest: PanneauMessage<Record<never, never>>;
+    pickerSortName: PanneauMessage<Record<never, never>>;
+    pickerSortSize: PanneauMessage<Record<never, never>>;
+    pickerSortDimensions: PanneauMessage<Record<never, never>>;
+    pickerSortDuration: PanneauMessage<Record<never, never>>;
+    pickerFilters: PanneauMessage<Record<never, never>>;
+    pickerResetFilters: PanneauMessage<Record<never, never>>;
+    pickerLockedFilter: PanneauMessage<    {
+    label: string;
+    value: string;
+    }>;
+    pickerAccepted: PanneauMessage<    {
+    types: string;
+    }>;
+    pickerAcceptedSize: PanneauMessage<    {
+    types: string;
+    size: string;
+    }>;
+    pickerUploadAccepts: PanneauMessage<    {
+    types: string;
+    }>;
+    pickerUploadAcceptsSize: PanneauMessage<    {
+    types: string;
+    size: string;
+    }>;
+    pickerAnyFile: PanneauMessage<Record<never, never>>;
+    pickerMedia: PanneauMessage<    {
+    library: string;
+    }>;
+    pickerLoading: PanneauMessage<Record<never, never>>;
+    pickerLoadingMore: PanneauMessage<Record<never, never>>;
+    pickerLoadMore: PanneauMessage<Record<never, never>>;
+    pickerCount: PanneauMessage<    {
+    shown: number;
+    total: number;
+    }>;
+    pickerLoadError: PanneauMessage<Record<never, never>>;
+    pickerRetry: PanneauMessage<Record<never, never>>;
+    pickerEmpty: PanneauMessage<    {
+    library: string;
+    }>;
+    pickerEmptyUpload: PanneauMessage<    {
+    library: string;
+    }>;
+    pickerEmptyReadOnly: PanneauMessage<Record<never, never>>;
+    pickerUploadFiles: PanneauMessage<Record<never, never>>;
+    pickerNoResults: PanneauMessage<Record<never, never>>;
+    pickerClearSearch: PanneauMessage<Record<never, never>>;
+    pickerRefusedType: PanneauMessage<    {
+    type: string;
+    }>;
+    pickerRefusedSize: PanneauMessage<    {
+    size: string;
+    }>;
+    pickerCurrent: PanneauMessage<Record<never, never>>;
+    pickerNothingSelected: PanneauMessage<Record<never, never>>;
+    pickerSelected: PanneauMessage<    {
+    name: string;
+    }>;
+    pickerSelectedCount: PanneauMessage<    {
+    count: number;
+    }>;
+    pickerSelectedIn: PanneauMessage<    {
+    count: number;
+    libraries: number;
+    }>;
+    pickerClear: PanneauMessage<Record<never, never>>;
+    pickerDetails: PanneauMessage<Record<never, never>>;
+    pickerDetailsOf: PanneauMessage<    {
+    name: string;
+    }>;
+    pickerNoDetails: PanneauMessage<Record<never, never>>;
+    pickerBack: PanneauMessage<Record<never, never>>;
+    pickerSave: PanneauMessage<Record<never, never>>;
+    pickerSaveFailed: PanneauMessage<    {
+    error: string;
+    }>;
+    pickerUnsaved: PanneauMessage<    {
+    name: string;
+    }>;
+    pickerUnsavedText: PanneauMessage<Record<never, never>>;
+    pickerDiscard: PanneauMessage<Record<never, never>>;
+    pickerStillProcessing: PanneauMessage<Record<never, never>>;
+    pickerFile: PanneauMessage<Record<never, never>>;
+    pickerFileType: PanneauMessage<Record<never, never>>;
+    pickerSize: PanneauMessage<Record<never, never>>;
+    pickerDimensions: PanneauMessage<Record<never, never>>;
+    pickerDuration: PanneauMessage<Record<never, never>>;
+    pickerAdded: PanneauMessage<Record<never, never>>;
+    pickerAddedTo: PanneauMessage<    {
+    library: string;
+    }>;
+    pickerUploadTo: PanneauMessage<    {
+    library: string;
+    }>;
+    pickerUploadToConfirm: PanneauMessage<    {
+    library: string;
+    }>;
+    pickerCreateFailed: PanneauMessage<    {
+    name: string;
+    error: string;
+    }>;
 };
 
 // @public
