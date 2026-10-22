@@ -66,7 +66,7 @@ export const NeedsCrop: Story = {
 };
 
 /** A photo its library turned upright: the crop for this use applies over the library's edits. */
-export const OverTheLibrarysEdits: Story = {
+export const OverTheLibraryVersion: Story = {
     args: {
         transformBase: 'choose',
         value: [

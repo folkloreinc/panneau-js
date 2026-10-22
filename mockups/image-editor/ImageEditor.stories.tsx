@@ -139,7 +139,7 @@ export const Keyboard: Story = {
  * A photo stored sideways, which its library turns upright. The crop for this use applies over
  * the library's version, and the user can start from the original instead.
  */
-export const OverTheLibrarysEdits: Story = {
+export const OverTheLibraryVersion: Story = {
     args: {
         image: hiker,
         initial: { crop: { x: 0, y: 900, width: 3024, height: 1701 } },
