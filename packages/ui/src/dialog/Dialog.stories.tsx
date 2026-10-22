@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { Button } from '../button/Button';
+import { SegmentedControl } from '../segmented-control/SegmentedControl';
 import { TextInput } from '../text-input/TextInput';
 import { Dialog, DialogTrigger } from './Dialog';
 
@@ -57,5 +58,42 @@ export const AlertDialog: Story = {
                 <Button variant="danger">Delete</Button>
             </>
         ),
+    },
+};
+
+/**
+ * A picker: the extra large size, a segmented control in the header, and the whole screen on
+ * phones instead of a sheet.
+ */
+export const Picker: Story = {
+    args: {
+        title: 'Choose media',
+        isOpen: true,
+        size: 'xl',
+        fullScreenOnPhone: true,
+        headerContent: (
+            <SegmentedControl
+                aria-label="Library"
+                size="sm"
+                options={[
+                    { value: 'images', label: 'Images' },
+                    { value: 'documents', label: 'Documents' },
+                ]}
+            />
+        ),
+        children: 'The grid of media.',
+        footer: (
+            <>
+                <Button>Cancel</Button>
+                <Button variant="primary">Select</Button>
+            </>
+        ),
+    },
+    play: async ({ canvasElement }) => {
+        const dialog = await within(canvasElement.ownerDocument.body).findByRole('dialog', {
+            name: 'Choose media',
+        });
+        await userEvent.click(within(dialog).getByRole('radio', { name: 'Documents' }));
+        await expect(within(dialog).getByRole('radio', { name: 'Documents' })).toBeChecked();
     },
 };

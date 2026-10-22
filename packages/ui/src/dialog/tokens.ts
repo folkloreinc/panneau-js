@@ -10,6 +10,8 @@ export const dialogTokens = defineComponentTokens('dialog', {
     'width-sm': '24rem',
     /** Maximum width of the large size. */
     'width-lg': '48rem',
+    /** Maximum width of the extra large size, for pickers and editors. */
+    'width-xl': '72rem',
     /** Background. */
     bg: 'var(--panneau-color-surface-raised)',
     /** Corner radius. */

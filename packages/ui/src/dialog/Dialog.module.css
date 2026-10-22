@@ -34,6 +34,10 @@
     max-width: var(--panneau-dialog-width-lg, 48rem);
 }
 
+.xl {
+    max-width: var(--panneau-dialog-width-xl, 72rem);
+}
+
 .modal[data-entering] {
     animation: rise var(--panneau-duration) ease-out;
 }
@@ -58,8 +62,16 @@
         var(--panneau-dialog-padding-x, var(--panneau-space-5));
 }
 
+.headerContent {
+    display: flex;
+    flex: 0 1 auto;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    min-width: 0;
+}
+
 .title {
-    flex: 1 1 auto;
+    flex: 1 1 12rem;
     min-width: 0;
     padding-top: var(--panneau-space-1);
     font-size: var(--panneau-dialog-title-font-size, var(--panneau-font-size-lg));
@@ -96,7 +108,8 @@
 
     .modal,
     .sm,
-    .lg {
+    .lg,
+    .xl {
         max-width: none;
         max-height: calc(100dvh - var(--panneau-space-8));
     }
@@ -105,6 +118,27 @@
         border-end-start-radius: 0;
         border-end-end-radius: 0;
         padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* The whole screen, under the notch. */
+    .fullScreenOnPhone {
+        height: 100dvh;
+        max-height: 100dvh;
+    }
+
+    .fullScreenOnPhone .dialog {
+        border-radius: 0;
+        padding-top: env(safe-area-inset-top);
+    }
+
+    /* The header's content goes under the title and the close button. */
+    .header {
+        flex-wrap: wrap;
+    }
+
+    .headerContent {
+        flex: 1 1 100%;
+        order: 1;
     }
 
     .footer {

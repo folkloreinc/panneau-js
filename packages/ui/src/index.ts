@@ -50,6 +50,11 @@ export { RadioGroup, type RadioGroupProps } from './radio-group/RadioGroup';
 export { PanneauRoot, type PanneauRootProps, usePortalContainer } from './root/PanneauRoot';
 export { ThemeScope, type ThemeScopeProps } from './root/ThemeScope';
 export {
+    SegmentedControl,
+    type SegmentedControlOption,
+    type SegmentedControlProps,
+} from './segmented-control/SegmentedControl';
+export {
     type MultipleSelectProps,
     type OptionValue,
     Select,

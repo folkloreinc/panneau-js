@@ -294,7 +294,7 @@ export const componentTokens: Readonly<{
     card: Readonly<Record<"panneau-card-radius" | "panneau-card-gap" | "panneau-card-padding-y" | "panneau-card-padding-x" | "panneau-card-border-width" | "panneau-card-title-font-weight" | "panneau-card-bg" | "panneau-card-border-color" | "panneau-card-shadow" | "panneau-card-header-padding-y" | "panneau-card-title-font-size", string>>;
     checkbox: Readonly<Record<"panneau-checkbox-size" | "panneau-checkbox-radius" | "panneau-checkbox-bg" | "panneau-checkbox-border-color" | "panneau-checkbox-checked-color" | "panneau-checkbox-checked-bg", string>>;
     container: Readonly<Record<"panneau-container-padding-x" | "panneau-container-width-sm" | "panneau-container-width-md" | "panneau-container-width-lg" | "panneau-container-width-xl", string>>;
-    dialog: Readonly<Record<"panneau-dialog-width" | "panneau-dialog-radius" | "panneau-dialog-padding-x" | "panneau-dialog-title-font-weight" | "panneau-dialog-bg" | "panneau-dialog-shadow" | "panneau-dialog-title-font-size" | "panneau-dialog-width-sm" | "panneau-dialog-width-lg" | "panneau-dialog-backdrop", string>>;
+    dialog: Readonly<Record<"panneau-dialog-width" | "panneau-dialog-radius" | "panneau-dialog-padding-x" | "panneau-dialog-title-font-weight" | "panneau-dialog-bg" | "panneau-dialog-shadow" | "panneau-dialog-title-font-size" | "panneau-dialog-width-sm" | "panneau-dialog-width-lg" | "panneau-dialog-width-xl" | "panneau-dialog-backdrop", string>>;
     disclosure: Readonly<Record<"panneau-disclosure-gap" | "panneau-disclosure-title-font-weight" | "panneau-disclosure-title-font-size", string>>;
     divider: Readonly<Record<"panneau-divider-color" | "panneau-divider-width", string>>;
     field: Readonly<Record<"panneau-field-gap" | "panneau-field-label-font-size" | "panneau-field-label-font-weight", string>>;
@@ -307,6 +307,7 @@ export const componentTokens: Readonly<{
     popover: Readonly<Record<"panneau-popover-radius" | "panneau-popover-padding" | "panneau-popover-bg" | "panneau-popover-border-color" | "panneau-popover-shadow", string>>;
     prose: Readonly<Record<"panneau-prose-gap" | "panneau-prose-border-color" | "panneau-prose-line-height" | "panneau-prose-heading-gap" | "panneau-prose-list-indent" | "panneau-prose-link-color" | "panneau-prose-code-font-size" | "panneau-prose-code-color" | "panneau-prose-code-bg" | "panneau-prose-code-radius" | "panneau-prose-quote-border-color" | "panneau-prose-quote-color", string>>;
     radio: Readonly<Record<"panneau-radio-size" | "panneau-radio-bg" | "panneau-radio-border-color" | "panneau-radio-checked-color" | "panneau-radio-checked-border-width", string>>;
+    'segmented-control': Readonly<Record<"panneau-segmented-control-radius" | "panneau-segmented-control-padding" | "panneau-segmented-control-bg" | "panneau-segmented-control-border-color" | "panneau-segmented-control-segment-padding-x" | "panneau-segmented-control-segment-font-weight" | "panneau-segmented-control-segment-color" | "panneau-segmented-control-segment-color-selected" | "panneau-segmented-control-segment-bg-selected" | "panneau-segmented-control-segment-shadow-selected", string>>;
     spinner: Readonly<Record<"panneau-spinner-border-width", string>>;
     stack: Readonly<Record<"panneau-stack-gap", string>>;
     switch: Readonly<Record<"panneau-switch-height" | "panneau-switch-width" | "panneau-switch-radius" | "panneau-switch-checked-bg" | "panneau-switch-track-bg" | "panneau-switch-thumb-size" | "panneau-switch-thumb-bg" | "panneau-switch-checked-thumb-bg", string>>;
@@ -365,14 +366,15 @@ export interface DialogProps extends Pick<ModalOverlayProps, 'isOpen' | 'default
     footer?: ReactNode | ((close: () => void) => ReactNode);
     // (undocumented)
     footerClassName?: string;
+    fullScreenOnPhone?: boolean;
     // (undocumented)
     headerClassName?: string;
+    headerContent?: ReactNode | ((close: () => void) => ReactNode);
     isDismissable?: boolean;
     // (undocumented)
     overlayClassName?: string;
     role?: 'dialog' | 'alertdialog';
-    // (undocumented)
-    size?: 'sm' | 'md' | 'lg';
+    size?: 'sm' | 'md' | 'lg' | 'xl';
     title: ReactNode;
 }
 
@@ -709,6 +711,44 @@ export interface Rgb {
     g: number;
     // (undocumented)
     r: number;
+}
+
+// @public
+export function SegmentedControl(input: SegmentedControlProps): JSX.Element;
+
+// @public
+export interface SegmentedControlOption {
+    // (undocumented)
+    icon?: IconComponent;
+    // (undocumented)
+    isDisabled?: boolean;
+    // (undocumented)
+    label: ReactNode;
+    textValue?: string;
+    // (undocumented)
+    value: string;
+}
+
+// @public (undocumented)
+export interface SegmentedControlProps {
+    'aria-label'?: string;
+    // (undocumented)
+    'aria-labelledby'?: string;
+    // (undocumented)
+    className?: string;
+    defaultValue?: string;
+    fullWidth?: boolean;
+    // (undocumented)
+    isDisabled?: boolean;
+    // (undocumented)
+    onChange?: (value: string) => void;
+    // (undocumented)
+    options: readonly SegmentedControlOption[];
+    // (undocumented)
+    segmentClassName?: string;
+    // (undocumented)
+    size?: 'sm' | 'md';
+    value?: string;
 }
 
 // @public
