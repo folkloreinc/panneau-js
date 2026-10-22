@@ -31,4 +31,5 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0023](0023-action-runner.md)            | An action runner in its own package                              | Accepted        |
 | [0024](0024-theme-model.md)              | A theme model as extensible as Bootstrap's                       | Accepted        |
 | [0025](0025-presigned-uploads.md)        | Direct uploads to storage, separate from media                   | Amended by 0026 |
-| [0026](0026-media-libraries.md)          | Media libraries are resources                                    | Accepted        |
+| [0026](0026-media-libraries.md)          | Media libraries are resources                                    | Amended by 0027 |
+| [0027](0027-media-picker.md)             | A media picker on a source that products can implement           | Accepted        |
