@@ -117,6 +117,9 @@ export const appMessages: {
     narrowPanel: PanneauMessage<Record<never, never>>;
     closePanel: PanneauMessage<Record<never, never>>;
     goTo: PanneauMessage<Record<never, never>>;
+    profile: PanneauMessage<    {
+    name: string;
+    }>;
     groupRecent: PanneauMessage<Record<never, never>>;
     groupNavigation: PanneauMessage<Record<never, never>>;
     groupCreate: PanneauMessage<Record<never, never>>;
