@@ -1,5 +1,32 @@
 # @panneau/fields
 
+## 5.0.0-alpha.5
+
+### Minor Changes
+
+- 88a3d09: Fields check their value with the backend, and the slug field does what sites' `PageSlug` did (decision 0032). A field with `check: true` sends `POST /resources/{resource}/fields/{field}/check` as it is typed (`FieldCheckRequest`), and the backend answers whether the value is available, a free suggestion, the URL's `prefix` and `url`, and `disabled` for an item the field doesn't apply to (`FieldCheckResponse`). The mock backend answers it, and the conformance kit checks it (`fields.check`). `DataAdapter.checkField?()` sends it; `createFieldCheckSource(adapter, resource, id)` gives the fields context its `checkSource`, which `FormView` takes too. The `slug` field follows its source in its own locale, or in the default one, shows the backend's URL, and offers the suggestion when the slug is taken. Field entries get the `locale` of the value they edit.
+
+### Patch Changes
+
+- 8372b27: A `media` field can allow several libraries (decision 0027). Its `resource` takes a list of library ids, and without one it allows every library of the definition, instead of being an error when there are several. `MediaReference` gets `resource`, its library: ids are unique only within their library, so a field that allows several needs it in requests, and the mock backend refuses a media without it. `getMediaLibraries(definition, field)` (in `@panneau/protocol/runtime`) gives the libraries a field allows. `lintDefinition()` checks each listed id, and that a `relation` field names one resource. `getLibrary()` of `@panneau/media` takes a list too, and gives the first library: the field uploads to it, the references it makes carry their library, and it reads each media in its own library. The `relation` field ignores a list in `resource`.
+- Updated dependencies [bdb1173]
+- Updated dependencies [88a3d09]
+- Updated dependencies [b86f35e]
+- Updated dependencies [eadfc08]
+- Updated dependencies [f2c79b5]
+- Updated dependencies [81ec6b2]
+- Updated dependencies [6d1f1d8]
+- Updated dependencies [6d1f1d8]
+- Updated dependencies [8372b27]
+- Updated dependencies [199a687]
+- Updated dependencies [fb33783]
+- Updated dependencies [5779047]
+- Updated dependencies [5b9aa44]
+- Updated dependencies [5b2f3ce]
+  - @panneau/intl@5.0.0-alpha.5
+  - @panneau/protocol@5.0.0-alpha.5
+  - @panneau/ui@5.0.0-alpha.5
+
 ## 5.0.0-alpha.4
 
 ### Minor Changes

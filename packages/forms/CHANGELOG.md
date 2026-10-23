@@ -1,5 +1,49 @@
 # @panneau/forms
 
+## 5.0.0-alpha.5
+
+### Minor Changes
+
+- 3830b4f: Navigating the app shell no longer loses unsaved changes, and announces each page:
+  
+  - **`@panneau/core`:** `createLeaveGuards()`, `LeaveGuardsProvider` and `useLeaveGuard()` let a router ask the forms below it before leaving a page.
+  - **`@panneau/forms`:** under a `LeaveGuardsProvider`, a form with unsaved changes (`guardUnsavedChanges`, on by default) asks in a dialog before the router leaves its page, not only before the page closes or reloads.
+  - **`@panneau/app`:**
+      - links, "Go to…" and actions ask before leaving a form with unsaved changes, and so do the browser's back and forward buttons;
+      - the tab is named after the page (`Ten walks for the fall · Articles · Northwind Journal`);
+      - when the route changes, focus moves to the title of the new page and the page scrolls to the top. Opening the panel of an item focuses the panel, and closing it gives focus back to the item's link.
+- 88a3d09: Fields check their value with the backend, and the slug field does what sites' `PageSlug` did (decision 0032). A field with `check: true` sends `POST /resources/{resource}/fields/{field}/check` as it is typed (`FieldCheckRequest`), and the backend answers whether the value is available, a free suggestion, the URL's `prefix` and `url`, and `disabled` for an item the field doesn't apply to (`FieldCheckResponse`). The mock backend answers it, and the conformance kit checks it (`fields.check`). `DataAdapter.checkField?()` sends it; `createFieldCheckSource(adapter, resource, id)` gives the fields context its `checkSource`, which `FormView` takes too. The `slug` field follows its source in its own locale, or in the default one, shows the backend's URL, and offers the suggestion when the slug is taken. Field entries get the `locale` of the value they edit.
+- 81ec6b2: The protocol of the image editor and the `image` field (decision 0031):
+  
+  - **`image` fields**, a built-in type: `media` fields for images, with the editor's options `ratios` (suggested), `rotate`, `focalPoint` and `transformBase` (`media`, `original` or `choose`). `lintDefinition()` checks their libraries as for `media`, and the mock backend references their images.
+  - **The `crop` portable rule:** `{ "rule": "crop", "value": { "ratios": ["16:9", "1:1"], "required": true } }`. It requires a crop for each image, and one of the ratios once rendered, within one pixel. `checkRules()` and `checkValues()` check it, and `@panneau/forms` words it ("Crop the image to 16:9 or 1:1.") in English and French.
+  - **`MediaTransform`** says its `base`: from the original file (the default), or over the media's own transform (`"media"`), with `baseTransform`, the media's transform it was made on. It keeps the keys that editor tools add.
+  - **`MediaInfo.transform`:** the media's own transform. The mock backend gives it from the library's `transform` field.
+  - **`parseRatio()`, `matchesRatio()` and `renderedCropSize()`** in `@panneau/protocol/runtime`.
+
+### Patch Changes
+
+- Updated dependencies [3830b4f]
+- Updated dependencies [bdb1173]
+- Updated dependencies [88a3d09]
+- Updated dependencies [b86f35e]
+- Updated dependencies [eadfc08]
+- Updated dependencies [f2c79b5]
+- Updated dependencies [81ec6b2]
+- Updated dependencies [6d1f1d8]
+- Updated dependencies [6d1f1d8]
+- Updated dependencies [8372b27]
+- Updated dependencies [199a687]
+- Updated dependencies [fb33783]
+- Updated dependencies [5779047]
+- Updated dependencies [5b9aa44]
+- Updated dependencies [5b2f3ce]
+  - @panneau/core@5.0.0-alpha.5
+  - @panneau/intl@5.0.0-alpha.5
+  - @panneau/protocol@5.0.0-alpha.5
+  - @panneau/fields@5.0.0-alpha.5
+  - @panneau/ui@5.0.0-alpha.5
+
 ## 5.0.0-alpha.4
 
 ### Minor Changes

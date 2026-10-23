@@ -1,5 +1,39 @@
 # @panneau/lists
 
+## 5.0.0-alpha.5
+
+### Minor Changes
+
+- 6d1f1d8: The show route of an item opens its details in a panel next to its list ([decision 0028](https://github.com/folkloreinc/panneau-js/blob/v5.x/docs/decisions/0028-item-panel.md)), instead of the edit form:
+  
+  - `@panneau/app`: titles in a list link to the show route, with the list's query. The panel shows the item's values, a link to edit it, and the `link` actions of the resource that apply to it, such as its page on the site. Its button or Escape closes it, back to the list with its query. It sits beside the list from the `xl` width of the root, and over it below. Its tokens are `--panneau-item-panel-*` (`itemPanelTokens`).
+  - `@panneau/lists`: `ItemDetails` shows the values of one item with the displays of the lists. `ListView` takes `currentItemId`, which marks the row of the item shown and makes the link of its title the current page. Layouts get `isCurrent`. A table keeps its title column readable in a narrow list, and scrolls instead.
+  - `@panneau/intl`: the messages of the panel, in English and French.
+
+### Patch Changes
+
+- bdb1173: The filters of a list sit on one line: a `toggle` filter is centered on the line of the controls instead of between their labels and their boxes, and the two ends of a `date-range` filter are side by side under its legend, named “From” and “To” for assistive technologies only.
+- Updated dependencies [3830b4f]
+- Updated dependencies [bdb1173]
+- Updated dependencies [88a3d09]
+- Updated dependencies [b86f35e]
+- Updated dependencies [eadfc08]
+- Updated dependencies [f2c79b5]
+- Updated dependencies [81ec6b2]
+- Updated dependencies [6d1f1d8]
+- Updated dependencies [6d1f1d8]
+- Updated dependencies [8372b27]
+- Updated dependencies [199a687]
+- Updated dependencies [fb33783]
+- Updated dependencies [5779047]
+- Updated dependencies [5b9aa44]
+- Updated dependencies [5b2f3ce]
+  - @panneau/core@5.0.0-alpha.5
+  - @panneau/intl@5.0.0-alpha.5
+  - @panneau/protocol@5.0.0-alpha.5
+  - @panneau/fields@5.0.0-alpha.5
+  - @panneau/ui@5.0.0-alpha.5
+
 ## 5.0.0-alpha.4
 
 ### Patch Changes

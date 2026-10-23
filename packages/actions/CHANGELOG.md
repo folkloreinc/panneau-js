@@ -1,5 +1,32 @@
 # @panneau/actions
 
+## 5.0.0-alpha.5
+
+### Patch Changes
+
+- 282e968: The `Parameters` story of the action runner waits for the "This field is required." error to be visible, instead of checking it once while its dialog may still be entering. Tests only: no change for users.
+- Updated dependencies [3830b4f]
+- Updated dependencies [bdb1173]
+- Updated dependencies [88a3d09]
+- Updated dependencies [b86f35e]
+- Updated dependencies [eadfc08]
+- Updated dependencies [f2c79b5]
+- Updated dependencies [81ec6b2]
+- Updated dependencies [6d1f1d8]
+- Updated dependencies [6d1f1d8]
+- Updated dependencies [8372b27]
+- Updated dependencies [199a687]
+- Updated dependencies [fb33783]
+- Updated dependencies [5779047]
+- Updated dependencies [5b9aa44]
+- Updated dependencies [5b2f3ce]
+  - @panneau/core@5.0.0-alpha.5
+  - @panneau/forms@5.0.0-alpha.5
+  - @panneau/intl@5.0.0-alpha.5
+  - @panneau/protocol@5.0.0-alpha.5
+  - @panneau/data@5.0.0-alpha.5
+  - @panneau/ui@5.0.0-alpha.5
+
 ## 5.0.0-alpha.4
 
 ### Patch Changes

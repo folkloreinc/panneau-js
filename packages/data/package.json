@@ -1,6 +1,6 @@
 {
     "name": "@panneau/data",
-    "version": "5.0.0-alpha.4",
+    "version": "5.0.0-alpha.5",
     "description": "The data layer of Panneau: the DataAdapter interface, the REST adapter of the protocol, its Laravel preset and TanStack Query hooks.",
     "type": "module",
     "license": "MIT",
@@ -49,7 +49,7 @@
         "react": "^19.2.0"
     },
     "dependencies": {
-        "@panneau/protocol": "5.0.0-alpha.4"
+        "@panneau/protocol": "5.0.0-alpha.5"
     },
     "peerDependenciesMeta": {
         "@tanstack/react-query": {
@@ -60,6 +60,6 @@
         }
     },
     "devDependencies": {
-        "@panneau/core": "5.0.0-alpha.4"
+        "@panneau/core": "5.0.0-alpha.5"
     }
 }
