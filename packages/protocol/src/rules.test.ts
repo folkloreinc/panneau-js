@@ -101,6 +101,23 @@ describe('the crop rule', () => {
     });
 });
 
+describe('the json rule', () => {
+    it('accepts objects and arrays, and refuses text that did not parse', () => {
+        const rules = [{ rule: 'json' as const }];
+        expect(checkRules(rules, { a: 1 })).toEqual([]);
+        expect(checkRules(rules, [1, 2])).toEqual([]);
+        expect(checkRules(rules, null)).toEqual([]);
+        expect(checkRules(rules, '{ "a": ')).toEqual([{ rule: 'json' }]);
+        expect(checkRules(rules, 12)).toEqual([{ rule: 'json' }]);
+    });
+
+    it('applies to every json field', () => {
+        const fields: Field[] = [{ name: 'data', type: 'json' }];
+        expect(checkValues(fields, { data: '[1,' })).toEqual({ data: [{ rule: 'json' }] });
+        expect(checkValues(fields, { data: [1] })).toEqual({});
+    });
+});
+
 describe('checkValues', () => {
     it('keys failures by dot path, with locales and repeater indexes', () => {
         const failures = checkValues(

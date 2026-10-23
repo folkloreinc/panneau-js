@@ -34,6 +34,11 @@ Every field takes `value`, `onChange`, `onBlur`, `errors`, `disabled`, `readOnly
 | `@panneau/fields/url`       | `UrlField`                                   | `string`, with `https://` added on blur                             |
 | `@panneau/fields/color`     | `ColorField`                                 | `'#1d4ed8'`                                                         |
 | `@panneau/fields/slug`      | `SlugField`, `slugify()`, `sourceText()`     | `string`, following a `source` until edited, checked with `onCheck` |
+| `@panneau/fields/tel`       | `TelField`                                   | `string`, as typed                                                  |
+| `@panneau/fields/range`     | `RangeField` (a slider)                      | `number`, `null` until moved                                        |
+| `@panneau/fields/duration`  | `DurationField`, `formatDuration()`          | seconds, typed in hours, minutes and seconds                        |
+| `@panneau/fields/json`      | `JsonField`, `parseJson()`                   | an object or an array; the text while it doesn't parse              |
+| `@panneau/fields/tags`      | `TagsField`                                  | a list of strings, free or among suggestions                        |
 | `@panneau/fields/localized` | `LocalizedField`                             | `{ fr: …, en: … }`                                                  |
 | `@panneau/fields/group`     | `GroupField`                                 | an object                                                           |
 | `@panneau/fields/repeater`  | `RepeaterField` (items or typed blocks)      | a list of objects; blocks have a `type`                             |

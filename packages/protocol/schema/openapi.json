@@ -1813,7 +1813,8 @@
                                 "type": "string",
                                 "enum": [
                                     "email",
-                                    "url"
+                                    "url",
+                                    "json"
                                 ]
                             },
                             "message": {

@@ -42,6 +42,7 @@ export const formsFr: Record<string, string> = {
     'panneau.forms.rule.pattern': 'Cette valeur n’a pas le bon format.',
     'panneau.forms.rule.email': 'Cette valeur doit être une adresse courriel.',
     'panneau.forms.rule.url': 'Cette valeur doit être une URL.',
+    'panneau.forms.rule.json': 'Cette valeur doit être du JSON valide : un objet ou une liste.',
     'panneau.forms.rule.in': 'Cette valeur ne fait pas partie des choix.',
     'panneau.forms.rule.accept': 'Ce type de fichier n’est pas accepté.',
     'panneau.forms.rule.maxSize': 'Ce fichier est trop lourd.',

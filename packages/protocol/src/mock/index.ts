@@ -67,6 +67,7 @@ const DEFAULT_MESSAGES: Record<string, (failure: RuleFailure) => string> = {
     pattern: () => 'This value has an invalid format.',
     email: () => 'This value must be an email address.',
     url: () => 'This value must be a URL.',
+    json: () => 'This value must be valid JSON: an object or an array.',
     in: () => 'This value is not one of the choices.',
     accept: () => 'This file type is not accepted.',
     maxSize: () => 'This file is too large.',

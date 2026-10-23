@@ -1,6 +1,7 @@
 import { Check, Minus } from 'lucide-react';
 
 import { toReferences } from '@panneau/fields';
+import { formatDuration } from '@panneau/fields/duration';
 import { Badge, Icon, usePanneauIntl } from '@panneau/ui';
 
 import { messages } from '../messages';
@@ -177,6 +178,58 @@ export function EmailDisplay({ value }: DisplayProps) {
     );
 }
 
+/** A link that calls the phone number. */
+export function TelDisplay({ value }: DisplayProps) {
+    if (typeof value !== 'string' || value.trim() === '') {
+        return <EmptyValue />;
+    }
+    return (
+        <a className={styles.link} href={`tel:${value.replace(/[^\d+]/g, '')}`}>
+            {value}
+        </a>
+    );
+}
+
+/** A duration in seconds, with its units: `1 h 5 min`, to the precision of its field. */
+export function DurationDisplay({ value, field }: DisplayProps) {
+    if (typeof value !== 'number' || Number.isNaN(value)) {
+        return <EmptyValue />;
+    }
+    const precision = field?.settings?.precision === 'minutes' ? 'minutes' : 'seconds';
+    return <span className={styles.number}>{formatDuration(value, { precision })}</span>;
+}
+
+/** JSON on one line, shortened. */
+export function JsonDisplay({ value }: DisplayProps) {
+    if (value === null || value === undefined || typeof value !== 'object') {
+        return <EmptyValue />;
+    }
+    const json = JSON.stringify(value);
+    return (
+        <code className={styles.code} title={json.length > 80 ? json : undefined}>
+            {json.length > 80 ? `${json.slice(0, 79)}…` : json}
+        </code>
+    );
+}
+
+/** Tags, as badges, with the labels of their options. */
+export function TagsDisplay({ value, field }: DisplayProps) {
+    const tags = Array.isArray(value) ? value.filter((tag) => typeof tag === 'string') : [];
+    if (tags.length === 0) {
+        return <EmptyValue />;
+    }
+    const options = field?.options ?? [];
+    return (
+        <span className={styles.tags}>
+            {tags.map((tag) => (
+                <Badge key={tag}>
+                    {options.find((option) => String(option.value) === tag)?.label ?? tag}
+                </Badge>
+            ))}
+        </span>
+    );
+}
+
 /** A swatch, with the color's code. */
 export function ColorDisplay({ value }: DisplayProps) {
     if (typeof value !== 'string' || value === '') {
@@ -229,4 +282,9 @@ export const builtInDisplays: Readonly<Record<string, DisplayEntry>> = {
     email: EmailDisplay,
     color: ColorDisplay,
     media: MediaDisplay,
+    tel: TelDisplay,
+    range: NumberDisplay,
+    duration: DurationDisplay,
+    json: JsonDisplay,
+    tags: TagsDisplay,
 };

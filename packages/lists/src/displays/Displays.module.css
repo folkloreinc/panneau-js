@@ -69,3 +69,15 @@
     background-color: var(--panneau-color-surface-sunken);
     border-radius: var(--panneau-radius-sm);
 }
+
+.code {
+    font-family: var(--panneau-font-family-mono);
+    font-size: var(--panneau-font-size-sm);
+    white-space: nowrap;
+}
+
+.tags {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: var(--panneau-space-1);
+}

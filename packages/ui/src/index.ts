@@ -53,6 +53,8 @@ export {
     MenuTrigger,
 } from './menu/Menu';
 export { NumberInput, type NumberInputProps } from './number-input/NumberInput';
+export { Slider, type SliderProps } from './slider/Slider';
+export { type TagSuggestion, TagsInput, type TagsInputProps } from './tags-input/TagsInput';
 export { Popover, type PopoverProps, PopoverTrigger } from './popover/Popover';
 export { RadioGroup, type RadioGroupProps } from './radio-group/RadioGroup';
 export { PanneauRoot, type PanneauRootProps, usePortalContainer } from './root/PanneauRoot';

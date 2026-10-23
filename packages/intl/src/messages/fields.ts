@@ -34,6 +34,16 @@ export const fieldsMessages = {
     }),
     openLink: defineMessage({ id: 'panneau.fields.openLink', defaultMessage: 'Open the link' }),
     pickColor: defineMessage({ id: 'panneau.fields.pickColor', defaultMessage: 'Pick a color' }),
+    hours: defineMessage({ id: 'panneau.fields.hours', defaultMessage: 'Hours' }),
+    minutes: defineMessage({ id: 'panneau.fields.minutes', defaultMessage: 'Minutes' }),
+    seconds: defineMessage({ id: 'panneau.fields.seconds', defaultMessage: 'Seconds' }),
+    hoursUnit: defineMessage({ id: 'panneau.fields.hoursUnit', defaultMessage: 'h' }),
+    minutesUnit: defineMessage({ id: 'panneau.fields.minutesUnit', defaultMessage: 'min' }),
+    secondsUnit: defineMessage({ id: 'panneau.fields.secondsUnit', defaultMessage: 's' }),
+    jsonInvalid: defineMessage<{ error: string }>({
+        id: 'panneau.fields.jsonInvalid',
+        defaultMessage: 'This JSON doesn’t parse: {error}',
+    }),
     generateSlug: defineMessage<{ field: string }>({
         id: 'panneau.fields.generateSlug',
         defaultMessage: 'Generate from {field}',

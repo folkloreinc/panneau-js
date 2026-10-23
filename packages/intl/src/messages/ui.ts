@@ -20,6 +20,10 @@ export const uiMessages = {
     clear: defineMessage({ id: 'panneau.ui.clear', defaultMessage: 'Clear' }),
     moreActions: defineMessage({ id: 'panneau.ui.moreActions', defaultMessage: 'More actions' }),
     time: defineMessage({ id: 'panneau.ui.time', defaultMessage: 'Time' }),
+    tags: defineMessage<{ label: string }>({
+        id: 'panneau.ui.tags',
+        defaultMessage: 'Tags: {label}',
+    }),
     commandPalette: defineMessage({
         id: 'panneau.ui.commandPalette',
         defaultMessage: 'Search',

@@ -84,7 +84,8 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     - `text`, `textarea`, `richtext`, `number`, `boolean`;
     - `date`, `datetime`, `time`;
     - `select`, `email`, `url`, `color`;
-    - `media`, `image`, `file`, `relation`, `group`, `repeater`, `slug`.
+    - `media`, `image`, `file`, `relation`, `group`, `repeater`, `slug`;
+    - `tel`, `range`, `duration`, `json`, `tags` ([0033](decisions/0033-more-field-types.md)).
 - **`localized`** makes the value an object keyed by locale (`{ "fr": "…", "en": "…" }`). It replaces the separate `localized` field and the `*Localized` PHP classes of v1.
 - **`group`** has `fields`, for a nested object.
 - **`repeater`** has `fields`, or `types` for typed blocks, for an array.
@@ -122,6 +123,11 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     - In items, a value is a stored file, `{ "name": "terms.pdf", "url": "https://…", "mime": "application/pdf", "size": 52000 }`, or `null`. With `multiple`, it is a list of them.
     - In requests, the client sends `{ "upload": "upl_…" }` for a file uploaded directly to storage, the stored file it received to keep it, or `null` to remove it. Without direct uploads, it sends the file itself, in `multipart/form-data`.
     - `accept` and `maxSize` are checked on the file the backend receives. The client can also send the `name`, `mime` and `size` of an upload next to its `upload`, so that it checks them first.
+- **`tel` values** are phone numbers, strings as typed. `pattern` constrains them when a project needs a format.
+- **`range` values** are numbers, picked on a slider between the `min` and `max` rules (0 and 100 without them), or `null` until it is moved. Settings `step`, `decimals` and `suffix` are those of `number`.
+- **`duration` values** are whole numbers of seconds, typed in hours, minutes and seconds. `settings.precision` is `seconds` (the default) or `minutes`. `min` and `max` are in seconds.
+- **`json` values** are objects or arrays, edited as JSON text. The type implies the `json` rule: a client keeps text that doesn't parse as a string, which the rule refuses, and a backend refuses anything but an object, an array or `null`.
+- **`tags` values** are lists of strings. `options` suggest tags; with `"settings": { "allowCustom": false }`, only their values are allowed, and `in` applies to each tag. `min` and `max` count the tags.
 - **`rules`** use the portable rules below. A backend can also enforce rules that it doesn't expose.
 
 ### Portable validation rules
@@ -132,6 +138,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 | `min`, `max`        | number value; length of text and arrays |
 | `pattern`           | text                                    |
 | `email`, `url`      | text                                    |
+| `json`              | `json` values: an object or an array    |
 | `in`                | select values                           |
 | `accept`, `maxSize` | files (MIME types, bytes)               |
 | `before`, `after`   | dates (value or other field)            |

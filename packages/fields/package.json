@@ -78,6 +78,31 @@
             "types": "./dist/slug/index.d.ts",
             "default": "./dist/slug/index.js"
         },
+        "./tel": {
+            "@panneau/source": "./src/tel/index.ts",
+            "types": "./dist/tel/index.d.ts",
+            "default": "./dist/tel/index.js"
+        },
+        "./range": {
+            "@panneau/source": "./src/range/index.ts",
+            "types": "./dist/range/index.d.ts",
+            "default": "./dist/range/index.js"
+        },
+        "./duration": {
+            "@panneau/source": "./src/duration/index.ts",
+            "types": "./dist/duration/index.d.ts",
+            "default": "./dist/duration/index.js"
+        },
+        "./json": {
+            "@panneau/source": "./src/json/index.ts",
+            "types": "./dist/json/index.d.ts",
+            "default": "./dist/json/index.js"
+        },
+        "./tags": {
+            "@panneau/source": "./src/tags/index.ts",
+            "types": "./dist/tags/index.d.ts",
+            "default": "./dist/tags/index.js"
+        },
         "./localized": {
             "@panneau/source": "./src/localized/index.ts",
             "types": "./dist/localized/index.d.ts",

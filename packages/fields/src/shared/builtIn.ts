@@ -4,14 +4,19 @@ import { BooleanFieldEntry } from '../boolean/BooleanField';
 import { ColorFieldEntry } from '../color/ColorField';
 import { DateFieldEntry } from '../date/DateField';
 import { DateTimeFieldEntry } from '../datetime/DateTimeField';
+import { DurationFieldEntry } from '../duration/DurationField';
 import { EmailFieldEntry } from '../email/EmailField';
 import { FileFieldEntry } from '../file/FileField';
 import { GroupFieldEntry } from '../group/GroupField';
+import { JsonFieldEntry } from '../json/JsonField';
 import { NumberFieldEntry } from '../number/NumberField';
+import { RangeFieldEntry } from '../range/RangeField';
 import { RelationFieldEntry } from '../relation/RelationField';
 import { RepeaterFieldEntry } from '../repeater/RepeaterField';
 import { SelectFieldEntry } from '../select/SelectField';
 import { SlugFieldEntry } from '../slug/SlugField';
+import { TagsFieldEntry } from '../tags/TagsField';
+import { TelFieldEntry } from '../tel/TelField';
 import { TextFieldEntry } from '../text/TextField';
 import { TextAreaFieldEntry } from '../textarea/TextAreaField';
 import { TimeFieldEntry } from '../time/TimeField';
@@ -40,6 +45,11 @@ export const builtInFields: Readonly<Record<string, FieldEntry>> = {
     relation: RelationFieldEntry,
     group: GroupFieldEntry,
     repeater: RepeaterFieldEntry,
+    tel: TelFieldEntry,
+    range: RangeFieldEntry,
+    duration: DurationFieldEntry,
+    json: JsonFieldEntry,
+    tags: TagsFieldEntry,
 };
 
 /**

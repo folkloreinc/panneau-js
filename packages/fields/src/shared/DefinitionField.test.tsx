@@ -72,6 +72,11 @@ describe('fieldsPlugin', () => {
                 'time',
                 'url',
                 'email',
+                'tel',
+                'range',
+                'duration',
+                'json',
+                'tags',
             ].sort(),
         );
         expect(fieldsPlugin.fields).toBe(builtInFields);

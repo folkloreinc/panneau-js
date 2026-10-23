@@ -140,6 +140,10 @@ export function checkRules(
             case 'url':
                 valid = typeof value !== 'string' || URL.canParse(value);
                 break;
+            case 'json':
+                // Text that doesn't parse stays a string in the form: only objects and arrays pass
+                valid = isRecord(value) || Array.isArray(value);
+                break;
             case 'in': {
                 const allowed = rule.value as unknown[];
                 const values = Array.isArray(value) ? value : [value];
@@ -188,8 +192,16 @@ function addFailures(context: Context, path: string, failures: RuleFailure[]) {
     }
 }
 
-function checkFieldValue(field: Field, value: unknown, path: string, context: Context) {
+/** The rules of a field, with those its type implies: `json` for the `json` type. */
+function rulesOf(field: Field): Rule[] {
     const rules = field.rules ?? [];
+    return field.type === 'json' && !rules.some((rule) => rule.rule === 'json')
+        ? [...rules, { rule: 'json' }]
+        : rules;
+}
+
+function checkFieldValue(field: Field, value: unknown, path: string, context: Context) {
+    const rules = rulesOf(field);
     if (field.localized === true) {
         const localized = isRecord(value) ? value : {};
         const required = rules.filter((rule) => rule.rule === 'required');
