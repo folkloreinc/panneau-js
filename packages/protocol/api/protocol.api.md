@@ -70,6 +70,7 @@ export const Action: z.ZodObject<{
             rule: z.ZodEnum<{
                 email: "email";
                 url: "url";
+                json: "json";
             }>;
             message: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>, z.ZodObject<{
@@ -449,7 +450,7 @@ export type BootConfigInput = z.input<typeof BootConfig>;
 export const BUILT_IN_ACTIONS: readonly ["show", "edit", "duplicate", "delete", "restore", "export", "import"];
 
 // @public
-export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "image", "relation", "group", "repeater", "slug"];
+export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "image", "relation", "group", "repeater", "slug", "tel", "range", "duration", "json", "tags", "embed", "location"];
 
 // @public
 export const BUILT_IN_LAYOUT_NODE_TYPES: readonly ["row", "column", "section", "tabs", "tab", "sidebar", "field", "text", "component"];
@@ -587,6 +588,7 @@ export const Definition: z.ZodObject<{
                 rule: z.ZodEnum<{
                     email: "email";
                     url: "url";
+                    json: "json";
                 }>;
                 message: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>, z.ZodObject<{
@@ -772,6 +774,7 @@ export const Definition: z.ZodObject<{
                     rule: z.ZodEnum<{
                         email: "email";
                         url: "url";
+                        json: "json";
                     }>;
                     message: z.ZodOptional<z.ZodString>;
                 }, z.core.$loose>, z.ZodObject<{
@@ -1086,6 +1089,50 @@ export const DefinitionTheme: z.ZodObject<{
 // @public (undocumented)
 export type DefinitionTheme = z.infer<typeof DefinitionTheme>;
 
+// @public (undocumented)
+export const EmbedResponse: z.ZodObject<{
+    data: z.ZodObject<{
+        url: z.ZodString;
+        type: z.ZodOptional<z.ZodEnum<{
+            link: "link";
+            video: "video";
+            audio: "audio";
+            photo: "photo";
+            rich: "rich";
+        }>>;
+        title: z.ZodOptional<z.ZodString>;
+        provider: z.ZodOptional<z.ZodString>;
+        thumbnailUrl: z.ZodOptional<z.ZodString>;
+        html: z.ZodOptional<z.ZodString>;
+        width: z.ZodOptional<z.ZodNumber>;
+        height: z.ZodOptional<z.ZodNumber>;
+    }, z.core.$loose>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type EmbedResponse = z.infer<typeof EmbedResponse>;
+
+// @public (undocumented)
+export const EmbedValue: z.ZodObject<{
+    url: z.ZodString;
+    type: z.ZodOptional<z.ZodEnum<{
+        link: "link";
+        video: "video";
+        audio: "audio";
+        photo: "photo";
+        rich: "rich";
+    }>>;
+    title: z.ZodOptional<z.ZodString>;
+    provider: z.ZodOptional<z.ZodString>;
+    thumbnailUrl: z.ZodOptional<z.ZodString>;
+    html: z.ZodOptional<z.ZodString>;
+    width: z.ZodOptional<z.ZodNumber>;
+    height: z.ZodOptional<z.ZodNumber>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type EmbedValue = z.infer<typeof EmbedValue>;
+
 // @public
 export function evaluateCondition(condition: Condition, values: unknown): boolean;
 
@@ -1120,6 +1167,7 @@ export const Field: z.ZodObject<{
         rule: z.ZodEnum<{
             email: "email";
             url: "url";
+            json: "json";
         }>;
         message: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>, z.ZodObject<{
@@ -1399,6 +1447,16 @@ export const ListResponse: z.ZodObject<{
 // @public (undocumented)
 export type ListResponse = z.infer<typeof ListResponse>;
 
+// @public (undocumented)
+export const LocationValue: z.ZodObject<{
+    lat: z.ZodNumber;
+    lng: z.ZodNumber;
+    address: z.ZodOptional<z.ZodString>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type LocationValue = z.infer<typeof LocationValue>;
+
 // @public
 export function matchesFilterRange(value: unknown, range: FilterRange): boolean;
 
@@ -1670,6 +1728,7 @@ export const namedSchemas: {
         rule: z.ZodEnum<{
             email: "email";
             url: "url";
+            json: "json";
         }>;
         message: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>, z.ZodObject<{
@@ -1740,6 +1799,7 @@ export const namedSchemas: {
             rule: z.ZodEnum<{
                 email: "email";
                 url: "url";
+                json: "json";
             }>;
             message: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>, z.ZodObject<{
@@ -1967,6 +2027,7 @@ export const namedSchemas: {
                 rule: z.ZodEnum<{
                     email: "email";
                     url: "url";
+                    json: "json";
                 }>;
                 message: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>, z.ZodObject<{
@@ -2117,6 +2178,7 @@ export const namedSchemas: {
                 rule: z.ZodEnum<{
                     email: "email";
                     url: "url";
+                    json: "json";
                 }>;
                 message: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>, z.ZodObject<{
@@ -2302,6 +2364,7 @@ export const namedSchemas: {
                     rule: z.ZodEnum<{
                         email: "email";
                         url: "url";
+                        json: "json";
                     }>;
                     message: z.ZodOptional<z.ZodString>;
                 }, z.core.$loose>, z.ZodObject<{
@@ -2702,6 +2765,7 @@ export const namedSchemas: {
                     rule: z.ZodEnum<{
                         email: "email";
                         url: "url";
+                        json: "json";
                     }>;
                     message: z.ZodOptional<z.ZodString>;
                 }, z.core.$loose>, z.ZodObject<{
@@ -2887,6 +2951,7 @@ export const namedSchemas: {
                         rule: z.ZodEnum<{
                             email: "email";
                             url: "url";
+                            json: "json";
                         }>;
                         message: z.ZodOptional<z.ZodString>;
                     }, z.core.$loose>, z.ZodObject<{
@@ -3591,6 +3656,45 @@ export const namedSchemas: {
         url: z.ZodString;
         expiresAt: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>;
+    EmbedValue: z.ZodObject<{
+        url: z.ZodString;
+        type: z.ZodOptional<z.ZodEnum<{
+            link: "link";
+            video: "video";
+            audio: "audio";
+            photo: "photo";
+            rich: "rich";
+        }>>;
+        title: z.ZodOptional<z.ZodString>;
+        provider: z.ZodOptional<z.ZodString>;
+        thumbnailUrl: z.ZodOptional<z.ZodString>;
+        html: z.ZodOptional<z.ZodString>;
+        width: z.ZodOptional<z.ZodNumber>;
+        height: z.ZodOptional<z.ZodNumber>;
+    }, z.core.$loose>;
+    EmbedResponse: z.ZodObject<{
+        data: z.ZodObject<{
+            url: z.ZodString;
+            type: z.ZodOptional<z.ZodEnum<{
+                link: "link";
+                video: "video";
+                audio: "audio";
+                photo: "photo";
+                rich: "rich";
+            }>>;
+            title: z.ZodOptional<z.ZodString>;
+            provider: z.ZodOptional<z.ZodString>;
+            thumbnailUrl: z.ZodOptional<z.ZodString>;
+            html: z.ZodOptional<z.ZodString>;
+            width: z.ZodOptional<z.ZodNumber>;
+            height: z.ZodOptional<z.ZodNumber>;
+        }, z.core.$loose>;
+    }, z.core.$loose>;
+    LocationValue: z.ZodObject<{
+        lat: z.ZodNumber;
+        lng: z.ZodNumber;
+        address: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>;
 };
 
 // @public (undocumented)
@@ -3634,7 +3738,7 @@ export function parseRatio(ratio: string): number | null;
 export type PartialTheme = Partial<Theme>;
 
 // @public
-export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "in", "accept", "maxSize", "before", "after", "crop"];
+export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "json", "in", "accept", "maxSize", "before", "after", "crop"];
 
 // @public (undocumented)
 export type PortableRule = (typeof PORTABLE_RULES)[number];
@@ -3735,6 +3839,7 @@ export const Resource: z.ZodObject<{
             rule: z.ZodEnum<{
                 email: "email";
                 url: "url";
+                json: "json";
             }>;
             message: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>, z.ZodObject<{
@@ -3920,6 +4025,7 @@ export const Resource: z.ZodObject<{
                 rule: z.ZodEnum<{
                     email: "email";
                     url: "url";
+                    json: "json";
                 }>;
                 message: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>, z.ZodObject<{
@@ -4090,6 +4196,7 @@ export const Rule: z.ZodUnion<readonly [z.ZodObject<{
     rule: z.ZodEnum<{
         email: "email";
         url: "url";
+        json: "json";
     }>;
     message: z.ZodOptional<z.ZodString>;
 }, z.core.$loose>, z.ZodObject<{

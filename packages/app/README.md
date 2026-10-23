@@ -37,6 +37,7 @@ npm install --save-dev vite @vitejs/plugin-react
 - The entry imports no CSS and no theme: packages import their own styles, and themes come from plugins.
 - Named icons (`"icon": "users"` in the definition) are Lucide icons, each loaded when shown. Pass `iconLoader` to load fewer, or `null` for none.
 - Without `adapter`, the app uses the Laravel preset of the REST adapter (`@panneau/data/laravel`) on `apiBaseUrl`.
+- `location` fields place points on OpenStreetMap's tiles, without an address search. Pass `maps` for other tiles or a search: `maps: { geocoding: createNominatimSource() }`, from `@panneau/fields`.
 - When the API answers `401` (or `419` from Laravel), the app sends the browser to the login URL. Pass `onUnauthorized` to do something else.
 
 ## Theming the shell

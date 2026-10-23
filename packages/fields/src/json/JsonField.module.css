@@ -1,0 +1,7 @@
+/* JSON reads in a monospace font, without wrapping long lines. */
+.code {
+    font-family: var(--panneau-font-family-mono);
+    font-size: var(--panneau-font-size-sm);
+    white-space: pre;
+    tab-size: 2;
+}

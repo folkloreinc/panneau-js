@@ -1,0 +1,54 @@
+/* The search, the map, then the coordinates and the address. */
+.location {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-2);
+}
+
+.map {
+    position: relative;
+    z-index: 0;
+    height: 16rem;
+    overflow: hidden;
+    background-color: var(--panneau-color-surface-sunken);
+    border: var(--panneau-border-width) solid var(--panneau-color-border-control);
+    border-radius: var(--panneau-radius-md);
+}
+
+.map:focus-visible {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 1px;
+}
+
+/* A pin: a round head pointing down at the point. */
+.marker {
+    background: none;
+    border: 0;
+}
+
+.pin {
+    display: block;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    background-color: var(--panneau-color-accent);
+    border: 2px solid var(--panneau-color-surface);
+    border-radius: 50% 50% 50% 0;
+    box-shadow: var(--panneau-shadow-sm);
+    rotate: -45deg;
+}
+
+.coordinates {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--panneau-space-2);
+}
+
+.coordinate {
+    flex: 1 1 8rem;
+}
+
+.remove {
+    flex: none;
+}

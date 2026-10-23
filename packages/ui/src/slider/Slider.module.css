@@ -1,0 +1,84 @@
+/* A track with the part before the thumb filled, and the value next to the label. */
+
+.slider {
+    width: 100%;
+}
+
+.header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--panneau-space-2);
+}
+
+.output {
+    font-size: var(--panneau-font-size-sm);
+    font-variant-numeric: var(--panneau-font-numeric);
+    color: var(--panneau-color-text-muted);
+}
+
+.track {
+    position: relative;
+    height: var(--panneau-control-height-sm);
+    cursor: pointer;
+}
+
+/* The rail, centered in the track. */
+.track::before {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    left: 0;
+    height: 0.25rem;
+    content: '';
+    background-color: var(--panneau-color-surface-sunken);
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-radius-full);
+    transform: translateY(-50%);
+}
+
+.fill {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 0.25rem;
+    background-color: var(--panneau-color-accent);
+    border-radius: var(--panneau-radius-full);
+    transform: translateY(-50%);
+}
+
+.thumb {
+    top: 50%;
+    width: 1.125rem;
+    height: 1.125rem;
+    background-color: var(--panneau-color-surface);
+    border: 2px solid var(--panneau-color-accent);
+    border-radius: var(--panneau-radius-full);
+    box-shadow: var(--panneau-shadow-sm);
+    transform: translateY(-50%);
+}
+
+.slider[data-empty] .thumb {
+    border-color: var(--panneau-color-border-control);
+}
+
+.thumb[data-dragging] {
+    background-color: var(--panneau-color-accent);
+}
+
+.thumb[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 2px;
+}
+
+.slider[data-invalid] .thumb {
+    border-color: var(--panneau-color-danger);
+}
+
+.slider[data-disabled] {
+    opacity: 0.6;
+}
+
+.slider[data-disabled] .track {
+    cursor: not-allowed;
+}

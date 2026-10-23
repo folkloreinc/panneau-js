@@ -28,7 +28,7 @@ export const Rule = z
             flags: z.string().optional(),
             message,
         }),
-        z.looseObject({ rule: z.enum(['email', 'url']), message }),
+        z.looseObject({ rule: z.enum(['email', 'url', 'json']), message }),
         z.looseObject({
             rule: z.literal('in'),
             value: z.array(z.union([z.string(), z.number(), z.boolean()])),

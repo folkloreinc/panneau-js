@@ -9,6 +9,7 @@ import type { BootConfigInput } from '@panneau/protocol';
 import { ComponentTokens } from '@panneau/ui';
 import { DataAdapter } from '@panneau/data';
 import { JSX } from 'react';
+import { MapsConfig } from '@panneau/fields';
 import { NamedIconLoader } from '@panneau/ui';
 import { PanneauPlugin } from '@panneau/core';
 import { QueryClient } from '@tanstack/react-query';
@@ -41,6 +42,11 @@ export interface PanneauAppOptions {
     config?: BootConfigInput;
     element: Element;
     iconLoader?: NamedIconLoader | null;
+    // Warning: (tsdoc-code-span-missing-delimiter) The code span is missing its closing backtick
+    // Warning: (tsdoc-malformed-inline-tag) Expecting a TSDoc tag starting with "{@"
+    // Warning: (tsdoc-code-span-missing-delimiter) The code span is missing its closing backtick
+    // Warning: (tsdoc-escape-right-brace) The "}" character should be escaped using a backslash to avoid confusion with a TSDoc inline tag
+    maps?: MapsConfig | null;
     onUnauthorized?: (context: UnauthorizedContext) => void;
     plugins?: readonly PanneauPlugin[];
     queryClient?: QueryClient;
@@ -51,6 +57,7 @@ export interface PanneauProps {
     adapter?: DataAdapter;
     config: BootConfig;
     iconLoader?: NamedIconLoader | null;
+    maps?: MapsConfig | null;
     onUnauthorized?: (context: UnauthorizedContext) => void;
     plugins?: readonly PanneauPlugin[];
     queryClient?: QueryClient;

@@ -2,8 +2,10 @@ import { type ComponentType, type ReactNode, createContext, use } from 'react';
 
 import type { Field } from '@panneau/protocol';
 
+import type { MapsConfig } from '../location/types';
 import type { UploadSource } from '../upload/types';
 import type { FieldCheckSource } from './check';
+import type { EmbedSource } from './embed';
 import type { RelationSource } from './relation';
 import type { FieldEntry } from './types';
 
@@ -47,6 +49,10 @@ export interface FieldsContextValue {
     uploadSource: UploadSource | null;
     /** Where fields with `check` check their value, such as a slug's availability. */
     checkSource: FieldCheckSource | null;
+    /** Where `embed` fields get what a URL embeds. Without one, they keep the URL alone. */
+    embedSource: EmbedSource | null;
+    /** The tiles and the address search of `location` fields. */
+    maps: MapsConfig | null;
     binding: FieldBinding | null;
 }
 
@@ -56,6 +62,8 @@ const FieldsContext = createContext<FieldsContextValue>({
     relationSource: null,
     uploadSource: null,
     checkSource: null,
+    embedSource: null,
+    maps: null,
     binding: null,
 });
 
@@ -73,14 +81,18 @@ export interface FieldsProviderProps {
     uploadSource?: UploadSource | null;
     /** `createFieldCheckSource(adapter, resource, id)`, for the form of an item. */
     checkSource?: FieldCheckSource | null;
+    /** `createEmbedSource(adapter)`. */
+    embedSource?: EmbedSource | null;
+    /** The tiles and the address search of `location` fields. */
+    maps?: MapsConfig | null;
     binding?: FieldBinding | null;
     children?: ReactNode;
 }
 
 /**
  * Provides what fields rendered from a definition need: the components of each type, the locales
- * of localized values, a relation source, an upload source, a check source and a binding. Values not given come from the parent
- * provider.
+ * of localized values, the sources of relations, uploads, checks and embeds, the maps of
+ * locations, and a binding. Values not given come from the parent provider.
  */
 export function FieldsProvider({
     components,
@@ -88,6 +100,8 @@ export function FieldsProvider({
     relationSource,
     uploadSource,
     checkSource,
+    embedSource,
+    maps,
     binding,
     children,
 }: FieldsProviderProps) {
@@ -99,6 +113,8 @@ export function FieldsProvider({
         relationSource: relationSource === undefined ? parent.relationSource : relationSource,
         uploadSource: uploadSource === undefined ? parent.uploadSource : uploadSource,
         checkSource: checkSource === undefined ? parent.checkSource : checkSource,
+        embedSource: embedSource === undefined ? parent.embedSource : embedSource,
+        maps: maps === undefined ? parent.maps : maps,
         binding: binding === undefined ? parent.binding : binding,
     };
     return <FieldsContext value={value}>{children}</FieldsContext>;

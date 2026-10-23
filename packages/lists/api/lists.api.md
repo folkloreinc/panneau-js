@@ -99,7 +99,13 @@ export interface DisplayProps {
 }
 
 // @public
+export function DurationDisplay(input: DisplayProps): JSX.Element;
+
+// @public
 export function EmailDisplay(input: DisplayProps): JSX.Element;
+
+// @public
+export function EmbedDisplay(input: DisplayProps): JSX.Element;
 
 // @public
 export function EmptyValue(): JSX.Element;
@@ -154,6 +160,9 @@ export interface ItemDetailsProps {
     // (undocumented)
     item: ListItem;
 }
+
+// @public
+export function JsonDisplay(input: DisplayProps): JSX.Element;
 
 // @public
 export function List(input: ListProps): JSX.Element;
@@ -305,6 +314,9 @@ export interface LocalQueryResult<T extends ListItem> {
 }
 
 // @public
+export function LocationDisplay(input: DisplayProps): JSX.Element;
+
+// @public
 export function MediaDisplay(input: DisplayProps): JSX.Element;
 
 // @public
@@ -353,6 +365,12 @@ export function SelectFilter(input: FilterControlProps): JSX.Element;
 
 // @public
 export function TableLayout(input: ListLayoutProps): JSX.Element;
+
+// @public
+export function TagsDisplay(input: DisplayProps): JSX.Element;
+
+// @public
+export function TelDisplay(input: DisplayProps): JSX.Element;
 
 // @public
 export function TextDisplay(input: DisplayProps): JSX.Element;

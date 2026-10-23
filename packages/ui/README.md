@@ -290,7 +290,7 @@ The theme model is described in [decision 0024](../../docs/decisions/0024-theme-
 
 ## Primitives
 
-`Heading`, `Text`, `Prose`, `Stack`, `Inline`, `Grid`, `Container`, `Divider`, `Button`, `IconButton`, `TextInput`, `TextArea`, `NumberInput`, `Select` (single or multiple), `ComboBox`, `Checkbox`, `Switch`, `RadioGroup`, `SegmentedControl`, `DatePicker`, `TimeInput`, `Fieldset`, `Dialog`, `Popover`, `Menu`, `Tabs`, `Tooltip`, toasts (`useToast()`), `Alert`, `Badge`, `Spinner`, `Card`, `Disclosure` and `Icon`.
+`Heading`, `Text`, `Prose`, `Stack`, `Inline`, `Grid`, `Container`, `Divider`, `Button`, `IconButton`, `TextInput`, `TextArea`, `NumberInput`, `Slider`, `TagsInput`, `Select` (single or multiple), `ComboBox`, `Checkbox`, `Switch`, `RadioGroup`, `SegmentedControl`, `DatePicker`, `TimeInput`, `Fieldset`, `Dialog`, `Popover`, `Menu`, `Tabs`, `Tooltip`, toasts (`useToast()`), `Alert`, `Badge`, `Spinner`, `Card`, `Disclosure` and `Icon`.
 
 - Every component accepts `className`, and `xxxClassName` props for its inner elements (`labelClassName`, `inputClassName`…).
 - Labelled controls take `label`, `description` and `errors` (a list of messages: any message makes the control invalid and describes it).

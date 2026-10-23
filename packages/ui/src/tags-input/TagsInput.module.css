@@ -1,0 +1,60 @@
+/* The tags as chips in the control, before the input. */
+
+.control.control {
+    flex-wrap: wrap;
+    gap: var(--panneau-space-1);
+    height: auto;
+    padding-block: var(--panneau-space-1);
+}
+
+.group {
+    display: contents;
+}
+
+.list {
+    display: contents;
+}
+
+.tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--panneau-space-1);
+    max-width: 100%;
+    padding: 0.125rem var(--panneau-space-1) 0.125rem var(--panneau-space-2);
+    font-size: var(--panneau-font-size-sm);
+    line-height: var(--panneau-line-height-tight);
+    color: var(--panneau-color-text);
+    background-color: var(--panneau-color-surface-sunken);
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-radius-full);
+    outline: none;
+    overflow-wrap: anywhere;
+}
+
+.tag[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 1px;
+}
+
+.remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.125rem;
+    color: var(--panneau-color-text-muted);
+    cursor: pointer;
+    background: none;
+    border: 0;
+    border-radius: var(--panneau-radius-full);
+    outline: none;
+}
+
+.remove[data-hovered] {
+    color: var(--panneau-color-text);
+    background-color: var(--panneau-color-hover);
+}
+
+.input {
+    flex: 1 1 6rem;
+    min-width: 6rem;
+}

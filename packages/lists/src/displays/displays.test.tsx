@@ -79,4 +79,48 @@ describe('displays', () => {
         expect(cell.querySelector('img')).toHaveAttribute('src', '/a.jpg');
         expect(cell).toHaveTextContent('a.jpg');
     });
+
+    it('shows phone numbers, durations, JSON and tags', () => {
+        expect(renderDisplay('tel', '514 555-0199').querySelector('a')).toHaveAttribute(
+            'href',
+            'tel:5145550199',
+        );
+        expect(renderDisplay('duration', 3930).textContent).toBe('1 h 5 min 30 s');
+        expect(
+            renderDisplay('duration', 180, {
+                name: 'reading_time',
+                type: 'duration',
+                settings: { precision: 'minutes' },
+            }).textContent,
+        ).toBe('3 min');
+        expect(renderDisplay('json', { a: 1 }).textContent).toBe('{"a":1}');
+        expect(renderDisplay('json', { text: 'x'.repeat(100) }).textContent).toHaveLength(80);
+        expect(
+            renderDisplay('tags', ['food', 'montréal'], {
+                name: 'topics',
+                type: 'tags',
+                options: [{ value: 'food', label: 'Food' }],
+            }).textContent,
+        ).toBe('Foodmontréal');
+        expect(renderDisplay('range', 7.5).textContent).toBe('7.5');
+    });
+
+    it('shows embeds and places', () => {
+        const embed = renderDisplay('embed', {
+            url: 'https://youtu.be/abc',
+            title: 'A video',
+            thumbnailUrl: 'https://i.ytimg.com/vi/abc/hqdefault.jpg',
+        });
+        expect(embed.querySelector('a')).toHaveAttribute('href', 'https://youtu.be/abc');
+        expect(embed.textContent).toBe('A video');
+        expect(renderDisplay('embed', { url: 'https://example.com/a' }).textContent).toBe(
+            'example.com/a',
+        );
+        expect(
+            renderDisplay('location', { lat: 45.5, lng: -73.56, address: 'Montréal' }).textContent,
+        ).toBe('Montréal');
+        expect(renderDisplay('location', { lat: 45.501689, lng: -73.567256 }).textContent).toBe(
+            '45.50169, -73.56726',
+        );
+    });
 });

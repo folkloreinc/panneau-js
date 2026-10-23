@@ -71,6 +71,46 @@ export function createPlaygroundDefinition(): DefinitionInput {
                     { name: 'author', type: 'relation', label: 'Author', resource: 'authors' },
                     { name: 'published_at', type: 'date', label: 'Publication date' },
                     { name: 'featured', type: 'boolean', label: 'Featured on the home page' },
+                    {
+                        name: 'tags',
+                        type: 'tags',
+                        label: 'Tags',
+                        options: [
+                            { value: 'festival', label: 'Festival' },
+                            { value: 'family', label: 'Family' },
+                            { value: 'free', label: 'Free' },
+                        ],
+                    },
+                    {
+                        name: 'reading_time',
+                        type: 'duration',
+                        label: 'Reading time',
+                        settings: { precision: 'minutes' },
+                    },
+                    {
+                        name: 'rating',
+                        type: 'range',
+                        label: 'Editor rating',
+                        rules: [
+                            { rule: 'min', value: 0 },
+                            { rule: 'max', value: 5 },
+                        ],
+                        settings: { step: 0.5, suffix: '/ 5' },
+                    },
+                    { name: 'contact', type: 'tel', label: 'Press contact' },
+                    {
+                        name: 'video',
+                        type: 'embed',
+                        label: 'Video',
+                        help: 'A YouTube or Vimeo video.',
+                    },
+                    {
+                        name: 'place',
+                        type: 'location',
+                        label: 'Place',
+                        settings: { center: { lat: 45.5017, lng: -73.5673 }, zoom: 14 },
+                    },
+                    { name: 'metadata', type: 'json', label: 'Metadata', settings: { rows: 4 } },
                 ],
                 form: {
                     layout: [
@@ -83,12 +123,19 @@ export function createPlaygroundDefinition(): DefinitionInput {
                                 { type: 'field', name: 'author', width: 6 },
                             ],
                         },
+                        { type: 'field', name: 'tags' },
+                        { type: 'field', name: 'video' },
+                        { type: 'field', name: 'place' },
+                        { type: 'field', name: 'metadata' },
                         {
                             type: 'sidebar',
                             children: [
                                 { type: 'field', name: 'status' },
                                 { type: 'field', name: 'published_at' },
                                 { type: 'field', name: 'featured' },
+                                { type: 'field', name: 'reading_time' },
+                                { type: 'field', name: 'rating' },
+                                { type: 'field', name: 'contact' },
                             ],
                         },
                     ],
@@ -99,7 +146,8 @@ export function createPlaygroundDefinition(): DefinitionInput {
                         { field: 'status' },
                         { field: 'category' },
                         { field: 'published_at', sortable: true },
-                        { field: 'featured' },
+                        { field: 'tags' },
+                        { field: 'reading_time' },
                     ],
                     filters: [
                         { id: 'status', type: 'select' },
@@ -299,6 +347,14 @@ export function createPlaygroundItems(): Record<string, Values[]> {
             author: reference(pick(authors, index)),
             published_at: `2026-${String(10 - Math.floor(index / 9)).padStart(2, '0')}-${String(28 - (index % 9) * 3).padStart(2, '0')}`,
             featured: index % 5 === 0,
+            tags: index % 3 === 0 ? ['festival', 'family'] : index % 3 === 1 ? ['free'] : [],
+            reading_time: (3 + (index % 7)) * 60,
+            rating: (index % 11) / 2,
+            metadata: index === 0 ? { source: 'archive', revisions: 3 } : null,
+            place:
+                index === 0
+                    ? { lat: 45.508, lng: -73.554, address: 'Vieux-Port de Montréal, Montréal' }
+                    : null,
         })),
         categories,
         authors,

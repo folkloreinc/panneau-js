@@ -474,6 +474,24 @@ describe('createMockBackend', () => {
         expect((await check({ locale: 'fr' })).status).toBe(422);
     });
 
+    it('resolves embeds, and refuses URLs it can not embed', async () => {
+        const backend = createBackend();
+        const embed = async (url: string) =>
+            backend.fetch(`/panneau/api/embeds?url=${encodeURIComponent(url)}`);
+        const video = await embed('https://www.youtube.com/watch?v=abc');
+        expect(await video.json()).toMatchObject({
+            data: {
+                url: 'https://www.youtube.com/watch?v=abc',
+                type: 'video',
+                provider: 'YouTube',
+            },
+        });
+        expect(await (await embed('https://example.com/a')).json()).toMatchObject({
+            data: { type: 'link', title: 'example.com' },
+        });
+        expect((await embed('not a url')).status).toBe(422);
+    });
+
     it('answers unknown routes with a 404 problem', async () => {
         const response = await createBackend().fetch('/panneau/api/resources/unknown');
         expect(response.status).toBe(404);

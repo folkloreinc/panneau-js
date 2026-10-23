@@ -1,0 +1,11 @@
+/* Hours, minutes and seconds side by side. */
+.parts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--panneau-space-2);
+}
+
+.part {
+    flex: 0 1 7rem;
+    min-width: 5rem;
+}

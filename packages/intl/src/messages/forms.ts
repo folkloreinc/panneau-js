@@ -114,6 +114,10 @@ export const formsMessages = {
             id: 'panneau.forms.rule.url',
             defaultMessage: 'This value must be a URL.',
         }),
+        json: defineMessage({
+            id: 'panneau.forms.rule.json',
+            defaultMessage: 'This value must be valid JSON: an object or an array.',
+        }),
         in: defineMessage({
             id: 'panneau.forms.rule.in',
             defaultMessage: 'This value is not one of the choices.',

@@ -4,14 +4,21 @@ import { BooleanFieldEntry } from '../boolean/BooleanField';
 import { ColorFieldEntry } from '../color/ColorField';
 import { DateFieldEntry } from '../date/DateField';
 import { DateTimeFieldEntry } from '../datetime/DateTimeField';
+import { DurationFieldEntry } from '../duration/DurationField';
 import { EmailFieldEntry } from '../email/EmailField';
+import { EmbedFieldEntry } from '../embed/EmbedField';
 import { FileFieldEntry } from '../file/FileField';
 import { GroupFieldEntry } from '../group/GroupField';
+import { JsonFieldEntry } from '../json/JsonField';
+import { LocationFieldEntry } from '../location/LocationField';
 import { NumberFieldEntry } from '../number/NumberField';
+import { RangeFieldEntry } from '../range/RangeField';
 import { RelationFieldEntry } from '../relation/RelationField';
 import { RepeaterFieldEntry } from '../repeater/RepeaterField';
 import { SelectFieldEntry } from '../select/SelectField';
 import { SlugFieldEntry } from '../slug/SlugField';
+import { TagsFieldEntry } from '../tags/TagsField';
+import { TelFieldEntry } from '../tel/TelField';
 import { TextFieldEntry } from '../text/TextField';
 import { TextAreaFieldEntry } from '../textarea/TextAreaField';
 import { TimeFieldEntry } from '../time/TimeField';
@@ -22,6 +29,7 @@ import type { FieldEntry } from './types';
  * The entries of the built-in field types. `richtext` and `media` come with their plugins
  * (`@panneau/editor` and `@panneau/media`): without them, `DefinitionField` renders a placeholder.
  * `file` uploads through the upload source of the fields context, or gives the files themselves.
+ * `embed` and `location` use its embed source and its maps; `location` loads Leaflet when shown.
  */
 export const builtInFields: Readonly<Record<string, FieldEntry>> = {
     text: TextFieldEntry,
@@ -40,6 +48,13 @@ export const builtInFields: Readonly<Record<string, FieldEntry>> = {
     relation: RelationFieldEntry,
     group: GroupFieldEntry,
     repeater: RepeaterFieldEntry,
+    tel: TelFieldEntry,
+    range: RangeFieldEntry,
+    duration: DurationFieldEntry,
+    json: JsonFieldEntry,
+    tags: TagsFieldEntry,
+    embed: EmbedFieldEntry,
+    location: LocationFieldEntry,
 };
 
 /**

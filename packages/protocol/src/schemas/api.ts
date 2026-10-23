@@ -357,6 +357,35 @@ export const SearchResponse = z
 
 export const PreviewResponse = z.looseObject({ url: z.string(), expiresAt: z.string().optional() });
 
+export const EmbedValue = z
+    .looseObject({
+        url: z.string().meta({ description: 'The URL of the video, sound or post.' }),
+        type: z.enum(['video', 'audio', 'photo', 'rich', 'link']).optional(),
+        title: z.string().optional(),
+        provider: z.string().optional().meta({ description: 'The name of the provider.' }),
+        thumbnailUrl: z.string().optional(),
+        html: z
+            .string()
+            .optional()
+            .meta({ description: 'The HTML that embeds it, from the oEmbed of its provider.' }),
+        width: z.number().optional(),
+        height: z.number().optional(),
+    })
+    .meta({
+        description:
+            'The value of an `embed` field: its URL, and what the backend got from its oEmbed.',
+    });
+
+export const EmbedResponse = z.looseObject({ data: EmbedValue });
+
+export const LocationValue = z
+    .looseObject({
+        lat: z.number().min(-90).max(90),
+        lng: z.number().min(-180).max(180),
+        address: z.string().optional(),
+    })
+    .meta({ description: 'The value of a `location` field: a point, and its address.' });
+
 export type Item = z.infer<typeof Item>;
 export type Pagination = z.infer<typeof Pagination>;
 export type ItemResponse = z.infer<typeof ItemResponse>;
@@ -383,3 +412,6 @@ export type MediaReference = z.infer<typeof MediaReference>;
 export type Session = z.infer<typeof Session>;
 export type SearchResponse = z.infer<typeof SearchResponse>;
 export type PreviewResponse = z.infer<typeof PreviewResponse>;
+export type EmbedValue = z.infer<typeof EmbedValue>;
+export type EmbedResponse = z.infer<typeof EmbedResponse>;
+export type LocationValue = z.infer<typeof LocationValue>;

@@ -1,0 +1,60 @@
+/* The URL, then the preview of what it embeds. */
+.embed {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-2);
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-text-muted);
+}
+
+.preview {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-3);
+    padding: var(--panneau-space-2);
+    color: var(--panneau-color-text);
+    text-decoration: none;
+    background-color: var(--panneau-color-surface-sunken);
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-radius-md);
+}
+
+.preview:hover {
+    border-color: var(--panneau-color-border-control);
+}
+
+.preview:focus-visible {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 1px;
+}
+
+.thumbnail {
+    flex: none;
+    width: 7rem;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: var(--panneau-radius-sm);
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+}
+
+.title {
+    font-weight: var(--panneau-font-weight-medium);
+    overflow-wrap: anywhere;
+}
+
+.provider {
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-text-muted);
+}

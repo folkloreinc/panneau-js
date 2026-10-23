@@ -98,7 +98,7 @@ export function NumberInput({
                     className={cx(fieldStyles.bare, styles.input, inputClassName)}
                 />
                 {suffix !== undefined ? (
-                    <span className={fieldStyles.adornment}>{suffix}</span>
+                    <span className={cx(fieldStyles.adornment, styles.suffix)}>{suffix}</span>
                 ) : null}
                 {isReadOnly !== true ? (
                     <span className={styles.steppers}>
