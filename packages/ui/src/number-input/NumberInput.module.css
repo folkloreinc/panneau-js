@@ -3,8 +3,22 @@
     overflow: hidden;
 }
 
+/* Without steppers, the control has its padding back. */
+.control.control[data-readonly] {
+    padding-inline-end: var(--panneau-input-padding-x, var(--panneau-control-padding-x));
+}
+
 .input {
     font-variant-numeric: var(--panneau-font-numeric);
+}
+
+/* The suffix sits between the value and the steppers, which have no padding of their own. */
+.suffix.suffix {
+    margin-inline: var(--panneau-space-2);
+}
+
+.control[data-readonly] .suffix {
+    margin-inline-end: 0;
 }
 
 .steppers {
@@ -53,5 +67,9 @@
 
     .control.control {
         padding-inline-end: var(--panneau-space-3);
+    }
+
+    .suffix.suffix {
+        margin-inline-end: 0;
     }
 }
