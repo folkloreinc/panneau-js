@@ -4,6 +4,7 @@ import { type FilterRange, toSearchParams } from '../query';
 import { Definition, type Resource } from '../schemas';
 import {
     ActionResult,
+    FieldCheckResponse,
     ItemResponse,
     ListResponse,
     Problem,
@@ -412,6 +413,37 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
             );
             check.expectProblem(
                 await request(`/uploads/${UNKNOWN}/complete`, { method: 'POST' }),
+                404,
+            );
+        },
+    );
+
+    await run(
+        'fields.check',
+        'POST /resources/{resource}/fields/{field}/check checks a value of a field with `check`',
+        async (check) => {
+            const field = resource?.fields.find((candidate) => candidate.check === true);
+            if (resource === null || field === undefined) {
+                check.skip('The resource has no field with `check`.');
+                return;
+            }
+            const checkPath = (name: string) =>
+                `${resourcePath()}/fields/${encodeURIComponent(name)}/check`;
+            const locale = field.localized === true ? definition?.locale : undefined;
+            const reply = await request(checkPath(field.name), {
+                method: 'POST',
+                body: JSON.stringify({
+                    value: 'panneau-conformance',
+                    ...(locale !== undefined ? { locale } : {}),
+                    id: null,
+                    values: {},
+                }),
+            });
+            if (check.expectStatus(reply, 200)) {
+                check.expectSchema(FieldCheckResponse, reply.body, 'The check');
+            }
+            check.expectProblem(
+                await request(checkPath(UNKNOWN), { method: 'POST', body: '{"value":"x"}' }),
                 404,
             );
         },

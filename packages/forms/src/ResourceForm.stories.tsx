@@ -115,7 +115,8 @@ export const Default: Story = {};
 export const ValidationErrors: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        const french = await canvas.findByRole('textbox', { name: /Français|French/ });
+        const title = await canvas.findByRole('group', { name: /Titre/ });
+        const french = within(title).getByRole('textbox', { name: /Français|French/ });
         await userEvent.clear(french);
         await userEvent.click(canvas.getByRole('button', { name: 'Save' }));
         const summary = await canvas.findByRole('alert');
@@ -128,7 +129,8 @@ export const ValidationErrors: Story = {
 export const VersionConflict: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        const english = await canvas.findByRole('textbox', { name: /Anglais|English/ });
+        const title = await canvas.findByRole('group', { name: /Titre/ });
+        const english = within(title).getByRole('textbox', { name: /Anglais|English/ });
         await userEvent.type(english, ' and our team');
         await userEvent.click(canvas.getByRole('button', { name: 'Simulate another editor' }));
         await userEvent.click(canvas.getByRole('button', { name: 'Save' }));

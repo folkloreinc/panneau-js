@@ -5,8 +5,14 @@
 ```ts
 
 import type { Field } from '@panneau/protocol';
+import type { FieldCheckResponse } from '@panneau/protocol';
 import { JSX } from 'react';
 import type { ReactNode } from 'react';
+
+// @public
+export type SlugCheck = (value: string, options: {
+    signal: AbortSignal;
+}) => Promise<FieldCheckResponse>;
 
 // @public
 export function SlugField(input: SlugFieldProps): JSX.Element;
@@ -20,12 +26,18 @@ export function SlugFieldEntry(props: FieldEntryProps): JSX.Element;
 //
 // @public (undocumented)
 export interface SlugFieldProps extends Omit<TextFieldProps, 'type' | 'suffix'> {
+    checkDelay?: number;
+    checkKey?: string;
+    onCheck?: SlugCheck | null;
     source?: string | null;
     sourceLabel?: string;
 }
 
 // @public
 export function slugify(text: string): string;
+
+// @public
+export function sourceText(value: unknown, locale?: string): string | null;
 
 // (No @packageDocumentation comment for this package)
 

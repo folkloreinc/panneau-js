@@ -94,6 +94,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     { "resource": "authors", "multiple": true }
     ```
 
+- **`slug` values** are strings, or an object per locale when the field is `localized`. `from` names the field the slug follows: in the slug's own locale, or in the default locale for a slug that isn't localized. With `"check": true`, the client checks the slug as it is typed ([Checking a field](#checking-a-field), [0032](decisions/0032-field-checks-and-slugs.md)).
 - **`relation` values:**
     - In items, a value is a reference to the related item, `{ "id": "12", "label": "Ada" }`, where `label` is the value of the related resource's `itemTitle`. With `multiple`, it is a list of references. Lists can show related items without fetching them.
     - In requests, the client sends ids: `"12"`, or `["12", "13"]`. A backend also accepts the references it sent, and reads their `id`. It refuses ids that don't exist within the related resource's scope.
@@ -274,15 +275,16 @@ All paths are relative to `api.baseUrl`.
 
 ### Resources
 
-| Operation   | Request                                                                   |
-| ----------- | ------------------------------------------------------------------------- |
-| List        | `GET /resources/{resource}`                                               |
-| Show        | `GET /resources/{resource}/{id}`                                          |
-| Create      | `POST /resources/{resource}`                                              |
-| Update      | `PATCH /resources/{resource}/{id}` (partial, with `If-Match`)             |
-| Delete      | `DELETE /resources/{resource}/{id}`                                       |
-| Action      | `POST /resources/{resource}/actions/{action}` (see [Actions](#actions-1)) |
-| Inline edit | `PATCH /resources/{resource}/{id}` with a single field                    |
+| Operation   | Request                                                                                       |
+| ----------- | --------------------------------------------------------------------------------------------- |
+| List        | `GET /resources/{resource}`                                                                   |
+| Show        | `GET /resources/{resource}/{id}`                                                              |
+| Create      | `POST /resources/{resource}`                                                                  |
+| Update      | `PATCH /resources/{resource}/{id}` (partial, with `If-Match`)                                 |
+| Delete      | `DELETE /resources/{resource}/{id}`                                                           |
+| Action      | `POST /resources/{resource}/actions/{action}` (see [Actions](#actions-1))                     |
+| Inline edit | `PATCH /resources/{resource}/{id}` with a single field                                        |
+| Check       | `POST /resources/{resource}/fields/{field}/check` (see [Checking a field](#checking-a-field)) |
 
 **List query parameters:**
 
@@ -297,6 +299,27 @@ All paths are relative to `api.baseUrl`.
 
 - `q`: search
 - `fields`: requested fields, so lists can ask for less
+
+#### Checking a field
+
+A field with `"check": true`, at the top of a resource, checks its value with the backend as it is typed (debounced), and once when the form opens ([0032](decisions/0032-field-checks-and-slugs.md)):
+
+```jsonc
+// POST /resources/pages/fields/slug/check
+{ "value": "ete-a-montreal", "locale": "fr", "id": "12", "values": { "parent": "7" } }
+// 200
+{
+    "available": false,
+    "suggestion": "ete-a-montreal-2",
+    "prefix": "https://example.com/fr/vacances/",
+    "url": "https://example.com/fr/vacances/ete-a-montreal"
+}
+```
+
+- `id` is the item being edited, or null when creating. `values` are the form's current values, as they would be sent to save, for what the answer depends on (a page's parent).
+- `available` says whether another item of the resource, in its scope and the same locale, has the value. `suggestion` is a free value close to it when it is taken: the field offers it, without replacing what was typed.
+- `prefix` and `url` are what the field shows in front of the value and as a link, or null. `disabled: true` says the field doesn't apply to this item (the home page has no slug): the field is read-only.
+- The check runs with the user's permission to create, or to update the item `id`. It isn't authoritative: saving still validates the value.
 
 **List response:**
 

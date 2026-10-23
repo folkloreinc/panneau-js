@@ -46,6 +46,8 @@ export interface FieldEntryProps {
     readOnly?: boolean;
     /** The object the field belongs to: the form's values, or a group or a block. */
     parentValue?: unknown;
+    /** The locale of the value: the input of a locale of a localized field. */
+    locale?: string;
     className?: string;
 }
 

@@ -10,6 +10,7 @@ import {
     validate,
 } from '@panneau/protocol';
 import type {
+    FieldCheckResponse,
     Item,
     ListResponse,
     PreviewResponse,
@@ -279,6 +280,14 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
                     ...(limit !== undefined && { limit }),
                     ...(resources !== undefined && { resources }),
                 }),
+                signal,
+            });
+        },
+        checkField(resource, field, request, { signal } = {}) {
+            return json<FieldCheckResponse>({
+                method: 'POST',
+                path: `/resources/${encode(resource)}/fields/${encode(field)}/check`,
+                body: request,
                 signal,
             });
         },

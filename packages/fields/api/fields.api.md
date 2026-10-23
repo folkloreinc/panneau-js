@@ -7,6 +7,8 @@
 import { ComponentType } from 'react';
 import type { Definition } from '@panneau/protocol';
 import type { Field } from '@panneau/protocol';
+import type { FieldCheckRequest } from '@panneau/protocol';
+import type { FieldCheckResponse } from '@panneau/protocol';
 import type { Item } from '@panneau/protocol';
 import { JSX } from 'react';
 import type { ListQuery } from '@panneau/protocol';
@@ -29,6 +31,16 @@ export interface BoundFieldProps {
 // @public
 export const builtInFields: Readonly<Record<string, FieldEntry>>;
 
+// Warning: (tsdoc-code-span-missing-delimiter) The code span is missing its closing backtick
+// Warning: (tsdoc-code-span-missing-delimiter) The code span is missing its closing backtick
+// Warning: (tsdoc-escape-right-brace) The "}" character should be escaped using a backslash to avoid confusion with a TSDoc inline tag
+// Warning: (tsdoc-escape-right-brace) The "}" character should be escaped using a backslash to avoid confusion with a TSDoc inline tag
+// Warning: (tsdoc-malformed-inline-tag) Expecting a TSDoc tag starting with "{@"
+// Warning: (tsdoc-malformed-inline-tag) Expecting a TSDoc tag starting with "{@"
+//
+// @public
+export function createFieldCheckSource(adapter: FieldCheckAdapter, resource: string, id?: string | null): FieldCheckSource | null;
+
 // @public
 export function createRelationSource(adapter: RelationListAdapter, input?: RelationSourceOptions): RelationSource;
 
@@ -48,6 +60,26 @@ export interface FieldBindingProps {
 }
 
 // @public
+export interface FieldCheckAdapter {
+    // (undocumented)
+    checkField?(resource: string, field: string, request: FieldCheckRequest, options?: {
+        signal?: AbortSignal;
+    }): Promise<FieldCheckResponse>;
+}
+
+// @public
+export interface FieldCheckSource {
+    // (undocumented)
+    check(field: string, request: {
+        value: string;
+        locale?: string;
+        values?: Record<string, unknown>;
+    }, options: {
+        signal: AbortSignal;
+    }): Promise<FieldCheckResponse>;
+}
+
+// @public
 export type FieldEntry = ComponentType<FieldEntryProps>;
 
 // @public
@@ -59,6 +91,7 @@ export interface FieldEntryProps {
     // (undocumented)
     errors?: readonly string[];
     field: Field;
+    locale?: string;
     // (undocumented)
     onBlur?: () => void;
     // (undocumented)
@@ -107,6 +140,7 @@ export interface FieldProps<V> {
 export interface FieldsContextValue {
     // (undocumented)
     binding: FieldBinding | null;
+    checkSource: FieldCheckSource | null;
     components: Readonly<Record<string, FieldEntry>>;
     locales: readonly string[];
     relationSource: RelationSource | null;
@@ -127,6 +161,7 @@ export function FieldsProvider(input: FieldsProviderProps): JSX.Element;
 export interface FieldsProviderProps {
     // (undocumented)
     binding?: FieldBinding | null;
+    checkSource?: FieldCheckSource | null;
     // (undocumented)
     children?: ReactNode;
     components?: Readonly<Record<string, FieldEntry>>;
@@ -229,6 +264,7 @@ export interface NestedFieldProps {
     errors?: readonly string[];
     // (undocumented)
     field: Field;
+    locale?: string;
     // (undocumented)
     onBlur?: () => void;
     onChange?: (value: unknown) => void;

@@ -82,6 +82,14 @@ export function createExampleDefinition(): DefinitionInput {
                         label: 'Pièce jointe',
                         rules: [{ rule: 'accept', value: ['application/pdf'] }],
                     },
+                    {
+                        name: 'slug',
+                        type: 'slug',
+                        from: 'title',
+                        localized: true,
+                        check: true,
+                        settings: { prefix: 'https://example.com/' },
+                    },
                 ],
                 form: {
                     layout: [

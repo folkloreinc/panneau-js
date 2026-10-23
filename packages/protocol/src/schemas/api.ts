@@ -291,6 +291,50 @@ export const MediaReference = z
             'The value of a `media` or `image` field in items: the media, with what lists and fields show, and its edits for this use. Requests send the id, or `{ id, resource, transform }`: `resource` is required when the field allows several libraries.',
     });
 
+export const FieldCheckRequest = z
+    .looseObject({
+        value: z.string().meta({ description: 'The value to check, as it is typed.' }),
+        locale: z
+            .string()
+            .optional()
+            .meta({ description: 'The locale of the value, for a localized field.' }),
+        id: Id.nullable()
+            .optional()
+            .meta({ description: 'The item being edited, or null when creating one.' }),
+        values: z.record(z.string(), z.unknown()).optional().meta({
+            description:
+                "The form's current values, as they would be sent to save, for what the check depends on (a page's parent).",
+        }),
+    })
+    .meta({ description: 'A value of a field with `check`, to check with the backend.' });
+
+export const FieldCheckResponse = z
+    .looseObject({
+        available: z.boolean().meta({
+            description:
+                'Whether no other item of the resource, in its scope and the same locale, has the value.',
+        }),
+        suggestion: z.string().nullable().optional().meta({
+            description: 'An available value close to the one checked, when it is taken.',
+        }),
+        prefix: z.string().nullable().optional().meta({
+            description: 'What the field shows in front of the value: the start of its URL.',
+        }),
+        url: z
+            .string()
+            .nullable()
+            .optional()
+            .meta({ description: 'The URL the value gives the item, which the field links to.' }),
+        disabled: z.boolean().optional().meta({
+            description:
+                "The field doesn't apply to this item (the home page has no slug): the field is read-only.",
+        }),
+    })
+    .meta({
+        description:
+            'What the backend says about a value: not authoritative, since saving still validates it.',
+    });
+
 export const Session = z.looseObject({ user: User });
 
 export const SearchResponse = z
@@ -331,6 +375,8 @@ export type Upload = z.infer<typeof Upload>;
 export type UploadResponse = z.infer<typeof UploadResponse>;
 export type UploadSignRequest = z.infer<typeof UploadSignRequest>;
 export type UploadSignResponse = z.infer<typeof UploadSignResponse>;
+export type FieldCheckRequest = z.infer<typeof FieldCheckRequest>;
+export type FieldCheckResponse = z.infer<typeof FieldCheckResponse>;
 export type MediaInfo = z.infer<typeof MediaInfo>;
 export type MediaItem = z.infer<typeof MediaItem>;
 export type MediaReference = z.infer<typeof MediaReference>;

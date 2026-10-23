@@ -12,6 +12,8 @@ export const fieldsFr: Record<string, string> = {
     'panneau.fields.openLink': 'Ouvrir le lien',
     'panneau.fields.pickColor': 'Choisir une couleur',
     'panneau.fields.generateSlug': 'Générer à partir de {field}',
+    'panneau.fields.slugTaken': 'Ce slug est déjà utilisé.',
+    'panneau.fields.useSuggestion': 'Utiliser {suggestion}',
     'panneau.fields.search': 'Rechercher…',
     'panneau.fields.noRelation': 'Aucun',
     'panneau.fields.noResults': 'Aucun résultat',

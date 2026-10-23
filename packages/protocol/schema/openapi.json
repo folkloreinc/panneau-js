@@ -686,6 +686,94 @@
                 }
             }
         },
+        "/resources/{resource}/fields/{field}/check": {
+            "parameters": [
+                {
+                    "name": "resource",
+                    "in": "path",
+                    "required": true,
+                    "description": "Resource id.",
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "field",
+                    "in": "path",
+                    "required": true,
+                    "description": "Name of a field with `check`.",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "post": {
+                "operationId": "checkField",
+                "summary": "Checks a value as it is typed: whether a slug is available, and its URL. With the permission to create, or to update the item `id`.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FieldCheckRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "What the backend says about the value.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FieldCheckResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated.",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Not allowed.",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found.",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid values: messages are in `errors`, keyed by dot path.",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/actions/runs": {
             "get": {
                 "operationId": "listActionRuns",
@@ -2049,6 +2137,10 @@
                     "from": {
                         "description": "`slug`: the field the slug is generated from.",
                         "type": "string"
+                    },
+                    "check": {
+                        "description": "The client checks the value with the backend as it is typed, with `POST /resources/{resource}/fields/{field}/check`: whether a `slug` is available, and its URL. A field at the top of the resource only.",
+                        "type": "boolean"
                     },
                     "display": {
                         "description": "Display used in lists, when it differs from the default one of the type.",
@@ -4008,6 +4100,82 @@
                 ],
                 "additionalProperties": {},
                 "description": "A presigned request."
+            },
+            "FieldCheckRequest": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "string",
+                        "description": "The value to check, as it is typed."
+                    },
+                    "locale": {
+                        "description": "The locale of the value, for a localized field.",
+                        "type": "string"
+                    },
+                    "id": {
+                        "description": "The item being edited, or null when creating one.",
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/Id"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "values": {
+                        "description": "The form's current values, as they would be sent to save, for what the check depends on (a page's parent).",
+                        "type": "object",
+                        "propertyNames": {
+                            "type": "string"
+                        },
+                        "additionalProperties": {}
+                    }
+                },
+                "required": [
+                    "value"
+                ],
+                "additionalProperties": {},
+                "description": "A value of a field with `check`, to check with the backend."
+            },
+            "FieldCheckResponse": {
+                "type": "object",
+                "properties": {
+                    "available": {
+                        "type": "boolean",
+                        "description": "Whether no other item of the resource, in its scope and the same locale, has the value."
+                    },
+                    "suggestion": {
+                        "description": "An available value close to the one checked, when it is taken.",
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "prefix": {
+                        "description": "What the field shows in front of the value: the start of its URL.",
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "url": {
+                        "description": "The URL the value gives the item, which the field links to.",
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "disabled": {
+                        "description": "The field doesn't apply to this item (the home page has no slug): the field is read-only.",
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "available"
+                ],
+                "additionalProperties": {},
+                "description": "What the backend says about a value: not authoritative, since saving still validates it."
             },
             "MediaInfo": {
                 "type": "object",

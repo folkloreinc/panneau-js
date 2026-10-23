@@ -3,6 +3,8 @@ import type {
     ActionResult,
     ActionRun,
     Definition,
+    FieldCheckRequest,
+    FieldCheckResponse,
     Item,
     ListQuery,
     ListResponse,
@@ -118,6 +120,17 @@ export interface DataAdapter {
 
     /** Searches the searchable resources: every one, or those of `resources`. */
     search(q: string, options?: SearchOptions): Promise<SearchResponse>;
+    /**
+     * Checks a value of a field with `check` as it is typed: whether a slug is available, and its
+     * URL (`POST /resources/{resource}/fields/{field}/check`). Optional: without it, fields don't
+     * check.
+     */
+    checkField?(
+        resource: string,
+        field: string,
+        request: FieldCheckRequest,
+        options?: RequestOptions,
+    ): Promise<FieldCheckResponse>;
     /** Data of a dashboard widget, in the shape its type defines. */
     getWidgetData(widget: string, options?: RequestOptions): Promise<unknown>;
 }

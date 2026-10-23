@@ -131,6 +131,10 @@ export const Field = z
             .string()
             .optional()
             .meta({ description: '`slug`: the field the slug is generated from.' }),
+        check: z.boolean().optional().meta({
+            description:
+                'The client checks the value with the backend as it is typed, with `POST /resources/{resource}/fields/{field}/check`: whether a `slug` is available, and its URL. A field at the top of the resource only.',
+        }),
         display: z.string().optional().meta({
             description: 'Display used in lists, when it differs from the default one of the type.',
         }),

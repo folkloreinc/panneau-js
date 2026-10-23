@@ -27,6 +27,11 @@ export {
     toReferences,
     useRelationReferences,
 } from './shared/relation';
+export {
+    type FieldCheckAdapter,
+    type FieldCheckSource,
+    createFieldCheckSource,
+} from './shared/check';
 export type { FieldEntry, FieldEntryProps, FieldProps } from './shared/types';
 export { MissingFieldEntry } from './missing/MissingField';
 export {

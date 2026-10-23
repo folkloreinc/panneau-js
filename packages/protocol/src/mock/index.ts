@@ -4,6 +4,7 @@ import { type RuleFailure, checkValues } from '../rules';
 import type { DefinitionInput, ResourceInput } from '../schemas';
 import type {
     ActionResult,
+    FieldCheckResponse,
     Item,
     MediaInfo,
     MediaReference,
@@ -580,6 +581,50 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                 return json(201, { data: item }, etag(item));
             }
             return problem(405, 'Method not allowed.');
+        }
+
+        if (segments[2] === 'fields' && segments[4] === 'check' && segments.length === 5) {
+            if (method !== 'POST') {
+                return problem(405, 'Method not allowed.');
+            }
+            const field = resource.fields.find(
+                (candidate) => candidate.name === segments[3] && candidate.check === true,
+            );
+            if (field === undefined) {
+                return problem(404, 'Field not found.');
+            }
+            const body = await readBody();
+            if (typeof body.value !== 'string') {
+                return problem(422, 'The given data was invalid.', {
+                    type: 'urn:panneau:problem:validation',
+                    errors: { value: ['The value is required.'] },
+                });
+            }
+            const locale = typeof body.locale === 'string' ? body.locale : null;
+            const id =
+                typeof body.id === 'string' || typeof body.id === 'number' ? String(body.id) : null;
+            const valueOf = (item: Item): unknown => {
+                const value = item[field.name];
+                return locale !== null && isRecord(value) ? value[locale] : value;
+            };
+            const taken = (candidate: string) =>
+                list.some((item) => item.id !== id && valueOf(item) === candidate);
+            const available = !taken(body.value);
+            let suggestion: string | null = null;
+            for (let index = 2; !available && suggestion === null; index += 1) {
+                const candidate = `${body.value}-${String(index)}`;
+                suggestion = taken(candidate) ? null : candidate;
+            }
+            // The mock gives a URL when the field has a fixed prefix
+            const prefix =
+                typeof field.settings?.prefix === 'string' ? field.settings.prefix : null;
+            const response: FieldCheckResponse = {
+                available,
+                suggestion,
+                prefix,
+                url: prefix !== null ? `${prefix}${body.value}` : null,
+            };
+            return json(200, response);
         }
 
         if (segments[2] === 'actions' && segments[3] !== undefined && segments.length === 4) {

@@ -37,3 +37,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0029](0029-go-to-palette.md)                | A "Go to…" command palette that products can use without the app      | Accepted              |
 | [0030](0030-search-parameters-and-scope.md)  | The parameters of the global search, its errors, a scope per resource | Accepted              |
 | [0031](0031-image-editor-and-image-field.md) | An image editor with tools, and an `image` field                      | Accepted              |
+| [0032](0032-field-checks-and-slugs.md)       | Fields check their value with the backend, and a generic slug         | Accepted              |
