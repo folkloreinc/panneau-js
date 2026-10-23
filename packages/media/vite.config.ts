@@ -5,6 +5,7 @@ export default definePackageConfig({
     entries: {
         index: 'src/index.ts',
         'picker/index': 'src/picker/index.ts',
+        'editor/index': 'src/editor/index.ts',
     },
     react: true,
     environment: 'jsdom',

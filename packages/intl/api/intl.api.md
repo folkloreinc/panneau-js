@@ -529,6 +529,80 @@ export const mediaMessages: {
     name: string;
     error: string;
     }>;
+    editorTitle: PanneauMessage<Record<never, never>>;
+    editorApply: PanneauMessage<Record<never, never>>;
+    editorCancel: PanneauMessage<Record<never, never>>;
+    editorReset: PanneauMessage<Record<never, never>>;
+    editorBack: PanneauMessage<Record<never, never>>;
+    editorStartFrom: PanneauMessage<Record<never, never>>;
+    editorBaseMedia: PanneauMessage<Record<never, never>>;
+    editorBaseOriginal: PanneauMessage<Record<never, never>>;
+    editorBaseMediaNote: PanneauMessage<Record<never, never>>;
+    editorBaseOriginalNote: PanneauMessage<Record<never, never>>;
+    editorMediaChangedTitle: PanneauMessage<Record<never, never>>;
+    editorMediaChanged: PanneauMessage<Record<never, never>>;
+    editorTools: PanneauMessage<Record<never, never>>;
+    editorCanvas: PanneauMessage<    {
+    name: string;
+    }>;
+    editorResult: PanneauMessage<Record<never, never>>;
+    editorResultSize: PanneauMessage<    {
+    width: number;
+    height: number;
+    ratio: string;
+    }>;
+    editorToolCrop: PanneauMessage<Record<never, never>>;
+    editorToolRotate: PanneauMessage<Record<never, never>>;
+    editorToolFocalPoint: PanneauMessage<Record<never, never>>;
+    editorRatio: PanneauMessage<Record<never, never>>;
+    editorRatioFree: PanneauMessage<Record<never, never>>;
+    editorRatioOriginal: PanneauMessage<Record<never, never>>;
+    editorRatioRequired: PanneauMessage<Record<never, never>>;
+    editorCropX: PanneauMessage<Record<never, never>>;
+    editorCropY: PanneauMessage<Record<never, never>>;
+    editorCropWidth: PanneauMessage<Record<never, never>>;
+    editorCropHeight: PanneauMessage<Record<never, never>>;
+    editorCropPixels: PanneauMessage<    {
+    width: number;
+    height: number;
+    }>;
+    editorCropProposed: PanneauMessage<Record<never, never>>;
+    editorCropFrame: PanneauMessage<    {
+    width: number;
+    height: number;
+    }>;
+    editorCropFrameRole: PanneauMessage<Record<never, never>>;
+    editorCropHint: PanneauMessage<Record<never, never>>;
+    editorRotateLeft: PanneauMessage<Record<never, never>>;
+    editorRotateRight: PanneauMessage<Record<never, never>>;
+    editorFlipHorizontal: PanneauMessage<Record<never, never>>;
+    editorFlipVertical: PanneauMessage<Record<never, never>>;
+    editorRotated: PanneauMessage<    {
+    degrees: number;
+    }>;
+    editorRotateKeepsRatio: PanneauMessage<    {
+    ratio: string;
+    }>;
+    editorRotateHint: PanneauMessage<Record<never, never>>;
+    editorFocalIntro: PanneauMessage<Record<never, never>>;
+    editorFocalPreview: PanneauMessage<    {
+    ratio: string;
+    }>;
+    editorFocalLeft: PanneauMessage<Record<never, never>>;
+    editorFocalTop: PanneauMessage<Record<never, never>>;
+    editorFocalPoint: PanneauMessage<    {
+    x: number;
+    y: number;
+    }>;
+    editorFocalRole: PanneauMessage<Record<never, never>>;
+    editorFocalHint: PanneauMessage<Record<never, never>>;
+    editorCropRequired: PanneauMessage<Record<never, never>>;
+    editorCropRequiredRatios: PanneauMessage<    {
+    ratios: string;
+    }>;
+    editorCropRatios: PanneauMessage<    {
+    ratios: string;
+    }>;
 };
 
 // @public

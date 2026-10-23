@@ -318,4 +318,205 @@ export const mediaMessages = {
         id: 'panneau.media.picker.createFailed',
         defaultMessage: '{name} couldn’t be added: {error}',
     }),
+    // The image editor (`@panneau/media/editor`, decision 0031).
+    editorTitle: defineMessage({
+        id: 'panneau.media.editor.title',
+        defaultMessage: 'Edit image',
+    }),
+    editorApply: defineMessage({
+        id: 'panneau.media.editor.apply',
+        defaultMessage: 'Apply',
+    }),
+    editorCancel: defineMessage({
+        id: 'panneau.media.editor.cancel',
+        defaultMessage: 'Cancel',
+    }),
+    editorReset: defineMessage({
+        id: 'panneau.media.editor.reset',
+        defaultMessage: 'Reset',
+    }),
+    editorBack: defineMessage({
+        id: 'panneau.media.editor.back',
+        defaultMessage: 'Back to the library',
+    }),
+    editorStartFrom: defineMessage({
+        id: 'panneau.media.editor.startFrom',
+        defaultMessage: 'Start from',
+    }),
+    editorBaseMedia: defineMessage({
+        id: 'panneau.media.editor.baseMedia',
+        defaultMessage: 'Library version',
+    }),
+    editorBaseOriginal: defineMessage({
+        id: 'panneau.media.editor.baseOriginal',
+        defaultMessage: 'Original file',
+    }),
+    editorBaseMediaNote: defineMessage({
+        id: 'panneau.media.editor.baseMediaNote',
+        defaultMessage:
+            'Starts from the library’s version of the image: this edit applies over it.',
+    }),
+    editorBaseOriginalNote: defineMessage({
+        id: 'panneau.media.editor.baseOriginalNote',
+        defaultMessage: 'Starts from the original file: the library’s edits don’t apply.',
+    }),
+    editorMediaChangedTitle: defineMessage({
+        id: 'panneau.media.editor.mediaChangedTitle',
+        defaultMessage: 'The library’s version of this image changed',
+    }),
+    editorMediaChanged: defineMessage({
+        id: 'panneau.media.editor.mediaChanged',
+        defaultMessage:
+            'The crop for this use was made on the previous version. It was moved inside the new one: check it before applying.',
+    }),
+    editorTools: defineMessage({
+        id: 'panneau.media.editor.tools',
+        defaultMessage: 'Tool',
+    }),
+    editorCanvas: defineMessage<{ name: string }>({
+        id: 'panneau.media.editor.canvas',
+        defaultMessage: '{name}, as it will be rendered',
+    }),
+    editorResult: defineMessage({
+        id: 'panneau.media.editor.result',
+        defaultMessage: 'Result',
+    }),
+    editorResultSize: defineMessage<{ width: number; height: number; ratio: string }>({
+        id: 'panneau.media.editor.resultSize',
+        defaultMessage: '{width} × {height} · {ratio}',
+    }),
+    editorToolCrop: defineMessage({
+        id: 'panneau.media.editor.tool.crop',
+        defaultMessage: 'Crop',
+    }),
+    editorToolRotate: defineMessage({
+        id: 'panneau.media.editor.tool.rotate',
+        defaultMessage: 'Rotate',
+    }),
+    editorToolFocalPoint: defineMessage({
+        id: 'panneau.media.editor.tool.focalPoint',
+        defaultMessage: 'Focal point',
+    }),
+    editorRatio: defineMessage({
+        id: 'panneau.media.editor.ratio',
+        defaultMessage: 'Aspect ratio',
+    }),
+    editorRatioFree: defineMessage({
+        id: 'panneau.media.editor.ratioFree',
+        defaultMessage: 'Free',
+    }),
+    editorRatioOriginal: defineMessage({
+        id: 'panneau.media.editor.ratioOriginal',
+        defaultMessage: 'Original',
+    }),
+    editorRatioRequired: defineMessage({
+        id: 'panneau.media.editor.ratioRequired',
+        defaultMessage: 'Required by the field',
+    }),
+    editorCropX: defineMessage({
+        id: 'panneau.media.editor.cropX',
+        defaultMessage: 'X',
+    }),
+    editorCropY: defineMessage({
+        id: 'panneau.media.editor.cropY',
+        defaultMessage: 'Y',
+    }),
+    editorCropWidth: defineMessage({
+        id: 'panneau.media.editor.cropWidth',
+        defaultMessage: 'Width',
+    }),
+    editorCropHeight: defineMessage({
+        id: 'panneau.media.editor.cropHeight',
+        defaultMessage: 'Height',
+    }),
+    editorCropPixels: defineMessage<{ width: number; height: number }>({
+        id: 'panneau.media.editor.cropPixels',
+        defaultMessage: 'In pixels of the image as rendered: {width} × {height}.',
+    }),
+    editorCropProposed: defineMessage({
+        id: 'panneau.media.editor.cropProposed',
+        defaultMessage:
+            'The field requires a crop: this one is proposed around the focal point. Adjust it, or choose another ratio.',
+    }),
+    editorCropFrame: defineMessage<{ width: number; height: number }>({
+        id: 'panneau.media.editor.cropFrame',
+        defaultMessage: 'Crop, {width} by {height} pixels',
+    }),
+    editorCropFrameRole: defineMessage({
+        id: 'panneau.media.editor.cropFrameRole',
+        defaultMessage: 'crop frame',
+    }),
+    editorCropHint: defineMessage({
+        id: 'panneau.media.editor.cropHint',
+        defaultMessage:
+            'Drag the frame or its corners. Keyboard: arrow keys move it, Shift + arrow keys resize it.',
+    }),
+    editorRotateLeft: defineMessage({
+        id: 'panneau.media.editor.rotateLeft',
+        defaultMessage: 'Rotate left',
+    }),
+    editorRotateRight: defineMessage({
+        id: 'panneau.media.editor.rotateRight',
+        defaultMessage: 'Rotate right',
+    }),
+    editorFlipHorizontal: defineMessage({
+        id: 'panneau.media.editor.flipHorizontal',
+        defaultMessage: 'Flip horizontally',
+    }),
+    editorFlipVertical: defineMessage({
+        id: 'panneau.media.editor.flipVertical',
+        defaultMessage: 'Flip vertically',
+    }),
+    editorRotated: defineMessage<{ degrees: number }>({
+        id: 'panneau.media.editor.rotated',
+        defaultMessage: 'Rotated {degrees}°.',
+    }),
+    editorRotateKeepsRatio: defineMessage<{ ratio: string }>({
+        id: 'panneau.media.editor.rotateKeepsRatio',
+        defaultMessage: 'The crop keeps its {ratio} ratio and follows the image.',
+    }),
+    editorRotateHint: defineMessage({
+        id: 'panneau.media.editor.rotateHint',
+        defaultMessage: 'The image is shown as it will be rendered.',
+    }),
+    editorFocalIntro: defineMessage({
+        id: 'panneau.media.editor.focalIntro',
+        defaultMessage: 'Automatic crops keep this point in view, for the sizes a site asks for:',
+    }),
+    editorFocalPreview: defineMessage<{ ratio: string }>({
+        id: 'panneau.media.editor.focalPreview',
+        defaultMessage: 'Automatic {ratio} crop',
+    }),
+    editorFocalLeft: defineMessage({
+        id: 'panneau.media.editor.focalLeft',
+        defaultMessage: 'From the left',
+    }),
+    editorFocalTop: defineMessage({
+        id: 'panneau.media.editor.focalTop',
+        defaultMessage: 'From the top',
+    }),
+    editorFocalPoint: defineMessage<{ x: number; y: number }>({
+        id: 'panneau.media.editor.focalPoint',
+        defaultMessage: 'Focal point, {x}% from the left, {y}% from the top',
+    }),
+    editorFocalRole: defineMessage({
+        id: 'panneau.media.editor.focalRole',
+        defaultMessage: 'focal point',
+    }),
+    editorFocalHint: defineMessage({
+        id: 'panneau.media.editor.focalHint',
+        defaultMessage: 'Click or drag where the subject is. Keyboard: arrow keys move the point.',
+    }),
+    editorCropRequired: defineMessage({
+        id: 'panneau.media.editor.cropRequired',
+        defaultMessage: 'Crop the image to apply.',
+    }),
+    editorCropRequiredRatios: defineMessage<{ ratios: string }>({
+        id: 'panneau.media.editor.cropRequiredRatios',
+        defaultMessage: 'Crop the image to {ratios} to apply.',
+    }),
+    editorCropRatios: defineMessage<{ ratios: string }>({
+        id: 'panneau.media.editor.cropRatios',
+        defaultMessage: 'The crop must be {ratios}.',
+    }),
 };
