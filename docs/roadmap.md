@@ -78,6 +78,7 @@ Goal: a complete admin panel, ready for client projects.
     - per-item results;
     - queued runs with progress and a notification area.
 - **Rich text:** TipTap 3 field (HTML storage by default, ProseMirror JSON as an option).
+- **More field types:** `tel`, `range`, `duration`, `json`, `tags`, `embed` (resolved by the backend with its provider's oEmbed) and `location` (a Leaflet map with a pluggable address search) ([#111](https://github.com/folkloreinc/panneau-js/issues/111), [decisions/0033](decisions/0033-more-field-types.md), [folkloreinc/laravel-panneau#100](https://github.com/folkloreinc/laravel-panneau/issues/100)). Choices as radios or checkboxes are `select` widgets.
 - **Media:** media fields and a basic library on the protocol's media API; `laravel-mediatheque` adapter.
 - **Folklore plugin:** Pages, Blocks and PageSlug fields with their JS, shipped by `laravel-folklore`.
 - **Migration:** guide, codemods for JS, Rector rules for PHP, tried on the contests platform's admin (custom fields, pages and controllers) before 5.0.
@@ -95,7 +96,7 @@ Minor releases, each one additive:
 - **Image editing:** crop, rotate, flip and focal point. Edits are non-destructive and rendered through `laravel-image`.
 - **Media library:** conversions, tags, search, usage tracking. Depends on the `laravel-mediatheque` roadmap.
 - **Home page:** dashboards with widgets (stats, charts, recent items, shortcuts, custom), defined per project and per role.
-- **Global search:** a "Go to…" command palette (⌘K), started in Phase 2 ([#97](https://github.com/folkloreinc/panneau-js/issues/97), [decisions/0029](decisions/0029-go-to-palette.md)): recent items, navigation, create, commands of plugins and results of `GET /search` grouped by resource. Then the `limit` and `resources` parameters, the `422` and `429` problems, conformance checks and a scope per resource ([decisions/0030](decisions/0030-search-parameters-and-scope.md)), and `laravel-panneau`'s endpoint, on Laravel Scout when the model is searchable ([folkloreinc/laravel-panneau#96](https://github.com/folkloreinc/laravel-panneau/issues/96)). Later: recent items on the server.
+- **Global search:** a "Go to…" command palette (⌘K), started in Phase 2 ([#97](https://github.com/folkloreinc/panneau-js/issues/97), [decisions/0029](decisions/0029-go-to-palette.md)): recent items, navigation, create, commands of plugins and results of `GET /search` grouped by resource. Then the `limit` and `resources` parameters, the `422` and `429` problems, conformance checks and a scope per resource ([decisions/0030](decisions/0030-search-parameters-and-scope.md)), and `laravel-panneau`'s endpoint, on Laravel Scout when the model is searchable ([folkloreinc/laravel-panneau#96](https://github.com/folkloreinc/laravel-panneau/issues/96)). Recent items on the server are set aside for now.
 - **Preview:** component previews and iframe previews of the real site fed with unsaved values.
 - **Drafts and revisions:** per resource.
 - **Collaboration:**
