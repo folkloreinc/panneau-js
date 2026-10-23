@@ -7,8 +7,8 @@ import { matchesRatio, parseRatio } from '@panneau/protocol/runtime';
 import { Alert, Button, Dialog, SegmentedControl, Text, usePanneauIntl } from '@panneau/ui';
 
 import styles from './ImageEditor.module.css';
+import { drawBase, ownTransform, ratioLabel, viewBox } from './draw';
 import {
-    type Rect,
     type Size,
     clampCrop,
     cropAround,
@@ -20,15 +20,12 @@ import {
     viewSize,
 } from './geometry';
 import { useImageEditorTools } from './tools';
-import type { ImageEditorProps, ImageEditorToolContext, TransformBase } from './types';
-
-const box = (rect: Rect) =>
-    `${String(rect.x)} ${String(rect.y)} ${String(rect.width)} ${String(rect.height)}`;
-
-/** Whether a transform has edits. */
-function hasEdits(transform: MediaTransform | null | undefined): transform is MediaTransform {
-    return transform !== null && transform !== undefined && !sameEdits(transform, {});
-}
+import type {
+    ImageEditorDialogProps,
+    ImageEditorProps,
+    ImageEditorToolContext,
+    TransformBase,
+} from './types';
 
 /** The edits of a transform, without what doesn't change the image. */
 function cleanEdits(transform: MediaTransform): MediaTransform {
@@ -45,17 +42,71 @@ function cleanEdits(transform: MediaTransform): MediaTransform {
  * The image editor (decision 0031): the image as it will be rendered, with the overlay of a tool
  * over it, the tool's options on the side, and the result. It edits a transform for one use, over
  * the media's own transform or from the original file, and returns it in the protocol's shape.
+ *
+ * It fits in a page or a panel, at the height its `className` gives it. `ImageEditorDialog` opens
+ * it in a dialog.
  */
-export function ImageEditor(props: ImageEditorProps) {
+export function ImageEditor({ 'aria-label': label, className, ...props }: ImageEditorProps) {
+    const intl = usePanneauIntl();
+    const { baseChoice, content, actions } = useImageEditor(props);
+    return (
+        <div
+            role="group"
+            aria-label={label ?? intl.formatMessage(messages.editorTitle)}
+            className={className !== undefined ? `${styles.inline} ${className}` : styles.inline}
+        >
+            {baseChoice}
+            {content}
+            {actions}
+        </div>
+    );
+}
+
+/** The image editor in a large dialog, and a full-screen sheet on phones. Apply and Cancel close it. */
+export function ImageEditorDialog(props: ImageEditorDialogProps) {
     // A new editor each time it opens: its edits start from the value again.
     if (!props.isOpen) {
         return null;
     }
-    return <OpenImageEditor {...props} />;
+    return <OpenImageEditorDialog {...props} />;
 }
 
-function OpenImageEditor({
+function OpenImageEditorDialog({
+    isOpen: _isOpen,
     onOpenChange,
+    title,
+    onApply,
+    ...props
+}: ImageEditorDialogProps) {
+    const intl = usePanneauIntl();
+    const close = () => onOpenChange(false);
+    const { baseChoice, content, actions } = useImageEditor({
+        ...props,
+        onApply: (transform) => {
+            onApply(transform);
+            close();
+        },
+        onCancel: close,
+    });
+    return (
+        <Dialog
+            title={title ?? intl.formatMessage(messages.editorTitle)}
+            size="xl"
+            fullScreenOnPhone
+            isOpen
+            onOpenChange={onOpenChange}
+            className={styles.dialog}
+            bodyClassName={styles.body}
+            headerContent={baseChoice}
+            footer={actions}
+        >
+            {content}
+        </Dialog>
+    );
+}
+
+/** The parts of the editor, which `ImageEditor` and `ImageEditorDialog` lay out. */
+function useImageEditor({
     image,
     value,
     base: newBase,
@@ -64,11 +115,15 @@ function OpenImageEditor({
     ratios = [],
     enforceRatios = false,
     cropRequired = false,
-    title,
     applyLabel,
     onBack,
     onApply,
-}: ImageEditorProps) {
+    onCancel,
+}: Omit<ImageEditorProps, 'aria-label' | 'className'>): {
+    baseChoice: ReactNode;
+    content: ReactNode;
+    actions: ReactNode;
+} {
     const intl = usePanneauIntl();
     const hintId = useId();
     const problemId = useId();
@@ -76,15 +131,8 @@ function OpenImageEditor({
     const defaults = useImageEditorTools();
     const tools = givenTools ?? [defaults.crop, defaults.rotate, defaults.focalPoint];
 
-    const own = hasEdits(image.mediaTransform) ? image.mediaTransform : null;
-    const original: Size = { width: image.width, height: image.height };
-    const sizeOf = (base: TransformBase): Size => {
-        if (base !== 'media' || own === null) {
-            return original;
-        }
-        const version = cropInView(original, own);
-        return { width: version.width, height: version.height };
-    };
+    const own = ownTransform(image);
+    const sizeOf = (base: TransformBase): Size => drawBase(image, base).size;
 
     // Where the edits start: the value's, moved inside the media's version when it changed, or
     // a crop the field requires, proposed around the focal point.
@@ -132,17 +180,9 @@ function OpenImageEditor({
     const tool = tools.find((candidate) => candidate.id === toolId) ?? tools[0];
 
     // The image the edits apply to: the original, or the media's version drawn in a viewport.
-    const originalImage = <image href={image.url} width={image.width} height={image.height} />;
-    let baseImage: ReactNode = originalImage;
-    if (base === 'media' && own !== null) {
-        const version = cropInView(original, own);
-        baseImage = (
-            <svg width={version.width} height={version.height} viewBox={box(version)}>
-                <g transform={svgTransform(original, own)}>{originalImage}</g>
-            </svg>
-        );
-    }
-    const drawing = <g transform={svgTransform(size, transform)}>{baseImage}</g>;
+    const drawing = (
+        <g transform={svgTransform(size, transform)}>{drawBase(image, base).drawing}</g>
+    );
 
     // How many units of the view one pixel of the screen is, for marks of a constant size.
     // The stage is kept in state, not in a ref, since the tools read it through `pointToView`.
@@ -217,83 +257,36 @@ function OpenImageEditor({
             : edits;
     };
 
-    return (
-        <Dialog
-            title={title ?? intl.formatMessage(messages.editorTitle)}
-            size="xl"
-            fullScreenOnPhone
-            isOpen
-            onOpenChange={onOpenChange}
-            className={styles.dialog}
-            bodyClassName={styles.body}
-            headerContent={
-                canChooseBase && own !== null ? (
-                    <div className={styles.baseChoice}>
-                        <Text as="span" size="sm" muted id={baseLabelId}>
-                            {intl.formatMessage(messages.editorStartFrom)}
-                        </Text>
-                        <SegmentedControl
-                            aria-labelledby={baseLabelId}
-                            size="sm"
-                            value={base}
-                            onChange={(next) => {
-                                // The edits are in the pixels of their base: they start over.
-                                setBase(next as TransformBase);
-                                setTransform({});
-                            }}
-                            options={[
-                                {
-                                    value: 'media',
-                                    label: intl.formatMessage(messages.editorBaseMedia),
-                                },
-                                {
-                                    value: 'original',
-                                    label: intl.formatMessage(messages.editorBaseOriginal),
-                                },
-                            ]}
-                        />
-                    </div>
-                ) : null
-            }
-            footer={(close) => (
-                <div className={styles.footer}>
-                    {onBack !== undefined ? (
-                        <Button variant="ghost" icon={ArrowLeft} onPress={onBack}>
-                            {intl.formatMessage(messages.editorBack)}
-                        </Button>
-                    ) : null}
-                    <Button
-                        variant="ghost"
-                        icon={Undo2}
-                        className={styles.reset}
-                        onPress={() => setTransform({})}
-                    >
-                        {intl.formatMessage(messages.editorReset)}
-                    </Button>
-                    <span className={styles.footerEnd}>
-                        {problem !== null ? (
-                            <Text as="span" size="sm" tone="danger" id={problemId}>
-                                {problem}
-                            </Text>
-                        ) : null}
-                        <Button onPress={close} className={styles.cancel}>
-                            {intl.formatMessage(messages.editorCancel)}
-                        </Button>
-                        <Button
-                            variant="primary"
-                            isDisabled={problem !== null}
-                            aria-describedby={problem !== null ? problemId : undefined}
-                            onPress={() => {
-                                onApply(result());
-                                close();
-                            }}
-                        >
-                            {applyLabel ?? intl.formatMessage(messages.editorApply)}
-                        </Button>
-                    </span>
+    return {
+        baseChoice:
+            canChooseBase && own !== null ? (
+                <div className={styles.baseChoice}>
+                    <Text as="span" size="sm" muted id={baseLabelId}>
+                        {intl.formatMessage(messages.editorStartFrom)}
+                    </Text>
+                    <SegmentedControl
+                        aria-labelledby={baseLabelId}
+                        size="sm"
+                        value={base}
+                        onChange={(next) => {
+                            // The edits are in the pixels of their base: they start over.
+                            setBase(next as TransformBase);
+                            setTransform({});
+                        }}
+                        options={[
+                            {
+                                value: 'media',
+                                label: intl.formatMessage(messages.editorBaseMedia),
+                            },
+                            {
+                                value: 'original',
+                                label: intl.formatMessage(messages.editorBaseOriginal),
+                            },
+                        ]}
+                    />
                 </div>
-            )}
-        >
+            ) : null,
+        content: (
             <div className={styles.layout}>
                 <div className={styles.stageColumn}>
                     {start.changed ? (
@@ -368,7 +361,7 @@ function OpenImageEditor({
                         <svg
                             role="img"
                             aria-label={image.label}
-                            viewBox={box(crop)}
+                            viewBox={viewBox(crop)}
                             className={styles.resultImage}
                         >
                             {drawing}
@@ -388,15 +381,43 @@ function OpenImageEditor({
                     </div>
                 </div>
             </div>
-        </Dialog>
-    );
-}
-
-/** A ratio as text: `16:9`, or `1.85:1` when it isn't a common one. */
-function ratioLabel(width: number, height: number): string {
-    const common = ['1:1', '16:9', '9:16', '4:3', '3:4', '3:2', '2:3', '4:5', '5:4', '21:9'];
-    return (
-        common.find((ratio) => matchesRatio(width, height, ratio)) ??
-        `${(width / height).toFixed(2)}:1`
-    );
+        ),
+        actions: (
+            <div className={styles.footer}>
+                {onBack !== undefined ? (
+                    <Button variant="ghost" icon={ArrowLeft} onPress={onBack}>
+                        {intl.formatMessage(messages.editorBack)}
+                    </Button>
+                ) : null}
+                <Button
+                    variant="ghost"
+                    icon={Undo2}
+                    className={styles.reset}
+                    onPress={() => setTransform({})}
+                >
+                    {intl.formatMessage(messages.editorReset)}
+                </Button>
+                <span className={styles.footerEnd}>
+                    {problem !== null ? (
+                        <Text as="span" size="sm" tone="danger" id={problemId}>
+                            {problem}
+                        </Text>
+                    ) : null}
+                    {onCancel !== undefined ? (
+                        <Button onPress={onCancel} className={styles.cancel}>
+                            {intl.formatMessage(messages.editorCancel)}
+                        </Button>
+                    ) : null}
+                    <Button
+                        variant="primary"
+                        isDisabled={problem !== null}
+                        aria-describedby={problem !== null ? problemId : undefined}
+                        onPress={() => onApply(result())}
+                    >
+                        {applyLabel ?? intl.formatMessage(messages.editorApply)}
+                    </Button>
+                </span>
+            </div>
+        ),
+    };
 }

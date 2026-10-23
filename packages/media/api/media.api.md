@@ -23,7 +23,26 @@ import { UploadSource } from '@panneau/fields';
 export function createResourceMediaSource(adapter: MediaSourceAdapter, library: MediaLibrary): MediaSource_2;
 
 // @public
+export function getImageOptions(field: Field): ImageOptions;
+
+// @public
 export function getLibrary(definition: Pick<Definition, 'resources'> | null, resource: string | readonly string[] | undefined): Definition['resources'][number] | null;
+
+// @public
+export function ImageField(props: ImageFieldProps): JSX.Element;
+
+// @public
+export type ImageFieldProps = MediaFieldProps & ImageOptions;
+
+// @public
+export interface ImageOptions {
+    cropRequired?: boolean;
+    enforceRatios?: boolean;
+    focalPoint?: boolean;
+    ratios?: readonly string[];
+    rotate?: boolean;
+    transformBase?: 'media' | 'original' | 'choose';
+}
 
 // @public
 export function isProcessing(reference: MediaReference): boolean;
@@ -39,6 +58,7 @@ export interface MediaFieldBaseProps extends Omit<FieldProps<never>, 'value' | '
     // (undocumented)
     accept?: readonly string[] | null;
     adapter?: MediaAdapter | null;
+    image?: ImageOptions | null;
     itemTitle?: string;
     // (undocumented)
     maxSize?: number | null;

@@ -69,7 +69,11 @@ describe('@panneau/media/editor', () => {
         ]);
     });
 
-    it('exports the editor and its tools', () => {
-        expect(Object.keys(editor)).toEqual(['ImageEditor', 'useImageEditorTools']);
+    it('exports the editor, its dialog and its tools', () => {
+        expect(Object.keys(editor)).toEqual([
+            'ImageEditor',
+            'ImageEditorDialog',
+            'useImageEditorTools',
+        ]);
     });
 });

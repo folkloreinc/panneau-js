@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Stamp } from 'lucide-react';
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { Text } from '@panneau/ui';
 
@@ -11,8 +11,6 @@ const meta = {
     title: 'Media/ImageEditor',
     component: ImageEditor,
     args: {
-        isOpen: true,
-        onOpenChange: fn(),
         onApply: fn(),
         image: harbour,
         value: null,
@@ -35,11 +33,9 @@ type Story = StoryObj<typeof meta>;
 
 const phone = { viewport: { value: 'phone', isRotated: false } };
 
-/** The editor, once its entering animation is over. */
+/** The editor, in the page. */
 async function editor(canvasElement: HTMLElement) {
-    const dialog = await within(canvasElement.ownerDocument.body).findByRole('dialog');
-    await waitFor(() => expect(dialog).toBeVisible());
-    return within(dialog);
+    return within(await within(canvasElement).findByRole('group', { name: 'Edit image' }));
 }
 
 /** A free crop: the frame, its handles and the thirds, with common ratios on the side. */
@@ -62,7 +58,6 @@ export const FieldRatios: Story = {
         value: harbourBanner,
         ratios: ['16:9', '1:1'],
         enforceRatios: true,
-        title: 'Crop for this use',
     },
     play: async ({ canvasElement }) => {
         const dialog = await editor(canvasElement);
@@ -82,7 +77,6 @@ export const RequiredCrop: Story = {
         ratios: ['16:9', '1:1'],
         enforceRatios: true,
         cropRequired: true,
-        title: 'Crop for this use',
         applyLabel: 'Use this crop',
     },
     play: async ({ canvasElement }) => {
@@ -158,7 +152,6 @@ export const OverTheLibraryVersion: Story = {
             crop: { x: 0, y: 900, width: 3024, height: 1701 },
         },
         canChooseBase: true,
-        title: 'Crop for this use',
     },
     play: async ({ canvasElement, args }) => {
         const dialog = await editor(canvasElement);
@@ -234,18 +227,22 @@ export const Dark: Story = {
     globals: { colorScheme: 'dark' },
 };
 
-/** On a phone: the image on top, the tools under it, full screen. */
-export const PhoneCrop: Story = {
-    args: {
-        value: harbourBanner,
-        ratios: ['16:9', '1:1'],
-        enforceRatios: true,
-        title: 'Crop for this use',
+/** In a narrow panel: the image on top, the tools under it, as on a phone. */
+export const InANarrowPanel: Story = {
+    args: { value: harbourBanner, ratios: ['16:9', '1:1'], enforceRatios: true },
+    render: (args) => (
+        <div style={{ width: '24rem', maxWidth: '100%' }}>
+            <ImageEditor {...args} />
+        </div>
+    ),
+    play: async ({ canvasElement }) => {
+        const dialog = await editor(canvasElement);
+        await expect(dialog.getByRole('radio', { name: '16:9' })).toBeChecked();
     },
-    globals: phone,
 };
 
-export const PhoneDark: Story = {
-    args: { image: hiker, value: null },
-    globals: { ...phone, colorScheme: 'dark' },
+/** On a phone. */
+export const Phone: Story = {
+    args: { image: hiker, value: null, onCancel: fn() },
+    globals: phone,
 };

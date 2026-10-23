@@ -19,11 +19,14 @@ import {
     useUploads,
 } from '@panneau/fields';
 import { fieldsMessages, mediaMessages as messages } from '@panneau/intl';
-import type { Definition, Item, MediaInfo, MediaReference } from '@panneau/protocol';
+import type { Definition, Field, Item, MediaInfo, MediaReference } from '@panneau/protocol';
 import { getMediaLibraries } from '@panneau/protocol/runtime';
 import { Badge, Button, Fieldset, IconButton, Spinner, usePanneauIntl } from '@panneau/ui';
 
+import { ImageItem, editedImageOf } from './ImageItem';
 import styles from './MediaField.module.css';
+import { ImageEditorDialog } from './editor/ImageEditor';
+import { useImageEditorTools } from './editor/tools';
 import { MediaPicker } from './picker/MediaPicker';
 import type { MediaSource } from './picker/types';
 import { createResourceMediaSource } from './resourceSource';
@@ -61,6 +64,31 @@ export interface MediaFieldBaseProps extends Omit<FieldProps<never>, 'value' | '
     sources?: readonly MediaSource[];
     /** Keeps what the user browsed in the picker between openings (see `MediaPicker`). */
     stateKey?: string;
+    /**
+     * Makes it an `image` field (decision 0031): its images as they are rendered for this use,
+     * the image editor to edit their transform, and the editor as the step after a pick when a
+     * crop is required. `ImageField` sets it.
+     */
+    image?: ImageOptions | null;
+}
+
+/** The options of an `image` field (decision 0031). */
+export interface ImageOptions {
+    /** The ratios the editor offers, as `width:height`. */
+    ratios?: readonly string[];
+    /** Whether a crop must have one of `ratios`: the `crop` rule. */
+    enforceRatios?: boolean;
+    /** Whether each image needs a crop for this use: the `crop` rule. */
+    cropRequired?: boolean;
+    /** Whether the editor offers rotation and flips. Defaults to true. */
+    rotate?: boolean;
+    /** Whether the editor offers the focal point. Defaults to true. */
+    focalPoint?: boolean;
+    /**
+     * What a transform for one use starts from: the media's own transform (the default), the
+     * original file, or the user's choice in the editor.
+     */
+    transformBase?: 'media' | 'original' | 'choose';
 }
 
 export interface SingleMediaFieldProps extends MediaFieldBaseProps {
@@ -236,6 +264,12 @@ export function MediaField(props: MediaFieldProps) {
     const canUpload = adapter !== null && enabled;
     const canPick = sources.length > 0 && enabled;
     const [picking, setPicking] = useState(false);
+    const imageOptions = props.image ?? null;
+    // The image being edited: one of the value, by its key, or one just picked, before it is added.
+    const [editing, setEditing] = useState<{ key: string } | { picked: MediaReference } | null>(
+        null,
+    );
+    const editorTools = useImageEditorTools();
     const [problems, setProblems] = useState<string[]>([]);
     const [creating, setCreating] = useState<string[]>([]);
     const rejectionMessage = useRejectionMessage(maxSize);
@@ -251,6 +285,19 @@ export function MediaField(props: MediaFieldProps) {
         } else {
             props.onChange?.(next[0] ?? null);
         }
+    };
+
+    /** Adds picked media: a single pick replaces the media, several are added to the list, once. */
+    const add = (picked: readonly MediaReference[]) => {
+        const known = new Set(latest.current.map((entry) => keyOf(entry, resource)));
+        set(
+            multiple
+                ? [
+                      ...latest.current,
+                      ...picked.filter((entry) => !known.has(keyOf(entry, resource))),
+                  ]
+                : picked.slice(0, 1),
+        );
     };
 
     useMediaRefresh(media, resource, adapter, refreshInterval, (refreshed) =>
@@ -326,17 +373,78 @@ export function MediaField(props: MediaFieldProps) {
         return null;
     };
 
+    // The constraints of an `image` field, next to its description.
+    const imageRatios = imageOptions?.ratios ?? [];
+    const constraints =
+        imageOptions === null
+            ? []
+            : [
+                  ...(imageRatios.length > 0
+                      ? [
+                            intl.formatMessage(
+                                imageOptions.enforceRatios === true
+                                    ? messages.imageRatios
+                                    : messages.imageSuggestedRatios,
+                                {
+                                    ratios: intl.formatList(imageRatios, {
+                                        type: 'disjunction',
+                                    }),
+                                },
+                            ),
+                        ]
+                      : []),
+                  ...(imageOptions.cropRequired === true
+                      ? [intl.formatMessage(messages.imageCropRequired)]
+                      : []),
+              ];
+
+    // The editor: on an image of the value, or as the step after a pick.
+    const edited =
+        editing === null
+            ? null
+            : 'key' in editing
+              ? (media.find((entry) => keyOf(entry, resource) === editing.key) ?? null)
+              : editing.picked;
+    const editedImage = edited !== null ? editedImageOf(edited) : null;
+    const tools = [
+        editorTools.crop,
+        ...(imageOptions?.rotate === false ? [] : [editorTools.rotate]),
+        ...(imageOptions?.focalPoint === false ? [] : [editorTools.focalPoint]),
+    ];
+    const unavailable = adapter === null && disabled !== true && readOnly !== true;
+    const chooseLabel =
+        imageOptions !== null
+            ? multiple
+                ? messages.addImages
+                : messages.chooseImage
+            : multiple
+              ? messages.addMedia
+              : messages.chooseMedia;
+    const cropStep = imageOptions?.cropRequired === true && !multiple;
+    const withTransform = (reference: MediaReference, transform: MediaReference['transform']) => {
+        const { transform: _previous, ...rest } = reference;
+        return transform === null || transform === undefined ? rest : { ...rest, transform };
+    };
+
     return (
         <Fieldset
             legend={label}
             description={
-                adapter === null && disabled !== true && readOnly !== true ? (
+                description !== undefined || unavailable || constraints.length > 0 ? (
                     <>
-                        {description} {intl.formatMessage(messages.unavailable)}
+                        {description}
+                        {unavailable
+                            ? `${description !== undefined ? ' ' : ''}${intl.formatMessage(messages.unavailable)}`
+                            : null}
+                        {constraints.length > 0 ? (
+                            <span className={styles.constraints}>
+                                {constraints.map((constraint) => (
+                                    <Badge key={constraint}>{constraint}</Badge>
+                                ))}
+                            </span>
+                        ) : null}
                     </>
-                ) : (
-                    description
-                )
+                ) : undefined
             }
             errors={[...errors, ...problems]}
             isRequired={required}
@@ -347,7 +455,36 @@ export function MediaField(props: MediaFieldProps) {
             errorsClassName={errorsClassName}
         >
             <div className={styles.field}>
-                {media.length > 0 ? (
+                {media.length > 0 && imageOptions !== null ? (
+                    <ul className={multiple ? styles.gallery : styles.media}>
+                        {media.map((item) => (
+                            <ImageItem
+                                key={keyOf(item, resource)}
+                                reference={item}
+                                tile={multiple}
+                                cropRequired={imageOptions.cropRequired === true}
+                                status={statusBadge(item)}
+                                onEdit={
+                                    enabled
+                                        ? () => setEditing({ key: keyOf(item, resource) })
+                                        : null
+                                }
+                                onRemove={
+                                    canUpload || canPick
+                                        ? () =>
+                                              set(
+                                                  latest.current.filter(
+                                                      (entry) =>
+                                                          keyOf(entry, resource) !==
+                                                          keyOf(item, resource),
+                                                  ),
+                                              )
+                                        : null
+                                }
+                            />
+                        ))}
+                    </ul>
+                ) : media.length > 0 ? (
                     <ul className={styles.media}>
                         {media.map((item) => {
                             const name = item.label ?? item.id;
@@ -396,7 +533,11 @@ export function MediaField(props: MediaFieldProps) {
                         })}
                     </ul>
                 ) : creating.length === 0 && upload.items.length === 0 ? (
-                    <span className={styles.none}>{intl.formatMessage(messages.noMedia)}</span>
+                    <span className={styles.none}>
+                        {intl.formatMessage(
+                            imageOptions !== null ? messages.noImage : messages.noMedia,
+                        )}
+                    </span>
                 ) : null}
                 <UploadList
                     items={upload.items}
@@ -420,9 +561,7 @@ export function MediaField(props: MediaFieldProps) {
                                 icon={Images}
                                 onPress={() => setPicking(true)}
                             >
-                                {intl.formatMessage(
-                                    multiple ? messages.addMedia : messages.chooseMedia,
-                                )}
+                                {intl.formatMessage(chooseLabel)}
                             </Button>
                         ) : null}
                         {canUpload ? (
@@ -433,7 +572,13 @@ export function MediaField(props: MediaFieldProps) {
                                 {...(canPick
                                     ? {
                                           label: intl.formatMessage(
-                                              multiple ? messages.uploadFiles : messages.uploadFile,
+                                              imageOptions !== null
+                                                  ? multiple
+                                                      ? messages.uploadImages
+                                                      : messages.uploadImage
+                                                  : multiple
+                                                    ? messages.uploadFiles
+                                                    : messages.uploadFile,
                                           ),
                                       }
                                     : {})}
@@ -455,26 +600,70 @@ export function MediaField(props: MediaFieldProps) {
                     accept={accept}
                     maxSize={maxSize}
                     value={media}
-                    title={intl.formatMessage(multiple ? messages.addMedia : messages.chooseMedia)}
+                    title={intl.formatMessage(chooseLabel)}
+                    {...(cropStep
+                        ? { confirmLabel: intl.formatMessage(messages.imageNextCrop) }
+                        : {})}
                     uploadSource={uploadSource}
                     refreshInterval={refreshInterval}
                     {...(stateKey !== undefined ? { stateKey } : {})}
                     onSelect={(picked) => {
                         setProblems([]);
-                        // A single pick replaces the media; several are added to the list, once.
-                        const known = new Set(
-                            latest.current.map((entry) => keyOf(entry, resource)),
-                        );
-                        set(
-                            multiple
-                                ? [
-                                      ...latest.current,
-                                      ...picked.filter(
-                                          (entry) => !known.has(keyOf(entry, resource)),
-                                      ),
-                                  ]
-                                : picked.slice(0, 1),
-                        );
+                        // A required crop is the step right after the pick of one image.
+                        const [first] = picked;
+                        if (
+                            cropStep &&
+                            picked.length === 1 &&
+                            first !== undefined &&
+                            editedImageOf(first) !== null
+                        ) {
+                            setEditing({ picked: first });
+                            return;
+                        }
+                        add(picked);
+                    }}
+                />
+            ) : null}
+            {imageOptions !== null &&
+            edited !== null &&
+            editedImage !== null &&
+            editing !== null ? (
+                <ImageEditorDialog
+                    isOpen
+                    onOpenChange={(isOpen) => {
+                        if (!isOpen) {
+                            setEditing(null);
+                        }
+                    }}
+                    image={editedImage}
+                    value={'key' in editing ? (edited.transform ?? null) : null}
+                    base={imageOptions.transformBase === 'original' ? 'original' : 'media'}
+                    canChooseBase={imageOptions.transformBase === 'choose'}
+                    tools={tools}
+                    ratios={imageRatios}
+                    enforceRatios={imageOptions.enforceRatios === true}
+                    cropRequired={imageOptions.cropRequired === true}
+                    {...('picked' in editing
+                        ? {
+                              title: intl.formatMessage(messages.imageCropForUse),
+                              applyLabel: intl.formatMessage(messages.imageUseCrop),
+                              onBack: () => {
+                                  setEditing(null);
+                                  setPicking(true);
+                              },
+                          }
+                        : {})}
+                    onApply={(transform) => {
+                        const next = withTransform(edited, transform);
+                        if ('picked' in editing) {
+                            add([next]);
+                        } else {
+                            set(
+                                latest.current.map((entry) =>
+                                    keyOf(entry, resource) === editing.key ? next : entry,
+                                ),
+                            );
+                        }
                     }}
                 />
             ) : null}
@@ -482,12 +671,70 @@ export function MediaField(props: MediaFieldProps) {
     );
 }
 
+/** The props of `ImageField`: those of `MediaField`, with the options of an `image` field. */
+export type ImageFieldProps = MediaFieldProps & ImageOptions;
+
 /**
- * The registry entry of the `media` type: the picker on the libraries the field allows
+ * An `image` field (decision 0031): a `media` field for images, with the image editor. It accepts
+ * `image/*` by default. Each image shows as it is rendered for this use, with Edit, which opens
+ * the editor on its transform. When a crop is required, the editor is the step right after the
+ * pick of one image.
+ */
+export function ImageField(props: ImageFieldProps) {
+    const {
+        ratios,
+        enforceRatios,
+        cropRequired,
+        rotate,
+        focalPoint,
+        transformBase,
+        accept = ['image/*'],
+        ...rest
+    } = props;
+    const image: ImageOptions = {
+        ...(ratios !== undefined ? { ratios } : {}),
+        ...(enforceRatios !== undefined ? { enforceRatios } : {}),
+        ...(cropRequired !== undefined ? { cropRequired } : {}),
+        ...(rotate !== undefined ? { rotate } : {}),
+        ...(focalPoint !== undefined ? { focalPoint } : {}),
+        ...(transformBase !== undefined ? { transformBase } : {}),
+    };
+    return <MediaField {...(rest as MediaFieldProps)} accept={accept} image={image} />;
+}
+
+/**
+ * The options of an `image` field of a definition: its `crop` rule (enforced ratios, a required
+ * crop), its suggested `ratios`, and the tools and base of its editor.
+ */
+export function getImageOptions(field: Field): ImageOptions {
+    const rule = field.rules?.find((candidate) => candidate.rule === 'crop');
+    const value =
+        rule !== undefined &&
+        'value' in rule &&
+        typeof rule.value === 'object' &&
+        rule.value !== null
+            ? (rule.value as { ratios?: unknown; required?: unknown })
+            : {};
+    const enforced = Array.isArray(value.ratios)
+        ? value.ratios.filter((ratio): ratio is string => typeof ratio === 'string')
+        : [];
+    return {
+        ratios: enforced.length > 0 ? enforced : (field.ratios ?? []),
+        enforceRatios: enforced.length > 0,
+        cropRequired: value.required === true,
+        rotate: field.rotate !== false,
+        focalPoint: field.focalPoint !== false,
+        transformBase: field.transformBase ?? 'media',
+    };
+}
+
+/**
+ * The registry entry of the `media` and `image` types: the picker on the libraries the field allows
  * (`getMediaLibraries()`), uploads to the first one (`getLibrary()`), `multiple`, `accept` (or
  * its `accept` rule) and `maxSize` rule, with the adapter of `@panneau/data` and the upload source
  * of the fields context. The picker opens again where the user left it in the same libraries.
- * Without a library, the field shows its media and can't add any.
+ * Without a library, the field shows its media and can't add any. An `image` field also gets its
+ * options (`getImageOptions()`), and accepts `image/*` by default.
  */
 export function MediaFieldEntry(props: FieldEntryProps) {
     const { field, value, onChange } = props;
@@ -502,13 +749,15 @@ export function MediaFieldEntry(props: FieldEntryProps) {
         adapter !== null
             ? libraries.map((candidate) => createResourceMediaSource(adapter, candidate))
             : [];
+    const image = field.type === 'image' ? getImageOptions(field) : null;
     const common = {
         ...getFieldProps(props),
         resource: library?.id ?? (typeof field.resource === 'string' ? field.resource : ''),
         itemTitle,
-        accept: getAccept(field),
+        accept: getAccept(field) ?? (image !== null ? ['image/*'] : null),
         maxSize: getMaxSize(field),
         sources,
+        image,
         stateKey: `panneau.media.${libraries.map((candidate) => candidate.id).join(',')}`,
         ...(library === null ? { adapter: null } : {}),
     };

@@ -72,12 +72,11 @@ export interface ImageEditorTool {
 }
 
 export interface ImageEditorProps {
-    isOpen: boolean;
-    onOpenChange: (isOpen: boolean) => void;
     image: EditedImage;
     /**
      * The transform being edited, as a value keeps it: with its `base`, and its `baseTransform`
-     * over the media's version. Null for a new one.
+     * over the media's version. Null for a new one. The edits start from it when the editor
+     * mounts: give the editor a new `key` to start again from another value.
      */
     value: MediaTransform | null;
     /** The base of a new transform. Defaults to `media` when the image has its own transform. */
@@ -92,12 +91,28 @@ export interface ImageEditorProps {
     enforceRatios?: boolean;
     /** Whether the image needs a crop (the `crop` rule): the editor proposes one. */
     cropRequired?: boolean;
-    /** "Edit image" by default. */
-    title?: string;
     /** "Apply" by default. */
     applyLabel?: string;
     /** Shows "Back to the library", when the editor is a step after the picker. */
     onBack?: () => void;
-    /** Called with the new transform, or null when it has no edits, then the editor closes. */
+    /** Called with the new transform, or null when it has no edits. */
+    onApply: (transform: MediaTransform | null) => void;
+    /** Shows a Cancel button. */
+    onCancel?: () => void;
+    /** The name of the editor's group. "Edit image" by default. */
+    'aria-label'?: string;
+    /** Its height is 40rem by default. */
+    className?: string;
+}
+
+export interface ImageEditorDialogProps extends Omit<
+    ImageEditorProps,
+    'onCancel' | 'aria-label' | 'className'
+> {
+    isOpen: boolean;
+    onOpenChange: (isOpen: boolean) => void;
+    /** "Edit image" by default. */
+    title?: string;
+    /** Called with the new transform, or null when it has no edits, then the dialog closes. */
     onApply: (transform: MediaTransform | null) => void;
 }

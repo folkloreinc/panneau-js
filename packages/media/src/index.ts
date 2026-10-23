@@ -1,4 +1,7 @@
 export {
+    ImageField,
+    type ImageFieldProps,
+    type ImageOptions,
     MediaField,
     type MediaAdapter,
     type MediaFieldBaseProps,
@@ -6,6 +9,7 @@ export {
     type MediaFieldProps,
     type MultipleMediaFieldProps,
     type SingleMediaFieldProps,
+    getImageOptions,
     getLibrary,
     isProcessing,
     toMediaReference,
