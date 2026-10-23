@@ -657,6 +657,7 @@ export const uiMessages: {
     showOptions: PanneauMessage<Record<never, never>>;
     clear: PanneauMessage<Record<never, never>>;
     moreActions: PanneauMessage<Record<never, never>>;
+    time: PanneauMessage<Record<never, never>>;
     commandPalette: PanneauMessage<Record<never, never>>;
     commandResults: PanneauMessage<    {
     count: number;

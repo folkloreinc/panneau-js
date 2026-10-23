@@ -15,4 +15,4 @@ Small fixes to the interface, and a link to the user's profile:
     - on a small screen too, the page is on a panel inset from the edges, with rounded corners, as on a large one. The shell's `inset`, `panel-border`, `panel-radius` and `panel-shadow` tokens apply at every width;
     - the user in the sidebar links to their profile: their item in the resource of users, when the definition has it.
 - **`@panneau/protocol`:** `user.resource` names the resource of users. Without it, clients look for a resource `users`.
-- **`@panneau/intl`:** the label of the profile link, in English and French.
+- **`@panneau/intl`:** the labels of the profile link and of the calendar's time, in English and French.
