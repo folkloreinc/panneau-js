@@ -1,5 +1,19 @@
 # @panneau/media
 
+## 5.0.0-alpha.6
+
+### Patch Changes
+
+- Updated dependencies [75a6496]
+- Updated dependencies [75a6496]
+- Updated dependencies [75a6496]
+  - @panneau/protocol@5.0.0-alpha.6
+  - @panneau/data@5.0.0-alpha.6
+  - @panneau/fields@5.0.0-alpha.6
+  - @panneau/intl@5.0.0-alpha.6
+  - @panneau/core@5.0.0-alpha.6
+  - @panneau/ui@5.0.0-alpha.6
+
 ## 5.0.0-alpha.5
 
 ### Minor Changes
