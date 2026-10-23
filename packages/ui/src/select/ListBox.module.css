@@ -47,7 +47,13 @@
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
+    gap: 0.125rem;
     min-width: 0;
+}
+
+/* An option with a description has two lines: more room above and below them. */
+.item:has(.itemDescription) {
+    padding-block: var(--panneau-list-box-item-padding-y-described, var(--panneau-space-2));
 }
 
 .itemLabel {
@@ -55,7 +61,8 @@
 }
 
 .itemDescription {
-    font-size: var(--panneau-font-size-sm);
+    font-size: var(--panneau-font-size-xs);
+    line-height: var(--panneau-line-height-tight);
     color: var(--panneau-color-text-muted);
 }
 

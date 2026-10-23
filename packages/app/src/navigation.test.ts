@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { type DefinitionInput, validateDefinition } from '@panneau/protocol';
 
 import { createDefinition } from './__fixtures__/definition';
-import { capitalize, getNavigation, isCurrent } from './navigation';
+import { capitalize, getNavigation, getProfilePath, isCurrent } from './navigation';
 
 function parse(input: DefinitionInput) {
     const result = validateDefinition(input);
@@ -104,6 +104,32 @@ describe('isCurrent', () => {
         expect(isCurrent(target, { name: 'resource.index', resource: 'authors' })).toBe(false);
         expect(isCurrent({ kind: 'home' }, { name: 'home' })).toBe(true);
         expect(isCurrent({ kind: 'home' }, { name: 'not-found' })).toBe(false);
+    });
+});
+
+describe('getProfilePath', () => {
+    const users = {
+        id: 'users',
+        label: { singular: 'user', plural: 'users' },
+        fields: [{ name: 'name', type: 'text' }],
+    };
+
+    it("leads to the user's item in the resource users", () => {
+        const definition = parse(
+            createDefinition({ resources: [...createDefinition().resources, users] }),
+        );
+        expect(getProfilePath(definition, '/panneau')).toBe('/panneau/resources/users/usr_1/edit');
+    });
+
+    it('reads the resource of users from the user', () => {
+        const definition = parse(
+            createDefinition({ user: { id: '7', name: 'Ada', resource: 'authors' } }),
+        );
+        expect(getProfilePath(definition, '/panneau')).toBe('/panneau/resources/authors/7/edit');
+    });
+
+    it('is null without a resource of users', () => {
+        expect(getProfilePath(parse(createDefinition()), '/panneau')).toBeNull();
     });
 });
 

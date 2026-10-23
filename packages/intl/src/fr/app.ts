@@ -32,6 +32,7 @@ export const appFr: Record<string, string> = {
     'panneau.app.narrowPanel': 'Rétrécir les détails',
     'panneau.app.closePanel': 'Fermer les détails',
     'panneau.app.goTo': 'Aller à…',
+    'panneau.app.profile': 'Votre profil ({name})',
     'panneau.app.groupRecent': 'Récents',
     'panneau.app.groupNavigation': 'Navigation',
     'panneau.app.groupCreate': 'Créer',

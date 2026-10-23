@@ -73,11 +73,21 @@ export function TextInput({
                     isDisabled={props.isDisabled}
                 >
                     {prefix !== undefined ? (
-                        <span className={styles.adornment}>{prefix}</span>
+                        <span
+                            className={styles.adornment}
+                            data-text={typeof prefix === 'string' || undefined}
+                        >
+                            {prefix}
+                        </span>
                     ) : null}
                     <Input placeholder={placeholder} className={cx(styles.bare, inputClassName)} />
                     {suffix !== undefined ? (
-                        <span className={styles.adornment}>{suffix}</span>
+                        <span
+                            className={styles.adornment}
+                            data-text={typeof suffix === 'string' || undefined}
+                        >
+                            {suffix}
+                        </span>
                     ) : null}
                 </Group>
             ) : (

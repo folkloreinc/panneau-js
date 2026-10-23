@@ -8,15 +8,15 @@ import { defineComponentTokens } from '@panneau/ui';
 export const shellTokens = defineComponentTokens('shell', {
     /** Background of the window, behind the sidebar and the panel. */
     bg: 'var(--panneau-color-surface-sunken)',
-    /** Space between the panel and the edges of the window, from the `lg` width. */
+    /** Space between the panel and the edges of the window. */
     inset: 'var(--panneau-space-2)',
     /** Background of the panel of the page. */
     'panel-bg': 'var(--panneau-color-surface)',
-    /** Border of the panel, from the `lg` width. */
+    /** Border of the panel. */
     'panel-border': 'var(--panneau-border-width) solid var(--panneau-color-border)',
-    /** Corner radius of the panel, from the `lg` width. */
+    /** Corner radius of the panel. */
     'panel-radius': 'calc(var(--panneau-radius-lg) * 1.5)',
-    /** Shadow of the panel, from the `lg` width. */
+    /** Shadow of the panel. */
     'panel-shadow': 'var(--panneau-shadow-sm)',
     /** Horizontal padding of the page, from the `lg` width. */
     'panel-padding-x': 'var(--panneau-space-8)',

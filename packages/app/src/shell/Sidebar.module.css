@@ -214,6 +214,32 @@
     padding-inline: var(--panneau-space-1);
 }
 
+.userLink {
+    min-height: var(--panneau-control-height-sm);
+    padding-block: var(--panneau-space-1);
+    border: var(--panneau-border-width) solid transparent;
+    border-radius: var(--panneau-radius-md);
+    color: var(--panneau-color-text);
+    text-decoration: none;
+    outline: none;
+    cursor: pointer;
+}
+
+/* The profile is a link of the sidebar: the same hover and current states. */
+.userLink[data-hovered] {
+    background: var(--panneau-sidebar-link-hover-bg, var(--panneau-color-hover));
+}
+
+.userLink[aria-current='page'] {
+    border-color: var(--panneau-sidebar-link-current-border, var(--panneau-color-border));
+    background: var(--panneau-sidebar-link-current-bg, var(--panneau-color-surface));
+    box-shadow: var(--panneau-sidebar-link-current-shadow, var(--panneau-shadow-sm));
+}
+
+.userLink[data-focus-visible] {
+    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+}
+
 .avatar {
     display: inline-grid;
     flex: none;
