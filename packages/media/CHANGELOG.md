@@ -1,5 +1,54 @@
 # @panneau/media
 
+## 5.0.0-alpha.5
+
+### Minor Changes
+
+- eadfc08: `@panneau/media/editor`: the image editor (decision 0031). It edits a transform of an image, with the image as it will be rendered. `ImageEditor` fits in a page or a panel, and lays itself out for its own width. `ImageEditorDialog` opens it in a large dialog, and a full-screen sheet on phones.
+  
+  - **Tools:** crop (a frame with handles and thirds, ratios, and numbers), rotate (with flips) and focal point (with the automatic crops it gives), from `useImageEditorTools()`. A product adds its own, with a panel, an overlay and a `validate()`.
+  - **The keyboard** moves and resizes the crop frame, and moves the focal point.
+  - **The field's rules:** offered or enforced `ratios`, and a required crop, which the editor proposes around the focal point.
+  - **The base of a transform for one use:** over the media's own transform by default, with `base` and `baseTransform`, or from the original file. When the media's transform changed, the crop is moved inside the new version, and the editor says so.
+  
+  The entry point loads neither `@panneau/data` nor `@panneau/core`. Its messages are in `@panneau/intl`, in English and French.
+- f2c79b5: The `image` field (decision 0031). `ImageField` is a `media` field for images, with the image editor:
+  
+  - **Preview:** each image shows as it is rendered for this use, computed in the browser.
+  - **Edit** opens the editor on its transform.
+  - **Badges** say whether it is cropped, needs a crop, or was cropped over a version of the library that changed.
+  - **Options:** `ratios` (offered or enforced), `cropRequired`, `rotate`, `focalPoint` and `transformBase`, shown next to the description.
+  - **After a pick:** when a crop is required, the editor is the step right after the pick of one image.
+  
+  `mediaPlugin` now gives the `image` type too, and `MediaFieldEntry` reads its options and its `crop` rule (`getImageOptions()`). `MediaField` takes them as `image`. The image editor and the field share how an image is drawn. The mockups of the editor and the field are deleted.
+- 8372b27: A `media` field can allow several libraries (decision 0027). Its `resource` takes a list of library ids, and without one it allows every library of the definition, instead of being an error when there are several. `MediaReference` gets `resource`, its library: ids are unique only within their library, so a field that allows several needs it in requests, and the mock backend refuses a media without it. `getMediaLibraries(definition, field)` (in `@panneau/protocol/runtime`) gives the libraries a field allows. `lintDefinition()` checks each listed id, and that a `relation` field names one resource. `getLibrary()` of `@panneau/media` takes a list too, and gives the first library: the field uploads to it, the references it makes carry their library, and it reads each media in its own library. The `relation` field ignores a list in `resource`.
+- 199a687: The `media` field opens the media picker: "Choose media" ("Add media" with `multiple`) browses the libraries given as `sources`, and the media picked replaces the field's media, or is added to its list. `MediaFieldEntry` gives the sources of every library the field allows, through the adapter of `DataAdapterProvider`. With the picker, the upload button reads "Upload a file" ("Upload files"). A media is now removed by its library and id, so that two libraries can have media with the same id. New messages in `@panneau/intl`: `chooseMedia`, `addMedia`, `uploadFile` and `uploadFiles`.
+- fb33783: New `@panneau/media/picker` entry point (decision 0027): `MediaPicker`, a dialog to browse media libraries, upload to them and pick one media, or several with `multiple`, on `MediaSource`s that Panneau or a product implements. It has search, a type filter, sorts, the filters of the sources and of the opener (the opener's `filter` is locked), infinite scroll that keeps its place (across openings with `stateKey`), a selection across libraries, `accept` and `maxSize` that grey out what doesn't match, details that edit the fields of a media with `update()` and ask before losing changes, an Upload tab whose files become media of the library shown and are selected (`confirmOnUpload` confirms a single one at once), and follows media being processed. It returns references with their library. The entry point loads neither `@panneau/data` nor `@panneau/core`. `createResourceMediaSource(adapter, library)`, in `@panneau/media`, gives the source of a library resource. `@panneau/intl` gets the picker's messages, in English and French.
+
+### Patch Changes
+
+- Updated dependencies [3830b4f]
+- Updated dependencies [bdb1173]
+- Updated dependencies [88a3d09]
+- Updated dependencies [b86f35e]
+- Updated dependencies [eadfc08]
+- Updated dependencies [f2c79b5]
+- Updated dependencies [81ec6b2]
+- Updated dependencies [6d1f1d8]
+- Updated dependencies [6d1f1d8]
+- Updated dependencies [8372b27]
+- Updated dependencies [199a687]
+- Updated dependencies [fb33783]
+- Updated dependencies [5779047]
+- Updated dependencies [5b9aa44]
+- Updated dependencies [5b2f3ce]
+  - @panneau/core@5.0.0-alpha.5
+  - @panneau/intl@5.0.0-alpha.5
+  - @panneau/protocol@5.0.0-alpha.5
+  - @panneau/data@5.0.0-alpha.5
+  - @panneau/fields@5.0.0-alpha.5
+  - @panneau/ui@5.0.0-alpha.5
+
 ## 5.0.0-alpha.4
 
 ### Minor Changes

@@ -1,5 +1,67 @@
 # @panneau/ui
 
+## 5.0.0-alpha.5
+
+### Minor Changes
+
+- b86f35e: A "Go to…" command palette ([decision 0029](https://github.com/folkloreinc/panneau-js/blob/v5.x/docs/decisions/0029-go-to-palette.md)), which products can also use without the app:
+  
+  - `@panneau/ui`:
+      - `CommandPalette`: a search field over groups of items to go to or run, in a dialog near the top of the screen (the whole screen on a phone).
+      - It matches items without case or accents, needs every word to match, and ranks the best matches first (`matchCommands()`, `normalizeSearch()`). Groups that are already `matched`, such as results of a server, are shown as they are, after the others.
+      - `useCommandShortcut()` opens it with ⌘K or Ctrl+K, unless something already handled the key.
+      - Tokens: `--panneau-command-palette-*`.
+  - `@panneau/core`: plugins add `commands` (`Command`, `getCommands()`). `isSearchable()` and `getSearchableResources()` tell which resources the global search covers: `features.search`, which defaults to `list.search`.
+  - `@panneau/data`: `useSearch()`, `searchQueryOptions()` and `queryKeys.search()`.
+  - `@panneau/protocol`:
+      - resources get `itemSubtitle` and `itemImage`, next to `itemTitle`;
+      - `features.search` defaults to `list.search`;
+      - the mock backend answers `GET /search`: 5 items per resource, 20 in all, from 2 characters.
+  - `@panneau/app`: "Go to…" in the sidebar (an icon when collapsed), in the phone's top bar, and on ⌘K or Ctrl+K.
+      - It lists recent items, kept in the browser, then the navigation, "New {resource}", the commands of plugins and the app's actions.
+      - The server's search results follow, grouped by resource, with their subtitle and image.
+      - An item opens its edit form.
+  - `@panneau/intl`: the messages of the palette, in English and French.
+- 5779047: The global search reads `limit` and `resources`, and can be narrowed to one resource ([decision 0030](../docs/decisions/0030-search-parameters-and-scope.md)):
+  
+  - **`@panneau/protocol`:**
+      - `GET /search` takes `limit` (1 to 20, 5 by default) and `resources` (comma-separated searchable resources). An invalid parameter is a `422` problem keyed by parameter, and a backend may answer `429` with `Retry-After`.
+      - `readSearchQuery()`, `toSearchQueryParams()`, `isSearchableResource()` and the `SEARCH_*` limits are in `@panneau/protocol/runtime`. The mock backend uses them, and `openapi.json` documents them.
+      - `runConformance()` checks the search: `search`, `search.scope` and `search.invalid`.
+  - **`@panneau/data`:** `adapter.search(q, { limit, resources })`, `useSearch(q, { limit, resources })` and `searchQueryOptions(adapter, q, { limit, resources })`. Search keys are now `['panneau', 'search', q, options]`. A `429` is a `RateLimitedError`, with `retryAfter` from `Retry-After` (`readRetryAfter()`).
+  - **`@panneau/ui`:** `CommandPalette` takes a `scope`, shown as a chip before the field, and `onScopeRemove`, called by Backspace in the empty field or the chip's button. Items with `keepsOpen` don't close it. Without results, its list shows its `status`.
+  - **`@panneau/core`:** `isSearchable()` uses the protocol's `isSearchableResource()`.
+  - **`@panneau/app`:** "Search in" narrows "Go to…" to one resource, with 20 results. "See all N results" opens the list of a resource, searched, when it has more results than shown. Too many searches are said in the palette.
+  - **`@panneau/intl`:** the messages of the scope, in English and French.
+- 5b9aa44: `Dialog` gets an `xl` size (`--panneau-dialog-width-xl`, 72rem) for pickers and editors, `fullScreenOnPhone` to take the whole screen on phones instead of opening as a sheet at the bottom, and `headerContent`, shown between the title and the close button (under the title on phones). New `SegmentedControl`: a row of a few choices, one always selected, as a radio group moved through with the arrow keys, with icons, two sizes, `fullWidth`, and its component tokens (`--panneau-segmented-control-*`).
+
+### Patch Changes
+
+- 5b2f3ce: Small fixes to the interface, and a link to the user's profile:
+  
+  - **`@panneau/ui`:**
+      - a text before or after the value of a `TextInput` (`prefix`, `suffix`) reads with it, without a gap: `/episodes/ete-a-montreal`, as in the slug field. Icons and other elements keep their space;
+      - `DatePicker` with a time (`granularity` `hour`, `minute` or `second`): the calendar has a field for the time, and stays open after a day is picked (`shouldCloseOnSelect` defaults to `false`). The calendar is as wide as its content, its month buttons lose the divider of the field's button, and the space of `10/15/2026, 9:30 AM` is back;
+      - the description of an option (`Select`, `ComboBox`, `Menu`) is smaller, under its label, and an option with one has more room (`--panneau-list-box-item-padding-y-described`).
+  - **`@panneau/app`:**
+      - on a small screen too, the page is on a panel inset from the edges, with rounded corners, as on a large one. The shell's `inset`, `panel-border`, `panel-radius` and `panel-shadow` tokens apply at every width;
+      - the user in the sidebar links to their profile: their item in the resource of users, when the definition has it.
+  - **`@panneau/protocol`:** `user.resource` names the resource of users. Without it, clients look for a resource `users`.
+  - **`@panneau/intl`:** the labels of the profile link and of the calendar's time, in English and French.
+- Updated dependencies [bdb1173]
+- Updated dependencies [88a3d09]
+- Updated dependencies [b86f35e]
+- Updated dependencies [eadfc08]
+- Updated dependencies [f2c79b5]
+- Updated dependencies [81ec6b2]
+- Updated dependencies [6d1f1d8]
+- Updated dependencies [6d1f1d8]
+- Updated dependencies [199a687]
+- Updated dependencies [fb33783]
+- Updated dependencies [5779047]
+- Updated dependencies [5b2f3ce]
+  - @panneau/intl@5.0.0-alpha.5
+
 ## 5.0.0-alpha.4
 
 ### Patch Changes

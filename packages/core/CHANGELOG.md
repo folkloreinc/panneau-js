@@ -1,5 +1,65 @@
 # @panneau/core
 
+## 5.0.0-alpha.5
+
+### Minor Changes
+
+- 3830b4f: Navigating the app shell no longer loses unsaved changes, and announces each page:
+  
+  - **`@panneau/core`:** `createLeaveGuards()`, `LeaveGuardsProvider` and `useLeaveGuard()` let a router ask the forms below it before leaving a page.
+  - **`@panneau/forms`:** under a `LeaveGuardsProvider`, a form with unsaved changes (`guardUnsavedChanges`, on by default) asks in a dialog before the router leaves its page, not only before the page closes or reloads.
+  - **`@panneau/app`:**
+      - links, "Go to…" and actions ask before leaving a form with unsaved changes, and so do the browser's back and forward buttons;
+      - the tab is named after the page (`Ten walks for the fall · Articles · Northwind Journal`);
+      - when the route changes, focus moves to the title of the new page and the page scrolls to the top. Opening the panel of an item focuses the panel, and closing it gives focus back to the item's link.
+- b86f35e: A "Go to…" command palette ([decision 0029](https://github.com/folkloreinc/panneau-js/blob/v5.x/docs/decisions/0029-go-to-palette.md)), which products can also use without the app:
+  
+  - `@panneau/ui`:
+      - `CommandPalette`: a search field over groups of items to go to or run, in a dialog near the top of the screen (the whole screen on a phone).
+      - It matches items without case or accents, needs every word to match, and ranks the best matches first (`matchCommands()`, `normalizeSearch()`). Groups that are already `matched`, such as results of a server, are shown as they are, after the others.
+      - `useCommandShortcut()` opens it with ⌘K or Ctrl+K, unless something already handled the key.
+      - Tokens: `--panneau-command-palette-*`.
+  - `@panneau/core`: plugins add `commands` (`Command`, `getCommands()`). `isSearchable()` and `getSearchableResources()` tell which resources the global search covers: `features.search`, which defaults to `list.search`.
+  - `@panneau/data`: `useSearch()`, `searchQueryOptions()` and `queryKeys.search()`.
+  - `@panneau/protocol`:
+      - resources get `itemSubtitle` and `itemImage`, next to `itemTitle`;
+      - `features.search` defaults to `list.search`;
+      - the mock backend answers `GET /search`: 5 items per resource, 20 in all, from 2 characters.
+  - `@panneau/app`: "Go to…" in the sidebar (an icon when collapsed), in the phone's top bar, and on ⌘K or Ctrl+K.
+      - It lists recent items, kept in the browser, then the navigation, "New {resource}", the commands of plugins and the app's actions.
+      - The server's search results follow, grouped by resource, with their subtitle and image.
+      - An item opens its edit form.
+  - `@panneau/intl`: the messages of the palette, in English and French.
+- 6d1f1d8: Previews of items, in the panel of the show route ([decisions 0009 and 0028](https://github.com/folkloreinc/panneau-js/blob/v5.x/docs/decisions/0028-item-panel.md)):
+  
+  - `@panneau/core`: plugins register preview components by name in `previews`, for resources whose `features.preview` is `{ "mode": "component", "component": "<name>" }`. They get `PreviewProps`: the item, its resource and the locale, to render the page as the site shows it, blocks, partials or charts.
+  - `@panneau/data`: `previewItem()`, optional on adapters and implemented by the REST adapter, posts values to `POST /resources/{resource}/{id}/preview` and returns the short-lived URL of the item's page. `useItemPreview()`, `itemPreviewQueryOptions()` and `queryKeys.itemPreview()` fetch it.
+  - `@panneau/protocol`: the mock backend answers the preview route, with a `data:` page of the item's values, or the URL of its `previewUrl` option.
+  - `@panneau/app`: the panel of an item opens on a Preview tab, before its Details, when its resource has a preview, and remembers the tab. A button widens the panel, for previews (`--panneau-item-panel-width-wide`, half of the page by default).
+  - `@panneau/intl`: the messages of previews, in English and French.
+
+### Patch Changes
+
+- 5779047: The global search reads `limit` and `resources`, and can be narrowed to one resource ([decision 0030](../docs/decisions/0030-search-parameters-and-scope.md)):
+  
+  - **`@panneau/protocol`:**
+      - `GET /search` takes `limit` (1 to 20, 5 by default) and `resources` (comma-separated searchable resources). An invalid parameter is a `422` problem keyed by parameter, and a backend may answer `429` with `Retry-After`.
+      - `readSearchQuery()`, `toSearchQueryParams()`, `isSearchableResource()` and the `SEARCH_*` limits are in `@panneau/protocol/runtime`. The mock backend uses them, and `openapi.json` documents them.
+      - `runConformance()` checks the search: `search`, `search.scope` and `search.invalid`.
+  - **`@panneau/data`:** `adapter.search(q, { limit, resources })`, `useSearch(q, { limit, resources })` and `searchQueryOptions(adapter, q, { limit, resources })`. Search keys are now `['panneau', 'search', q, options]`. A `429` is a `RateLimitedError`, with `retryAfter` from `Retry-After` (`readRetryAfter()`).
+  - **`@panneau/ui`:** `CommandPalette` takes a `scope`, shown as a chip before the field, and `onScopeRemove`, called by Backspace in the empty field or the chip's button. Items with `keepsOpen` don't close it. Without results, its list shows its `status`.
+  - **`@panneau/core`:** `isSearchable()` uses the protocol's `isSearchableResource()`.
+  - **`@panneau/app`:** "Search in" narrows "Go to…" to one resource, with 20 results. "See all N results" opens the list of a resource, searched, when it has more results than shown. Too many searches are said in the palette.
+  - **`@panneau/intl`:** the messages of the scope, in English and French.
+- Updated dependencies [88a3d09]
+- Updated dependencies [b86f35e]
+- Updated dependencies [81ec6b2]
+- Updated dependencies [6d1f1d8]
+- Updated dependencies [8372b27]
+- Updated dependencies [5779047]
+- Updated dependencies [5b2f3ce]
+  - @panneau/protocol@5.0.0-alpha.5
+
 ## 5.0.0-alpha.4
 
 ### Patch Changes
