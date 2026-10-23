@@ -173,6 +173,15 @@ export const fieldsMessages: {
     }>;
     openLink: PanneauMessage<Record<never, never>>;
     pickColor: PanneauMessage<Record<never, never>>;
+    hours: PanneauMessage<Record<never, never>>;
+    minutes: PanneauMessage<Record<never, never>>;
+    seconds: PanneauMessage<Record<never, never>>;
+    hoursUnit: PanneauMessage<Record<never, never>>;
+    minutesUnit: PanneauMessage<Record<never, never>>;
+    secondsUnit: PanneauMessage<Record<never, never>>;
+    jsonInvalid: PanneauMessage<    {
+    error: string;
+    }>;
     generateSlug: PanneauMessage<    {
     field: string;
     }>;
@@ -290,6 +299,7 @@ export const formsMessages: {
         pattern: PanneauMessage<Record<never, never>>;
         email: PanneauMessage<Record<never, never>>;
         url: PanneauMessage<Record<never, never>>;
+        json: PanneauMessage<Record<never, never>>;
         in: PanneauMessage<Record<never, never>>;
         accept: PanneauMessage<Record<never, never>>;
         maxSize: PanneauMessage<Record<never, never>>;
@@ -662,6 +672,9 @@ export const uiMessages: {
     clear: PanneauMessage<Record<never, never>>;
     moreActions: PanneauMessage<Record<never, never>>;
     time: PanneauMessage<Record<never, never>>;
+    tags: PanneauMessage<    {
+    label: string;
+    }>;
     commandPalette: PanneauMessage<Record<never, never>>;
     commandResults: PanneauMessage<    {
     count: number;

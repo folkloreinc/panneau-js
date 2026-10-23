@@ -25,6 +25,7 @@ import { RadioGroupProps as RadioGroupProps_2 } from 'react-aria-components';
 import type { ReactElement } from 'react';
 import { ReactNode } from 'react';
 import type { Ref } from 'react';
+import { SliderProps as SliderProps_2 } from 'react-aria-components';
 import { SwitchProps as SwitchProps_2 } from 'react-aria-components';
 import { TabListProps as TabListProps_2 } from 'react-aria-components';
 import { TabPanelProps as TabPanelProps_2 } from 'react-aria-components';
@@ -869,6 +870,22 @@ export interface SingleSelectProps extends SelectBaseProps {
 }
 
 // @public
+export function Slider(input: SliderProps): JSX.Element;
+
+// @public (undocumented)
+export interface SliderProps extends Omit<SliderProps_2<number>, 'className' | 'style' | 'children' | 'value' | 'defaultValue' | 'onChange'>, FieldChromeProps {
+    // (undocumented)
+    defaultValue?: number | null;
+    // (undocumented)
+    isRequired?: boolean;
+    name?: string;
+    // (undocumented)
+    onChange?: (value: number) => void;
+    suffix?: ReactNode;
+    value?: number | null;
+}
+
+// @public
 export type Space = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 8 | 10;
 
 // @public
@@ -941,6 +958,41 @@ export function Tabs(input: TabsProps): JSX.Element;
 export interface TabsProps extends Omit<TabsProps_2, 'className' | 'style'> {
     // (undocumented)
     className?: string;
+}
+
+// @public
+export function TagsInput(input: TagsInputProps): JSX.Element;
+
+// @public (undocumented)
+export interface TagsInputProps extends FieldChromeProps {
+    allowCustom?: boolean;
+    // (undocumented)
+    autoFocus?: boolean;
+    // (undocumented)
+    controlClassName?: string;
+    // (undocumented)
+    isDisabled?: boolean;
+    // (undocumented)
+    isReadOnly?: boolean;
+    // (undocumented)
+    isRequired?: boolean;
+    // (undocumented)
+    name?: string;
+    // (undocumented)
+    onBlur?: () => void;
+    onChange?: (value: string[] | null) => void;
+    // (undocumented)
+    placeholder?: string;
+    suggestions?: readonly TagSuggestion[];
+    value?: readonly string[] | null;
+}
+
+// @public
+export interface TagSuggestion {
+    // (undocumented)
+    label?: string;
+    // (undocumented)
+    value: string;
 }
 
 // @public
