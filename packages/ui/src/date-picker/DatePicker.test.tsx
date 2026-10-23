@@ -52,6 +52,30 @@ describe('DatePicker', () => {
         expect(segments).toEqual(['2026', '10', '15', '9', '30']);
     });
 
+    it('picks a day and a time in the calendar of a date and time', async () => {
+        const onChange = vi.fn();
+        render(
+            <PanneauRoot locale="en-US">
+                <DatePicker
+                    label="Published at"
+                    granularity="minute"
+                    defaultValue={new CalendarDateTime(2026, 10, 15, 9, 30)}
+                    onChange={onChange}
+                />
+            </PanneauRoot>,
+        );
+        await userEvent.click(screen.getByRole('button', { name: /Calendar/ }));
+        const dialog = await screen.findByRole('dialog');
+        await userEvent.click(within(dialog).getByRole('button', { name: /October 20, 2026/ }));
+        expect(onChange).toHaveBeenLastCalledWith(new CalendarDateTime(2026, 10, 20, 9, 30));
+        // The calendar stays open, for the time
+        const time = within(dialog).getByRole('group', { name: 'Time' });
+        const [hour] = within(time).getAllByRole('spinbutton');
+        await userEvent.click(hour as HTMLElement);
+        await userEvent.keyboard('11');
+        expect(onChange).toHaveBeenLastCalledWith(new CalendarDateTime(2026, 10, 20, 11, 30));
+    });
+
     it('shows its errors', () => {
         render(<DatePicker label="Published on" errors={['Too early.']} />);
         expect(screen.getByText('Too early.')).toBeInTheDocument();

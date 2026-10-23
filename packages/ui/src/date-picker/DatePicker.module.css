@@ -22,6 +22,8 @@
 .segment[data-type='literal'] {
     padding: 0;
     color: var(--panneau-color-text-muted);
+    /* The space of `10/15/2026, 9:30 AM`, which a flex item would drop */
+    white-space: pre;
 }
 
 .segment[data-placeholder] {
@@ -55,6 +57,42 @@
 .button[data-focus-visible] {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
     outline-offset: -2px;
+}
+
+/* As wide as the calendar, not as the field. */
+.popover.popover {
+    min-width: 0;
+}
+
+/* The previous and next months. */
+.navButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--panneau-calendar-cell-size, 2.25rem);
+    height: var(--panneau-calendar-cell-size, 2.25rem);
+    padding: 0;
+    color: var(--panneau-color-text-muted);
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    border-radius: var(--panneau-calendar-cell-radius, var(--panneau-radius-md));
+    outline: none;
+}
+
+.navButton[data-hovered] {
+    color: var(--panneau-color-text);
+    background-color: var(--panneau-color-hover);
+}
+
+.navButton[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: -2px;
+}
+
+.navButton[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.4;
 }
 
 .calendar {
@@ -132,4 +170,6 @@
 
 .time {
     margin-top: var(--panneau-space-3);
+    padding-top: var(--panneau-space-3);
+    border-top: var(--panneau-border-width) solid var(--panneau-color-border);
 }
