@@ -8,6 +8,8 @@ import type { ActionRequest } from '@panneau/protocol';
 import type { ActionResult } from '@panneau/protocol';
 import type { ActionRun } from '@panneau/protocol';
 import type { Definition } from '@panneau/protocol';
+import type { FieldCheckRequest } from '@panneau/protocol';
+import type { FieldCheckResponse } from '@panneau/protocol';
 import type { Item } from '@panneau/protocol';
 import type { ListQuery } from '@panneau/protocol';
 import type { ListResponse } from '@panneau/protocol';
@@ -59,6 +61,7 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter;
 // @public
 export interface DataAdapter {
     cancelActionRun(id: string, options?: RequestOptions): Promise<void>;
+    checkField?(resource: string, field: string, request: FieldCheckRequest, options?: RequestOptions): Promise<FieldCheckResponse>;
     create(resource: string, values: Values, options?: RequestOptions): Promise<Item>;
     delete(resource: string, id: string, options?: RequestOptions): Promise<void>;
     get(resource: string, id: string, options?: RequestOptions): Promise<Item>;

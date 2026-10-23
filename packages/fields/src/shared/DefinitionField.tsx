@@ -22,6 +22,8 @@ export interface NestedFieldProps {
     errors?: readonly string[];
     /** The object the field belongs to, for conditions and generated values. */
     parentValue?: unknown;
+    /** The locale of the value, in a localized field. */
+    locale?: string;
     disabled?: boolean;
     readOnly?: boolean;
     className?: string;
@@ -41,6 +43,7 @@ export function NestedField({
     onBlur,
     errors,
     parentValue,
+    locale,
     disabled,
     readOnly,
     className,
@@ -50,6 +53,7 @@ export function NestedField({
         field,
         path,
         parentValue,
+        ...(locale !== undefined ? { locale } : {}),
         ...(disabled !== undefined ? { disabled } : {}),
         ...(readOnly !== undefined ? { readOnly } : {}),
         ...(className !== undefined ? { className } : {}),

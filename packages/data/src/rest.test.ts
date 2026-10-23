@@ -312,6 +312,23 @@ describe('createRestAdapter', () => {
         });
     });
 
+    it('checks a value of a field', async () => {
+        const { fetch, requests } = createStubFetch(() =>
+            jsonResponse(200, { available: false, suggestion: 'ete-2', prefix: null, url: null }),
+        );
+        const adapter = createRestAdapter({ baseUrl: BASE_URL, fetch });
+
+        expect(
+            await adapter.checkField?.('pages', 'slug', { value: 'ete', locale: 'fr', id: null }),
+        ).toEqual({ available: false, suggestion: 'ete-2', prefix: null, url: null });
+        const request = requests[0];
+        expect(request?.method).toBe('POST');
+        expect(new URL(request?.url ?? '').pathname).toBe(
+            '/panneau/api/resources/pages/fields/slug/check',
+        );
+        expect(await request?.json()).toEqual({ value: 'ete', locale: 'fr', id: null });
+    });
+
     it('creates a media from a file uploaded directly to storage', async () => {
         const { fetch, requests } = createStubFetch(() =>
             jsonResponse(201, { data: { id: 'med_1', version: '1', abilities: {} } }),

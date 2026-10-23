@@ -3,6 +3,7 @@ import { type ComponentType, type ReactNode, createContext, use } from 'react';
 import type { Field } from '@panneau/protocol';
 
 import type { UploadSource } from '../upload/types';
+import type { FieldCheckSource } from './check';
 import type { RelationSource } from './relation';
 import type { FieldEntry } from './types';
 
@@ -44,6 +45,8 @@ export interface FieldsContextValue {
      * files themselves.
      */
     uploadSource: UploadSource | null;
+    /** Where fields with `check` check their value, such as a slug's availability. */
+    checkSource: FieldCheckSource | null;
     binding: FieldBinding | null;
 }
 
@@ -52,6 +55,7 @@ const FieldsContext = createContext<FieldsContextValue>({
     locales: [],
     relationSource: null,
     uploadSource: null,
+    checkSource: null,
     binding: null,
 });
 
@@ -67,13 +71,15 @@ export interface FieldsProviderProps {
     relationSource?: RelationSource | null;
     /** Make it once, outside of render: fields make an uploader for each source they get. */
     uploadSource?: UploadSource | null;
+    /** `createFieldCheckSource(adapter, resource, id)`, for the form of an item. */
+    checkSource?: FieldCheckSource | null;
     binding?: FieldBinding | null;
     children?: ReactNode;
 }
 
 /**
  * Provides what fields rendered from a definition need: the components of each type, the locales
- * of localized values, a relation source, an upload source and a binding. Values not given come from the parent
+ * of localized values, a relation source, an upload source, a check source and a binding. Values not given come from the parent
  * provider.
  */
 export function FieldsProvider({
@@ -81,6 +87,7 @@ export function FieldsProvider({
     locales,
     relationSource,
     uploadSource,
+    checkSource,
     binding,
     children,
 }: FieldsProviderProps) {
@@ -91,6 +98,7 @@ export function FieldsProvider({
         locales: locales ?? parent.locales,
         relationSource: relationSource === undefined ? parent.relationSource : relationSource,
         uploadSource: uploadSource === undefined ? parent.uploadSource : uploadSource,
+        checkSource: checkSource === undefined ? parent.checkSource : checkSource,
         binding: binding === undefined ? parent.binding : binding,
     };
     return <FieldsContext value={value}>{children}</FieldsContext>;

@@ -12,6 +12,7 @@ import {
     usePlugins,
 } from '@panneau/core';
 import {
+    type FieldCheckSource,
     type FieldEntry,
     FieldsProvider,
     type RelationSource,
@@ -47,6 +48,12 @@ export interface FormViewProps {
      * parent `FieldsProvider`. Without one, values hold the files themselves.
      */
     uploadSource?: UploadSource | null;
+    /**
+     * Where fields with `check` check their value, such as a slug's availability:
+     * `createFieldCheckSource(adapter, resource, id)`. Defaults to the one of a parent
+     * `FieldsProvider`.
+     */
+    checkSource?: FieldCheckSource | null;
     /** Field entries by type, over the built-in ones and those of the plugins. */
     components?: Readonly<Record<string, FieldEntry>>;
     /** Label of the submit button. Defaults to "Save". `null` hides the button. */
@@ -124,6 +131,7 @@ export function FormView({
     locales,
     relationSource,
     uploadSource,
+    checkSource,
     components,
     submitLabel,
     actions,
@@ -242,6 +250,7 @@ export function FormView({
                     locales={locales ?? definition?.locales ?? []}
                     {...(relationSource !== undefined ? { relationSource } : {})}
                     {...(uploadSource !== undefined ? { uploadSource } : {})}
+                    {...(checkSource !== undefined ? { checkSource } : {})}
                     binding={FormBinding}
                 >
                     <form

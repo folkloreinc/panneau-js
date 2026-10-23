@@ -45,7 +45,7 @@ describe('Definition', () => {
         const result = validateDefinition(definition);
         expect(result.success).toBe(false);
         if (!result.success) {
-            expect(result.issues.map((issue) => issue.path)).toContain('resources.0.fields.6.name');
+            expect(result.issues.map((issue) => issue.path)).toContain('resources.0.fields.7.name');
         }
     });
 });
@@ -199,7 +199,7 @@ describe('lintDefinition', () => {
                 message: 'The children of `tabs` must be `tab` nodes.',
             },
             { path: 'resources.0.list.columns.0.field', message: 'No field named `missing`.' },
-            { path: 'resources.0.fields.6.resource', message: 'No resource `editors`.' },
+            { path: 'resources.0.fields.7.resource', message: 'No resource `editors`.' },
         ]);
     });
 

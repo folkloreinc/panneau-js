@@ -131,6 +131,7 @@ export const Action: z.ZodObject<{
             choose: "choose";
         }>>;
         from: z.ZodOptional<z.ZodString>;
+        check: z.ZodOptional<z.ZodBoolean>;
         display: z.ZodOptional<z.ZodString>;
         fields: z.ZodOptional<z.ZodArray<typeof Field>>;
         types: z.ZodOptional<z.ZodArray<BlockType>>;
@@ -647,6 +648,7 @@ export const Definition: z.ZodObject<{
                 choose: "choose";
             }>>;
             from: z.ZodOptional<z.ZodString>;
+            check: z.ZodOptional<z.ZodBoolean>;
             display: z.ZodOptional<z.ZodString>;
             fields: z.ZodOptional<z.ZodArray<Field>>;
             types: z.ZodOptional<z.ZodArray<BlockType>>;
@@ -831,6 +833,7 @@ export const Definition: z.ZodObject<{
                     choose: "choose";
                 }>>;
                 from: z.ZodOptional<z.ZodString>;
+                check: z.ZodOptional<z.ZodBoolean>;
                 display: z.ZodOptional<z.ZodString>;
                 fields: z.ZodOptional<z.ZodArray<Field>>;
                 types: z.ZodOptional<z.ZodArray<BlockType>>;
@@ -1178,6 +1181,7 @@ export const Field: z.ZodObject<{
         choose: "choose";
     }>>;
     from: z.ZodOptional<z.ZodString>;
+    check: z.ZodOptional<z.ZodBoolean>;
     display: z.ZodOptional<z.ZodString>;
     fields: z.ZodOptional<z.ZodArray<typeof Field>>;
     types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
@@ -1186,6 +1190,29 @@ export const Field: z.ZodObject<{
 
 // @public (undocumented)
 export type Field = z.infer<typeof Field>;
+
+// @public (undocumented)
+export const FieldCheckRequest: z.ZodObject<{
+    value: z.ZodString;
+    locale: z.ZodOptional<z.ZodString>;
+    id: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    values: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type FieldCheckRequest = z.infer<typeof FieldCheckRequest>;
+
+// @public (undocumented)
+export const FieldCheckResponse: z.ZodObject<{
+    available: z.ZodBoolean;
+    suggestion: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    prefix: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    disabled: z.ZodOptional<z.ZodBoolean>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type FieldCheckResponse = z.infer<typeof FieldCheckResponse>;
 
 // @public (undocumented)
 export const Filter: z.ZodObject<{
@@ -1774,6 +1801,7 @@ export const namedSchemas: {
             choose: "choose";
         }>>;
         from: z.ZodOptional<z.ZodString>;
+        check: z.ZodOptional<z.ZodBoolean>;
         display: z.ZodOptional<z.ZodString>;
         fields: z.ZodOptional<z.ZodArray<typeof Field>>;
         types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
@@ -2000,6 +2028,7 @@ export const namedSchemas: {
                 choose: "choose";
             }>>;
             from: z.ZodOptional<z.ZodString>;
+            check: z.ZodOptional<z.ZodBoolean>;
             display: z.ZodOptional<z.ZodString>;
             fields: z.ZodOptional<z.ZodArray<typeof Field>>;
             types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
@@ -2149,6 +2178,7 @@ export const namedSchemas: {
                 choose: "choose";
             }>>;
             from: z.ZodOptional<z.ZodString>;
+            check: z.ZodOptional<z.ZodBoolean>;
             display: z.ZodOptional<z.ZodString>;
             fields: z.ZodOptional<z.ZodArray<typeof Field>>;
             types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
@@ -2333,6 +2363,7 @@ export const namedSchemas: {
                     choose: "choose";
                 }>>;
                 from: z.ZodOptional<z.ZodString>;
+                check: z.ZodOptional<z.ZodBoolean>;
                 display: z.ZodOptional<z.ZodString>;
                 fields: z.ZodOptional<z.ZodArray<typeof Field>>;
                 types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
@@ -2732,6 +2763,7 @@ export const namedSchemas: {
                     choose: "choose";
                 }>>;
                 from: z.ZodOptional<z.ZodString>;
+                check: z.ZodOptional<z.ZodBoolean>;
                 display: z.ZodOptional<z.ZodString>;
                 fields: z.ZodOptional<z.ZodArray<typeof Field>>;
                 types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
@@ -2916,6 +2948,7 @@ export const namedSchemas: {
                         choose: "choose";
                     }>>;
                     from: z.ZodOptional<z.ZodString>;
+                    check: z.ZodOptional<z.ZodBoolean>;
                     display: z.ZodOptional<z.ZodString>;
                     fields: z.ZodOptional<z.ZodArray<typeof Field>>;
                     types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
@@ -3364,6 +3397,19 @@ export const namedSchemas: {
         headers: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
         upload: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>;
+    FieldCheckRequest: z.ZodObject<{
+        value: z.ZodString;
+        locale: z.ZodOptional<z.ZodString>;
+        id: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        values: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+    }, z.core.$loose>;
+    FieldCheckResponse: z.ZodObject<{
+        available: z.ZodBoolean;
+        suggestion: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        prefix: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        disabled: z.ZodOptional<z.ZodBoolean>;
+    }, z.core.$loose>;
     MediaInfo: z.ZodObject<{
         type: z.ZodString;
         mime: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -3750,6 +3796,7 @@ export const Resource: z.ZodObject<{
             choose: "choose";
         }>>;
         from: z.ZodOptional<z.ZodString>;
+        check: z.ZodOptional<z.ZodBoolean>;
         display: z.ZodOptional<z.ZodString>;
         fields: z.ZodOptional<z.ZodArray<typeof Field>>;
         types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
@@ -3934,6 +3981,7 @@ export const Resource: z.ZodObject<{
                 choose: "choose";
             }>>;
             from: z.ZodOptional<z.ZodString>;
+            check: z.ZodOptional<z.ZodBoolean>;
             display: z.ZodOptional<z.ZodString>;
             fields: z.ZodOptional<z.ZodArray<typeof Field>>;
             types: z.ZodOptional<z.ZodArray<typeof BlockType>>;

@@ -137,6 +137,7 @@ export function LocalizedFieldEntry(props: FieldEntryProps) {
                     onChange={input.onChange}
                     {...(props.onBlur !== undefined ? { onBlur: props.onBlur } : {})}
                     parentValue={props.parentValue}
+                    locale={input.locale}
                     {...(props.disabled !== undefined ? { disabled: props.disabled } : {})}
                     {...(props.readOnly !== undefined ? { readOnly: props.readOnly } : {})}
                 />

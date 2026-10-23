@@ -38,6 +38,14 @@ export const fieldsMessages = {
         id: 'panneau.fields.generateSlug',
         defaultMessage: 'Generate from {field}',
     }),
+    slugTaken: defineMessage({
+        id: 'panneau.fields.slugTaken',
+        defaultMessage: 'This slug is already used.',
+    }),
+    useSuggestion: defineMessage<{ suggestion: string }>({
+        id: 'panneau.fields.useSuggestion',
+        defaultMessage: 'Use {suggestion}',
+    }),
     search: defineMessage({ id: 'panneau.fields.search', defaultMessage: 'Search…' }),
     noRelation: defineMessage({ id: 'panneau.fields.noRelation', defaultMessage: 'None' }),
     noResults: defineMessage({ id: 'panneau.fields.noResults', defaultMessage: 'No results' }),

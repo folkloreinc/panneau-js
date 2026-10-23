@@ -440,6 +440,40 @@ describe('createMockBackend', () => {
         expect(await errors('q=acc&resources=unknown')).toEqual(['resources']);
     });
 
+    it('checks a slug per locale, and suggests a free one', async () => {
+        const backend = createMockBackend({
+            definition: createExampleDefinition(),
+            items: {
+                pages: [
+                    { id: '1', title: { fr: 'Été' }, slug: { fr: 'ete', en: 'summer' } },
+                    { id: '2', title: { fr: 'Été 2' }, slug: { fr: 'ete-2' } },
+                ],
+            },
+        });
+        const check = async (body: unknown, field = 'slug') =>
+            backend.fetch(
+                `/panneau/api/resources/pages/fields/${field}/check`,
+                json(body, { method: 'POST' }),
+            );
+
+        expect(await (await check({ value: 'ete', locale: 'fr', id: null })).json()).toEqual({
+            available: false,
+            suggestion: 'ete-3',
+            prefix: 'https://example.com/',
+            url: 'https://example.com/ete',
+        });
+        // The item's own slug, and another locale
+        expect(await (await check({ value: 'ete', locale: 'fr', id: '1' })).json()).toMatchObject({
+            available: true,
+            suggestion: null,
+        });
+        expect(await (await check({ value: 'ete', locale: 'en', id: null })).json()).toMatchObject({
+            available: true,
+        });
+        expect((await check({ value: 'x' }, 'title')).status).toBe(404);
+        expect((await check({ locale: 'fr' })).status).toBe(422);
+    });
+
     it('answers unknown routes with a 404 problem', async () => {
         const response = await createBackend().fetch('/panneau/api/resources/unknown');
         expect(response.status).toBe(404);

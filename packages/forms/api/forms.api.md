@@ -6,6 +6,7 @@
 
 import type { Field } from '@panneau/protocol';
 import type { FieldBindingProps } from '@panneau/fields';
+import { FieldCheckSource } from '@panneau/fields';
 import { FieldEntry } from '@panneau/fields';
 import { Form as Form_2 } from '@panneau/core';
 import { FormOptions } from '@panneau/core';
@@ -74,6 +75,7 @@ export interface FormViewProps {
     // (undocumented)
     'aria-label'?: string;
     actions?: ReactNode;
+    checkSource?: FieldCheckSource | null;
     // (undocumented)
     className?: string;
     components?: Readonly<Record<string, FieldEntry>>;

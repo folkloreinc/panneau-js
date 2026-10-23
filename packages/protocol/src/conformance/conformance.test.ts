@@ -76,6 +76,7 @@ describe('runConformance', () => {
         expect(report.passed).toBe(false);
         expect(failed).toEqual([
             'uploads.sign',
+            'fields.check',
             'list.unknown-resource',
             'item',
             'item.missing',

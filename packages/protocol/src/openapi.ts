@@ -237,6 +237,22 @@ export function createOpenApiDocument(): JsonObject {
                     },
                 },
             },
+            '/resources/{resource}/fields/{field}/check': {
+                parameters: [resource, pathParameter('field', 'Name of a field with `check`.')],
+                post: {
+                    operationId: 'checkField',
+                    summary:
+                        'Checks a value as it is typed: whether a slug is available, and its URL. With the permission to create, or to update the item `id`.',
+                    requestBody: { required: true, content: json(ref('FieldCheckRequest')) },
+                    responses: {
+                        200: ok(
+                            'What the backend says about the value.',
+                            ref('FieldCheckResponse'),
+                        ),
+                        ...problems(401, 403, 404, 422),
+                    },
+                },
+            },
             '/actions/runs': {
                 get: {
                     operationId: 'listActionRuns',

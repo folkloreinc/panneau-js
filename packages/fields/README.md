@@ -20,27 +20,27 @@ import { PanneauRoot } from '@panneau/ui';
 
 Every field takes `value`, `onChange`, `onBlur`, `errors`, `disabled`, `readOnly`, `required`, `label` and `description`, plus `className` and `xxxClassName` props for its inner elements. Fields keep no value of their own, and an empty value is `null`.
 
-| Import                      | Components                                   | Value                                          |
-| --------------------------- | -------------------------------------------- | ---------------------------------------------- |
-| `@panneau/fields/text`      | `TextField`                                  | `string`                                       |
-| `@panneau/fields/textarea`  | `TextAreaField`                              | `string`                                       |
-| `@panneau/fields/number`    | `NumberField`                                | `number`                                       |
-| `@panneau/fields/boolean`   | `BooleanField` (checkbox, switch)            | `boolean`                                      |
-| `@panneau/fields/date`      | `DateField`                                  | `'2026-10-15'`                                 |
-| `@panneau/fields/datetime`  | `DateTimeField`                              | `'2026-10-15T13:30:00Z'`, or without an offset |
-| `@panneau/fields/time`      | `TimeField`                                  | `'09:30'`                                      |
-| `@panneau/fields/select`    | `SelectField` (dropdown, radios, checkboxes) | an option's value, or a list with `multiple`   |
-| `@panneau/fields/email`     | `EmailField`                                 | `string`                                       |
-| `@panneau/fields/url`       | `UrlField`                                   | `string`, with `https://` added on blur        |
-| `@panneau/fields/color`     | `ColorField`                                 | `'#1d4ed8'`                                    |
-| `@panneau/fields/slug`      | `SlugField`, `slugify()`                     | `string`, following a `source` until edited    |
-| `@panneau/fields/localized` | `LocalizedField`                             | `{ fr: …, en: … }`                             |
-| `@panneau/fields/group`     | `GroupField`                                 | an object                                      |
-| `@panneau/fields/repeater`  | `RepeaterField` (items or typed blocks)      | a list of objects; blocks have a `type`        |
-| `@panneau/fields/relation`  | `RelationField`, `createRelationSource()`    | `{ id, label }`, or a list with `multiple`     |
-| `@panneau/fields/file`      | `FileField`                                  | a file, or a list with `multiple` (below)      |
-| `@panneau/fields/uppy`      | `createUppyUploadSource()`                   | the upload source on Uppy 6 (below)            |
-| `@panneau/fields/locales`   | `en`, `fr`                                   | deprecated: use `@panneau/intl`                |
+| Import                      | Components                                   | Value                                                               |
+| --------------------------- | -------------------------------------------- | ------------------------------------------------------------------- |
+| `@panneau/fields/text`      | `TextField`                                  | `string`                                                            |
+| `@panneau/fields/textarea`  | `TextAreaField`                              | `string`                                                            |
+| `@panneau/fields/number`    | `NumberField`                                | `number`                                                            |
+| `@panneau/fields/boolean`   | `BooleanField` (checkbox, switch)            | `boolean`                                                           |
+| `@panneau/fields/date`      | `DateField`                                  | `'2026-10-15'`                                                      |
+| `@panneau/fields/datetime`  | `DateTimeField`                              | `'2026-10-15T13:30:00Z'`, or without an offset                      |
+| `@panneau/fields/time`      | `TimeField`                                  | `'09:30'`                                                           |
+| `@panneau/fields/select`    | `SelectField` (dropdown, radios, checkboxes) | an option's value, or a list with `multiple`                        |
+| `@panneau/fields/email`     | `EmailField`                                 | `string`                                                            |
+| `@panneau/fields/url`       | `UrlField`                                   | `string`, with `https://` added on blur                             |
+| `@panneau/fields/color`     | `ColorField`                                 | `'#1d4ed8'`                                                         |
+| `@panneau/fields/slug`      | `SlugField`, `slugify()`, `sourceText()`     | `string`, following a `source` until edited, checked with `onCheck` |
+| `@panneau/fields/localized` | `LocalizedField`                             | `{ fr: …, en: … }`                                                  |
+| `@panneau/fields/group`     | `GroupField`                                 | an object                                                           |
+| `@panneau/fields/repeater`  | `RepeaterField` (items or typed blocks)      | a list of objects; blocks have a `type`                             |
+| `@panneau/fields/relation`  | `RelationField`, `createRelationSource()`    | `{ id, label }`, or a list with `multiple`                          |
+| `@panneau/fields/file`      | `FileField`                                  | a file, or a list with `multiple` (below)                           |
+| `@panneau/fields/uppy`      | `createUppyUploadSource()`                   | the upload source on Uppy 6 (below)                                 |
+| `@panneau/fields/locales`   | `en`, `fr`                                   | deprecated: use `@panneau/intl`                                     |
 
 ## From a definition
 
@@ -107,3 +107,15 @@ const uploadSource =
 Strings go through react-intl, with English defaults. Add the messages of every Panneau package to the app's with `withPanneauMessages()` from [`@panneau/intl`](../intl), or use `fieldsPlugin`, which carries the French messages of every package (`ui`, `fields` and `forms`).
 
 The package layout, scripts and API reports are explained in [`docs/packages.md`](../../docs/packages.md).
+
+## Checking a value
+
+A field with `check` in the definition, such as a `slug`, checks its value with the backend as it is typed ([decision 0032](../../docs/decisions/0032-field-checks-and-slugs.md)). The slug field then shows the URL the backend gives, says when the slug is taken with a free one to use, and is read-only when the backend says the field doesn't apply to the item. Give forms a check source for the item they edit:
+
+```tsx
+import { createFieldCheckSource } from '@panneau/fields';
+
+<FormView form={form} checkSource={createFieldCheckSource(adapter, 'pages', item?.id ?? null)} />;
+```
+
+Without one, fields don't check, and the slug shows its fixed `settings.prefix`.

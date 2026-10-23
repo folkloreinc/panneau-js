@@ -176,6 +176,10 @@ export const fieldsMessages: {
     generateSlug: PanneauMessage<    {
     field: string;
     }>;
+    slugTaken: PanneauMessage<Record<never, never>>;
+    useSuggestion: PanneauMessage<    {
+    suggestion: string;
+    }>;
     search: PanneauMessage<Record<never, never>>;
     noRelation: PanneauMessage<Record<never, never>>;
     noResults: PanneauMessage<Record<never, never>>;
