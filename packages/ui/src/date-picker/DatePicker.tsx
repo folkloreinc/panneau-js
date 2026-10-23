@@ -1,4 +1,5 @@
 import { CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
+import { use } from 'react';
 import {
     DatePicker as AriaDatePicker,
     type DatePickerProps as AriaDatePickerProps,
@@ -10,6 +11,7 @@ import {
     CalendarGridHeader,
     CalendarHeaderCell,
     DateInput,
+    DatePickerStateContext,
     DateSegment,
     type DateValue,
     Dialog,
@@ -25,10 +27,36 @@ import {
     fieldStyles,
 } from '../field/FieldParts';
 import { Icon } from '../icon/Icon';
+import { messages } from '../intl/messages';
+import { usePanneauIntl } from '../intl/usePanneauIntl';
 import { PopoverSurface } from '../popover/Popover';
 import popoverStyles from '../popover/Popover.module.css';
+import { TimeInput } from '../time-input/TimeInput';
 import { cx } from '../utils/cx';
 import styles from './DatePicker.module.css';
+
+/** The time of a date and time, under the calendar: the calendar alone can't set it. */
+function CalendarTime() {
+    const intl = usePanneauIntl();
+    const state = use(DatePickerStateContext);
+    if (state === null || !state.hasTime) {
+        return null;
+    }
+    const granularity = state.granularity === 'day' ? 'minute' : state.granularity;
+    return (
+        <TimeInput
+            label={intl.formatMessage(messages.time)}
+            value={state.timeValue}
+            onChange={(value) => {
+                if (value !== null) {
+                    state.setTimeValue(value);
+                }
+            }}
+            granularity={granularity}
+            className={styles.time}
+        />
+    );
+}
 
 export interface DatePickerProps
     extends
@@ -43,7 +71,8 @@ export interface DatePickerProps
 
 /**
  * A date, or a date and time with `granularity="minute"`, typed segment by segment in the order of
- * the locale, or picked in a calendar. Values are `@internationalized/date` objects.
+ * the locale, or picked in a calendar. With a time, the calendar has a field for it, and stays
+ * open after a day is picked. Values are `@internationalized/date` objects.
  */
 export function DatePicker({
     label,
@@ -60,8 +89,13 @@ export function DatePicker({
     ...props
 }: DatePickerProps) {
     const invalid = errors.length > 0;
+    const hasTime =
+        props.granularity === 'hour' ||
+        props.granularity === 'minute' ||
+        props.granularity === 'second';
     return (
         <AriaDatePicker
+            shouldCloseOnSelect={!hasTime}
             {...props}
             isRequired={isRequired}
             isReadOnly={isReadOnly}
@@ -87,15 +121,15 @@ export function DatePicker({
             </Group>
             <FieldDescription className={descriptionClassName}>{description}</FieldDescription>
             <FieldErrors errors={errors} className={errorsClassName} />
-            <PopoverSurface className={popoverClassName}>
+            <PopoverSurface className={cx(styles.popover, popoverClassName)}>
                 <Dialog className={popoverStyles.dialog}>
                     <Calendar className={styles.calendar}>
                         <header className={styles.header}>
-                            <Button slot="previous" className={styles.button}>
+                            <Button slot="previous" className={styles.navButton}>
                                 <Icon icon={ChevronLeft} />
                             </Button>
                             <Heading className={styles.heading} />
-                            <Button slot="next" className={styles.button}>
+                            <Button slot="next" className={styles.navButton}>
                                 <Icon icon={ChevronRight} />
                             </Button>
                         </header>
@@ -112,6 +146,7 @@ export function DatePicker({
                             </CalendarGridBody>
                         </CalendarGrid>
                     </Calendar>
+                    <CalendarTime />
                 </Dialog>
             </PopoverSurface>
         </AriaDatePicker>

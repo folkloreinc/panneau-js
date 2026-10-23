@@ -36,6 +36,22 @@ export interface NavSeparator {
 
 export type NavEntry = NavLink | NavGroup | NavSeparator;
 
+/**
+ * The path of the user's profile: the user's item in the resource of users (`user.resource`, or
+ * the resource `users`), or `null` when the definition has no such resource.
+ */
+export function getProfilePath(definition: Definition, basePath: string): string | null {
+    const user = definition.user;
+    if (user === undefined || user === null) {
+        return null;
+    }
+    const id = user.resource ?? 'users';
+    const resource = definition.resources.find((candidate) => candidate.id === id);
+    return resource !== undefined
+        ? routePath({ name: 'resource.edit', resource: resource.id, id: user.id }, basePath)
+        : null;
+}
+
 /** The first letter in upper case: resource labels are written in lower case (`pages`). */
 export function capitalize(label: string, locale?: string): string {
     return label.charAt(0).toLocaleUpperCase(locale) + label.slice(1);

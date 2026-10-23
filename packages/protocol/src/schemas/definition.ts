@@ -11,6 +11,10 @@ export const User = z.looseObject({
     email: z.string().optional(),
     avatarUrl: z.string().optional(),
     abilities: Abilities.optional(),
+    resource: z.string().optional().meta({
+        description:
+            'The resource of users: its item with this `id` is the profile of the user. Without it, clients look for a resource `users`.',
+    }),
 });
 
 export const AuthProvider = z.looseObject({

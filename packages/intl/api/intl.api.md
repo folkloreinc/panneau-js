@@ -117,6 +117,9 @@ export const appMessages: {
     narrowPanel: PanneauMessage<Record<never, never>>;
     closePanel: PanneauMessage<Record<never, never>>;
     goTo: PanneauMessage<Record<never, never>>;
+    profile: PanneauMessage<    {
+    name: string;
+    }>;
     groupRecent: PanneauMessage<Record<never, never>>;
     groupNavigation: PanneauMessage<Record<never, never>>;
     groupCreate: PanneauMessage<Record<never, never>>;
@@ -654,6 +657,7 @@ export const uiMessages: {
     showOptions: PanneauMessage<Record<never, never>>;
     clear: PanneauMessage<Record<never, never>>;
     moreActions: PanneauMessage<Record<never, never>>;
+    time: PanneauMessage<Record<never, never>>;
     commandPalette: PanneauMessage<Record<never, never>>;
     commandResults: PanneauMessage<    {
     count: number;

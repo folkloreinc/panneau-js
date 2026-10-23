@@ -218,4 +218,27 @@ describe('the app shell', () => {
         await user.keyboard('{Escape}');
         await waitFor(() => expect(screen.getByRole('link', { name: 'Contact' })).toHaveFocus());
     });
+
+    it("links the user to their profile, the user's item in the resource users", async () => {
+        const user = userEvent.setup();
+        renderApp({
+            resources: [
+                ...createDefinition().resources,
+                {
+                    id: 'users',
+                    label: { singular: 'user', plural: 'users' },
+                    fields: [{ name: 'name', type: 'text' }],
+                },
+            ],
+        });
+        await user.click(
+            within(screen.getByRole('complementary')).getByRole('link', { name: /Ada/ }),
+        );
+        await waitFor(() =>
+            expect(window.location.pathname).toBe('/panneau/resources/users/usr_1/edit'),
+        );
+        expect(
+            within(screen.getByRole('complementary')).getByRole('link', { name: /Ada/ }),
+        ).toHaveAttribute('aria-current', 'page');
+    });
 });

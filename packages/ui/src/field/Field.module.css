@@ -132,6 +132,15 @@
     margin-inline-start: var(--panneau-space-2);
 }
 
+/* A text before or after the value reads with it, as one URL or one amount: `/pages/home`. */
+.adornment[data-text]:first-child {
+    margin-inline-end: 0;
+}
+
+.adornment[data-text]:last-child {
+    margin-inline-start: 0;
+}
+
 .fieldset {
     display: flex;
     flex-direction: column;

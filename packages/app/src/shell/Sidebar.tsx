@@ -32,6 +32,7 @@ import {
     type NavLink,
     type NavTarget,
     getNavigation,
+    getProfilePath,
     isCurrent,
 } from '../navigation';
 import { type AppRoute, routePath } from '../routes';
@@ -162,6 +163,27 @@ export function Sidebar({
     };
 
     const user = definition.user ?? null;
+    // The user's profile, when the definition has the resource of users
+    const profilePath = getProfilePath(definition, basePath);
+    const currentPath = route.name !== 'not-found' ? routePath(route, basePath) : null;
+    const userContent =
+        user !== null ? (
+            <>
+                {user.avatarUrl !== undefined ? (
+                    <img src={user.avatarUrl} alt="" className={styles.avatar} />
+                ) : (
+                    <span className={styles.avatar} aria-hidden="true">
+                        {user.name.charAt(0).toLocaleUpperCase(definition.locale)}
+                    </span>
+                )}
+                <span className={cx(styles.label, styles.userText)}>
+                    <span className={styles.userName}>{user.name}</span>
+                    {user.email !== undefined ? (
+                        <span className={styles.userEmail}>{user.email}</span>
+                    ) : null}
+                </span>
+            </>
+        ) : null;
     const apple = isApplePlatform();
     const shortcut = apple ? '⌘K' : 'Ctrl+K';
     const keyShortcuts = apple ? 'Meta+K' : 'Control+K';
@@ -248,21 +270,23 @@ export function Sidebar({
             </nav>
             <div className={styles.footer}>
                 {user !== null ? (
-                    <div className={styles.user}>
-                        {user.avatarUrl !== undefined ? (
-                            <img src={user.avatarUrl} alt="" className={styles.avatar} />
-                        ) : (
-                            <span className={styles.avatar} aria-hidden="true">
-                                {user.name.charAt(0).toLocaleUpperCase(definition.locale)}
-                            </span>
-                        )}
-                        <span className={cx(styles.label, styles.userText)}>
-                            <span className={styles.userName}>{user.name}</span>
-                            {user.email !== undefined ? (
-                                <span className={styles.userEmail}>{user.email}</span>
-                            ) : null}
-                        </span>
-                    </div>
+                    profilePath !== null ? (
+                        <Link
+                            href={profilePath}
+                            className={cx(styles.user, styles.userLink)}
+                            aria-label={
+                                collapsed
+                                    ? intl.formatMessage(appMessages.profile, { name: user.name })
+                                    : undefined
+                            }
+                            aria-current={currentPath === profilePath ? 'page' : undefined}
+                            onPress={onNavigate}
+                        >
+                            {userContent}
+                        </Link>
+                    ) : (
+                        <div className={styles.user}>{userContent}</div>
+                    )
                 ) : null}
                 <IconButton
                     icon={SCHEME_ICONS[colorScheme]}

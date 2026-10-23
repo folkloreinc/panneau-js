@@ -1502,6 +1502,9 @@
                 },
                 "abilities": {
                     "$ref": "#/$defs/Abilities"
+                },
+                "resource": {
+                    "type": "string"
                 }
             },
             "required": [

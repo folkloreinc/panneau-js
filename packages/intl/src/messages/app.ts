@@ -97,6 +97,10 @@ export const appMessages = {
         defaultMessage: 'Close the details',
     }),
     goTo: defineMessage({ id: 'panneau.app.goTo', defaultMessage: 'Go to…' }),
+    profile: defineMessage<{ name: string }>({
+        id: 'panneau.app.profile',
+        defaultMessage: 'Your profile ({name})',
+    }),
     groupRecent: defineMessage({ id: 'panneau.app.groupRecent', defaultMessage: 'Recent' }),
     groupNavigation: defineMessage({
         id: 'panneau.app.groupNavigation',

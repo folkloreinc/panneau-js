@@ -19,6 +19,7 @@ export const uiMessages = {
     showOptions: defineMessage({ id: 'panneau.ui.showOptions', defaultMessage: 'Show options' }),
     clear: defineMessage({ id: 'panneau.ui.clear', defaultMessage: 'Clear' }),
     moreActions: defineMessage({ id: 'panneau.ui.moreActions', defaultMessage: 'More actions' }),
+    time: defineMessage({ id: 'panneau.ui.time', defaultMessage: 'Time' }),
     commandPalette: defineMessage({
         id: 'panneau.ui.commandPalette',
         defaultMessage: 'Search',

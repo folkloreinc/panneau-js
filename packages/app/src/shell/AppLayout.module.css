@@ -1,6 +1,6 @@
-/* The frame of the app. One column on a small screen, with a bar on top. From Panneau's `lg`
- * breakpoint (64rem, measured on the Panneau root, a size container): the sidebar on the window's
- * background, and the page on a panel inset from the edges, as in recent browsers. */
+/* The frame of the app: the page on a panel inset from the edges, on the window's background, as
+ * in recent browsers. One column on a small screen, with a bar on top. From Panneau's `lg`
+ * breakpoint (64rem, measured on the Panneau root, a size container): the sidebar on the left. */
 
 .layout {
     display: grid;
@@ -21,7 +21,6 @@
     padding: var(--panneau-space-1) var(--panneau-space-3) var(--panneau-space-1)
         var(--panneau-space-1);
     background: var(--panneau-shell-bg, var(--panneau-color-surface-sunken));
-    border-bottom: var(--panneau-border-width) solid var(--panneau-color-border);
 }
 
 .topBarSearch {
@@ -48,7 +47,11 @@
 }
 
 .main {
+    display: flex;
+    flex-direction: column;
     min-width: 0;
+    padding: 0 var(--panneau-shell-inset, var(--panneau-space-2))
+        var(--panneau-shell-inset, var(--panneau-space-2));
 }
 
 .main:focus {
@@ -56,9 +59,16 @@
 }
 
 .panel {
-    min-height: 100%;
+    flex: 1 1 auto;
+    min-width: 0;
     padding: var(--panneau-space-5) var(--panneau-space-4) var(--panneau-space-8);
     background: var(--panneau-shell-panel-bg, var(--panneau-color-surface));
+    border: var(
+        --panneau-shell-panel-border,
+        var(--panneau-border-width) solid var(--panneau-color-border)
+    );
+    border-radius: var(--panneau-shell-panel-radius, calc(var(--panneau-radius-lg) * 1.5));
+    box-shadow: var(--panneau-shell-panel-shadow, var(--panneau-shadow-sm));
 }
 
 /* The drawer of a small screen. */
@@ -161,12 +171,6 @@
         min-height: calc(100dvh - 2 * var(--panneau-shell-inset, var(--panneau-space-2)));
         padding: var(--panneau-space-6) var(--panneau-shell-panel-padding-x, var(--panneau-space-8))
             var(--panneau-space-10);
-        border: var(
-            --panneau-shell-panel-border,
-            var(--panneau-border-width) solid var(--panneau-color-border)
-        );
-        border-radius: var(--panneau-shell-panel-radius, calc(var(--panneau-radius-lg) * 1.5));
-        box-shadow: var(--panneau-shell-panel-shadow, var(--panneau-shadow-sm));
     }
 }
 

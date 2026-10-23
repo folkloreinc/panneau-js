@@ -8,6 +8,7 @@ export const uiFr: Record<string, string> = {
     'panneau.ui.showOptions': 'Afficher les choix',
     'panneau.ui.clear': 'Effacer',
     'panneau.ui.moreActions': 'Plus d’actions',
+    'panneau.ui.time': 'Heure',
     'panneau.ui.commandPalette': 'Rechercher',
     'panneau.ui.commandResults':
         '{count, plural, =0 {Aucun résultat} one {# résultat} other {# résultats}}',
