@@ -179,6 +179,21 @@ export const fieldsMessages: {
     hoursUnit: PanneauMessage<Record<never, never>>;
     minutesUnit: PanneauMessage<Record<never, never>>;
     secondsUnit: PanneauMessage<Record<never, never>>;
+    searchAddress: PanneauMessage<Record<never, never>>;
+    noPlaces: PanneauMessage<Record<never, never>>;
+    searchAddressHint: PanneauMessage<    {
+    count: number;
+    }>;
+    latitude: PanneauMessage<Record<never, never>>;
+    longitude: PanneauMessage<Record<never, never>>;
+    address: PanneauMessage<Record<never, never>>;
+    removePoint: PanneauMessage<Record<never, never>>;
+    map: PanneauMessage<    {
+    label: string;
+    }>;
+    embedUrl: PanneauMessage<Record<never, never>>;
+    embedLoading: PanneauMessage<Record<never, never>>;
+    embedFailed: PanneauMessage<Record<never, never>>;
     jsonInvalid: PanneauMessage<    {
     error: string;
     }>;

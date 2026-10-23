@@ -24,6 +24,8 @@ export interface MockBackend {
 // @public (undocumented)
 export interface MockBackendOptions {
     definition: DefinitionInput;
+    // Warning: (ae-forgotten-export) The symbol "EmbedValue" needs to be exported by the entry point index.d.ts
+    embed?: (url: string) => EmbedValue | null;
     // Warning: (ae-forgotten-export) The symbol "Values" needs to be exported by the entry point index.d.ts
     items?: Record<string, Values[]>;
     previewUrl?: (context: {

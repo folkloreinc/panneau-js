@@ -32,6 +32,9 @@ export {
     type FieldCheckSource,
     createFieldCheckSource,
 } from './shared/check';
+export { type EmbedAdapter, type EmbedSource, createEmbedSource } from './shared/embed';
+export type { GeocodingResult, GeocodingSource, MapTiles, MapsConfig } from './location/types';
+export { type NominatimSourceOptions, createNominatimSource } from './location/nominatim';
 export type { FieldEntry, FieldEntryProps, FieldProps } from './shared/types';
 export { MissingFieldEntry } from './missing/MissingField';
 export {

@@ -85,7 +85,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     - `date`, `datetime`, `time`;
     - `select`, `email`, `url`, `color`;
     - `media`, `image`, `file`, `relation`, `group`, `repeater`, `slug`;
-    - `tel`, `range`, `duration`, `json`, `tags` ([0033](decisions/0033-more-field-types.md)).
+    - `tel`, `range`, `duration`, `json`, `tags`, `embed`, `location` ([0033](decisions/0033-more-field-types.md)).
 - **`localized`** makes the value an object keyed by locale (`{ "fr": "…", "en": "…" }`). It replaces the separate `localized` field and the `*Localized` PHP classes of v1.
 - **`group`** has `fields`, for a nested object.
 - **`repeater`** has `fields`, or `types` for typed blocks, for an array.
@@ -128,6 +128,8 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 - **`duration` values** are whole numbers of seconds, typed in hours, minutes and seconds. `settings.precision` is `seconds` (the default) or `minutes`. `min` and `max` are in seconds.
 - **`json` values** are objects or arrays, edited as JSON text. The type implies the `json` rule: a client keeps text that doesn't parse as a string, which the rule refuses, and a backend refuses anything but an object, an array or `null`.
 - **`tags` values** are lists of strings. `options` suggest tags; with `"settings": { "allowCustom": false }`, only their values are allowed, and `in` applies to each tag. `min` and `max` count the tags.
+- **`embed` values** are what a URL embeds: `{ "url", "type", "title", "provider", "thumbnailUrl", "html", "width", "height" }` (`EmbedValue`), where everything but `url` comes from the provider's oEmbed. `type` is `video`, `audio`, `photo`, `rich` or `link`. Clients get it from `GET /embeds`, and send `{ "url" }` alone without it.
+- **`location` values** are a point and its address: `{ "lat", "lng", "address" }` (`LocationValue`), with `lat` from -90 to 90, `lng` from -180 to 180, and `address` optional. Settings `zoom` and `center` (`{ "lat", "lng" }`) frame the map before a point is placed, and `tiles` (`{ "url", "attribution", "maxZoom" }`) replaces the app's tiles.
 - **`rules`** use the portable rules below. A backend can also enforce rules that it doesn't expose.
 
 ### Portable validation rules
@@ -621,6 +623,7 @@ With `auth.mode = "external"`, the frontend only calls `GET /auth/session` and s
 | Endpoint                                  | Purpose                                                                                             |
 | ----------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | `GET /search?q=&limit=&resources=`        | results grouped by resource: `{ "data": [ { "resource": "pages", "items": [...], "total": 34 } ] }` |
+| `GET /embeds?url=`                        | what a URL embeds, for `embed` fields: `{ "data": EmbedValue }`, or a `422` when it can't embed it  |
 | `GET /dashboard/widgets/{widget}`         | data for one widget, with the widget's own shape declared in the definition                         |
 | `POST /resources/{resource}/{id}/preview` | sends the unsaved values; returns `{ "url": "…", "expiresAt": "…" }` for iframe previews            |
 

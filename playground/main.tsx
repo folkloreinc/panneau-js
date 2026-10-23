@@ -1,5 +1,6 @@
 import { createPanneauApp } from '@panneau/app';
 import { createRestAdapter } from '@panneau/data';
+import { createNominatimSource } from '@panneau/fields';
 import { createMockBackend } from '@panneau/protocol/mock';
 
 import { createPlaygroundDefinition, createPlaygroundItems } from './definition';
@@ -58,5 +59,7 @@ createPanneauApp({
         },
     ],
     adapter: createRestAdapter({ baseUrl: definition.api.baseUrl, fetch: backend.fetch }),
+    // The address search of location fields, on OpenStreetMap's public geocoder
+    maps: { geocoding: createNominatimSource() },
     config: { protocol: 1, apiBaseUrl: definition.api.baseUrl, basePath, locale: 'en', definition },
 });

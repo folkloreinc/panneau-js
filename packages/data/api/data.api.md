@@ -8,6 +8,7 @@ import type { ActionRequest } from '@panneau/protocol';
 import type { ActionResult } from '@panneau/protocol';
 import type { ActionRun } from '@panneau/protocol';
 import type { Definition } from '@panneau/protocol';
+import type { EmbedValue } from '@panneau/protocol';
 import type { FieldCheckRequest } from '@panneau/protocol';
 import type { FieldCheckResponse } from '@panneau/protocol';
 import type { Item } from '@panneau/protocol';
@@ -77,6 +78,7 @@ export interface DataAdapter {
         endpoint?: string;
     }): PresignedUploads;
     previewItem?(resource: string, id: string, values: Values, options?: RequestOptions): Promise<PreviewResponse>;
+    resolveEmbed?(url: string, options?: RequestOptions): Promise<EmbedValue>;
     runAction(resource: string, action: string, request: ActionRequest, options?: RequestOptions): Promise<ActionResponse>;
     search(q: string, options?: SearchOptions): Promise<SearchResponse>;
     update(resource: string, id: string, values: Values, options?: UpdateOptions): Promise<Item>;

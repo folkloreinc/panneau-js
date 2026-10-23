@@ -98,6 +98,18 @@ export function createPlaygroundDefinition(): DefinitionInput {
                         settings: { step: 0.5, suffix: '/ 5' },
                     },
                     { name: 'contact', type: 'tel', label: 'Press contact' },
+                    {
+                        name: 'video',
+                        type: 'embed',
+                        label: 'Video',
+                        help: 'A YouTube or Vimeo video.',
+                    },
+                    {
+                        name: 'place',
+                        type: 'location',
+                        label: 'Place',
+                        settings: { center: { lat: 45.5017, lng: -73.5673 }, zoom: 14 },
+                    },
                     { name: 'metadata', type: 'json', label: 'Metadata', settings: { rows: 4 } },
                 ],
                 form: {
@@ -112,6 +124,8 @@ export function createPlaygroundDefinition(): DefinitionInput {
                             ],
                         },
                         { type: 'field', name: 'tags' },
+                        { type: 'field', name: 'video' },
+                        { type: 'field', name: 'place' },
                         { type: 'field', name: 'metadata' },
                         {
                             type: 'sidebar',
@@ -337,6 +351,10 @@ export function createPlaygroundItems(): Record<string, Values[]> {
             reading_time: (3 + (index % 7)) * 60,
             rating: (index % 11) / 2,
             metadata: index === 0 ? { source: 'archive', revisions: 3 } : null,
+            place:
+                index === 0
+                    ? { lat: 45.508, lng: -73.554, address: 'Vieux-Port de Montréal, Montréal' }
+                    : null,
         })),
         categories,
         authors,

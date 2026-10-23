@@ -105,6 +105,9 @@ export function DurationDisplay(input: DisplayProps): JSX.Element;
 export function EmailDisplay(input: DisplayProps): JSX.Element;
 
 // @public
+export function EmbedDisplay(input: DisplayProps): JSX.Element;
+
+// @public
 export function EmptyValue(): JSX.Element;
 
 // @public
@@ -309,6 +312,9 @@ export interface LocalQueryResult<T extends ListItem> {
     items: T[];
     total: number;
 }
+
+// @public
+export function LocationDisplay(input: DisplayProps): JSX.Element;
 
 // @public
 export function MediaDisplay(input: DisplayProps): JSX.Element;

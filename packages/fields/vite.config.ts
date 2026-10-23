@@ -21,6 +21,8 @@ export default definePackageConfig({
         'duration/index': 'src/duration/index.ts',
         'json/index': 'src/json/index.ts',
         'tags/index': 'src/tags/index.ts',
+        'embed/index': 'src/embed/index.ts',
+        'location/index': 'src/location/index.ts',
         'localized/index': 'src/localized/index.ts',
         'group/index': 'src/group/index.ts',
         'repeater/index': 'src/repeater/index.ts',

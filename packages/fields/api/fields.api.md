@@ -6,6 +6,7 @@
 
 import { ComponentType } from 'react';
 import type { Definition } from '@panneau/protocol';
+import type { EmbedValue } from '@panneau/protocol';
 import type { Field } from '@panneau/protocol';
 import type { FieldCheckRequest } from '@panneau/protocol';
 import type { FieldCheckResponse } from '@panneau/protocol';
@@ -31,6 +32,9 @@ export interface BoundFieldProps {
 // @public
 export const builtInFields: Readonly<Record<string, FieldEntry>>;
 
+// @public
+export function createEmbedSource(adapter: EmbedAdapter): EmbedSource | null;
+
 // Warning: (tsdoc-code-span-missing-delimiter) The code span is missing its closing backtick
 // Warning: (tsdoc-code-span-missing-delimiter) The code span is missing its closing backtick
 // Warning: (tsdoc-escape-right-brace) The "}" character should be escaped using a backslash to avoid confusion with a TSDoc inline tag
@@ -42,10 +46,29 @@ export const builtInFields: Readonly<Record<string, FieldEntry>>;
 export function createFieldCheckSource(adapter: FieldCheckAdapter, resource: string, id?: string | null): FieldCheckSource | null;
 
 // @public
+export function createNominatimSource(input?: NominatimSourceOptions): GeocodingSource;
+
+// @public
 export function createRelationSource(adapter: RelationListAdapter, input?: RelationSourceOptions): RelationSource;
 
 // @public
 export function DefinitionField(props: FieldEntryProps): JSX.Element;
+
+// @public
+export interface EmbedAdapter {
+    // (undocumented)
+    resolveEmbed?(url: string, options?: {
+        signal?: AbortSignal;
+    }): Promise<EmbedValue>;
+}
+
+// @public
+export interface EmbedSource {
+    // (undocumented)
+    resolve(url: string, options: {
+        signal: AbortSignal;
+    }): Promise<EmbedValue>;
+}
 
 // @public
 export type FieldBinding = ComponentType<FieldBindingProps>;
@@ -142,7 +165,9 @@ export interface FieldsContextValue {
     binding: FieldBinding | null;
     checkSource: FieldCheckSource | null;
     components: Readonly<Record<string, FieldEntry>>;
+    embedSource: EmbedSource | null;
     locales: readonly string[];
+    maps: MapsConfig | null;
     relationSource: RelationSource | null;
     uploadSource: UploadSource | null;
 }
@@ -165,8 +190,10 @@ export interface FieldsProviderProps {
     // (undocumented)
     children?: ReactNode;
     components?: Readonly<Record<string, FieldEntry>>;
+    embedSource?: EmbedSource | null;
     // (undocumented)
     locales?: readonly string[];
+    maps?: MapsConfig | null;
     // (undocumented)
     relationSource?: RelationSource | null;
     uploadSource?: UploadSource | null;
@@ -214,6 +241,31 @@ export function findRule(field: Field, rule: Rule['rule']): Rule | undefined;
 export function formatSize(bytes: number, locale?: string): string;
 
 // @public
+export interface GeocodingResult {
+    // (undocumented)
+    label: string;
+    // (undocumented)
+    lat: number;
+    // (undocumented)
+    lng: number;
+}
+
+// @public
+export interface GeocodingSource {
+    reverse?(point: {
+        lat: number;
+        lng: number;
+    }, options: {
+        signal: AbortSignal;
+        locale?: string;
+    }): Promise<GeocodingResult | null>;
+    search(query: string, options: {
+        signal: AbortSignal;
+        locale?: string;
+    }): Promise<GeocodingResult[]>;
+}
+
+// @public
 export function getAccept(field: Field): string[] | null;
 
 // @public
@@ -235,6 +287,21 @@ export function isFileValue(value: unknown): value is FileValue;
 
 // @public
 export function isRequired(field: Field): boolean;
+
+// @public
+export interface MapsConfig {
+    // (undocumented)
+    geocoding?: GeocodingSource;
+    // (undocumented)
+    tiles?: MapTiles;
+}
+
+// @public
+export interface MapTiles {
+    attribution: string;
+    maxZoom?: number;
+    url: string;
+}
 
 // @public
 export function matchesMime(mime: string, patterns: readonly string[]): boolean;
@@ -273,6 +340,14 @@ export interface NestedFieldProps {
     // (undocumented)
     readOnly?: boolean;
     value?: unknown;
+}
+
+// @public (undocumented)
+export interface NominatimSourceOptions {
+    countryCodes?: readonly string[];
+    email?: string;
+    endpoint?: string;
+    limit?: number;
 }
 
 // @public

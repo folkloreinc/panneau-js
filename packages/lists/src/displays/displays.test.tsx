@@ -104,4 +104,23 @@ describe('displays', () => {
         ).toBe('Foodmontréal');
         expect(renderDisplay('range', 7.5).textContent).toBe('7.5');
     });
+
+    it('shows embeds and places', () => {
+        const embed = renderDisplay('embed', {
+            url: 'https://youtu.be/abc',
+            title: 'A video',
+            thumbnailUrl: 'https://i.ytimg.com/vi/abc/hqdefault.jpg',
+        });
+        expect(embed.querySelector('a')).toHaveAttribute('href', 'https://youtu.be/abc');
+        expect(embed.textContent).toBe('A video');
+        expect(renderDisplay('embed', { url: 'https://example.com/a' }).textContent).toBe(
+            'example.com/a',
+        );
+        expect(
+            renderDisplay('location', { lat: 45.5, lng: -73.56, address: 'Montréal' }).textContent,
+        ).toBe('Montréal');
+        expect(renderDisplay('location', { lat: 45.501689, lng: -73.567256 }).textContent).toBe(
+            '45.50169, -73.56726',
+        );
+    });
 });

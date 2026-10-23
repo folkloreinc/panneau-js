@@ -103,6 +103,16 @@
             "types": "./dist/tags/index.d.ts",
             "default": "./dist/tags/index.js"
         },
+        "./embed": {
+            "@panneau/source": "./src/embed/index.ts",
+            "types": "./dist/embed/index.d.ts",
+            "default": "./dist/embed/index.js"
+        },
+        "./location": {
+            "@panneau/source": "./src/location/index.ts",
+            "types": "./dist/location/index.d.ts",
+            "default": "./dist/location/index.js"
+        },
         "./localized": {
             "@panneau/source": "./src/localized/index.ts",
             "types": "./dist/localized/index.d.ts",
@@ -171,9 +181,11 @@
         "@panneau/intl": "5.0.0-alpha.5",
         "@panneau/protocol": "5.0.0-alpha.5",
         "@panneau/ui": "5.0.0-alpha.5",
+        "leaflet": "^1.9.4",
         "lucide-react": "^1.57.0"
     },
     "devDependencies": {
+        "@types/leaflet": "^1.9.20",
         "@uppy/aws-s3": "^6.3.0",
         "@uppy/core": "^6.3.0"
     }

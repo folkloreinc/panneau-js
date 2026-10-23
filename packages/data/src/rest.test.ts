@@ -268,6 +268,15 @@ describe('createRestAdapter', () => {
         await expect(adapter.get('pages', '1')).rejects.toBeInstanceOf(TeapotError);
     });
 
+    it('resolves embeds', async () => {
+        const { adapter } = setup();
+        expect(await adapter.resolveEmbed?.('https://youtu.be/abc')).toMatchObject({
+            url: 'https://youtu.be/abc',
+            provider: 'YouTube',
+        });
+        await expect(adapter.resolveEmbed?.('nope')).rejects.toBeInstanceOf(ValidationError);
+    });
+
     it('calls the other endpoints of the protocol', async () => {
         const run = { id: 'run/1', action: 'export', resource: 'pages', status: 'running' };
         const { fetch, requests } = createStubFetch((request) => {

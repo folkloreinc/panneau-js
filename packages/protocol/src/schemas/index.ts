@@ -7,11 +7,14 @@ import {
     ActionResult,
     ActionRun,
     ActionRunResponse,
+    EmbedResponse,
+    EmbedValue,
     FieldCheckRequest,
     FieldCheckResponse,
     Item,
     ItemResponse,
     ListResponse,
+    LocationValue,
     MediaInfo,
     MediaItem,
     MediaReference,
@@ -128,6 +131,9 @@ export const namedSchemas = {
     Session,
     SearchResponse,
     PreviewResponse,
+    EmbedValue,
+    EmbedResponse,
+    LocationValue,
 } satisfies Record<string, z.ZodType>;
 
 /** A registry of the named schemas, used to reference them by name in generated files. */

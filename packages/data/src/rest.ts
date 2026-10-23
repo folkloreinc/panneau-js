@@ -10,6 +10,7 @@ import {
     validate,
 } from '@panneau/protocol';
 import type {
+    EmbedResponse,
     FieldCheckResponse,
     Item,
     ListResponse,
@@ -290,6 +291,14 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
                 body: request,
                 signal,
             });
+        },
+        async resolveEmbed(url, { signal } = {}) {
+            const response = await json<EmbedResponse>({
+                path: '/embeds',
+                query: new URLSearchParams({ url }),
+                signal,
+            });
+            return response.data;
         },
         getWidgetData(widget, { signal } = {}) {
             return json<unknown>({ path: `/dashboard/widgets/${encode(widget)}`, signal });

@@ -40,6 +40,35 @@ export const fieldsMessages = {
     hoursUnit: defineMessage({ id: 'panneau.fields.hoursUnit', defaultMessage: 'h' }),
     minutesUnit: defineMessage({ id: 'panneau.fields.minutesUnit', defaultMessage: 'min' }),
     secondsUnit: defineMessage({ id: 'panneau.fields.secondsUnit', defaultMessage: 's' }),
+    searchAddress: defineMessage({
+        id: 'panneau.fields.searchAddress',
+        defaultMessage: 'Search an address',
+    }),
+    noPlaces: defineMessage({ id: 'panneau.fields.noPlaces', defaultMessage: 'No places found' }),
+    searchAddressHint: defineMessage<{ count: number }>({
+        id: 'panneau.fields.searchAddressHint',
+        defaultMessage: 'Type at least {count, plural, one {# character} other {# characters}}.',
+    }),
+    latitude: defineMessage({ id: 'panneau.fields.latitude', defaultMessage: 'Latitude' }),
+    longitude: defineMessage({ id: 'panneau.fields.longitude', defaultMessage: 'Longitude' }),
+    address: defineMessage({ id: 'panneau.fields.address', defaultMessage: 'Address' }),
+    removePoint: defineMessage({
+        id: 'panneau.fields.removePoint',
+        defaultMessage: 'Remove the point',
+    }),
+    map: defineMessage<{ label: string }>({
+        id: 'panneau.fields.map',
+        defaultMessage: 'Map: {label}. Click to place the point, or drag the marker.',
+    }),
+    embedUrl: defineMessage({ id: 'panneau.fields.embedUrl', defaultMessage: 'URL' }),
+    embedLoading: defineMessage({
+        id: 'panneau.fields.embedLoading',
+        defaultMessage: 'Getting the preview…',
+    }),
+    embedFailed: defineMessage({
+        id: 'panneau.fields.embedFailed',
+        defaultMessage: 'This URL can’t be embedded.',
+    }),
     jsonInvalid: defineMessage<{ error: string }>({
         id: 'panneau.fields.jsonInvalid',
         defaultMessage: 'This JSON doesn’t parse: {error}',

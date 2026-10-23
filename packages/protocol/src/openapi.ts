@@ -500,6 +500,24 @@ export function createOpenApiDocument(): JsonObject {
                     },
                 },
             },
+            '/embeds': {
+                get: {
+                    operationId: 'resolveEmbed',
+                    parameters: [
+                        {
+                            ...queryParameter('url', 'The URL to embed.', { type: 'string' }),
+                            required: true,
+                        },
+                    ],
+                    responses: {
+                        200: ok(
+                            "The value of an `embed` field for the URL, from its provider's oEmbed.",
+                            ref('EmbedResponse'),
+                        ),
+                        ...problems(401, 422, 429),
+                    },
+                },
+            },
             '/dashboard/widgets/{widget}': {
                 parameters: [pathParameter('widget', 'Widget id.')],
                 get: {

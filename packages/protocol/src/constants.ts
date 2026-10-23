@@ -38,6 +38,8 @@ export const BUILT_IN_FIELD_TYPES = [
     'duration',
     'json',
     'tags',
+    'embed',
+    'location',
 ] as const;
 export type BuiltInFieldType = (typeof BUILT_IN_FIELD_TYPES)[number];
 

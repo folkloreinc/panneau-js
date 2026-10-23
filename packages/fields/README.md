@@ -39,6 +39,8 @@ Every field takes `value`, `onChange`, `onBlur`, `errors`, `disabled`, `readOnly
 | `@panneau/fields/duration`  | `DurationField`, `formatDuration()`          | seconds, typed in hours, minutes and seconds                        |
 | `@panneau/fields/json`      | `JsonField`, `parseJson()`                   | an object or an array; the text while it doesn't parse              |
 | `@panneau/fields/tags`      | `TagsField`                                  | a list of strings, free or among suggestions                        |
+| `@panneau/fields/embed`     | `EmbedField`                                 | `{ url, title, thumbnailUrl, … }`, from the backend (below)         |
+| `@panneau/fields/location`  | `LocationField`, `createNominatimSource()`   | `{ lat, lng, address }`, on a map (below)                           |
 | `@panneau/fields/localized` | `LocalizedField`                             | `{ fr: …, en: … }`                                                  |
 | `@panneau/fields/group`     | `GroupField`                                 | an object                                                           |
 | `@panneau/fields/repeater`  | `RepeaterField` (items or typed blocks)      | a list of objects; blocks have a `type`                             |
@@ -124,3 +126,30 @@ import { createFieldCheckSource } from '@panneau/fields';
 ```
 
 Without one, fields don't check, and the slug shows its fixed `settings.prefix`.
+
+## Embeds and places
+
+An `embed` field shows the title and the thumbnail of a URL's video, sound or post. It gets them from the backend (`GET /embeds`), through the embed source of the provider; without one, it keeps the URL alone:
+
+```tsx
+import { createEmbedSource } from '@panneau/fields';
+
+<FieldsProvider embedSource={createEmbedSource(adapter)}>…</FieldsProvider>;
+```
+
+A `location` field places a point on a Leaflet map, loaded when the field is first shown. The tiles are OpenStreetMap's by default. `maps` sets other tiles and an address search, a `GeocodingSource`: `createNominatimSource()` searches OpenStreetMap's Nominatim, whose [usage policy](https://operations.osmfoundation.org/policies/nominatim/) suits small volumes; a product with more uses its own service. Without a geocoding source, the field has no address search, and the latitude and longitude are typed or picked on the map.
+
+```tsx
+import { createNominatimSource } from '@panneau/fields';
+
+<FieldsProvider
+    maps={{
+        tiles: { url: 'https://tiles.example.com/{z}/{x}/{y}.png', attribution: '© Example' },
+        geocoding: createNominatimSource({ email: 'dev@example.com', countryCodes: ['ca'] }),
+    }}
+>
+    …
+</FieldsProvider>;
+```
+
+`<Panneau>` and `createPanneauApp()` give the embed source of their adapter, and take `maps`.

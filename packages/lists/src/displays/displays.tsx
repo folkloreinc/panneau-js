@@ -230,6 +230,53 @@ export function TagsDisplay({ value, field }: DisplayProps) {
     );
 }
 
+/** What a URL embeds: its thumbnail and title, linked to it. */
+export function EmbedDisplay({ value }: DisplayProps) {
+    if (
+        value === null ||
+        typeof value !== 'object' ||
+        typeof (value as { url?: unknown }).url !== 'string'
+    ) {
+        return <EmptyValue />;
+    }
+    const { url, title, thumbnailUrl } = value as {
+        url: string;
+        title?: unknown;
+        thumbnailUrl?: unknown;
+    };
+    return (
+        <a className={`${styles.link} ${styles.media}`} href={url} target="_blank" rel="noreferrer">
+            {typeof thumbnailUrl === 'string' ? (
+                <img className={styles.thumbnail} src={thumbnailUrl} alt="" />
+            ) : null}
+            <span className={styles.text}>
+                {typeof title === 'string' ? title : url.replace(/^https?:\/\//, '')}
+            </span>
+        </a>
+    );
+}
+
+/** A place: its address, or its coordinates. */
+export function LocationDisplay({ value }: DisplayProps) {
+    const intl = usePanneauIntl();
+    if (value === null || typeof value !== 'object') {
+        return <EmptyValue />;
+    }
+    const { lat, lng, address } = value as { lat?: unknown; lng?: unknown; address?: unknown };
+    if (typeof address === 'string' && address !== '') {
+        return <span className={styles.text}>{address}</span>;
+    }
+    if (typeof lat !== 'number' || typeof lng !== 'number') {
+        return <EmptyValue />;
+    }
+    const format = (number: number) => intl.formatNumber(number, { maximumFractionDigits: 5 });
+    return (
+        <span className={styles.number}>
+            {format(lat)}, {format(lng)}
+        </span>
+    );
+}
+
 /** A swatch, with the color's code. */
 export function ColorDisplay({ value }: DisplayProps) {
     if (typeof value !== 'string' || value === '') {
@@ -287,4 +334,6 @@ export const builtInDisplays: Readonly<Record<string, DisplayEntry>> = {
     duration: DurationDisplay,
     json: JsonDisplay,
     tags: TagsDisplay,
+    embed: EmbedDisplay,
+    location: LocationDisplay,
 };

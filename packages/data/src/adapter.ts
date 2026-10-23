@@ -3,6 +3,7 @@ import type {
     ActionResult,
     ActionRun,
     Definition,
+    EmbedValue,
     FieldCheckRequest,
     FieldCheckResponse,
     Item,
@@ -131,6 +132,11 @@ export interface DataAdapter {
         request: FieldCheckRequest,
         options?: RequestOptions,
     ): Promise<FieldCheckResponse>;
+    /**
+     * The value of an `embed` field for a URL, from its provider's oEmbed (`GET /embeds`).
+     * Optional: without it, `embed` fields keep the URL alone.
+     */
+    resolveEmbed?(url: string, options?: RequestOptions): Promise<EmbedValue>;
     /** Data of a dashboard widget, in the shape its type defines. */
     getWidgetData(widget: string, options?: RequestOptions): Promise<unknown>;
 }

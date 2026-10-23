@@ -9,6 +9,7 @@ import type { ActionResult } from '@panneau/protocol';
 import type { ActionRun } from '@panneau/protocol';
 import { DataTag } from '@tanstack/react-query';
 import type { Definition } from '@panneau/protocol';
+import type { EmbedValue } from '@panneau/protocol';
 import type { FieldCheckRequest } from '@panneau/protocol';
 import type { FieldCheckResponse } from '@panneau/protocol';
 import type { Item } from '@panneau/protocol';

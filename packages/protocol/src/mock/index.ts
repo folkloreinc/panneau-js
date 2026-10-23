@@ -4,6 +4,7 @@ import { type RuleFailure, checkValues } from '../rules';
 import type { DefinitionInput, ResourceInput } from '../schemas';
 import type {
     ActionResult,
+    EmbedValue,
     FieldCheckResponse,
     Item,
     MediaInfo,
@@ -32,6 +33,11 @@ export interface MockBackendOptions {
      * values. Defaults to a `data:` URL of a plain page with the item's values.
      */
     previewUrl?: (context: { resource: string; item: Item }) => string;
+    /**
+     * The value of `GET /embeds?url=` for a URL, or `null` to refuse it with a `422`. Defaults to
+     * a video for YouTube and Vimeo URLs, and a link for other web pages.
+     */
+    embed?: (url: string) => EmbedValue | null;
 }
 
 export interface MockBackend {
@@ -58,6 +64,49 @@ function defaultPreviewUrl(item: Item): string {
         .join('');
     const html = `<!doctype html><meta charset="utf-8"><title>Preview</title><body style="font-family:system-ui;margin:2rem"><h1>Item ${escapeHtml(item.id)}</h1><dl>${rows}</dl></body>`;
     return `data:text/html;charset=utf-8,${encodeURIComponent(html)}`;
+}
+
+/** What the mock knows of a URL to embed: a video of YouTube or Vimeo, or a web page. */
+function defaultEmbed(url: string): EmbedValue | null {
+    if (!URL.canParse(url)) {
+        return null;
+    }
+    const parsed = new URL(url);
+    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
+        return null;
+    }
+    const host = parsed.hostname.replace(/^www\./, '');
+    const youtube =
+        host === 'youtu.be'
+            ? parsed.pathname.slice(1)
+            : host.endsWith('youtube.com')
+              ? parsed.searchParams.get('v')
+              : null;
+    if (youtube !== null && youtube !== '') {
+        return {
+            url,
+            type: 'video',
+            provider: 'YouTube',
+            title: `YouTube video ${youtube}`,
+            thumbnailUrl: `https://i.ytimg.com/vi/${youtube}/hqdefault.jpg`,
+            html: `<iframe src="https://www.youtube.com/embed/${youtube}" width="560" height="315" allowfullscreen></iframe>`,
+            width: 560,
+            height: 315,
+        };
+    }
+    if (host === 'vimeo.com') {
+        const id = parsed.pathname.split('/').filter(Boolean)[0] ?? '';
+        return {
+            url,
+            type: 'video',
+            provider: 'Vimeo',
+            title: `Vimeo video ${id}`,
+            html: `<iframe src="https://player.vimeo.com/video/${id}" width="640" height="360" allowfullscreen></iframe>`,
+            width: 640,
+            height: 360,
+        };
+    }
+    return { url, type: 'link', provider: host, title: host };
 }
 
 const DEFAULT_MESSAGES: Record<string, (failure: RuleFailure) => string> = {
@@ -527,6 +576,16 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
 
         if (segments.length === 1 && segments[0] === 'definition' && method === 'GET') {
             return json(200, definition);
+        }
+        if (segments.length === 1 && segments[0] === 'embeds' && method === 'GET') {
+            const url = new URL(request.url, 'http://panneau.test').searchParams.get('url') ?? '';
+            const embed = url === '' ? null : (options.embed ?? defaultEmbed)(url);
+            return embed !== null
+                ? json(200, { data: embed })
+                : problem(422, 'The given data was invalid.', {
+                      type: 'urn:panneau:problem:validation',
+                      errors: { url: ['This URL can’t be embedded.'] },
+                  });
         }
         if (segments.length === 1 && segments[0] === 'search' && method === 'GET') {
             return search(url.searchParams);

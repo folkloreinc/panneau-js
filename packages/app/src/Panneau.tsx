@@ -11,6 +11,7 @@ import {
 import { type DataAdapter, isApiError } from '@panneau/data';
 import { createLaravelAdapter } from '@panneau/data/laravel';
 import { DataAdapterProvider, definitionQueryOptions } from '@panneau/data/query';
+import { FieldsProvider, type MapsConfig, createEmbedSource } from '@panneau/fields';
 import { appMessages } from '@panneau/intl';
 import type { BootConfig } from '@panneau/protocol';
 import { Button, type NamedIconLoader, PanneauRoot, Spinner, usePanneauIntl } from '@panneau/ui';
@@ -53,6 +54,11 @@ export interface PanneauProps {
      * to `loginUrl` when there is one.
      */
     onUnauthorized?: (context: UnauthorizedContext) => void;
+    /**
+     * The tiles and the address search of the maps of `location` fields. Defaults to
+     * OpenStreetMap's tiles, without an address search (decision 0033).
+     */
+    maps?: MapsConfig | null;
 }
 
 function redirectToLogin({ loginUrl }: UnauthorizedContext) {
@@ -80,9 +86,11 @@ function Content({
     iconLoader,
     session,
     onUnauthorized,
+    maps,
 }: Required<Pick<PanneauProps, 'config' | 'adapter' | 'onUnauthorized'>> & {
     plugins: readonly PanneauPlugin[];
     iconLoader: NamedIconLoader | null;
+    maps: MapsConfig | null;
     session: ReturnType<typeof createSessionState>;
 }) {
     const [router] = useState(createHistoryRouter);
@@ -125,12 +133,15 @@ function Content({
                 />
             ) : (
                 <PanneauProvider plugins={plugins} definition={definition} router={router}>
-                    <Shell
-                        definition={definition}
-                        basePath={config.basePath}
-                        colorScheme={scheme}
-                        onColorSchemeChange={setColorScheme}
-                    />
+                    {/* What `embed` and `location` fields need, in every form */}
+                    <FieldsProvider embedSource={createEmbedSource(adapter)} maps={maps}>
+                        <Shell
+                            definition={definition}
+                            basePath={config.basePath}
+                            colorScheme={scheme}
+                            onColorSchemeChange={setColorScheme}
+                        />
+                    </FieldsProvider>
                 </PanneauProvider>
             )}
         </PanneauRoot>
@@ -180,6 +191,7 @@ export function Panneau({
     queryClient,
     iconLoader = lucideIconLoader,
     onUnauthorized = redirectToLogin,
+    maps = null,
 }: PanneauProps) {
     const [state] = useState(() => {
         const session = createSessionState();
@@ -202,6 +214,7 @@ export function Panneau({
                     iconLoader={iconLoader}
                     session={state.session}
                     onUnauthorized={onUnauthorized}
+                    maps={maps}
                 />
             </DataAdapterProvider>
         </QueryClientProvider>

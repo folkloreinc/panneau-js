@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 
 import type { PanneauPlugin } from '@panneau/core';
 import type { DataAdapter } from '@panneau/data';
+import type { MapsConfig } from '@panneau/fields';
 import type { BootConfig, BootConfigInput } from '@panneau/protocol';
 import type { NamedIconLoader } from '@panneau/ui';
 
@@ -32,6 +33,11 @@ export interface PanneauAppOptions {
      * browser to the login URL, when there is one.
      */
     onUnauthorized?: (context: UnauthorizedContext) => void;
+    /**
+     * The tiles and the address search of the maps of `location` fields: `{ geocoding:
+     * createNominatimSource() }`. Defaults to OpenStreetMap's tiles, without an address search.
+     */
+    maps?: MapsConfig | null;
 }
 
 /** A mounted app. */

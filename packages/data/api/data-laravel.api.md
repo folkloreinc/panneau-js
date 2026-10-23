@@ -8,6 +8,7 @@ import type { ActionRequest } from '@panneau/protocol';
 import type { ActionResult } from '@panneau/protocol';
 import type { ActionRun } from '@panneau/protocol';
 import type { Definition } from '@panneau/protocol';
+import type { EmbedValue } from '@panneau/protocol';
 import type { FieldCheckRequest } from '@panneau/protocol';
 import type { FieldCheckResponse } from '@panneau/protocol';
 import type { Item } from '@panneau/protocol';
