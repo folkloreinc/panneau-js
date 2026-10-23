@@ -10,7 +10,7 @@ npm install @panneau/media@^5.0.0-alpha.0 @tanstack/react-query react-aria-compo
 | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `@panneau/media`        | `MediaField`, `ImageField`, `MediaFieldEntry`, `mediaPlugin`, `getImageOptions()`, `createResourceMediaSource()`, `getLibrary()`, `toMediaReference()`, `toMediaReferences()`, `isProcessing()` |
 | `@panneau/media/picker` | `MediaPicker`, and the types of its sources: `MediaSource`, `MediaQuery`, `MediaPage`, `PickerMedia`, `MediaSort`                                                                               |
-| `@panneau/media/editor` | `ImageEditor`, `useImageEditorTools()`, and the types of the editor and its tools: `EditedImage`, `ImageEditorTool`, `ImageEditorToolContext`                                                   |
+| `@panneau/media/editor` | `ImageEditor`, `ImageEditorDialog`, `useImageEditorTools()`, and the types of the editor and its tools: `EditedImage`, `ImageEditorTool`, `ImageEditorToolContext`                              |
 
 ## The media field
 
@@ -83,20 +83,30 @@ const sources = definition.resources
 
 ## The image editor
 
-`ImageEditor` (`@panneau/media/editor`, [decision 0031](../../docs/decisions/0031-image-editor-and-image-field.md)) edits a transform of an image (the protocol's `MediaTransform`) in a dialog: the image as it will be rendered, the overlay of a tool over it, the tool's options on the side, and the result. This entry point only imports `@panneau/ui`, `@panneau/intl` and the runtime of `@panneau/protocol`.
+`ImageEditor` (`@panneau/media/editor`, [decision 0031](../../docs/decisions/0031-image-editor-and-image-field.md)) edits a transform of an image (the protocol's `MediaTransform`): the image as it will be rendered, the overlay of a tool over it, the tool's options on the side, and the result. This entry point only imports `@panneau/ui`, `@panneau/intl` and the runtime of `@panneau/protocol`.
 
 - **Tools.** Crop (a frame with handles and thirds, ratios, and numbers), rotate (with flips) and focal point (with the automatic crops it gives), from `useImageEditorTools()`. A product adds its own: a panel, an overlay drawn in the coordinates of the view, and a `validate()` that says why the edits can't be applied yet. Tools can add their own keys to the transform.
 - **Keyboard.** The crop frame and the focal point can be focused: arrow keys move them, and Shift + arrow keys resize the frame.
 - **The field's rules.** `ratios` are offered, or enforced with `enforceRatios`. With `cropRequired`, the editor proposes the largest crop of the first ratio around the focal point, or waits for a crop.
 - **The base of a transform for one use.** When the image has its own transform (`mediaTransform`, from its library), the edits apply over it by default, and the editor returns `{ base: "media", baseTransform, … }`. From the original file, it returns the edits alone. `canChooseBase` lets the user choose. When the media's transform is no longer the `baseTransform` of the value, the editor moves the crop inside the new version and says so.
-- It returns null when there is nothing to apply. On phones, it is a full-screen sheet. `--panneau-image-editor-stage` and `--panneau-image-editor-stage-pattern` set the colors of the stage, which stays dark.
+- **In a page or in a dialog.** `ImageEditor` fits where it is placed, at the height its `className` gives it (40rem by default), and lays itself out for its own width: in a narrow panel, the image is on top and the tools under it. It shows Cancel when it gets `onCancel`. Its edits start from `value` when it mounts: give it a new `key` to start again from another one. `ImageEditorDialog` opens it in a large dialog, and a full-screen sheet on phones, with `isOpen`, `onOpenChange` and a `title`: Apply and Cancel close it, and each time it opens, the edits start from the value again.
+- It returns null when there is nothing to apply. `--panneau-image-editor-stage` and `--panneau-image-editor-stage-pattern` set the colors of the stage, which stays dark.
 
 ```tsx
-import { ImageEditor, useImageEditorTools } from '@panneau/media/editor';
+import { ImageEditor, ImageEditorDialog, useImageEditorTools } from '@panneau/media/editor';
 
 const tools = useImageEditorTools();
 
+// In a page.
 <ImageEditor
+    key={reference.id}
+    image={image}
+    value={reference.transform ?? null}
+    onApply={(transform) => onChange({ ...reference, transform })}
+/>;
+
+// In a dialog.
+<ImageEditorDialog
     isOpen={isOpen}
     onOpenChange={setOpen}
     image={{ label: 'Cover', url, width: 4000, height: 3000, mediaTransform: media.transform }}

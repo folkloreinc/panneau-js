@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { cleanup, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Stamp } from 'lucide-react';
 import { describe, expect, it, vi } from 'vitest';
@@ -10,19 +10,9 @@ import type { ImageEditorProps } from './types';
 
 function open(props: Partial<ImageEditorProps> = {}) {
     const onApply = vi.fn<ImageEditorProps['onApply']>();
-    const onOpenChange = vi.fn<ImageEditorProps['onOpenChange']>();
-    renderInRoot(
-        <ImageEditor
-            isOpen
-            onOpenChange={onOpenChange}
-            image={harbour}
-            value={null}
-            onApply={onApply}
-            {...props}
-        />,
-    );
-    const dialog = within(screen.getByRole('dialog'));
-    return { dialog, onApply, onOpenChange };
+    renderInRoot(<ImageEditor image={harbour} value={null} onApply={onApply} {...props} />);
+    const dialog = within(screen.getByRole('group', { name: 'Edit image' }));
+    return { dialog, onApply };
 }
 
 const apply = (dialog: ReturnType<typeof within>, name = 'Apply') =>
@@ -30,7 +20,7 @@ const apply = (dialog: ReturnType<typeof within>, name = 'Apply') =>
 
 describe('ImageEditor', () => {
     it('proposes the largest crop of the first ratio a field requires, around the focal point', async () => {
-        const { dialog, onApply, onOpenChange } = open({
+        const { dialog, onApply } = open({
             ratios: ['16:9', '1:1'],
             enforceRatios: true,
             cropRequired: true,
@@ -42,7 +32,6 @@ describe('ImageEditor', () => {
         await apply(dialog);
 
         expect(onApply).toHaveBeenCalledWith({ crop: { x: 0, y: 375, width: 4000, height: 2250 } });
-        expect(onOpenChange).toHaveBeenCalledWith(false);
     });
 
     it('fits the crop to the ratio chosen', async () => {
@@ -167,5 +156,23 @@ describe('ImageEditor', () => {
         expect(dialog.queryByRole('radiogroup', { name: 'Tool' })).not.toBeInTheDocument();
         expect(dialog.getByRole('button', { name: 'Apply' })).toBeDisabled();
         expect(dialog.getByText('Add a stamp.')).toBeInTheDocument();
+    });
+
+    it('fits in a page, and shows Cancel only when it can cancel', async () => {
+        const onApply = vi.fn();
+        renderInRoot(
+            <ImageEditor image={harbour} value={null} aria-label="Cover crop" onApply={onApply} />,
+        );
+        const editor = within(screen.getByRole('group', { name: 'Cover crop' }));
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+        expect(editor.queryByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();
+        await apply(editor);
+        expect(onApply).toHaveBeenCalledWith(null);
+
+        cleanup();
+        const onCancel = vi.fn();
+        const { dialog } = open({ onCancel });
+        await userEvent.click(dialog.getByRole('button', { name: 'Cancel' }));
+        expect(onCancel).toHaveBeenCalled();
     });
 });

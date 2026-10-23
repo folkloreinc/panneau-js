@@ -3,7 +3,7 @@
 '@panneau/intl': minor
 ---
 
-`@panneau/media/editor`: the image editor (decision 0031). `ImageEditor` edits a transform of an image in a dialog, with the image as it will be rendered:
+`@panneau/media/editor`: the image editor (decision 0031). It edits a transform of an image, with the image as it will be rendered. `ImageEditor` fits in a page or a panel, and lays itself out for its own width. `ImageEditorDialog` opens it in a large dialog, and a full-screen sheet on phones.
 
 - **Tools:** crop (a frame with handles and thirds, ratios, and numbers), rotate (with flips) and focal point (with the automatic crops it gives), from `useImageEditorTools()`. A product adds its own, with a panel, an overlay and a `validate()`.
 - **The keyboard** moves and resizes the crop frame, and moves the focal point.

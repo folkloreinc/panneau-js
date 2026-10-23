@@ -1,5 +1,5 @@
 import { ArrowLeft, Undo2 } from 'lucide-react';
-import { useEffect, useId, useState } from 'react';
+import { type ReactNode, useEffect, useId, useState } from 'react';
 
 import { mediaMessages as messages } from '@panneau/intl';
 import type { MediaTransform } from '@panneau/protocol';
@@ -20,7 +20,12 @@ import {
     viewSize,
 } from './geometry';
 import { useImageEditorTools } from './tools';
-import type { ImageEditorProps, ImageEditorToolContext, TransformBase } from './types';
+import type {
+    ImageEditorDialogProps,
+    ImageEditorProps,
+    ImageEditorToolContext,
+    TransformBase,
+} from './types';
 
 /** The edits of a transform, without what doesn't change the image. */
 function cleanEdits(transform: MediaTransform): MediaTransform {
@@ -37,17 +42,71 @@ function cleanEdits(transform: MediaTransform): MediaTransform {
  * The image editor (decision 0031): the image as it will be rendered, with the overlay of a tool
  * over it, the tool's options on the side, and the result. It edits a transform for one use, over
  * the media's own transform or from the original file, and returns it in the protocol's shape.
+ *
+ * It fits in a page or a panel, at the height its `className` gives it. `ImageEditorDialog` opens
+ * it in a dialog.
  */
-export function ImageEditor(props: ImageEditorProps) {
+export function ImageEditor({ 'aria-label': label, className, ...props }: ImageEditorProps) {
+    const intl = usePanneauIntl();
+    const { baseChoice, content, actions } = useImageEditor(props);
+    return (
+        <div
+            role="group"
+            aria-label={label ?? intl.formatMessage(messages.editorTitle)}
+            className={className !== undefined ? `${styles.inline} ${className}` : styles.inline}
+        >
+            {baseChoice}
+            {content}
+            {actions}
+        </div>
+    );
+}
+
+/** The image editor in a large dialog, and a full-screen sheet on phones. Apply and Cancel close it. */
+export function ImageEditorDialog(props: ImageEditorDialogProps) {
     // A new editor each time it opens: its edits start from the value again.
     if (!props.isOpen) {
         return null;
     }
-    return <OpenImageEditor {...props} />;
+    return <OpenImageEditorDialog {...props} />;
 }
 
-function OpenImageEditor({
+function OpenImageEditorDialog({
+    isOpen: _isOpen,
     onOpenChange,
+    title,
+    onApply,
+    ...props
+}: ImageEditorDialogProps) {
+    const intl = usePanneauIntl();
+    const close = () => onOpenChange(false);
+    const { baseChoice, content, actions } = useImageEditor({
+        ...props,
+        onApply: (transform) => {
+            onApply(transform);
+            close();
+        },
+        onCancel: close,
+    });
+    return (
+        <Dialog
+            title={title ?? intl.formatMessage(messages.editorTitle)}
+            size="xl"
+            fullScreenOnPhone
+            isOpen
+            onOpenChange={onOpenChange}
+            className={styles.dialog}
+            bodyClassName={styles.body}
+            headerContent={baseChoice}
+            footer={actions}
+        >
+            {content}
+        </Dialog>
+    );
+}
+
+/** The parts of the editor, which `ImageEditor` and `ImageEditorDialog` lay out. */
+function useImageEditor({
     image,
     value,
     base: newBase,
@@ -56,11 +115,15 @@ function OpenImageEditor({
     ratios = [],
     enforceRatios = false,
     cropRequired = false,
-    title,
     applyLabel,
     onBack,
     onApply,
-}: ImageEditorProps) {
+    onCancel,
+}: Omit<ImageEditorProps, 'aria-label' | 'className'>): {
+    baseChoice: ReactNode;
+    content: ReactNode;
+    actions: ReactNode;
+} {
     const intl = usePanneauIntl();
     const hintId = useId();
     const problemId = useId();
@@ -194,83 +257,36 @@ function OpenImageEditor({
             : edits;
     };
 
-    return (
-        <Dialog
-            title={title ?? intl.formatMessage(messages.editorTitle)}
-            size="xl"
-            fullScreenOnPhone
-            isOpen
-            onOpenChange={onOpenChange}
-            className={styles.dialog}
-            bodyClassName={styles.body}
-            headerContent={
-                canChooseBase && own !== null ? (
-                    <div className={styles.baseChoice}>
-                        <Text as="span" size="sm" muted id={baseLabelId}>
-                            {intl.formatMessage(messages.editorStartFrom)}
-                        </Text>
-                        <SegmentedControl
-                            aria-labelledby={baseLabelId}
-                            size="sm"
-                            value={base}
-                            onChange={(next) => {
-                                // The edits are in the pixels of their base: they start over.
-                                setBase(next as TransformBase);
-                                setTransform({});
-                            }}
-                            options={[
-                                {
-                                    value: 'media',
-                                    label: intl.formatMessage(messages.editorBaseMedia),
-                                },
-                                {
-                                    value: 'original',
-                                    label: intl.formatMessage(messages.editorBaseOriginal),
-                                },
-                            ]}
-                        />
-                    </div>
-                ) : null
-            }
-            footer={(close) => (
-                <div className={styles.footer}>
-                    {onBack !== undefined ? (
-                        <Button variant="ghost" icon={ArrowLeft} onPress={onBack}>
-                            {intl.formatMessage(messages.editorBack)}
-                        </Button>
-                    ) : null}
-                    <Button
-                        variant="ghost"
-                        icon={Undo2}
-                        className={styles.reset}
-                        onPress={() => setTransform({})}
-                    >
-                        {intl.formatMessage(messages.editorReset)}
-                    </Button>
-                    <span className={styles.footerEnd}>
-                        {problem !== null ? (
-                            <Text as="span" size="sm" tone="danger" id={problemId}>
-                                {problem}
-                            </Text>
-                        ) : null}
-                        <Button onPress={close} className={styles.cancel}>
-                            {intl.formatMessage(messages.editorCancel)}
-                        </Button>
-                        <Button
-                            variant="primary"
-                            isDisabled={problem !== null}
-                            aria-describedby={problem !== null ? problemId : undefined}
-                            onPress={() => {
-                                onApply(result());
-                                close();
-                            }}
-                        >
-                            {applyLabel ?? intl.formatMessage(messages.editorApply)}
-                        </Button>
-                    </span>
+    return {
+        baseChoice:
+            canChooseBase && own !== null ? (
+                <div className={styles.baseChoice}>
+                    <Text as="span" size="sm" muted id={baseLabelId}>
+                        {intl.formatMessage(messages.editorStartFrom)}
+                    </Text>
+                    <SegmentedControl
+                        aria-labelledby={baseLabelId}
+                        size="sm"
+                        value={base}
+                        onChange={(next) => {
+                            // The edits are in the pixels of their base: they start over.
+                            setBase(next as TransformBase);
+                            setTransform({});
+                        }}
+                        options={[
+                            {
+                                value: 'media',
+                                label: intl.formatMessage(messages.editorBaseMedia),
+                            },
+                            {
+                                value: 'original',
+                                label: intl.formatMessage(messages.editorBaseOriginal),
+                            },
+                        ]}
+                    />
                 </div>
-            )}
-        >
+            ) : null,
+        content: (
             <div className={styles.layout}>
                 <div className={styles.stageColumn}>
                     {start.changed ? (
@@ -365,6 +381,43 @@ function OpenImageEditor({
                     </div>
                 </div>
             </div>
-        </Dialog>
-    );
+        ),
+        actions: (
+            <div className={styles.footer}>
+                {onBack !== undefined ? (
+                    <Button variant="ghost" icon={ArrowLeft} onPress={onBack}>
+                        {intl.formatMessage(messages.editorBack)}
+                    </Button>
+                ) : null}
+                <Button
+                    variant="ghost"
+                    icon={Undo2}
+                    className={styles.reset}
+                    onPress={() => setTransform({})}
+                >
+                    {intl.formatMessage(messages.editorReset)}
+                </Button>
+                <span className={styles.footerEnd}>
+                    {problem !== null ? (
+                        <Text as="span" size="sm" tone="danger" id={problemId}>
+                            {problem}
+                        </Text>
+                    ) : null}
+                    {onCancel !== undefined ? (
+                        <Button onPress={onCancel} className={styles.cancel}>
+                            {intl.formatMessage(messages.editorCancel)}
+                        </Button>
+                    ) : null}
+                    <Button
+                        variant="primary"
+                        isDisabled={problem !== null}
+                        aria-describedby={problem !== null ? problemId : undefined}
+                        onPress={() => onApply(result())}
+                    >
+                        {applyLabel ?? intl.formatMessage(messages.editorApply)}
+                    </Button>
+                </span>
+            </div>
+        ),
+    };
 }

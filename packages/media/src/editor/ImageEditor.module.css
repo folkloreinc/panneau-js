@@ -2,13 +2,29 @@
  * The image editor: `--panneau-*` tokens only, so a project's theme applies. The stage stays dark
  * in both schemes, as photo editors do, so that the image reads the same:
  * `--panneau-image-editor-stage` and `--panneau-image-editor-stage-pattern` set its colors.
+ * Its layout follows its own width, in a page, a panel or a dialog.
  */
+
+.inline {
+    container: panneau-image-editor / inline-size;
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-3);
+    height: 40rem;
+    min-height: 0;
+}
+
+.inline > .footer {
+    padding-top: var(--panneau-space-3);
+    border-top: var(--panneau-border-width) solid var(--panneau-color-border);
+}
 
 .dialog {
     height: min(48rem, calc(100dvh - 2 * var(--panneau-space-4)));
 }
 
 .body {
+    container: panneau-image-editor / inline-size;
     display: flex;
     flex-direction: column;
     padding-top: var(--panneau-space-2);
@@ -311,8 +327,8 @@
     margin-inline-start: auto;
 }
 
-/* Tablets and phones: the image on top, the tools under it. */
-@media (max-width: 48rem) {
+/* Narrow: the image on top, the tools under it. */
+@container panneau-image-editor (max-width: 48rem) {
     .layout {
         grid-template-columns: minmax(0, 1fr);
         grid-template-rows: minmax(14rem, 1fr) auto;
@@ -332,14 +348,14 @@
     }
 }
 
-/* Phones: a full-screen sheet, whose close button cancels. */
+/* Phones: the dialog is a full-screen sheet, whose close button cancels. */
 @media (max-width: 30rem) {
     .dialog {
         height: 100%;
     }
 
-    .cancel,
-    .reset {
+    .dialog .cancel,
+    .dialog .reset {
         display: none;
     }
 

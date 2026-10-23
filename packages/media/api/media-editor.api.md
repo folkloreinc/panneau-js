@@ -20,25 +20,36 @@ export interface EditedImage {
 }
 
 // @public
-export function ImageEditor(props: ImageEditorProps): JSX.Element | null;
+export function ImageEditor(input: ImageEditorProps): JSX.Element;
+
+// @public
+export function ImageEditorDialog(props: ImageEditorDialogProps): JSX.Element | null;
+
+// @public (undocumented)
+export interface ImageEditorDialogProps extends Omit<ImageEditorProps, 'onCancel' | 'aria-label' | 'className'> {
+    // (undocumented)
+    isOpen: boolean;
+    onApply: (transform: MediaTransform | null) => void;
+    // (undocumented)
+    onOpenChange: (isOpen: boolean) => void;
+    title?: string;
+}
 
 // @public (undocumented)
 export interface ImageEditorProps {
+    'aria-label'?: string;
     applyLabel?: string;
     base?: TransformBase;
     canChooseBase?: boolean;
+    className?: string;
     cropRequired?: boolean;
     enforceRatios?: boolean;
     // (undocumented)
     image: EditedImage;
-    // (undocumented)
-    isOpen: boolean;
     onApply: (transform: MediaTransform | null) => void;
     onBack?: () => void;
-    // (undocumented)
-    onOpenChange: (isOpen: boolean) => void;
+    onCancel?: () => void;
     ratios?: readonly string[];
-    title?: string;
     tools?: readonly ImageEditorTool[];
     value: MediaTransform | null;
 }

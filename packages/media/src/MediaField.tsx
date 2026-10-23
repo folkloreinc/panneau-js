@@ -25,7 +25,7 @@ import { Badge, Button, Fieldset, IconButton, Spinner, usePanneauIntl } from '@p
 
 import { ImageItem, editedImageOf } from './ImageItem';
 import styles from './MediaField.module.css';
-import { ImageEditor } from './editor/ImageEditor';
+import { ImageEditorDialog } from './editor/ImageEditor';
 import { useImageEditorTools } from './editor/tools';
 import { MediaPicker } from './picker/MediaPicker';
 import type { MediaSource } from './picker/types';
@@ -628,7 +628,7 @@ export function MediaField(props: MediaFieldProps) {
             edited !== null &&
             editedImage !== null &&
             editing !== null ? (
-                <ImageEditor
+                <ImageEditorDialog
                     isOpen
                     onOpenChange={(isOpen) => {
                         if (!isOpen) {
