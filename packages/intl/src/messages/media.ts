@@ -519,4 +519,77 @@ export const mediaMessages = {
         id: 'panneau.media.editor.cropRatios',
         defaultMessage: 'The crop must be {ratios}.',
     }),
+    // The `image` field (decision 0031).
+    chooseImage: defineMessage({
+        id: 'panneau.media.chooseImage',
+        defaultMessage: 'Choose image',
+    }),
+    addImages: defineMessage({
+        id: 'panneau.media.addImages',
+        defaultMessage: 'Add images',
+    }),
+    uploadImage: defineMessage({
+        id: 'panneau.media.uploadImage',
+        defaultMessage: 'Upload an image',
+    }),
+    uploadImages: defineMessage({
+        id: 'panneau.media.uploadImages',
+        defaultMessage: 'Upload images',
+    }),
+    noImage: defineMessage({
+        id: 'panneau.media.noImage',
+        defaultMessage: 'No image',
+    }),
+    imageEdit: defineMessage({
+        id: 'panneau.media.image.edit',
+        defaultMessage: 'Edit',
+    }),
+    imageEditOf: defineMessage<{ name: string }>({
+        id: 'panneau.media.image.editOf',
+        defaultMessage: 'Edit {name}',
+    }),
+    imageCropped: defineMessage({
+        id: 'panneau.media.image.cropped',
+        defaultMessage: 'Cropped for this use',
+    }),
+    imageNeedsCrop: defineMessage({
+        id: 'panneau.media.image.needsCrop',
+        defaultMessage: 'Needs a crop',
+    }),
+    imageOverLibrary: defineMessage({
+        id: 'panneau.media.image.overLibrary',
+        defaultMessage: 'Over the library’s edits',
+    }),
+    imageFromOriginal: defineMessage({
+        id: 'panneau.media.image.fromOriginal',
+        defaultMessage: 'From the original',
+    }),
+    imageLibraryChanged: defineMessage({
+        id: 'panneau.media.image.libraryChanged',
+        defaultMessage: 'Library version changed: check the crop',
+    }),
+    imageNextCrop: defineMessage({
+        id: 'panneau.media.image.nextCrop',
+        defaultMessage: 'Next: crop',
+    }),
+    imageCropForUse: defineMessage({
+        id: 'panneau.media.image.cropForUse',
+        defaultMessage: 'Crop for this use',
+    }),
+    imageUseCrop: defineMessage({
+        id: 'panneau.media.image.useCrop',
+        defaultMessage: 'Use this crop',
+    }),
+    imageRatios: defineMessage<{ ratios: string }>({
+        id: 'panneau.media.image.ratios',
+        defaultMessage: '{ratios}',
+    }),
+    imageSuggestedRatios: defineMessage<{ ratios: string }>({
+        id: 'panneau.media.image.suggestedRatios',
+        defaultMessage: 'Suggested: {ratios}',
+    }),
+    imageCropRequired: defineMessage({
+        id: 'panneau.media.image.cropRequired',
+        defaultMessage: 'Crop required',
+    }),
 };

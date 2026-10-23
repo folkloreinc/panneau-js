@@ -467,7 +467,7 @@ describe('MediaField', () => {
 });
 
 describe('mediaPlugin', () => {
-    it('provides the media type only: the file type is built into the fields', () => {
-        expect(Object.keys(mediaPlugin.fields)).toEqual(['media']);
+    it('provides the media and image types: the file type is built into the fields', () => {
+        expect(Object.keys(mediaPlugin.fields)).toEqual(['media', 'image']);
     });
 });

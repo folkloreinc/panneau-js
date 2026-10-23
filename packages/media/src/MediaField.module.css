@@ -77,3 +77,101 @@
 .upload {
     flex: 1 1 16rem;
 }
+
+/* The `image` field (decision 0031): images as they are rendered for this use. */
+
+.constraints {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: var(--panneau-space-1);
+    margin-inline-start: var(--panneau-space-2);
+    vertical-align: middle;
+}
+
+.imageCard {
+    display: grid;
+    grid-template-columns: minmax(0, 18rem) minmax(0, 1fr);
+    gap: var(--panneau-space-4);
+    align-items: start;
+    padding: var(--panneau-space-3);
+    background-color: var(--panneau-color-surface-sunken);
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-radius-md);
+}
+
+.preview {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: auto;
+    max-height: 14rem;
+    color: var(--panneau-color-text-muted);
+    border-radius: var(--panneau-radius-sm);
+}
+
+.badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--panneau-space-1);
+}
+
+.imageActions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--panneau-space-2);
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+    gap: var(--panneau-space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-1);
+    min-width: 0;
+    padding: var(--panneau-space-2);
+    background-color: var(--panneau-color-surface-sunken);
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-radius-md);
+}
+
+.tilePreview {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    color: var(--panneau-color-text-muted);
+    border-radius: var(--panneau-radius-sm);
+}
+
+.tileActions {
+    position: absolute;
+    inset-block-start: var(--panneau-space-3);
+    inset-inline-end: var(--panneau-space-3);
+    display: flex;
+    gap: var(--panneau-space-1);
+    padding: 2px;
+    background-color: var(--panneau-color-surface-raised);
+    border-radius: var(--panneau-radius-md);
+    box-shadow: var(--panneau-shadow-sm);
+}
+
+@media (max-width: 30rem) {
+    .imageCard {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .gallery {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

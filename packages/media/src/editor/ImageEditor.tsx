@@ -1,5 +1,5 @@
 import { ArrowLeft, Undo2 } from 'lucide-react';
-import { type ReactNode, useEffect, useId, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 
 import { mediaMessages as messages } from '@panneau/intl';
 import type { MediaTransform } from '@panneau/protocol';
@@ -7,8 +7,8 @@ import { matchesRatio, parseRatio } from '@panneau/protocol/runtime';
 import { Alert, Button, Dialog, SegmentedControl, Text, usePanneauIntl } from '@panneau/ui';
 
 import styles from './ImageEditor.module.css';
+import { drawBase, ownTransform, ratioLabel, viewBox } from './draw';
 import {
-    type Rect,
     type Size,
     clampCrop,
     cropAround,
@@ -21,14 +21,6 @@ import {
 } from './geometry';
 import { useImageEditorTools } from './tools';
 import type { ImageEditorProps, ImageEditorToolContext, TransformBase } from './types';
-
-const box = (rect: Rect) =>
-    `${String(rect.x)} ${String(rect.y)} ${String(rect.width)} ${String(rect.height)}`;
-
-/** Whether a transform has edits. */
-function hasEdits(transform: MediaTransform | null | undefined): transform is MediaTransform {
-    return transform !== null && transform !== undefined && !sameEdits(transform, {});
-}
 
 /** The edits of a transform, without what doesn't change the image. */
 function cleanEdits(transform: MediaTransform): MediaTransform {
@@ -76,15 +68,8 @@ function OpenImageEditor({
     const defaults = useImageEditorTools();
     const tools = givenTools ?? [defaults.crop, defaults.rotate, defaults.focalPoint];
 
-    const own = hasEdits(image.mediaTransform) ? image.mediaTransform : null;
-    const original: Size = { width: image.width, height: image.height };
-    const sizeOf = (base: TransformBase): Size => {
-        if (base !== 'media' || own === null) {
-            return original;
-        }
-        const version = cropInView(original, own);
-        return { width: version.width, height: version.height };
-    };
+    const own = ownTransform(image);
+    const sizeOf = (base: TransformBase): Size => drawBase(image, base).size;
 
     // Where the edits start: the value's, moved inside the media's version when it changed, or
     // a crop the field requires, proposed around the focal point.
@@ -132,17 +117,9 @@ function OpenImageEditor({
     const tool = tools.find((candidate) => candidate.id === toolId) ?? tools[0];
 
     // The image the edits apply to: the original, or the media's version drawn in a viewport.
-    const originalImage = <image href={image.url} width={image.width} height={image.height} />;
-    let baseImage: ReactNode = originalImage;
-    if (base === 'media' && own !== null) {
-        const version = cropInView(original, own);
-        baseImage = (
-            <svg width={version.width} height={version.height} viewBox={box(version)}>
-                <g transform={svgTransform(original, own)}>{originalImage}</g>
-            </svg>
-        );
-    }
-    const drawing = <g transform={svgTransform(size, transform)}>{baseImage}</g>;
+    const drawing = (
+        <g transform={svgTransform(size, transform)}>{drawBase(image, base).drawing}</g>
+    );
 
     // How many units of the view one pixel of the screen is, for marks of a constant size.
     // The stage is kept in state, not in a ref, since the tools read it through `pointToView`.
@@ -368,7 +345,7 @@ function OpenImageEditor({
                         <svg
                             role="img"
                             aria-label={image.label}
-                            viewBox={box(crop)}
+                            viewBox={viewBox(crop)}
                             className={styles.resultImage}
                         >
                             {drawing}
@@ -389,14 +366,5 @@ function OpenImageEditor({
                 </div>
             </div>
         </Dialog>
-    );
-}
-
-/** A ratio as text: `16:9`, or `1.85:1` when it isn't a common one. */
-function ratioLabel(width: number, height: number): string {
-    const common = ['1:1', '16:9', '9:16', '4:3', '3:4', '3:2', '2:3', '4:5', '5:4', '21:9'];
-    return (
-        common.find((ratio) => matchesRatio(width, height, ratio)) ??
-        `${(width / height).toFixed(2)}:1`
     );
 }

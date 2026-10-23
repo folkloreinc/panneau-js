@@ -6,11 +6,11 @@ The media of Panneau: the media field, which references media of a library, make
 npm install @panneau/media@^5.0.0-alpha.0 @tanstack/react-query react-aria-components react-intl
 ```
 
-| Export                  | Content                                                                                                                                                      |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `@panneau/media`        | `MediaField`, `MediaFieldEntry`, `mediaPlugin`, `createResourceMediaSource()`, `getLibrary()`, `toMediaReference()`, `toMediaReferences()`, `isProcessing()` |
-| `@panneau/media/picker` | `MediaPicker`, and the types of its sources: `MediaSource`, `MediaQuery`, `MediaPage`, `PickerMedia`, `MediaSort`                                            |
-| `@panneau/media/editor` | `ImageEditor`, `useImageEditorTools()`, and the types of the editor and its tools: `EditedImage`, `ImageEditorTool`, `ImageEditorToolContext`                |
+| Export                  | Content                                                                                                                                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@panneau/media`        | `MediaField`, `ImageField`, `MediaFieldEntry`, `mediaPlugin`, `getImageOptions()`, `createResourceMediaSource()`, `getLibrary()`, `toMediaReference()`, `toMediaReferences()`, `isProcessing()` |
+| `@panneau/media/picker` | `MediaPicker`, and the types of its sources: `MediaSource`, `MediaQuery`, `MediaPage`, `PickerMedia`, `MediaSort`                                                                               |
+| `@panneau/media/editor` | `ImageEditor`, `useImageEditorTools()`, and the types of the editor and its tools: `EditedImage`, `ImageEditorTool`, `ImageEditorToolContext`                                                   |
 
 ## The media field
 
@@ -109,6 +109,16 @@ const tools = useImageEditorTools();
 />;
 ```
 
-`mediaPlugin` gives the `media` type to `@panneau/core`: pass it after `fieldsPlugin`. The `file` type is built into `@panneau/fields`.
+## The image field
+
+`ImageField` (the `image` type, [decision 0031](../../docs/decisions/0031-image-editor-and-image-field.md)) is a `media` field for images, with the image editor. Its value, libraries, picker and uploads are those of `MediaField`, and it accepts `image/*` by default.
+
+- Each image shows as it is rendered for this use, computed in the browser from the original, the media's own transform and the transform for this use. Edit opens the editor on that transform.
+- Badges say whether an image is cropped for this use, needs a crop the field requires, or was cropped over a version of the library that changed since.
+- **Options:** `ratios`, offered or enforced with `enforceRatios`; `cropRequired`; `rotate` and `focalPoint`, which offer those tools; and `transformBase` (`media`, `original` or `choose`). They show next to the description.
+- When a crop is required, the editor is the step right after the pick of one image ("Next: crop", then "Use this crop"), with "Back to the library". It doesn't open after an upload.
+- `MediaFieldEntry` renders the `image` type with `getImageOptions()`: the field's `crop` rule (enforced ratios, a required crop), its suggested `ratios`, `rotate`, `focalPoint` and `transformBase`.
+
+`mediaPlugin` gives the `media` and `image` types to `@panneau/core`: pass it after `fieldsPlugin`. The `file` type is built into `@panneau/fields`.
 
 The package layout, scripts and API reports are explained in [`docs/packages.md`](../../docs/packages.md).

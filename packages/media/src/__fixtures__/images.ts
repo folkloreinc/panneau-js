@@ -1,3 +1,5 @@
+import type { MediaReference } from '@panneau/protocol';
+
 import type { EditedImage } from '../editor/types';
 
 // Images drawn in SVG, for the editor's tests and stories: no network, and subjects to crop.
@@ -87,3 +89,28 @@ export const harbourBanner = {
     crop: { x: 1100, y: 600, width: 2800, height: 1575 },
     focalPoint: { x: 0.68, y: 0.4 },
 };
+
+/** A reference to one of these images, as a field value holds it. */
+export function referenceTo(
+    image: EditedImage,
+    id: string,
+    overrides: Partial<MediaReference> = {},
+): MediaReference {
+    return {
+        id,
+        resource: 'media',
+        label: image.label,
+        media: {
+            type: 'image',
+            mime: 'image/jpeg',
+            url: image.url,
+            thumbnailUrl: image.url,
+            width: image.width,
+            height: image.height,
+            ...(image.mediaTransform !== undefined && image.mediaTransform !== null
+                ? { transform: image.mediaTransform }
+                : {}),
+        },
+        ...overrides,
+    };
+}

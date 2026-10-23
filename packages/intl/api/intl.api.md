@@ -603,6 +603,30 @@ export const mediaMessages: {
     editorCropRatios: PanneauMessage<    {
     ratios: string;
     }>;
+    chooseImage: PanneauMessage<Record<never, never>>;
+    addImages: PanneauMessage<Record<never, never>>;
+    uploadImage: PanneauMessage<Record<never, never>>;
+    uploadImages: PanneauMessage<Record<never, never>>;
+    noImage: PanneauMessage<Record<never, never>>;
+    imageEdit: PanneauMessage<Record<never, never>>;
+    imageEditOf: PanneauMessage<    {
+    name: string;
+    }>;
+    imageCropped: PanneauMessage<Record<never, never>>;
+    imageNeedsCrop: PanneauMessage<Record<never, never>>;
+    imageOverLibrary: PanneauMessage<Record<never, never>>;
+    imageFromOriginal: PanneauMessage<Record<never, never>>;
+    imageLibraryChanged: PanneauMessage<Record<never, never>>;
+    imageNextCrop: PanneauMessage<Record<never, never>>;
+    imageCropForUse: PanneauMessage<Record<never, never>>;
+    imageUseCrop: PanneauMessage<Record<never, never>>;
+    imageRatios: PanneauMessage<    {
+    ratios: string;
+    }>;
+    imageSuggestedRatios: PanneauMessage<    {
+    ratios: string;
+    }>;
+    imageCropRequired: PanneauMessage<Record<never, never>>;
 };
 
 // @public

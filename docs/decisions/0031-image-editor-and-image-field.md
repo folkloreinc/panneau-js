@@ -4,7 +4,7 @@
 - Date: 2026-10-22
 - Issue: [#100](https://github.com/folkloreinc/panneau-js/issues/100)
 - Amends: [0010](0010-media.md), for the base of a transform for one use
-- Mockups: [#102](https://github.com/folkloreinc/panneau-js/pull/102), in `mockups/image-editor/`, with their screenshots in [`docs/mockups/image-editor/`](../mockups/image-editor/) and [`docs/mockups/image-field/`](../mockups/image-field/)
+- Mockups: [#102](https://github.com/folkloreinc/panneau-js/pull/102), deleted once the editor and the field were built. Their screenshots are in [`docs/mockups/image-editor/`](https://github.com/folkloreinc/panneau-js/tree/980d302198023f98f0ceb597c96340db5f3bae60/docs/mockups/image-editor) and [`docs/mockups/image-field/`](https://github.com/folkloreinc/panneau-js/tree/980d302198023f98f0ceb597c96340db5f3bae60/docs/mockups/image-field) at the commit that merged them.
 
 ## Context
 
