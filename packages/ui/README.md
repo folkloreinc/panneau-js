@@ -290,11 +290,64 @@ The theme model is described in [decision 0024](../../docs/decisions/0024-theme-
 
 ## Primitives
 
-`Heading`, `Text`, `Prose`, `Stack`, `Inline`, `Grid`, `Container`, `Divider`, `Button`, `IconButton`, `TextInput`, `TextArea`, `NumberInput`, `Slider`, `TagsInput`, `Select` (single or multiple), `ComboBox`, `Checkbox`, `Switch`, `RadioGroup`, `SegmentedControl`, `DatePicker`, `TimeInput`, `Fieldset`, `Dialog`, `Popover`, `Menu`, `Tabs`, `Tooltip`, toasts (`useToast()`), `Alert`, `Badge`, `Spinner`, `Card`, `Disclosure` and `Icon`.
+`Heading`, `Text`, `Prose`, `Stack`, `Inline`, `Grid`, `Container`, `Divider`, `Button`, `IconButton`, `TextInput`, `TextArea`, `NumberInput`, `Slider`, `TagsInput`, `Select` (single or multiple), `ComboBox`, `Checkbox`, `Switch`, `RadioGroup`, `SegmentedControl`, `DatePicker`, `TimeInput`, `Fieldset`, `Dialog`, `Popover`, `Menu`, `PillTrigger`, `Tabs`, `Tooltip`, toasts (`useToast()`), `Alert`, `Badge`, `Spinner`, `Card`, `Disclosure` and `Icon`.
 
 - Every component accepts `className`, and `xxxClassName` props for its inner elements (`labelClassName`, `inputClassName`…).
 - Labelled controls take `label`, `description` and `errors` (a list of messages: any message makes the control invalid and describes it).
 - They work on phones: larger touch targets on touch screens, dialogs as bottom sheets (or the whole screen, with `fullScreenOnPhone`), scrolling tabs.
+
+### Rich choices
+
+Picking one item among a few rich ones, such as an account (an avatar, a name, a handle), a plan or a template, takes a menu or radio cards.
+
+- **`Menu`** groups its items in `MenuSection`s, whose `title` is a small muted eyebrow that labels the group, and takes a `footer`: a short note under the items, after a line, which describes the menu and can't be focused. With `selectionMode` (`single` or `multiple`) and `selectedKeys`, its items are radio or checkbox items, and the selected ones have a check at their end and a sunken background.
+- **`MenuItem`** takes a leading `media` (an avatar or an image) instead of an `icon`: larger when the item has a `description`, and clipped to a circle by default (`--panneau-menu-media-radius`).
+- **`PillTrigger`** is a compact rounded button that shows the current value, with an optional leading `media` and a chevron, for a `MenuTrigger` or a `PopoverTrigger`. Its accessible name is its value: give it an `aria-label` that contains the value when the value alone doesn't say what it picks.
+
+```tsx
+<MenuTrigger>
+    <PillTrigger size="sm" media={<Avatar user={account} />}>
+        {account.name}
+    </PillTrigger>
+    <Menu
+        aria-label="Accounts"
+        selectionMode="single"
+        selectedKeys={[account.id]}
+        onSelectionChange={(keys) => keys !== 'all' && onChange([...keys][0])}
+        footer="Only this step changes."
+    >
+        <MenuSection title="Publish on">
+            {accounts.map((item) => (
+                <MenuItem
+                    key={item.id}
+                    id={item.id}
+                    media={<Avatar user={item} />}
+                    description={item.handle}
+                >
+                    {item.name}
+                </MenuItem>
+            ))}
+        </MenuSection>
+    </Menu>
+</MenuTrigger>
+```
+
+- **`RadioGroup`** with `appearance="cards"` shows its options as bordered cards in a grid of `columns` (2 by default): each card has the radio, the option's `media`, its label and its description, and the selected card has a stronger border. The grid is a size container of its own, and becomes a single column when it is narrower than 28rem. Keyboard and focus work as in a list of radios.
+
+```tsx
+<RadioGroup
+    label="Publish on"
+    appearance="cards"
+    options={accounts.map((item) => ({
+        value: item.id,
+        label: item.name,
+        description: item.handle,
+        media: <Avatar user={item} />,
+    }))}
+    value={accountId}
+    onChange={setAccountId}
+/>
+```
 
 ## Icons
 
