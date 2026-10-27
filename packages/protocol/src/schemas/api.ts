@@ -254,6 +254,20 @@ export const MediaInfo = z
             description:
                 'Where the processing of the file is: `pending` and `processing` until its renditions are made, then `ready` or `failed`. Without it, the media is ready.',
         }),
+        error: z
+            .looseObject({
+                code: z.string().meta({
+                    description:
+                        'The code of the step that failed, such as a transcoder task code (`timeout`, `input_unreadable`).',
+                }),
+                message: z.string().optional().meta({ description: 'Why it failed, for people.' }),
+            })
+            .nullable()
+            .optional()
+            .meta({
+                description:
+                    "Why the processing failed, when `status` is `failed`, so that editors see it without the backend's monitoring.",
+            }),
         metadata: z.record(z.string(), z.unknown()).optional(),
         transform: MediaTransform.nullable().optional().meta({
             description:

@@ -548,6 +548,7 @@ A media library is a resource of kind `media` ([0026](decisions/0026-media-libra
             "height": 3780,
             "duration": null,
             "status": "ready", // pending or processing until its renditions are made, then ready or failed; ready without it
+            "error": null, // with a failed status: { "code": "timeout", "message": "The poster took too long." }
             "transform": { "rotate": 90 }, // the media's own transform, from its transform field
         },
         "version": "3",

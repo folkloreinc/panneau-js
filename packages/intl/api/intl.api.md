@@ -433,6 +433,9 @@ export const mediaMessages: {
     statusPending: PanneauMessage<Record<never, never>>;
     statusProcessing: PanneauMessage<Record<never, never>>;
     statusFailed: PanneauMessage<Record<never, never>>;
+    statusFailedBecause: PanneauMessage<    {
+    error: string;
+    }>;
     unavailable: PanneauMessage<Record<never, never>>;
     chooseMedia: PanneauMessage<Record<never, never>>;
     addMedia: PanneauMessage<Record<never, never>>;

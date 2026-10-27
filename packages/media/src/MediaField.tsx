@@ -357,7 +357,17 @@ export function MediaField(props: MediaFieldProps) {
 
     const statusBadge = (item: MediaReference) => {
         if (item.media?.status === 'failed') {
-            return <Badge tone="danger">{intl.formatMessage(messages.statusFailed)}</Badge>;
+            const reason = item.media.error?.message;
+            return (
+                <span className={styles.failed}>
+                    <Badge tone="danger">{intl.formatMessage(messages.statusFailed)}</Badge>
+                    {typeof reason === 'string' && reason !== '' ? (
+                        <span className={styles.failure} title={reason}>
+                            {reason}
+                        </span>
+                    ) : null}
+                </span>
+            );
         }
         if (isProcessing(item)) {
             return (

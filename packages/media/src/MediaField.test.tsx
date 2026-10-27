@@ -216,6 +216,26 @@ describe('MediaField', () => {
         expect(screen.queryByRole('button')).not.toBeInTheDocument();
     });
 
+    it('says why the processing of a media failed', () => {
+        renderInRoot(
+            <MediaField
+                label="Video"
+                resource="media"
+                adapter={null}
+                value={reference({
+                    status: 'failed',
+                    error: { code: 'timeout', message: 'The poster took too long.' },
+                })}
+            />,
+        );
+
+        expect(screen.getByText('Processing failed')).toBeInTheDocument();
+        expect(screen.getByText('The poster took too long.')).toHaveAttribute(
+            'title',
+            'The poster took too long.',
+        );
+    });
+
     it('makes a media of an upload, with the adapter and the upload source of its providers', async () => {
         const create = vi
             .fn<MediaAdapter['create']>()

@@ -1484,6 +1484,10 @@ export const MediaInfo: z.ZodObject<{
         processing: "processing";
         ready: "ready";
     }>>;
+    error: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+        code: z.ZodString;
+        message: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>>>;
     metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     transform: z.ZodOptional<z.ZodNullable<z.ZodObject<{
         crop: z.ZodOptional<z.ZodObject<{
@@ -1535,6 +1539,10 @@ export const MediaItem: z.ZodObject<{
             processing: "processing";
             ready: "ready";
         }>>;
+        error: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            code: z.ZodString;
+            message: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>>>;
         metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         transform: z.ZodOptional<z.ZodNullable<z.ZodObject<{
             crop: z.ZodOptional<z.ZodObject<{
@@ -1596,6 +1604,10 @@ export const MediaReference: z.ZodObject<{
             processing: "processing";
             ready: "ready";
         }>>;
+        error: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            code: z.ZodString;
+            message: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>>>;
         metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         transform: z.ZodOptional<z.ZodNullable<z.ZodObject<{
             crop: z.ZodOptional<z.ZodObject<{
@@ -3495,6 +3507,10 @@ export const namedSchemas: {
             processing: "processing";
             ready: "ready";
         }>>;
+        error: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            code: z.ZodString;
+            message: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>>>;
         metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         transform: z.ZodOptional<z.ZodNullable<z.ZodObject<{
             crop: z.ZodOptional<z.ZodObject<{
@@ -3541,6 +3557,10 @@ export const namedSchemas: {
                 processing: "processing";
                 ready: "ready";
             }>>;
+            error: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+                code: z.ZodString;
+                message: z.ZodOptional<z.ZodString>;
+            }, z.core.$loose>>>;
             metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
             transform: z.ZodOptional<z.ZodNullable<z.ZodObject<{
                 crop: z.ZodOptional<z.ZodObject<{
@@ -3588,6 +3608,10 @@ export const namedSchemas: {
                 processing: "processing";
                 ready: "ready";
             }>>;
+            error: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+                code: z.ZodString;
+                message: z.ZodOptional<z.ZodString>;
+            }, z.core.$loose>>>;
             metadata: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
             transform: z.ZodOptional<z.ZodNullable<z.ZodObject<{
                 crop: z.ZodOptional<z.ZodObject<{

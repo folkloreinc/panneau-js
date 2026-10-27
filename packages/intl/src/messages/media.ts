@@ -15,6 +15,10 @@ export const mediaMessages = {
         id: 'panneau.media.statusFailed',
         defaultMessage: 'Processing failed',
     }),
+    statusFailedBecause: defineMessage<{ error: string }>({
+        id: 'panneau.media.statusFailedBecause',
+        defaultMessage: 'Processing failed: {error}',
+    }),
     unavailable: defineMessage({
         id: 'panneau.media.unavailable',
         defaultMessage: 'Files can’t be uploaded here.',
