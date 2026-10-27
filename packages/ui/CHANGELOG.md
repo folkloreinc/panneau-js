@@ -1,5 +1,44 @@
 # @panneau/ui
 
+## 5.0.0-alpha.6
+
+### Minor Changes
+
+- 75a6496: Five more field types ([decision 0033](../docs/decisions/0033-more-field-types.md)):
+  
+  - **`tel`:** a phone number, as typed, with the phone keyboard. Lists link it with `tel:`.
+  - **`range`:** a number on a slider, between the `min` and `max` rules (0 and 100 without them), with `step`, `decimals` and `suffix`. It is `null` until the slider is moved.
+  - **`duration`:** a number of seconds, typed in hours, minutes and seconds; `settings.precision` hides the seconds. Lists show it with its units: `1 h 5 min 30 s`.
+  - **`json`:** an object or an array, edited as JSON text. Text that doesn't parse stays a string, which the new `json` portable rule refuses: the `json` type implies it, so a form can't be saved with it.
+  - **`tags`:** a list of strings, typed or among `options`. `settings.allowCustom: false` allows only the options. Lists show them as badges.
+  
+  And:
+  
+  - **`@panneau/protocol`:** the five types in `BUILT_IN_FIELD_TYPES`, and the `json` rule in `PORTABLE_RULES` and `checkRules()`.
+  - **`@panneau/ui`:** `Slider`, and `TagsInput`, whose tags are added with Enter, a comma or a paste, and removed with Backspace or their button.
+  - **`@panneau/fields`:** `TelField`, `RangeField`, `DurationField` (with `formatDuration()`), `JsonField` (with `parseJson()`) and `TagsField`, at `@panneau/fields/tel`, `/range`, `/duration`, `/json` and `/tags`.
+  - **`@panneau/lists`:** `TelDisplay`, `DurationDisplay`, `JsonDisplay` and `TagsDisplay`; `range` shows as a number.
+  - **`@panneau/core`:** the message of the `json` rule.
+  - **`@panneau/intl`:** the messages of the new fields and rule, in English and French.
+- 4e453d2: Rich choices, to pick one item among a few rich ones, such as a connected account:
+  
+  - **`MenuSection`**, a group of menu items with a `title`: a small muted eyebrow that labels the group.
+  - **`Menu`** takes a `footer`: a short note under the items, after a line, that describes the menu and can't be focused.
+  - **`MenuItem`** takes a leading `media` (an avatar or an image) instead of an `icon`, and, in a menu with a `selectionMode`, shows a check at the end of the selected items, on a sunken background.
+  - **`PillTrigger`**, a compact rounded button that shows the current value, with an optional leading media and a chevron, for a `MenuTrigger` or a `PopoverTrigger`.
+  - **`RadioGroup`** takes `appearance="cards"`: bordered cards in a grid of `columns` (2 by default) that becomes one column in a narrow container, the selected card with a stronger border. Its options (`RadioGroupOption`) take a leading `media`, in both appearances.
+  
+  New component tokens: `--panneau-menu-*`, `--panneau-pill-trigger-*`, and `--panneau-radio-media-*` and `--panneau-radio-card-*`.
+
+### Patch Changes
+
+- 75a6496: - **`NumberInput`:** the `suffix` has room on both sides, and the control gets its padding back when it is read-only, without steppers.
+  - **`Select`:** the chosen option's description follows its label on one line in the trigger, instead of two lines pressed against its edges.
+- Updated dependencies [75a6496]
+- Updated dependencies [48676ff]
+- Updated dependencies [75a6496]
+  - @panneau/intl@5.0.0-alpha.6
+
 ## 5.0.0-alpha.5
 
 ### Minor Changes
