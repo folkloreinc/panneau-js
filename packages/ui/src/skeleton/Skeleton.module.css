@@ -1,4 +1,4 @@
-.skeleton {
+.block {
     display: block;
     flex-shrink: 0;
     max-width: 100%;
@@ -46,7 +46,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .skeleton {
+    .block {
         animation: none;
     }
 }

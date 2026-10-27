@@ -49,7 +49,7 @@ export function Skeleton({
                 style={size}
             >
                 {Array.from({ length: lines }, (_, index) => (
-                    <span key={index} className={cx(styles.skeleton, styles.line)} />
+                    <span key={index} className={cx(styles.block, styles.line)} />
                 ))}
             </span>
         );
@@ -59,7 +59,7 @@ export function Skeleton({
             aria-hidden="true"
             className={cx(
                 'panneau-skeleton',
-                styles.skeleton,
+                styles.block,
                 shape === 'text' ? styles.line : shape === 'circle' ? styles.circle : styles.rect,
                 className,
             )}
