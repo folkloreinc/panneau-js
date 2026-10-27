@@ -419,28 +419,6 @@
     padding: var(--panneau-space-1);
 }
 
-.skeletonThumbnail,
-.skeletonLine,
-.skeletonLineShort {
-    display: block;
-    background-color: var(--panneau-color-surface-sunken);
-    border-radius: var(--panneau-radius-sm);
-    animation: pulse 1.6s ease-in-out infinite;
-}
-
-.skeletonThumbnail {
-    aspect-ratio: 1;
-}
-
-.skeletonLine {
-    height: 0.75rem;
-}
-
-.skeletonLineShort {
-    width: 50%;
-    height: 0.625rem;
-}
-
 .upload {
     display: grid;
     grid-template-areas:
@@ -522,29 +500,6 @@
 .actions {
     display: flex;
     gap: var(--panneau-space-2);
-}
-
-.visuallyHidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .skeletonThumbnail,
-    .skeletonLine,
-    .skeletonLineShort {
-        animation: none;
-    }
-}
-
-@keyframes pulse {
-    50% {
-        opacity: 0.5;
-    }
 }
 
 /* Tablets: the details open over the grid from each card, the Upload tab is one column. */

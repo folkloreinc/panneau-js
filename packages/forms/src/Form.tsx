@@ -21,7 +21,8 @@ export interface FormProps
  * translated with react-intl.
  *
  * Initial values and the version are read once: give the form a new `key` to start from another
- * item, or use `useForm()` and `FormView`.
+ * item, or use `useForm()` and `FormView`. While the item loads, `isLoading` draws a skeleton of
+ * the form, and a new `key` once it is there starts the form from its values.
  */
 export function Form({
     fields,

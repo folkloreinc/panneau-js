@@ -32,6 +32,16 @@ describe('ItemDetails', () => {
         expect(values[2]?.querySelector('time')).toHaveAttribute('dateTime', '2026-03-02');
     });
 
+    it('draws the labels and a skeleton of each value while the item loads', () => {
+        const { container } = renderList(<ItemDetails item={undefined} columns={columns} />);
+        expect(screen.getByRole('status')).toHaveTextContent('Loading the item…');
+        const region = container.querySelector('[aria-busy="true"]');
+        expect([...(region?.querySelectorAll('dt') ?? [])].map((term) => term.textContent)).toEqual(
+            ['Title', 'Status', 'Published on'],
+        );
+        expect(region?.querySelectorAll('dd .panneau-skeleton')).toHaveLength(3);
+    });
+
     it('takes displays over the built-in ones', () => {
         const Upper = ({ value }: DisplayProps) => <span>{String(value).toUpperCase()}</span>;
         renderList(

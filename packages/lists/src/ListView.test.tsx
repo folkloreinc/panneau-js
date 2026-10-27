@@ -193,14 +193,45 @@ describe('List', () => {
 });
 
 describe('ListView', () => {
-    it('shows a spinner, then an error with a retry', async () => {
+    it('draws skeleton rows of its columns while the first page loads', () => {
+        const { container } = renderList(
+            <ListView
+                list={createList({ defaults: { perPage: 4 } })}
+                columns={columns}
+                items={undefined}
+            />,
+        );
+        expect(screen.getByRole('status')).toHaveTextContent('Loading the items…');
+        expect(screen.queryByRole('progressbar')).toBeNull();
+        const region = container.querySelector('[aria-busy="true"]');
+        expect(region?.querySelector('[inert]')).not.toBeNull();
+        expect(
+            [...(region?.querySelectorAll('th') ?? [])].map((header) => header.textContent),
+        ).toEqual(['Title', 'Status', 'Published on']);
+        expect(region?.querySelectorAll('tbody tr')).toHaveLength(4);
+        expect(region?.querySelectorAll('td .panneau-skeleton')).toHaveLength(4 * columns.length);
+    });
+
+    it('draws at most the rows that fit, in the layout of the list', () => {
+        const { container } = renderList(
+            <ListView
+                list={createList({ defaults: { perPage: 100 } })}
+                columns={columns}
+                items={undefined}
+                layout="cards"
+            />,
+        );
+        expect(container.querySelectorAll('[aria-busy="true"] li')).toHaveLength(10);
+    });
+
+    it('shows an error with a retry when the first page fails', async () => {
         const user = userEvent.setup();
         const onRetry = vi.fn();
         const list = createList();
         const { rerender } = renderList(
             <ListView list={list} columns={columns} items={undefined} />,
         );
-        expect(screen.getByRole('progressbar')).toBeInTheDocument();
+        expect(screen.getByRole('status')).toBeInTheDocument();
         rerender(
             <PanneauRoot>
                 <ListView

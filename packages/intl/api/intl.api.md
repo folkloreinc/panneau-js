@@ -108,6 +108,7 @@ export const appMessages: {
     previewOf: PanneauMessage<    {
     title: string;
     }>;
+    previewLoading: PanneauMessage<Record<never, never>>;
     previewError: PanneauMessage<Record<never, never>>;
     previewMissing: PanneauMessage<    {
     component: string;
@@ -258,6 +259,7 @@ export const fieldsMessages: {
 export const formsMessages: {
     save: PanneauMessage<Record<never, never>>;
     saved: PanneauMessage<Record<never, never>>;
+    loading: PanneauMessage<Record<never, never>>;
     unsaved: PanneauMessage<Record<never, never>>;
     errorCount: PanneauMessage<    {
     count: number;
@@ -410,6 +412,8 @@ export const listsMessages: {
     }>;
     empty: PanneauMessage<Record<never, never>>;
     noResults: PanneauMessage<Record<never, never>>;
+    loading: PanneauMessage<Record<never, never>>;
+    loadingItem: PanneauMessage<Record<never, never>>;
     loadFailed: PanneauMessage<Record<never, never>>;
     retry: PanneauMessage<Record<never, never>>;
     pagination: PanneauMessage<Record<never, never>>;

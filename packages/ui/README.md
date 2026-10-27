@@ -290,7 +290,7 @@ The theme model is described in [decision 0024](../../docs/decisions/0024-theme-
 
 ## Primitives
 
-`Heading`, `Text`, `Prose`, `Stack`, `Inline`, `Grid`, `Container`, `Divider`, `Button`, `IconButton`, `TextInput`, `TextArea`, `NumberInput`, `Slider`, `TagsInput`, `Select` (single or multiple), `ComboBox`, `Checkbox`, `Switch`, `RadioGroup`, `SegmentedControl`, `DatePicker`, `TimeInput`, `Fieldset`, `Dialog`, `Popover`, `Menu`, `PillTrigger`, `Tabs`, `Tooltip`, toasts (`useToast()`), `Alert`, `Badge`, `Spinner`, `Card`, `Disclosure` and `Icon`.
+`Heading`, `Text`, `Prose`, `Stack`, `Inline`, `Grid`, `Container`, `Divider`, `Button`, `IconButton`, `TextInput`, `TextArea`, `NumberInput`, `Slider`, `TagsInput`, `Select` (single or multiple), `ComboBox`, `Checkbox`, `Switch`, `RadioGroup`, `SegmentedControl`, `DatePicker`, `TimeInput`, `Fieldset`, `Dialog`, `Popover`, `Menu`, `PillTrigger`, `Tabs`, `Tooltip`, toasts (`useToast()`), `Alert`, `Badge`, `Spinner`, `Skeleton`, `LoadingRegion`, `Card`, `Disclosure` and `Icon`.
 
 - Every component accepts `className`, and `xxxClassName` props for its inner elements (`labelClassName`, `inputClassName`…).
 - Labelled controls take `label`, `description` and `errors` (a list of messages: any message makes the control invalid and describes it).
@@ -348,6 +348,29 @@ Picking one item among a few rich ones, such as an account (an avatar, a name, a
     onChange={setAccountId}
 />
 ```
+
+### Loading
+
+Content that loads shows a skeleton of its shape, never a spinner in its place ([decision 0034](../../docs/decisions/0034-skeletons-while-content-loads.md)). Spinners are for operations in progress (`Button` `isPending`) and lookups inside a control (`ComboBox` `isLoading`).
+
+- `Skeleton` is a block of the shape to come: a line of text (`lines` for several, the last one shorter), a `rect` with a `width`, a `height` or an `aspectRatio`, or a `circle`. It is `aria-hidden`, pulses unless the user prefers reduced motion, and reads the `skeleton` component tokens (`color`, `radius`, `duration`).
+- `LoadingRegion` goes around the skeleton, in place of the content: it has `aria-busy="true"`, and a status message says once that the content loads (`label`, "Loading…" by default).
+
+```tsx
+function ArticleCard({ article }: { article: Article | undefined }) {
+    if (article === undefined) {
+        return (
+            <LoadingRegion label="Loading the article…">
+                <Skeleton shape="rect" aspectRatio="16 / 9" />
+                <Skeleton lines={3} />
+            </LoadingRegion>
+        );
+    }
+    return <ArticleView article={article} />;
+}
+```
+
+A skeleton never replaces content already shown: while it is fetched again, it stays, dimmed, with `aria-busy`, as in lists.
 
 ## Icons
 

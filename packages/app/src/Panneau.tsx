@@ -14,12 +14,13 @@ import { DataAdapterProvider, definitionQueryOptions } from '@panneau/data/query
 import { FieldsProvider, type MapsConfig, createEmbedSource } from '@panneau/fields';
 import { appMessages } from '@panneau/intl';
 import type { BootConfig } from '@panneau/protocol';
-import { Button, type NamedIconLoader, PanneauRoot, Spinner, usePanneauIntl } from '@panneau/ui';
+import { Button, type NamedIconLoader, PanneauRoot, usePanneauIntl } from '@panneau/ui';
 import { lucideIconLoader } from '@panneau/ui/named-icons';
 
 import styles from './Panneau.module.css';
 import { Shell } from './Shell';
 import { usePreference } from './preferences';
+import { ShellSkeleton } from './shell/ShellSkeleton';
 import { COLOR_SCHEMES } from './shell/Sidebar';
 import { createSessionState, getLoginUrl, watchUnauthorized } from './unauthorized';
 
@@ -170,11 +171,7 @@ function Loading({ isError, onRetry }: { isError: boolean; onRetry: () => void }
             </div>
         );
     }
-    return (
-        <div className={styles.state}>
-            <Spinner showLabel label={intl.formatMessage(appMessages.loading)} />
-        </div>
-    );
+    return <ShellSkeleton />;
 }
 
 /**

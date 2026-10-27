@@ -68,6 +68,17 @@ export const Default: Story = {
     },
 };
 
+/** The item loads: the labels, with a skeleton of each value, announced once. */
+export const Loading: Story = {
+    args: { item: undefined },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByRole('status')).toHaveTextContent('Loading the item…');
+        const region = canvasElement.querySelector('[aria-busy="true"]');
+        await expect(region?.querySelectorAll('dd .panneau-skeleton')).toHaveLength(6);
+    },
+};
+
 /** In a narrow column, such as a panel: each label above its value. */
 export const Narrow: Story = {
     decorators: [

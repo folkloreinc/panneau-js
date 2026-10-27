@@ -6,7 +6,7 @@ import { usePlugins } from '@panneau/core';
 import { useItemPreview } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
 import type { Item, Resource } from '@panneau/protocol';
-import { Alert, Button, Icon, Spinner, usePanneauIntl } from '@panneau/ui';
+import { Alert, Button, Icon, LoadingRegion, Skeleton, usePanneauIntl } from '@panneau/ui';
 
 import styles from './ItemPanel.module.css';
 
@@ -23,6 +23,19 @@ function canOpen(url: string): boolean {
     return /^(https?:)?\/\//.test(url) || url.startsWith('/');
 }
 
+/** The preview while it loads: a block in the frame of the preview (decision 0034). */
+export function PreviewSkeleton() {
+    const intl = usePanneauIntl();
+    return (
+        <LoadingRegion
+            label={intl.formatMessage(appMessages.previewLoading)}
+            className={styles.preview}
+        >
+            <Skeleton shape="rect" className={styles.frameSkeleton} />
+        </LoadingRegion>
+    );
+}
+
 function IframePreview({ resource, item, title }: Omit<ItemPreviewProps, 'locale'>) {
     const intl = usePanneauIntl();
     const { data, isError, refetch } = useItemPreview(resource.id, item.id);
@@ -35,7 +48,7 @@ function IframePreview({ resource, item, title }: Omit<ItemPreviewProps, 'locale
                 </Button>
             </Alert>
         ) : (
-            <Spinner showLabel />
+            <PreviewSkeleton />
         );
     }
     return (

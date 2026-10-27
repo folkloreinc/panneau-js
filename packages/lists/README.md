@@ -87,7 +87,7 @@ const { data, isFetching, error } = useResourceList('pages', query); // @panneau
 | Pagination | With `total`: the range, previous and next pages, and the page size (`perPageOptions`)                                                                                       |
 | Selection  | Checkboxes, the page, then "select all N items", which selects every item matching the query, with exceptions                                                                |
 | Actions    | `row` (buttons), `menu` (the row's menu), `toolbar` (selection and resource actions), with `confirm`, hidden by abilities ([0011](../../docs/decisions/0011-permissions.md)) |
-| States     | A spinner, an error with a retry, an empty message, and "no results" with a button that clears the filters                                                                   |
+| States     | Skeleton rows of the columns while `items` is `undefined`, an error with a retry, an empty message, and "no results" with a button that clears the filters                   |
 
 An action shows the icon it names (`"icon": "send"`, through `getNamedIcon()` of `@panneau/ui`, which needs an `iconLoader` on `PanneauRoot`, such as `lucideIconLoader` of `@panneau/ui/named-icons`), or the icon of a built-in action (`edit`, `delete`…). Actions written in code can get icon components by id instead, which win over names: `actionIcons={{ archive: Archive }}`.
 

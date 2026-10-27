@@ -1,6 +1,7 @@
 /** The French messages of `@panneau/forms`, by id. */
 export const formsFr: Record<string, string> = {
     'panneau.forms.save': 'Enregistrer',
+    'panneau.forms.loading': 'Chargement du formulaire…',
     'panneau.forms.saved': 'Enregistré',
     'panneau.forms.unsaved': 'Modifications non enregistrées',
     'panneau.forms.errorCount': '{count, plural, one {# erreur} other {# erreurs}}',

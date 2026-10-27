@@ -363,6 +363,7 @@ export const componentTokens: Readonly<{
     prose: Readonly<Record<"panneau-prose-gap" | "panneau-prose-border-color" | "panneau-prose-line-height" | "panneau-prose-heading-gap" | "panneau-prose-list-indent" | "panneau-prose-link-color" | "panneau-prose-code-font-size" | "panneau-prose-code-color" | "panneau-prose-code-bg" | "panneau-prose-code-radius" | "panneau-prose-quote-border-color" | "panneau-prose-quote-color", string>>;
     radio: Readonly<Record<"panneau-radio-size" | "panneau-radio-bg" | "panneau-radio-border-color" | "panneau-radio-checked-color" | "panneau-radio-media-size" | "panneau-radio-media-radius" | "panneau-radio-checked-border-width" | "panneau-radio-card-gap" | "panneau-radio-card-padding" | "panneau-radio-card-bg" | "panneau-radio-card-border-color" | "panneau-radio-card-border-color-hover" | "panneau-radio-card-border-color-selected" | "panneau-radio-card-radius" | "panneau-radio-card-label-font-weight", string>>;
     'segmented-control': Readonly<Record<"panneau-segmented-control-radius" | "panneau-segmented-control-padding" | "panneau-segmented-control-bg" | "panneau-segmented-control-border-color" | "panneau-segmented-control-segment-padding-x" | "panneau-segmented-control-segment-font-weight" | "panneau-segmented-control-segment-color" | "panneau-segmented-control-segment-color-selected" | "panneau-segmented-control-segment-bg-selected" | "panneau-segmented-control-segment-shadow-selected", string>>;
+    skeleton: Readonly<Record<"panneau-skeleton-color" | "panneau-skeleton-radius" | "panneau-skeleton-duration", string>>;
     spinner: Readonly<Record<"panneau-spinner-border-width", string>>;
     stack: Readonly<Record<"panneau-stack-gap", string>>;
     switch: Readonly<Record<"panneau-switch-height" | "panneau-switch-width" | "panneau-switch-radius" | "panneau-switch-checked-bg" | "panneau-switch-track-bg" | "panneau-switch-thumb-size" | "panneau-switch-thumb-bg" | "panneau-switch-checked-thumb-bg", string>>;
@@ -610,6 +611,19 @@ export function isApplePlatform(): boolean;
 
 // @public
 export type Justification = 'start' | 'center' | 'end' | 'between';
+
+// @public
+export function LoadingRegion(input: LoadingRegionProps): JSX.Element;
+
+// @public (undocumented)
+export interface LoadingRegionProps {
+    children?: ReactNode;
+    // (undocumented)
+    className?: string;
+    label?: string;
+    // (undocumented)
+    style?: CSSProperties;
+}
 
 // @public
 export function loadNamedIcon(name: string, loader: NamedIconLoader): Promise<IconComponent | null>;
@@ -912,6 +926,22 @@ export interface SingleSelectProps extends SelectBaseProps {
     // (undocumented)
     onChange?: (value: OptionValue | null) => void;
     value?: OptionValue | null;
+}
+
+// @public
+export function Skeleton(input: SkeletonProps): JSX.Element;
+
+// @public (undocumented)
+export interface SkeletonProps {
+    aspectRatio?: number | string;
+    // (undocumented)
+    className?: string;
+    height?: number | string;
+    lines?: number;
+    shape?: 'text' | 'rect' | 'circle';
+    // (undocumented)
+    style?: CSSProperties;
+    width?: number | string;
 }
 
 // @public

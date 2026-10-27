@@ -86,6 +86,7 @@ export interface FormViewProps {
     guardUnsavedChanges?: boolean;
     // (undocumented)
     id?: string;
+    isLoading?: boolean;
     layout?: readonly LayoutNode[];
     // (undocumented)
     layoutClassName?: string;

@@ -22,6 +22,7 @@ import { proseTokens } from '../prose/tokens';
 import { radioTokens } from '../radio-group/tokens';
 import { segmentedControlTokens } from '../segmented-control/tokens';
 import { listBoxTokens } from '../select/listBoxTokens';
+import { skeletonTokens } from '../skeleton/tokens';
 import { spinnerTokens } from '../spinner/tokens';
 import { stackTokens } from '../stack/tokens';
 import { switchTokens } from '../switch/tokens';
@@ -59,6 +60,7 @@ export const componentTokens = Object.freeze({
     prose: proseTokens.tokens,
     radio: radioTokens.tokens,
     'segmented-control': segmentedControlTokens.tokens,
+    skeleton: skeletonTokens.tokens,
     spinner: spinnerTokens.tokens,
     stack: stackTokens.tokens,
     switch: switchTokens.tokens,

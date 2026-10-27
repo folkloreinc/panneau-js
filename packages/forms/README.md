@@ -61,6 +61,7 @@ Under a `PanneauProvider`, forms use the field components of the plugins and the
 | Unsaved changes   | The page asks before closing (`guardUnsavedChanges`). Under a `LeaveGuardsProvider` of `@panneau/core`, leaving through the app's router asks in a dialog too; `useLeaveConfirmation()` gives that dialog to other routers |
 | Broken fields     | Each field has an error boundary: a field that throws shows a message, the rest of the form keeps working                                                                                                                  |
 | Version conflicts | A dialog shows the values that differ, then loads the current version or saves the local one over it                                                                                                                       |
+| Loading           | With `isLoading`, while the item loads: a skeleton of the layout, and of each field, its label and a block of its height ([0034](../../docs/decisions/0034-skeletons-while-content-loads.md))                              |
 
 `Form` creates its state with `useForm()`. To keep the state outside, use `useForm()` and `FormView`.
 

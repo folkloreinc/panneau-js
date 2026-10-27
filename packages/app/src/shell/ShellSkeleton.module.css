@@ -1,0 +1,43 @@
+/* The app at boot: the sidebar and a page header, in the layout of the app. */
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-4);
+    height: 100%;
+    padding: var(--panneau-space-3) var(--panneau-space-2);
+}
+
+.brand,
+.link {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    padding-inline: var(--panneau-space-1);
+}
+
+.links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-1);
+}
+
+.link {
+    min-height: var(--panneau-control-height-sm);
+    padding-inline: var(--panneau-space-2);
+    font-size: var(--panneau-font-size-sm);
+}
+
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-3);
+    max-width: 80rem;
+    margin-inline: auto;
+}
+
+/* The title of the page: a line of the size of a level 1 heading. */
+.title {
+    font-size: var(--panneau-heading-1-font-size, 1.75rem);
+    line-height: var(--panneau-heading-1-line-height, var(--panneau-line-height-tight));
+}

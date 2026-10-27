@@ -3,8 +3,9 @@ import { type ReactNode, useRef, useState } from 'react';
 import type { List } from '@panneau/core';
 import { usePlugins } from '@panneau/core';
 import type { Action, Field, Filter } from '@panneau/protocol';
-import { Alert, Button, Checkbox, Spinner, usePanneauIntl, useToast } from '@panneau/ui';
+import { Alert, Button, Checkbox, usePanneauIntl, useToast } from '@panneau/ui';
 
+import { ListSkeleton } from './ListSkeleton';
 import styles from './ListView.module.css';
 import { ActionButton } from './actions/ActionButton';
 import { ConfirmDialog, type ConfirmPreview, needsConfirmation } from './actions/ConfirmDialog';
@@ -43,7 +44,10 @@ import { getColumnValue, toText } from './values';
 export interface ListViewProps {
     /** The list state of `@panneau/core` (`useList()`): query and selection. */
     list: List;
-    /** The items of the current page. `undefined` while they load for the first time. */
+    /**
+     * The items of the current page. `undefined` while they load for the first time: the list
+     * draws a skeleton of its rows, from its columns and its page size.
+     */
     items: readonly ListItem[] | undefined;
     columns: readonly ListColumn[];
     /**
@@ -382,9 +386,13 @@ export function ListView({
         }
         if (items === undefined) {
             return (
-                <div className={styles.state}>
-                    <Spinner showLabel />
-                </div>
+                <ListSkeleton
+                    Layout={Layout}
+                    columns={columns}
+                    perPage={query.perPage}
+                    sort={sort}
+                    label={label}
+                />
             );
         }
         if (pageItems.length === 0) {

@@ -45,6 +45,12 @@
     overflow-wrap: anywhere;
 }
 
+/* The title while the item loads: a line of the heading's size. */
+.titleSkeleton {
+    font-size: var(--panneau-heading-2-font-size, 1.375rem);
+    line-height: var(--panneau-heading-2-line-height, var(--panneau-line-height-tight));
+}
+
 .actions {
     display: flex;
     flex-wrap: wrap;
@@ -136,6 +142,12 @@
     border: var(--panneau-border-width) solid var(--panneau-color-border);
     border-radius: var(--panneau-radius-md);
     background: var(--panneau-color-surface);
+}
+
+/* The preview while it loads: a block as tall as the frame. */
+.frameSkeleton {
+    flex: 1 1 auto;
+    min-height: 28rem;
 }
 
 /* From the `xl` width of the root: beside the list, in the flow of the page. */

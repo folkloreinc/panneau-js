@@ -12,7 +12,7 @@ import {
     Heading,
     Icon,
     IconButton,
-    Spinner,
+    Skeleton,
     Tab,
     TabList,
     TabPanel,
@@ -26,7 +26,7 @@ import { usePreference } from '../preferences';
 import { useRecordRecentItem } from '../recentItems';
 import { routePath } from '../routes';
 import styles from './ItemPanel.module.css';
-import { ItemPreview } from './ItemPreview';
+import { ItemPreview, PreviewSkeleton } from './ItemPreview';
 import { getItemTitle } from './itemTitle';
 
 /** Fields that hold other fields, shown in the form rather than in the details. */
@@ -94,18 +94,17 @@ export function ItemPanel({ resolved, basePath, locale, id, closeHref }: ItemPan
     };
 
     let content;
-    if (item === undefined) {
-        content = isError ? (
+    if (item === undefined && isError) {
+        content = (
             <Alert tone="danger">
                 <p>{intl.formatMessage(appMessages.itemLoadError, { resource: singular })}</p>
                 <Button size="sm" onPress={() => void refetch()}>
                     {intl.formatMessage(appMessages.retry)}
                 </Button>
             </Alert>
-        ) : (
-            <Spinner showLabel />
         );
     } else {
+        // While the item loads, its details and its preview draw their skeleton.
         const details = <ItemDetails item={item} columns={columns} />;
         content = hasPreview ? (
             <Tabs
@@ -118,7 +117,16 @@ export function ItemPanel({ resolved, basePath, locale, id, closeHref }: ItemPan
                     <Tab id="details">{intl.formatMessage(appMessages.details)}</Tab>
                 </TabList>
                 <TabPanel id="preview" className={styles.tabPanel}>
-                    <ItemPreview resource={resource} item={item} title={title} locale={locale} />
+                    {item !== undefined ? (
+                        <ItemPreview
+                            resource={resource}
+                            item={item}
+                            title={title}
+                            locale={locale}
+                        />
+                    ) : (
+                        <PreviewSkeleton />
+                    )}
                 </TabPanel>
                 <TabPanel id="details" className={styles.tabPanel}>
                     {details}
@@ -139,9 +147,13 @@ export function ItemPanel({ resolved, basePath, locale, id, closeHref }: ItemPan
             onKeyDown={onKeyDown}
         >
             <header className={styles.header}>
-                <Heading level={2} className={styles.title}>
-                    {title}
-                </Heading>
+                {item !== undefined ? (
+                    <Heading level={2} className={styles.title}>
+                        {title}
+                    </Heading>
+                ) : (
+                    <Skeleton className={styles.titleSkeleton} width="60%" />
+                )}
                 <div className={styles.headerButtons}>
                     <IconButton
                         icon={wide ? Minimize2 : Maximize2}
@@ -160,6 +172,11 @@ export function ItemPanel({ resolved, basePath, locale, id, closeHref }: ItemPan
                     />
                 </div>
             </header>
+            {item === undefined && !isError ? (
+                <div className={styles.actions}>
+                    <Skeleton shape="rect" width="5rem" height="var(--panneau-control-height-sm)" />
+                </div>
+            ) : null}
             {item !== undefined ? (
                 <div className={styles.actions}>
                     {item.abilities.update !== false ? (

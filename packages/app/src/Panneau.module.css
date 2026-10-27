@@ -2,7 +2,7 @@
     min-height: 100dvh;
 }
 
-/* Loading, a definition that failed to load, and an ended session: centered in the window. */
+/* A definition that failed to load, and an ended session: centered in the window. */
 .state {
     display: flex;
     flex-direction: column;

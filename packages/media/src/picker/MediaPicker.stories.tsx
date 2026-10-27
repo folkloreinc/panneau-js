@@ -191,9 +191,16 @@ export const ConfirmOnUpload: Story = {
     },
 };
 
+/** The first page of a library loads: cards of its skeleton, announced once. */
 export const Loading: Story = {
     args: {
         sources: [createMemorySource({ id: 'media', label: 'Media', items: [], list: 'loading' })],
+    },
+    play: async ({ canvasElement }) => {
+        const dialog = await body(canvasElement).findByRole('dialog');
+        await expect(within(dialog).getByText('Loading media…')).toHaveAttribute('role', 'status');
+        const region = dialog.querySelector('[aria-busy="true"]');
+        await expect(region?.querySelectorAll('.panneau-skeleton').length).toBeGreaterThan(0);
     },
 };
 

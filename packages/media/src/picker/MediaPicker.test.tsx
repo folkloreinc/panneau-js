@@ -40,6 +40,18 @@ const dialog = () => screen.getByRole('dialog', { name: /media/i });
 const card = async (name: string) => within(dialog()).findByRole('row', { name });
 
 describe('MediaPicker', () => {
+    it('draws the cards of its skeleton while the library loads', () => {
+        open({
+            sources: [
+                createMemorySource({ id: 'media', label: 'Media', items: [], list: 'loading' }),
+            ],
+        });
+
+        expect(within(dialog()).getByText('Loading media…')).toHaveAttribute('role', 'status');
+        const region = dialog().querySelector('[aria-busy="true"]');
+        expect(region?.querySelectorAll('.panneau-skeleton[aria-hidden="true"]')).toHaveLength(36);
+    });
+
     it('lists the media of its source, and returns the one selected with its library', async () => {
         const { onSelect, onOpenChange } = open();
 

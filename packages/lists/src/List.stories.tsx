@@ -318,10 +318,35 @@ export const Empty: Story = {
     },
 };
 
-const loadingList = createList();
+const loadingList = createList({ defaults: { perPage: 5 } });
 
+/** The first page loads: rows of the columns, as many as the page size, announced once. */
 export const Loading: StoryObj<typeof ListView> = {
-    render: () => <ListView list={loadingList} columns={columns} items={undefined} />,
+    render: () => (
+        <ListView list={loadingList} columns={columns} items={undefined} aria-label="Members" />
+    ),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByRole('status')).toHaveTextContent('Loading the items…');
+        const region = canvasElement.querySelector('[aria-busy="true"]');
+        await expect(region?.querySelectorAll('tbody tr')).toHaveLength(5);
+        await expect(region?.querySelectorAll('th')).toHaveLength(columns.length);
+        // The skeleton is inert: its sort buttons can't be used before the items are there.
+        await expect(region?.querySelector('[inert]')).not.toBeNull();
+    },
+};
+
+/** The first page loads in the cards layout: cards of the columns. */
+export const LoadingCards: StoryObj<typeof ListView> = {
+    render: () => (
+        <ListView list={loadingList} columns={columns} items={undefined} layout="cards" />
+    ),
+    play: async ({ canvasElement }) => {
+        await expect(within(canvasElement).getByRole('status')).toBeInTheDocument();
+        await expect(
+            canvasElement.querySelectorAll('[aria-busy="true"] li .panneau-skeleton'),
+        ).toHaveLength(5 * columns.length);
+    },
 };
 
 export const LoadError: StoryObj<typeof ListView> = {

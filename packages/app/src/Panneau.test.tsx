@@ -49,7 +49,9 @@ describe('Panneau', () => {
             Promise.resolve(parse(createBootConfig({ definition: createDefinition() })).definition),
         );
         renderPanneau({ adapter });
-        expect(screen.getByRole('progressbar', { name: 'Loading…' })).toBeInTheDocument();
+        // The shell's skeleton, until the definition is there.
+        expect(screen.getByRole('status')).toHaveTextContent('Loading…');
+        expect(document.querySelector('[aria-busy="true"] .panneau-skeleton')).not.toBeNull();
         expect(await screen.findByRole('heading', { name: 'Test site' })).toBeInTheDocument();
         expect(navigation().getByRole('link', { name: 'Pages' })).toHaveAttribute(
             'href',
