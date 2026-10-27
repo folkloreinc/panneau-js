@@ -31,6 +31,7 @@ Other branches (`master`, `v2.0`, `v0.x`, `feature/*`) are not maintained.
 3. **Public API.** Only what a package's `exports` map exposes is public. Anything else is internal. No deep imports between packages. Each entry point has an API report in the package's `api/` folder: a change to the public API updates it (`npm run api`) in the same pull request.
 4. **No global CSS.** Components use CSS Modules and design tokens (CSS variables).
 5. **Controlled components.** Fields never keep their value in their own state.
+6. **Skeletons while content loads.** Content that loads shows a skeleton of its shape (`Skeleton` from `@panneau/ui`), never a spinner in its place. Spinners are for operations in progress and lookups inside a control. See [decision 0034](docs/decisions/0034-skeletons-while-content-loads.md).
 
 ## Stack
 

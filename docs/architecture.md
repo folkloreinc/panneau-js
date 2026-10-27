@@ -158,6 +158,7 @@ Plugins are passed to the app (`<Panneau plugins={[...]}>`) or to `PanneauProvid
 - **Concurrency.** Items carry a version. Updates send `If-Match`, and a `412` response opens a conflict resolution dialog. See [decisions/0008](decisions/0008-realtime-and-concurrency.md).
 - **Permissions.** The backend sends abilities with the definition (per resource) and with each item. The UI hides or disables actions accordingly. The backend still enforces them. See [decisions/0011](decisions/0011-permissions.md).
 - **Actions.** Operations on one item, a selection (including every item matching the list query) or a whole resource, with optional parameters, per-item results and long-running runs. One concept covers built-in actions (show, edit, duplicate, delete, restore, export, import) and project actions. See [decisions/0017](decisions/0017-actions.md).
+- **Loading.** Content that loads shows a skeleton of its shape, drawn by the component from what it knows (columns, fields, layout). Spinners are for operations in progress and lookups inside a control. See [decisions/0034](decisions/0034-skeletons-while-content-loads.md).
 - **Accessibility.** Primitives come from React Aria. The CI runs axe checks on Storybook stories.
 - **Internationalization.** UI messages use react-intl. Content fields can be `localized`, with values keyed by locale.
 
