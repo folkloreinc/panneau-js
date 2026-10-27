@@ -1,0 +1,104 @@
+/* A compact rounded button that shows a current value: the trigger of a menu or a popover. */
+
+.pillTrigger {
+    display: inline-flex;
+    flex: 0 1 auto;
+    align-items: center;
+    gap: var(--panneau-pill-trigger-gap, var(--panneau-space-2));
+    max-width: 100%;
+    min-height: var(--panneau-control-height);
+    padding: 0 var(--panneau-pill-trigger-padding-x, var(--panneau-space-3));
+    font-family: inherit;
+    font-size: var(--panneau-pill-trigger-font-size, var(--panneau-font-size-md));
+    font-weight: var(--panneau-pill-trigger-font-weight, var(--panneau-font-weight-medium));
+    line-height: var(--panneau-line-height-tight);
+    color: var(--panneau-pill-trigger-color, var(--panneau-color-text));
+    text-align: start;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    background-color: var(--panneau-pill-trigger-bg, var(--panneau-color-surface-sunken));
+    border: var(--panneau-border-width) solid var(--panneau-pill-trigger-border-color, transparent);
+    border-radius: var(--panneau-pill-trigger-radius, var(--panneau-radius-full));
+    transition: background-color var(--panneau-duration);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.pillTrigger[data-hovered],
+.pillTrigger[data-pressed],
+.pillTrigger[aria-expanded='true'] {
+    background-color: var(
+        --panneau-pill-trigger-bg-hover,
+        color-mix(in srgb, var(--panneau-color-text) 8%, var(--panneau-color-surface-sunken))
+    );
+}
+
+.pillTrigger[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 2px;
+}
+
+.pillTrigger[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+/* With media, the media sits as far from the start as from the top and the bottom. */
+.pillTrigger:has(.media) {
+    padding-inline-start: calc(
+        (var(--panneau-control-height) - var(--panneau-pill-trigger-media-size, 1.5rem)) / 2 -
+            var(--panneau-border-width)
+    );
+}
+
+.sm {
+    min-height: var(--panneau-control-height-sm);
+    padding: 0 var(--panneau-pill-trigger-padding-x-sm, var(--panneau-space-2));
+    font-size: var(--panneau-pill-trigger-font-size-sm, var(--panneau-font-size-sm));
+}
+
+.sm:has(.media) {
+    padding-inline-start: calc(
+        (var(--panneau-control-height-sm) - var(--panneau-pill-trigger-media-size-sm, 1.25rem)) /
+            2 - var(--panneau-border-width)
+    );
+}
+
+.media {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: var(--panneau-pill-trigger-media-size, 1.5rem);
+    height: var(--panneau-pill-trigger-media-size, 1.5rem);
+    overflow: hidden;
+    border-radius: var(--panneau-pill-trigger-media-radius, var(--panneau-radius-full));
+}
+
+.sm .media {
+    width: var(--panneau-pill-trigger-media-size-sm, 1.25rem);
+    height: var(--panneau-pill-trigger-media-size-sm, 1.25rem);
+}
+
+.media > :is(img, svg, video, picture) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.value {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chevron {
+    flex: 0 0 auto;
+    color: var(--panneau-color-text-muted);
+    transition: rotate var(--panneau-duration);
+}
+
+.pillTrigger[aria-expanded='true'] .chevron {
+    rotate: 180deg;
+}

@@ -67,9 +67,99 @@
     min-width: 0;
 }
 
+.optionLabel {
+    overflow-wrap: anywhere;
+}
+
 .description {
     font-size: var(--panneau-font-size-sm);
     color: var(--panneau-color-text-muted);
+}
+
+/* Leading media of an option, between the radio and the label. */
+.media {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: var(--panneau-radio-media-size, 2rem);
+    height: var(--panneau-radio-media-size, 2rem);
+    overflow: hidden;
+    border-radius: var(--panneau-radio-media-radius, var(--panneau-radius-full));
+}
+
+.media > :is(img, svg, video, picture) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/*
+ * Cards: the options in a grid of --_panneau-radio-group-columns columns, inside a size container
+ * of their own, so that they become a single column when the group is narrow, wherever it is.
+ */
+
+.grid {
+    container-type: inline-size;
+}
+
+.cards .options {
+    display: grid;
+    grid-template-columns: repeat(var(--_panneau-radio-group-columns, 2), minmax(0, 1fr));
+    gap: var(--panneau-radio-card-gap, var(--panneau-space-2));
+}
+
+@container (max-width: 28rem) {
+    .cards .options {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.card {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-3);
+    padding: var(--panneau-radio-card-padding, var(--panneau-space-3));
+    background-color: var(--panneau-radio-card-bg, var(--panneau-color-surface));
+    border: var(--panneau-border-width) solid
+        var(--panneau-radio-card-border-color, var(--panneau-color-border));
+    border-radius: var(--panneau-radio-card-radius, var(--panneau-radius-md));
+    transition:
+        border-color var(--panneau-duration),
+        box-shadow var(--panneau-duration);
+}
+
+.card .circle {
+    margin-top: 0;
+}
+
+.card .optionLabel {
+    font-weight: var(--panneau-radio-card-label-font-weight, var(--panneau-font-weight-medium));
+}
+
+.card[data-hovered] {
+    border-color: var(--panneau-radio-card-border-color-hover, var(--panneau-color-border-control));
+}
+
+/* The selected card: a border of twice the width, drawn inside so that nothing moves. */
+.card[data-selected] {
+    border-color: var(--panneau-radio-card-border-color-selected, var(--panneau-color-accent));
+    box-shadow: inset 0 0 0 var(--panneau-border-width)
+        var(--panneau-radio-card-border-color-selected, var(--panneau-color-accent));
+}
+
+.card[data-invalid] {
+    border-color: var(--panneau-color-danger);
+}
+
+/* A card shows the focus ring around itself, instead of around its radio. */
+.card[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 2px;
+}
+
+.card[data-focus-visible] .circle {
+    outline: none;
 }
 
 @media (pointer: coarse) {

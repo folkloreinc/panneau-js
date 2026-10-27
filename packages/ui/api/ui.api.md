@@ -17,6 +17,7 @@ import { IntlShape } from 'react-intl';
 import { JSX } from 'react';
 import { MenuItemProps as MenuItemProps_2 } from 'react-aria-components';
 import { MenuProps as MenuProps_2 } from 'react-aria-components';
+import { MenuSectionProps as MenuSectionProps_2 } from 'react-aria-components';
 import { MenuTrigger } from 'react-aria-components';
 import { ModalOverlayProps } from 'react-aria-components';
 import { NumberFieldProps } from 'react-aria-components';
@@ -355,10 +356,12 @@ export const componentTokens: Readonly<{
     inline: Readonly<Record<"panneau-inline-gap", string>>;
     input: Readonly<Record<"panneau-input-radius" | "panneau-input-padding-x" | "panneau-input-border-width" | "panneau-input-bg" | "panneau-input-border-color" | "panneau-input-border-color-hover", string>>;
     'list-box': Readonly<Record<"panneau-list-box-padding" | "panneau-list-box-item-radius" | "panneau-list-box-item-padding-y" | "panneau-list-box-item-padding-y-described" | "panneau-list-box-item-padding-x" | "panneau-list-box-item-bg-hover", string>>;
+    menu: Readonly<Record<"panneau-menu-header-font-size" | "panneau-menu-header-font-weight" | "panneau-menu-header-color" | "panneau-menu-header-text-transform" | "panneau-menu-header-letter-spacing" | "panneau-menu-footer-font-size" | "panneau-menu-footer-color" | "panneau-menu-media-size" | "panneau-menu-media-size-described" | "panneau-menu-media-radius" | "panneau-menu-item-bg-selected", string>>;
     'number-input': Readonly<Record<"panneau-number-input-stepper-width", string>>;
+    'pill-trigger': Readonly<Record<"panneau-pill-trigger-color" | "panneau-pill-trigger-radius" | "panneau-pill-trigger-gap" | "panneau-pill-trigger-padding-x" | "panneau-pill-trigger-font-size" | "panneau-pill-trigger-font-weight" | "panneau-pill-trigger-padding-x-sm" | "panneau-pill-trigger-font-size-sm" | "panneau-pill-trigger-bg" | "panneau-pill-trigger-border-color" | "panneau-pill-trigger-media-size" | "panneau-pill-trigger-media-radius" | "panneau-pill-trigger-bg-hover" | "panneau-pill-trigger-media-size-sm", string>>;
     popover: Readonly<Record<"panneau-popover-radius" | "panneau-popover-padding" | "panneau-popover-bg" | "panneau-popover-border-color" | "panneau-popover-shadow", string>>;
     prose: Readonly<Record<"panneau-prose-gap" | "panneau-prose-border-color" | "panneau-prose-line-height" | "panneau-prose-heading-gap" | "panneau-prose-list-indent" | "panneau-prose-link-color" | "panneau-prose-code-font-size" | "panneau-prose-code-color" | "panneau-prose-code-bg" | "panneau-prose-code-radius" | "panneau-prose-quote-border-color" | "panneau-prose-quote-color", string>>;
-    radio: Readonly<Record<"panneau-radio-size" | "panneau-radio-bg" | "panneau-radio-border-color" | "panneau-radio-checked-color" | "panneau-radio-checked-border-width", string>>;
+    radio: Readonly<Record<"panneau-radio-size" | "panneau-radio-bg" | "panneau-radio-border-color" | "panneau-radio-checked-color" | "panneau-radio-media-size" | "panneau-radio-media-radius" | "panneau-radio-checked-border-width" | "panneau-radio-card-gap" | "panneau-radio-card-padding" | "panneau-radio-card-bg" | "panneau-radio-card-border-color" | "panneau-radio-card-border-color-hover" | "panneau-radio-card-border-color-selected" | "panneau-radio-card-radius" | "panneau-radio-card-label-font-weight", string>>;
     'segmented-control': Readonly<Record<"panneau-segmented-control-radius" | "panneau-segmented-control-padding" | "panneau-segmented-control-bg" | "panneau-segmented-control-border-color" | "panneau-segmented-control-segment-padding-x" | "panneau-segmented-control-segment-font-weight" | "panneau-segmented-control-segment-color" | "panneau-segmented-control-segment-color-selected" | "panneau-segmented-control-segment-bg-selected" | "panneau-segmented-control-segment-shadow-selected", string>>;
     spinner: Readonly<Record<"panneau-spinner-border-width", string>>;
     stack: Readonly<Record<"panneau-stack-gap", string>>;
@@ -631,16 +634,34 @@ export interface MenuItemProps extends Omit<MenuItemProps_2, 'className' | 'styl
     // (undocumented)
     icon?: IconComponent;
     isDanger?: boolean;
+    media?: ReactNode;
 }
 
 // @public (undocumented)
 export interface MenuProps<T extends object> extends Omit<MenuProps_2<T>, 'className' | 'style'> {
     // (undocumented)
     className?: string;
+    footer?: ReactNode;
+    // (undocumented)
+    footerClassName?: string;
     // (undocumented)
     placement?: 'bottom start' | 'bottom end' | 'top start' | 'top end';
     // (undocumented)
     popoverClassName?: string;
+}
+
+// @public
+export function MenuSection<T extends object>(input: MenuSectionProps<T>): JSX.Element;
+
+// @public (undocumented)
+export interface MenuSectionProps<T extends object> extends Omit<MenuSectionProps_2<T>, 'className' | 'style' | 'children' | 'items'> {
+    // (undocumented)
+    children?: ReactNode;
+    // (undocumented)
+    className?: string;
+    // (undocumented)
+    headerClassName?: string;
+    title?: ReactNode;
 }
 
 // @public
@@ -725,6 +746,20 @@ export interface PanneauTones {
 }
 
 // @public
+export function PillTrigger(input: PillTriggerProps): JSX.Element;
+
+// @public (undocumented)
+export interface PillTriggerProps extends Omit<ButtonProps_2, 'className' | 'style' | 'children'> {
+    children?: ReactNode;
+    // (undocumented)
+    className?: string;
+    media?: ReactNode;
+    size?: 'sm' | 'md';
+    // (undocumented)
+    style?: CSSProperties;
+}
+
+// @public
 export function Popover(input: PopoverProps): JSX.Element | null;
 
 // @public (undocumented)
@@ -749,12 +784,22 @@ export interface ProseProps extends HTMLAttributes<HTMLElement> {
 // @public
 export function RadioGroup(input: RadioGroupProps): JSX.Element;
 
+// @public
+export type RadioGroupAppearance = 'list' | 'cards';
+
+// @public
+export interface RadioGroupOption extends SelectOption {
+    media?: ReactNode;
+}
+
 // @public (undocumented)
 export interface RadioGroupProps extends Omit<RadioGroupProps_2, 'className' | 'style' | 'children' | 'isInvalid' | 'validate' | 'value' | 'defaultValue' | 'onChange'>, FieldChromeProps {
+    appearance?: RadioGroupAppearance;
+    columns?: number;
     // (undocumented)
     onChange?: (value: OptionValue) => void;
     // (undocumented)
-    options: readonly SelectOption[];
+    options: readonly RadioGroupOption[];
     // (undocumented)
     radioClassName?: string;
     // (undocumented)

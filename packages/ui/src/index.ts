@@ -49,14 +49,22 @@ export {
     MenuItem,
     type MenuItemProps,
     type MenuProps,
+    MenuSection,
+    type MenuSectionProps,
     MenuSeparator,
     MenuTrigger,
 } from './menu/Menu';
 export { NumberInput, type NumberInputProps } from './number-input/NumberInput';
 export { Slider, type SliderProps } from './slider/Slider';
 export { type TagSuggestion, TagsInput, type TagsInputProps } from './tags-input/TagsInput';
+export { PillTrigger, type PillTriggerProps } from './pill-trigger/PillTrigger';
 export { Popover, type PopoverProps, PopoverTrigger } from './popover/Popover';
-export { RadioGroup, type RadioGroupProps } from './radio-group/RadioGroup';
+export {
+    RadioGroup,
+    type RadioGroupAppearance,
+    type RadioGroupOption,
+    type RadioGroupProps,
+} from './radio-group/RadioGroup';
 export { PanneauRoot, type PanneauRootProps, usePortalContainer } from './root/PanneauRoot';
 export { ThemeScope, type ThemeScopeProps } from './root/ThemeScope';
 export {

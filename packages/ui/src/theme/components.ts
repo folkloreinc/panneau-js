@@ -14,7 +14,9 @@ import { fieldTokens } from '../field/tokens';
 import { gridTokens } from '../grid/tokens';
 import { headingTokens } from '../heading/tokens';
 import { inlineTokens } from '../inline/tokens';
+import { menuTokens } from '../menu/tokens';
 import { numberInputTokens } from '../number-input/tokens';
+import { pillTriggerTokens } from '../pill-trigger/tokens';
 import { popoverTokens } from '../popover/tokens';
 import { proseTokens } from '../prose/tokens';
 import { radioTokens } from '../radio-group/tokens';
@@ -50,7 +52,9 @@ export const componentTokens = Object.freeze({
     inline: inlineTokens.tokens,
     input: inputTokens.tokens,
     'list-box': listBoxTokens.tokens,
+    menu: menuTokens.tokens,
     'number-input': numberInputTokens.tokens,
+    'pill-trigger': pillTriggerTokens.tokens,
     popover: popoverTokens.tokens,
     prose: proseTokens.tokens,
     radio: radioTokens.tokens,

@@ -20,6 +20,7 @@ import { IconButton } from '../icon-button/IconButton';
 import { Icon } from '../icon/Icon';
 import { Inline } from '../inline/Inline';
 import { NumberInput } from '../number-input/NumberInput';
+import { PillTrigger } from '../pill-trigger/PillTrigger';
 import { Prose } from '../prose/Prose';
 import { RadioGroup } from '../radio-group/RadioGroup';
 import { PanneauRoot } from '../root/PanneauRoot';
@@ -58,6 +59,7 @@ const cases: [string, ReactNode][] = [
     ['icon-button', <IconButton key="icon-button" icon={Plus} label="Add" showTooltip={false} />],
     ['inline', <Inline key="inline" />],
     ['number-input', <NumberInput key="number-input" label="Count" />],
+    ['pill-trigger', <PillTrigger key="pill-trigger">Draft</PillTrigger>],
     ['prose', <Prose key="prose" />],
     ['radio-group', <RadioGroup key="radio-group" label="Choice" options={options} />],
     ['radio', <RadioGroup key="radio" label="Choice" options={options} />],
