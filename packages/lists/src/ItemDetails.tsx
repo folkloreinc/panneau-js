@@ -53,7 +53,9 @@ export function ItemDetails({
     if (item === undefined) {
         return (
             <LoadingRegion label={intl.formatMessage(messages.loadingItem)}>
-                <div inert>{details}</div>
+                <div inert aria-hidden="true">
+                    {details}
+                </div>
             </LoadingRegion>
         );
     }

@@ -25,7 +25,8 @@ export interface ListSkeletonProps {
 /**
  * The first page of a list that loads (decision 0034): the list's own layout, with its columns
  * and a skeleton for each value, as many rows as the page size, up to what fits. The layout is
- * inert, so its headers can't be used before the items are there.
+ * inert and hidden: its headers can't be used before the items are there, and the status message
+ * of the region says that the list loads.
  */
 export function ListSkeleton({ Layout, columns, perPage, sort, label }: ListSkeletonProps) {
     const intl = usePanneauIntl();
@@ -39,7 +40,7 @@ export function ListSkeleton({ Layout, columns, perPage, sort, label }: ListSkel
     };
     return (
         <LoadingRegion label={intl.formatMessage(messages.loading)}>
-            <div inert>
+            <div inert aria-hidden="true">
                 <Layout
                     items={items}
                     columns={columns}
