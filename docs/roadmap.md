@@ -59,6 +59,7 @@ Goal: a complete admin panel, ready for client projects.
 
 **The interface is worked on in parallel.** The look and the interactions of the app (shell, sidebar, pages) are designed on the playground (`npm run playground`), at the same time as the contests platform migrates, instead of waiting for each of its slices.
 
+- **Loading states:** skeletons of the content's shape instead of spinners, in lists, forms, the item panel, the preview, the media picker and the boot of the app ([#121](https://github.com/folkloreinc/panneau-js/issues/121), [decisions/0034](decisions/0034-skeletons-while-content-loads.md)).
 - **App shell:** routing, layout, menus, replaceable pages, error pages.
     - First version: a sidebar from the `main` menu, collapsible to a rail of icons, with the page on a raised panel as in recent browsers, a drawer on small screens, and themable through the `shell` and `sidebar` component tokens. Home, list, create, edit, plugin and not found pages.
     - **Show page:** the show route opens the item's details in a panel next to its list: its values, a link to edit it, and its `link` actions, such as its page on the site ([decisions/0028](decisions/0028-item-panel.md)). It shows the item's preview when its resource has one: a plugin component, or its page on the site in an iframe.
