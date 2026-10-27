@@ -4,6 +4,7 @@ export const mediaFr: Record<string, string> = {
     'panneau.media.statusPending': 'En attente',
     'panneau.media.statusProcessing': 'Traitement en cours',
     'panneau.media.statusFailed': 'Le traitement a échoué',
+    'panneau.media.statusFailedBecause': 'Le traitement a échoué : {error}',
     'panneau.media.unavailable': 'On ne peut pas téléverser de fichiers ici.',
     'panneau.media.chooseMedia': 'Choisir un média',
     'panneau.media.addMedia': 'Ajouter des médias',

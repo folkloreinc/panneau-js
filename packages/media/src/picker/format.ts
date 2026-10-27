@@ -33,7 +33,10 @@ export function refusalOf(
     intl: Intl,
 ): string | null {
     if (item.media.status === 'failed') {
-        return intl.formatMessage(messages.statusFailed);
+        const reason = item.media.error?.message;
+        return typeof reason === 'string' && reason !== ''
+            ? intl.formatMessage(messages.statusFailedBecause, { error: reason })
+            : intl.formatMessage(messages.statusFailed);
     }
     if (accept !== null && accept.length > 0 && !matchesMime(item.media.mime ?? '', accept)) {
         return intl.formatMessage(messages.pickerRefusedType, { type: extensionOf(item) });

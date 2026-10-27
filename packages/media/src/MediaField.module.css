@@ -175,3 +175,21 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
+
+.failed {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--panneau-space-1) var(--panneau-space-2);
+    min-width: 0;
+}
+
+/* Why the processing failed: two lines at most, the whole text in its title. */
+.failure {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-danger);
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
