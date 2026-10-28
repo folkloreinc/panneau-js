@@ -102,7 +102,8 @@ Minor releases, each one additive:
 - **AI agents (MCP):** an MCP server that lets an AI assistant work in a Panneau, authenticated as its user.
     - Its tools come from the definition and the protocol: list, search, show, create and update the items of a resource, and run its actions, with a dry run first for those that change or delete items.
     - The agent signs in with OAuth as the user, as the MCP specification describes: it acts with the user's abilities and the backend's policies, and the user can revoke it.
-    - Where it lives is decided in its own decision record: in `laravel-panneau` (on `laravel/mcp`), or in a Node package over the REST adapter that works with any backend.
+    - It lives in `laravel-panneau`. The tools are built once from the definition, with Laravel's JSON Schema builder. `laravel/mcp` serves them to outside AI clients, signed in with OAuth 2.1 (Passport) or a Sanctum token. The Laravel AI SDK (`laravel/ai`) uses the same tools for an assistant inside Panneau, with its answers streamed to a panel of the app.
+    - A decision record sets the tools, their names and their limits when the work starts.
 - **Preview:** component previews and iframe previews of the real site fed with unsaved values.
 - **Drafts and revisions:** per resource.
 - **Collaboration:**
