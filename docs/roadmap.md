@@ -71,7 +71,8 @@ Goal: a complete admin panel, ready for client projects.
 - **Permissions:** abilities in the UI; an optional roles module on the Laravel side.
 - **Lists:**
     - sorting, filters (with active filter chips), column choice;
-    - inline editing, layouts (table, cards, gallery, calendar), bulk actions;
+    - inline editing: a column edits its field in place, for the simple types (text, number, select, boolean, date). Each change saves the one field (`PATCH` with a single field and `If-Match`), checked by its portable rules, and an error or a conflict shows on the cell;
+    - layouts (table, cards, gallery, calendar), bulk actions;
     - remembered view per user.
 - **Actions:**
     - built-in and custom actions, with parameters and confirmation;
@@ -98,6 +99,10 @@ Minor releases, each one additive:
 - **Media library:** conversions, tags, search, usage tracking. Depends on the `laravel-mediatheque` roadmap.
 - **Home page:** dashboards with widgets (stats, charts, recent items, shortcuts, custom), defined per project and per role.
 - **Global search:** a "Go to…" command palette (⌘K), started in Phase 2 ([#97](https://github.com/folkloreinc/panneau-js/issues/97), [decisions/0029](decisions/0029-go-to-palette.md)): recent items, navigation, create, commands of plugins and results of `GET /search` grouped by resource. Then the `limit` and `resources` parameters, the `422` and `429` problems, conformance checks and a scope per resource ([decisions/0030](decisions/0030-search-parameters-and-scope.md)), and `laravel-panneau`'s endpoint, on Laravel Scout when the model is searchable ([folkloreinc/laravel-panneau#96](https://github.com/folkloreinc/laravel-panneau/issues/96)). Recent items on the server are set aside for now.
+- **AI agents (MCP):** an MCP server that lets an AI assistant work in a Panneau, authenticated as its user.
+    - Its tools come from the definition and the protocol: list, search, show, create and update the items of a resource, and run its actions, with a dry run first for those that change or delete items.
+    - The agent signs in with OAuth as the user, as the MCP specification describes: it acts with the user's abilities and the backend's policies, and the user can revoke it.
+    - Where it lives is decided in its own decision record: in `laravel-panneau` (on `laravel/mcp`), or in a Node package over the REST adapter that works with any backend.
 - **Preview:** component previews and iframe previews of the real site fed with unsaved values.
 - **Drafts and revisions:** per resource.
 - **Collaboration:**
