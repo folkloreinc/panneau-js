@@ -32,6 +32,8 @@ Other branches (`master`, `v2.0`, `v0.x`, `feature/*`) are not maintained.
 4. **No global CSS.** Components use CSS Modules and design tokens (CSS variables).
 5. **Controlled components.** Fields never keep their value in their own state.
 6. **Skeletons while content loads.** Content that loads shows a skeleton of its shape (`Skeleton` from `@panneau/ui`), never a spinner in its place. Spinners are for operations in progress and lookups inside a control. See [decision 0034](docs/decisions/0034-skeletons-while-content-loads.md).
+    - A component that loads content draws its own skeleton from its props (columns, fields, layout), so it works without the app: `items` or `item` left `undefined`, or an `isLoading` prop, as `ListView`, `ItemDetails` and `Form` do.
+    - The skeleton goes in a `LoadingRegion` (`aria-busy`, and one status message). Content already shown stays during a refetch.
 
 ## Stack
 
@@ -40,7 +42,7 @@ Other branches (`master`, `v2.0`, `v0.x`, `feature/*`) are not maintained.
 - TypeScript 6, `strict` with `noUncheckedIndexedAccess` (`tsconfig.base.json`).
 - Builds use Vite in library mode: ESM only, one file per module, with `.d.ts` files from `tsc`. Use the shared config in `config/vite.package.ts`.
 - Tests use Vitest, plus Testing Library for components (`environment: 'jsdom'`). Test files sit next to the code: `*.test.ts(x)`.
-- Every component has stories next to it (`*.stories.tsx`), with play functions for its interactions. Storybook 10 runs them as tests in Chromium through its Vitest addon, with axe checks: an accessibility violation fails CI.
+- Every component has stories next to it (`*.stories.tsx`), with play functions for its interactions. A component that loads content also has a loading story, whose play function checks `aria-busy` and the status message. Storybook 10 runs them as tests in Chromium through its Vitest addon, with axe checks: an accessibility violation fails CI.
 - Components style themselves with CSS Modules that read the `--panneau-*` tokens ([decision 0020](docs/decisions/0020-default-theme-and-icons.md)), and render inside `PanneauRoot`. Icons come from Lucide only.
 - Lint with ESLint (flat config, typescript-eslint `strict`, React Hooks). Format with Prettier.
 
