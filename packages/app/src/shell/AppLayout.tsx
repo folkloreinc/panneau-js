@@ -14,7 +14,7 @@ import { GoTo } from './GoTo';
 import { type ColorSchemePreference, Sidebar } from './Sidebar';
 
 const CONTENT_ID = 'panneau-content';
-const SIDEBAR_STATES = ['expanded', 'collapsed'] as const;
+export const SIDEBAR_STATES = ['expanded', 'collapsed'] as const;
 
 export interface AppLayoutProps {
     definition: Definition;

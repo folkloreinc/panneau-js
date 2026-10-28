@@ -4,7 +4,7 @@ import { createRelationSource } from '@panneau/fields';
 import { Form } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
 import type { Definition, Item } from '@panneau/protocol';
-import { Alert, Button, Spinner, usePanneauIntl } from '@panneau/ui';
+import { Alert, Button, usePanneauIntl } from '@panneau/ui';
 
 import { useDocumentTitle } from '../documentTitle';
 import { navigate } from '../location';
@@ -61,22 +61,22 @@ export function ResourceFormPage({ definition, resolved, basePath, id }: Resourc
     useDocumentTitle([title, back.label]);
 
     let content;
-    if (mode === 'update' && item === undefined) {
-        content = itemQuery.isError ? (
+    if (mode === 'update' && item === undefined && itemQuery.isError) {
+        content = (
             <Alert tone="danger">
                 <p>{intl.formatMessage(appMessages.itemLoadError, { resource: singular })}</p>
                 <Button size="sm" onPress={() => void itemQuery.refetch()}>
                     {intl.formatMessage(appMessages.retry)}
                 </Button>
             </Alert>
-        ) : (
-            <Spinner showLabel />
         );
     } else {
+        // While the item loads, the form draws its skeleton; it starts over from the item's values.
         content = (
             <Form
                 key={item?.version ?? item?.id ?? 'new'}
                 aria-label={title}
+                isLoading={mode === 'update' && item === undefined}
                 fields={fields}
                 layout={layout}
                 values={

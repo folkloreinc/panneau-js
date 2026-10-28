@@ -9,8 +9,10 @@ import {
     Button,
     Dialog,
     Heading,
+    LoadingRegion,
     SegmentedControl,
     Select,
+    Skeleton,
     Spinner,
     Tab,
     TabList,
@@ -54,14 +56,15 @@ function toReference({ source, item }: Picked): MediaReference {
     return { id: item.id, resource: source, label: item.label, media: item.media };
 }
 
+/** The cards of a library that loads: a thumbnail, a name and a line of details. */
 function Skeletons() {
     return (
-        <div className={styles.grid} aria-hidden>
+        <div className={styles.grid}>
             {Array.from({ length: 12 }, (_, index) => (
                 <div key={index} className={styles.skeletonCard}>
-                    <span className={styles.skeletonThumbnail} />
-                    <span className={styles.skeletonLine} />
-                    <span className={styles.skeletonLineShort} />
+                    <Skeleton shape="rect" aspectRatio={1} />
+                    <Skeleton className={styles.cardName} width="80%" />
+                    <Skeleton className={styles.cardMeta} width="50%" />
                 </div>
             ))}
         </div>
@@ -427,12 +430,12 @@ function OpenMediaPicker({
     let libraryContent;
     if (state.items.length === 0 && (state.status === 'idle' || state.status === 'loading')) {
         libraryContent = (
-            <div className={styles.scroll} aria-busy="true">
-                <span className={styles.visuallyHidden} role="status">
-                    {intl.formatMessage(messages.pickerLoading)}
-                </span>
+            <LoadingRegion
+                className={styles.scroll}
+                label={intl.formatMessage(messages.pickerLoading)}
+            >
                 <Skeletons />
-            </div>
+            </LoadingRegion>
         );
     } else if (state.items.length === 0 && state.status === 'error') {
         libraryContent = (

@@ -25,6 +25,7 @@ export const appFr: Record<string, string> = {
     'panneau.app.preview': 'Aperçu',
     'panneau.app.details': 'Détails',
     'panneau.app.previewOf': 'Aperçu de « {title} »',
+    'panneau.app.previewLoading': 'Chargement de l’aperçu…',
     'panneau.app.previewError': 'L’aperçu n’a pas pu être chargé.',
     'panneau.app.previewMissing': 'Aucun plugin ne fournit l’aperçu « {component} ».',
     'panneau.app.openPreview': 'Ouvrir dans un nouvel onglet',

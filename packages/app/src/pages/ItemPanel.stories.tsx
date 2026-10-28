@@ -66,7 +66,7 @@ function ArticlePreview({ item }: PreviewProps) {
     );
 }
 
-function createSetup(mode: PreviewMode) {
+function createSetup(mode: PreviewMode, loading: boolean) {
     const resourceInput = input.resources[0];
     const definition: DefinitionInput = {
         ...input,
@@ -107,13 +107,23 @@ function createSetup(mode: PreviewMode) {
     });
     return {
         resource: result.data.resources[0],
-        adapter: createRestAdapter({ baseUrl: '/api', fetch: backend.fetch }),
+        // A backend that never answers, for the loading state.
+        adapter: createRestAdapter({
+            baseUrl: '/api',
+            fetch: loading ? () => new Promise<Response>(() => undefined) : backend.fetch,
+        }),
         client: new QueryClient({ defaultOptions: { queries: { retry: false } } }),
     };
 }
 
-function Panel({ preview = 'none' }: { preview?: PreviewMode }) {
-    const [{ resource, adapter, client }] = useState(() => createSetup(preview));
+function Panel({
+    preview = 'none',
+    loading = false,
+}: {
+    preview?: PreviewMode;
+    loading?: boolean;
+}) {
+    const [{ resource, adapter, client }] = useState(() => createSetup(preview, loading));
     if (resource === undefined) {
         return null;
     }
@@ -197,5 +207,28 @@ export const IframePreview: Story = {
         await expect(
             await canvas.findByTitle('Preview of “The river festival returns”'),
         ).toBeInTheDocument();
+    },
+};
+
+/** The item loads: a skeleton of its title, its actions and its details, announced once. */
+export const Loading: Story = {
+    args: { loading: true },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const panel = canvas.getByRole('region', { name: 'Details of the article' });
+        await expect(within(panel).getByRole('status')).toHaveTextContent('Loading the item…');
+        await expect(panel.querySelector('[aria-busy="true"]')).not.toBeNull();
+        await expect(within(panel).queryByRole('heading')).toBeNull();
+    },
+};
+
+/** The item loads, with a preview: the tabs, and a block in the frame of the preview. */
+export const LoadingPreview: Story = {
+    args: { loading: true, preview: 'iframe' },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const panel = canvas.getByRole('region', { name: 'Details of the article' });
+        await expect(within(panel).getByRole('tab', { name: 'Preview' })).toBeInTheDocument();
+        await expect(within(panel).getByRole('status')).toHaveTextContent('Loading the preview…');
     },
 };

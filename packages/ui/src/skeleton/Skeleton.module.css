@@ -1,0 +1,62 @@
+.block {
+    display: block;
+    flex-shrink: 0;
+    max-width: 100%;
+    background-color: var(
+        --panneau-skeleton-color,
+        color-mix(in srgb, var(--panneau-color-text) 9%, transparent)
+    );
+    border-radius: var(--panneau-skeleton-radius, var(--panneau-radius-sm));
+    animation: pulse var(--panneau-skeleton-duration, 1.6s) ease-in-out infinite;
+}
+
+/* A line of text: as tall as a line, with the block in its middle, like the glyphs. */
+.line {
+    box-sizing: border-box;
+    height: 1.5em;
+    height: 1lh;
+    padding-block: 0.3em;
+    background-clip: content-box;
+}
+
+.lines {
+    display: block;
+    max-width: 100%;
+}
+
+.lines > .line:last-child:not(:first-child) {
+    width: 60%;
+}
+
+.circle {
+    flex-shrink: 0;
+    width: 2.5rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+}
+
+.rect {
+    width: 100%;
+}
+
+@keyframes pulse {
+    50% {
+        opacity: 0.45;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .block {
+        animation: none;
+    }
+}
+
+/* The status message of a loading region: read by screen readers, not shown. */
+.status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}

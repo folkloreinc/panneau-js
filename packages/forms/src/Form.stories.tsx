@@ -133,6 +133,19 @@ export const Layout: Story = {
     },
 };
 
+/** The item loads: the layout of the form, with a label and a block for each field. */
+export const Loading: Story = {
+    args: { fields: LAYOUT_FIELDS, layout: LAYOUT, isLoading: true },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByRole('status')).toHaveTextContent('Loading the form…');
+        await expect(canvas.queryByRole('form')).toBeNull();
+        await expect(canvas.queryByRole('textbox')).toBeNull();
+        const region = canvasElement.querySelector('[aria-busy="true"]');
+        await expect(region?.querySelectorAll('.panneau-skeleton').length).toBeGreaterThan(0);
+    },
+};
+
 function LeaveGuard() {
     const [dirty, setDirty] = useState(true);
     const [left, setLeft] = useState<boolean | null>(null);

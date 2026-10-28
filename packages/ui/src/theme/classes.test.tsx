@@ -26,6 +26,8 @@ import { RadioGroup } from '../radio-group/RadioGroup';
 import { PanneauRoot } from '../root/PanneauRoot';
 import { ThemeScope } from '../root/ThemeScope';
 import { Select } from '../select/Select';
+import { LoadingRegion } from '../skeleton/LoadingRegion';
+import { Skeleton } from '../skeleton/Skeleton';
 import { Spinner } from '../spinner/Spinner';
 import { Stack } from '../stack/Stack';
 import { Switch } from '../switch/Switch';
@@ -64,6 +66,8 @@ const cases: [string, ReactNode][] = [
     ['radio-group', <RadioGroup key="radio-group" label="Choice" options={options} />],
     ['radio', <RadioGroup key="radio" label="Choice" options={options} />],
     ['select', <Select key="select" label="Choice" options={options} />],
+    ['skeleton', <Skeleton key="skeleton" />],
+    ['loading-region', <LoadingRegion key="loading-region" />],
     ['spinner', <Spinner key="spinner" label="Loading" />],
     ['stack', <Stack key="stack" />],
     ['switch', <Switch key="switch">Active</Switch>],

@@ -157,8 +157,7 @@ export interface ItemDetailsProps {
     className?: string;
     columns: readonly ListColumn[];
     displays?: Readonly<Record<string, DisplayEntry>>;
-    // (undocumented)
-    item: ListItem;
+    item: ListItem | undefined;
 }
 
 // @public

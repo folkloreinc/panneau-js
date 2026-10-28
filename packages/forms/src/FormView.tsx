@@ -26,6 +26,7 @@ import { ConflictDialog } from './ConflictDialog';
 import { ErrorSummary } from './ErrorSummary';
 import styles from './Form.module.css';
 import { FormBinding } from './FormBinding';
+import { FormSkeleton } from './FormSkeleton';
 import { FormContext, RevealContext, createRevealRegistry, useFormState } from './context';
 import { cx } from './cx';
 import { LayoutNodes } from './layout/Layout';
@@ -74,6 +75,11 @@ export interface FormViewProps {
     guardUnsavedChanges?: boolean;
     /** Shows a toast after a successful submit. Defaults to true. */
     showSavedToast?: boolean;
+    /**
+     * The values load, such as the item to edit: the form draws a skeleton of its layout and
+     * fields instead (decision 0034).
+     */
+    isLoading?: boolean;
     id?: string;
     'aria-label'?: string;
     className?: string;
@@ -139,6 +145,7 @@ export function FormView({
     onReload,
     guardUnsavedChanges = true,
     showSavedToast = true,
+    isLoading = false,
     id,
     'aria-label': ariaLabel,
     className,
@@ -241,6 +248,21 @@ export function FormView({
         problem?.detail ??
         (problem === null && state.error instanceof Error ? state.error.message : undefined);
     const showSummary = state.status === 'invalid' && state.submitCount > 0;
+
+    if (isLoading) {
+        return (
+            <FormSkeleton
+                main={main}
+                sidebar={resolved.layout.filter((node) => node.type === 'sidebar')}
+                fields={resolved.fieldsByName}
+                footer={submitLabel !== null || actions !== undefined}
+                className={className}
+                layoutClassName={layoutClassName}
+                sidebarClassName={sidebarClassName}
+                footerClassName={footerClassName}
+            />
+        );
+    }
 
     return (
         <FormContext value={form}>

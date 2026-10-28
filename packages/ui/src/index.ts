@@ -90,6 +90,8 @@ export {
     type Space,
 } from './layout/responsive';
 export { Prose, type ProseProps } from './prose/Prose';
+export { LoadingRegion, type LoadingRegionProps } from './skeleton/LoadingRegion';
+export { Skeleton, type SkeletonProps } from './skeleton/Skeleton';
 export { Spinner, type SpinnerProps } from './spinner/Spinner';
 export { Stack, type StackProps } from './stack/Stack';
 export { Switch, type SwitchProps } from './switch/Switch';

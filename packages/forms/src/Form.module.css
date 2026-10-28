@@ -155,3 +155,27 @@
         flex: 1 1 auto;
     }
 }
+
+/* The skeleton of a form whose values load. */
+.skeletonField {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-1);
+}
+
+.skeletonInline {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+}
+
+.skeletonLabel {
+    font-size: var(--panneau-font-size-sm);
+}
+
+.skeletonTabs {
+    display: flex;
+    gap: var(--panneau-space-5);
+    padding-block: var(--panneau-space-2);
+    border-bottom: var(--panneau-border-width) solid var(--panneau-color-border);
+}

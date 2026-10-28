@@ -59,6 +59,7 @@ const uploadSource =
     - `value`: the current media;
     - `title` and `confirmLabel`;
     - `stateKey`: keeps the query, the pages and the scroll position of each library across openings.
+- While a library loads, the grid shows the cards of its skeleton.
 - Media being processed can be picked, and are read again (`get()`) until they are ready. A media whose processing failed can't be picked.
 
 `createResourceMediaSource(adapter, library)` gives the source of a library resource: `GET /resources/{library}` with `q`, `filter`, `sort` and the page as the cursor, `POST` from an upload, and `PATCH` for the details. A product implements `MediaSource` on its own API.

@@ -72,6 +72,10 @@ export const appMessages = {
         id: 'panneau.app.previewOf',
         defaultMessage: 'Preview of “{title}”',
     }),
+    previewLoading: defineMessage({
+        id: 'panneau.app.previewLoading',
+        defaultMessage: 'Loading the preview…',
+    }),
     previewError: defineMessage({
         id: 'panneau.app.previewError',
         defaultMessage: 'The preview could not be loaded.',

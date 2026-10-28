@@ -108,6 +108,14 @@ export const listsMessages = {
         id: 'panneau.lists.noResults',
         defaultMessage: 'No items match the search or the filters.',
     }),
+    loading: defineMessage({
+        id: 'panneau.lists.loading',
+        defaultMessage: 'Loading the items…',
+    }),
+    loadingItem: defineMessage({
+        id: 'panneau.lists.loadingItem',
+        defaultMessage: 'Loading the item…',
+    }),
     loadFailed: defineMessage({
         id: 'panneau.lists.loadFailed',
         defaultMessage: 'The items could not be loaded.',

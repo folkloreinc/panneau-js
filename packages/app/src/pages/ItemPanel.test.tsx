@@ -79,6 +79,25 @@ describe('ItemPanel', () => {
         expect(within(panel).getByRole('term')).toHaveTextContent('Title');
     });
 
+    it('draws the skeleton of the details while the item loads', async () => {
+        const panel = renderPanel(undefined);
+        expect(within(panel).getByRole('status')).toHaveTextContent('Loading the item…');
+        expect(within(panel).queryByRole('heading')).toBeNull();
+        expect(panel.querySelector('[aria-busy="true"] dd .panneau-skeleton')).not.toBeNull();
+        expect(await within(panel).findByRole('heading', { name: 'About us' })).toBeInTheDocument();
+        expect(panel.querySelector('[aria-busy="true"]')).toBeNull();
+    });
+
+    it('draws a block in the frame of the preview while it loads', async () => {
+        const panel = renderPanel({ preview: { mode: 'iframe' } });
+        expect(within(panel).getByRole('tab', { name: 'Preview' })).toBeInTheDocument();
+        expect(await within(panel).findByText('Loading the preview…')).toHaveAttribute(
+            'role',
+            'status',
+        );
+        expect(await within(panel).findByTitle('Preview of “About us”')).toBeInTheDocument();
+    });
+
     it('opens on the preview of a plugin component, next to the details', async () => {
         const user = userEvent.setup();
         const panel = renderPanel({ preview: { mode: 'component', component: 'page' } });
