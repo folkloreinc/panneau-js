@@ -1,7 +1,7 @@
 import { Mark, Node } from '@tiptap/core';
 import type { DOMOutputSpec } from '@tiptap/pm/model';
 
-import { readAttributes } from './attributes';
+import { CLIPBOARD_SLICE, readAttributes } from './attributes';
 
 /**
  * Elements the field doesn't edit, kept as they were written: embedded media (`<figure
@@ -151,11 +151,21 @@ function createHtmlView(html: string, options: HtmlNodeOptions, inline: boolean)
     return { dom };
 }
 
+/** The HTML of an element as it was written, without what ProseMirror adds when it copies. */
+function outerHtml(element: HTMLElement): string {
+    if (!element.hasAttribute(CLIPBOARD_SLICE)) {
+        return element.outerHTML;
+    }
+    const copy = element.cloneNode(true) as HTMLElement;
+    copy.removeAttribute(CLIPBOARD_SLICE);
+    return copy.outerHTML;
+}
+
 const htmlAttribute = {
     html: {
         default: '',
         rendered: false,
-        parseHTML: (element: HTMLElement) => element.outerHTML,
+        parseHTML: outerHtml,
     },
 };
 

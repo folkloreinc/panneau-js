@@ -77,6 +77,7 @@ The toolbar only limits what users add. The field reads everything content may h
 - **HTML that the field doesn't edit is kept as it was written**, whitespace included: embedded media (`<figure class="media">` of CKEditor 5, with or without its preview), iframes, images, tables, `<div>`, `<pre>`, social posts with their script. The editor shows such a block by its element and what it points to (`figure.media`, its URL), and never renders its markup: its scripts don't run and its iframes don't load in the admin. It can be moved or removed.
 - What changes, without changing what the HTML renders: entities become characters (`&eacute;` gives `é`), whitespace between blocks goes, attributes of a link come in their order (`href`, `target`, `rel`), and styles are written as a browser writes them (`color: rgb(231, 76, 60);`).
 - Links to scripts (`javascript:`) lose their link.
+- **Pasted content is cleaned**: a page or a document brings its text, headings, lists, links and marks, not its styles, classes and wrappers (`<span style="font-size: 11pt">` and `<div>` of Google Docs or a web page). Bold and italic written as styles become marks. Content copied from the editor itself pastes in full, kept HTML included.
 
 `normalizeRichText(html, extensions)` gives the HTML the field would save for some HTML once edited. Run it on existing content before a migration, with the extensions of the project's plugin, to see what would change.
 

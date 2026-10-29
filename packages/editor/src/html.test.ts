@@ -1,9 +1,19 @@
-import { Node, mergeAttributes } from '@tiptap/core';
+import { Node, getSchema, mergeAttributes } from '@tiptap/core';
 import { describe, expect, it } from 'vitest';
 
 import { ckeditor4, ckeditor5 } from './__fixtures__/ckeditor';
 import { equivalent } from './__fixtures__/equivalent';
-import { normalizeRichText } from './html';
+import { createRichTextExtensions } from './extensions/index';
+import { createPasteParser } from './extensions/paste';
+import { normalizeRichText, serializeRichText } from './html';
+
+/** The HTML that pasting this HTML gives. */
+function paste(html: string): string | null {
+    const schema = getSchema(createRichTextExtensions());
+    const body = new window.DOMParser().parseFromString(html, 'text/html').body;
+    const slice = createPasteParser(schema).parseSlice(body);
+    return serializeRichText(schema.topNodeType.create(null, slice.content), schema);
+}
 
 describe('normalizeRichText', () => {
     it('writes HTML of CKEditor 5 as it was', () => {
@@ -74,5 +84,28 @@ describe('normalizeRichText', () => {
         const html = '<p>Made by <span data-logo=""></span>.</p>';
         expect(normalizeRichText(html, [Logo])).toBe(html);
         expect(normalizeRichText(html)).toBe(html);
+    });
+});
+
+describe('createPasteParser', () => {
+    it('brings the text, structure and marks of pasted content, not its styles', () => {
+        expect(
+            paste(
+                '<meta charset="utf-8"><b style="font-weight:normal;" id="docs-internal-guid-1"><h2 dir="ltr" style="line-height:1.38"><span style="font-size:16pt">Title</span></h2><p dir="ltr" style="line-height:1.38;margin-top:0pt;"><span style="font-size:11pt;font-family:Arial;font-weight:700;">Bold</span><span style="font-size:11pt;font-style:italic;"> italic</span><span style="font-size:11pt;"> and <a href="https://example.com" style="color:#1155cc">a link</a></span></p></b><div class="wrapper"><p class="lead">In a div</p></div>',
+            ),
+        ).toBe(
+            '<h2>Title</h2><p><strong>Bold</strong><em> italic</em> and <a href="https://example.com">a link</a></p><p>In a div</p>',
+        );
+    });
+
+    it('reads content copied from the editor in full', () => {
+        const html =
+            '<p class="big">Big</p><figure class="media"><oembed url="https://example.com/v"></oembed></figure>';
+        expect(paste(html)).toBe('<p>Big</p>');
+        // ProseMirror marks the first element of what it copies
+        expect(paste(html.replace('<p ', '<p data-pm-slice="1 1 []" '))).toBe(html);
+        expect(
+            paste(`<figure data-pm-slice="0 0 []"${html.slice(html.indexOf('<figure') + 7)}`),
+        ).toBe(html.slice(html.indexOf('<figure')));
     });
 });

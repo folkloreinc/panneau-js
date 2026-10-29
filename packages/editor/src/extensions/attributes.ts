@@ -7,6 +7,9 @@ import { Extension } from '@tiptap/core';
  */
 export const IMPLICIT_PARAGRAPH = 'data-panneau-implicit';
 
+/** What ProseMirror puts on content it copies, to paste it back: never kept. */
+export const CLIPBOARD_SLICE = 'data-pm-slice';
+
 /**
  * The attributes that an extension handles itself, by type: they are not kept a second time.
  */
@@ -41,7 +44,10 @@ export function readAttributes(
     skip: readonly string[] = [],
 ): Record<string, string> | null {
     const attributes = Array.from(element.attributes).filter(
-        (attribute) => attribute.name !== IMPLICIT_PARAGRAPH && !skip.includes(attribute.name),
+        (attribute) =>
+            attribute.name !== IMPLICIT_PARAGRAPH &&
+            attribute.name !== CLIPBOARD_SLICE &&
+            !skip.includes(attribute.name),
     );
     return attributes.length > 0
         ? Object.fromEntries(attributes.map((attribute) => [attribute.name, attribute.value]))

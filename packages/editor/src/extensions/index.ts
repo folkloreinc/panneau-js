@@ -12,6 +12,7 @@ import { Dropcursor, Gapcursor, Placeholder, UndoRedo } from '@tiptap/extensions
 
 import { HtmlAttributes } from './attributes';
 import { markExtensions } from './marks';
+import { Paste } from './paste';
 import { HtmlBlock, HtmlInline, HtmlMark, type HtmlNodeOptions } from './raw';
 
 /** Links with their `href` first, as editors write them. */
@@ -66,6 +67,7 @@ export function createRichTextExtensions({
         HtmlBlock.configure(html),
         HtmlInline.configure(html),
         HtmlMark,
+        Paste,
         UndoRedo,
         Dropcursor,
         Gapcursor,
