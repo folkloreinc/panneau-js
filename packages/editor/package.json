@@ -1,0 +1,72 @@
+{
+    "name": "@panneau/editor",
+    "version": "5.0.0-alpha.6",
+    "description": "The rich text field of Panneau, on TipTap 3: HTML storage, a toolbar and block styles set from the definition, and extensions from plugins.",
+    "type": "module",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/folkloreinc/panneau-js.git",
+        "directory": "packages/editor"
+    },
+    "sideEffects": [
+        "*.css"
+    ],
+    "exports": {
+        ".": {
+            "@panneau/source": "./src/index.ts",
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "vite build && tsc -p tsconfig.build.json",
+        "typecheck": "tsc --noEmit",
+        "api": "tsc -p tsconfig.build.json && node ../../scripts/api-report.js"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "peerDependencies": {
+        "@tiptap/core": "^3.32.1",
+        "@tiptap/pm": "^3.32.1",
+        "@tiptap/react": "^3.32.1",
+        "react": "^19.2.0",
+        "react-aria-components": "^1.22.0",
+        "react-dom": "^19.2.0",
+        "react-intl": "^12.0.0"
+    },
+    "dependencies": {
+        "@panneau/fields": "5.0.0-alpha.6",
+        "@panneau/intl": "5.0.0-alpha.6",
+        "@panneau/protocol": "5.0.0-alpha.6",
+        "@panneau/ui": "5.0.0-alpha.6",
+        "@tiptap/extension-blockquote": "^3.32.1",
+        "@tiptap/extension-bold": "^3.32.1",
+        "@tiptap/extension-code": "^3.32.1",
+        "@tiptap/extension-document": "^3.32.1",
+        "@tiptap/extension-hard-break": "^3.32.1",
+        "@tiptap/extension-heading": "^3.32.1",
+        "@tiptap/extension-horizontal-rule": "^3.32.1",
+        "@tiptap/extension-italic": "^3.32.1",
+        "@tiptap/extension-link": "^3.32.1",
+        "@tiptap/extension-list": "^3.32.1",
+        "@tiptap/extension-paragraph": "^3.32.1",
+        "@tiptap/extension-strike": "^3.32.1",
+        "@tiptap/extension-subscript": "^3.32.1",
+        "@tiptap/extension-superscript": "^3.32.1",
+        "@tiptap/extension-text": "^3.32.1",
+        "@tiptap/extension-underline": "^3.32.1",
+        "@tiptap/extensions": "^3.32.1",
+        "lucide-react": "^1.57.0"
+    },
+    "devDependencies": {
+        "@tiptap/core": "^3.32.1",
+        "@tiptap/pm": "^3.32.1",
+        "@tiptap/react": "^3.32.1"
+    }
+}

@@ -3,7 +3,16 @@ import { describe, expect, it } from 'vitest';
 import { createDefinition } from '../__fixtures__/definition';
 import { lintDefinition } from '../lint';
 import { validate, validateDefinition } from '../validate';
-import { Action, Definition, Field, Item, ListResponse, MediaTransform, Problem } from './index';
+import {
+    Action,
+    Definition,
+    Field,
+    Item,
+    ListResponse,
+    MediaTransform,
+    Problem,
+    RichTextSettings,
+} from './index';
 
 describe('Definition', () => {
     it('accepts a complete definition', () => {
@@ -55,6 +64,20 @@ describe('Field', () => {
         expect(
             Field.safeParse({ name: 'slug', type: 'page-slug', settings: { prefix: '/' } }).success,
         ).toBe(true);
+    });
+
+    it('describes the settings of richtext fields', () => {
+        expect(
+            RichTextSettings.safeParse({
+                toolbar: ['heading', 'style', '|', 'bold', 'logo'],
+                headings: [2, 3],
+                styles: [{ label: 'Big paragraph', class: 'big', element: 'p' }],
+                links: { newTab: 'external' },
+            }).success,
+        ).toBe(true);
+        expect(RichTextSettings.safeParse({ headings: [7] }).success).toBe(false);
+        expect(RichTextSettings.safeParse({ styles: [{ label: 'Big' }] }).success).toBe(false);
+        expect(RichTextSettings.safeParse({ links: { newTab: 'always' } }).success).toBe(false);
     });
 
     it('checks the parameters of known rules', () => {

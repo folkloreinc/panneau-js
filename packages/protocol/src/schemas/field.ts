@@ -154,6 +154,49 @@ export const Field = z
     })
     .meta({ description: 'A field of a form.' });
 
+export const RichTextStyle = z
+    .looseObject({
+        label: z.string().meta({ description: 'The name of the style in the toolbar.' }),
+        class: z.string().min(1).meta({
+            description:
+                'The class the style puts on the element: `big`. Several classes are separated by spaces.',
+        }),
+        element: z.string().min(1).optional().meta({
+            description:
+                'The element the style applies to: `p` (the default), `h1` to `h6`, `blockquote`, `ul`, `ol` or `li`.',
+        }),
+    })
+    .meta({
+        description:
+            'A block style of a `richtext` field: a named class on a paragraph, a heading, a quote or a list (`<p class="big">`).',
+    });
+
+export const RichTextSettings = z
+    .looseObject({
+        toolbar: z.array(z.string().min(1)).optional().meta({
+            description:
+                "The toolbar, in order: `heading`, `style`, `bold`, `italic`, `underline`, `strike`, `superscript`, `subscript`, `code`, `link`, `bulletList`, `orderedList`, `blockquote`, `horizontalRule`, `clear`, `undo`, `redo`, `|` between groups, and the buttons of plugins. Clients skip the names they don't know.",
+        }),
+        headings: z.array(z.number().int().min(1).max(6)).optional().meta({
+            description: 'The heading levels the toolbar offers. Defaults to 2, 3 and 4.',
+        }),
+        styles: z.array(RichTextStyle).optional().meta({ description: 'The block styles.' }),
+        links: z
+            .looseObject({
+                newTab: z.enum(['choose', 'external', 'never']).optional().meta({
+                    description:
+                        'Which links open in a new tab (`target="_blank" rel="noopener noreferrer"`): as the user chooses (the default), every link to another site, or none.',
+                }),
+            })
+            .optional(),
+    })
+    .meta({
+        description:
+            'The `settings` of a `richtext` field. Its value is HTML. The toolbar only limits what users add: content that the field stores keeps its elements and attributes.',
+    });
+
 export type Rule = z.infer<typeof Rule>;
 export type BlockType = z.infer<typeof BlockType>;
 export type Field = z.infer<typeof Field>;
+export type RichTextStyle = z.infer<typeof RichTextStyle>;
+export type RichTextSettings = z.infer<typeof RichTextSettings>;

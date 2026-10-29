@@ -123,6 +123,34 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     - In items, a value is a stored file, `{ "name": "terms.pdf", "url": "https://…", "mime": "application/pdf", "size": 52000 }`, or `null`. With `multiple`, it is a list of them.
     - In requests, the client sends `{ "upload": "upl_…" }` for a file uploaded directly to storage, the stored file it received to keep it, or `null` to remove it. Without direct uploads, it sends the file itself, in `multipart/form-data`.
     - `accept` and `maxSize` are checked on the file the backend receives. The client can also send the `name`, `mime` and `size` of an upload next to its `upload`, so that it checks them first.
+- **`richtext` values** are HTML ([0007](decisions/0007-rich-text.md)), or `null` when empty. A client keeps the HTML it received until the content is edited: content written by another editor (CKEditor) saves unchanged. Its `settings` (`RichTextSettings`) set what users can add, not what a value may hold: elements and attributes that the toolbar doesn't offer are kept.
+
+    ```jsonc
+    {
+        "name": "body",
+        "type": "richtext",
+        "settings": {
+            "toolbar": [
+                "heading",
+                "style",
+                "|",
+                "bold",
+                "italic",
+                "link",
+                "bulletList",
+                "orderedList",
+            ],
+            "headings": [2, 3], // the levels the toolbar offers (2, 3 and 4 by default)
+            "styles": [{ "label": "Big paragraph", "class": "big", "element": "p" }], // <p class="big">
+            "links": { "newTab": "external" }, // choose (the default), external or never
+        },
+    }
+    ```
+
+    - `toolbar` lists buttons in order, with `|` between groups: `heading`, `style`, `bold`, `italic`, `underline`, `strike`, `superscript`, `subscript`, `code`, `link`, `bulletList`, `orderedList`, `blockquote`, `horizontalRule`, `clear`, `undo`, `redo`, and the buttons that plugins add (an inline logo). Clients skip names they don't know.
+    - A style in `styles` puts its `class` on an element: `p` (the default), `h1` to `h6`, `blockquote`, `ul`, `ol` or `li`.
+    - `links.newTab` sets which links open in a new tab, with `target="_blank" rel="noopener noreferrer"`: as the user chooses, every link to another site, or none.
+
 - **`tel` values** are phone numbers, strings as typed. `pattern` constrains them when a project needs a format.
 - **`range` values** are numbers, picked on a slider between the `min` and `max` rules (0 and 100 without them), or `null` until it is moved. Settings `step`, `decimals` and `suffix` are those of `number`.
 - **`duration` values** are whole numbers of seconds, typed in hours, minutes and seconds. `settings.precision` is `seconds` (the default) or `minutes`. `min` and `max` are in seconds.

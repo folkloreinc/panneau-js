@@ -58,10 +58,29 @@ Rector rules will cover the mechanical parts: field class renames, `localized()`
 | `@panneau/core/contexts` hooks                                     | Public hooks from `@panneau/core`                                                               |
 | `MainLayout`, `ResourceItemsList` from `@panneau/app`              | Public building blocks of `@panneau/app`                                                        |
 | `ApiProvider` / `DataProvider` with `Api` classes                  | `DataAdapter` and the REST adapter                                                              |
-| CKEditor `html` field                                              | `richtext` field (TipTap); HTML stays the storage format                                        |
+| CKEditor `html` field                                              | `richtext` field (TipTap); HTML stays the storage format (see [Rich text](#rich-text))          |
 | Bootstrap classes in custom components                             | Design tokens and `@panneau/ui` primitives; the Bootstrap-compatible theme eases the transition |
 
 Codemods will rewrite imports and the plugin registration.
+
+## Rich text
+
+The CKEditor `html` field of v4 becomes the `richtext` field of `@panneau/editor` ([README](../packages/editor/README.md)). Its HTML needs no conversion:
+
+- Content loads as it was written, and saves unchanged until it is edited. Once edited, it renders the same: classes, attributes, `<i>` or `<em>`, bare list items, and the HTML the field doesn't edit (media embeds, iframes, tables, social posts) are kept.
+- The `ckConfig` of a v4 field maps to `settings` (`RichTextSettings`), set by the `RichText` builder of `laravel-panneau`:
+
+| `ckConfig` of v4                                                | `settings` of 5                                                     |
+| --------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `toolbar`: `heading`, `bold`, `italic`, `link`, `bulletedList`… | `toolbar`: `heading`, `bold`, `italic`, `link`, `bulletList`…       |
+| `heading.options` (`heading2`, `heading4`…)                     | `headings`: `[2, 4]`                                                |
+| `style.definitions`: `{ name, element: 'p', classes: ['big'] }` | `styles`: `{ label, element: 'p', class: 'big' }`                   |
+| `link.addTargetToExternalLinks`                                 | `links.newTab`: `external`                                          |
+| A plugin of the project (an inline logo)                        | TipTap extensions and buttons in `createEditorPlugin()`             |
+| `mediaEmbed`                                                    | Existing embeds are kept; adding new ones is not in the toolbar yet |
+
+- Before migrating, `normalizeRichText()` shows what the field would write for existing content, with the extensions of the project's plugin.
+- The styles of block styles (`p.big`) come from the project's CSS, as with CKEditor.
 
 ## Per project
 

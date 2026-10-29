@@ -2,6 +2,7 @@ import { createRoot } from 'react-dom/client';
 import { IntlProvider } from 'react-intl';
 
 import { ActionRunnerProvider, useActionRunner } from '@panneau/actions';
+import { RichTextField } from '@panneau/editor';
 import { TextField } from '@panneau/fields/text';
 import { Form } from '@panneau/forms';
 import { withPanneauMessages } from '@panneau/intl';
@@ -79,6 +80,14 @@ function App() {
                 <ActionRunnerProvider adapter={adapter}>
                     <Pages />
                 </ActionRunnerProvider>
+                <RichTextField
+                    label="Corps"
+                    value="<p>Du <strong>texte</strong></p>"
+                    toolbar={['bold', 'italic']}
+                    onChange={(value) => {
+                        document.body.dataset.richtext = value;
+                    }}
+                />
             </PanneauRoot>
         </IntlProvider>
     );

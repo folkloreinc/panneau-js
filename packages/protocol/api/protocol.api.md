@@ -1879,6 +1879,27 @@ export const namedSchemas: {
         types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
         settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     }, z.core.$loose>;
+    RichTextStyle: z.ZodObject<{
+        label: z.ZodString;
+        class: z.ZodString;
+        element: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>;
+    RichTextSettings: z.ZodObject<{
+        toolbar: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        headings: z.ZodOptional<z.ZodArray<z.ZodNumber>>;
+        styles: z.ZodOptional<z.ZodArray<z.ZodObject<{
+            label: z.ZodString;
+            class: z.ZodString;
+            element: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>>>;
+        links: z.ZodOptional<z.ZodObject<{
+            newTab: z.ZodOptional<z.ZodEnum<{
+                never: "never";
+                choose: "choose";
+                external: "external";
+            }>>;
+        }, z.core.$loose>>;
+    }, z.core.$loose>;
     LayoutNode: z.ZodObject<{
         type: z.ZodString;
         name: z.ZodOptional<z.ZodString>;
@@ -4190,6 +4211,37 @@ export type ResourceFeatures = z.infer<typeof ResourceFeatures>;
 
 // @public
 export type ResourceInput = z.input<typeof Resource>;
+
+// @public (undocumented)
+export const RichTextSettings: z.ZodObject<{
+    toolbar: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    headings: z.ZodOptional<z.ZodArray<z.ZodNumber>>;
+    styles: z.ZodOptional<z.ZodArray<z.ZodObject<{
+        label: z.ZodString;
+        class: z.ZodString;
+        element: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>>>;
+    links: z.ZodOptional<z.ZodObject<{
+        newTab: z.ZodOptional<z.ZodEnum<{
+            never: "never";
+            choose: "choose";
+            external: "external";
+        }>>;
+    }, z.core.$loose>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type RichTextSettings = z.infer<typeof RichTextSettings>;
+
+// @public (undocumented)
+export const RichTextStyle: z.ZodObject<{
+    label: z.ZodString;
+    class: z.ZodString;
+    element: z.ZodOptional<z.ZodString>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type RichTextStyle = z.infer<typeof RichTextStyle>;
 
 // @public (undocumented)
 export const RouteReference: z.ZodObject<{

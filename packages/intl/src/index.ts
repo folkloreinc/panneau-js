@@ -2,6 +2,7 @@ export { type MessageCatalog, en, fr, getDefaultMessages, panneauMessages } from
 export { type PanneauMessage, type PanneauMessageValues } from './message';
 export { actionsMessages } from './messages/actions';
 export { appMessages } from './messages/app';
+export { editorMessages } from './messages/editor';
 export { fieldsMessages } from './messages/fields';
 export { formsMessages } from './messages/forms';
 export { listsMessages } from './messages/lists';

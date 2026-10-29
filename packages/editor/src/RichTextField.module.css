@@ -1,0 +1,247 @@
+.field {
+    min-width: 0;
+}
+
+/* The box of the field, as the other controls draw it: the toolbar over the text. */
+.editor {
+    min-width: 0;
+    color: var(--panneau-color-text);
+    background-color: var(--panneau-input-bg, var(--panneau-color-surface));
+    border: var(--panneau-input-border-width, var(--panneau-border-width)) solid
+        var(--panneau-input-border-color, var(--panneau-color-border-control));
+    border-radius: var(--panneau-input-radius, var(--panneau-radius-md));
+    transition:
+        border-color var(--panneau-duration),
+        box-shadow var(--panneau-duration);
+}
+
+.editor:hover {
+    border-color: var(--panneau-input-border-color-hover, var(--panneau-color-text-muted));
+}
+
+.editor:has(.content:focus) {
+    border-color: var(--panneau-color-focus);
+    box-shadow: 0 0 0 1px var(--panneau-color-focus);
+}
+
+.editor[data-invalid] {
+    border-color: var(--panneau-color-danger);
+}
+
+.editor[data-invalid]:has(.content:focus) {
+    box-shadow: 0 0 0 1px var(--panneau-color-danger);
+}
+
+.editor[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.editor[data-disabled],
+.editor[data-readonly] {
+    background-color: var(--panneau-color-surface-sunken);
+}
+
+.toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--panneau-space-1);
+    padding: var(--panneau-space-1);
+    background-color: inherit;
+    border-bottom: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: inherit;
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+}
+
+.separator {
+    align-self: stretch;
+    width: var(--panneau-border-width);
+    margin: var(--panneau-space-1) var(--panneau-space-1);
+    background-color: var(--panneau-color-border);
+    border: 0;
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--panneau-control-height-sm);
+    height: var(--panneau-control-height-sm);
+    padding: 0;
+    color: var(--panneau-color-text);
+    cursor: pointer;
+    background-color: transparent;
+    border: 0;
+    border-radius: var(--panneau-radius-sm);
+    transition: background-color var(--panneau-duration);
+}
+
+.button[data-hovered] {
+    background-color: color-mix(in srgb, var(--panneau-color-text) 6%, transparent);
+}
+
+.button[data-pressed],
+.button[data-selected] {
+    background-color: color-mix(in srgb, var(--panneau-color-text) 12%, transparent);
+}
+
+.button[data-selected] {
+    color: var(--panneau-color-accent-text);
+    background-color: var(--panneau-color-accent-subtle);
+}
+
+.button[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 1px;
+}
+
+.button[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+.select {
+    min-width: 9rem;
+}
+
+/* The text: the elements of rich content, as `Prose` styles them. */
+.content {
+    min-height: 8rem;
+    padding: var(--panneau-space-3);
+    font-size: var(--panneau-font-size-control);
+    line-height: var(--panneau-prose-line-height, 1.6);
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    outline: none;
+}
+
+.content > * + * {
+    margin-top: var(--panneau-prose-gap, var(--panneau-space-3));
+}
+
+.content :where(h1, h2, h3, h4, h5, h6) {
+    font-family: var(--panneau-heading-font-family, var(--panneau-font-family-heading));
+    font-weight: var(--panneau-font-weight-bold);
+    line-height: var(--panneau-line-height-tight);
+}
+
+.content :where(h1) {
+    font-size: var(--panneau-heading-1-font-size, 1.75rem);
+}
+
+.content :where(h2) {
+    font-size: var(--panneau-heading-2-font-size, 1.375rem);
+}
+
+.content :where(h3) {
+    font-size: var(--panneau-heading-3-font-size, 1.125rem);
+}
+
+.content :where(h4, h5, h6) {
+    font-size: var(--panneau-heading-4-font-size, var(--panneau-font-size-lg));
+}
+
+.content :where(ul, ol) {
+    padding-inline-start: var(--panneau-prose-list-indent, 1.5em);
+}
+
+.content :where(ul) {
+    list-style: disc;
+}
+
+.content :where(ol) {
+    list-style: decimal;
+}
+
+.content :where(li + li, li > ul, li > ol) {
+    margin-top: var(--panneau-space-1);
+}
+
+.content :where(a) {
+    color: var(--panneau-prose-link-color, var(--panneau-color-link));
+    text-decoration: underline;
+}
+
+.content :where(strong, b) {
+    font-weight: var(--panneau-font-weight-bold);
+}
+
+.content :where(em, i) {
+    font-style: italic;
+}
+
+.content :where(blockquote) {
+    padding-inline-start: var(--panneau-space-4);
+    color: var(--panneau-color-text-muted);
+    border-inline-start: 3px solid var(--panneau-color-border);
+}
+
+.content :where(code) {
+    font-family: var(--panneau-font-family-mono);
+    font-size: 0.875em;
+}
+
+.content :where(hr) {
+    border: 0;
+    border-top: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
+.content :global(.ProseMirror-selectednode) {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+}
+
+.content :global(.is-editor-empty:first-child)::before {
+    float: inline-start;
+    height: 0;
+    color: var(--panneau-color-text-muted);
+    pointer-events: none;
+    content: attr(data-placeholder);
+}
+
+/* HTML kept as it was written: its element and what it points to, never its markup. */
+.html {
+    display: flex;
+    gap: var(--panneau-space-2);
+    align-items: baseline;
+    min-width: 0;
+    padding: var(--panneau-space-2) var(--panneau-space-3);
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-text-muted);
+    white-space: nowrap;
+    background-color: var(--panneau-color-surface-sunken);
+    border: var(--panneau-border-width) dashed var(--panneau-color-border);
+    border-radius: var(--panneau-radius-sm);
+}
+
+span.html {
+    display: inline-flex;
+    max-width: 100%;
+    padding: 0 var(--panneau-space-1);
+    vertical-align: baseline;
+}
+
+.html > code {
+    flex: 0 0 auto;
+    font-family: var(--panneau-font-family-mono);
+    color: var(--panneau-color-text);
+}
+
+.html > span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.linkForm {
+    display: grid;
+    gap: var(--panneau-space-3);
+}
+
+.removeLink {
+    margin-inline-end: auto;
+}
