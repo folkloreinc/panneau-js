@@ -12,8 +12,16 @@ const statusField: Field = {
     label: 'Status',
     options: [
         { value: 'draft', label: 'Draft' },
-        { value: 'published', label: 'Published' },
+        { value: 'published', label: 'Published', tone: 'success' },
     ],
+};
+
+/** A secret: shown as dots. */
+const keyField: Field = {
+    name: 'api_key',
+    type: 'text',
+    label: 'API key',
+    settings: { secret: true },
 };
 
 const columns: ListColumn[] = [
@@ -23,6 +31,7 @@ const columns: ListColumn[] = [
     { id: 'featured', label: 'Featured', display: 'boolean' },
     { id: 'email', label: 'Contact', display: 'email' },
     { id: 'summary', label: 'Summary' },
+    { id: 'api_key', label: 'API key', field: keyField },
 ];
 
 /** The values of one item, with the displays of the lists: the details of an item. */
@@ -43,6 +52,7 @@ const meta = {
             featured: true,
             email: 'news@example.com',
             summary: null,
+            api_key: 'nw_live_51Hx',
         },
     },
 } satisfies Meta<typeof ItemDetails>;
@@ -60,7 +70,14 @@ export const Default: Story = {
             'Featured',
             'Contact',
             'Summary',
+            'API key',
         ]);
+        // The tone of the option, and the secret as dots
+        await expect(canvas.getByText('Published').closest('.panneau-badge')).toHaveClass(
+            'panneau-tone-success',
+        );
+        await expect(canvas.queryByText('nw_live_51Hx')).not.toBeInTheDocument();
+        await expect(canvas.getByRole('img', { name: 'Hidden value' })).toBeInTheDocument();
         await expect(canvas.getByRole('link', { name: 'news@example.com' })).toHaveAttribute(
             'href',
             'mailto:news@example.com',
@@ -75,7 +92,7 @@ export const Loading: Story = {
         const canvas = within(canvasElement);
         await expect(canvas.getByRole('status')).toHaveTextContent('Loading the item…');
         const region = canvasElement.querySelector('[aria-busy="true"]');
-        await expect(region?.querySelectorAll('dd .panneau-skeleton')).toHaveLength(6);
+        await expect(region?.querySelectorAll('dd .panneau-skeleton')).toHaveLength(7);
     },
 };
 

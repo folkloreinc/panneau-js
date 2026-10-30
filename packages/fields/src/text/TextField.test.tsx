@@ -75,6 +75,37 @@ describe('TextField', () => {
     });
 });
 
+describe('a secret text field', () => {
+    it('hides its value until a button shows it, and keeps the browser from filling it in', async () => {
+        const user = userEvent.setup();
+        const { container } = renderField(
+            <DefinitionField
+                field={{
+                    name: 'secret_key',
+                    type: 'text',
+                    label: 'Secret key',
+                    settings: { secret: true },
+                }}
+                path="secret_key"
+                value="s3cr3t"
+                onChange={() => undefined}
+            />,
+        );
+        const input = container.querySelector('input') as HTMLInputElement;
+        expect(input).toHaveAttribute('type', 'password');
+        expect(input).toHaveAttribute('autocomplete', 'new-password');
+        expect(input).toHaveAccessibleName('Secret key');
+        const show = screen.getByRole('button', { name: 'Show' });
+        expect(show).toHaveAttribute('aria-pressed', 'false');
+        await user.click(show);
+        expect(input).toHaveAttribute('type', 'text');
+        expect(screen.getByRole('button', { name: 'Hide' })).toHaveAttribute(
+            'aria-pressed',
+            'true',
+        );
+    });
+});
+
 describe('TextFieldEntry without a label', () => {
     it('is labelled with the name of the field', () => {
         renderField(
