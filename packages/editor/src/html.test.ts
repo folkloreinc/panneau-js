@@ -129,6 +129,17 @@ describe('createPasteParser', () => {
     });
 });
 
+describe('kept HTML', () => {
+    it('is never made of an attribute of the content', () => {
+        const html = normalizeRichText(
+            '<p><span data-panneau-html="&lt;img src=x onerror=alert(1)&gt;">text</span></p><div data-panneau-html="&lt;script&gt;alert(2)&lt;/script&gt;"></div>',
+        );
+        const body = new window.DOMParser().parseFromString(html ?? '', 'text/html').body;
+        expect(body.querySelector('img, script')).toBeNull();
+        expect(body.querySelector('p')?.outerHTML).toBe('<p>text</p>');
+    });
+});
+
 describe('script attributes', () => {
     it('are only event handlers and script URLs', () => {
         const html =

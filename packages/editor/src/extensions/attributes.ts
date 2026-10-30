@@ -13,8 +13,14 @@ export const CLIPBOARD_SLICE = 'data-pm-slice';
 /** What the field puts on content it copies, to know it when it is pasted: never kept. */
 export const COPIED_FROM = 'data-panneau-copy';
 
+/**
+ * Where the field puts kept HTML when ProseMirror renders it without its view (see
+ * `restoreKeptHtml()`): never read from content.
+ */
+export const KEPT_HTML = 'data-panneau-html';
+
 /** Attributes that the field and ProseMirror add, which never reach the value. */
-const INTERNAL_ATTRIBUTES = [IMPLICIT_PARAGRAPH, CLIPBOARD_SLICE, COPIED_FROM];
+const INTERNAL_ATTRIBUTES = [IMPLICIT_PARAGRAPH, CLIPBOARD_SLICE, COPIED_FROM, KEPT_HTML];
 
 /**
  * The attributes that an extension handles itself, by type: they are not kept a second time.

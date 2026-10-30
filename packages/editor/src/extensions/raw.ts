@@ -4,6 +4,7 @@ import type { DOMOutputSpec } from '@tiptap/pm/model';
 import {
     CLIPBOARD_SLICE,
     COPIED_FROM,
+    KEPT_HTML,
     readAttributes,
     withoutScriptAttributes,
 } from './attributes';
@@ -102,8 +103,6 @@ export interface HtmlNodeOptions {
  * unmounts, with the editor still in the page. `restoreKeptHtml()` puts the HTML back, only in
  * what the field writes: the value, and what it copies.
  */
-export const KEPT_HTML = 'data-panneau-html';
-
 function placeholder(html: string, inline: boolean): DOMOutputSpec {
     return [inline ? 'span' : 'div', { [KEPT_HTML]: html }];
 }
@@ -113,7 +112,8 @@ function placeholder(html: string, inline: boolean): DOMOutputSpec {
  * page: an inert document, or a fragment of one.
  */
 export function restoreKeptHtml(root: ParentNode): void {
-    root.querySelectorAll(`[${KEPT_HTML}]`).forEach((element) => {
+    // Only the empty placeholders the field wrote: content never brings the attribute
+    root.querySelectorAll(`[${KEPT_HTML}]:empty`).forEach((element) => {
         const template = element.ownerDocument.createElement('template');
         template.innerHTML = element.getAttribute(KEPT_HTML) ?? '';
         element.replaceWith(...Array.from(template.content.childNodes));
