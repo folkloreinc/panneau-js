@@ -93,7 +93,6 @@ export function FileField(props: FileFieldProps) {
     const {
         accept = null,
         maxSize = null,
-        uploadSource = context.uploadSource,
         label,
         description,
         errors = [],
@@ -105,6 +104,8 @@ export function FileField(props: FileFieldProps) {
         descriptionClassName,
         errorsClassName,
     } = props;
+    const uploadSource =
+        props.uploadSource === undefined ? context.uploadSource : props.uploadSource;
     const multiple = props.multiple === true;
     const files = toFiles(props.value);
     const editable = disabled !== true && readOnly !== true;

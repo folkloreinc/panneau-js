@@ -11,6 +11,9 @@ import type { FieldEntryProps } from '../shared/types';
 import { TextField, type TextFieldProps } from '../text/TextField';
 import styles from './SlugField.module.css';
 
+// Read outside the component: the React Compiler takes any `use…` name for a hook.
+const suggestionMessage = messages.useSuggestion;
+
 /**
  * Turns a text into a slug: lowercase ASCII letters and digits separated by dashes, without
  * accents (`Été à Montréal` gives `ete-a-montreal`).
@@ -172,7 +175,7 @@ export function SlugField({
                                         appearance="ghost"
                                         onPress={() => onChange?.(suggestion)}
                                     >
-                                        {intl.formatMessage(messages.useSuggestion, {
+                                        {intl.formatMessage(suggestionMessage, {
                                             suggestion,
                                         })}
                                     </Button>

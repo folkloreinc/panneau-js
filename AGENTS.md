@@ -39,6 +39,8 @@ Other branches (`master`, `v2.0`, `v0.x`, `feature/*`) are not maintained.
 
 - Node 24 (`.nvmrc`), npm workspaces.
 - React 19.2+ as a peer dependency, with the React Compiler in the build. Don't add `useMemo`, `useCallback` or `memo` for performance.
+    - The build fails when the compiler skips a component or a hook, with the line it stopped at: rewrite that code (an effect that reads the latest props uses `useEffectEvent`, not an `eslint-disable`). `'use no memo'` is the last resort, with a comment that says why.
+    - `@babel/core` stays on Babel 7: React Compiler 1.0 skips every component with a default value in its props on Babel 8.
 - TypeScript 6, `strict` with `noUncheckedIndexedAccess` (`tsconfig.base.json`).
 - Builds use Vite in library mode: ESM only, one file per module, with `.d.ts` files from `tsc`. Use the shared config in `config/vite.package.ts`.
 - Tests use Vitest, plus Testing Library for components (`environment: 'jsdom'`). Test files sit next to the code: `*.test.ts(x)`.

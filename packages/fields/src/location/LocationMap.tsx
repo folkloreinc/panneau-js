@@ -1,5 +1,5 @@
 import type * as LeafletModule from 'leaflet';
-import { useEffect, useRef } from 'react';
+import { useEffect, useEffectEvent, useRef } from 'react';
 
 import styles from './LocationField.module.css';
 import { LEAFLET_CSS } from './leafletCss';
@@ -10,6 +10,12 @@ type LeafletMap = LeafletModule.Map;
 type LeafletMarker = LeafletModule.Marker;
 
 const STYLE_ID = 'panneau-leaflet-css';
+
+/** Loads Leaflet, outside the component: the React Compiler doesn't handle `import()`. */
+async function loadLeaflet(): Promise<Leaflet> {
+    const module = await import('leaflet');
+    return ((module as { default?: Leaflet }).default ?? module) as Leaflet;
+}
 
 /** Adds Leaflet's stylesheet to the document of the map, once. */
 function injectStyles(document: Document) {
@@ -65,44 +71,6 @@ export function LocationMap({
         latest.current = { onChange, readOnly };
     });
 
-    // Creates the map once Leaflet is loaded
-    useEffect(() => {
-        const element = container.current;
-        if (element === null) {
-            return undefined;
-        }
-        let cancelled = false;
-        void import('leaflet').then((module) => {
-            if (cancelled) {
-                return;
-            }
-            const leaflet = ((module as { default?: Leaflet }).default ?? module) as Leaflet;
-            injectStyles(element.ownerDocument);
-            const instance = leaflet.map(element, { attributionControl: true });
-            leaflet
-                .tileLayer(tiles.url, {
-                    attribution: tiles.attribution,
-                    maxZoom: tiles.maxZoom ?? 19,
-                })
-                .addTo(instance);
-            instance.on('click', (event) => {
-                if (!latest.current.readOnly) {
-                    latest.current.onChange?.({ lat: event.latlng.lat, lng: event.latlng.lng });
-                }
-            });
-            map.current = { leaflet, map: instance, marker: null };
-            instance.setView(point ?? center, point !== null ? zoom : 2);
-            sync(point, false);
-        });
-        return () => {
-            cancelled = true;
-            map.current?.map.remove();
-            map.current = null;
-        };
-        // The map is made once; later changes go through the effect below
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [tiles.url]);
-
     /** Puts the marker on the point, and the point in view. */
     function sync(next: Point | null, pan: boolean) {
         const current = map.current;
@@ -141,11 +109,50 @@ export function LocationMap({
         }
     }
 
+    // Creates the map once Leaflet is loaded, with the latest props. It is made again for other
+    // tiles only: later points go through the effect below.
+    const create = useEffectEvent((leaflet: Leaflet, element: HTMLDivElement, url: string) => {
+        injectStyles(element.ownerDocument);
+        const instance = leaflet.map(element, { attributionControl: true });
+        leaflet
+            .tileLayer(url, {
+                attribution: tiles.attribution,
+                maxZoom: tiles.maxZoom ?? 19,
+            })
+            .addTo(instance);
+        instance.on('click', (event) => {
+            if (!latest.current.readOnly) {
+                latest.current.onChange?.({ lat: event.latlng.lat, lng: event.latlng.lng });
+            }
+        });
+        map.current = { leaflet, map: instance, marker: null };
+        instance.setView(point ?? center, point !== null ? zoom : 2);
+        sync(point, false);
+    });
+    const url = tiles.url;
+    useEffect(() => {
+        const element = container.current;
+        if (element === null) {
+            return undefined;
+        }
+        let cancelled = false;
+        void loadLeaflet().then((leaflet) => {
+            if (!cancelled) {
+                create(leaflet, element, url);
+            }
+        });
+        return () => {
+            cancelled = true;
+            map.current?.map.remove();
+            map.current = null;
+        };
+    }, [url]);
+
     const lat = point?.lat;
     const lng = point?.lng;
+    const show = useEffectEvent((next: Point | null) => sync(next, true));
     useEffect(() => {
-        sync(lat !== undefined && lng !== undefined ? { lat, lng } : null, true);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        show(lat !== undefined && lng !== undefined ? { lat, lng } : null);
     }, [lat, lng]);
 
     return (

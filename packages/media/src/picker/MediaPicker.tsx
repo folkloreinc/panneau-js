@@ -207,21 +207,21 @@ function OpenMediaPicker({
         }
         setSaving(true);
         setSaveError(null);
+        let saved = true;
         try {
-            const saved = await focusedSource.update(focusedEntry.item.id, draft.values);
-            replace(focusedEntry.source, saved);
+            const item = await focusedSource.update(focusedEntry.item.id, draft.values);
+            replace(focusedEntry.source, item);
             setDraft(null);
-            return true;
         } catch (error) {
             setSaveError(
                 intl.formatMessage(messages.pickerSaveFailed, {
                     error: error instanceof Error ? error.message : String(error),
                 }),
             );
-            return false;
-        } finally {
-            setSaving(false);
+            saved = false;
         }
+        setSaving(false);
+        return saved;
     };
 
     const confirm = (entries: readonly Picked[]) => {

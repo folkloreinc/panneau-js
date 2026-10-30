@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useEffectEvent, useState } from 'react';
 
 import type { EmbedValue } from '@panneau/protocol';
 import { Spinner, TextInput, usePanneauIntl } from '@panneau/ui';
@@ -58,6 +58,8 @@ export function EmbedField({
 
     // Resolves a URL that hasn't been, after a pause in typing
     const pending = value !== null && value !== undefined && !isResolved(value) ? value.url : null;
+    // `onChange` changes on every render of a form: the latest one gets the preview
+    const resolved = useEffectEvent((embed: EmbedValue) => onChange?.(embed));
     useEffect(() => {
         if (embedSource === null || pending === null || !URL.canParse(pending)) {
             return undefined;
@@ -69,7 +71,7 @@ export function EmbedField({
                 .resolve(pending, { signal: controller.signal })
                 .then((embed) => {
                     setStatus(null);
-                    onChange?.({ ...embed, url: pending });
+                    resolved({ ...embed, url: pending });
                 })
                 .catch(() => {
                     if (!controller.signal.aborted) {
@@ -81,8 +83,6 @@ export function EmbedField({
             window.clearTimeout(timeout);
             controller.abort();
         };
-        // `onChange` changes on every render of a form
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [embedSource, pending]);
 
     const current = status !== null && status.url === url ? status.state : null;

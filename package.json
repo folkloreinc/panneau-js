@@ -38,7 +38,7 @@
         "build-playground": "vite build --config playground/vite.config.ts --outDir ../playground-dist --emptyOutDir"
     },
     "devDependencies": {
-        "@babel/core": "^8.0.7",
+        "@babel/core": "^7.29.7",
         "@changesets/cli": "^3.0.3",
         "@eslint/js": "^10.0.1",
         "@formatjs/icu-messageformat-parser": "^3.5.21",
