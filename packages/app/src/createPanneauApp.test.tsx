@@ -1,4 +1,4 @@
-import { act, screen, within } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { DataAdapter } from '@panneau/data';
@@ -95,6 +95,38 @@ describe('createPanneauApp', () => {
             '/resources/pages',
         );
         expect(adapter.getDefinition).not.toHaveBeenCalled();
+    });
+
+    it('loads the icons that the definition names from Lucide, unless it is given a loader', async () => {
+        const definition = createDefinition({
+            resources: [
+                {
+                    id: 'authors',
+                    label: { singular: 'author', plural: 'authors' },
+                    icon: 'users',
+                    fields: [],
+                },
+            ],
+        });
+        act(() => {
+            app = createPanneauApp({ element, config: createBootConfig({ definition }) });
+        });
+        const card = within(screen.getByRole('main')).getByRole('link', { name: 'Authors' });
+        // A chunk of its own, after Lucide's list of icons: slow on a busy CI runner.
+        await waitFor(() => expect(card.querySelector('svg.lucide-users')).not.toBeNull(), {
+            timeout: 5000,
+        });
+        act(() => app?.unmount());
+
+        const iconLoader = vi.fn(() => Promise.resolve(null));
+        act(() => {
+            app = createPanneauApp({
+                element,
+                config: createBootConfig({ definition }),
+                iconLoader,
+            });
+        });
+        await waitFor(() => expect(iconLoader).toHaveBeenCalledWith('users'));
     });
 
     it('throws when the boot config is missing or invalid', () => {

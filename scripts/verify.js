@@ -32,6 +32,7 @@ const checks = [
     ['Storybook build', 'npm', ['run', 'build-storybook', '--', '--quiet']],
     ['Smoke test', 'npm', ['run', 'test:smoke']],
     ['Types (NodeNext)', 'npm', ['run', 'test:types']],
+    ['Icons in bundles', 'npm', ['run', 'test:icons']],
 ];
 
 const results = [];

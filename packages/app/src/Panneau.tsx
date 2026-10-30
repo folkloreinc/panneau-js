@@ -16,7 +16,6 @@ import { FieldsProvider, type MapsConfig, createEmbedSource } from '@panneau/fie
 import { appMessages } from '@panneau/intl';
 import type { BootConfig } from '@panneau/protocol';
 import { Button, type NamedIconLoader, PanneauRoot, usePanneauIntl } from '@panneau/ui';
-import { lucideIconLoader } from '@panneau/ui/named-icons';
 
 import styles from './Panneau.module.css';
 import { Shell } from './Shell';
@@ -50,8 +49,12 @@ export interface PanneauProps {
     /** The TanStack Query client. Defaults to a new one. */
     queryClient?: QueryClient;
     /**
-     * Loads the Lucide icons that the definition names (`"icon": "users"`). Defaults to every
-     * Lucide icon, each one in its own chunk, loaded when shown. `null` shows no named icons.
+     * Loads the icons that the definition names (`"icon": "users"`): `lucideIconLoader` of
+     * `@panneau/ui/named-icons` for every Lucide icon, each one in its own chunk, or a loader of
+     * only the icons the app uses. Without it, named icons render an empty space.
+     *
+     * Unlike `createPanneauApp()`, `<Panneau>` has no default: a bundler emits a chunk per Lucide
+     * icon for `lucideIconLoader` wherever it is imported (decision 0036).
      */
     iconLoader?: NamedIconLoader | null;
     /**
@@ -199,7 +202,7 @@ export function Panneau({
     adapter,
     plugins = [],
     queryClient,
-    iconLoader = lucideIconLoader,
+    iconLoader = null,
     onUnauthorized = redirectToLogin,
     maps = null,
 }: PanneauProps) {
