@@ -45,7 +45,7 @@ Unsaved changes ask first, as when leaving the page.
 
 ## Consequences
 
-- A backend in `panneau` mode writes `auth` in the boot config, and serves the page of the app to guests instead of redirecting them: the app shows the login page. `laravel-panneau` follows, with `auth.logoutUrl` in `external` mode.
+- A backend in `panneau` mode writes `auth` in the boot config, and serves the page of the app to guests instead of redirecting them: the app shows the login page. `laravel-panneau` follows, with `auth.logoutUrl` in `external` mode: [folkloreinc/laravel-panneau#132](https://github.com/folkloreinc/laravel-panneau/issues/132).
 - Adapters that implement `login()` take the union: a breaking change of the type for custom adapters, in the alphas.
 - Eclair's dashboard drops its own login page and its `sign-out` page.
 - The two-factor answer of `POST /auth/login` (`202`) isn't handled by the page yet; it comes with the two-factor challenge.
