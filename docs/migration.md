@@ -58,7 +58,7 @@ Rector rules will cover the mechanical parts: field class renames, `localized()`
 | `@panneau/core/contexts` hooks                                     | Public hooks from `@panneau/core`                                                               |
 | `MainLayout`, `ResourceItemsList` from `@panneau/app`              | Public building blocks of `@panneau/app`                                                        |
 | `ApiProvider` / `DataProvider` with `Api` classes                  | `DataAdapter` and the REST adapter                                                              |
-| CKEditor `html` field                                              | `richtext` field (TipTap); HTML stays the storage format                                        |
+| CKEditor `html` field                                              | `richtext` field (TipTap); HTML stays the storage format (see [Rich text](#rich-text))          |
 | Bootstrap classes in custom components                             | Design tokens and `@panneau/ui` primitives; the Bootstrap-compatible theme eases the transition |
 
 The codemods of `@panneau/codemods` rewrite the entry, the imports and the custom field components, and report the rest: see [Custom fields](#custom-fields).
@@ -273,6 +273,26 @@ Every finding has the file, the line and what replaces the code, when 5 has some
 - **Imports of v4 with no rewrite:** `usePanneauResource` (`useResource(id)` of `@panneau/core`), `useResourceItems` (`useResourceList()` of `@panneau/data/query`), `useUrlGenerator` (no named routes in 5), the other hooks of `@panneau/core/contexts`, `@panneau/element-*` (the primitives of `@panneau/ui`), `MainLayout` and `PageHeader` (pages render inside the shell). They stay, so that the build fails until they are replaced.
 - **What needs a check:** the keys of the plugin, the props read from `settings`, the stylesheets of the project kept in the plugin module.
 - **Bootstrap classes** in `className` and `*ClassName` props, each with a comment (class names kept in variables are not found): Panneau 5 has no Bootstrap. Replace them with `@panneau/ui` primitives (`Stack`, `Inline`, `Button`) and CSS Modules with design tokens, or keep them with the Bootstrap-compatible theme.
+
+## Rich text
+
+The CKEditor `html` field of v4 becomes the `richtext` field of `@panneau/editor` ([README](../packages/editor/README.md)). Its HTML needs no conversion:
+
+- Content loads as it was written, and saves unchanged until it is edited. Once edited, it renders the same: classes, attributes, `<i>` or `<em>`, bare list items, and the HTML the field doesn't edit (media embeds, iframes, tables, social posts) are kept.
+- The `ckConfig` of a v4 field maps to `settings` (`RichTextSettings`), set by the `RichText` builder of `laravel-panneau`:
+
+| `ckConfig` of v4                                                | `settings` of 5                                                     |
+| --------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `toolbar`: `heading`, `bold`, `italic`, `link`, `bulletedList`… | `toolbar`: `heading`, `bold`, `italic`, `link`, `bulletList`…       |
+| `heading.options` (`heading2`, `heading4`…)                     | `headings`: `[2, 4]`                                                |
+| `style.definitions`: `{ name, element: 'p', classes: ['big'] }` | `styles`: `{ label, element: 'p', class: 'big' }`                   |
+| `link.addTargetToExternalLinks`                                 | `links.newTab`: `external`                                          |
+| A plugin of the project (an inline logo)                        | TipTap extensions and buttons in `createEditorPlugin()`             |
+| `mediaEmbed`                                                    | Existing embeds are kept; adding new ones is not in the toolbar yet |
+
+- A CKEditor heading option written as a block `<span>` (`{ model: 'logo', view: 'span' }`) needs a block-level node in the project's plugin: without one, its text becomes a paragraph once edited.
+- Before migrating, `normalizeRichText()` shows what the field would write for existing content, with the extensions of the project's plugin.
+- The styles of block styles (`p.big`) come from the project's CSS, as with CKEditor.
 
 ## Per project
 

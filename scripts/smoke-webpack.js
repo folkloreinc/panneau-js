@@ -2,11 +2,12 @@
 //
 //     npm run build && npm run test:smoke
 //
-// It packs the `@panneau/*` packages a form and a list need (`npm pack`), installs the tarballs into a copy
-// of smoke/webpack (with their peer dependencies, as a project lists them), builds the app with
-// `flklr` (`@folklore/cli`, webpack), checks that the bundle has no zod, and renders it in
-// Chromium: the form must render with its styles, show a validation error, and submit; the list
-// must render, sort and run an action.
+// It packs the `@panneau/*` packages a form, a list and the rich text field need (`npm pack`),
+// installs the tarballs into a copy of smoke/webpack (with their peer dependencies, as a project
+// lists them), builds the app with `flklr` (`@folklore/cli`, webpack), checks that the bundle has
+// no zod, and renders it in Chromium: the form must render with its styles, show a validation
+// error, and submit; the list must render, sort and run an action; the rich text field must bold
+// its text.
 import { execFileSync } from 'node:child_process';
 import {
     cpSync,
@@ -27,10 +28,32 @@ const work = resolve(root, '.tmp/smoke-webpack');
 const tarballs = resolve(work, 'tarballs');
 const app = resolve(work, 'app');
 
-/** The packages the app imports (a form, a list and the action runner), and their dependencies. */
-const PACKAGES = ['protocol', 'intl', 'ui', 'fields', 'core', 'forms', 'lists', 'data', 'actions'];
+/**
+ * The packages the app imports (a form, a list, the action runner and the rich text field), and
+ * their dependencies.
+ */
+const PACKAGES = [
+    'protocol',
+    'intl',
+    'ui',
+    'fields',
+    'core',
+    'forms',
+    'lists',
+    'data',
+    'actions',
+    'editor',
+];
 /** Peer dependencies, at the versions the workspace uses. */
-const PEERS = ['react', 'react-dom', 'react-aria-components', 'react-intl'];
+const PEERS = [
+    'react',
+    'react-dom',
+    'react-aria-components',
+    'react-intl',
+    '@tiptap/core',
+    '@tiptap/pm',
+    '@tiptap/react',
+];
 const FLKLR_VERSION = '0.1.54';
 
 function run(command, args, cwd) {
@@ -229,10 +252,23 @@ try {
     });
     // The action ran through the runner of @panneau/actions, which shows its result.
     await page.getByText('Page archivée.').waitFor({ timeout: 5000 });
+    // The rich text field: TipTap from the peer dependencies, and the HTML it gives once edited.
+    const body = page.getByRole('textbox', { name: 'Corps' });
+    await body.getByText('texte').click({ clickCount: 3 });
+    await page.getByRole('button', { name: 'Gras' }).click();
+    await page.waitForFunction(() => document.body.dataset.richtext !== undefined, null, {
+        timeout: 5000,
+    });
+    const richtext = await page.evaluate(() => document.body.dataset.richtext);
+    if (richtext !== '<p><strong>Du texte</strong></p>') {
+        throw new Error(`Unexpected rich text: ${richtext}`);
+    }
     if (errors.length > 0) {
         throw new Error(`Errors in the page:\n${errors.join('\n')}`);
     }
-    console.log('The packed packages work in a webpack app: a form and a list.');
+    console.log(
+        'The packed packages work in a webpack app: a form, a list and the rich text field.',
+    );
 } finally {
     await browser.close();
     server.close();

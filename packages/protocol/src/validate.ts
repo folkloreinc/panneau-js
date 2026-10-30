@@ -3,6 +3,7 @@ import type { z } from 'zod';
 import { lintDefinition } from './lint';
 import { BootConfig } from './schemas/boot';
 import { Definition } from './schemas/definition';
+import { type Field, RichTextSettings } from './schemas/field';
 
 export interface ValidationIssue {
     /** Dot path of the invalid value (`resources.0.fields.2.type`), empty for the root. */
@@ -31,16 +32,55 @@ export function validate<T extends z.ZodType>(
     };
 }
 
+/** Checks the settings of the `richtext` fields of a list of fields, nested ones included. */
+function checkFieldSettings(fields: readonly Field[], path: string): ValidationIssue[] {
+    return fields.flatMap((field, index) => {
+        const fieldPath = `${path}.${String(index)}`;
+        const own =
+            field.type === 'richtext' && field.settings !== undefined
+                ? (RichTextSettings.safeParse(field.settings).error?.issues ?? []).map((issue) => ({
+                      path: [`${fieldPath}.settings`, ...issue.path.map(String)].join('.'),
+                      message: issue.message,
+                  }))
+                : [];
+        return [
+            ...own,
+            ...checkFieldSettings(field.fields ?? [], `${fieldPath}.fields`),
+            ...(field.types ?? []).flatMap((type, typeIndex) =>
+                checkFieldSettings(type.fields, `${fieldPath}.types.${String(typeIndex)}.fields`),
+            ),
+        ];
+    });
+}
+
 /**
  * Validates a definition, as returned by `GET /definition`: against the schema, then the
- * references between its parts (see `lintDefinition()`).
+ * references between its parts (see `lintDefinition()`), and the settings of field types that
+ * the protocol describes (`RichTextSettings`).
  */
 export function validateDefinition(input: unknown): ValidationResult<Definition> {
     const result = validate(Definition, input);
     if (!result.success) {
         return result;
     }
-    const issues = lintDefinition(result.data);
+    const issues = [
+        ...lintDefinition(result.data),
+        ...result.data.resources.flatMap((resource, index) => [
+            ...checkFieldSettings(resource.fields, `resources.${String(index)}.fields`),
+            ...(resource.types ?? []).flatMap((type, typeIndex) =>
+                checkFieldSettings(
+                    type.fields,
+                    `resources.${String(index)}.types.${String(typeIndex)}.fields`,
+                ),
+            ),
+            ...(resource.actions ?? []).flatMap((action, actionIndex) =>
+                checkFieldSettings(
+                    action.fields ?? [],
+                    `resources.${String(index)}.actions.${String(actionIndex)}.fields`,
+                ),
+            ),
+        ]),
+    ];
     return issues.length > 0 ? { success: false, issues } : result;
 }
 

@@ -3,7 +3,16 @@ import { describe, expect, it } from 'vitest';
 import { createDefinition } from '../__fixtures__/definition';
 import { lintDefinition } from '../lint';
 import { validate, validateDefinition } from '../validate';
-import { Action, Definition, Field, Item, ListResponse, MediaTransform, Problem } from './index';
+import {
+    Action,
+    Definition,
+    Field,
+    Item,
+    ListResponse,
+    MediaTransform,
+    Problem,
+    RichTextSettings,
+} from './index';
 
 describe('Definition', () => {
     it('accepts a complete definition', () => {
@@ -55,6 +64,24 @@ describe('Field', () => {
         expect(
             Field.safeParse({ name: 'slug', type: 'page-slug', settings: { prefix: '/' } }).success,
         ).toBe(true);
+    });
+
+    it('describes the settings of richtext fields', () => {
+        expect(
+            RichTextSettings.safeParse({
+                toolbar: ['heading', 'style', '|', 'bold', 'logo'],
+                headings: [2, 3],
+                styles: [{ label: 'Big paragraph', class: 'big', element: 'p' }],
+                links: { newTab: 'external' },
+            }).success,
+        ).toBe(true);
+        expect(RichTextSettings.safeParse({ headings: [7] }).success).toBe(false);
+        expect(RichTextSettings.safeParse({ styles: [{ label: 'Big' }] }).success).toBe(false);
+        expect(
+            RichTextSettings.safeParse({ styles: [{ label: 'Box', class: 'box', element: 'div' }] })
+                .success,
+        ).toBe(false);
+        expect(RichTextSettings.safeParse({ links: { newTab: 'always' } }).success).toBe(false);
     });
 
     it('checks the parameters of known rules', () => {
@@ -131,6 +158,39 @@ describe('API payloads', () => {
             }).success,
         ).toBe(true);
         expect(Problem.safeParse({ title: 'Invalid', status: 200 }).success).toBe(false);
+    });
+});
+
+describe('validateDefinition', () => {
+    it('checks the settings of richtext fields, nested ones included', () => {
+        const definition = createDefinition();
+        const resource = definition.resources[0];
+        if (resource === undefined) {
+            throw new Error('Fixture has no resource.');
+        }
+        const count = resource.fields.length;
+        resource.fields.push(
+            { name: 'lead', type: 'richtext', settings: { headings: [2], toolbar: ['bold'] } },
+            { name: 'notes', type: 'richtext', settings: { headings: [7] } },
+            {
+                name: 'aside',
+                type: 'group',
+                fields: [
+                    {
+                        name: 'text',
+                        type: 'richtext',
+                        settings: { styles: [{ label: 'Big' }], links: { newTab: 'always' } },
+                    },
+                ],
+            },
+        );
+        const result = validateDefinition(definition);
+        expect(result.success).toBe(false);
+        expect(result.success ? [] : result.issues.map((issue) => issue.path)).toEqual([
+            `resources.0.fields.${String(count + 1)}.settings.headings.0`,
+            `resources.0.fields.${String(count + 2)}.fields.0.settings.styles.0.class`,
+            `resources.0.fields.${String(count + 2)}.fields.0.settings.links.newTab`,
+        ]);
     });
 });
 

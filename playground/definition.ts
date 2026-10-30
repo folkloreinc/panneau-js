@@ -61,6 +61,31 @@ export function createPlaygroundDefinition(): DefinitionInput {
                 fields: [
                     { name: 'title', type: 'text', label: 'Title', rules: [{ rule: 'required' }] },
                     { name: 'summary', type: 'textarea', label: 'Summary' },
+                    {
+                        name: 'body',
+                        type: 'richtext',
+                        label: 'Body',
+                        settings: {
+                            toolbar: [
+                                'heading',
+                                'style',
+                                '|',
+                                'bold',
+                                'italic',
+                                'link',
+                                '|',
+                                'bulletList',
+                                'orderedList',
+                                'blockquote',
+                                '|',
+                                'undo',
+                                'redo',
+                            ],
+                            headings: [2, 3],
+                            styles: [{ label: 'Big paragraph', class: 'big' }],
+                            links: { newTab: 'external' },
+                        },
+                    },
                     STATUS,
                     {
                         name: 'category',
@@ -116,6 +141,7 @@ export function createPlaygroundDefinition(): DefinitionInput {
                     layout: [
                         { type: 'field', name: 'title' },
                         { type: 'field', name: 'summary' },
+                        { type: 'field', name: 'body' },
                         {
                             type: 'row',
                             children: [
@@ -342,6 +368,10 @@ export function createPlaygroundItems(): Record<string, Values[]> {
                 index % 2 === 0
                     ? 'The city turns out for a weekend of music, food and boats on the water.'
                     : '',
+            body:
+                index % 2 === 0
+                    ? '<h2>The program</h2><p class="big">Three days on the water, from noon to midnight.</p><p>Tickets are on <a href="https://example.com/tickets" target="_blank" rel="noopener noreferrer">the festival site</a>. <i>Free for children.</i></p><ul><li>Concerts</li><li>Food trucks</li></ul><figure class="media"><oembed url="https://www.youtube.com/watch?v=abc123"></oembed></figure>'
+                    : null,
             status: STATUSES[index % STATUSES.length],
             category: reference(pick(categories, index)),
             author: reference(pick(authors, index)),

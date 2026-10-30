@@ -2234,6 +2234,89 @@
                 "additionalProperties": {},
                 "description": "A field of a form."
             },
+            "RichTextStyle": {
+                "type": "object",
+                "properties": {
+                    "label": {
+                        "type": "string",
+                        "description": "The name of the style in the toolbar."
+                    },
+                    "class": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The class the style puts on the element: `big`. Several classes are separated by spaces."
+                    },
+                    "element": {
+                        "description": "The element the style applies to: `p` (the default), `h1` to `h6`, `blockquote`, `ul`, `ol` or `li`.",
+                        "type": "string",
+                        "enum": [
+                            "p",
+                            "h1",
+                            "h2",
+                            "h3",
+                            "h4",
+                            "h5",
+                            "h6",
+                            "blockquote",
+                            "ul",
+                            "ol",
+                            "li"
+                        ]
+                    }
+                },
+                "required": [
+                    "label",
+                    "class"
+                ],
+                "additionalProperties": {},
+                "description": "A block style of a `richtext` field: a named class on a paragraph, a heading, a quote or a list (`<p class=\"big\">`)."
+            },
+            "RichTextSettings": {
+                "type": "object",
+                "properties": {
+                    "toolbar": {
+                        "description": "The toolbar, in order: `heading`, `style`, `bold`, `italic`, `underline`, `strike`, `superscript`, `subscript`, `code`, `link`, `bulletList`, `orderedList`, `blockquote`, `horizontalRule`, `clear`, `undo`, `redo`, `|` between groups, and the buttons of plugins. Clients skip the names they don't know.",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    },
+                    "headings": {
+                        "description": "The heading levels the toolbar offers. Defaults to 2, 3 and 4.",
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 6
+                        }
+                    },
+                    "styles": {
+                        "description": "The block styles.",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/RichTextStyle"
+                        }
+                    },
+                    "links": {
+                        "type": "object",
+                        "properties": {
+                            "newTab": {
+                                "description": "Which links open in a new tab (`target=\"_blank\" rel=\"noopener noreferrer\"`): as the user chooses (the default), every link to another site, or none.",
+                                "type": "string",
+                                "enum": [
+                                    "choose",
+                                    "external",
+                                    "never"
+                                ]
+                            }
+                        },
+                        "additionalProperties": {}
+                    }
+                },
+                "additionalProperties": {},
+                "description": "The `settings` of a `richtext` field. Its value is HTML. The toolbar only limits what users add: content that the field stores keeps its elements and attributes."
+            },
             "LayoutNode": {
                 "type": "object",
                 "properties": {

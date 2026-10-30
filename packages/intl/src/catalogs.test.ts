@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest';
 import { en, fr, getDescriptors } from './catalogs';
 import { actionsMessages } from './messages/actions';
 import { appMessages } from './messages/app';
+import { editorMessages } from './messages/editor';
 import { fieldsMessages } from './messages/fields';
 import { formsMessages } from './messages/forms';
 import { listsMessages } from './messages/lists';
@@ -22,6 +23,7 @@ const GROUPS = {
     actions: actionsMessages,
     app: appMessages,
     media: mediaMessages,
+    editor: editorMessages,
 };
 
 /** The names of the arguments of an ICU message (`{count, plural, …}` gives `count`). */

@@ -140,10 +140,11 @@ function findCssModules(folder, base = folder) {
         .sort();
 }
 
-/** The local class names of a stylesheet, from its selectors. */
+/** The local class names of a stylesheet, from its selectors, without those in `:global()`. */
 function readLocalClasses(css) {
     const selectors = css
         .replace(/\/\*[\s\S]*?\*\//g, '')
+        .replace(/:global\([^)]*\)/g, '')
         .split('}')
         .map((block) => block.split('{').slice(-2, -1)[0] ?? '')
         .filter((prelude) => !prelude.trim().startsWith('@'));

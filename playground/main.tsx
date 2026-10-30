@@ -1,5 +1,6 @@
 import { createPanneauApp } from '@panneau/app';
 import { createRestAdapter } from '@panneau/data';
+import { editorPlugin } from '@panneau/editor';
 import { createNominatimSource } from '@panneau/fields';
 import { createMockBackend } from '@panneau/protocol/mock';
 
@@ -41,6 +42,7 @@ if (element === null) {
 createPanneauApp({
     element,
     plugins: [
+        editorPlugin,
         {
             id: 'playground',
             themes: { flat: flatTheme },

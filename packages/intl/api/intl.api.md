@@ -146,6 +146,41 @@ export const appMessages: {
 };
 
 // @public
+export const editorMessages: {
+    toolbar: PanneauMessage<Record<never, never>>;
+    textStyle: PanneauMessage<Record<never, never>>;
+    paragraph: PanneauMessage<Record<never, never>>;
+    heading: PanneauMessage<    {
+    level: number;
+    }>;
+    blockStyle: PanneauMessage<Record<never, never>>;
+    noStyle: PanneauMessage<Record<never, never>>;
+    bold: PanneauMessage<Record<never, never>>;
+    italic: PanneauMessage<Record<never, never>>;
+    underline: PanneauMessage<Record<never, never>>;
+    strike: PanneauMessage<Record<never, never>>;
+    superscript: PanneauMessage<Record<never, never>>;
+    subscript: PanneauMessage<Record<never, never>>;
+    code: PanneauMessage<Record<never, never>>;
+    link: PanneauMessage<Record<never, never>>;
+    bulletList: PanneauMessage<Record<never, never>>;
+    orderedList: PanneauMessage<Record<never, never>>;
+    blockquote: PanneauMessage<Record<never, never>>;
+    horizontalRule: PanneauMessage<Record<never, never>>;
+    clear: PanneauMessage<Record<never, never>>;
+    undo: PanneauMessage<Record<never, never>>;
+    redo: PanneauMessage<Record<never, never>>;
+    linkTitle: PanneauMessage<Record<never, never>>;
+    linkUrl: PanneauMessage<Record<never, never>>;
+    linkNewTab: PanneauMessage<Record<never, never>>;
+    linkInvalid: PanneauMessage<Record<never, never>>;
+    linkApply: PanneauMessage<Record<never, never>>;
+    linkRemove: PanneauMessage<Record<never, never>>;
+    linkCancel: PanneauMessage<Record<never, never>>;
+    html: PanneauMessage<Record<never, never>>;
+};
+
+// @public
 export const en: MessageCatalog;
 
 // @public

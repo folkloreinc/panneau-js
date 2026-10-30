@@ -79,7 +79,7 @@ Goal: a complete admin panel, ready for client projects.
     - selection by query (every matching item);
     - per-item results;
     - queued runs with progress and a notification area.
-- **Rich text:** TipTap 3 field (HTML storage by default, ProseMirror JSON as an option).
+- **Rich text:** TipTap 3 field in `@panneau/editor` ([#128](https://github.com/folkloreinc/panneau-js/issues/128)): HTML storage, the toolbar, heading levels and block styles set from the definition, and TipTap extensions from plugins. HTML written by CKEditor 4 and 5 loads and saves unchanged until it is edited. ProseMirror JSON storage as an option comes later.
 - **More field types:** `tel`, `range`, `duration`, `json`, `tags`, `embed` (resolved by the backend with its provider's oEmbed) and `location` (a Leaflet map with a pluggable address search) ([#111](https://github.com/folkloreinc/panneau-js/issues/111), [decisions/0033](decisions/0033-more-field-types.md), [folkloreinc/laravel-panneau#100](https://github.com/folkloreinc/laravel-panneau/issues/100)). Choices as radios or checkboxes are `select` widgets.
 - **Media:** media fields and a basic library on the protocol's media API; `laravel-mediatheque` adapter.
 - **Folklore plugin:** Pages, Blocks and PageSlug fields with their JS, shipped by `laravel-folklore`.

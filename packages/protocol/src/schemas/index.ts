@@ -43,7 +43,7 @@ import {
     User,
     Widget,
 } from './definition';
-import { BlockType, Field, Rule } from './field';
+import { BlockType, Field, RichTextSettings, RichTextStyle, Rule } from './field';
 import { LayoutNode } from './layout';
 import { Column, Filter, ListDefinition } from './list';
 import { Resource, ResourceFeatures } from './resource';
@@ -79,6 +79,8 @@ export const namedSchemas = {
     Rule,
     BlockType,
     Field,
+    RichTextStyle,
+    RichTextSettings,
     LayoutNode,
     Column,
     Filter,

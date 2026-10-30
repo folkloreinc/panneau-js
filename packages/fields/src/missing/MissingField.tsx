@@ -6,8 +6,9 @@ import type { FieldEntryProps } from '../shared/types';
 import styles from './MissingField.module.css';
 
 /**
- * The slot of a field type that no plugin provides, such as `richtext` and `media` until Phase 2:
- * it keeps the field's place in the form and names the missing type. The value is left as is.
+ * The slot of a field type that no plugin provides, such as `richtext` and `media` without
+ * `@panneau/editor` and `@panneau/media`: it keeps the field's place in the form and names the
+ * missing type. The value is left as is.
  */
 export function MissingFieldEntry({ field, className }: FieldEntryProps) {
     const intl = usePanneauIntl();

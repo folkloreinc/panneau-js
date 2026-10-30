@@ -171,6 +171,12 @@ export function renderedCropSize(transform: Pick<MediaTransform, 'crop' | 'rotat
 } | null;
 
 // @public
+export const RICH_TEXT_STYLE_ELEMENTS: readonly ["p", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "ul", "ol", "li"];
+
+// @public
+export type RichTextStyleElement = (typeof RICH_TEXT_STYLE_ELEMENTS)[number];
+
+// @public
 export interface RuleFailure {
     message?: string;
     // (undocumented)

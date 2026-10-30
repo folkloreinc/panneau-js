@@ -1,5 +1,6 @@
 import { actionsFr } from './fr/actions';
 import { appFr } from './fr/app';
+import { editorFr } from './fr/editor';
 import { fieldsFr } from './fr/fields';
 import { formsFr } from './fr/forms';
 import { listsFr } from './fr/lists';
@@ -8,6 +9,7 @@ import { uiFr } from './fr/ui';
 import type { PanneauMessage } from './message';
 import { actionsMessages } from './messages/actions';
 import { appMessages } from './messages/app';
+import { editorMessages } from './messages/editor';
 import { fieldsMessages } from './messages/fields';
 import { formsMessages } from './messages/forms';
 import { listsMessages } from './messages/lists';
@@ -43,6 +45,7 @@ export const en: MessageCatalog = {
     ...getDefaultMessages(actionsMessages),
     ...getDefaultMessages(appMessages),
     ...getDefaultMessages(mediaMessages),
+    ...getDefaultMessages(editorMessages),
 };
 
 /** The French messages of every Panneau package, by id. */
@@ -54,6 +57,7 @@ export const fr: MessageCatalog = {
     ...actionsFr,
     ...appFr,
     ...mediaFr,
+    ...editorFr,
 };
 
 /** The messages of every Panneau package, by locale. */
