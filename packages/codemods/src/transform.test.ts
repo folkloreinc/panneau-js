@@ -133,6 +133,32 @@ describe('transformSources', () => {
         ]);
     });
 
+    it('gives a TypeScript component that forwards its props a value it may not declare', () => {
+        const { output } = run({
+            'fields/Slug.tsx': [
+                "import TextField from '@panneau/field-text';",
+                '',
+                'interface SlugFieldProps {',
+                '    fieldLocale?: string | null;',
+                '    helpText?: string;',
+                '}',
+                '',
+                'export default function SlugField({ fieldLocale = null, helpText, ...props }: SlugFieldProps) {',
+                '    return <TextField {...props} description={helpText} prepend={fieldLocale} />;',
+                '}',
+                '',
+            ].join('\n'),
+        });
+        // An attribute the props don't declare doesn't typecheck; a spread property does.
+        expect(output('fields/Slug.tsx')).toContain(
+            '{...{ value: props.value as never, onChange: props.onChange }}',
+        );
+        expect(output('fields/Slug.tsx')).not.toContain('onChange={props.onChange}');
+        expect(output('fields/Slug.tsx')).toContain(
+            "helpText={description as SlugFieldProps['helpText']}",
+        );
+    });
+
     it('keeps the `className` of a field over the one of its `FormGroup`, and reports it', () => {
         const { output, messages } = run({
             'Group.jsx': [

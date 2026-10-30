@@ -38,8 +38,8 @@ export function PageSlugLocalizedFieldEntry(props) {
         <PageSlugLocalizedField
             {...props.field.settings}
             {...getFieldProps(props)}
-            value={props.value}
             onChange={props.onChange}
+            value={props.value}
             locales={locales}
         />
     );

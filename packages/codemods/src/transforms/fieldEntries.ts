@@ -176,7 +176,7 @@ const PROP_SOURCES: Readonly<Record<string, string>> = {
 };
 
 /** Props the entry passes as they are, without a cast to the component's types. */
-const UNCAST = new Set(['onChange', 'onBlur', 'label', 'description', 'helpText', 'help']);
+const UNCAST = new Set(['onChange', 'onBlur']);
 
 function isIdentifier(name: string): boolean {
     return /^[A-Za-z_$][\w$]*$/.test(name);
@@ -203,9 +203,25 @@ function writeEntry(
     const fieldProps = new Set(
         forwarded ? [] : ['label', 'description', 'errors', 'required', 'className'],
     );
-    // The value and its handler always go to the component, which may read them from `...props`.
-    const given = forwarded ? [...new Set(['value', 'onChange', ...read])] : read;
-    const attributes = given
+    // The value and its handler always go to a component that forwards its props, which may not
+    // name them. In TypeScript, they go in an object spread: an attribute the props don't declare
+    // is an error, a spread property isn't, and `never` fits the type of a value they declare.
+    const implicit = forwarded ? ['value', 'onChange'].filter((prop) => !read.includes(prop)) : [];
+    const implicitAttributes =
+        implicit.length === 0
+            ? []
+            : api.typescript
+              ? [
+                    `{...{ ${implicit
+                        .map((prop) =>
+                            prop === 'value'
+                                ? 'value: props.value as never'
+                                : 'onChange: props.onChange',
+                        )
+                        .join(', ')} }}`,
+                ]
+              : implicit.map((prop) => `${prop}={props.${prop}}`);
+    const attributes = read
         .filter((prop) => !(forwarded && FIELD_PROPS.has(prop)))
         .map((prop) => {
             const source = PROP_SOURCES[prop];
@@ -237,6 +253,7 @@ function writeEntry(
     }
     const element = [
         ...(forwarded ? ['{...props.field.settings}', '{...getFieldProps(props)}'] : []),
+        ...implicitAttributes,
         ...attributes,
     ];
     const indent = forwarded ? '            ' : '                ';

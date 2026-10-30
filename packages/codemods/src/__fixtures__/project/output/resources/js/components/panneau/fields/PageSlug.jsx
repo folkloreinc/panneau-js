@@ -50,10 +50,10 @@ export function PageSlugFieldEntry(props) {
         <PageSlugField
             {...props.field.settings}
             {...getFieldProps(props)}
-            value={props.value}
             onChange={props.onChange}
             routes={props.field.settings?.routes}
             fieldLocale={props.locale}
+            value={props.value}
         />
     );
 }
