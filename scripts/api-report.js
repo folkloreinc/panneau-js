@@ -1,6 +1,6 @@
 // Writes or checks the API reports of the package in the current directory, with API Extractor.
 //
-// Usage, from a package directory (through its `api` script, after `tsc -p tsconfig.build.json`):
+// Usage, from a package directory (through its `api` script, after `scripts/declarations.js`):
 //
 //     node ../../scripts/api-report.js           update the reports in api/
 //     node ../../scripts/api-report.js --check   fail if a report is out of date

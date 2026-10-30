@@ -94,7 +94,7 @@ npm run api:check            # fail if a report is out of date
 node scripts/api-report.js --workspaces --check   # the same, with the declarations of a build (CI)
 ```
 
-- The shared config is [`api-extractor.json`](../api-extractor.json) at the root. Each package runs it through `scripts/api-report.js` in its `api` script, after emitting its declarations with `tsc -p tsconfig.build.json`.
+- The shared config is [`api-extractor.json`](../api-extractor.json) at the root. Each package runs it through `scripts/api-report.js` in its `api` script, after emitting its declarations with `scripts/declarations.js` (`tsc -p tsconfig.build.json`, then explicit relative specifiers, so that the declarations work under `NodeNext`).
 - **One report per entry point.** API Extractor reads one entry point at a time, so the script runs it for every subpath of `exports` that has `types`, with one TypeScript program for all of them: `.` writes `api/<name>.api.md` and `./mock` writes `api/<name>-mock.api.md` (`./text` in `@panneau/fields` would write `api/fields-text.api.md`). Reports of removed entry points are deleted by `npm run api`, and fail `npm run api:check`.
 - Other exports (JSON files, `./package.json`) have no report. `@panneau/protocol` checks its generated JSON files with its own tests.
 - Compiler errors in the declarations fail the run. Other API Extractor and TSDoc messages are written into the report, as `// Warning:` comments, so that they are reviewed with the API.

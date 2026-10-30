@@ -42,9 +42,9 @@
         "schema"
     ],
     "scripts": {
-        "build": "vite build && tsc -p tsconfig.build.json && node scripts/generate-schemas.js",
+        "build": "vite build && node ../../scripts/declarations.js && node scripts/generate-schemas.js",
         "typecheck": "tsc --noEmit",
-        "api": "tsc -p tsconfig.build.json && node ../../scripts/api-report.js"
+        "api": "node ../../scripts/declarations.js && node ../../scripts/api-report.js"
     },
     "publishConfig": {
         "access": "public"
