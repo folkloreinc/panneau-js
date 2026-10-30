@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { Button } from '../button/Button';
 import { SegmentedControl } from '../segmented-control/SegmentedControl';
@@ -95,5 +95,56 @@ export const Picker: Story = {
         });
         await userEvent.click(within(dialog).getByRole('radio', { name: 'Documents' }));
         await expect(within(dialog).getByRole('radio', { name: 'Documents' })).toBeChecked();
+    },
+};
+
+const submitPage = fn();
+const submitKey = fn();
+
+/**
+ * A dialog opened from a form, with a form of its own: submitting it doesn't submit the form of the
+ * page, although React bubbles events through the dialog's portal.
+ */
+export const InsideAForm: Story = {
+    args: { title: 'New API key' },
+    render: (args) => (
+        <form
+            aria-label="Project"
+            onSubmit={(event) => {
+                event.preventDefault();
+                submitPage();
+            }}
+        >
+            <TextInput label="Project name" defaultValue="Northwind" />
+            <DialogTrigger>
+                <Button>New API key</Button>
+                <Dialog {...args}>
+                    {(close) => (
+                        <form
+                            onSubmit={(event) => {
+                                event.preventDefault();
+                                submitKey();
+                                close();
+                            }}
+                        >
+                            <TextInput label="Name of the key" autoFocus />
+                            <Button type="submit" variant="primary">
+                                Create the key
+                            </Button>
+                        </form>
+                    )}
+                </Dialog>
+            </DialogTrigger>
+        </form>
+    ),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        submitPage.mockClear();
+        submitKey.mockClear();
+        await userEvent.click(canvas.getByRole('button', { name: 'New API key' }));
+        const dialog = within(await within(document.body).findByRole('dialog'));
+        await userEvent.type(dialog.getByLabelText('Name of the key'), 'Encoder{Enter}');
+        await expect(submitKey).toHaveBeenCalledTimes(1);
+        await expect(submitPage).not.toHaveBeenCalled();
     },
 };

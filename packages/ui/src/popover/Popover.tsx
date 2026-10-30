@@ -7,6 +7,7 @@ import {
 
 import { usePortalContainer } from '../root/PanneauRoot';
 import { cx } from '../utils/cx';
+import { stopPropagation } from '../utils/events';
 import styles from './Popover.module.css';
 
 export interface PopoverProps extends Omit<
@@ -43,9 +44,12 @@ export function Popover({
             className={cx('panneau-popover', styles.popover, className)}
             UNSTABLE_portalContainer={container}
         >
-            <Dialog aria-label={ariaLabel} className={cx(styles.dialog, dialogClassName)}>
-                {children}
-            </Dialog>
+            {/* Like a dialog: a form in the popover doesn't submit a form around it (#146). */}
+            <div className={styles.boundary} onSubmit={stopPropagation}>
+                <Dialog aria-label={ariaLabel} className={cx(styles.dialog, dialogClassName)}>
+                    {children}
+                </Dialog>
+            </div>
         </AriaPopover>
     );
 }
