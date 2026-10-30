@@ -1,0 +1,12 @@
+# Security updates only: version updates stay off (`open-pull-requests-limit: 0`).
+# `legacy/` is the v4 code kept as a reference for porting. It is never built, run
+# or published (decision 0018), so Dependabot leaves it out.
+version: 2
+updates:
+    - package-ecosystem: npm
+      directory: /
+      schedule:
+          interval: weekly
+      open-pull-requests-limit: 0
+      exclude-paths:
+          - 'legacy/**'
