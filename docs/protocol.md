@@ -262,6 +262,21 @@ Built-in actions use reserved ids:
 
 A resource lists the built-in actions it enables, possibly with overrides (label, placement, confirm).
 
+### Pages
+
+`pages` are screens that aren't resources, rendered by a component of a plugin (or the built-in `dashboard`), at `{basePath}/pages/{page}`:
+
+```jsonc
+"pages": {
+    "home": { "component": "dashboard" }, // the home route
+    "usage": { "component": "usage", "label": "Usage", "props": { "period": "month" } },
+    "job": { "component": "job", "label": "Job", "params": ["id"] }, // {basePath}/pages/job/{id}
+}
+```
+
+- The component gets the page's `props`, the definition, and `params`: the values of the path segments that `params` names ([decisions/0038](decisions/0038-pages-with-params.md)). A page takes exactly its params.
+- A route reference can name a page: `{ "route": "job", "params": { "id": "4f2a" } }`, when `routes` has no route of that name. Menus don't link to pages with params.
+
 ### Auth
 
 ```jsonc

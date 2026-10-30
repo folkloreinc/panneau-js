@@ -83,6 +83,13 @@ export const Page = z.looseObject({
     path: z.string().optional().meta({ description: 'Path of a custom page.' }),
     label: z.string().optional(),
     props: z.record(z.string(), z.unknown()).optional(),
+    params: z
+        .array(z.string().regex(/^[A-Za-z_][A-Za-z0-9_]*$/))
+        .optional()
+        .meta({
+            description:
+                'Names of the path segments after the page: `["id"]` makes `{basePath}/pages/{page}/{id}`. The component gets them as `params`, and route references (`{ "route": "<page>", "params": { "id": … } }`) can link to the page. A page with `params` is not in menus.',
+        }),
 });
 
 export const Widget = z.looseObject({

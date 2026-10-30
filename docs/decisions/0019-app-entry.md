@@ -1,6 +1,6 @@
 # 0019: The app entry: boot config, mount function and client routes
 
-- Status: accepted, amended by [0036](0036-default-icon-loader.md): `<Panneau>` has no default `iconLoader`; and by [0037](0037-login-page-token-and-logout.md): the login page when the session ends in `panneau` mode, and `auth` in the boot config
+- Status: accepted, amended by [0036](0036-default-icon-loader.md): `<Panneau>` has no default `iconLoader`; and by [0037](0037-login-page-token-and-logout.md): the login page when the session ends in `panneau` mode, and `auth` in the boot config; and by [0038](0038-pages-with-params.md): pages with params
 - Date: 2026-10-15
 
 ## Context
@@ -73,14 +73,15 @@ The server writes one JSON object in the page, and the app reads it itself, so t
 
 The app uses **history mode** (`history.pushState`), without a hash. Links are real URLs, so they can be opened in a new tab or reloaded. All routes are under `basePath`:
 
-| Path                                        | Page                                                   |
-| ------------------------------------------- | ------------------------------------------------------ |
-| `{basePath}`                                | Home: `pages.home` of the definition, or the dashboard |
-| `{basePath}/resources/{resource}`           | List of a resource                                     |
-| `{basePath}/resources/{resource}/create`    | Create form                                            |
-| `{basePath}/resources/{resource}/{id}`      | Show page                                              |
-| `{basePath}/resources/{resource}/{id}/edit` | Edit form                                              |
-| `{basePath}/pages/{page}`                   | A page of the definition's `pages`                     |
+| Path                                        | Page                                                     |
+| ------------------------------------------- | -------------------------------------------------------- |
+| `{basePath}`                                | Home: `pages.home` of the definition, or the dashboard   |
+| `{basePath}/resources/{resource}`           | List of a resource                                       |
+| `{basePath}/resources/{resource}/create`    | Create form                                              |
+| `{basePath}/resources/{resource}/{id}`      | Show page                                                |
+| `{basePath}/resources/{resource}/{id}/edit` | Edit form                                                |
+| `{basePath}/pages/{page}`                   | A page of the definition's `pages`                       |
+| `{basePath}/pages/{page}/{param}…`          | A page with `params` ([0038](0038-pages-with-params.md)) |
 
 - **Path segments are URL-encoded,** since ids are opaque. `create` is not a valid item id in URLs.
 - **The query string of a list** is its query, in the protocol's format (`?page=2&sort=-published_at&filter[status]=draft&q=été`). Lists keep it in the URL through the `Router` of `@panneau/core`.

@@ -934,6 +934,7 @@ export const Definition: z.ZodObject<{
         path: z.ZodOptional<z.ZodString>;
         label: z.ZodOptional<z.ZodString>;
         props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+        params: z.ZodOptional<z.ZodArray<z.ZodString>>;
     }, z.core.$loose>>>;
     menus: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodArray<z.ZodObject<{
         type: z.ZodString;
@@ -2637,6 +2638,7 @@ export const namedSchemas: {
         path: z.ZodOptional<z.ZodString>;
         label: z.ZodOptional<z.ZodString>;
         props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+        params: z.ZodOptional<z.ZodArray<z.ZodString>>;
     }, z.core.$loose>;
     Widget: z.ZodObject<{
         id: z.ZodString;
@@ -3182,6 +3184,7 @@ export const namedSchemas: {
             path: z.ZodOptional<z.ZodString>;
             label: z.ZodOptional<z.ZodString>;
             props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+            params: z.ZodOptional<z.ZodArray<z.ZodString>>;
         }, z.core.$loose>>>;
         menus: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodArray<z.ZodObject<{
             type: z.ZodString;
@@ -3840,6 +3843,7 @@ export const Page: z.ZodObject<{
     path: z.ZodOptional<z.ZodString>;
     label: z.ZodOptional<z.ZodString>;
     props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+    params: z.ZodOptional<z.ZodArray<z.ZodString>>;
 }, z.core.$loose>;
 
 // @public (undocumented)

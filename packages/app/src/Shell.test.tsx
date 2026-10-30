@@ -3,6 +3,7 @@ import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { type PanneauPlugin, definePlugin } from '@panneau/core';
 import { createRestAdapter } from '@panneau/data';
 import { type DefinitionInput, validateBootConfig } from '@panneau/protocol';
 import { createMockBackend } from '@panneau/protocol/mock';
@@ -10,7 +11,7 @@ import { createMockBackend } from '@panneau/protocol/mock';
 import { Panneau } from './Panneau';
 import { createBootConfig, createDefinition } from './__fixtures__/definition';
 
-function renderApp(overrides: Partial<DefinitionInput> = {}) {
+function renderApp(overrides: Partial<DefinitionInput> = {}, plugins: PanneauPlugin[] = []) {
     const definition = createDefinition({
         menus: { main: [{ type: 'resources' }, { type: 'link', label: 'Site', url: '/' }] },
         ...overrides,
@@ -35,6 +36,7 @@ function renderApp(overrides: Partial<DefinitionInput> = {}) {
             adapter={createRestAdapter({ baseUrl: '/panneau/api', fetch: backend.fetch })}
             queryClient={new QueryClient({ defaultOptions: { queries: { retry: false } } })}
             iconLoader={null}
+            plugins={plugins}
             onUnauthorized={vi.fn()}
         />,
     );
@@ -240,5 +242,59 @@ describe('the app shell', () => {
         expect(
             within(screen.getByRole('complementary')).getByRole('link', { name: /Ada/ }),
         ).toHaveAttribute('aria-current', 'page');
+    });
+
+    describe('a page with params', () => {
+        function JobPage({ params, title }: { params: { id: string }; title: string }) {
+            return <h1>{`${title} ${params.id}`}</h1>;
+        }
+        const plugins = [definePlugin({ id: 'jobs', pages: { job: JobPage } })];
+        const overrides: Partial<DefinitionInput> = {
+            pages: {
+                job: { component: 'job', label: 'Job', params: ['id'], props: { title: 'Job' } },
+            },
+            menus: { main: [{ type: 'resources' }, { type: 'page', page: 'job' }] },
+            resources: [
+                {
+                    id: 'pages',
+                    label: { singular: 'page', plural: 'pages' },
+                    itemTitle: 'title',
+                    fields: [{ name: 'title', type: 'text', label: 'Title' }],
+                    actions: [
+                        {
+                            id: 'timeline',
+                            label: 'Timeline',
+                            kind: 'link',
+                            route: 'job',
+                            scope: ['item'],
+                            placement: ['row'],
+                        },
+                    ],
+                },
+            ],
+        };
+
+        it('gives the segments of its path to its component, as its params', () => {
+            window.history.replaceState(null, '', '/panneau/pages/job/a%2F1');
+            renderApp(overrides, plugins);
+            expect(screen.getByRole('heading', { name: 'Job a/1' })).toBeInTheDocument();
+            // A menu can't link to a page about one thing.
+            expect(navigation().queryByRole('link', { name: 'Job' })).not.toBeInTheDocument();
+        });
+
+        it('is not found without its params, or with more', () => {
+            window.history.replaceState(null, '', '/panneau/pages/job');
+            renderApp(overrides, plugins);
+            expect(screen.getByRole('heading', { name: 'Page not found' })).toBeInTheDocument();
+        });
+
+        it('opens from a route reference that names it', async () => {
+            const user = userEvent.setup();
+            window.history.replaceState(null, '', '/panneau/resources/pages');
+            renderApp(overrides, plugins);
+            await user.click(await screen.findByRole('button', { name: 'Timeline: Contact' }));
+            expect(await screen.findByRole('heading', { name: 'Job 2' })).toBeInTheDocument();
+            expect(window.location.pathname).toBe('/panneau/pages/job/2');
+        });
     });
 });
