@@ -1,6 +1,6 @@
 {
     "name": "@panneau/codemods",
-    "version": "5.0.0-alpha.7",
+    "version": "5.0.0-alpha.8",
     "description": "Codemods that move Panneau 4 projects to Panneau 5: the app entry, imports and custom field components, with a report of what they can't rewrite.",
     "type": "module",
     "license": "MIT",
