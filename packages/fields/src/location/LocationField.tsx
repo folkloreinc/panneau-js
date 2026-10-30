@@ -31,6 +31,7 @@ export const OPEN_STREET_MAP_TILES: MapTiles = {
 
 const SEARCH_DELAY = 400;
 const SEARCH_MIN_LENGTH = 3;
+const DEFAULT_CENTER: Point = { lat: 20, lng: 0 };
 
 export interface LocationFieldProps extends FieldProps<LocationValue> {
     /** The address search. Defaults to that of the `FieldsProvider`; without one, there is none. */
@@ -96,7 +97,7 @@ export function LocationField({
     onBlur,
     geocoding: geocodingProp,
     tiles: tilesProp,
-    center = { lat: 20, lng: 0 },
+    center = DEFAULT_CENTER,
     zoom = 15,
     label,
     description,
@@ -135,7 +136,8 @@ export function LocationField({
         setDraft({ source: value, lat: value?.lat ?? null, lng: value?.lng ?? null });
     }
 
-    const setPoint = (point: Point, address = value?.address) => {
+    const setPoint = (point: Point, newAddress?: string) => {
+        const address = newAddress ?? value?.address;
         const next: LocationValue = {
             lat: Number(point.lat.toFixed(6)),
             lng: Number(point.lng.toFixed(6)),

@@ -92,7 +92,6 @@ export function Select(props: SelectProps) {
         label,
         description,
         errors = [],
-        placeholder = intl.formatMessage(messages.selectPlaceholder),
         isRequired = false,
         isDisabled,
         name,
@@ -106,6 +105,7 @@ export function Select(props: SelectProps) {
         triggerClassName,
         popoverClassName,
     } = props;
+    const placeholder = props.placeholder ?? intl.formatMessage(messages.selectPlaceholder);
     const invalid = errors.length > 0;
     const items = options.map((option, index) => ({ ...option, key: String(index) }));
     const withEmpty = props.multiple !== true && !isRequired;

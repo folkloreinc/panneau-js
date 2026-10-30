@@ -141,7 +141,6 @@ export function RelationField(props: RelationFieldProps) {
         disabled,
         readOnly,
         required,
-        placeholder = intl.formatMessage(messages.search),
         onBlur,
         name,
         id,
@@ -151,6 +150,7 @@ export function RelationField(props: RelationFieldProps) {
         errorsClassName,
         controlClassName,
     } = props;
+    const placeholder = props.placeholder ?? intl.formatMessage(messages.search);
     const selected = useRelationReferences(source, resource, toReferences(props.value));
     const [query, setQuery] = useState<string | null>(null);
     const [creating, setCreating] = useState(false);
