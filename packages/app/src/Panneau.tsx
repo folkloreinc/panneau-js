@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useEffect, useEffectEvent, useState, useSyncExternalStore } from 'react';
 
 import {
     type PanneauPlugin,
@@ -104,12 +104,12 @@ function Content({
     const definition = definitionQuery.data;
     const loginUrl = getLoginUrl(definition, config);
 
+    // Only when the session ends: `loginUrl` and the callback are read at that time.
+    const sessionEnded = useEffectEvent(() => onUnauthorized({ loginUrl }));
     useEffect(() => {
         if (signedOut) {
-            onUnauthorized({ loginUrl });
+            sessionEnded();
         }
-        // Only when the session ends: `loginUrl` and the callback are read at that time.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [signedOut]);
 
     const scheme = colorScheme ?? definition?.theme?.colorScheme ?? 'light';

@@ -234,23 +234,27 @@ export function ListView({
     const execute = async (event: ListActionEvent) => {
         closeConfirmation();
         setPending(keyOf(event.action, event.item));
-        try {
-            const outcome = await onAction?.(event);
-            // `false`: the action didn't run (its parameters were cancelled).
-            if (event.scope === 'selection' && outcome !== false) {
-                list.clearSelection();
-            }
-        } catch (caught) {
-            toasts.show({
-                title: intl.formatMessage(messages.actionFailed, { action: event.action.label }),
-                ...(caught instanceof Error && caught.message !== ''
-                    ? { description: caught.message }
-                    : {}),
-                tone: 'danger',
+        // A promise chain rather than `try`, which the React Compiler only handles in part.
+        await Promise.resolve()
+            .then(() => onAction?.(event))
+            .then((outcome) => {
+                // `false`: the action didn't run (its parameters were cancelled).
+                if (event.scope === 'selection' && outcome !== false) {
+                    list.clearSelection();
+                }
+            })
+            .catch((caught: unknown) => {
+                toasts.show({
+                    title: intl.formatMessage(messages.actionFailed, {
+                        action: event.action.label,
+                    }),
+                    ...(caught instanceof Error && caught.message !== ''
+                        ? { description: caught.message }
+                        : {}),
+                    tone: 'danger',
+                });
             });
-        } finally {
-            setPending(null);
-        }
+        setPending(null);
     };
 
     const run = (event: ListActionEvent) => {
@@ -366,6 +370,13 @@ export function ListView({
         resourceActions.length > 0 ||
         toolbar !== undefined;
 
+    function clearFilters() {
+        Object.keys(filterValues).forEach((id) => list.setFilter(id, undefined));
+        if ((query.q ?? '') !== '') {
+            list.setSearch('');
+        }
+    }
+
     const body = (() => {
         if (error !== null) {
             return (
@@ -430,13 +441,6 @@ export function ListView({
             />
         );
     })();
-
-    function clearFilters() {
-        Object.keys(filterValues).forEach((id) => list.setFilter(id, undefined));
-        if ((query.q ?? '') !== '') {
-            list.setSearch('');
-        }
-    }
 
     return (
         <div className={cx(styles.list, className)}>

@@ -239,7 +239,6 @@ export function MediaField(props: MediaFieldProps) {
     const context = useFieldsContext();
     const {
         adapter = contextAdapter,
-        uploadSource = context.uploadSource,
         accept = null,
         maxSize = null,
         refreshInterval = 3000,
@@ -258,6 +257,8 @@ export function MediaField(props: MediaFieldProps) {
         descriptionClassName,
         errorsClassName,
     } = props;
+    const uploadSource =
+        props.uploadSource === undefined ? context.uploadSource : props.uploadSource;
     const multiple = props.multiple === true;
     const media = toMediaReferences(props.value, itemTitle);
     const enabled = disabled !== true && readOnly !== true;

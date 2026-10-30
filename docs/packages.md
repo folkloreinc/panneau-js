@@ -114,7 +114,7 @@ node scripts/api-report.js --workspaces --check   # the same, with the declarati
     - styles in CSS Modules with design tokens, no Bootstrap and no global CSS ([decisions/0005](decisions/0005-styling-and-theming.md));
     - accessible primitives from `@panneau/ui`, messages from `@panneau/intl`;
     - a skeleton of its shape while its content loads, where v4 showed a spinner ([decisions/0034](decisions/0034-skeletons-while-content-loads.md)), with a loading story;
-    - no `useMemo`, `useCallback` or `memo` for performance: the React Compiler handles it.
+    - no `useMemo`, `useCallback` or `memo` for performance: the React Compiler handles it, and the build fails if it skips the component.
 3. **Test it** next to the code (`*.test.tsx`), with Testing Library. Cover what the v4 component did that the v5 one keeps, and the bugs it had.
 4. **Expose it** through the package's `exports` map (and `entries` in `vite.config.ts` for a new subpath), then run `npm run api` and check the report.
 5. **Delete the ported code from `legacy/`** in the same pull request: the component, its styles, its stories and its tests. Delete a v4 package folder once nothing in it is left to port.
