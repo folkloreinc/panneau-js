@@ -1,6 +1,6 @@
 {
     "name": "@panneau/fields",
-    "version": "5.0.0-alpha.6",
+    "version": "5.0.0-alpha.7",
     "description": "Controlled field components of Panneau for the protocol's built-in field types, one subpath per field, and uploads to storage (Uppy 6 in its own entry point).",
     "type": "module",
     "license": "MIT",
@@ -178,9 +178,9 @@
     },
     "dependencies": {
         "@internationalized/date": "^3.12.4",
-        "@panneau/intl": "5.0.0-alpha.6",
-        "@panneau/protocol": "5.0.0-alpha.6",
-        "@panneau/ui": "5.0.0-alpha.6",
+        "@panneau/intl": "5.0.0-alpha.7",
+        "@panneau/protocol": "5.0.0-alpha.7",
+        "@panneau/ui": "5.0.0-alpha.7",
         "leaflet": "^1.9.4",
         "lucide-react": "^1.57.0"
     },

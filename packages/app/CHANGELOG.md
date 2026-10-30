@@ -1,5 +1,35 @@
 # @panneau/app
 
+## 5.0.0-alpha.7
+
+### Minor Changes
+
+- fb534de: Skeletons instead of spinners while content loads (#121, decision 0034), drawn by the components themselves, so a product that uses them without the app gets them too:
+  
+  - `ListView`: while `items` is `undefined`, rows of its columns in its layout, as many as the page size, up to 10.
+  - `ItemDetails`: `item` can be `undefined` while it loads, for the labels with a skeleton of each value.
+  - `Form` and `FormView`: `isLoading` draws the layout of the form, and for each field its label and a block of its height, from its type. The app's edit page uses it while the item loads.
+  - The media picker draws its cards with `Skeleton`, and its own skeleton CSS is gone.
+  - The app: the item panel draws its title, actions and details, the preview a block in its frame, and the boot the shell with its sidebar and a page header, instead of a centered spinner.
+  - New messages, in English and French: `lists.loading`, `lists.loadingItem`, `forms.loading`, `app.previewLoading`.
+
+### Patch Changes
+
+- 9c6c087: Every component is memoized by the React Compiler again. The packages were built with Babel 8, on which React Compiler 1.0 skips any component with a default value in its props (`Fieldset`, `Text`, `TextInput` and most others), so they shipped without memoization. The build is back on Babel 7, and the components the compiler still skipped (`Panneau`, `FormView`, `ListView`, `Select`, the file, location, embed, slug and relation fields, `MediaField`, `MediaPicker` and `ImageEditor`) are rewritten so that it compiles them. Nothing changes in their behavior.
+- Updated dependencies [9c6c087]
+- Updated dependencies [060e0de]
+- Updated dependencies [fb534de]
+- Updated dependencies [fb534de]
+  - @panneau/fields@5.0.0-alpha.7
+  - @panneau/forms@5.0.0-alpha.7
+  - @panneau/lists@5.0.0-alpha.7
+  - @panneau/ui@5.0.0-alpha.7
+  - @panneau/protocol@5.0.0-alpha.7
+  - @panneau/intl@5.0.0-alpha.7
+  - @panneau/actions@5.0.0-alpha.7
+  - @panneau/core@5.0.0-alpha.7
+  - @panneau/data@5.0.0-alpha.7
+
 ## 5.0.0-alpha.6
 
 ### Minor Changes

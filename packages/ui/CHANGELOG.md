@@ -1,5 +1,18 @@
 # @panneau/ui
 
+## 5.0.0-alpha.7
+
+### Minor Changes
+
+- fb534de: `Skeleton` and `LoadingRegion` (#121, decision 0034): content that loads shows a skeleton of its shape instead of a spinner. `Skeleton` is a line of text (`lines` for several, the last one shorter), a `rect` sized by `width`, `height` or `aspectRatio`, or a `circle`. It is `aria-hidden`, has the `panneau-skeleton` class, reads the `skeleton` component tokens (`color`, `radius`, `duration`) and pulses unless the user prefers reduced motion. `LoadingRegion` goes around it, with `aria-busy="true"` and a status message that says once that the content loads.
+
+### Patch Changes
+
+- 9c6c087: Every component is memoized by the React Compiler again. The packages were built with Babel 8, on which React Compiler 1.0 skips any component with a default value in its props (`Fieldset`, `Text`, `TextInput` and most others), so they shipped without memoization. The build is back on Babel 7, and the components the compiler still skipped (`Panneau`, `FormView`, `ListView`, `Select`, the file, location, embed, slug and relation fields, `MediaField`, `MediaPicker` and `ImageEditor`) are rewritten so that it compiles them. Nothing changes in their behavior.
+- Updated dependencies [060e0de]
+- Updated dependencies [fb534de]
+  - @panneau/intl@5.0.0-alpha.7
+
 ## 5.0.0-alpha.6
 
 ### Minor Changes

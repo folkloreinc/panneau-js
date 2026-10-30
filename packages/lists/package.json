@@ -1,6 +1,6 @@
 {
     "name": "@panneau/lists",
-    "version": "5.0.0-alpha.6",
+    "version": "5.0.0-alpha.7",
     "description": "Lists of Panneau: columns with displays, table and cards layouts, sorting, filters, search, pagination, selection and actions, driven by the list state of @panneau/core.",
     "type": "module",
     "license": "MIT",
@@ -37,14 +37,14 @@
         "react-intl": "^12.0.0"
     },
     "dependencies": {
-        "@panneau/core": "5.0.0-alpha.6",
-        "@panneau/fields": "5.0.0-alpha.6",
-        "@panneau/intl": "5.0.0-alpha.6",
-        "@panneau/protocol": "5.0.0-alpha.6",
-        "@panneau/ui": "5.0.0-alpha.6",
+        "@panneau/core": "5.0.0-alpha.7",
+        "@panneau/fields": "5.0.0-alpha.7",
+        "@panneau/intl": "5.0.0-alpha.7",
+        "@panneau/protocol": "5.0.0-alpha.7",
+        "@panneau/ui": "5.0.0-alpha.7",
         "lucide-react": "^1.57.0"
     },
     "devDependencies": {
-        "@panneau/data": "5.0.0-alpha.6"
+        "@panneau/data": "5.0.0-alpha.7"
     }
 }
