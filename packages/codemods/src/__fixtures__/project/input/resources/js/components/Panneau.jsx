@@ -14,6 +14,7 @@ import * as displaysComponents from './panneau/displays';
 import * as fieldsComponents from './panneau/fields';
 
 import '../../styles/panneau.scss';
+import 'ckeditor5/ckeditor5.css';
 
 const propTypes = {
     definition: PropTypes.shape({}).isRequired,

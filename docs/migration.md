@@ -82,9 +82,9 @@ In v4, the app found a custom field by name in the `fields` namespace of its `co
 
     `--dry` writes nothing, and prints what would change and every finding. Run it again without `--dry` to write the files.
 
-3. Format the files (`npx prettier --write`, `npx eslint --fix`): the codemods keep the code as it was written, and only print what they change.
+3. Format the changed files with the project's Prettier (`npx prettier --write`), then `npx eslint --fix`. This step is needed: the codemods keep the code they don't change as it was written, but print what they add their own way (children functions on one line, blank lines around new imports), and `prettier --check` fails until then.
 4. Fix each finding. In the files, each one has a `// TODO(panneau-5): …` comment (`grep -rn "TODO(panneau-5)" resources/js`). The codemods change nothing more when run again, and list what is left.
-5. Add the packages the components now import to `package.json`, at the version of `@panneau/app` (`^5.0.0-alpha.0` until 5.0.0): `@panneau/fields`, `@panneau/ui`, and `@panneau/forms` or `@panneau/media` when they use them.
+5. Add the packages the components now import to `package.json`, at the version of `@panneau/app` (`^5.0.0-alpha.0` until 5.0.0): `@panneau/core` (the plugin module imports `definePlugin`), `@panneau/fields`, `@panneau/ui`, and `@panneau/forms` or `@panneau/media` when they use them.
 6. Delete the code that mounted the container of v4 (`import('./components/Panneau')` behind `isPanneau`): the page of 5 loads `panneau.tsx`.
 
 ### The entry
@@ -209,14 +209,14 @@ import { Fieldset } from '@panneau/ui';
 // TODO(panneau-5): `PersonFieldEntry` reads `personType` from the `settings` of the field: give it with `settings()` of the PHP field
 /** The registry entry of `PersonField` for Panneau 5: its props from the field (written by @panneau/codemods). */
 export function PersonFieldEntry(props: FieldEntryProps) {
-    const { label, description, errors, required } = getFieldProps(props);
+    const { label, description, errors, required, className } = getFieldProps(props);
     return (
         <Fieldset
             legend={label}
             description={description}
             errors={errors}
             isRequired={required}
-            className={props.className}
+            className={className}
         >
             <PersonField
                 value={props.value as PersonFieldProps['value']}
@@ -230,17 +230,17 @@ export function PersonFieldEntry(props: FieldEntryProps) {
 
 The entry gives each prop the component destructures:
 
-| v4 prop                                   | In the entry                                                  |
-| ----------------------------------------- | ------------------------------------------------------------- |
-| `value`, `onChange`, `onBlur`             | `props.value`, `props.onChange`, `props.onBlur`               |
-| `errors`, `label`, `required`, `helpText` | From `getFieldProps(props)` (`description` for the help)      |
-| `disabled`, `readOnly`, `className`       | `props.disabled`, `props.readOnly`, `props.className`         |
-| `name`, `placeholder`                     | `props.field.name`, `props.field.placeholder`                 |
-| `fieldLocale`, `locale`                   | `props.locale`: the locale of the value, in a localized field |
-| `locales`                                 | `useFieldsContext().locales` of `@panneau/fields`             |
-| Any other prop                            | `props.field.settings?.<prop>`, reported                      |
+| v4 prop                                   | In the entry                                                   |
+| ----------------------------------------- | -------------------------------------------------------------- |
+| `value`, `onChange`, `onBlur`             | `props.value`, `props.onChange`, `props.onBlur`                |
+| `label`, `helpText`, `errors`, `required` | From `getFieldProps(props)` (`description` for the help)       |
+| `disabled`, `readOnly`, `className`       | From `getFieldProps(props)` (`readOnly` of the field too)      |
+| `name`, `placeholder`                     | From `getFieldProps(props)`: the path, the field's placeholder |
+| `fieldLocale`, `locale`                   | `props.locale`: the locale of the value, in a localized field  |
+| `locales`                                 | `useFieldsContext().locales` of `@panneau/fields`              |
+| Any other prop                            | `props.field.settings?.<prop>`, reported                       |
 
-- **Labels.** v5 fields render their own label, help and errors. The entry wraps the component in a `Fieldset` of `@panneau/ui` with those of the field, as v4 wrapped it in a form group. A component that forwards `...props` to a field instead gets `getFieldProps(props)` and the field's settings, and no fieldset: the field it renders shows the label.
+- **Labels.** v5 fields render their own label, help and errors. The entry wraps the component in a `Fieldset` of `@panneau/ui` with those of the field, as v4 wrapped it in a form group. A component that forwards `...props` to a field instead gets its `value` and `onChange`, `getFieldProps(props)` and the field's settings, and no fieldset: the field it renders shows the label.
 - **Localized values.** A field whose PHP field is `->localized()` is rendered once per locale, with `locale` and the value of that locale. A component that takes `locales` and renders every locale itself (a `LocalizedField`) is reported: its PHP field must not be localized.
 - **The form's values.** `useFormValue()` becomes `useFormState(useFormContext()).values` of `@panneau/forms`. The entry also gets `parentValue`, the object the field belongs to.
 - **Types.** In TypeScript, the entry casts each value to the type of the component's prop: the definition gives `unknown`.
@@ -249,19 +249,19 @@ The entry gives each prop the component destructures:
 
 `useFieldComponent('<id>')` and the default exports of `@panneau/field-*` become the controlled components of 5, under the same local names:
 
-| v4                                                       | 5                                                                                                                     |
-| -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `text`, `textarea`, `email`, `url`, `telephone`          | `TextField`, `TextAreaField`, `EmailField`, `UrlField`, `TelField` of `@panneau/fields/<type>`                        |
-| `number`, `color`, `date`, `date-time`                   | `NumberField`, `ColorField`, `DateField`, `DateTimeField`                                                             |
-| `select`, `radios`, `checkboxes`, `toggles`              | `SelectField`, with `widget="radios"` or `multiple widget="checkboxes"`                                               |
-| `toggle`, `checkbox`                                     | `BooleanField`, with `widget="switch"` for a toggle                                                                   |
-| `embed`                                                  | `EmbedField`                                                                                                          |
-| `localized`                                              | `LocalizedField`: `fieldComponent={TextField}` becomes its children function                                          |
-| `fields`, `items`                                        | `GroupField`, `RepeaterField`: their `fields` are fields of the protocol, reported                                    |
-| `item`, `resource-item`                                  | `RelationField`, with the id of the resource, reported                                                                |
-| `upload`, `media`, `image`, `video`, `audio`, `document` | `MediaField` or `ImageField` of `@panneau/media` (`accept` for video and audio), with the id of the library, reported |
-| `html`                                                   | `richtext` of `@panneau/editor`, reported                                                                             |
-| An id of the project (`video_or_embed`)                  | Reported: import its component                                                                                        |
+| v4                                                       | 5                                                                                                                                                                                                 |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `text`, `textarea`, `email`, `url`, `telephone`          | `TextField`, `TextAreaField`, `EmailField`, `UrlField`, `TelField` of `@panneau/fields/<type>`                                                                                                    |
+| `number`, `color`, `date`, `date-time`                   | `NumberField`, `ColorField`, `DateField`, `DateTimeField`                                                                                                                                         |
+| `select`, `radios`, `checkboxes`, `toggles`              | `SelectField`, with `widget="radios"` or `multiple widget="checkboxes"`                                                                                                                           |
+| `toggle`, `checkbox`                                     | `BooleanField`, with `widget="switch"` for a toggle                                                                                                                                               |
+| `embed`                                                  | `EmbedField`                                                                                                                                                                                      |
+| `localized`                                              | `LocalizedField`: `fieldComponent={TextField}` becomes its children function, which gives the input of each locale (and `fieldLocale` to a project component). Without `fieldComponent`, reported |
+| `fields`, `items`                                        | `GroupField`, `RepeaterField`: their `fields` are fields of the protocol, reported                                                                                                                |
+| `item`, `resource-item`                                  | `RelationField`, with the id of the resource, reported                                                                                                                                            |
+| `upload`, `media`, `image`, `video`, `audio`, `document` | `MediaField` or `ImageField` of `@panneau/media` (`accept` for video and audio), with the id of the library, reported                                                                             |
+| `html`                                                   | `richtext` of `@panneau/editor`, reported                                                                                                                                                         |
+| An id of the project (`video_or_embed`)                  | Reported: import its component                                                                                                                                                                    |
 
 - **Props** with another name in 5 are renamed (`prepend` and `append` become `prefix` and `suffix`, `helpText` becomes `description`). Props a component of 5 doesn't have (`withoutReset`, `noOptionsMessage`, `uncheckable`, `withButton`) are reported, and stay, so that TypeScript points at them. A `label` that is a message descriptor of `defineMessages()` is reported: labels of 5 are nodes.
 - **`FormGroup`** around one of these fields becomes the field's `label` (and `description`, and its `className` when the field has none). Around anything else, it becomes a `Fieldset` of `@panneau/ui` (`legend`).
@@ -272,7 +272,7 @@ Every finding has the file, the line and what replaces the code, when 5 has some
 
 - **Imports of v4 with no rewrite:** `usePanneauResource` (`useResource(id)` of `@panneau/core`), `useResourceItems` (`useResourceList()` of `@panneau/data/query`), `useUrlGenerator` (no named routes in 5), the other hooks of `@panneau/core/contexts`, `@panneau/element-*` (the primitives of `@panneau/ui`), `MainLayout` and `PageHeader` (pages render inside the shell). They stay, so that the build fails until they are replaced.
 - **What needs a check:** the keys of the plugin, the props read from `settings`, the stylesheets of the project kept in the plugin module.
-- **Bootstrap classes** in `className`, once per file: Panneau 5 has no Bootstrap. Replace them with `@panneau/ui` primitives (`Stack`, `Inline`, `Button`) and CSS Modules with design tokens, or keep them with the Bootstrap-compatible theme.
+- **Bootstrap classes** in `className` and `*ClassName` props, each with a comment (class names kept in variables are not found): Panneau 5 has no Bootstrap. Replace them with `@panneau/ui` primitives (`Stack`, `Inline`, `Button`) and CSS Modules with design tokens, or keep them with the Bootstrap-compatible theme.
 
 ## Per project
 

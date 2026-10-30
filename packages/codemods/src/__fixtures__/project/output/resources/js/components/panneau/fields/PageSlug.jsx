@@ -29,6 +29,7 @@ function PageSlugField({ routes, fieldLocale, value, className, ...props }) {
         parent !== null
             ? generatePath(routes.page_with_parent, { parent: parentSlug[fieldLocale], page: '' })
             : generatePath(routes.page, { page: '' });
+    // TODO(panneau-5): Bootstrap class `flex-nowrap` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
     return (
         <TextField
             prefix={`${window.location.protocol}//${window.location.host}${url}`}
@@ -49,9 +50,10 @@ export function PageSlugFieldEntry(props) {
         <PageSlugField
             {...props.field.settings}
             {...getFieldProps(props)}
+            value={props.value}
+            onChange={props.onChange}
             routes={props.field.settings?.routes}
             fieldLocale={props.locale}
-            value={props.value}
         />
     );
 }

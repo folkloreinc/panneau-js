@@ -157,14 +157,32 @@ function isMessageDescriptor(api: TransformApi, attribute: Attribute): boolean {
 }
 
 /** `fieldComponent={TextField}` of a v4 localized field, as the render function of v5. */
-function convertFieldComponent(api: TransformApi, path: ASTPath<JSXElement>): void {
+function convertFieldComponent(
+    api: TransformApi,
+    path: ASTPath<JSXElement>,
+    bindings: ReadonlyMap<string, FieldTarget>,
+): void {
     const { j } = api;
     const element = path.node;
+    const name = getElementName(element) ?? '';
     const attributes = element.openingElement.attributes ?? [];
     const attribute = attributes.find(
         (candidate) => getAttributeName(candidate) === 'fieldComponent',
     );
     if (attribute === undefined || attribute.type !== 'JSXAttribute') {
+        const hasChildren = (element.children ?? []).some(
+            (child) => !(child.type === 'JSXText' && child.value.trim() === ''),
+        );
+        if (!hasChildren) {
+            // v4 rendered the `component` of the field's definition, often given by `{...props}`;
+            // the `LocalizedField` of v5 calls its children function for each locale.
+            api.report(
+                path,
+                'field-component',
+                `\`<${name}>\` has no \`fieldComponent\`: v4 rendered the \`component\` of the field${attributes.some((candidate) => candidate.type === 'JSXSpreadAttribute') ? ' (given by the spread props)' : ''}, \`LocalizedField\` of Panneau 5 renders the input of each locale with its children function: give it one`,
+                { todo: true },
+            );
+        }
         return;
     }
     const value = attribute.value as JSXExpressionContainer | null;
@@ -178,22 +196,42 @@ function convertFieldComponent(api: TransformApi, path: ASTPath<JSXElement>): vo
         return;
     }
     const component = value.expression.name;
+    const target = bindings.get(component);
     const input = j.identifier('input');
-    const prop = (name: string) =>
-        j.jsxAttribute(
-            j.jsxIdentifier(name),
-            j.jsxExpressionContainer(j.memberExpression(input, j.identifier(name))),
-        );
+    const member = (prop: string) => j.memberExpression(input, j.identifier(prop));
+    const prop = (prop: string, from = prop) => {
+        const expression =
+            prop === 'value' && api.typescript && target?.valueType !== undefined
+                ? j.tsAsExpression(
+                      member(from),
+                      j.tsUnionType([
+                          target.valueType === 'string'
+                              ? j.tsStringKeyword()
+                              : target.valueType === 'number'
+                                ? j.tsNumberKeyword()
+                                : j.tsBooleanKeyword(),
+                          j.tsNullKeyword(),
+                      ]),
+                  )
+                : member(from);
+        return j.jsxAttribute(j.jsxIdentifier(prop), j.jsxExpressionContainer(expression));
+    };
     const field = j.jsxElement(
         j.jsxOpeningElement(
             j.jsxIdentifier(component),
-            ['label', 'value', 'onChange', 'disabled', 'readOnly', 'required'].map(prop),
+            [
+                ...['label', 'value', 'onChange', 'onBlur', 'disabled', 'readOnly', 'required'].map(
+                    (name) => prop(name),
+                ),
+                // A component of the project read the locale of its value as `fieldLocale`.
+                ...(target === undefined ? [prop('fieldLocale', 'locale')] : []),
+            ],
             true,
         ),
     );
     element.openingElement.attributes = attributes.filter((candidate) => candidate !== attribute);
     element.openingElement.selfClosing = false;
-    element.closingElement = j.jsxClosingElement(j.jsxIdentifier(getElementName(element) ?? ''));
+    element.closingElement = j.jsxClosingElement(j.jsxIdentifier(name));
     element.children = [j.jsxExpressionContainer(j.arrowFunctionExpression([input], field))];
 }
 
@@ -208,7 +246,7 @@ function convertElements(api: TransformApi, bindings: Map<string, FieldTarget>):
             return;
         }
         if (target.name === 'LocalizedField') {
-            convertFieldComponent(api, path);
+            convertFieldComponent(api, path, bindings);
         }
         const opening = path.node.openingElement;
         const renames = { ...FIELD_RENAMES, ...target.renames };

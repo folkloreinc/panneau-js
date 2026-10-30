@@ -33,6 +33,9 @@ function ScheduleField({ value, disabled, onChange }) {
         }
     };
     // TODO(panneau-5): `<Radios>`: `uncheckable` is not a prop of `SelectField` of `@panneau/fields/select`
+    // TODO(panneau-5): Bootstrap classes `row`, `g-3` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
+    // TODO(panneau-5): Bootstrap class `col-auto` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
+    // TODO(panneau-5): Bootstrap class `col-12` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
     return (
         <div className="row g-3">
             <DateTimeField
@@ -69,12 +72,18 @@ ScheduleField.defaultProps = defaultProps;
 
 /** The registry entry of `ScheduleField` for Panneau 5: its props from the field (written by @panneau/codemods). */
 export function ScheduleFieldEntry(props) {
-    const { label, description, errors, required } = getFieldProps(props);
+    const { label, description, errors, required, className, disabled } = getFieldProps(props);
     return (
-        <Fieldset legend={label} description={description} errors={errors} isRequired={required} className={props.className}>
+        <Fieldset
+            legend={label}
+            description={description}
+            errors={errors}
+            isRequired={required}
+            className={className}
+        >
             <ScheduleField
                 value={props.value}
-                disabled={props.disabled}
+                disabled={disabled}
                 onChange={props.onChange}
             />
         </Fieldset>

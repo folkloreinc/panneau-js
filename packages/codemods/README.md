@@ -7,7 +7,7 @@ npx @panneau/codemods@alpha v4-to-v5 resources/js/panneau.tsx resources/js/compo
 npx @panneau/codemods@alpha v4-to-v5 resources/js/panneau.tsx resources/js/components/Panneau.jsx resources/js/components/panneau
 ```
 
-`--dry` writes nothing and prints what would change, and every finding: what the codemods couldn't rewrite, and what needs a check. Without it, the files are rewritten, and each finding to fix by hand also gets a `// TODO(panneau-5): …` comment in its file. Running the codemods again changes nothing more, and lists what is left. `--json` prints the result as JSON.
+`--dry` writes nothing and prints what would change, and every finding: what the codemods couldn't rewrite, and what needs a check. Without it, the files are rewritten (format them with Prettier afterwards), and each finding to fix by hand also gets a `// TODO(panneau-5): …` comment in its file. Running the codemods again changes nothing more, and lists what is left. `--json` prints the result as JSON.
 
 The steps, and what each rewrite does, are in the migration guide: [Custom fields](../../docs/migration.md#custom-fields).
 

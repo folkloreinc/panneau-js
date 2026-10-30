@@ -14,6 +14,8 @@ export interface FieldTarget {
     renames?: Readonly<Record<string, string>>;
     /** Props that give the v5 component the behavior of the v4 one (`widget="radios"`). */
     adds?: Readonly<Record<string, string | true | readonly string[]>>;
+    /** The type of the value, for the input of a locale of a localized field in TypeScript. */
+    valueType?: 'string' | 'number' | 'boolean';
     /** What to check after the rewrite, when the props of the v4 and v5 components differ. */
     note?: string;
 }
@@ -76,6 +78,7 @@ const text: FieldTarget = {
     name: 'TextField',
     props: TEXT_PROPS,
     renames: TEXT_RENAMES,
+    valueType: 'string',
 };
 const select: FieldTarget = {
     source: '@panneau/fields/select',
@@ -119,12 +122,14 @@ export const FIELD_TARGETS: Readonly<Record<string, FieldTarget>> = {
     textarea: {
         source: '@panneau/fields/textarea',
         name: 'TextAreaField',
+        valueType: 'string',
         props: ['maxLength', 'placeholder', 'rows', 'textAreaClassName'],
     },
     email: { ...text, source: '@panneau/fields/email', name: 'EmailField' },
     url: {
         source: '@panneau/fields/url',
         name: 'UrlField',
+        valueType: 'string',
         props: [...TEXT_PROPS.filter((prop) => prop !== 'suffix'), 'defaultScheme'],
         renames: { prepend: 'prefix' },
     },
@@ -133,6 +138,7 @@ export const FIELD_TARGETS: Readonly<Record<string, FieldTarget>> = {
     number: {
         source: '@panneau/fields/number',
         name: 'NumberField',
+        valueType: 'number',
         props: [
             'controlClassName',
             'formatOptions',
@@ -148,21 +154,25 @@ export const FIELD_TARGETS: Readonly<Record<string, FieldTarget>> = {
     color: {
         source: '@panneau/fields/color',
         name: 'ColorField',
+        valueType: 'string',
         props: TEXT_PROPS.filter((prop) => !['type', 'prefix', 'maxLength'].includes(prop)),
     },
     date: {
         source: '@panneau/fields/date',
         name: 'DateField',
+        valueType: 'string',
         props: ['controlClassName', 'max', 'min'],
     },
     'date-time': {
         source: '@panneau/fields/datetime',
         name: 'DateTimeField',
+        valueType: 'string',
         props: ['controlClassName', 'hourCycle', 'timeZone', 'withSeconds'],
     },
     datetime: {
         source: '@panneau/fields/datetime',
         name: 'DateTimeField',
+        valueType: 'string',
         props: ['controlClassName', 'hourCycle', 'timeZone', 'withSeconds'],
     },
     select,
@@ -172,12 +182,14 @@ export const FIELD_TARGETS: Readonly<Record<string, FieldTarget>> = {
     toggle: {
         source: '@panneau/fields/boolean',
         name: 'BooleanField',
+        valueType: 'boolean',
         props: ['widget', 'controlClassName'],
         adds: { widget: 'switch' },
     },
     checkbox: {
         source: '@panneau/fields/boolean',
         name: 'BooleanField',
+        valueType: 'boolean',
         props: ['widget', 'controlClassName'],
     },
     embed: {

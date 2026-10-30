@@ -40,6 +40,7 @@ export default function LinkField({ locales = ['fr', 'en'], value = null, onChan
     };
 
     // TODO(panneau-5): `<LocalizedField label>` is a message descriptor: labels of Panneau 5 are nodes, format it (`intl.formatMessage()`)
+    // TODO(panneau-5): Bootstrap class `col-auto` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
     return (
         <div>
             <LocalizedField
@@ -48,8 +49,9 @@ export default function LinkField({ locales = ['fr', 'en'], value = null, onChan
                 value={label}
                 onChange={(newValue: any) => change('label', newValue)}>{input => <TextField
                     label={input.label}
-                    value={input.value}
+                    value={input.value as string | null}
                     onChange={input.onChange}
+                    onBlur={input.onBlur}
                     disabled={input.disabled}
                     readOnly={input.readOnly}
                     required={input.required} />}</LocalizedField>
@@ -66,8 +68,9 @@ export default function LinkField({ locales = ['fr', 'en'], value = null, onChan
                     value={url}
                     onChange={(newValue: any) => change('url', newValue)}>{input => <UrlField
                         label={input.label}
-                        value={input.value}
+                        value={input.value as string | null}
                         onChange={input.onChange}
+                        onBlur={input.onBlur}
                         disabled={input.disabled}
                         readOnly={input.readOnly}
                         required={input.required} />}</LocalizedField>
@@ -87,10 +90,16 @@ export default function LinkField({ locales = ['fr', 'en'], value = null, onChan
 // TODO(panneau-5): `LinkField` renders every locale itself: its PHP field must not be `localized()`, which renders a field once per locale
 /** The registry entry of `LinkField` for Panneau 5: its props from the field (written by @panneau/codemods). */
 export function LinkFieldEntry(props: FieldEntryProps) {
-    const { label, description, errors, required } = getFieldProps(props);
+    const { label, description, errors, required, className } = getFieldProps(props);
     const { locales } = useFieldsContext();
     return (
-        <Fieldset legend={label} description={description} errors={errors} isRequired={required} className={props.className}>
+        <Fieldset
+            legend={label}
+            description={description}
+            errors={errors}
+            isRequired={required}
+            className={className}
+        >
             <LinkField
                 locales={locales as LinkFieldProps['locales']}
                 value={props.value as LinkFieldProps['value']}

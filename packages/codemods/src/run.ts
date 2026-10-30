@@ -96,7 +96,7 @@ export function formatReport(result: RunResult, { dry = false }: { dry?: boolean
     );
     if (!dry && changed > 0) {
         lines.push(
-            'Each finding to fix by hand also has a `// TODO(panneau-5): …` comment in its file. Run the codemods again with --dry to list what is left.',
+            'Format the changed files with Prettier: the codemods print what they add their own way. Each finding to fix by hand also has a `// TODO(panneau-5): …` comment in its file. Run the codemods again with --dry to list what is left.',
         );
     }
     return lines.join('\n');

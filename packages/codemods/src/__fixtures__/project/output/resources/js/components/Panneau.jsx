@@ -16,6 +16,7 @@ import '../../styles/panneau.scss';
 // TODO(panneau-5): the `buttons` components have no place in the plugins of Panneau 5: see the migration guide
 // TODO(panneau-5): `uppy` is dropped: uploads go to the storage of the media libraries, signed by the API (decision 0025); Media and Image fields need `mediaPlugin` of `@panneau/media` in the plugins
 // TODO(panneau-5): `../../styles/panneau.scss` was written for v4 and Bootstrap: check what it still styles
+// TODO(panneau-5): `import 'ckeditor5/ckeditor5.css'` is dropped with the container: import it where it is still needed
 export default definePlugin({
     id: 'project',
     fields: {

@@ -68,28 +68,30 @@ function collectStrings(node: unknown, strings: string[]): void {
     });
 }
 
+/** Reports the Bootstrap classes of each `className` (or `*ClassName`) prop, with a TODO. */
 export function reportBootstrap(api: TransformApi): void {
     const { j, root } = api;
-    const classes = new Set<string>();
-    let first: ASTPath | null = null;
-    root.find(j.JSXAttribute, { name: { name: 'className' } }).forEach(
-        (path: ASTPath<JSXAttribute>) => {
-            const strings: string[] = [];
-            collectStrings(path.node.value, strings);
-            const found = strings
-                .flatMap((string) => string.split(/\s+/))
-                .filter((name) => name !== '' && isBootstrapClass(name));
-            if (found.length > 0) {
-                first ??= path;
-                found.forEach((name) => classes.add(name));
-            }
-        },
-    );
-    if (classes.size > 0) {
-        api.report(
-            first,
-            'bootstrap',
-            `Bootstrap classes (${[...classes].map((name) => `\`${name}\``).join(', ')}): Panneau 5 has no Bootstrap; use \`@panneau/ui\` primitives (\`Stack\`, \`Inline\`, \`Button\`), CSS Modules with design tokens, or the Bootstrap-compatible theme`,
-        );
-    }
+    root.find(j.JSXAttribute).forEach((path: ASTPath<JSXAttribute>) => {
+        const { name } = path.node;
+        if (name.type !== 'JSXIdentifier' || !/^className$|ClassName$/.test(name.name)) {
+            return;
+        }
+        const strings: string[] = [];
+        collectStrings(path.node.value, strings);
+        const classes = [
+            ...new Set(
+                strings
+                    .flatMap((string) => string.split(/\s+/))
+                    .filter((value) => value !== '' && isBootstrapClass(value)),
+            ),
+        ];
+        if (classes.length > 0) {
+            api.report(
+                path,
+                'bootstrap',
+                `Bootstrap ${classes.length > 1 ? 'classes' : 'class'} ${classes.map((value) => `\`${value}\``).join(', ')} in \`${name.name}\`: Panneau 5 has no Bootstrap (\`@panneau/ui\` primitives, CSS Modules, or the Bootstrap-compatible theme)`,
+                { todo: true },
+            );
+        }
+    });
 }

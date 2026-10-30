@@ -55,6 +55,13 @@ export function analyze(path: string, source: string): FileInfo {
     return {
         ...readContainer(j, root),
         defaultReExports,
+        importsPanneau:
+            root
+                .find(j.ImportDeclaration)
+                .filter((declaration) =>
+                    String(declaration.node.source.value).startsWith('@panneau/'),
+                )
+                .size() > 0,
         hasDefaultExport: root.find(j.ExportDefaultDeclaration).size() > 0,
         fieldEntry: component !== null ? getEntryName(component.name) : null,
     };
@@ -100,12 +107,14 @@ export function createProject(files: ReadonlyMap<string, FileInfo>): Project {
     return {
         resolve,
         info: (path) => files.get(path) ?? null,
-        // Without the container of the app in the run, components in a `fields` folder are fields.
+        // Without the container of the app (or the plugin module made from it) in the run, the
+        // components of a `fields` folder that import Panneau are fields.
         isField: (path) =>
             hasFieldsModule
                 ? fieldFiles.has(path)
                 : basename(dirname(path)) === 'fields' &&
-                  files.get(path)?.hasDefaultExport === true,
+                  files.get(path)?.hasDefaultExport === true &&
+                  files.get(path)?.importsPanneau === true,
         pluginModules: () =>
             [...files.entries()].filter(([, info]) => info.isContainer).map(([path]) => path),
     };
@@ -197,9 +206,9 @@ export function transformFile(
         transformFields(api);
         transformFieldEntries(api);
         transformImports(api);
+        reportBootstrap(api);
         output = spaceEntries(root.toSource({ quote: 'single' }));
     }
-    reportBootstrap(api);
     // Comments left by an earlier run, or written into a plugin module, are findings too.
     const reported = new Set(findings.map((finding) => finding.message));
     readTodos(output).forEach(({ line, message }) => {

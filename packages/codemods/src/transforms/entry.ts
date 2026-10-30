@@ -110,6 +110,55 @@ function getNamespaceModule(j: JSCodeshift, root: Collection, name: string): str
     return typeof value === 'string' ? value : null;
 }
 
+/**
+ * A plugin module that the codemods wrote from a container: `definePlugin({ fields: { 'page-slug':
+ * fields.PageSlug } })`. Its fields are known again when the codemods run a second time.
+ */
+function readPluginModule(j: JSCodeshift, root: Collection, namespaces: Map<string, string>): void {
+    const definePlugin = root
+        .find(j.ImportDeclaration, { source: { value: '@panneau/core' } })
+        .find(j.ImportSpecifier, { imported: { name: 'definePlugin' } })
+        .nodes()[0]?.local?.name;
+    if (typeof definePlugin !== 'string') {
+        return;
+    }
+    root.find(j.CallExpression, { callee: { type: 'Identifier', name: definePlugin } }).forEach(
+        (call) => {
+            const [options] = call.node.arguments;
+            if (options?.type !== 'ObjectExpression') {
+                return;
+            }
+            options.properties.forEach((property) => {
+                if (
+                    (property.type !== 'ObjectProperty' && property.type !== 'Property') ||
+                    property.key.type !== 'Identifier' ||
+                    property.key.name !== 'fields' ||
+                    property.value.type !== 'ObjectExpression'
+                ) {
+                    return;
+                }
+                property.value.properties.forEach((entry) => {
+                    const value = (
+                        entry as {
+                            value?: { type: string; object?: { type: string; name?: string } };
+                        }
+                    ).value;
+                    if (
+                        value?.type === 'MemberExpression' &&
+                        value.object?.type === 'Identifier' &&
+                        value.object.name !== undefined
+                    ) {
+                        const module = getNamespaceModule(j, root, value.object.name);
+                        if (module !== null) {
+                            namespaces.set('fields', module);
+                        }
+                    }
+                });
+            });
+        },
+    );
+}
+
 /** What `analyze` reads about the entry of a file. */
 export function readContainer(
     j: JSCodeshift,
@@ -118,6 +167,7 @@ export function readContainer(
     const elements = findAppElements(j, root);
     const namespaces = new Map<string, string>();
     if (elements.size() === 0) {
+        readPluginModule(j, root, namespaces);
         return { isContainer: false, namespaces };
     }
     readComponents(elements.get().node as JSXElement).forEach(({ namespace, value }) => {
@@ -249,7 +299,8 @@ function writePlugin(api: TransformApi, element: ASTPath<JSXElement>): string {
             )} come from the boot config of the page, and the rest of the container is dropped (it stays in git)`,
     );
 
-    // Stylesheets of the project stay: they may style the plugin's components.
+    // Stylesheets of the project stay: they may style the plugin's components. Other imports for
+    // their side effects (`ckeditor5/ckeditor5.css`) are reported.
     root.find(j.ImportDeclaration).forEach((declaration) => {
         const source = String(declaration.node.source.value);
         if ((declaration.node.specifiers ?? []).length === 0 && !source.startsWith('@panneau/')) {
@@ -259,6 +310,12 @@ function writePlugin(api: TransformApi, element: ASTPath<JSXElement>): string {
                     declaration,
                     'entry',
                     `\`${source}\` was written for v4 and Bootstrap: check what it still styles`,
+                );
+            } else {
+                todo(
+                    declaration,
+                    'entry',
+                    `\`import '${source}'\` is dropped with the container: import it where it is still needed`,
                 );
             }
         }

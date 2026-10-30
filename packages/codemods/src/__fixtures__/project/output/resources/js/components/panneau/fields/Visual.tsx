@@ -29,6 +29,8 @@ export default function VisualField({ imageField, videoField, value = null, onCh
 
     // TODO(panneau-5): `<ImageField>`: `withButton` is not a prop of `ImageField` of `@panneau/media`
     // TODO(panneau-5): `<ImageField>` is `ImageField` of `@panneau/media`: it needs `resource`, the id of the media library, and the `mediaPlugin`
+    // TODO(panneau-5): Bootstrap classes `d-flex`, `align-items-center` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
+    // TODO(panneau-5): Bootstrap class `mx-2` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
     return (
         <div className={!hasValue ? 'd-flex align-items-center' : undefined}>
             {!hasValue || image !== null ? (
@@ -58,9 +60,15 @@ export default function VisualField({ imageField, videoField, value = null, onCh
 // TODO(panneau-5): `VisualFieldEntry` reads `imageField`, `videoField` from the `settings` of the field: give them with `settings()` of the PHP field
 /** The registry entry of `VisualField` for Panneau 5: its props from the field (written by @panneau/codemods). */
 export function VisualFieldEntry(props: FieldEntryProps) {
-    const { label, description, errors, required } = getFieldProps(props);
+    const { label, description, errors, required, className } = getFieldProps(props);
     return (
-        <Fieldset legend={label} description={description} errors={errors} isRequired={required} className={props.className}>
+        <Fieldset
+            legend={label}
+            description={description}
+            errors={errors}
+            isRequired={required}
+            className={className}
+        >
             <VisualField
                 imageField={props.field.settings?.imageField as VisualFieldProps['imageField']}
                 videoField={props.field.settings?.videoField as VisualFieldProps['videoField']}

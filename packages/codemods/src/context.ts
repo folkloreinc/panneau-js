@@ -19,6 +19,8 @@ export interface FileInfo {
     namespaces: ReadonlyMap<string, string>;
     /** Re-exports of default exports: `export { default as Agency } from './Agency'`. */
     defaultReExports: ReadonlyMap<string, string>;
+    /** Whether the file imports a module of `@panneau/*`. */
+    importsPanneau: boolean;
     /** Whether the file has a default export. */
     hasDefaultExport: boolean;
     /** The name of the field entry the file exports, or will export. */

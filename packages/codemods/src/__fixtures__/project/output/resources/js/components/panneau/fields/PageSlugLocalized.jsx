@@ -16,6 +16,7 @@ function PageSlugLocalizedField({ value, locales, ...props }) {
                 : { ...newValue, [locale]: slugify((title || {})[locale] || '', { lower: true }) },
         value,
     );
+    // TODO(panneau-5): `<LocalizedField>` has no `fieldComponent`: v4 rendered the `component` of the field (given by the spread props), `LocalizedField` of Panneau 5 renders the input of each locale with its children function: give it one
     return <LocalizedField value={finalValue} locales={locales} description="Leave empty to use the title" {...props} />;
 }
 
@@ -38,6 +39,7 @@ export function PageSlugLocalizedFieldEntry(props) {
             {...props.field.settings}
             {...getFieldProps(props)}
             value={props.value}
+            onChange={props.onChange}
             locales={locales}
         />
     );

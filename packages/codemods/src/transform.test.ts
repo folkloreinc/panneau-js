@@ -105,6 +105,34 @@ describe('transformSources', () => {
         ]);
     });
 
+    it('renders the input of each locale with the children function of `LocalizedField`', () => {
+        const { output, messages } = run({
+            'Title.tsx': [
+                "import LocalizedField from '@panneau/field-localized';",
+                "import TextField from '@panneau/field-text';",
+                "import Slug from './Slug';",
+                '',
+                'export function Title({ value, locales, ...props }: { value: any; locales: string[] }) {',
+                '    return (',
+                '        <>',
+                '            <LocalizedField value={value} locales={locales} fieldComponent={TextField} />',
+                '            <LocalizedField value={value} locales={locales} fieldComponent={Slug} />',
+                '            <LocalizedField value={value} locales={locales} {...props} />',
+                '        </>',
+                '    );',
+                '}',
+                '',
+            ].join('\n'),
+        });
+        expect(output('Title.tsx')).toContain('value={input.value as string | null}');
+        expect(output('Title.tsx')).toContain('onBlur={input.onBlur}');
+        // A component of the project gets the locale of its value, as v4 gave it.
+        expect(output('Title.tsx')).toContain('fieldLocale={input.locale}');
+        expect(messages).toEqual([
+            'Title.tsx:10 `<LocalizedField>` has no `fieldComponent`: v4 rendered the `component` of the field (given by the spread props), `LocalizedField` of Panneau 5 renders the input of each locale with its children function: give it one',
+        ]);
+    });
+
     it('keeps the `className` of a field over the one of its `FormGroup`, and reports it', () => {
         const { output, messages } = run({
             'Group.jsx': [
@@ -131,9 +159,11 @@ describe('transformSources', () => {
     });
 
     describe('without the container of the app', () => {
-        it('takes the components of a `fields` folder as fields', () => {
+        it('takes the components of a `fields` folder that import Panneau as fields', () => {
             const { output } = run({
                 'fields/Price.jsx': [
+                    "import { useFormValue } from '@panneau/core/contexts';",
+                    '',
                     'function PriceField(props) {',
                     '    const { value, onChange, currency } = props;',
                     '    return <input value={value} onChange={(event) => onChange(event.target.value)} placeholder={currency} />;',
@@ -142,6 +172,8 @@ describe('transformSources', () => {
                     'export default PriceField;',
                     '',
                 ].join('\n'),
+                'site/fields/Search.jsx':
+                    'export default function Search({ value, onChange }) {\n    return <input value={value} onChange={onChange} />;\n}\n',
                 'components/Price.jsx':
                     'export default function Price({ value }) {\n    return <span>{value}</span>;\n}\n',
             });
@@ -151,16 +183,18 @@ describe('transformSources', () => {
             expect(output('fields/Price.jsx')).toContain(
                 'currency={props.field.settings?.currency}',
             );
+            // A component of the site in a `fields` folder doesn't import Panneau.
+            expect(output('site/fields/Search.jsx')).toBeNull();
             expect(output('components/Price.jsx')).toBeNull();
         });
 
         it('reports a field it cannot read', () => {
             const { messages } = run({
                 'fields/Memo.jsx':
-                    "import { memo } from 'react';\n\nexport default memo(function Memo() {\n    return null;\n});\n",
+                    "import { memo } from 'react';\nimport TextField from '@panneau/field-text';\n\nexport default memo(function Memo() {\n    return null;\n});\n",
             });
             expect(messages).toEqual([
-                'fields/Memo.jsx:3 the default export is registered as a field, but it is not a function component the codemods can read: write its entry (`FieldEntryProps` of `@panneau/fields`)',
+                'fields/Memo.jsx:4 the default export is registered as a field, but it is not a function component the codemods can read: write its entry (`FieldEntryProps` of `@panneau/fields`)',
             ]);
         });
     });

@@ -146,7 +146,7 @@ export function getEntryName(component: string): string {
     return `${component}Entry`;
 }
 
-/** Props of `getFieldProps()`, which the entry spreads into a component that forwards its props. */
+/** Props of `getFieldProps()`: the label, help, errors and state of the field. */
 const FIELD_PROPS = new Set([
     'label',
     'description',
@@ -160,22 +160,16 @@ const FIELD_PROPS = new Set([
     'placeholder',
 ]);
 
-/** How the entry gives each v4 prop, from `FieldEntryProps`. */
+/** v4 props that `getFieldProps()` gives under another name. */
+const FIELD_PROP_ALIASES: Readonly<Record<string, string>> = {
+    helpText: 'description',
+    help: 'description',
+};
+
+/** How the entry gives the other v4 props, from `FieldEntryProps`. */
 const PROP_SOURCES: Readonly<Record<string, string>> = {
     value: 'props.value',
     onChange: 'props.onChange',
-    onBlur: 'props.onBlur',
-    errors: 'errors',
-    disabled: 'props.disabled',
-    readOnly: 'props.readOnly',
-    className: 'props.className',
-    name: 'props.field.name',
-    label: 'label',
-    required: 'required',
-    description: 'description',
-    helpText: 'description',
-    help: 'description',
-    placeholder: 'props.field.placeholder',
     fieldLocale: 'props.locale',
     locale: 'props.locale',
     locales: 'locales',
@@ -197,26 +191,37 @@ function writeEntry(
     const { name, props, hasRest } = component;
     const entry = getEntryName(name);
     const read = (props ?? []).filter((prop) => !['children', 'key', 'ref'].includes(prop));
+    // A component that forwards its props to a field gets those of `getFieldProps()`, and the
+    // field renders the label. Others are wrapped in a fieldset, as v4 wrapped them in a group.
     const forwarded = hasRest || props === null;
     const cast = (prop: string) =>
         api.typescript && !UNCAST.has(prop)
             ? ` as ${component.propsType ?? `Parameters<typeof ${name}>[0]`}['${prop}']`
             : '';
     const settings: string[] = [];
-    const attributes = read
+    // The props of `getFieldProps()` the entry reads by name.
+    const fieldProps = new Set(
+        forwarded ? [] : ['label', 'description', 'errors', 'required', 'className'],
+    );
+    // The value and its handler always go to the component, which may read them from `...props`.
+    const given = forwarded ? [...new Set(['value', 'onChange', ...read])] : read;
+    const attributes = given
         .filter((prop) => !(forwarded && FIELD_PROPS.has(prop)))
         .map((prop) => {
             const source = PROP_SOURCES[prop];
             if (source !== undefined) {
                 return `${prop}={${source}${cast(prop)}}`;
             }
+            const fieldProp = FIELD_PROPS.has(prop) ? prop : FIELD_PROP_ALIASES[prop];
+            if (fieldProp !== undefined) {
+                fieldProps.add(fieldProp);
+                return `${prop}={${fieldProp}${cast(prop)}}`;
+            }
             settings.push(prop);
             const setting = isIdentifier(prop) ? `?.${prop}` : `?.['${prop}']`;
             return `${prop}={props.field.settings${setting}${cast(prop)}}`;
         });
     const usesLocales = read.includes('locales');
-    // A component that forwards its props to a field gets those of `getFieldProps()`, and the
-    // field renders the label. Others are wrapped in a fieldset, as v4 wrapped them in a group.
     const lines: string[] = [];
     const param = api.typescript ? 'props: FieldEntryProps' : 'props';
     todos(settings).forEach((todo) => lines.push(`// ${TODO_PREFIX} ${todo}`));
@@ -224,40 +229,37 @@ function writeEntry(
         `/** The registry entry of \`${name}\` for Panneau 5: its props from the field (written by @panneau/codemods). */`,
     );
     lines.push(`export function ${entry}(${param}) {`);
-    if (!forwarded) {
-        lines.push('    const { label, description, errors, required } = getFieldProps(props);');
+    if (fieldProps.size > 0) {
+        lines.push(`    const { ${[...fieldProps].join(', ')} } = getFieldProps(props);`);
     }
     if (usesLocales) {
         lines.push('    const { locales } = useFieldsContext();');
     }
     const element = [
-        `<${name}`,
         ...(forwarded ? ['{...props.field.settings}', '{...getFieldProps(props)}'] : []),
         ...attributes,
-        '/>',
     ];
-    if (forwarded) {
-        lines.push('    return (');
-        lines.push(`        ${element[0]}`);
-        element.slice(1, -1).forEach((attribute) => lines.push(`            ${attribute}`));
-        lines.push('        />');
-        lines.push('    );');
-    } else {
-        const fieldsetProps = [
+    const indent = forwarded ? '            ' : '                ';
+    const open = forwarded ? '        ' : '            ';
+    lines.push('    return (');
+    if (!forwarded) {
+        lines.push('        <Fieldset');
+        [
             'legend={label}',
             'description={description}',
             ...(read.includes('errors') ? [] : ['errors={errors}']),
             'isRequired={required}',
-            ...(read.includes('className') ? [] : ['className={props.className}']),
-        ];
-        lines.push('    return (');
-        lines.push(`        <Fieldset ${fieldsetProps.join(' ')}>`);
-        lines.push(`            ${element[0]}`);
-        element.slice(1, -1).forEach((attribute) => lines.push(`                ${attribute}`));
-        lines.push('            />');
-        lines.push('        </Fieldset>');
-        lines.push('    );');
+            ...(read.includes('className') ? [] : ['className={className}']),
+        ].forEach((attribute) => lines.push(`            ${attribute}`));
+        lines.push('        >');
     }
+    lines.push(`${open}<${name}`);
+    element.forEach((attribute) => lines.push(`${indent}${attribute}`));
+    lines.push(`${open}/>`);
+    if (!forwarded) {
+        lines.push('        </Fieldset>');
+    }
+    lines.push('    );');
     lines.push('}');
     return lines.join('\n');
 }
@@ -285,7 +287,7 @@ function addEntry(api: TransformApi): void {
         const todos: string[] = [];
         if (component.props === null) {
             todos.push(
-                `\`${component.name}\` doesn't destructure its props: \`${entry}\` passes it the settings of the field and \`getFieldProps()\`; check the props it reads`,
+                `\`${component.name}\` doesn't destructure its props: \`${entry}\` passes it \`value\`, \`onChange\`, the settings of the field and \`getFieldProps()\`; check the props it reads`,
             );
         }
         if ((component.props ?? []).includes('locales')) {
@@ -314,7 +316,7 @@ function addEntry(api: TransformApi): void {
         api.report(
             statement,
             'field-entry',
-            `\`${component.name}\` forwards \`...props\`, which was the field's definition in v4: \`${entry}\` passes it the settings of the field and \`getFieldProps()\``,
+            `\`${component.name}\` forwards \`...props\`, which was the field's definition in v4: \`${entry}\` passes it \`value\`, \`onChange\`, the settings of the field and \`getFieldProps()\``,
         );
     }
     if (api.typescript) {

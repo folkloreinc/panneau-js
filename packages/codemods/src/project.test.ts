@@ -37,6 +37,19 @@ describe('a v4 project', () => {
         },
     );
 
+    it('gives every field entry the value and its handler', () => {
+        const entries = [...result.outputs.values()].flatMap((output) =>
+            [
+                ...output.matchAll(/export function (\w+Entry)\(props[^)]*\) \{\n([\s\S]*?)\n\}/g),
+            ].map(([, name, body]) => ({ name, body })),
+        );
+        expect(entries.map(({ name }) => name)).toHaveLength(6);
+        entries.forEach(({ body }) => {
+            expect(body).toMatch(/\bvalue=\{props\.value\b/);
+            expect(body).toContain('onChange={props.onChange}');
+        });
+    });
+
     it('reports what it could not rewrite', async () => {
         const report = formatReport({
             files: [...sources.keys()].map((path) => relative(input, path)).sort(),
