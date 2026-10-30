@@ -1,0 +1,69 @@
+resources/js/components/Panneau.jsx
+    16  entry            `../../styles/panneau.scss` was written for v4 and Bootstrap: check what it still styles
+    17  entry            `import 'ckeditor5/ckeditor5.css'` is dropped with the container: import it where it is still needed
+    55  entry            the keys of `fields` are the types of the definition, in kebab case: check each one against the `type()` of its PHP field (v4 also found `video_or_embed` under `VideoOrEmbed`)
+    55  entry            `displays`: displays of Panneau 5 get `value`, `item`, `field` and `column` (`DisplayProps` of `@panneau/lists`)
+    55  entry            the keys of `displays` are in kebab case: check each one against the name the definition uses
+    55  entry            `actions`: actions of Panneau 5 are handlers of `client` actions of the definition, not buttons: see decision 0017
+    55  entry            the keys of `actions` are in kebab case: check each one against the name the definition uses
+    55  entry            the `buttons` components have no place in the plugins of Panneau 5: see the migration guide
+    55  entry            `uppy` is dropped: uploads go to the storage of the media libraries, signed by the API (decision 0025); Media and Image fields need `mediaPlugin` of `@panneau/media` in the plugins
+    55  entry            the container is now the plugin of the project: `definition`, `routes`, `user`, `baseUrl` come from the boot config of the page, and the rest of the container is dropped (it stays in git)
+
+resources/js/components/panneau/ItemsResource.tsx
+     1  import           `usePanneauResource` of `@panneau/core/contexts`: `useResource(id)` of `@panneau/core` gives `{ resource, form, list }`: the fields of the resource are `resource.fields`, fields of the protocol
+     2  import           `useResourceItems` of `@panneau/data`: `useResourceList(resource, query)` of `@panneau/data/query`: its `data.data` are the items, and the query is a list query of the protocol (`page`, `perPage`, `filter`)
+    14  field-component  `<SelectField>`: `withoutReset` is not a prop of `SelectField` of `@panneau/fields/select`
+
+resources/js/components/panneau/actions/Publish.jsx
+     1  import           `useUrlGenerator` of `@panneau/core/contexts`: Panneau 5 has no named routes: link to `{basePath}/resources/{resource}/{id}` (decision 0019), or run a resource action
+     2  import           the default export of `@panneau/element-button`: `Button` of `@panneau/ui` (`variant` and `tone` instead of `theme`, Lucide icons)
+
+resources/js/components/panneau/displays/TextLocalized.jsx
+     1  import           `useLocales` of `@panneau/core/contexts`: `useFieldsContext().locales` of `@panneau/fields`
+    15  bootstrap        Bootstrap class `text-muted` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
+
+resources/js/components/panneau/fields/Link.tsx
+    27  field-entry      `LinkField` renders every locale itself: its PHP field must not be `localized()`, which renders a field once per locale
+    43  field-component  `<LocalizedField label>` is a message descriptor: labels of Panneau 5 are nodes, format it (`intl.formatMessage()`)
+    51  bootstrap        Bootstrap class `col-auto` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
+
+resources/js/components/panneau/fields/PageSlug.jsx
+    33  bootstrap        Bootstrap class `flex-nowrap` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
+    43  field-entry      `PageSlugFieldEntry` reads `routes` from the `settings` of the field: give it with `settings()` of the PHP field
+    43  field-entry      `PageSlugField` forwards `...props`, which was the field's definition in v4: `PageSlugFieldEntry` passes it `value`, `onChange`, the settings of the field and `getFieldProps()`
+
+resources/js/components/panneau/fields/PageSlugLocalized.jsx
+    17  field-component  `<LocalizedField>` has no `fieldComponent`: v4 rendered the `component` of the field (given by the spread props), `LocalizedField` of Panneau 5 renders the input of each locale with its children function: give it one
+    30  field-entry      `PageSlugLocalizedField` renders every locale itself: its PHP field must not be `localized()`, which renders a field once per locale
+    30  field-entry      `PageSlugLocalizedField` forwards `...props`, which was the field's definition in v4: `PageSlugLocalizedFieldEntry` passes it `value`, `onChange`, the settings of the field and `getFieldProps()`
+
+resources/js/components/panneau/fields/Person.tsx
+     1  import           `usePanneauResource` of `@panneau/core/contexts`: `useResource(id)` of `@panneau/core` gives `{ resource, form, list }`: the fields of the resource are `resource.fields`, fields of the protocol
+     2  import           `useResourceItems` of `@panneau/data`: `useResourceList(resource, query)` of `@panneau/data/query`: its `data.data` are the items, and the query is a list query of the protocol (`page`, `perPage`, `filter`)
+    33  field-entry      `PersonFieldEntry` reads `personType` from the `settings` of the field: give it with `settings()` of the PHP field
+    55  bootstrap        Bootstrap classes `btn`, `btn-danger` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
+    64  bootstrap        Bootstrap classes `d-flex`, `align-items-center` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
+    66  field-component  `<Fields>` is `GroupField` of `@panneau/fields/group`: `fields` are fields of the definition of Panneau 5 (`Field[]` of `@panneau/protocol`)
+    66  bootstrap        Bootstrap class `flex-grow-1` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
+    69  field-component  `<SelectField>`: `noOptionsMessage` is not a prop of `SelectField` of `@panneau/fields/select`
+    70  bootstrap        Bootstrap class `flex-grow-1` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
+    77  bootstrap        Bootstrap classes `btn`, `btn-primary`, `ms-2` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
+
+resources/js/components/panneau/fields/Schedule.jsx
+    35  bootstrap        Bootstrap classes `row`, `g-3` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
+    37  bootstrap        Bootstrap class `col-auto` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
+    40  bootstrap        Bootstrap class `col-auto` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
+    42  bootstrap        Bootstrap class `col-12` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
+    43  field-component  `<Radios>`: `uncheckable` is not a prop of `SelectField` of `@panneau/fields/select`
+
+resources/js/components/panneau/fields/Visual.tsx
+    20  field-entry      `VisualFieldEntry` reads `imageField`, `videoField` from the `settings` of the field: give them with `settings()` of the PHP field
+    22  field-component  `useFieldComponent('video_or_embed')` renders a field of the project: import its component
+    27  bootstrap        Bootstrap classes `d-flex`, `align-items-center` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
+    29  field-component  `<ImageField>`: `withButton` is not a prop of `ImageField` of `@panneau/media`
+    29  field-component  `<ImageField>` is `ImageField` of `@panneau/media`: it needs `resource`, the id of the media library, and the `mediaPlugin`
+    37  bootstrap        Bootstrap class `mx-2` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
+
+15 files read, 12 changed, 47 findings.
+Format the changed files with Prettier: the codemods print what they add their own way. Each finding to fix by hand also has a `// TODO(panneau-5): …` comment in its file. Run the codemods again with --dry to list what is left.

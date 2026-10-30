@@ -1,0 +1,45 @@
+{
+    "name": "@panneau/codemods",
+    "version": "5.0.0-alpha.6",
+    "description": "Codemods that move Panneau 4 projects to Panneau 5: the app entry, imports and custom field components, with a report of what they can't rewrite.",
+    "type": "module",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/folkloreinc/panneau-js.git",
+        "directory": "packages/codemods"
+    },
+    "sideEffects": false,
+    "exports": {
+        ".": {
+            "@panneau/source": "./src/index.ts",
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "files": [
+        "dist",
+        "bin"
+    ],
+    "bin": {
+        "panneau-codemods": "./bin/panneau-codemods.js"
+    },
+    "engines": {
+        "node": ">=22"
+    },
+    "scripts": {
+        "build": "vite build && tsc -p tsconfig.build.json",
+        "typecheck": "tsc --noEmit",
+        "api": "tsc -p tsconfig.build.json && node ../../scripts/api-report.js"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "dependencies": {
+        "jscodeshift": "^17.4.0"
+    },
+    "devDependencies": {
+        "@types/jscodeshift": "^17.3.0"
+    }
+}
