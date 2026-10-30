@@ -44,43 +44,65 @@ function resolveRoute(definition: Definition, { route, params = {} }: RouteRefer
     );
 }
 
-function Page({
-    definition,
-    basePath,
-    route,
-}: {
+interface PageProps {
     definition: Definition;
     basePath: string;
-    route: AppRoute;
+}
+
+/**
+ * A page of the definition's `pages`: a plugin's component, with the page's props and the
+ * definition. The built-in `dashboard`, which plugins can replace, is the cards of the resources
+ * until the dashboard of 5.x has widgets.
+ */
+function DefinitionPage({
+    page,
+    definition,
+    basePath,
+}: PageProps & {
+    page: NonNullable<Definition['pages']>[string];
 }) {
     const intl = usePanneauIntl();
     const plugins = usePlugins();
+    const Component = plugins.pages.get(page.component);
+    // Before the page: a page that sets its own title sets it last
+    return (
+        <>
+            <DocumentTitle parts={[page.label]} />
+            {Component !== undefined ? (
+                createElement(Component, { ...page.props, definition })
+            ) : page.component === 'dashboard' ? (
+                <HomePage definition={definition} basePath={basePath} />
+            ) : (
+                <Alert tone="warning">
+                    {intl.formatMessage(appMessages.missingPage, {
+                        component: page.component,
+                    })}
+                </Alert>
+            )}
+        </>
+    );
+}
+
+function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) {
     const notFound = <NotFoundPage homeHref={routePath({ name: 'home' }, basePath)} />;
     switch (route.name) {
-        case 'home':
-            return <HomePage definition={definition} basePath={basePath} />;
+        case 'home': {
+            // `pages.home` of the definition, or the cards of the resources (decision 0019)
+            const page = definition.pages?.home;
+            return page !== undefined ? (
+                <DefinitionPage page={page} definition={definition} basePath={basePath} />
+            ) : (
+                <HomePage definition={definition} basePath={basePath} />
+            );
+        }
         case 'not-found':
             return notFound;
         case 'page': {
             const page = definition.pages?.[route.page];
-            if (page === undefined) {
-                return notFound;
-            }
-            const Component = plugins.pages.get(page.component);
-            // Before the page: a page that sets its own title sets it last
-            return (
-                <>
-                    <DocumentTitle parts={[page.label]} />
-                    {Component !== undefined ? (
-                        createElement(Component, { ...page.props, definition })
-                    ) : (
-                        <Alert tone="warning">
-                            {intl.formatMessage(appMessages.missingPage, {
-                                component: page.component,
-                            })}
-                        </Alert>
-                    )}
-                </>
+            return page !== undefined ? (
+                <DefinitionPage page={page} definition={definition} basePath={basePath} />
+            ) : (
+                notFound
             );
         }
         default: {

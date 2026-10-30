@@ -46,6 +46,12 @@ export interface PanneauRootProps extends HTMLAttributes<HTMLDivElement> {
      * `@panneau/intl`.
      */
     locale?: string;
+    /**
+     * Messages added to Panneau's, by id, when the root provides the `IntlProvider`: those of
+     * plugins (`loadMessages()` of `@panneau/core`). An app with its own `IntlProvider` adds them
+     * to its own.
+     */
+    messages?: Readonly<Record<string, string>> | null;
     children?: ReactNode;
 }
 
@@ -108,9 +114,11 @@ export function usePortalContainer(): Element | null | undefined {
  */
 function PanneauIntlProvider({
     locale = 'en',
+    messages: added,
     children,
 }: {
     locale?: string;
+    messages?: Readonly<Record<string, string>> | null;
     children: ReactNode;
 }) {
     const messages = getPanneauMessages(locale);
@@ -119,7 +127,7 @@ function PanneauIntlProvider({
         <IntlProvider
             locale={translated ? locale : 'en'}
             defaultLocale="en"
-            messages={translated ? messages : getPanneauMessages('en')}
+            messages={{ ...(translated ? messages : getPanneauMessages('en')), ...added }}
         >
             {children}
         </IntlProvider>
@@ -139,6 +147,7 @@ export function PanneauRoot({
     density = 'auto',
     iconLoader = null,
     locale,
+    messages,
     className,
     children,
     ...props
@@ -177,7 +186,11 @@ export function PanneauRoot({
         </div>
     );
     if (intl === null || intl === undefined) {
-        return <PanneauIntlProvider locale={locale}>{root}</PanneauIntlProvider>;
+        return (
+            <PanneauIntlProvider locale={locale} messages={messages}>
+                {root}
+            </PanneauIntlProvider>
+        );
     }
     return root;
 }
