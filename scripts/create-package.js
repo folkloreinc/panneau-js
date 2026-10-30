@@ -77,9 +77,9 @@ const packageJson = {
     },
     files: ['dist'],
     scripts: {
-        build: 'vite build && tsc -p tsconfig.build.json',
+        build: `vite build && node ${toRoot}/scripts/declarations.js`,
         typecheck: 'tsc --noEmit',
-        api: `tsc -p tsconfig.build.json && node ${toRoot}/scripts/api-report.js`,
+        api: `node ${toRoot}/scripts/declarations.js && node ${toRoot}/scripts/api-report.js`,
     },
     publishConfig: {
         access: 'public',
