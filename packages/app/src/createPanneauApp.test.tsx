@@ -112,7 +112,10 @@ describe('createPanneauApp', () => {
             app = createPanneauApp({ element, config: createBootConfig({ definition }) });
         });
         const card = within(screen.getByRole('main')).getByRole('link', { name: 'Authors' });
-        await waitFor(() => expect(card.querySelector('svg.lucide-users')).not.toBeNull());
+        // A chunk of its own, after Lucide's list of icons: slow on a busy CI runner.
+        await waitFor(() => expect(card.querySelector('svg.lucide-users')).not.toBeNull(), {
+            timeout: 5000,
+        });
         act(() => app?.unmount());
 
         const iconLoader = vi.fn(() => Promise.resolve(null));
