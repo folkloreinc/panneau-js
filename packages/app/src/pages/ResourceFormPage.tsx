@@ -11,9 +11,9 @@ import { navigate } from '../location';
 import { capitalize } from '../navigation';
 import { useRecordRecentItem } from '../recentItems';
 import { routePath } from '../routes';
-import { PageHeader } from './PageHeader';
+import { ItemActions } from './ItemActions';
+import { PageHeader, PageLayout } from './PageHeader';
 import { getItemTitle } from './itemTitle';
-import styles from './pages.module.css';
 
 export interface ResourceFormPageProps {
     definition: Definition;
@@ -59,6 +59,12 @@ export function ResourceFormPage({ definition, resolved, basePath, id }: Resourc
         label: capitalize(resource.label.plural, definition.locale),
     };
     useDocumentTitle([title, back.label]);
+    // The actions placed in `form`, once the item says which it allows, but the page's own
+    const formActions = resolved.list.actions.form.filter((action) => action.id !== 'edit');
+    const itemActions =
+        mode === 'update' && item !== undefined && formActions.length > 0 ? (
+            <ItemActions resource={resource.id} actions={formActions} item={item} />
+        ) : undefined;
 
     let content;
     if (mode === 'update' && item === undefined && itemQuery.isError) {
@@ -118,9 +124,9 @@ export function ResourceFormPage({ definition, resolved, basePath, id }: Resourc
     }
 
     return (
-        <div className={`${styles.page} ${styles.narrow}`}>
-            <PageHeader title={title} back={back} />
+        <PageLayout width="narrow">
+            <PageHeader title={title} back={back} actions={itemActions} />
             {content}
-        </div>
+        </PageLayout>
     );
 }

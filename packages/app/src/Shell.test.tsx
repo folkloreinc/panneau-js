@@ -241,4 +241,58 @@ describe('the app shell', () => {
             within(screen.getByRole('complementary')).getByRole('link', { name: /Ada/ }),
         ).toHaveAttribute('aria-current', 'page');
     });
+
+    it('shows the actions placed in form on the edit page of an item, and runs them', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages/1/edit');
+        const backend = renderApp({
+            resources: [
+                {
+                    id: 'pages',
+                    label: { singular: 'page', plural: 'pages' },
+                    itemTitle: 'title',
+                    fields: [{ name: 'title', type: 'text', label: 'Title' }],
+                    actions: [
+                        {
+                            id: 'edit',
+                            label: 'Edit',
+                            kind: 'link',
+                            url: '/panneau/resources/pages/{id}/edit',
+                            scope: ['item'],
+                        },
+                        {
+                            id: 'site',
+                            label: 'View on the site',
+                            kind: 'link',
+                            url: '/site/{id}',
+                            scope: ['item'],
+                            placement: ['form'],
+                        },
+                        { id: 'publish', label: 'Publish', scope: ['item'], placement: ['row'] },
+                        {
+                            id: 'delete',
+                            label: 'Delete',
+                            scope: ['item'],
+                            destructive: true,
+                            confirm: true,
+                        },
+                    ],
+                },
+            ],
+        });
+        const main = within(screen.getByRole('main'));
+        expect(await main.findByRole('link', { name: 'View on the site' })).toHaveAttribute(
+            'href',
+            '/site/1',
+        );
+        // Placed in `row` only, and the page's own action
+        expect(main.queryByRole('button', { name: 'Publish' })).not.toBeInTheDocument();
+        expect(main.queryByRole('link', { name: 'Edit' })).not.toBeInTheDocument();
+
+        await user.click(main.getByRole('button', { name: 'Delete' }));
+        const dialog = await screen.findByRole('alertdialog');
+        await user.click(within(dialog).getByRole('button', { name: 'Delete' }));
+        expect(await screen.findByText('1 deleted.')).toBeInTheDocument();
+        expect(backend.items('pages').map((page) => page.id)).toEqual(['2']);
+    });
 });
