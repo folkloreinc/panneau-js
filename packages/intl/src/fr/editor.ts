@@ -24,6 +24,7 @@ export const editorFr: Record<string, string> = {
     'panneau.editor.linkTitle': 'Lien',
     'panneau.editor.linkUrl': 'URL',
     'panneau.editor.linkNewTab': 'Ouvrir dans un nouvel onglet',
+    'panneau.editor.linkInvalid': 'Cette URL ne peut pas servir de lien.',
     'panneau.editor.linkApply': 'Appliquer',
     'panneau.editor.linkRemove': 'Retirer le lien',
     'panneau.editor.linkCancel': 'Annuler',

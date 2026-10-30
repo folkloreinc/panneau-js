@@ -154,6 +154,7 @@ export const Field = z
     })
     .meta({ description: 'A field of a form.' });
 
+/** A block style of a `richtext` field: a named class on an element (`<p class="big">`). */
 export const RichTextStyle = z
     .looseObject({
         label: z.string().meta({ description: 'The name of the style in the toolbar.' }),
@@ -171,6 +172,10 @@ export const RichTextStyle = z
             'A block style of a `richtext` field: a named class on a paragraph, a heading, a quote or a list (`<p class="big">`).',
     });
 
+/**
+ * The `settings` of a `richtext` field: its toolbar, heading levels, block styles and which links
+ * open in a new tab. `validateDefinition()` checks them.
+ */
 export const RichTextSettings = z
     .looseObject({
         toolbar: z.array(z.string().min(1)).optional().meta({
@@ -198,5 +203,7 @@ export const RichTextSettings = z
 export type Rule = z.infer<typeof Rule>;
 export type BlockType = z.infer<typeof BlockType>;
 export type Field = z.infer<typeof Field>;
+/** A block style of a `richtext` field. */
 export type RichTextStyle = z.infer<typeof RichTextStyle>;
+/** The `settings` of a `richtext` field. */
 export type RichTextSettings = z.infer<typeof RichTextSettings>;

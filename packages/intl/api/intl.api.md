@@ -173,6 +173,7 @@ export const editorMessages: {
     linkTitle: PanneauMessage<Record<never, never>>;
     linkUrl: PanneauMessage<Record<never, never>>;
     linkNewTab: PanneauMessage<Record<never, never>>;
+    linkInvalid: PanneauMessage<Record<never, never>>;
     linkApply: PanneauMessage<Record<never, never>>;
     linkRemove: PanneauMessage<Record<never, never>>;
     linkCancel: PanneauMessage<Record<never, never>>;

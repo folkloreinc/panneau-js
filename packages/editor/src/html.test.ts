@@ -4,8 +4,10 @@ import { describe, expect, it } from 'vitest';
 import { ckeditor4, ckeditor5 } from './__fixtures__/ckeditor';
 import { equivalent } from './__fixtures__/equivalent';
 import { createRichTextExtensions } from './extensions/index';
-import { createPasteParser } from './extensions/paste';
-import { normalizeRichText, serializeRichText } from './html';
+import { createCopySerializer, createPasteParser, getCopyToken } from './extensions/paste';
+import { normalizeRichText, parseRichText, serializeRichText } from './html';
+
+const normalizeDocument = parseRichText;
 
 /** The HTML that pasting this HTML gives. */
 function paste(html: string): string | null {
@@ -98,14 +100,46 @@ describe('createPasteParser', () => {
         );
     });
 
-    it('reads content copied from the editor in full', () => {
+    it('reads content copied from a rich text field of this page in full', () => {
         const html =
             '<p class="big">Big</p><figure class="media"><oembed url="https://example.com/v"></oembed></figure>';
         expect(paste(html)).toBe('<p>Big</p>');
-        // ProseMirror marks the first element of what it copies
-        expect(paste(html.replace('<p ', '<p data-pm-slice="1 1 []" '))).toBe(html);
+        // What the field copies, as ProseMirror puts it in the clipboard
+        const schema = getSchema(createRichTextExtensions());
+        const container = document.createElement('div');
+        container.append(
+            createCopySerializer(schema).serializeFragment(normalizeDocument(html, schema).content),
+        );
+        container.firstElementChild?.setAttribute('data-pm-slice', '0 0 []');
+        expect(container.innerHTML).toContain(`data-panneau-copy="${getCopyToken()}"`);
+        expect(paste(container.innerHTML)).toBe(html);
+    });
+
+    it('doesn’t trust HTML that claims to come from a ProseMirror editor', () => {
         expect(
-            paste(`<figure data-pm-slice="0 0 []"${html.slice(html.indexOf('<figure') + 7)}`),
-        ).toBe(html.slice(html.indexOf('<figure')));
+            paste(
+                '<div data-pm-slice="0 0 []"><p onmouseover="alert(1)" style="position:fixed">Text<img src="x" onerror="alert(2)"></p></div>',
+            ),
+        ).toBe('<p>Text</p>');
+        expect(
+            paste(
+                '<p data-pm-slice="1 1 []" data-panneau-copy="forged" onclick="alert(1)">Text</p><script>alert(2)</script>',
+            ),
+        ).toBe('<p>Text</p>');
+    });
+});
+
+describe('script attributes', () => {
+    it('are dropped from the elements the field edits, and from kept marks', () => {
+        expect(
+            normalizeRichText(
+                '<p onmouseover="a()" class="intro">A <strong onclick="b()">b</strong> <a href="/page" onclick="c()" title="Page">link</a> <span onfocus="d()" style="color:red">span</span> <span data-x=" JaVa&#x0A;script:e()">bare</span> <abbr title="x" onClick="f()">abbr</abbr></p>',
+            ),
+        ).toBe(
+            '<p class="intro">A <strong>b</strong> <a href="/page" title="Page">link</a> <span style="color: red;">span</span> bare <abbr title="x">abbr</abbr></p>',
+        );
+        expect(normalizeRichText('<p><a href="/x" data-u="vbscript:x">a</a></p>')).toBe(
+            '<p><a href="/x">a</a></p>',
+        );
     });
 });

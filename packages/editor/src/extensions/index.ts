@@ -15,11 +15,31 @@ import { markExtensions } from './marks';
 import { Paste } from './paste';
 import { HtmlBlock, HtmlInline, HtmlMark, type HtmlNodeOptions } from './raw';
 
-/** Links with their `href` first, as editors write them. */
+/**
+ * Links with their attributes in the order they were written in (CKEditor 5 writes `target` and
+ * `rel` before `href`), and new links with `href` first.
+ */
 const KeptLink = Link.extend({
+    addAttributes() {
+        return {
+            ...this.parent?.(),
+            order: {
+                default: null,
+                rendered: false,
+                parseHTML: (element: HTMLElement) => element.getAttributeNames().join(' ') || null,
+            },
+        };
+    },
     renderHTML(props) {
         const [tag, attributes] = this.parent?.(props) as [string, Record<string, unknown>, 0];
-        return [tag, { href: attributes.href, ...attributes }, 0];
+        const order = typeof props.mark.attrs.order === 'string' ? props.mark.attrs.order : 'href';
+        const ordered = Object.fromEntries(
+            order
+                .split(' ')
+                .filter((name) => attributes[name] !== undefined && attributes[name] !== null)
+                .map((name) => [name, attributes[name]]),
+        );
+        return [tag, { ...ordered, ...attributes }, 0];
     },
 });
 

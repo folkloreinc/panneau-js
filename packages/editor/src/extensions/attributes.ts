@@ -10,6 +10,12 @@ export const IMPLICIT_PARAGRAPH = 'data-panneau-implicit';
 /** What ProseMirror puts on content it copies, to paste it back: never kept. */
 export const CLIPBOARD_SLICE = 'data-pm-slice';
 
+/** What the field puts on content it copies, to know it when it is pasted: never kept. */
+export const COPIED_FROM = 'data-panneau-copy';
+
+/** Attributes that the field and ProseMirror add, which never reach the value. */
+const INTERNAL_ATTRIBUTES = [IMPLICIT_PARAGRAPH, CLIPBOARD_SLICE, COPIED_FROM];
+
 /**
  * The attributes that an extension handles itself, by type: they are not kept a second time.
  */
@@ -38,16 +44,39 @@ export const KEPT_ATTRIBUTE_TYPES = [
     'superscript',
 ] as const;
 
-/** The attributes of an element, in their order, except those of `skip`. `null` without any. */
+/**
+ * Whether an attribute would run a script once rendered: an event handler (`onclick`), or a
+ * `javascript:`, `vbscript:` or `data:text/html` URL, whatever the case and the whitespace and
+ * control characters in it. Values are read from the DOM, so their entities are already decoded.
+ */
+export function isScriptAttribute(name: string, value: string): boolean {
+    if (name.toLowerCase().startsWith('on')) {
+        return true;
+    }
+    // Browsers skip whitespace and control characters in a URL's scheme
+    const url = Array.from(value)
+        .filter((character) => {
+            const code = character.charCodeAt(0);
+            return code > 0x20 && (code < 0x7f || code > 0x9f);
+        })
+        .join('')
+        .toLowerCase();
+    return /^(javascript|vbscript|data:text\/html)/.test(url);
+}
+
+/**
+ * The attributes of an element, in their order, except those of `skip` and those that would run
+ * a script (`isScriptAttribute()`). `null` without any.
+ */
 export function readAttributes(
     element: HTMLElement,
     skip: readonly string[] = [],
 ): Record<string, string> | null {
     const attributes = Array.from(element.attributes).filter(
         (attribute) =>
-            attribute.name !== IMPLICIT_PARAGRAPH &&
-            attribute.name !== CLIPBOARD_SLICE &&
-            !skip.includes(attribute.name),
+            !INTERNAL_ATTRIBUTES.includes(attribute.name) &&
+            !skip.includes(attribute.name) &&
+            !isScriptAttribute(attribute.name, attribute.value),
     );
     return attributes.length > 0
         ? Object.fromEntries(attributes.map((attribute) => [attribute.name, attribute.value]))

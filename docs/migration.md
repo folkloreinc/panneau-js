@@ -79,6 +79,7 @@ The CKEditor `html` field of v4 becomes the `richtext` field of `@panneau/editor
 | A plugin of the project (an inline logo)                        | TipTap extensions and buttons in `createEditorPlugin()`             |
 | `mediaEmbed`                                                    | Existing embeds are kept; adding new ones is not in the toolbar yet |
 
+- A CKEditor heading option written as a block `<span>` (`{ model: 'logo', view: 'span' }`) needs a block-level node in the project's plugin: without one, its text becomes a paragraph once edited.
 - Before migrating, `normalizeRichText()` shows what the field would write for existing content, with the extensions of the project's plugin.
 - The styles of block styles (`p.big`) come from the project's CSS, as with CKEditor.
 

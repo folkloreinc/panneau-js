@@ -157,6 +157,39 @@ describe('API payloads', () => {
     });
 });
 
+describe('validateDefinition', () => {
+    it('checks the settings of richtext fields, nested ones included', () => {
+        const definition = createDefinition();
+        const resource = definition.resources[0];
+        if (resource === undefined) {
+            throw new Error('Fixture has no resource.');
+        }
+        const count = resource.fields.length;
+        resource.fields.push(
+            { name: 'lead', type: 'richtext', settings: { headings: [2], toolbar: ['bold'] } },
+            { name: 'notes', type: 'richtext', settings: { headings: [7] } },
+            {
+                name: 'aside',
+                type: 'group',
+                fields: [
+                    {
+                        name: 'text',
+                        type: 'richtext',
+                        settings: { styles: [{ label: 'Big' }], links: { newTab: 'always' } },
+                    },
+                ],
+            },
+        );
+        const result = validateDefinition(definition);
+        expect(result.success).toBe(false);
+        expect(result.success ? [] : result.issues.map((issue) => issue.path)).toEqual([
+            `resources.0.fields.${String(count + 1)}.settings.headings.0`,
+            `resources.0.fields.${String(count + 2)}.fields.0.settings.styles.0.class`,
+            `resources.0.fields.${String(count + 2)}.fields.0.settings.links.newTab`,
+        ]);
+    });
+});
+
 describe('lintDefinition', () => {
     it('checks the file field of media resources, and the library of media fields', () => {
         const definition = createDefinition();

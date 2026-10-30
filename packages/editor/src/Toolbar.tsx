@@ -28,7 +28,6 @@ export interface ToolbarProps {
     newTab: NewTabLinks;
     /** Buttons of plugins. One with the name of a built-in button replaces it. */
     buttons: readonly RichTextButton[];
-    isDisabled?: boolean;
 }
 
 const SEPARATOR = '|';
@@ -109,7 +108,6 @@ export function Toolbar({
     styles: blockStyles,
     newTab,
     buttons,
-    isDisabled = false,
 }: ToolbarProps) {
     const intl = usePanneauIntl();
     const [linkOpen, setLinkOpen] = useState(false);
@@ -184,7 +182,7 @@ export function Toolbar({
                                 key={key}
                                 aria-label={intl.formatMessage(messages.textStyle)}
                                 className={styles.select}
-                                isDisabled={isDisabled || !state.canSetTextStyle}
+                                isDisabled={!state.canSetTextStyle}
                                 options={[
                                     {
                                         value: 'paragraph',
@@ -222,7 +220,6 @@ export function Toolbar({
                                 key={key}
                                 aria-label={intl.formatMessage(messages.blockStyle)}
                                 className={styles.select}
-                                isDisabled={isDisabled}
                                 options={[
                                     {
                                         value: NO_STYLE,
@@ -250,7 +247,7 @@ export function Toolbar({
                                 label={intl.formatMessage(messages.link)}
                                 icon={Link}
                                 isActive={state.link}
-                                isDisabled={isDisabled || !state.canLink}
+                                isDisabled={!state.canLink}
                                 onPress={() => setLinkOpen(true)}
                             />
                         );
@@ -270,7 +267,7 @@ export function Toolbar({
                             }
                             icon={button.icon}
                             isActive={buttonState?.active}
-                            isDisabled={isDisabled || buttonState?.disabled === true}
+                            isDisabled={buttonState?.disabled === true}
                             onPress={() => button.run(editor)}
                         />
                     );

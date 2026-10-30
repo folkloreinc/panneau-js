@@ -4212,7 +4212,7 @@ export type ResourceFeatures = z.infer<typeof ResourceFeatures>;
 // @public
 export type ResourceInput = z.input<typeof Resource>;
 
-// @public (undocumented)
+// @public
 export const RichTextSettings: z.ZodObject<{
     toolbar: z.ZodOptional<z.ZodArray<z.ZodString>>;
     headings: z.ZodOptional<z.ZodArray<z.ZodNumber>>;
@@ -4230,17 +4230,17 @@ export const RichTextSettings: z.ZodObject<{
     }, z.core.$loose>>;
 }, z.core.$loose>;
 
-// @public (undocumented)
+// @public
 export type RichTextSettings = z.infer<typeof RichTextSettings>;
 
-// @public (undocumented)
+// @public
 export const RichTextStyle: z.ZodObject<{
     label: z.ZodString;
     class: z.ZodString;
     element: z.ZodOptional<z.ZodString>;
 }, z.core.$loose>;
 
-// @public (undocumented)
+// @public
 export type RichTextStyle = z.infer<typeof RichTextStyle>;
 
 // @public (undocumented)

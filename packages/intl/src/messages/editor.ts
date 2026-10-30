@@ -48,6 +48,10 @@ export const editorMessages = {
         id: 'panneau.editor.linkNewTab',
         defaultMessage: 'Open in a new tab',
     }),
+    linkInvalid: defineMessage({
+        id: 'panneau.editor.linkInvalid',
+        defaultMessage: 'This URL can’t be used in a link.',
+    }),
     linkApply: defineMessage({ id: 'panneau.editor.linkApply', defaultMessage: 'Apply' }),
     linkRemove: defineMessage({ id: 'panneau.editor.linkRemove', defaultMessage: 'Remove link' }),
     linkCancel: defineMessage({ id: 'panneau.editor.linkCancel', defaultMessage: 'Cancel' }),

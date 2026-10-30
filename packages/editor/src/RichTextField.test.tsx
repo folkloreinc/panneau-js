@@ -91,6 +91,22 @@ describe('RichTextField', () => {
         expect(onChange).not.toHaveBeenCalled();
     });
 
+    it('never puts what would run a script in the page', () => {
+        renderInRoot(
+            <RichTextField
+                label="Body"
+                value={
+                    '<p onmouseover="alert(1)" class="intro">Text <strong onclick="alert(2)">bold</strong> <a href="/x" onfocus="alert(3)">link</a><img src="x" onerror="alert(4)"></p><figure class="media"><iframe src="javascript:alert(5)"></iframe></figure><script>alert(6)</script>'
+                }
+            />,
+        );
+        const textbox = screen.getByRole('textbox', { name: 'Body' });
+        expect(textbox.querySelector('[onmouseover], [onclick], [onfocus], [onerror]')).toBeNull();
+        // ProseMirror's own separators aside
+        expect(textbox.querySelector('img:not(.ProseMirror-separator), iframe, script')).toBeNull();
+        expect(within(textbox).getByText('Text', { exact: false })).toHaveClass('intro');
+    });
+
     it('has no toolbar when read-only', () => {
         renderInRoot(<RichTextField label="Body" value="<p>Text</p>" readOnly />);
         expect(screen.queryByRole('toolbar')).toBeNull();

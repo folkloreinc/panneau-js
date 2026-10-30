@@ -1,4 +1,5 @@
 import type { Editor } from '@tiptap/core';
+import { isAllowedUri } from '@tiptap/extension-link';
 import { useId, useState } from 'react';
 
 import { editorMessages as messages } from '@panneau/intl';
@@ -39,6 +40,7 @@ export function LinkDialog({ editor, newTab, isOpen, onOpenChange }: LinkDialogP
     const currentRel = typeof current.rel === 'string' ? current.rel : null;
     const [href, setHref] = useState(currentHref);
     const [openInNewTab, setOpenInNewTab] = useState(current.target === '_blank');
+    const [invalid, setInvalid] = useState(false);
     const [opened, setOpened] = useState(isOpen);
     // Starts from the link of the selection each time it opens
     if (opened !== isOpen) {
@@ -46,6 +48,7 @@ export function LinkDialog({ editor, newTab, isOpen, onOpenChange }: LinkDialogP
         if (isOpen) {
             setHref(currentHref);
             setOpenInNewTab(current.target === '_blank');
+            setInvalid(false);
         }
     }
 
@@ -54,6 +57,11 @@ export function LinkDialog({ editor, newTab, isOpen, onOpenChange }: LinkDialogP
         if (url === '') {
             editor.chain().focus().extendMarkRange('link').unsetLink().run();
             onOpenChange(false);
+            return;
+        }
+        // A `javascript:` URL, which the link would refuse
+        if (!isAllowedUri(url)) {
+            setInvalid(true);
             return;
         }
         const inNewTab =
@@ -120,7 +128,11 @@ export function LinkDialog({ editor, newTab, isOpen, onOpenChange }: LinkDialogP
                     autoComplete="off"
                     autoFocus
                     value={href}
-                    onChange={setHref}
+                    onChange={(next) => {
+                        setHref(next);
+                        setInvalid(false);
+                    }}
+                    errors={invalid ? [intl.formatMessage(messages.linkInvalid)] : []}
                 />
                 {newTab === 'choose' ? (
                     <Checkbox isSelected={openInNewTab} onChange={setOpenInNewTab}>

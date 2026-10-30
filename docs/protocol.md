@@ -123,7 +123,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     - In items, a value is a stored file, `{ "name": "terms.pdf", "url": "https://…", "mime": "application/pdf", "size": 52000 }`, or `null`. With `multiple`, it is a list of them.
     - In requests, the client sends `{ "upload": "upl_…" }` for a file uploaded directly to storage, the stored file it received to keep it, or `null` to remove it. Without direct uploads, it sends the file itself, in `multipart/form-data`.
     - `accept` and `maxSize` are checked on the file the backend receives. The client can also send the `name`, `mime` and `size` of an upload next to its `upload`, so that it checks them first.
-- **`richtext` values** are HTML ([0007](decisions/0007-rich-text.md)), or `null` when empty. A client keeps the HTML it received until the content is edited: content written by another editor (CKEditor) saves unchanged. Its `settings` (`RichTextSettings`) set what users can add, not what a value may hold: elements and attributes that the toolbar doesn't offer are kept.
+- **`richtext` values** are HTML ([0007](decisions/0007-rich-text.md)), or `null` when empty. A client keeps the HTML it received until the content is edited: content written by another editor (CKEditor) saves unchanged. Its `settings` (`RichTextSettings`, which `validateDefinition()` checks) set what users can add, not what a value may hold: elements and attributes that the toolbar doesn't offer are kept ([0035](decisions/0035-rich-text-kept-html.md)).
 
     ```jsonc
     {

@@ -5,12 +5,13 @@
 
 /**
  * CKEditor 5: no whitespace between blocks, `<i>` for italics, bare list items, media embeds
- * with and without their preview (`previewsInData`), links to other sites with `target`.
+ * with and without their preview (`previewsInData`), links to other sites with `target` and `rel`
+ * before `href`, as its link decorators write them.
  */
 export const ckeditor5 = [
     '<h2>A heading</h2>',
     '<p class="big">A big paragraph, with <strong>bold</strong> and <i>italic</i> text.</p>',
-    '<p>A <a href="https://example.com/page" target="_blank" rel="noopener noreferrer">link to another site</a>, a <a href="/en/about">link to a page</a>, a <a href="mailto:hello@example.com"><strong>bold e-mail link</strong></a> and a non-breaking&nbsp;space.</p>',
+    '<p>A <a target="_blank" rel="noopener noreferrer" href="https://example.com/page">link to another site</a>, a <a href="/en/about">link to a page</a>, a <a href="mailto:hello@example.com"><strong>bold e-mail link</strong></a> and a non-breaking&nbsp;space.</p>',
     '<h4>A smaller heading</h4>',
     '<ul><li>First item</li><li>Second item, <strong><i>bold and italic</i></strong><ul><li>Nested item</li></ul></li></ul>',
     '<ol><li>One</li><li>Two</li></ol>',
@@ -19,7 +20,7 @@ export const ckeditor5 = [
     '<blockquote><p>A quote.</p></blockquote>',
     '<p>A line<br>broken in two.</p>',
     '<figure class="image"><img src="https://example.com/image.jpg" alt="An image"><figcaption>A caption</figcaption></figure>',
-    '<p class="big">Another <a href="https://example.com/other" target="_blank" rel="noopener noreferrer">big</a> paragraph.</p>',
+    '<p class="big">Another <a target="_blank" rel="noopener noreferrer" href="https://example.com/other">big</a> paragraph.</p>',
     '<p>&nbsp;</p>',
 ].join('');
 

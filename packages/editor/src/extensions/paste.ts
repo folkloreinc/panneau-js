@@ -1,6 +1,8 @@
 import { Extension } from '@tiptap/core';
 import {
     DOMParser,
+    DOMSerializer,
+    type Fragment,
     type ParseOptions,
     type ParseRule,
     type Schema,
@@ -9,7 +11,52 @@ import {
 } from '@tiptap/pm/model';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 
-import { CLIPBOARD_SLICE } from './attributes';
+import { COPIED_FROM } from './attributes';
+
+let copyToken: string | null = null;
+
+/**
+ * The token that the rich text fields of this page put on what they copy: random, so that no
+ * other page or document can claim to come from them.
+ */
+export function getCopyToken(): string {
+    copyToken ??= crypto.randomUUID();
+    return copyToken;
+}
+
+/** Whether pasted content was copied from a rich text field of this page. */
+function isCopiedHere(dom: globalThis.Node): boolean {
+    if (!(dom instanceof Element)) {
+        return false;
+    }
+    const selector = `[${COPIED_FROM}="${getCopyToken()}"]`;
+    return dom.matches(selector) || dom.querySelector(selector) !== null;
+}
+
+/** Writes copied content as the field does, with the token of this page on its elements. */
+class CopySerializer extends DOMSerializer {
+    override serializeFragment(
+        fragment: Fragment,
+        options: { document?: Document } = {},
+        target?: HTMLElement | DocumentFragment,
+    ): HTMLElement | DocumentFragment {
+        const result = super.serializeFragment(fragment, options, target);
+        if (target === undefined) {
+            result.childNodes.forEach((child) => {
+                if (child.nodeType === 1) {
+                    (child as Element).setAttribute(COPIED_FROM, getCopyToken());
+                }
+            });
+        }
+        return result;
+    }
+}
+
+/** The serializer of copied content: `getCopyToken()` on its elements. */
+export function createCopySerializer(schema: Schema): DOMSerializer {
+    const { nodes, marks } = DOMSerializer.fromSchema(schema);
+    return new CopySerializer(nodes, marks);
+}
 
 /** What the field keeps as it was written, which pasted content doesn't bring. */
 const KEPT_AS_WRITTEN = new Set(['htmlBlock', 'htmlInline', 'htmlMark']);
@@ -38,7 +85,7 @@ function withoutHtmlAttributes(rule: ParseRule): ParseRule {
     return next;
 }
 
-/** Pasted content within the editor, or from another ProseMirror editor, is read in full. */
+/** Pasted content copied from a rich text field of this page is read in full. */
 class PasteParser extends DOMParser {
     constructor(
         schema: Schema,
@@ -49,9 +96,7 @@ class PasteParser extends DOMParser {
     }
 
     override parseSlice(dom: globalThis.Node, options?: ParseOptions): Slice {
-        return dom instanceof Element &&
-            (dom.hasAttribute(CLIPBOARD_SLICE) ||
-                dom.querySelector(`[${CLIPBOARD_SLICE}]`) !== null)
+        return isCopiedHere(dom)
             ? this.full.parseSlice(dom, options)
             : super.parseSlice(dom, options);
     }
@@ -61,7 +106,10 @@ class PasteParser extends DOMParser {
  * The parser of pasted content: what the toolbar can make, without the attributes and the HTML
  * that loaded content keeps, so that a page or a document pasted brings its text, its structure
  * and its marks, not its styles (`<span style="font-size: 11pt">` of Google Docs). Bold and
- * italic written as styles become marks. Content copied from a ProseMirror editor is read in full.
+ * italic written as styles become marks. Content copied from a rich text field of this page
+ * (`getCopyToken()`), and only that, is read in full: kept HTML can't be brought in from
+ * elsewhere, even by HTML that claims to come from a ProseMirror editor (`data-pm-slice`).
+ * Attributes that would run a script are dropped in both cases.
  */
 export function createPasteParser(schema: Schema): DOMParser {
     const full = DOMParser.fromSchema(schema);
@@ -98,7 +146,10 @@ export const Paste = Extension.create({
         return [
             new Plugin({
                 key: new PluginKey('panneauPaste'),
-                props: { clipboardParser: createPasteParser(this.editor.schema) },
+                props: {
+                    clipboardParser: createPasteParser(this.editor.schema),
+                    clipboardSerializer: createCopySerializer(this.editor.schema),
+                },
             }),
         ];
     },

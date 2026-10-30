@@ -1,7 +1,7 @@
 import { Mark, Node } from '@tiptap/core';
 import type { DOMOutputSpec } from '@tiptap/pm/model';
 
-import { CLIPBOARD_SLICE, readAttributes } from './attributes';
+import { CLIPBOARD_SLICE, COPIED_FROM, readAttributes } from './attributes';
 
 /**
  * Elements the field doesn't edit, kept as they were written: embedded media (`<figure
@@ -151,13 +151,14 @@ function createHtmlView(html: string, options: HtmlNodeOptions, inline: boolean)
     return { dom };
 }
 
-/** The HTML of an element as it was written, without what ProseMirror adds when it copies. */
+/** The HTML of an element as it was written, without what copying adds to it. */
 function outerHtml(element: HTMLElement): string {
-    if (!element.hasAttribute(CLIPBOARD_SLICE)) {
+    if (!element.hasAttribute(CLIPBOARD_SLICE) && !element.hasAttribute(COPIED_FROM)) {
         return element.outerHTML;
     }
     const copy = element.cloneNode(true) as HTMLElement;
     copy.removeAttribute(CLIPBOARD_SLICE);
+    copy.removeAttribute(COPIED_FROM);
     return copy.outerHTML;
 }
 
@@ -270,7 +271,7 @@ export const HtmlMark = Mark.create({
                 tag: MARK_TAGS.join(', '),
                 priority: 10,
                 getAttrs: (element: HTMLElement) =>
-                    element.tagName === 'SPAN' && element.attributes.length === 0 ? false : null,
+                    element.tagName === 'SPAN' && readAttributes(element) === null ? false : null,
             },
         ];
     },

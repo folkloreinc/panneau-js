@@ -1,4 +1,4 @@
-import { type AnyExtension, getSchema } from '@tiptap/core';
+import type { AnyExtension } from '@tiptap/core';
 import { EditorContent, useEditor } from '@tiptap/react';
 import { useEffect, useRef } from 'react';
 
@@ -43,9 +43,31 @@ export interface RichTextFieldProps extends FieldProps<string> {
     contentClassName?: string;
 }
 
+/** The attributes of the editable element: a labelled, multiline `textbox`. */
+function getContentAttributes(
+    className: string,
+    accessibleName: string | undefined,
+    invalid: boolean,
+    required: boolean,
+    editable: boolean,
+    id: string | undefined,
+): Record<string, string> {
+    return {
+        role: 'textbox',
+        'aria-multiline': 'true',
+        class: className,
+        ...(accessibleName !== undefined ? { 'aria-label': accessibleName } : {}),
+        ...(invalid ? { 'aria-invalid': 'true' } : {}),
+        ...(required ? { 'aria-required': 'true' } : {}),
+        ...(!editable ? { 'aria-readonly': 'true' } : {}),
+        ...(id !== undefined ? { id } : {}),
+    };
+}
+
 const NO_EXTENSIONS: readonly AnyExtension[] = [];
 const NO_BUTTONS: readonly RichTextButton[] = [];
 const NO_STYLES: readonly RichTextStyle[] = [];
+const NO_ERRORS: readonly string[] = [];
 
 /**
  * Rich text, stored as HTML (decision 0007): an empty text is `null`. Content keeps what the
@@ -57,18 +79,18 @@ export function RichTextField({
     onChange,
     onBlur,
     placeholder,
-    toolbar = DEFAULT_TOOLBAR,
-    headings = DEFAULT_HEADINGS,
-    styles: blockStyles = NO_STYLES,
-    newTab = 'choose',
-    extensions: projectExtensions = NO_EXTENSIONS,
-    buttons = NO_BUTTONS,
+    toolbar: toolbarProp,
+    headings: headingsProp,
+    styles: stylesProp,
+    newTab: newTabProp,
+    extensions: extensionsProp,
+    buttons: buttonsProp,
     label,
     description,
-    errors = [],
-    disabled = false,
-    readOnly = false,
-    required = false,
+    errors: errorsProp,
+    disabled: disabledProp,
+    readOnly: readOnlyProp,
+    required: requiredProp,
     name,
     id,
     autoFocus,
@@ -76,6 +98,17 @@ export function RichTextField({
     className,
     contentClassName,
 }: RichTextFieldProps) {
+    // Defaults in the body: the React Compiler skips components with defaults in their parameters
+    const toolbar = toolbarProp ?? DEFAULT_TOOLBAR;
+    const headings = headingsProp ?? DEFAULT_HEADINGS;
+    const blockStyles = stylesProp ?? NO_STYLES;
+    const newTab = newTabProp ?? 'choose';
+    const projectExtensions = extensionsProp ?? NO_EXTENSIONS;
+    const buttons = buttonsProp ?? NO_BUTTONS;
+    const errors = errorsProp ?? NO_ERRORS;
+    const disabled = disabledProp === true;
+    const readOnly = readOnlyProp === true;
+    const required = requiredProp === true;
     const intl = usePanneauIntl();
     const editable = !disabled && !readOnly;
     const extensions = createRichTextExtensions({
@@ -88,29 +121,29 @@ export function RichTextField({
     const accessibleName = ariaLabel ?? (typeof label === 'string' ? label : undefined);
     const invalid = errors.length > 0;
     const contentClass = [styles.content, contentClassName].filter(Boolean).join(' ');
-    const getAttributes = (): Record<string, string> => ({
-        role: 'textbox',
-        'aria-multiline': 'true',
-        class: contentClass,
-        ...(accessibleName !== undefined ? { 'aria-label': accessibleName } : {}),
-        ...(invalid ? { 'aria-invalid': 'true' } : {}),
-        ...(required ? { 'aria-required': 'true' } : {}),
-        ...(!editable ? { 'aria-readonly': 'true' } : {}),
-        ...(id !== undefined ? { id } : {}),
-    });
 
     const editor = useEditor(
         {
             extensions,
-            content: parseRichText(value ?? null, getSchema(extensions)).toJSON() as Record<
-                string,
-                unknown
-            >,
             editable,
             autofocus: autoFocus === true ? 'end' : false,
             immediatelyRender: true,
             shouldRerenderOnTransaction: false,
-            editorProps: { attributes: getAttributes() },
+            editorProps: {
+                attributes: getContentAttributes(
+                    contentClass,
+                    accessibleName,
+                    invalid,
+                    required,
+                    editable,
+                    id,
+                ),
+            },
+            // The value is read once the schema exists, and only when the editor is made
+            onBeforeCreate: ({ editor: created }) => {
+                current.current = value;
+                created.options.content = parseRichText(value ?? null, created.schema).toJSON();
+            },
             onUpdate: ({ editor: updated }) => {
                 const html = serializeRichText(updated.state.doc, updated.schema);
                 current.current = html;
@@ -138,10 +171,19 @@ export function RichTextField({
     }, [editor, editable]);
 
     useEffect(() => {
-        editor?.setOptions({ editorProps: { attributes: getAttributes() } });
-        // The attributes only change with these
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [editor, accessibleName, invalid, required, editable, id, contentClass]);
+        editor?.setOptions({
+            editorProps: {
+                attributes: getContentAttributes(
+                    contentClass,
+                    accessibleName,
+                    invalid,
+                    required,
+                    editable,
+                    id,
+                ),
+            },
+        });
+    }, [editor, contentClass, accessibleName, invalid, required, editable, id]);
 
     return (
         <Fieldset

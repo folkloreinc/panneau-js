@@ -12,7 +12,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0004](0004-definitions-are-data.md)          | Definitions are data                                                   | Accepted              |
 | [0005](0005-styling-and-theming.md)           | Design tokens and accessible primitives, no global CSS                 | Accepted              |
 | [0006](0006-validation-and-errors.md)         | Portable validation rules and problem+json errors                      | Accepted              |
-| [0007](0007-rich-text.md)                     | TipTap replaces CKEditor                                               | Accepted              |
+| [0007](0007-rich-text.md)                     | TipTap replaces CKEditor                                               | Amended by 0035       |
 | [0008](0008-realtime-and-concurrency.md)      | Conflict detection in 5.0, collaboration in 5.x                        | Accepted              |
 | [0009](0009-preview-drafts-revisions.md)      | Component and iframe previews, drafts and revisions per resource       | Accepted              |
 | [0010](0010-media.md)                         | Media through the protocol, non-destructive image editing              | Amended by 0026, 0031 |
@@ -40,3 +40,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0032](0032-field-checks-and-slugs.md)        | Fields check their value with the backend, and a generic slug          | Accepted              |
 | [0033](0033-more-field-types.md)              | More field types: tel, range, duration, json, tags, embed and location | Accepted              |
 | [0034](0034-skeletons-while-content-loads.md) | Skeletons while content loads                                          | Accepted              |
+| [0035](0035-rich-text-kept-html.md)           | Rich text keeps HTML it doesn't edit, inert in the admin               | Accepted              |

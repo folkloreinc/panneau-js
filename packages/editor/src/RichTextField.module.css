@@ -120,6 +120,14 @@
     outline: none;
 }
 
+/*
+ * Styles of stored content show in the editor (a color, an alignment), but never take an element
+ * out of the text to cover the admin: they are kept as they are in the value.
+ */
+.content :where([style]) {
+    position: static !important;
+}
+
 .content > * + * {
     margin-top: var(--panneau-prose-gap, var(--panneau-space-3));
 }
