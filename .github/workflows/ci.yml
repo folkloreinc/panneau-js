@@ -124,3 +124,6 @@ jobs:
 
             - name: Pack, install and build with flklr (webpack), then render in Chromium
               run: npm run test:smoke
+
+            - name: Lucide icons only in the bundles of apps that use them (Vite)
+              run: npm run test:icons

@@ -1,6 +1,6 @@
 # 0019: The app entry: boot config, mount function and client routes
 
-- Status: accepted
+- Status: accepted, amended by [0036](0036-default-icon-loader.md): `<Panneau>` has no default `iconLoader`
 - Date: 2026-10-15
 
 ## Context

@@ -24,8 +24,8 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0016](0016-migration-strategy.md)            | Clean break, maintained old lines, Niche as pilot                      | Accepted              |
 | [0017](0017-actions.md)                       | Actions on items, selections and resources                             | Accepted              |
 | [0018](0018-new-packages-next-to-v4.md)       | New packages next to the v4 code, which moves to `legacy/`             | Accepted              |
-| [0019](0019-app-entry.md)                     | The app entry: boot config, mount function and client routes           | Accepted              |
-| [0020](0020-default-theme-and-icons.md)       | A sober default theme, and Lucide as the only icon set                 | Accepted              |
+| [0019](0019-app-entry.md)                     | The app entry: boot config, mount function and client routes           | Amended by 0036       |
+| [0020](0020-default-theme-and-icons.md)       | A sober default theme, and Lucide as the only icon set                 | Amended by 0036       |
 | [0021](0021-forms-render-core-state.md)       | Forms render the form state of the engine                              | Accepted              |
 | [0022](0022-lists-render-core-state.md)       | Lists render the list state of the engine                              | Accepted              |
 | [0023](0023-action-runner.md)                 | An action runner in its own package                                    | Accepted              |
@@ -41,3 +41,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0033](0033-more-field-types.md)              | More field types: tel, range, duration, json, tags, embed and location | Accepted              |
 | [0034](0034-skeletons-while-content-loads.md) | Skeletons while content loads                                          | Accepted              |
 | [0035](0035-rich-text-kept-html.md)           | Rich text keeps HTML it doesn't edit, inert in the admin               | Accepted              |
+| [0036](0036-default-icon-loader.md)           | Lucide's icon loader is the default of `createPanneauApp()` only       | Accepted              |
