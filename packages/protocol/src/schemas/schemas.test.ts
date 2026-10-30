@@ -77,6 +77,10 @@ describe('Field', () => {
         ).toBe(true);
         expect(RichTextSettings.safeParse({ headings: [7] }).success).toBe(false);
         expect(RichTextSettings.safeParse({ styles: [{ label: 'Big' }] }).success).toBe(false);
+        expect(
+            RichTextSettings.safeParse({ styles: [{ label: 'Box', class: 'box', element: 'div' }] })
+                .success,
+        ).toBe(false);
         expect(RichTextSettings.safeParse({ links: { newTab: 'always' } }).success).toBe(false);
     });
 

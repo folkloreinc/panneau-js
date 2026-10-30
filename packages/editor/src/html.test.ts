@@ -130,16 +130,22 @@ describe('createPasteParser', () => {
 });
 
 describe('script attributes', () => {
+    it('are only event handlers and script URLs', () => {
+        const html =
+            '<p class="javascript-intro" title="JavaScript: the good parts">A <a href="/js" title="javascript:">link</a></p>';
+        expect(normalizeRichText(html)).toBe(html);
+    });
+
     it('are dropped from the elements the field edits, and from kept marks', () => {
         expect(
             normalizeRichText(
-                '<p onmouseover="a()" class="intro">A <strong onclick="b()">b</strong> <a href="/page" onclick="c()" title="Page">link</a> <span onfocus="d()" style="color:red">span</span> <span data-x=" JaVa&#x0A;script:e()">bare</span> <abbr title="x" onClick="f()">abbr</abbr></p>',
+                '<p onmouseover="a()" class="intro">A <strong onclick="b()">b</strong> <a href="/page" onclick="c()" title="Page">link</a> <span onfocus="d()" style="color:red">span</span> <q cite=" JaVa&#x0A;script:e()">bare</q> <abbr title="x" onClick="f()">abbr</abbr></p>',
             ),
         ).toBe(
-            '<p class="intro">A <strong>b</strong> <a href="/page" title="Page">link</a> <span style="color: red;">span</span> bare <abbr title="x">abbr</abbr></p>',
+            '<p class="intro">A <strong>b</strong> <a href="/page" title="Page">link</a> <span style="color: red;">span</span> <q>bare</q> <abbr title="x">abbr</abbr></p>',
         );
-        expect(normalizeRichText('<p><a href="/x" data-u="vbscript:x">a</a></p>')).toBe(
-            '<p><a href="/x">a</a></p>',
-        );
+        expect(
+            normalizeRichText('<p><span data-src="javascript:x" cite="javascript:y">a</span></p>'),
+        ).toBe('<p><span data-src="javascript:x">a</span></p>');
     });
 });

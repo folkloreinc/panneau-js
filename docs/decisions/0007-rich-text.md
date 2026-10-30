@@ -1,6 +1,6 @@
 # 0007: TipTap replaces CKEditor
 
-- Status: accepted
+- Status: accepted, amended by [0035](0035-rich-text-kept-html.md): what is sanitized on load, and HTML the field doesn't edit kept inert
 - Date: 2026-10-14
 
 ## Context

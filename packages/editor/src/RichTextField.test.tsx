@@ -107,6 +107,38 @@ describe('RichTextField', () => {
         expect(within(textbox).getByText('Text', { exact: false })).toHaveClass('intro');
     });
 
+    it('never puts kept HTML in the page, even when it unmounts', async () => {
+        const added: string[] = [];
+        const observer = new MutationObserver((records) => {
+            records.forEach((record) =>
+                record.addedNodes.forEach((node) => {
+                    if (node instanceof Element) {
+                        [node, ...Array.from(node.querySelectorAll('*'))]
+                            .filter((element) =>
+                                element.matches(
+                                    'img:not(.ProseMirror-separator), iframe, script, [onerror]',
+                                ),
+                            )
+                            .forEach((element) => added.push(element.outerHTML));
+                    }
+                }),
+            );
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+        const { unmount } = renderInRoot(
+            <RichTextField
+                label="Body"
+                value={
+                    '<p>x<img src="/nope.png" onerror="alert(1)"></p><figure class="media"><iframe src="javascript:alert(2)"></iframe></figure>'
+                }
+            />,
+        );
+        unmount();
+        await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
+        observer.disconnect();
+        expect(added).toEqual([]);
+    });
+
     it('has no toolbar when read-only', () => {
         renderInRoot(<RichTextField label="Body" value="<p>Text</p>" readOnly />);
         expect(screen.queryByRole('toolbar')).toBeNull();

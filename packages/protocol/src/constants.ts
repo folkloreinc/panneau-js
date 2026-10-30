@@ -84,3 +84,21 @@ export type BuiltInListLayout = (typeof BUILT_IN_LIST_LAYOUTS)[number];
  * `<script type="application/json" id="panneau-boot">` element whose text is the JSON object.
  */
 export const BOOT_CONFIG_ELEMENT_ID = 'panneau-boot';
+
+/** The elements a block style of a `richtext` field can apply to. */
+export const RICH_TEXT_STYLE_ELEMENTS = [
+    'p',
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6',
+    'blockquote',
+    'ul',
+    'ol',
+    'li',
+] as const;
+
+/** An element a block style of a `richtext` field can apply to. */
+export type RichTextStyleElement = (typeof RICH_TEXT_STYLE_ELEMENTS)[number];

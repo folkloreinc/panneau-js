@@ -8,6 +8,7 @@ import {
 
 import { IMPLICIT_PARAGRAPH } from './extensions/attributes';
 import { createRichTextExtensions } from './extensions/index';
+import { restoreKeptHtml } from './extensions/raw';
 
 /**
  * Reads HTML into a document of the schema. Unlike TipTap's `setContent()`, it keeps the
@@ -46,6 +47,7 @@ export function serializeRichText(doc: ProseMirrorNode, schema: Schema): string 
     container.append(
         DOMSerializer.fromSchema(schema).serializeFragment(doc.content, { document: inert }),
     );
+    restoreKeptHtml(container);
     container.querySelectorAll('li').forEach((item) => {
         const [first, ...others] = Array.from(item.children);
         if (

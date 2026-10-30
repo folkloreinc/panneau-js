@@ -1882,7 +1882,19 @@ export const namedSchemas: {
     RichTextStyle: z.ZodObject<{
         label: z.ZodString;
         class: z.ZodString;
-        element: z.ZodOptional<z.ZodString>;
+        element: z.ZodOptional<z.ZodEnum<{
+            p: "p";
+            h1: "h1";
+            h2: "h2";
+            h3: "h3";
+            h4: "h4";
+            h5: "h5";
+            h6: "h6";
+            blockquote: "blockquote";
+            ul: "ul";
+            ol: "ol";
+            li: "li";
+        }>>;
     }, z.core.$loose>;
     RichTextSettings: z.ZodObject<{
         toolbar: z.ZodOptional<z.ZodArray<z.ZodString>>;
@@ -1890,7 +1902,19 @@ export const namedSchemas: {
         styles: z.ZodOptional<z.ZodArray<z.ZodObject<{
             label: z.ZodString;
             class: z.ZodString;
-            element: z.ZodOptional<z.ZodString>;
+            element: z.ZodOptional<z.ZodEnum<{
+                p: "p";
+                h1: "h1";
+                h2: "h2";
+                h3: "h3";
+                h4: "h4";
+                h5: "h5";
+                h6: "h6";
+                blockquote: "blockquote";
+                ul: "ul";
+                ol: "ol";
+                li: "li";
+            }>>;
         }, z.core.$loose>>>;
         links: z.ZodOptional<z.ZodObject<{
             newTab: z.ZodOptional<z.ZodEnum<{
@@ -4213,13 +4237,28 @@ export type ResourceFeatures = z.infer<typeof ResourceFeatures>;
 export type ResourceInput = z.input<typeof Resource>;
 
 // @public
+export const RICH_TEXT_STYLE_ELEMENTS: readonly ["p", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "ul", "ol", "li"];
+
+// @public
 export const RichTextSettings: z.ZodObject<{
     toolbar: z.ZodOptional<z.ZodArray<z.ZodString>>;
     headings: z.ZodOptional<z.ZodArray<z.ZodNumber>>;
     styles: z.ZodOptional<z.ZodArray<z.ZodObject<{
         label: z.ZodString;
         class: z.ZodString;
-        element: z.ZodOptional<z.ZodString>;
+        element: z.ZodOptional<z.ZodEnum<{
+            p: "p";
+            h1: "h1";
+            h2: "h2";
+            h3: "h3";
+            h4: "h4";
+            h5: "h5";
+            h6: "h6";
+            blockquote: "blockquote";
+            ul: "ul";
+            ol: "ol";
+            li: "li";
+        }>>;
     }, z.core.$loose>>>;
     links: z.ZodOptional<z.ZodObject<{
         newTab: z.ZodOptional<z.ZodEnum<{
@@ -4237,11 +4276,26 @@ export type RichTextSettings = z.infer<typeof RichTextSettings>;
 export const RichTextStyle: z.ZodObject<{
     label: z.ZodString;
     class: z.ZodString;
-    element: z.ZodOptional<z.ZodString>;
+    element: z.ZodOptional<z.ZodEnum<{
+        p: "p";
+        h1: "h1";
+        h2: "h2";
+        h3: "h3";
+        h4: "h4";
+        h5: "h5";
+        h6: "h6";
+        blockquote: "blockquote";
+        ul: "ul";
+        ol: "ol";
+        li: "li";
+    }>>;
 }, z.core.$loose>;
 
 // @public
 export type RichTextStyle = z.infer<typeof RichTextStyle>;
+
+// @public
+export type RichTextStyleElement = (typeof RICH_TEXT_STYLE_ELEMENTS)[number];
 
 // @public (undocumented)
 export const RouteReference: z.ZodObject<{

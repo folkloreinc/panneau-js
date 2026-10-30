@@ -44,14 +44,36 @@ export const KEPT_ATTRIBUTE_TYPES = [
     'superscript',
 ] as const;
 
+/** Attributes whose value is a URL, which a `javascript:` URL makes run a script. */
+const URL_ATTRIBUTES = new Set([
+    'action',
+    'background',
+    'cite',
+    'data',
+    'dynsrc',
+    'formaction',
+    'href',
+    'longdesc',
+    'lowsrc',
+    'poster',
+    'src',
+    'usemap',
+    'xlink:href',
+]);
+
 /**
- * Whether an attribute would run a script once rendered: an event handler (`onclick`), or a
- * `javascript:`, `vbscript:` or `data:text/html` URL, whatever the case and the whitespace and
- * control characters in it. Values are read from the DOM, so their entities are already decoded.
+ * Whether an attribute would run a script once rendered: an event handler (`onclick`), `srcdoc`,
+ * or a URL attribute (`href`, `src`…) with a `javascript:`, `vbscript:` or `data:text/html` URL,
+ * whatever the case and the whitespace and control characters in it. Values are read from the
+ * DOM, so their entities are already decoded. Other attributes can say "javascript:" (`title`).
  */
 export function isScriptAttribute(name: string, value: string): boolean {
-    if (name.toLowerCase().startsWith('on')) {
+    const attribute = name.toLowerCase();
+    if (attribute.startsWith('on') || attribute === 'srcdoc') {
         return true;
+    }
+    if (!URL_ATTRIBUTES.has(attribute)) {
+        return false;
     }
     // Browsers skip whitespace and control characters in a URL's scheme
     const url = Array.from(value)
@@ -62,6 +84,22 @@ export function isScriptAttribute(name: string, value: string): boolean {
         .join('')
         .toLowerCase();
     return /^(javascript|vbscript|data:text\/html)/.test(url);
+}
+
+/**
+ * Attributes that are safe to render: strings, without those that would run a script. Content
+ * reaches nodes through the parser, but also through the context of a pasted slice.
+ */
+export function withoutScriptAttributes(attributes: unknown): Record<string, string> {
+    if (attributes === null || typeof attributes !== 'object') {
+        return {};
+    }
+    return Object.fromEntries(
+        Object.entries(attributes).filter(
+            (entry): entry is [string, string] =>
+                typeof entry[1] === 'string' && !isScriptAttribute(entry[0], entry[1]),
+        ),
+    );
 }
 
 /**
@@ -83,10 +121,9 @@ export function readAttributes(
         : null;
 }
 
-/** The attributes kept on a node or a mark, in `htmlAttributes`. */
+/** The attributes kept on a node or a mark, in `htmlAttributes`, without script attributes. */
 export function getHtmlAttributes(attrs: Record<string, unknown>): Record<string, string> {
-    const value = attrs.htmlAttributes;
-    return value !== null && typeof value === 'object' ? (value as Record<string, string>) : {};
+    return withoutScriptAttributes(attrs.htmlAttributes);
 }
 
 /**

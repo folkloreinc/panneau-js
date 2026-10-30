@@ -1,7 +1,12 @@
 import { Mark, Node } from '@tiptap/core';
 import type { DOMOutputSpec } from '@tiptap/pm/model';
 
-import { CLIPBOARD_SLICE, COPIED_FROM, readAttributes } from './attributes';
+import {
+    CLIPBOARD_SLICE,
+    COPIED_FROM,
+    readAttributes,
+    withoutScriptAttributes,
+} from './attributes';
 
 /**
  * Elements the field doesn't edit, kept as they were written: embedded media (`<figure
@@ -81,6 +86,9 @@ const MARK_TAGS = [
     'a:not([href])',
 ];
 
+/** The elements of `MARK_TAGS`: what a kept mark can be written as. */
+const MARK_NAMES = new Set(MARK_TAGS.map((tag) => tag.replace(/:.*$/, '')));
+
 export interface HtmlNodeOptions {
     /** Names kept HTML in the editor, for assistive technologies: "HTML". */
     label: string;
@@ -88,12 +96,28 @@ export interface HtmlNodeOptions {
     className: string;
 }
 
-/** The element of HTML that was written, from a string. */
-function fromHtml(html: string): DOMOutputSpec {
-    // The content of a template is inert: its scripts don't run, its images don't load.
-    const template = document.createElement('template');
-    template.innerHTML = html;
-    return template.content.firstElementChild ?? ['span', {}];
+/**
+ * Where kept HTML goes when ProseMirror renders a node without its view: an empty element that
+ * holds the HTML in an attribute, where nothing runs. ProseMirror does that when the editor
+ * unmounts, with the editor still in the page. `restoreKeptHtml()` puts the HTML back, only in
+ * what the field writes: the value, and what it copies.
+ */
+export const KEPT_HTML = 'data-panneau-html';
+
+function placeholder(html: string, inline: boolean): DOMOutputSpec {
+    return [inline ? 'span' : 'div', { [KEPT_HTML]: html }];
+}
+
+/**
+ * Replaces the placeholders of kept HTML with the HTML they hold, in content written outside the
+ * page: an inert document, or a fragment of one.
+ */
+export function restoreKeptHtml(root: ParentNode): void {
+    root.querySelectorAll(`[${KEPT_HTML}]`).forEach((element) => {
+        const template = element.ownerDocument.createElement('template');
+        template.innerHTML = element.getAttribute(KEPT_HTML) ?? '';
+        element.replaceWith(...Array.from(template.content.childNodes));
+    });
 }
 
 /** `figure.media`: the element and its first class. */
@@ -198,7 +222,7 @@ export const HtmlBlock = Node.create<HtmlNodeOptions>({
     },
 
     renderHTML({ node }) {
-        return fromHtml(String(node.attrs.html));
+        return placeholder(String(node.attrs.html), false);
     },
 
     addNodeView() {
@@ -231,7 +255,7 @@ export const HtmlInline = Node.create<HtmlNodeOptions>({
     },
 
     renderHTML({ node }) {
-        return fromHtml(String(node.attrs.html));
+        return placeholder(String(node.attrs.html), true);
     },
 
     addNodeView() {
@@ -277,7 +301,11 @@ export const HtmlMark = Mark.create({
     },
 
     renderHTML({ mark }) {
-        const attributes = mark.attrs.attributes as Record<string, string> | null;
-        return [String(mark.attrs.tag), attributes ?? {}, 0];
+        const tag = String(mark.attrs.tag);
+        return [
+            MARK_NAMES.has(tag) ? tag : 'span',
+            withoutScriptAttributes(mark.attrs.attributes),
+            0,
+        ];
     },
 });

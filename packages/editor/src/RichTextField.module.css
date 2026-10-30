@@ -118,6 +118,8 @@
     overflow-wrap: break-word;
     white-space: pre-wrap;
     outline: none;
+    /* Nothing of the content paints outside of it: transforms, negative margins */
+    contain: paint;
 }
 
 /*

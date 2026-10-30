@@ -1,4 +1,5 @@
 import type { Field, RichTextSettings, RichTextStyle } from '@panneau/protocol';
+import { RICH_TEXT_STYLE_ELEMENTS } from '@panneau/protocol/runtime';
 
 export type { RichTextSettings, RichTextStyle };
 
@@ -43,7 +44,8 @@ function isStyle(value: unknown): value is RichTextStyle {
         isString(value.label) &&
         isString(value.class) &&
         value.class.trim() !== '' &&
-        (value.element === undefined || isString(value.element))
+        (value.element === undefined ||
+            (RICH_TEXT_STYLE_ELEMENTS as readonly unknown[]).includes(value.element))
     );
 }
 

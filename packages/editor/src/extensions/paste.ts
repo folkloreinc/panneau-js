@@ -11,7 +11,8 @@ import {
 } from '@tiptap/pm/model';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 
-import { COPIED_FROM } from './attributes';
+import { CLIPBOARD_SLICE, COPIED_FROM } from './attributes';
+import { restoreKeptHtml } from './raw';
 
 let copyToken: string | null = null;
 
@@ -20,7 +21,10 @@ let copyToken: string | null = null;
  * other page or document can claim to come from them.
  */
 export function getCopyToken(): string {
-    copyToken ??= crypto.randomUUID();
+    // `randomUUID()` only exists in secure contexts: an admin can be served over plain HTTP
+    copyToken ??= Array.from(crypto.getRandomValues(new Uint8Array(16)), (byte) =>
+        byte.toString(16).padStart(2, '0'),
+    ).join('');
     return copyToken;
 }
 
@@ -42,6 +46,8 @@ class CopySerializer extends DOMSerializer {
     ): HTMLElement | DocumentFragment {
         const result = super.serializeFragment(fragment, options, target);
         if (target === undefined) {
+            // ProseMirror writes the clipboard in an inert document
+            restoreKeptHtml(result);
             result.childNodes.forEach((child) => {
                 if (child.nodeType === 1) {
                     (child as Element).setAttribute(COPIED_FROM, getCopyToken());
@@ -137,16 +143,39 @@ export function createPasteParser(schema: Schema): DOMParser {
 }
 
 /**
+ * Pasted HTML that wasn't copied from a rich text field of this page, without the slice data of
+ * ProseMirror (`data-pm-slice`): its context is JSON that ProseMirror makes nodes of after the
+ * parser, attributes included, so any page could write it.
+ */
+export function withoutForeignSlice(html: string): string {
+    const template = document.createElement('template');
+    template.innerHTML = html;
+    const { content } = template;
+    if (content.querySelector(`[${COPIED_FROM}="${getCopyToken()}"]`) !== null) {
+        return html;
+    }
+    const slices = content.querySelectorAll(`[${CLIPBOARD_SLICE}]`);
+    if (slices.length === 0) {
+        return html;
+    }
+    slices.forEach((element) => element.removeAttribute(CLIPBOARD_SLICE));
+    return template.innerHTML;
+}
+
+/**
  * Pasted content brings what the toolbar can make, not the styles of its page
- * (`createPasteParser()`).
+ * (`createPasteParser()`), and only content copied from a rich text field of this page brings
+ * its context (`withoutForeignSlice()`).
  */
 export const Paste = Extension.create({
-    name: 'paste',
+    // TipTap's core has an extension named `paste`
+    name: 'panneauPaste',
     addProseMirrorPlugins() {
         return [
             new Plugin({
                 key: new PluginKey('panneauPaste'),
                 props: {
+                    transformPastedHTML: withoutForeignSlice,
                     clipboardParser: createPasteParser(this.editor.schema),
                     clipboardSerializer: createCopySerializer(this.editor.schema),
                 },

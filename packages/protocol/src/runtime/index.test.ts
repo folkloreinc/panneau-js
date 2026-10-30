@@ -84,6 +84,7 @@ describe('@panneau/protocol/runtime', () => {
             'PORTABLE_RULES',
             'PROBLEM_CONTENT_TYPE',
             'PROTOCOL_VERSION',
+            'RICH_TEXT_STYLE_ELEMENTS',
             'SEARCH_DEFAULT_LIMIT',
             'SEARCH_MAX_LENGTH',
             'SEARCH_MAX_LIMIT',

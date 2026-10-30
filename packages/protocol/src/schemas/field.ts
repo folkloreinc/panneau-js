@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { PORTABLE_RULES } from '../constants';
+import { PORTABLE_RULES, RICH_TEXT_STYLE_ELEMENTS } from '../constants';
 import { Condition, Option } from './common';
 
 const message = z
@@ -162,7 +162,7 @@ export const RichTextStyle = z
             description:
                 'The class the style puts on the element: `big`. Several classes are separated by spaces.',
         }),
-        element: z.string().min(1).optional().meta({
+        element: z.enum(RICH_TEXT_STYLE_ELEMENTS).optional().meta({
             description:
                 'The element the style applies to: `p` (the default), `h1` to `h6`, `blockquote`, `ul`, `ol` or `li`.',
         }),

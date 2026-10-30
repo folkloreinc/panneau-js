@@ -21,6 +21,7 @@ describe('getRichTextOptions', () => {
                     styles: [
                         { label: 'Big paragraph', class: 'big' },
                         { label: 'No class' },
+                        { label: 'Box', class: 'box', element: 'div' },
                         { label: 'Lead', class: 'lead', element: 'h2' },
                     ],
                     links: { newTab: 'external' },

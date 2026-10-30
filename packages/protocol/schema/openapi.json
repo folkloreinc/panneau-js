@@ -2249,7 +2249,19 @@
                     "element": {
                         "description": "The element the style applies to: `p` (the default), `h1` to `h6`, `blockquote`, `ul`, `ol` or `li`.",
                         "type": "string",
-                        "minLength": 1
+                        "enum": [
+                            "p",
+                            "h1",
+                            "h2",
+                            "h3",
+                            "h4",
+                            "h5",
+                            "h6",
+                            "blockquote",
+                            "ul",
+                            "ol",
+                            "li"
+                        ]
                     }
                 },
                 "required": [
