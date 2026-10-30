@@ -102,21 +102,22 @@ export class InvalidResponseError extends Error {
 export function isApiError(error: unknown): error is ApiError;
 
 // @public
-export interface LoginCredentials {
+export type LoginCredentials = PasswordCredentials | TokenCredentials;
+
+// @public
+export class NotFoundError extends ApiError {
     // (undocumented)
-    [key: string]: unknown;
+    readonly name: string;
+}
+
+// @public
+export interface PasswordCredentials {
     // (undocumented)
     email: string;
     // (undocumented)
     password: string;
     // (undocumented)
     remember?: boolean;
-}
-
-// @public
-export class NotFoundError extends ApiError {
-    // (undocumented)
-    readonly name: string;
 }
 
 // @public
@@ -170,6 +171,14 @@ export interface RestAdapterOptions {
 export interface SearchOptions extends RequestOptions {
     limit?: number;
     resources?: readonly string[];
+}
+
+// @public
+export interface TokenCredentials {
+    // (undocumented)
+    remember?: boolean;
+    // (undocumented)
+    token: string;
 }
 
 // @public

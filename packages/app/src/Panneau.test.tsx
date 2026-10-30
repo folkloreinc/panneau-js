@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { act } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { type DataAdapter, UnauthorizedError } from '@panneau/data';
+import { type DataAdapter, UnauthorizedError, ValidationError } from '@panneau/data';
 import { queryKeys } from '@panneau/data/query';
 import { type BootConfigInput, type DefinitionInput, validateBootConfig } from '@panneau/protocol';
 
@@ -163,6 +163,7 @@ describe('Panneau', () => {
             });
             await act(() => queryClient.refetchQueries({ queryKey: queryKeys.definition() }));
             expect(screen.queryByRole('link', { name: 'Log in' })).not.toBeInTheDocument();
+            expect(screen.getByRole('heading', { name: 'Log in' })).toBeInTheDocument();
             expect(onUnauthorized).toHaveBeenCalledExactlyOnceWith({ loginUrl: null });
         });
 
@@ -178,6 +179,199 @@ describe('Panneau', () => {
             await act(() => queryClient.refetchQueries({ queryKey: queryKeys.definition() }));
             await act(() => queryClient.refetchQueries({ queryKey: queryKeys.definition() }));
             expect(onUnauthorized).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('in panneau auth mode', () => {
+        const auth = { mode: 'panneau' as const };
+        function definition() {
+            const inlined = parse(
+                createBootConfig({ definition: createDefinition({ auth }) }),
+            ).definition;
+            if (inlined === undefined) {
+                throw new Error('No definition.');
+            }
+            return inlined;
+        }
+
+        function createAuthAdapter(overrides: Partial<DataAdapter> = {}) {
+            return {
+                getDefinition: vi.fn(() => Promise.resolve(definition())),
+                login: vi.fn(() => Promise.resolve({ user: { id: 'usr_1', name: 'Ada' } })),
+                logout: vi.fn(() => Promise.resolve()),
+                ...overrides,
+            } as Partial<DataAdapter> as DataAdapter & {
+                getDefinition: ReturnType<typeof vi.fn>;
+                login: ReturnType<typeof vi.fn>;
+                logout: ReturnType<typeof vi.fn>;
+            };
+        }
+
+        it('shows the login page of the boot config before the definition, then the shell', async () => {
+            const user = userEvent.setup();
+            let calls = 0;
+            const adapter = createAuthAdapter({
+                getDefinition: vi.fn(() => {
+                    calls += 1;
+                    return calls === 1
+                        ? Promise.reject(unauthorized())
+                        : Promise.resolve(definition());
+                }),
+            });
+            renderPanneau({
+                adapter,
+                queryClient: createQueryClient(),
+                config: createBootConfig({
+                    auth: {
+                        mode: 'panneau',
+                        token: { label: 'Admin token', help: 'ADMIN_TOKEN of the server.' },
+                    },
+                }),
+            });
+            const token = await screen.findByLabelText(/^Admin token/);
+            expect(screen.getByText('ADMIN_TOKEN of the server.')).toBeInTheDocument();
+            // A token login only: no email.
+            expect(screen.queryByLabelText('Email')).not.toBeInTheDocument();
+            expect(screen.queryByText(/session has ended/)).not.toBeInTheDocument();
+            await user.type(token, 's3cret');
+            await user.click(screen.getByRole('button', { name: 'Log in' }));
+            expect(adapter.login).toHaveBeenCalledWith({ token: 's3cret' });
+            expect(await screen.findByRole('heading', { name: 'Test site' })).toBeInTheDocument();
+        });
+
+        it('shows the errors of the backend under the fields, or above the form', async () => {
+            const user = userEvent.setup();
+            const invalid = (errors: Record<string, string[]>) =>
+                new ValidationError({
+                    type: 'about:blank',
+                    title: 'These credentials do not match our records.',
+                    status: 422,
+                    errors,
+                });
+            const adapter = createAuthAdapter({
+                getDefinition: vi.fn(() => Promise.reject(unauthorized())),
+                login: vi
+                    .fn()
+                    .mockRejectedValueOnce(
+                        invalid({ email: ['These credentials do not match our records.'] }),
+                    )
+                    .mockRejectedValueOnce(invalid({}))
+                    .mockRejectedValueOnce(new Error('Network error')),
+            });
+            renderPanneau({
+                adapter,
+                queryClient: createQueryClient(),
+                config: createBootConfig({ auth }),
+            });
+            await user.type(await screen.findByLabelText(/^Email/), 'ada@example.com');
+            await user.type(screen.getByLabelText(/^Password/), 'wrong');
+            await user.click(screen.getByRole('checkbox', { name: 'Remember me' }));
+            const submit = screen.getByRole('button', { name: 'Log in' });
+
+            await user.click(submit);
+            expect(adapter.login).toHaveBeenLastCalledWith({
+                email: 'ada@example.com',
+                password: 'wrong',
+                remember: true,
+            });
+            expect(await screen.findByLabelText(/^Email/)).toHaveAccessibleDescription(
+                'These credentials do not match our records.',
+            );
+            expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+
+            await user.click(submit);
+            expect(await screen.findByRole('alert')).toHaveTextContent(
+                'These credentials do not match our records.',
+            );
+
+            await user.click(submit);
+            expect(await screen.findByRole('alert')).toHaveTextContent(
+                'You could not be logged in.',
+            );
+        });
+
+        it('shows the login page when the session ends, then the page the user was on', async () => {
+            const user = userEvent.setup();
+            const queryClient = createQueryClient();
+            const adapter = createAuthAdapter();
+            window.history.replaceState(null, '', '/panneau/resources/pages');
+            renderPanneau({
+                adapter,
+                queryClient,
+                config: createBootConfig({ definition: definition() }),
+            });
+            adapter.getDefinition.mockRejectedValueOnce(unauthorized());
+            await act(() => queryClient.refetchQueries({ queryKey: queryKeys.definition() }));
+            expect(
+                screen.getByText('Your session has ended. Log in again to continue.'),
+            ).toBeInTheDocument();
+            expect(screen.getByText('Test site')).toBeInTheDocument();
+
+            await user.type(screen.getByLabelText(/^Email/), 'ada@example.com');
+            await user.type(screen.getByLabelText(/^Password/), 'secret');
+            await user.click(screen.getByRole('button', { name: 'Log in' }));
+            expect(await screen.findByRole('heading', { name: 'Pages' })).toBeInTheDocument();
+            expect(window.location.pathname).toBe('/panneau/resources/pages');
+        });
+
+        it('logs out, forgets the user, and fetches the definition at the next login', async () => {
+            const user = userEvent.setup();
+            const queryClient = createQueryClient();
+            const adapter = createAuthAdapter();
+            renderPanneau({
+                adapter,
+                queryClient,
+                config: createBootConfig({ definition: definition() }),
+            });
+            expect(adapter.getDefinition).not.toHaveBeenCalled();
+
+            await user.click(screen.getByRole('button', { name: 'Log out' }));
+            expect(adapter.logout).toHaveBeenCalledTimes(1);
+            expect(await screen.findByRole('heading', { name: 'Log in' })).toBeInTheDocument();
+            expect(screen.queryByText(/session has ended/)).not.toBeInTheDocument();
+            expect(queryClient.getQueryData(queryKeys.definition())).toBeUndefined();
+
+            await user.type(screen.getByLabelText(/^Email/), 'grace@example.com');
+            await user.type(screen.getByLabelText(/^Password/), 'secret');
+            await user.click(screen.getByRole('button', { name: 'Log in' }));
+            expect(await screen.findByRole('heading', { name: 'Test site' })).toBeInTheDocument();
+            expect(adapter.getDefinition).toHaveBeenCalledTimes(1);
+        });
+
+        it('says when the logout fails, and stays', async () => {
+            const user = userEvent.setup();
+            const adapter = createAuthAdapter({
+                logout: vi.fn(() => Promise.reject(new Error('Network error'))),
+            });
+            renderPanneau({
+                adapter,
+                queryClient: createQueryClient(),
+                config: createBootConfig({ definition: definition() }),
+            });
+            await user.click(screen.getByRole('button', { name: 'Log out' }));
+            expect(
+                await screen.findByText('You could not be logged out. Try again.'),
+            ).toBeInTheDocument();
+            expect(screen.getByRole('heading', { name: 'Test site' })).toBeInTheDocument();
+        });
+    });
+
+    describe('in external auth mode', () => {
+        it('offers no logout without auth.logoutUrl', () => {
+            renderPanneau({ config: createBootConfig({ definition: createDefinition() }) });
+            expect(screen.queryByRole('button', { name: 'Log out' })).not.toBeInTheDocument();
+        });
+
+        it('offers a logout with auth.logoutUrl', () => {
+            // The button sends the browser to the URL, which jsdom doesn't do.
+            renderPanneau({
+                config: createBootConfig({
+                    definition: createDefinition({
+                        auth: { mode: 'external', loginUrl: '/login', logoutUrl: '/logout' },
+                    }),
+                }),
+            });
+            expect(screen.getByRole('button', { name: 'Log out' })).toBeInTheDocument();
         });
     });
 });

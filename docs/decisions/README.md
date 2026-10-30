@@ -17,14 +17,14 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0009](0009-preview-drafts-revisions.md)      | Component and iframe previews, drafts and revisions per resource       | Accepted              |
 | [0010](0010-media.md)                         | Media through the protocol, non-destructive image editing              | Amended by 0026, 0031 |
 | [0011](0011-permissions.md)                   | Backend policies, abilities in the UI, optional roles module           | Accepted              |
-| [0012](0012-authentication.md)                | Complete, optional auth that works next to a site's own auth           | Accepted              |
+| [0012](0012-authentication.md)                | Complete, optional auth that works next to a site's own auth           | Amended by 0037       |
 | [0013](0013-public-api-and-stability.md)      | Public API and stability rules                                         | Accepted              |
 | [0014](0014-testing.md)                       | Testing strategy                                                       | Accepted              |
 | [0015](0015-dashboards-and-search.md)         | Dashboards and global search                                           | Accepted              |
 | [0016](0016-migration-strategy.md)            | Clean break, maintained old lines, Niche as pilot                      | Accepted              |
 | [0017](0017-actions.md)                       | Actions on items, selections and resources                             | Accepted              |
 | [0018](0018-new-packages-next-to-v4.md)       | New packages next to the v4 code, which moves to `legacy/`             | Accepted              |
-| [0019](0019-app-entry.md)                     | The app entry: boot config, mount function and client routes           | Accepted              |
+| [0019](0019-app-entry.md)                     | The app entry: boot config, mount function and client routes           | Amended by 0037       |
 | [0020](0020-default-theme-and-icons.md)       | A sober default theme, and Lucide as the only icon set                 | Accepted              |
 | [0021](0021-forms-render-core-state.md)       | Forms render the form state of the engine                              | Accepted              |
 | [0022](0022-lists-render-core-state.md)       | Lists render the list state of the engine                              | Accepted              |
@@ -41,3 +41,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0033](0033-more-field-types.md)              | More field types: tel, range, duration, json, tags, embed and location | Accepted              |
 | [0034](0034-skeletons-while-content-loads.md) | Skeletons while content loads                                          | Accepted              |
 | [0035](0035-rich-text-kept-html.md)           | Rich text keeps HTML it doesn't edit, inert in the admin               | Accepted              |
+| [0037](0037-login-page-token-and-logout.md)   | The login page of the app, a login with a token, and the logout        | Accepted              |

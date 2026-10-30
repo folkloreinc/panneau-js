@@ -1,34 +1,50 @@
 import { type DataAdapter, UnauthorizedError } from '@panneau/data';
-import type { BootConfig, Definition } from '@panneau/protocol';
+import type { Auth, BootConfig, Definition } from '@panneau/protocol';
 
-/** Whether the API said that the user isn't authenticated, with a way to know when it does. */
+/**
+ * Where the session is: `active`, `ended` when the API answered that the user isn't authenticated,
+ * or `logged-out` when the user logged out from the app.
+ */
+export type SessionStatus = 'active' | 'ended' | 'logged-out';
+
+/** The status of the session, with a way to know when it changes. */
 export interface SessionState {
-    isSignedOut(): boolean;
+    getStatus(): SessionStatus;
     subscribe(listener: () => void): () => void;
-    signOut(): void;
+    /** The API answered `401`: an active session ends. A logged-out one stays logged out. */
+    end(): void;
+    logOut(): void;
+    logIn(): void;
 }
 
 export function createSessionState(): SessionState {
-    let signedOut = false;
+    let status: SessionStatus = 'active';
     const listeners = new Set<() => void>();
+    const set = (next: SessionStatus) => {
+        if (status !== next) {
+            status = next;
+            listeners.forEach((listener) => listener());
+        }
+    };
     return {
-        isSignedOut: () => signedOut,
+        getStatus: () => status,
         subscribe(listener) {
             listeners.add(listener);
             return () => listeners.delete(listener);
         },
-        signOut() {
-            if (!signedOut) {
-                signedOut = true;
-                listeners.forEach((listener) => listener());
+        end() {
+            if (status === 'active') {
+                set('ended');
             }
         },
+        logOut: () => set('logged-out'),
+        logIn: () => set('active'),
     };
 }
 
 /**
  * Wraps an adapter so that every call that rejects with an `UnauthorizedError` (`401`, or `419`
- * with the Laravel preset) signs the session out. The call still rejects.
+ * with the Laravel preset) ends the session. The call still rejects.
  */
 export function watchUnauthorized(adapter: DataAdapter, session: SessionState): DataAdapter {
     return new Proxy(adapter, {
@@ -42,7 +58,7 @@ export function watchUnauthorized(adapter: DataAdapter, session: SessionState): 
                 if (result instanceof Promise) {
                     return result.catch((error: unknown) => {
                         if (error instanceof UnauthorizedError) {
-                            session.signOut();
+                            session.end();
                         }
                         throw error;
                     });
@@ -54,13 +70,22 @@ export function watchUnauthorized(adapter: DataAdapter, session: SessionState): 
 }
 
 /**
- * Where to send unauthenticated users: `auth.loginUrl` of the definition in `external` mode, the
- * `loginUrl` of the boot config before the definition is loaded, and nowhere in `panneau` mode,
- * whose login page is part of the app.
+ * Where to send unauthenticated users: `auth.loginUrl` in `external` mode, the `loginUrl` of the
+ * boot config before the definition is loaded, and nowhere in `panneau` mode, whose login page is
+ * part of the app.
  */
 export function getLoginUrl(definition: Definition | undefined, config: BootConfig): string | null {
-    if (definition?.auth?.mode === 'panneau') {
+    const auth = getAuth(definition, config);
+    if (auth?.mode === 'panneau') {
         return null;
     }
-    return definition?.auth?.loginUrl ?? config.loginUrl ?? null;
+    return auth?.loginUrl ?? config.loginUrl ?? null;
+}
+
+/**
+ * The auth settings in effect: those of the definition, or of the boot config before the
+ * definition is loaded.
+ */
+export function getAuth(definition: Definition | undefined, config: BootConfig): Auth | null {
+    return definition?.auth ?? config.auth ?? null;
 }

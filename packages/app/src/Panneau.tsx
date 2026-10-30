@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useEffectEvent, useState, useSyncExternalStore } from 'react';
 
 import {
@@ -8,21 +8,33 @@ import {
     createPluginRegistry,
     resolveTheme,
 } from '@panneau/core';
-import { type DataAdapter, isApiError } from '@panneau/data';
+import {
+    type DataAdapter,
+    type LoginCredentials,
+    UnauthorizedError,
+    isApiError,
+} from '@panneau/data';
 import { createLaravelAdapter } from '@panneau/data/laravel';
-import { DataAdapterProvider, definitionQueryOptions } from '@panneau/data/query';
+import { DataAdapterProvider, definitionQueryOptions, queryKeys } from '@panneau/data/query';
 import { FieldsProvider, type MapsConfig, createEmbedSource } from '@panneau/fields';
 import { appMessages } from '@panneau/intl';
-import type { BootConfig } from '@panneau/protocol';
+import type { Auth, BootConfig } from '@panneau/protocol';
 import { Button, type NamedIconLoader, PanneauRoot, usePanneauIntl } from '@panneau/ui';
 import { lucideIconLoader } from '@panneau/ui/named-icons';
 
 import styles from './Panneau.module.css';
 import { Shell } from './Shell';
+import { LoginPage } from './auth/LoginPage';
 import { usePreference } from './preferences';
 import { ShellSkeleton } from './shell/ShellSkeleton';
 import { COLOR_SCHEMES } from './shell/Sidebar';
-import { createSessionState, getLoginUrl, watchUnauthorized } from './unauthorized';
+import {
+    type SessionState,
+    createSessionState,
+    getAuth,
+    getLoginUrl,
+    watchUnauthorized,
+} from './unauthorized';
 
 /** What `onUnauthorized` receives. */
 export interface UnauthorizedContext {
@@ -83,34 +95,75 @@ function createQueryClient(): QueryClient {
 function Content({
     config,
     adapter,
+    baseAdapter,
     plugins,
     iconLoader,
     session,
     onUnauthorized,
     maps,
 }: Required<Pick<PanneauProps, 'config' | 'adapter' | 'onUnauthorized'>> & {
+    /** The adapter, without the watch of `401` answers. */
+    baseAdapter: DataAdapter;
     plugins: readonly PanneauPlugin[];
     iconLoader: NamedIconLoader | null;
     maps: MapsConfig | null;
-    session: ReturnType<typeof createSessionState>;
+    session: SessionState;
 }) {
     const [router] = useState(createHistoryRouter);
+    const queryClient = useQueryClient();
+    const status = useSyncExternalStore(session.subscribe, session.getStatus);
+    // The inlined definition is that of the user the page was loaded for: after a login or a
+    // logout in the app, the definition is fetched.
+    const [inlined, setInlined] = useState(config.definition);
     const definitionQuery = useQuery({
         ...definitionQueryOptions(adapter),
-        initialData: config.definition,
+        initialData: inlined,
+        enabled: status === 'active',
     });
-    const signedOut = useSyncExternalStore(session.subscribe, session.isSignedOut);
     const [colorScheme, setColorScheme] = usePreference('color-scheme', COLOR_SCHEMES);
     const definition = definitionQuery.data;
+    // The auth settings outlive the definition of a user who logged out.
+    const [lastAuth, setLastAuth] = useState<Auth | null>(null);
+    const auth = getAuth(definition, config) ?? lastAuth;
     const loginUrl = getLoginUrl(definition, config);
 
     // Only when the session ends: `loginUrl` and the callback are read at that time.
     const sessionEnded = useEffectEvent(() => onUnauthorized({ loginUrl }));
     useEffect(() => {
-        if (signedOut) {
+        if (status === 'ended') {
             sessionEnded();
         }
-    }, [signedOut]);
+    }, [status]);
+
+    // Nothing of the previous user stays in the cache.
+    const forgetUser = () => {
+        setLastAuth(auth);
+        setInlined(undefined);
+        queryClient.removeQueries({ queryKey: queryKeys.all });
+    };
+    const logIn = async (credentials: LoginCredentials) => {
+        await adapter.login(credentials);
+        forgetUser();
+        session.logIn();
+    };
+    // `panneau` mode: the API logs out, and the login page shows. `external` mode: the site's own
+    // logout, when the definition has one.
+    const logoutUrl = auth?.mode === 'external' ? (auth.logoutUrl ?? null) : null;
+    const logOut =
+        auth?.mode === 'panneau'
+            ? async () => {
+                  // A session that already ended is logged out.
+                  await baseAdapter.logout().catch((error: unknown) => {
+                      if (!(error instanceof UnauthorizedError)) {
+                          throw error;
+                      }
+                  });
+                  session.logOut();
+                  forgetUser();
+              }
+            : logoutUrl !== null
+              ? () => window.location.assign(logoutUrl)
+              : undefined;
 
     const scheme = colorScheme ?? definition?.theme?.colorScheme ?? 'light';
     return (
@@ -125,7 +178,15 @@ function Content({
             iconLoader={iconLoader}
             className={styles.root}
         >
-            {signedOut ? (
+            {status !== 'active' && auth?.mode === 'panneau' ? (
+                <LoginPage
+                    auth={auth}
+                    name={definition?.name}
+                    // A guest who just arrived had no session
+                    sessionEnded={status === 'ended' && definition !== undefined}
+                    onLogIn={logIn}
+                />
+            ) : status !== 'active' ? (
                 <SessionEnded loginUrl={loginUrl} />
             ) : definition === undefined ? (
                 <Loading
@@ -141,6 +202,7 @@ function Content({
                             basePath={config.basePath}
                             colorScheme={scheme}
                             onColorSchemeChange={setColorScheme}
+                            onLogOut={logOut}
                         />
                     </FieldsProvider>
                 </PanneauProvider>
@@ -192,12 +254,11 @@ export function Panneau({
 }: PanneauProps) {
     const [state] = useState(() => {
         const session = createSessionState();
+        const baseAdapter = adapter ?? createLaravelAdapter({ baseUrl: config.apiBaseUrl });
         return {
             session,
-            adapter: watchUnauthorized(
-                adapter ?? createLaravelAdapter({ baseUrl: config.apiBaseUrl }),
-                session,
-            ),
+            baseAdapter,
+            adapter: watchUnauthorized(baseAdapter, session),
             queryClient: queryClient ?? createQueryClient(),
         };
     });
@@ -207,6 +268,7 @@ export function Panneau({
                 <Content
                     config={config}
                     adapter={state.adapter}
+                    baseAdapter={state.baseAdapter}
                     plugins={plugins}
                     iconLoader={iconLoader}
                     session={state.session}

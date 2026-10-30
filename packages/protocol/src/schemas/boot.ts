@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { PROTOCOL_VERSION } from '../version';
-import { Definition } from './definition';
+import { Auth, Definition } from './definition';
 
 export const BootConfig = z
     .looseObject({
@@ -26,6 +26,10 @@ export const BootConfig = z
             description:
                 'The definition for the current user, inlined so the app skips the first `GET /definition`.',
         }) as z.ZodOptional<typeof Definition>,
+        auth: Auth.optional().meta({
+            description:
+                'The `auth` of the definition, for the login page of the `panneau` auth mode, which shows before the definition can be loaded.',
+        }),
         loginUrl: z.string().nullable().optional().meta({
             description:
                 'Where to send unauthenticated users when the API answers `401` before the definition is loaded. Afterwards, `auth.loginUrl` of the definition is used.',

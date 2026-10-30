@@ -2,8 +2,10 @@ export type {
     ActionResponse,
     DataAdapter,
     LoginCredentials,
+    PasswordCredentials,
     RequestOptions,
     SearchOptions,
+    TokenCredentials,
     UpdateOptions,
     Values,
 } from './adapter';

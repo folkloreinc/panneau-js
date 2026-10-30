@@ -13,7 +13,7 @@ import {
 import { invalidateActionResult, useDataAdapter } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
 import type { Definition, RouteReference } from '@panneau/protocol';
-import { Alert, usePanneauIntl } from '@panneau/ui';
+import { Alert, usePanneauIntl, useToast } from '@panneau/ui';
 
 import { DocumentTitle } from './documentTitle';
 import { navigate, setHistoryGuard, usePathname } from './location';
@@ -30,6 +30,8 @@ export interface ShellProps {
     basePath: string;
     colorScheme: ColorSchemePreference;
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
+    /** Logs the user out. Without it, the shell offers no logout. */
+    onLogOut?: () => Promise<void> | void;
 }
 
 /** The path of a named route of the definition (`routes`), with its parameters filled in. */
@@ -123,7 +125,15 @@ function Page({
  * adapter, refreshing what their result changed. Leaving a page with unsaved changes, by a link
  * or by going back or forward, asks first.
  */
-export function Shell({ definition, basePath, colorScheme, onColorSchemeChange }: ShellProps) {
+export function Shell({
+    definition,
+    basePath,
+    colorScheme,
+    onColorSchemeChange,
+    onLogOut,
+}: ShellProps) {
+    const intl = usePanneauIntl();
+    const toasts = useToast();
     const pathname = usePathname();
     const queryClient = useQueryClient();
     const adapter = useDataAdapter();
@@ -144,6 +154,25 @@ export function Shell({ definition, basePath, colorScheme, onColorSchemeChange }
             window.location.assign(url);
         }
     };
+    // Like leaving the page: unsaved changes ask first.
+    const logOut =
+        onLogOut !== undefined
+            ? () => {
+                  void guards.confirmLeave().then(async (leave) => {
+                      if (!leave) {
+                          return;
+                      }
+                      try {
+                          await onLogOut();
+                      } catch {
+                          toasts.show({
+                              title: intl.formatMessage(appMessages.logOutError),
+                              tone: 'danger',
+                          });
+                      }
+                  });
+              }
+            : undefined;
     return (
         <LeaveGuardsProvider guards={guards}>
             <RouterProvider navigate={go}>
@@ -166,6 +195,7 @@ export function Shell({ definition, basePath, colorScheme, onColorSchemeChange }
                         route={route}
                         colorScheme={colorScheme}
                         onColorSchemeChange={onColorSchemeChange}
+                        onLogOut={logOut}
                     >
                         <ActionRuns />
                         <Page definition={definition} basePath={basePath} route={route} />

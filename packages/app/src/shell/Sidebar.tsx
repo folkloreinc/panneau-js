@@ -4,6 +4,7 @@ import {
     House,
     Link2,
     List,
+    LogOut,
     Monitor,
     Moon,
     PanelLeftClose,
@@ -75,6 +76,8 @@ export interface SidebarProps {
     onNavigate?: () => void;
     colorScheme: ColorSchemePreference;
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
+    /** Logs the user out. Without it, the sidebar has no "Log out" button. */
+    onLogOut?: () => void;
     /** Opens the "Go to…" palette. Without it, the sidebar has no such button. */
     onGoTo?: () => void;
     className?: string;
@@ -82,7 +85,7 @@ export interface SidebarProps {
 
 /**
  * The main navigation, as a column: the site, the links of the `main` menu of the definition, and
- * the user. Collapsed, it is a rail of icons, as in the sidebars of recent browsers.
+ * the user, with the buttons of the appearance and of the logout. Collapsed, it is a rail of icons, as in the sidebars of recent browsers.
  */
 export function Sidebar({
     definition,
@@ -94,6 +97,7 @@ export function Sidebar({
     onNavigate,
     colorScheme,
     onColorSchemeChange,
+    onLogOut,
     onGoTo,
     className,
 }: SidebarProps) {
@@ -294,6 +298,14 @@ export function Sidebar({
                     size="sm"
                     onPress={() => onColorSchemeChange(nextScheme)}
                 />
+                {onLogOut !== undefined ? (
+                    <IconButton
+                        icon={LogOut}
+                        label={intl.formatMessage(appMessages.logOut)}
+                        size="sm"
+                        onPress={onLogOut}
+                    />
+                ) : null}
             </div>
         </div>
     );

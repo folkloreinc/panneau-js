@@ -24,6 +24,11 @@ export const AuthProvider = z.looseObject({
     icon: z.string().optional(),
 });
 
+export const AuthToken = z.looseObject({
+    label: z.string().optional().meta({ description: 'Label of the field. Defaults to "Token".' }),
+    help: z.string().optional().meta({ description: 'Help under the field: where to find it.' }),
+});
+
 export const Auth = z.looseObject({
     mode: z.enum(['panneau', 'external']).meta({
         description: "`panneau`: Panneau's own login pages. `external`: the site handles login.",
@@ -33,7 +38,18 @@ export const Auth = z.looseObject({
         .nullable()
         .optional()
         .meta({ description: '`external`: where unauthenticated users are sent.' }),
-    password: z.boolean().optional(),
+    logoutUrl: z.string().nullable().optional().meta({
+        description:
+            "`external`: where the browser goes to log out, the site's own logout. Without it, the app offers no logout.",
+    }),
+    password: z.boolean().optional().meta({
+        description:
+            '`panneau`: a login with an email and a password. Defaults to true without `token`.',
+    }),
+    token: AuthToken.optional().meta({
+        description:
+            '`panneau`: a login with a single secret, such as an access token, sent as `token` to `POST /auth/login`.',
+    }),
     providers: z.array(AuthProvider).optional(),
     passwordReset: z.boolean().optional(),
     twoFactor: z.boolean().optional(),
@@ -134,6 +150,7 @@ export const Definition = z
 
 export type User = z.infer<typeof User>;
 export type AuthProvider = z.infer<typeof AuthProvider>;
+export type AuthToken = z.infer<typeof AuthToken>;
 export type Auth = z.infer<typeof Auth>;
 export type MenuItem = z.infer<typeof MenuItem>;
 export type Page = z.infer<typeof Page>;

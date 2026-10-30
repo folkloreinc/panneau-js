@@ -389,7 +389,12 @@ export const Auth: z.ZodObject<{
         panneau: "panneau";
     }>;
     loginUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    logoutUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     password: z.ZodOptional<z.ZodBoolean>;
+    token: z.ZodOptional<z.ZodObject<{
+        label: z.ZodOptional<z.ZodString>;
+        help: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>>;
     providers: z.ZodOptional<z.ZodArray<z.ZodObject<{
         id: z.ZodString;
         label: z.ZodString;
@@ -417,6 +422,15 @@ export const AuthProvider: z.ZodObject<{
 export type AuthProvider = z.infer<typeof AuthProvider>;
 
 // @public (undocumented)
+export const AuthToken: z.ZodObject<{
+    label: z.ZodOptional<z.ZodString>;
+    help: z.ZodOptional<z.ZodString>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type AuthToken = z.infer<typeof AuthToken>;
+
+// @public (undocumented)
 export const BlockType: z.ZodObject<{
     id: z.ZodString;
     label: z.ZodString;
@@ -437,6 +451,29 @@ export const BootConfig: z.ZodObject<{
     basePath: z.ZodString;
     locale: z.ZodString;
     definition: z.ZodOptional<typeof Definition>;
+    auth: z.ZodOptional<z.ZodObject<{
+        mode: z.ZodEnum<{
+            external: "external";
+            panneau: "panneau";
+        }>;
+        loginUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        logoutUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        password: z.ZodOptional<z.ZodBoolean>;
+        token: z.ZodOptional<z.ZodObject<{
+            label: z.ZodOptional<z.ZodString>;
+            help: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>>;
+        providers: z.ZodOptional<z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            label: z.ZodString;
+            url: z.ZodOptional<z.ZodString>;
+            icon: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>>>;
+        passwordReset: z.ZodOptional<z.ZodBoolean>;
+        twoFactor: z.ZodOptional<z.ZodBoolean>;
+        passkeys: z.ZodOptional<z.ZodBoolean>;
+        emailVerification: z.ZodOptional<z.ZodBoolean>;
+    }, z.core.$loose>>;
     loginUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 }, z.core.$loose>;
 
@@ -915,7 +952,12 @@ export const Definition: z.ZodObject<{
             panneau: "panneau";
         }>;
         loginUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        logoutUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         password: z.ZodOptional<z.ZodBoolean>;
+        token: z.ZodOptional<z.ZodObject<{
+            label: z.ZodOptional<z.ZodString>;
+            help: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>>;
         providers: z.ZodOptional<z.ZodArray<z.ZodObject<{
             id: z.ZodString;
             label: z.ZodString;
@@ -2553,13 +2595,22 @@ export const namedSchemas: {
         url: z.ZodOptional<z.ZodString>;
         icon: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>;
+    AuthToken: z.ZodObject<{
+        label: z.ZodOptional<z.ZodString>;
+        help: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>;
     Auth: z.ZodObject<{
         mode: z.ZodEnum<{
             external: "external";
             panneau: "panneau";
         }>;
         loginUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        logoutUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         password: z.ZodOptional<z.ZodBoolean>;
+        token: z.ZodOptional<z.ZodObject<{
+            label: z.ZodOptional<z.ZodString>;
+            help: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>>;
         providers: z.ZodOptional<z.ZodArray<z.ZodObject<{
             id: z.ZodString;
             label: z.ZodString;
@@ -3149,7 +3200,12 @@ export const namedSchemas: {
                 panneau: "panneau";
             }>;
             loginUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            logoutUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
             password: z.ZodOptional<z.ZodBoolean>;
+            token: z.ZodOptional<z.ZodObject<{
+                label: z.ZodOptional<z.ZodString>;
+                help: z.ZodOptional<z.ZodString>;
+            }, z.core.$loose>>;
             providers: z.ZodOptional<z.ZodArray<z.ZodObject<{
                 id: z.ZodString;
                 label: z.ZodString;

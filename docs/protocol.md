@@ -268,7 +268,9 @@ A resource lists the built-in actions it enables, possibly with overrides (label
 {
     "mode": "panneau", // "panneau": Panneau's own pages; "external": the site handles login
     "loginUrl": null, // with "external", where to send unauthenticated users
-    "password": true,
+    "logoutUrl": null, // with "external", the site's logout, where the browser goes to log out
+    "password": true, // an email and a password; the default without "token"
+    "token": { "label": "Admin token", "help": "…" }, // optional: a login with a single secret
     "providers": [{ "id": "google", "label": "Google", "url": "/panneau/auth/google" }],
     "passwordReset": true,
     "twoFactor": true,
@@ -276,6 +278,9 @@ A resource lists the built-in actions it enables, possibly with overrides (label
     "emailVerification": false,
 }
 ```
+
+- **Login.** In `panneau` mode, the app shows its login page when the API answers `401`: a form for an email and a password, a form for the secret of `token`, and a link for each provider, as `auth` says. `POST /auth/login` takes `{ "email", "password", "remember" }`, or `{ "token", "remember" }` with `token`. See [decisions/0037](decisions/0037-login-page-token-and-logout.md).
+- **Logout.** In `panneau` mode, the app calls `POST /auth/logout`, then shows the login page. In `external` mode, the browser goes to `logoutUrl`; without it, the app offers no logout.
 
 ## Boot config
 
@@ -296,11 +301,13 @@ The page of the app carries a **boot config**: what the app needs before it can 
     "locale": "fr", // locale of the UI before the definition loads
     "definition": {/* Definition */}, // optional: inlined for the first render
     "loginUrl": "/login", // optional: where to send users when GET /definition answers 401
+    "auth": {/* Auth */}, // optional: the auth of the definition, for the login page before it
 }
 ```
 
 - **`definition`** is the response of `GET /definition` for the current user ([decisions/0004](decisions/0004-definitions-are-data.md)). With it, the app skips that request on load.
 - **`loginUrl`** is only used before the definition is known. Afterwards, the app uses `auth.loginUrl` of the definition.
+- **`auth`** is the `auth` of the definition. In `panneau` mode, the app's login page shows before the definition can be loaded, and reads which logins to offer from it. The server serves the page to guests, rather than redirecting them.
 - **Escaping.** The server escapes `<`, `>` and `&` in the JSON, so its content can't close the `<script>` element.
 - Like the definition, the boot config keeps properties it doesn't know.
 
@@ -637,7 +644,7 @@ These endpoints only exist with `auth.mode = "panneau"`:
 | Endpoint                                                        | Purpose                                             |
 | --------------------------------------------------------------- | --------------------------------------------------- |
 | `GET /auth/session`                                             | current user and abilities, or `401`                |
-| `POST /auth/login`, `POST /auth/logout`                         | password login and logout                           |
+| `POST /auth/login`, `POST /auth/logout`                         | login (password or token) and logout                |
 | `GET /auth/providers/{provider}/redirect`                       | OAuth start; the callback is handled by the backend |
 | `POST /auth/password/forgot`, `POST /auth/password/reset`       | password reset                                      |
 | `POST /auth/two-factor/challenge`                               | second factor at login                              |

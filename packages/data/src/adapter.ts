@@ -45,12 +45,20 @@ export type ActionResponse =
     { result: ActionResult; run?: undefined } | { run: ActionRun; result?: undefined };
 
 /** Credentials of a password login. */
-export interface LoginCredentials {
+export interface PasswordCredentials {
     email: string;
     password: string;
     remember?: boolean;
-    [key: string]: unknown;
 }
+
+/** Credentials of a login with a single secret, for definitions with `auth.token`. */
+export interface TokenCredentials {
+    token: string;
+    remember?: boolean;
+}
+
+/** What `login()` sends: an email and a password, or a token. */
+export type LoginCredentials = PasswordCredentials | TokenCredentials;
 
 /**
  * Everything Panneau needs from a backend. `createRestAdapter()` implements it over the HTTP API of
@@ -102,7 +110,7 @@ export interface DataAdapter {
 
     /** The current session. Rejects with an `UnauthorizedError` without one. */
     getSession(options?: RequestOptions): Promise<Session>;
-    /** Logs in with a password. */
+    /** Logs in with an email and a password, or with a token (`auth.token`). */
     login(credentials: LoginCredentials, options?: RequestOptions): Promise<Session>;
     /** Logs out. */
     logout(options?: RequestOptions): Promise<void>;
