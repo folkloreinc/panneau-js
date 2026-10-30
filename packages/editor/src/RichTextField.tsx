@@ -79,18 +79,18 @@ export function RichTextField({
     onChange,
     onBlur,
     placeholder,
-    toolbar: toolbarProp,
-    headings: headingsProp,
-    styles: stylesProp,
-    newTab: newTabProp,
-    extensions: extensionsProp,
-    buttons: buttonsProp,
+    toolbar = DEFAULT_TOOLBAR,
+    headings = DEFAULT_HEADINGS,
+    styles: blockStyles = NO_STYLES,
+    newTab = 'choose',
+    extensions: projectExtensions = NO_EXTENSIONS,
+    buttons = NO_BUTTONS,
     label,
     description,
-    errors: errorsProp,
-    disabled: disabledProp,
-    readOnly: readOnlyProp,
-    required: requiredProp,
+    errors = NO_ERRORS,
+    disabled = false,
+    readOnly = false,
+    required = false,
     name,
     id,
     autoFocus,
@@ -98,17 +98,6 @@ export function RichTextField({
     className,
     contentClassName,
 }: RichTextFieldProps) {
-    // Defaults in the body: the React Compiler skips components with defaults in their parameters
-    const toolbar = toolbarProp ?? DEFAULT_TOOLBAR;
-    const headings = headingsProp ?? DEFAULT_HEADINGS;
-    const blockStyles = stylesProp ?? NO_STYLES;
-    const newTab = newTabProp ?? 'choose';
-    const projectExtensions = extensionsProp ?? NO_EXTENSIONS;
-    const buttons = buttonsProp ?? NO_BUTTONS;
-    const errors = errorsProp ?? NO_ERRORS;
-    const disabled = disabledProp === true;
-    const readOnly = readOnlyProp === true;
-    const required = requiredProp === true;
     const intl = usePanneauIntl();
     const editable = !disabled && !readOnly;
     const extensions = createRichTextExtensions({
