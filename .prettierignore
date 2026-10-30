@@ -9,3 +9,4 @@ CHANGELOG.md
 packages/*/schema/
 packages/*/api/
 storybook-static
+packages/codemods/src/__fixtures__/

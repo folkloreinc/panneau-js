@@ -15,6 +15,8 @@ export default defineConfig([
         'coverage/',
         'storybook-static/',
         'playground-dist/',
+        // v4 code that the codemods rewrite, and what they write.
+        'packages/codemods/src/__fixtures__/',
     ]),
     js.configs.recommended,
     tseslint.configs.strict,

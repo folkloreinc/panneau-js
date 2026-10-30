@@ -83,7 +83,7 @@ Goal: a complete admin panel, ready for client projects.
 - **More field types:** `tel`, `range`, `duration`, `json`, `tags`, `embed` (resolved by the backend with its provider's oEmbed) and `location` (a Leaflet map with a pluggable address search) ([#111](https://github.com/folkloreinc/panneau-js/issues/111), [decisions/0033](decisions/0033-more-field-types.md), [folkloreinc/laravel-panneau#100](https://github.com/folkloreinc/laravel-panneau/issues/100)). Choices as radios or checkboxes are `select` widgets.
 - **Media:** media fields and a basic library on the protocol's media API; `laravel-mediatheque` adapter.
 - **Folklore plugin:** Pages, Blocks and PageSlug fields with their JS, shipped by `laravel-folklore`.
-- **Migration:** guide, codemods for JS, Rector rules for PHP, tried on the contests platform's admin (custom fields, pages and controllers) before 5.0.
+- **Migration:** guide, codemods for JS (`@panneau/codemods`, [#129](https://github.com/folkloreinc/panneau-js/issues/129)), Rector rules for PHP, tried on the contests platform's admin (custom fields, pages and controllers) before 5.0.
 
 ## 5.0.0
 

@@ -21,6 +21,7 @@ Packages are created when their work starts, not as empty shells ([decisions/001
 | `@panneau/media`    | Data          | The media field, the media picker (`./picker`) and the image editor (`./editor`), which load neither `data` nor `core`, the media library | the packages above                                                                                                                              |
 | `@panneau/auth`     | Data          | Auth forms and flows: login, OAuth, password reset, 2FA, passkeys, verification                                                           | the packages above, except `media`                                                                                                              |
 | `@panneau/app`      | App           | The app entry (`createPanneauApp`) and the admin panel: routes, layout, pages                                                             | every package above                                                                                                                             |
+| `@panneau/codemods` | Tooling       | Codemods from Panneau 4 (`npx @panneau/codemods v4-to-v5`), for Node: the app entry, imports and custom fields, with a report             | none: it reads the code of v4 projects, and only knows the v5 packages by name                                                                  |
 | `@panneau/collab`   | Engine (5.x)  | Presence and realtime collaboration through Yjs, as a store for `core`                                                                    | `protocol`, `core`                                                                                                                              |
 
 Notes:
@@ -32,6 +33,7 @@ Notes:
 - **`data`** only needs `protocol` to start with. It sits above `core` so that query hooks can use the engine's list state.
 - **`actions`** runs the actions that lists and forms hand over. It sits above `forms` (parameters) and `data` (the adapter's types), and doesn't need TanStack Query ([decisions/0023](decisions/0023-action-runner.md)).
 - **`app`** starts from the entry contract of [decisions/0019](decisions/0019-app-entry.md): the boot config, `createPanneauApp()` and the client routes. Its shell is a placeholder until Phase 2.
+- **`codemods`** is a command for Node, outside the layers: it rewrites the code of v4 projects, and imports no other package.
 - **Feature packages** (`editor`, `media`, `auth`, `intl`, `collab`) sit at the layer of what they need, so a project only loads the features it uses. `app` adds them through plugins.
 - Internal dependencies are `dependencies` with the shared version. React and other libraries the host app shares (TanStack Query, React Aria) are `peerDependencies`.
 
