@@ -2,8 +2,10 @@ import { QueryClient } from '@tanstack/react-query';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { act } from 'react';
+import { useIntl } from 'react-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { type PanneauPlugin, definePlugin } from '@panneau/core';
 import { type DataAdapter, UnauthorizedError, ValidationError } from '@panneau/data';
 import { queryKeys } from '@panneau/data/query';
 import { type BootConfigInput, type DefinitionInput, validateBootConfig } from '@panneau/protocol';
@@ -120,6 +122,109 @@ describe('Panneau', () => {
         expect(await screen.findByRole('alert')).toHaveTextContent('could not be loaded');
         await user.click(screen.getByRole('button', { name: 'Try again' }));
         expect(await screen.findByRole('heading', { name: 'Test site' })).toBeInTheDocument();
+    });
+
+    describe('the home route', () => {
+        function Overview({ title }: { title: string }) {
+            return <h1>{title}</h1>;
+        }
+        const plugins = [definePlugin({ id: 'overview', pages: { overview: Overview } })];
+
+        it('renders pages.home of the definition', () => {
+            renderPanneau({
+                plugins,
+                config: createBootConfig({
+                    definition: createDefinition({
+                        pages: {
+                            home: {
+                                component: 'overview',
+                                label: 'Overview',
+                                props: { title: 'Server health' },
+                            },
+                        },
+                    }),
+                }),
+            });
+            expect(screen.getByRole('heading', { name: 'Server health' })).toBeInTheDocument();
+            expect(screen.queryByText('Welcome, Ada.')).not.toBeInTheDocument();
+            expect(navigation().getByRole('link', { name: 'Home' })).toHaveAttribute(
+                'aria-current',
+                'page',
+            );
+            expect(document.title).toBe('Overview · Test site');
+        });
+
+        it('shows the cards of the resources for the built-in dashboard', () => {
+            renderPanneau({
+                config: createBootConfig({
+                    definition: createDefinition({ pages: { home: { component: 'dashboard' } } }),
+                }),
+            });
+            expect(
+                within(screen.getByRole('main')).getByRole('link', { name: 'Pages' }),
+            ).toHaveAttribute('href', '/panneau/resources/pages');
+        });
+
+        it('says when no plugin provides the component of pages.home', () => {
+            renderPanneau({
+                config: createBootConfig({
+                    definition: createDefinition({ pages: { home: { component: 'overview' } } }),
+                }),
+            });
+            const main = within(screen.getByRole('main'));
+            expect(main.getByText(/overview/)).toBeInTheDocument();
+            expect(main.queryByRole('link', { name: 'Authors' })).not.toBeInTheDocument();
+        });
+    });
+
+    describe('the messages of plugins', () => {
+        function Overview() {
+            const intl = useIntl();
+            return (
+                <h1>
+                    {intl.formatMessage({ id: 'overview.title', defaultMessage: 'Server health' })}
+                </h1>
+            );
+        }
+
+        function renderWithMessages(locales: PanneauPlugin['locales']) {
+            renderPanneau({
+                plugins: [definePlugin({ id: 'overview', pages: { overview: Overview }, locales })],
+                config: createBootConfig({
+                    locale: 'fr',
+                    definition: createDefinition({
+                        locale: 'fr-CA',
+                        pages: { home: { component: 'overview' } },
+                    }),
+                }),
+            });
+        }
+
+        it('loads them in the locale of the definition, over Panneau’s, before the shell', async () => {
+            renderWithMessages({
+                fr: () => Promise.resolve({ default: { 'overview.title': 'Santé du serveur' } }),
+                en: () => Promise.reject(new Error('Not loaded.')),
+            });
+            // The shell's skeleton, until the messages are there.
+            expect(screen.getByRole('status')).toBeInTheDocument();
+            expect(
+                await screen.findByRole('heading', { name: 'Santé du serveur' }),
+            ).toBeInTheDocument();
+            expect(screen.getByRole('link', { name: 'Accueil' })).toBeInTheDocument();
+        });
+
+        it('renders the shell with the default messages when they fail to load', async () => {
+            const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+            renderWithMessages({ fr: () => Promise.reject(new Error('Network error')) });
+            expect(
+                await screen.findByRole('heading', { name: 'Server health' }),
+            ).toBeInTheDocument();
+            expect(error).toHaveBeenCalledWith(
+                expect.stringContaining('failed to load'),
+                expect.any(Error),
+            );
+            error.mockRestore();
+        });
     });
 
     describe('when the API answers that the user is not authenticated', () => {

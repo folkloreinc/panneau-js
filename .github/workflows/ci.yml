@@ -110,7 +110,7 @@ jobs:
               run: npm run build-storybook -- --quiet
 
     smoke-webpack:
-        name: Smoke test (packed packages in a webpack app)
+        name: Smoke tests (webpack app, types under NodeNext, icons in Vite bundles)
         runs-on: ubuntu-24.04
         steps:
             - uses: actions/checkout@v5
@@ -124,3 +124,9 @@ jobs:
 
             - name: Pack, install and build with flklr (webpack), then render in Chromium
               run: npm run test:smoke
+
+            - name: Pack, install and typecheck every entry point under NodeNext
+              run: npm run test:types
+
+            - name: Lucide icons only in the bundles of apps that use them (Vite)
+              run: npm run test:icons

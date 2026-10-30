@@ -478,10 +478,14 @@ describe('ListView', () => {
                 actionIcons={{ delete: Archive }}
             />,
         );
-        await waitFor(() =>
-            expect(screen.getByRole('button', { name: 'Export' }).querySelector('svg')).toHaveClass(
-                'lucide-file-down',
-            ),
+        // The icon is a chunk of its own, and loading Lucide's list of icons can take more than a
+        // second on a busy CI runner.
+        await waitFor(
+            () =>
+                expect(
+                    screen.getByRole('button', { name: 'Export' }).querySelector('svg'),
+                ).toHaveClass('lucide-file-down'),
+            { timeout: 5000 },
         );
         await user.click(screen.getByRole('button', { name: 'Actions for Contact' }));
         const item = await screen.findByRole('menuitem', { name: 'Delete' });

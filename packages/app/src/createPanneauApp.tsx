@@ -7,6 +7,7 @@ import type { DataAdapter } from '@panneau/data';
 import type { MapsConfig } from '@panneau/fields';
 import type { BootConfig, BootConfigInput } from '@panneau/protocol';
 import type { NamedIconLoader } from '@panneau/ui';
+import { lucideIconLoader } from '@panneau/ui/named-icons';
 
 import { Panneau, type UnauthorizedContext } from './Panneau';
 import { parseBootConfig, readBootConfig } from './boot';
@@ -26,7 +27,15 @@ export interface PanneauAppOptions {
     config?: BootConfigInput;
     /** The TanStack Query client. Defaults to a new one. */
     queryClient?: QueryClient;
-    /** Loads the Lucide icons that the definition names. Defaults to every Lucide icon. */
+    /**
+     * Loads the icons that the definition names (`"icon": "users"`). Defaults to every Lucide
+     * icon, each one in its own chunk, loaded when shown (`lucideIconLoader`). `null` shows no
+     * named icons.
+     *
+     * The bundle has a chunk per Lucide icon whatever this option is, since this function imports
+     * the default. An app that passes its own loader to keep them out renders `<Panneau>` itself
+     * (decision 0036).
+     */
     iconLoader?: NamedIconLoader | null;
     /**
      * Called once when the API answers that the user isn't authenticated. Defaults to sending the
@@ -61,6 +70,7 @@ export interface PanneauApp {
 export function createPanneauApp({
     element,
     config: input,
+    iconLoader = lucideIconLoader,
     ...props
 }: PanneauAppOptions): PanneauApp {
     const config =
@@ -68,7 +78,7 @@ export function createPanneauApp({
     const root = createRoot(element);
     root.render(
         <StrictMode>
-            <Panneau {...props} config={config} />
+            <Panneau {...props} config={config} iconLoader={iconLoader} />
         </StrictMode>,
     );
     return { config, unmount: () => root.unmount() };

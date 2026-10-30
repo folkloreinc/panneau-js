@@ -4,6 +4,7 @@ import { useEffect, useEffectEvent, useState, useSyncExternalStore } from 'react
 import {
     type PanneauPlugin,
     PanneauProvider,
+    type PluginRegistry,
     createHistoryRouter,
     createPluginRegistry,
     resolveTheme,
@@ -20,11 +21,11 @@ import { FieldsProvider, type MapsConfig, createEmbedSource } from '@panneau/fie
 import { appMessages } from '@panneau/intl';
 import type { Auth, BootConfig } from '@panneau/protocol';
 import { Button, type NamedIconLoader, PanneauRoot, usePanneauIntl } from '@panneau/ui';
-import { lucideIconLoader } from '@panneau/ui/named-icons';
 
 import styles from './Panneau.module.css';
 import { Shell } from './Shell';
 import { LoginPage } from './auth/LoginPage';
+import { usePluginMessages } from './messages';
 import { usePreference } from './preferences';
 import { ShellSkeleton } from './shell/ShellSkeleton';
 import { COLOR_SCHEMES } from './shell/Sidebar';
@@ -52,13 +53,20 @@ export interface PanneauProps {
     config: BootConfig;
     /** The data adapter. Defaults to `createLaravelAdapter({ baseUrl: config.apiBaseUrl })`. */
     adapter?: DataAdapter;
-    /** Plugins: field types, pages, locales, themes… */
+    /**
+     * Plugins: field types, pages, locales, themes… The messages of their `locales` in the locale
+     * of the definition are loaded before the shell renders.
+     */
     plugins?: readonly PanneauPlugin[];
     /** The TanStack Query client. Defaults to a new one. */
     queryClient?: QueryClient;
     /**
-     * Loads the Lucide icons that the definition names (`"icon": "users"`). Defaults to every
-     * Lucide icon, each one in its own chunk, loaded when shown. `null` shows no named icons.
+     * Loads the icons that the definition names (`"icon": "users"`): `lucideIconLoader` of
+     * `@panneau/ui/named-icons` for every Lucide icon, each one in its own chunk, or a loader of
+     * only the icons the app uses. Without it, named icons render an empty space.
+     *
+     * Unlike `createPanneauApp()`, `<Panneau>` has no default: a bundler emits a chunk per Lucide
+     * icon for `lucideIconLoader` wherever it is imported (decision 0036).
      */
     iconLoader?: NamedIconLoader | null;
     /**
@@ -97,6 +105,7 @@ function Content({
     adapter,
     baseAdapter,
     plugins,
+    registry,
     iconLoader,
     session,
     onUnauthorized,
@@ -105,6 +114,7 @@ function Content({
     /** The adapter, without the watch of `401` answers. */
     baseAdapter: DataAdapter;
     plugins: readonly PanneauPlugin[];
+    registry: PluginRegistry;
     iconLoader: NamedIconLoader | null;
     maps: MapsConfig | null;
     session: SessionState;
@@ -125,6 +135,8 @@ function Content({
     // The auth settings outlive the definition of a user who logged out.
     const [lastAuth, setLastAuth] = useState<Auth | null>(null);
     const auth = getAuth(definition, config) ?? lastAuth;
+    const locale = definition?.locale ?? config.locale;
+    const messages = usePluginMessages(registry, locale);
     const loginUrl = getLoginUrl(definition, config);
 
     // Only when the session ends: `loginUrl` and the callback are read at that time.
@@ -174,7 +186,8 @@ function Content({
                     : null
             }
             colorScheme={scheme}
-            locale={definition?.locale ?? config.locale}
+            locale={locale}
+            messages={messages}
             iconLoader={iconLoader}
             className={styles.root}
         >
@@ -193,6 +206,8 @@ function Content({
                     isError={definitionQuery.isError}
                     onRetry={() => void definitionQuery.refetch()}
                 />
+            ) : messages === undefined ? (
+                <ShellSkeleton />
             ) : (
                 <PanneauProvider plugins={plugins} definition={definition} router={router}>
                     {/* What `embed` and `location` fields need, in every form */}
@@ -238,7 +253,8 @@ function Loading({ isError, onRetry }: { isError: boolean; onRetry: () => void }
 
 /**
  * The Panneau admin panel, for a React app that renders it itself. `createPanneauApp()` mounts it
- * in an element of the page. The adapter and the query client are read on the first render.
+ * in an element of the page. The adapter, the query client and the locales of the plugins are
+ * read on the first render.
  *
  * It uses the definition inlined in the boot config, or fetches it, then renders the shell. When
  * the API answers that the user isn't authenticated, it calls `onUnauthorized`.
@@ -248,7 +264,7 @@ export function Panneau({
     adapter,
     plugins = [],
     queryClient,
-    iconLoader = lucideIconLoader,
+    iconLoader = null,
     onUnauthorized = redirectToLogin,
     maps = null,
 }: PanneauProps) {
@@ -260,6 +276,7 @@ export function Panneau({
             baseAdapter,
             adapter: watchUnauthorized(baseAdapter, session),
             queryClient: queryClient ?? createQueryClient(),
+            registry: createPluginRegistry(plugins),
         };
     });
     return (
@@ -270,6 +287,7 @@ export function Panneau({
                     adapter={state.adapter}
                     baseAdapter={state.baseAdapter}
                     plugins={plugins}
+                    registry={state.registry}
                     iconLoader={iconLoader}
                     session={state.session}
                     onUnauthorized={onUnauthorized}

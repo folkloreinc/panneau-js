@@ -1,6 +1,6 @@
 # 0020: A sober default theme, and Lucide as the only icon set
 
-- Status: accepted
+- Status: accepted, amended by [0036](0036-default-icon-loader.md): Lucide's icon loader is the default of `createPanneauApp()` only
 - Date: 2026-10-15
 
 ## Context

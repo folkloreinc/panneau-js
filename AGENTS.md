@@ -62,6 +62,8 @@ npm run format      # Prettier
 npm run storybook   # Storybook, on http://localhost:6006
 npm run test:storybook  # every story as a test in Chromium: play functions and axe checks
 npm run test:smoke  # after a build: the packed packages in a webpack app (flklr), rendered in Chromium
+npm run test:types  # after a build: the packed packages' types in a NodeNext project, without skipLibCheck
+npm run test:icons  # after a build: Lucide icons only in the Vite bundles of apps that use them
 npm run verify      # every check of CI, one after the other: run it before pushing
 npx changeset       # describe a change for the changelog
 
@@ -78,7 +80,7 @@ npm run test:create-package                  # check the template: create, lint,
 - **Every change comes with tests.** A bug fix adds a regression test that fails without the fix.
 - Run `npm run verify` before pushing: it runs the checks of CI locally, and prints the time of each one.
 - Open a pull request to `v5.x` with `Closes #<issue>` or `Part of #<issue>` and the checks you ran. **Merge only when CI is green.**
-- **CI** (`.github/workflows/ci.yml`) runs every check on every pull request and on every push to `v5.x`, in parallel jobs: format, lint and changeset; typecheck; tests; build and API reports; package template; Storybook; smoke test. The shared setup (Node, `npm ci`, Chromium) is in `.github/actions/setup`. Keep each job short: the wait is the longest job. A new check gets its own job, or goes in the job it fits, and in `scripts/verify.js`.
+- **CI** (`.github/workflows/ci.yml`) runs every check on every pull request and on every push to `v5.x`, in parallel jobs: format, lint and changeset; typecheck; tests; build and API reports; package template; Storybook; smoke tests (webpack, the types of the packed packages under NodeNext, Lucide icons in Vite bundles). The shared setup (Node, `npm ci`, Chromium) is in `.github/actions/setup`. Keep each job short: the wait is the longest job. A new check gets its own job, or goes in the job it fits, and in `scripts/verify.js`.
 - **Releases** are only published by the Release workflow (`.github/workflows/release.yml`), which runs on every push to `v5.x`:
     - while changesets are pending, it opens or updates the "Version packages" pull request, and publishes nothing;
     - **merging that pull request releases**: the next run publishes the new versions to npm and tags them.
