@@ -46,7 +46,13 @@ export { ListView, type ListViewProps } from './ListView';
 export { listsPlugin } from './plugin';
 export { type LocalQueryOptions, type LocalQueryResult, applyListQuery } from './query';
 export { countSelected, getPageSelection, isItemSelected } from './selection';
-export { Pagination, type PaginationProps } from './toolbar/Pagination';
+export {
+    CursorPagination,
+    type CursorPaginationProps,
+    Pagination,
+    type PaginationProps,
+    getPagingProps,
+} from './toolbar/Pagination';
 export { SearchField, type SearchFieldProps } from './toolbar/SearchField';
 export type {
     DisplayEntry,

@@ -95,6 +95,7 @@ describe('@panneau/protocol/runtime', () => {
             'fromSearchParams',
             'getMediaLibraries',
             'getValue',
+            'isCursorPage',
             'isFilled',
             'isFilterRange',
             'isProblem',

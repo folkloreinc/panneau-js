@@ -73,7 +73,7 @@ function Pages() {
                 ))}
             </ul>
             <p>
-                Page {query.page} of {items.data?.meta.lastPage}
+                Page {query.page} of {String(items.data?.meta.lastPage)}
             </p>
             <button type="button" onClick={() => list.setPage((query.page ?? 1) + 1)}>
                 Next page

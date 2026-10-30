@@ -50,6 +50,18 @@ export function checkRules(rules: Rule[], value: unknown, root?: Record<string, 
 // @public
 export function checkValues(fields: Field[], values: Record<string, unknown>, options?: CheckOptions): Record<string, RuleFailure[]>;
 
+// @public
+export interface CursorPageMeta {
+    // (undocumented)
+    nextCursor: string | null;
+    // (undocumented)
+    perPage: number;
+    // (undocumented)
+    previousCursor?: string | null;
+    // (undocumented)
+    total?: number | null;
+}
+
 // Warning: (ae-forgotten-export) The symbol "Condition" needs to be exported by the entry point index.d.ts
 //
 // @public
@@ -78,6 +90,9 @@ export function getMediaLibraries(definition: MediaLibrariesDefinition | null, f
 export function getValue(values: unknown, path: string): unknown;
 
 // @public
+export function isCursorPage(meta: object): meta is CursorPageMeta;
+
+// @public
 export function isFilled(value: unknown): boolean;
 
 // @public
@@ -98,6 +113,7 @@ export function lintDefinition(definition: DefinitionInput): ValidationIssue[];
 
 // @public
 export interface ListQuery {
+    cursor?: string;
     fields?: string[];
     // (undocumented)
     filter?: Record<string, FilterValue>;

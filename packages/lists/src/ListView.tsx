@@ -24,7 +24,7 @@ import { builtInLayouts } from './layouts/builtIn';
 import { messages } from './messages';
 import { countSelected, getPageSelection, isItemSelected } from './selection';
 import { LayoutSwitch } from './toolbar/LayoutSwitch';
-import { Pagination } from './toolbar/Pagination';
+import { CursorPagination, Pagination } from './toolbar/Pagination';
 import { SearchField } from './toolbar/SearchField';
 import { SortSelect } from './toolbar/SortSelect';
 import type {
@@ -55,6 +55,12 @@ export interface ListViewProps {
      * pagination and offers to select every matching item. Without it, `items` is the whole list.
      */
     total?: number | undefined;
+    /**
+     * The cursors of the page, for a list paged with cursors (`nextCursor` and `previousCursor`
+     * of its `meta`): the list then has buttons to the previous and next pages, without page
+     * numbers or a total, and doesn't offer to select every matching item.
+     */
+    cursors?: { next: string | null; previous?: string | null | undefined } | undefined;
     /** Shows that items are loading. Items already shown stay, dimmed. */
     isLoading?: boolean;
     /** An error while loading: an alert with a retry replaces the items. */
@@ -133,6 +139,7 @@ export function ListView({
     items,
     columns,
     total,
+    cursors,
     isLoading = false,
     error = null,
     onRetry,
@@ -564,7 +571,21 @@ export function ListView({
             <div className={styles.body} aria-busy={isLoading && items !== undefined}>
                 {body}
             </div>
-            {total !== undefined && error === null && total > 0 ? (
+            {cursors !== undefined && error === null ? (
+                <CursorPagination
+                    perPage={query.perPage ?? pageItems.length}
+                    hasPrevious={query.cursor !== undefined}
+                    hasNext={cursors.next !== null}
+                    onPrevious={() => list.previousPage(cursors.previous)}
+                    onNext={() => {
+                        if (cursors.next !== null) {
+                            list.nextPage(cursors.next);
+                        }
+                    }}
+                    perPageOptions={perPageOptions}
+                    onPerPageChange={(perPage) => list.setPerPage(perPage)}
+                />
+            ) : total !== undefined && error === null && total > 0 ? (
                 <Pagination
                     page={query.page ?? 1}
                     perPage={query.perPage ?? pageItems.length}

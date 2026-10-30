@@ -241,4 +241,34 @@ describe('the app shell', () => {
             within(screen.getByRole('complementary')).getByRole('link', { name: /Ada/ }),
         ).toHaveAttribute('aria-current', 'page');
     });
+
+    it('pages a list with cursors, back and forth, without page numbers', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        renderApp({
+            resources: [
+                {
+                    id: 'pages',
+                    label: { singular: 'page', plural: 'pages' },
+                    itemTitle: 'title',
+                    fields: [{ name: 'title', type: 'text', label: 'Title' }],
+                    list: { pagination: 'cursor', perPage: 1 },
+                },
+            ],
+        });
+        const main = within(screen.getByRole('main'));
+        expect(await main.findByText('About us')).toBeInTheDocument();
+        const pagination = within(main.getByRole('navigation', { name: 'Pagination' }));
+        expect(pagination.queryByText(/of/)).not.toBeInTheDocument();
+        expect(pagination.getByRole('button', { name: 'Previous page' })).toBeDisabled();
+
+        await user.click(pagination.getByRole('button', { name: 'Next page' }));
+        expect(await main.findByText('Contact')).toBeInTheDocument();
+        expect(window.location.search).toBe('?cursor=o1');
+        expect(pagination.getByRole('button', { name: 'Next page' })).toBeDisabled();
+
+        await user.click(pagination.getByRole('button', { name: 'Previous page' }));
+        expect(await main.findByText('About us')).toBeInTheDocument();
+        expect(window.location.search).toBe('');
+    });
 });

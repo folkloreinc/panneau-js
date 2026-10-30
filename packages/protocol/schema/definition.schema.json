@@ -793,6 +793,13 @@
                         "maximum": 9007199254740991
                     }
                 },
+                "pagination": {
+                    "type": "string",
+                    "enum": [
+                        "pages",
+                        "cursor"
+                    ]
+                },
                 "inlineEdit": {
                     "type": "array",
                     "items": {

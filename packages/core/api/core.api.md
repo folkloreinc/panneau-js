@@ -230,6 +230,8 @@ export interface List {
     getState(): ListState;
     // (undocumented)
     isSelected(id: string): boolean;
+    nextPage(cursor: string): void;
+    previousPage(cursor?: string | null): void;
     resetQuery(): void;
     select(ids: readonly string[]): void;
     selectAllMatching(): void;
@@ -410,6 +412,7 @@ export interface ResolvedList {
     filters: Filter[];
     inlineEdit: string[];
     layouts: string[];
+    pagination: 'pages' | 'cursor';
     // (undocumented)
     perPage: number;
     // (undocumented)

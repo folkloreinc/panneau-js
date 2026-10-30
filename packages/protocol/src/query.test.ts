@@ -35,6 +35,12 @@ describe('list queries', () => {
         expect(fromSearchParams(toSearchParams(query))).toEqual(query);
     });
 
+    it('sends and reads the cursor of a page', () => {
+        const params = toSearchParams({ perPage: 50, cursor: 'eyJpZCI6NDJ9' });
+        expect(params.toString()).toBe('perPage=50&cursor=eyJpZCI6NDJ9');
+        expect(fromSearchParams(params)).toEqual({ perPage: 50, cursor: 'eyJpZCI6NDJ9' });
+    });
+
     it('ignores invalid numbers and empty values', () => {
         expect(fromSearchParams(new URLSearchParams('page=abc&perPage=-1&sort=&q='))).toEqual({});
     });

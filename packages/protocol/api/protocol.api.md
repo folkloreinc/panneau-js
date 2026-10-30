@@ -574,6 +574,29 @@ export function createSchemaRegistry(): z.core.$ZodRegistry<{
 // @public
 export function createThemeJsonSchema(): JsonObject;
 
+// @public
+export interface CursorPageMeta {
+    // (undocumented)
+    nextCursor: string | null;
+    // (undocumented)
+    perPage: number;
+    // (undocumented)
+    previousCursor?: string | null;
+    // (undocumented)
+    total?: number | null;
+}
+
+// @public (undocumented)
+export const CursorPagination: z.ZodObject<{
+    perPage: z.ZodNumber;
+    nextCursor: z.ZodNullable<z.ZodString>;
+    previousCursor: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    total: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type CursorPagination = z.infer<typeof CursorPagination>;
+
 // @public (undocumented)
 export const Definition: z.ZodObject<{
     protocol: z.ZodLiteral<1>;
@@ -751,6 +774,10 @@ export const Definition: z.ZodObject<{
             layouts: z.ZodOptional<z.ZodArray<z.ZodString>>;
             perPage: z.ZodOptional<z.ZodNumber>;
             perPageOptions: z.ZodOptional<z.ZodArray<z.ZodNumber>>;
+            pagination: z.ZodOptional<z.ZodEnum<{
+                pages: "pages";
+                cursor: "cursor";
+            }>>;
             inlineEdit: z.ZodOptional<z.ZodArray<z.ZodString>>;
             selectable: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>>;
@@ -1352,6 +1379,9 @@ export const Id: z.ZodString;
 export type Id = z.infer<typeof Id>;
 
 // @public
+export function isCursorPage(meta: object): meta is CursorPageMeta;
+
+// @public
 export function isFilled(value: unknown): boolean;
 
 // @public
@@ -1450,6 +1480,10 @@ export const ListDefinition: z.ZodObject<{
     layouts: z.ZodOptional<z.ZodArray<z.ZodString>>;
     perPage: z.ZodOptional<z.ZodNumber>;
     perPageOptions: z.ZodOptional<z.ZodArray<z.ZodNumber>>;
+    pagination: z.ZodOptional<z.ZodEnum<{
+        pages: "pages";
+        cursor: "cursor";
+    }>>;
     inlineEdit: z.ZodOptional<z.ZodArray<z.ZodString>>;
     selectable: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$loose>;
@@ -1459,6 +1493,7 @@ export type ListDefinition = z.infer<typeof ListDefinition>;
 
 // @public
 export interface ListQuery {
+    cursor?: string;
     fields?: string[];
     // (undocumented)
     filter?: Record<string, FilterValue>;
@@ -1478,12 +1513,17 @@ export const ListResponse: z.ZodObject<{
         version: z.ZodNullable<z.ZodString>;
         abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
     }, z.core.$loose>>;
-    meta: z.ZodObject<{
+    meta: z.ZodUnion<readonly [z.ZodObject<{
         page: z.ZodNumber;
         perPage: z.ZodNumber;
         total: z.ZodNumber;
         lastPage: z.ZodNumber;
-    }, z.core.$loose>;
+    }, z.core.$loose>, z.ZodObject<{
+        perPage: z.ZodNumber;
+        nextCursor: z.ZodNullable<z.ZodString>;
+        previousCursor: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        total: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    }, z.core.$loose>]>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -2049,6 +2089,10 @@ export const namedSchemas: {
         layouts: z.ZodOptional<z.ZodArray<z.ZodString>>;
         perPage: z.ZodOptional<z.ZodNumber>;
         perPageOptions: z.ZodOptional<z.ZodArray<z.ZodNumber>>;
+        pagination: z.ZodOptional<z.ZodEnum<{
+            pages: "pages";
+            cursor: "cursor";
+        }>>;
         inlineEdit: z.ZodOptional<z.ZodArray<z.ZodString>>;
         selectable: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>;
@@ -2403,6 +2447,10 @@ export const namedSchemas: {
             layouts: z.ZodOptional<z.ZodArray<z.ZodString>>;
             perPage: z.ZodOptional<z.ZodNumber>;
             perPageOptions: z.ZodOptional<z.ZodArray<z.ZodNumber>>;
+            pagination: z.ZodOptional<z.ZodEnum<{
+                pages: "pages";
+                cursor: "cursor";
+            }>>;
             inlineEdit: z.ZodOptional<z.ZodArray<z.ZodString>>;
             selectable: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>>;
@@ -2999,6 +3047,10 @@ export const namedSchemas: {
                 layouts: z.ZodOptional<z.ZodArray<z.ZodString>>;
                 perPage: z.ZodOptional<z.ZodNumber>;
                 perPageOptions: z.ZodOptional<z.ZodArray<z.ZodNumber>>;
+                pagination: z.ZodOptional<z.ZodEnum<{
+                    pages: "pages";
+                    cursor: "cursor";
+                }>>;
                 inlineEdit: z.ZodOptional<z.ZodArray<z.ZodString>>;
                 selectable: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>>;
@@ -3318,6 +3370,12 @@ export const namedSchemas: {
         total: z.ZodNumber;
         lastPage: z.ZodNumber;
     }, z.core.$loose>;
+    CursorPagination: z.ZodObject<{
+        perPage: z.ZodNumber;
+        nextCursor: z.ZodNullable<z.ZodString>;
+        previousCursor: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        total: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    }, z.core.$loose>;
     ItemResponse: z.ZodObject<{
         data: z.ZodObject<{
             id: z.ZodString;
@@ -3331,12 +3389,17 @@ export const namedSchemas: {
             version: z.ZodNullable<z.ZodString>;
             abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
         }, z.core.$loose>>;
-        meta: z.ZodObject<{
+        meta: z.ZodUnion<readonly [z.ZodObject<{
             page: z.ZodNumber;
             perPage: z.ZodNumber;
             total: z.ZodNumber;
             lastPage: z.ZodNumber;
-        }, z.core.$loose>;
+        }, z.core.$loose>, z.ZodObject<{
+            perPage: z.ZodNumber;
+            nextCursor: z.ZodNullable<z.ZodString>;
+            previousCursor: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            total: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        }, z.core.$loose>]>;
     }, z.core.$loose>;
     Problem: z.ZodObject<{
         type: z.ZodString;
@@ -4090,6 +4153,10 @@ export const Resource: z.ZodObject<{
         layouts: z.ZodOptional<z.ZodArray<z.ZodString>>;
         perPage: z.ZodOptional<z.ZodNumber>;
         perPageOptions: z.ZodOptional<z.ZodArray<z.ZodNumber>>;
+        pagination: z.ZodOptional<z.ZodEnum<{
+            pages: "pages";
+            cursor: "cursor";
+        }>>;
         inlineEdit: z.ZodOptional<z.ZodArray<z.ZodString>>;
         selectable: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>>;

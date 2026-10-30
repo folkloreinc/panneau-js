@@ -13,7 +13,9 @@ export type { ValidationIssue } from '../validate';
 export {
     type FilterRange,
     type FilterValue,
+    type CursorPageMeta,
     type ListQuery,
+    isCursorPage,
     fromSearchParams,
     isFilterRange,
     matchesFilterRange,

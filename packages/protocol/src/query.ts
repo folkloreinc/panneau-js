@@ -48,6 +48,8 @@ export function matchesFilterRange(value: unknown, range: FilterRange): boolean 
 export interface ListQuery {
     page?: number;
     perPage?: number;
+    /** The page to get of a list whose `pagination` is `cursor`: `nextCursor` of the page before. */
+    cursor?: string;
     /** Fields to sort by, in order. A `-` prefix sorts descending. */
     sort?: string[];
     filter?: Record<string, FilterValue>;
@@ -64,6 +66,9 @@ export function toSearchParams(query: ListQuery): URLSearchParams {
     }
     if (query.perPage !== undefined) {
         params.set('perPage', String(query.perPage));
+    }
+    if (query.cursor !== undefined && query.cursor !== '') {
+        params.set('cursor', query.cursor);
     }
     if (query.sort !== undefined && query.sort.length > 0) {
         params.set('sort', query.sort.join(','));
@@ -113,6 +118,10 @@ export function fromSearchParams(params: URLSearchParams): ListQuery {
     if (perPage !== undefined) {
         query.perPage = perPage;
     }
+    const cursor = params.get('cursor');
+    if (cursor !== null && cursor !== '') {
+        query.cursor = cursor;
+    }
     const sort = params.get('sort');
     if (sort !== null && sort !== '') {
         query.sort = sort.split(',').filter((part) => part !== '');
@@ -147,4 +156,20 @@ export function fromSearchParams(params: URLSearchParams): ListQuery {
         }
     });
     return query;
+}
+
+/** The meta of a page of a list paged with cursors (`pagination: "cursor"`). */
+export interface CursorPageMeta {
+    perPage: number;
+    nextCursor: string | null;
+    previousCursor?: string | null;
+    total?: number | null;
+}
+
+/**
+ * Whether the meta of a page of a list comes from a list paged with cursors (`nextCursor`), rather
+ * than numbered pages (`page`, `lastPage`, `total`).
+ */
+export function isCursorPage(meta: object): meta is CursorPageMeta {
+    return 'nextCursor' in meta;
 }

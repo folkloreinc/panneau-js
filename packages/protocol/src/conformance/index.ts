@@ -296,20 +296,25 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                 [{ from: '0001-01-01', to: '9999-12-31' }, 'from 0001-01-01 to 9999-12-31'],
                 [{ to: '9999-12-31' }, 'up to 9999-12-31 (an open start)'],
             ];
+            // A list paged with cursors may have no total: the first page then counts.
+            const totalOf = (reply: ListResponse) =>
+                typeof reply.meta.total === 'number' ? reply.meta.total : null;
             for (const [range, label] of ranges) {
                 const reply = await list(range, `The list filtered ${label}`);
-                if (reply !== null) {
+                const total = reply !== null ? totalOf(reply) : null;
+                if (total !== null) {
                     check.expect(
-                        reply.meta.total >= dated,
-                        `Filtered ${label}, the list has ${reply.meta.total} items; the first page alone has ${dated} with a ${filter.id}.`,
+                        total >= dated,
+                        `Filtered ${label}, the list has ${total} items; the first page alone has ${dated} with a ${filter.id}.`,
                     );
                 }
             }
             const future = await list({ from: '9999-12-31' }, 'The list filtered from 9999-12-31');
             if (future !== null) {
+                const total = totalOf(future) ?? future.data.length;
                 check.expect(
-                    future.meta.total === 0,
-                    `Filtered from 9999-12-31, the list has ${future.meta.total} items, expected 0.`,
+                    total === 0,
+                    `Filtered from 9999-12-31, the list has ${total} items, expected 0.`,
                 );
             }
         },
