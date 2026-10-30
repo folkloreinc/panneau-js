@@ -236,11 +236,10 @@ export function FormView({
             return;
         }
         setResolving(true);
-        try {
-            handle(await form.resolveConflict(choice));
-        } finally {
-            setResolving(false);
-        }
+        await form
+            .resolveConflict(choice)
+            .then(handle)
+            .finally(() => setResolving(false));
     };
 
     const problem = state.status === 'error' ? getProblem(state.error) : null;

@@ -243,7 +243,9 @@ function useImageEditor({
         problem = intl.formatMessage(messages.editorCropRatios, { ratios: ratioList });
     }
     for (const candidate of tools) {
-        problem ??= candidate.validate?.(transform) ?? null;
+        if (problem === null) {
+            problem = candidate.validate?.(transform) ?? null;
+        }
     }
 
     /** The transform the value keeps: the edits, with their base over the media's version. */

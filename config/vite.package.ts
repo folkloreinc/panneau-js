@@ -1,5 +1,4 @@
-import babel from '@rolldown/plugin-babel';
-import react, { reactCompilerPreset } from '@vitejs/plugin-react';
+import react from '@vitejs/plugin-react';
 import MagicString from 'magic-string';
 import { readFileSync } from 'node:fs';
 import { dirname, relative, resolve } from 'node:path';
@@ -12,6 +11,7 @@ import {
 import { defineConfig } from 'vitest/config';
 
 import { stableClassName } from './class-names.ts';
+import { reactCompiler } from './react-compiler.ts';
 
 interface PackageConfigOptions {
     /** Package directory (pass `import.meta.dirname`). */
@@ -90,10 +90,7 @@ export function definePackageConfig({
 
     return defineConfig({
         root,
-        plugins: [
-            ...(withReact ? [react(), babel({ presets: [reactCompilerPreset()] })] : []),
-            importCss(),
-        ],
+        plugins: [...(withReact ? [react(), ...reactCompiler(root)] : []), importCss()],
         // Dependencies stay external in builds, so this only applies to tests.
         resolve: { conditions: [SOURCE_CONDITION, ...defaultClientConditions] },
         ssr: { resolve: { conditions: [SOURCE_CONDITION, ...defaultServerConditions] } },
