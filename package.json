@@ -33,6 +33,7 @@
         "build-storybook": "storybook build",
         "test:storybook": "vitest run --config vitest.storybook.config.ts",
         "test:smoke": "node scripts/smoke-webpack.js",
+        "test:types": "node scripts/smoke-types.js",
         "test:icons": "node scripts/smoke-icons.js",
         "verify": "node scripts/verify.js",
         "playground": "vite --config playground/vite.config.ts",

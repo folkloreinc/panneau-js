@@ -43,9 +43,9 @@
         "panneau-check-theme": "./bin/check-theme.js"
     },
     "scripts": {
-        "build": "vite build && tsc -p tsconfig.build.json",
+        "build": "vite build && node ../../scripts/declarations.js",
         "typecheck": "tsc --noEmit",
-        "api": "tsc -p tsconfig.build.json && node ../../scripts/api-report.js"
+        "api": "node ../../scripts/declarations.js && node ../../scripts/api-report.js"
     },
     "publishConfig": {
         "access": "public"

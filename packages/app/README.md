@@ -35,6 +35,8 @@ npm install --save-dev vite @vitejs/plugin-react
 
 - Add `@vitejs/plugin-react` to the Vite config, and the entry to its inputs.
 - The entry imports no CSS and no theme: packages import their own styles, and themes come from plugins.
+- The messages of plugins (`locales`) are loaded in the locale of the definition before the shell renders.
+- The home route renders `pages.home` of the definition, a page of a plugin, or the cards of the resources without it.
 - Named icons (`"icon": "users"` in the definition) are Lucide icons, each loaded when shown. Pass `iconLoader` to load fewer, or `null` for none. The bundle has a chunk for every Lucide icon either way. To keep them out, render `<Panneau>` with your own loader instead: it has no default ([decisions/0036](../../docs/decisions/0036-default-icon-loader.md)).
 
     ```tsx
