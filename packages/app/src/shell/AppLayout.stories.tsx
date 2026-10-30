@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { RouterProvider } from 'react-aria-components';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { createRestAdapter } from '@panneau/data';
 import { DataAdapterProvider } from '@panneau/data/query';
@@ -67,7 +67,7 @@ function createData() {
     };
 }
 
-function Layout() {
+function Layout({ onLogOut }: { onLogOut?: () => void }) {
     const [colorScheme, setColorScheme] = useState<ColorSchemePreference>('light');
     // The "Go to…" palette searches through the data adapter.
     const [{ adapter, client }] = useState(createData);
@@ -81,6 +81,7 @@ function Layout() {
                         route={{ name: 'resource.index', resource: 'articles' }}
                         colorScheme={colorScheme}
                         onColorSchemeChange={setColorScheme}
+                        onLogOut={onLogOut}
                     >
                         <Heading level={1}>Articles</Heading>
                         <Text muted>The page of the current route.</Text>
@@ -95,6 +96,7 @@ const meta = {
     title: 'App/Layout',
     component: Layout,
     parameters: { layout: 'fullscreen' },
+    args: { onLogOut: fn() },
     beforeEach: () => {
         window.localStorage.removeItem('panneau:sidebar');
     },
@@ -111,6 +113,15 @@ export const Default: Story = {
             'aria-current',
             'page',
         );
+    },
+};
+
+/** The button next to the appearance's logs the user out. */
+export const LogOut: Story = {
+    play: async ({ args, canvasElement }) => {
+        const canvas = within(canvasElement);
+        await userEvent.click(canvas.getByRole('button', { name: 'Log out' }));
+        await expect(args.onLogOut).toHaveBeenCalledTimes(1);
     },
 };
 

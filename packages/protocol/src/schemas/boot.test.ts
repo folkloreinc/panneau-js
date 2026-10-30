@@ -57,6 +57,20 @@ describe('BootConfig', () => {
         expect(validateBootConfig(createBootConfig({ basePath })).success).toBe(false);
     });
 
+    it('accepts the auth of the definition, for the login page before the definition', () => {
+        const auth = {
+            mode: 'panneau' as const,
+            token: { label: 'Admin token', help: 'The ADMIN_TOKEN of the server.' },
+        };
+        expect(validateBootConfig(createBootConfig({ auth }))).toEqual({
+            success: true,
+            data: createBootConfig({ auth }),
+        });
+        expect(
+            validateBootConfig(createBootConfig({ auth: { mode: 'other' } as never })).success,
+        ).toBe(false);
+    });
+
     it('requires the API base URL, the base path, the locale and version 1 of the protocol', () => {
         const result = validateBootConfig({ protocol: 2 });
         expect(result.success).toBe(false);

@@ -71,6 +71,18 @@ export const appMessages: {
     retry: PanneauMessage<Record<never, never>>;
     sessionEnded: PanneauMessage<Record<never, never>>;
     logIn: PanneauMessage<Record<never, never>>;
+    logInAgain: PanneauMessage<Record<never, never>>;
+    logInError: PanneauMessage<Record<never, never>>;
+    email: PanneauMessage<Record<never, never>>;
+    password: PanneauMessage<Record<never, never>>;
+    token: PanneauMessage<Record<never, never>>;
+    remember: PanneauMessage<Record<never, never>>;
+    logInWith: PanneauMessage<    {
+    provider: string;
+    }>;
+    or: PanneauMessage<Record<never, never>>;
+    logOut: PanneauMessage<Record<never, never>>;
+    logOutError: PanneauMessage<Record<never, never>>;
     skipToContent: PanneauMessage<Record<never, never>>;
     navigation: PanneauMessage<Record<never, never>>;
     collapseSidebar: PanneauMessage<Record<never, never>>;

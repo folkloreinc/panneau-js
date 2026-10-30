@@ -330,13 +330,27 @@ export function createOpenApiDocument(): JsonObject {
                     requestBody: {
                         required: true,
                         content: json({
-                            type: 'object',
-                            required: ['email', 'password'],
-                            properties: {
-                                email: { type: 'string' },
-                                password: { type: 'string' },
-                                remember: { type: 'boolean' },
-                            },
+                            description:
+                                'An email and a password, or the single secret of `auth.token`.',
+                            oneOf: [
+                                {
+                                    type: 'object',
+                                    required: ['email', 'password'],
+                                    properties: {
+                                        email: { type: 'string' },
+                                        password: { type: 'string' },
+                                        remember: { type: 'boolean' },
+                                    },
+                                },
+                                {
+                                    type: 'object',
+                                    required: ['token'],
+                                    properties: {
+                                        token: { type: 'string' },
+                                        remember: { type: 'boolean' },
+                                    },
+                                },
+                            ],
                         }),
                     },
                     responses: {
@@ -353,7 +367,12 @@ export function createOpenApiDocument(): JsonObject {
                 },
             },
             '/auth/logout': {
-                post: { operationId: 'logout', responses: { 204: ok('Logged out.') } },
+                post: {
+                    operationId: 'logout',
+                    description:
+                        '`panneau` auth mode. In `external` mode, the browser goes to `auth.logoutUrl` instead.',
+                    responses: { 204: ok('Logged out.') },
+                },
             },
             '/auth/providers/{provider}/redirect': {
                 parameters: [pathParameter('provider', 'Provider id.')],

@@ -22,6 +22,8 @@ export interface AppLayoutProps {
     route: AppRoute;
     colorScheme: ColorSchemePreference;
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
+    /** Logs the user out. Without it, the sidebar has no "Log out" button. */
+    onLogOut?: () => void;
     children?: ReactNode;
 }
 
@@ -83,6 +85,7 @@ export function AppLayout({
     route,
     colorScheme,
     onColorSchemeChange,
+    onLogOut,
     children,
 }: AppLayoutProps) {
     const intl = usePanneauIntl();
@@ -139,6 +142,7 @@ export function AppLayout({
         route,
         colorScheme,
         onColorSchemeChange,
+        onLogOut,
         onGoTo: openGoTo,
     };
 

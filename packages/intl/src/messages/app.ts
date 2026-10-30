@@ -16,6 +16,28 @@ export const appMessages = {
         defaultMessage: 'Your session has ended.',
     }),
     logIn: defineMessage({ id: 'panneau.app.logIn', defaultMessage: 'Log in' }),
+    logInAgain: defineMessage({
+        id: 'panneau.app.logInAgain',
+        defaultMessage: 'Your session has ended. Log in again to continue.',
+    }),
+    logInError: defineMessage({
+        id: 'panneau.app.logInError',
+        defaultMessage: 'You could not be logged in. Try again.',
+    }),
+    email: defineMessage({ id: 'panneau.app.email', defaultMessage: 'Email' }),
+    password: defineMessage({ id: 'panneau.app.password', defaultMessage: 'Password' }),
+    token: defineMessage({ id: 'panneau.app.token', defaultMessage: 'Token' }),
+    remember: defineMessage({ id: 'panneau.app.remember', defaultMessage: 'Remember me' }),
+    logInWith: defineMessage<{ provider: string }>({
+        id: 'panneau.app.logInWith',
+        defaultMessage: 'Log in with {provider}',
+    }),
+    or: defineMessage({ id: 'panneau.app.or', defaultMessage: 'or' }),
+    logOut: defineMessage({ id: 'panneau.app.logOut', defaultMessage: 'Log out' }),
+    logOutError: defineMessage({
+        id: 'panneau.app.logOutError',
+        defaultMessage: 'You could not be logged out. Try again.',
+    }),
     skipToContent: defineMessage({
         id: 'panneau.app.skipToContent',
         defaultMessage: 'Skip to content',

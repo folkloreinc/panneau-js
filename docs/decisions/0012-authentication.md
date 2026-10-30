@@ -1,6 +1,6 @@
 # 0012: Complete, optional auth that works next to a site's own auth
 
-- Status: accepted
+- Status: accepted, amended by [0037](0037-login-page-token-and-logout.md): a login with a token, and the logout
 - Date: 2026-10-14
 
 ## Context

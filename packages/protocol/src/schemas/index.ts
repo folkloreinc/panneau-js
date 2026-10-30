@@ -36,6 +36,7 @@ import { Abilities, Condition, Id, Option, RouteReference } from './common';
 import {
     Auth,
     AuthProvider,
+    AuthToken,
     Definition,
     MenuItem,
     Page,
@@ -93,6 +94,7 @@ export const namedSchemas = {
     Resource,
     User,
     AuthProvider,
+    AuthToken,
     Auth,
     MenuItem,
     Page,

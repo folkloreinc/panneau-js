@@ -54,6 +54,7 @@ npm install --save-dev vite @vitejs/plugin-react
 - Without `adapter`, the app uses the Laravel preset of the REST adapter (`@panneau/data/laravel`) on `apiBaseUrl`.
 - `location` fields place points on OpenStreetMap's tiles, without an address search. Pass `maps` for other tiles or a search: `maps: { geocoding: createNominatimSource() }`, from `@panneau/fields`.
 - When the API answers `401` (or `419` from Laravel), the app sends the browser to the login URL. Pass `onUnauthorized` to do something else.
+- In `panneau` auth mode, the app shows its login page instead, from `auth` of the definition or of the boot config: an email and a password, a token (`auth.token`), and the OAuth providers. The sidebar has a "Log out" button: in `panneau` mode it calls `adapter.logout()` and shows the login page, in `external` mode it goes to `auth.logoutUrl` ([decisions/0037](../../docs/decisions/0037-login-page-token-and-logout.md)).
 
 ## Theming the shell
 

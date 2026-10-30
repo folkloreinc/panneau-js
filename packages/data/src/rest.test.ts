@@ -321,6 +321,16 @@ describe('createRestAdapter', () => {
         });
     });
 
+    it('logs in with a token', async () => {
+        const { fetch, requests } = createStubFetch(() =>
+            jsonResponse(200, { user: { id: 'u1', name: 'Operator' } }),
+        );
+        const adapter = createRestAdapter({ baseUrl: BASE_URL, fetch });
+        await adapter.login({ token: 's3cret' });
+        expect(new URL(requests[0]?.url ?? '').pathname).toBe('/panneau/api/auth/login');
+        expect(await requests[0]?.json()).toEqual({ token: 's3cret' });
+    });
+
     it('checks a value of a field', async () => {
         const { fetch, requests } = createStubFetch(() =>
             jsonResponse(200, { available: false, suggestion: 'ete-2', prefix: null, url: null }),
