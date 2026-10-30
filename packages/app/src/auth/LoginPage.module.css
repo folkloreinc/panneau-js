@@ -50,3 +50,7 @@
     border-top: var(--panneau-border-width) solid var(--panneau-color-border);
     content: '';
 }
+
+.providers > a {
+    justify-content: center;
+}
