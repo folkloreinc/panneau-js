@@ -52,17 +52,49 @@ export interface PanneauRootProps extends HTMLAttributes<HTMLDivElement> {
      * to its own.
      */
     messages?: Readonly<Record<string, string>> | null;
+    /**
+     * The nonce of the page's Content Security Policy, set on the `<style>` and `<link>` elements of
+     * themes and fonts, for a policy without `'unsafe-inline'` in `style-src`. Defaults to the
+     * nonce React Aria reads too: that of `<meta property="csp-nonce">`, or `__webpack_nonce__`.
+     */
+    nonce?: string;
     children?: ReactNode;
 }
 
 /** `undefined` outside of a root, `null` while the root's container isn't mounted yet. */
 const PortalContext = createContext<Element | null | undefined>(undefined);
 
-/** The color scheme and density in effect, which a `ThemeScope` inherits when it doesn't set them. */
-export const ScopeContext = createContext<{ colorScheme: ColorScheme; density: Density }>({
+/**
+ * The color scheme and density in effect, which a `ThemeScope` inherits when it doesn't set them,
+ * and the nonce of the styles of themes.
+ */
+export const ScopeContext = createContext<{
+    colorScheme: ColorScheme;
+    density: Density;
+    nonce?: string | undefined;
+}>({
     colorScheme: 'light',
     density: 'auto',
 });
+
+/**
+ * The nonce of the page's Content Security Policy, where React Aria reads it: the `nonce` (or
+ * `content`) of `<meta property="csp-nonce">` or `<meta name="csp-nonce">`, or
+ * `__webpack_nonce__`. `undefined` without one, and on the server.
+ */
+export function getPageNonce(): string | undefined {
+    if (typeof document === 'undefined') {
+        return undefined;
+    }
+    const meta = document.querySelector<HTMLMetaElement>(
+        'meta[property="csp-nonce"], meta[name="csp-nonce"]',
+    );
+    const nonce =
+        meta?.nonce ||
+        meta?.content ||
+        (globalThis as { __webpack_nonce__?: string }).__webpack_nonce__;
+    return nonce !== undefined && nonce !== '' ? nonce : undefined;
+}
 
 /** Gives overlays a container: that of a root, or of a scope. */
 export const PortalProvider = PortalContext.Provider;
@@ -72,7 +104,10 @@ export const PortalProvider = PortalContext.Provider;
  * fonts. React hoists them to the head and adds each once, however many roots or scopes use it.
  * Returns the scope of the theme too, for `data-panneau-theme`.
  */
-export function useThemeStyles(theme: Theme | null): { scope?: string; styles: ReactNode } {
+export function useThemeStyles(
+    theme: Theme | null,
+    nonce?: string,
+): { scope?: string; styles: ReactNode } {
     const css = theme !== null ? getThemeCss(theme, '§') : '';
     const scope = css !== '' ? hashString(css) : undefined;
     const fontCss = getFontFaceCss(theme?.fonts);
@@ -81,17 +116,27 @@ export function useThemeStyles(theme: Theme | null): { scope?: string; styles: R
         styles: (
             <>
                 {scope !== undefined ? (
-                    <style href={`panneau-theme-${scope}`} precedence="panneau">
+                    <style href={`panneau-theme-${scope}`} precedence="panneau" nonce={nonce}>
                         {css.replaceAll('§', scope)}
                     </style>
                 ) : null}
                 {fontCss !== '' ? (
-                    <style href={`panneau-fonts-${hashString(fontCss)}`} precedence="panneau">
+                    <style
+                        href={`panneau-fonts-${hashString(fontCss)}`}
+                        precedence="panneau"
+                        nonce={nonce}
+                    >
                         {fontCss}
                     </style>
                 ) : null}
                 {getFontStylesheets(theme?.fonts).map((href) => (
-                    <link key={href} rel="stylesheet" href={href} precedence="panneau" />
+                    <link
+                        key={href}
+                        rel="stylesheet"
+                        href={href}
+                        precedence="panneau"
+                        nonce={nonce}
+                    />
                 ))}
             </>
         ),
@@ -148,13 +193,16 @@ export function PanneauRoot({
     iconLoader = null,
     locale,
     messages,
+    nonce: givenNonce,
     className,
     children,
     ...props
 }: PanneauRootProps) {
+    const [pageNonce] = useState(getPageNonce);
+    const nonce = givenNonce ?? pageNonce;
     const intl = use(IntlContext) as IntlShape | null | undefined;
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
-    const { scope, styles: themeStyles } = useThemeStyles(theme);
+    const { scope, styles: themeStyles } = useThemeStyles(theme, nonce);
     const root = (
         <div
             {...props}
@@ -166,7 +214,7 @@ export function PanneauRoot({
             {themeStyles}
             <I18nProvider locale={locale ?? intl?.locale}>
                 <NamedIconLoaderContext value={iconLoader}>
-                    <ScopeContext value={{ colorScheme, density }}>
+                    <ScopeContext value={{ colorScheme, density, nonce }}>
                         <PortalContext value={container}>
                             <ToastProvider
                                 regionClassName={styles.root}

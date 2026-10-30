@@ -47,6 +47,7 @@ export interface PanneauAppOptions {
     // Warning: (tsdoc-code-span-missing-delimiter) The code span is missing its closing backtick
     // Warning: (tsdoc-escape-right-brace) The "}" character should be escaped using a backslash to avoid confusion with a TSDoc inline tag
     maps?: MapsConfig | null;
+    nonce?: string;
     onUnauthorized?: (context: UnauthorizedContext) => void;
     plugins?: readonly PanneauPlugin[];
     queryClient?: QueryClient;
@@ -58,6 +59,7 @@ export interface PanneauProps {
     config: BootConfig;
     iconLoader?: NamedIconLoader | null;
     maps?: MapsConfig | null;
+    nonce?: string;
     onUnauthorized?: (context: UnauthorizedContext) => void;
     plugins?: readonly PanneauPlugin[];
     queryClient?: QueryClient;

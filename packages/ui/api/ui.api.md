@@ -737,6 +737,7 @@ export interface PanneauRootProps extends HTMLAttributes<HTMLDivElement> {
     iconLoader?: NamedIconLoader | null;
     locale?: string;
     messages?: Readonly<Record<string, string>> | null;
+    nonce?: string;
     theme?: Theme | null;
 }
 

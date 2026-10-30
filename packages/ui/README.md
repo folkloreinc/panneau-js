@@ -288,6 +288,23 @@ Class names are stable and readable, without a hash, like Bootstrap's: target th
 
 The theme model is described in [decision 0024](../../docs/decisions/0024-theme-model.md).
 
+### Content Security Policy
+
+Panneau runs under a strict Content Security Policy: it never needs `'unsafe-eval'` or inline scripts. For styles:
+
+- **CSS Modules** are files of the packages, that the project's bundler serves as its other stylesheets (`style-src 'self'`).
+- **Themes and fonts** are `<style>` elements (and a `<link>` for each font stylesheet) that `PanneauRoot` writes from the theme. With a policy without `'unsafe-inline'`, give them the page's nonce: `<PanneauRoot nonce={nonce}>`, or `nonce` of `<Panneau>` and `createPanneauApp()`. Without it, Panneau reads the nonce where React Aria does: `<meta property="csp-nonce" content="…">`, then `__webpack_nonce__`. The default theme writes no `<style>`.
+- **React Aria** adds one `<style>` (`react-aria-pressable-style`) with the same nonce.
+- **Inline `style` attributes** that components set (widths of progress bars, positions of popovers) go through the CSSOM, which `style-src` doesn't block.
+
+```html
+<meta property="csp-nonce" content="{{ $nonce }}" />
+```
+
+```text
+Content-Security-Policy: default-src 'self'; style-src 'self' 'nonce-{{ $nonce }}'; img-src 'self' data: https:
+```
+
 ## Primitives
 
 `Heading`, `Text`, `Prose`, `Stack`, `Inline`, `Grid`, `Container`, `Divider`, `Button`, `IconButton`, `TextInput`, `TextArea`, `NumberInput`, `Slider`, `TagsInput`, `Select` (single or multiple), `ComboBox`, `Checkbox`, `Switch`, `RadioGroup`, `SegmentedControl`, `DatePicker`, `TimeInput`, `Fieldset`, `Dialog`, `Popover`, `Menu`, `PillTrigger`, `Tabs`, `Tooltip`, toasts (`useToast()`), `Alert`, `Badge`, `Spinner`, `Skeleton`, `LoadingRegion`, `Card`, `Disclosure` and `Icon`.
