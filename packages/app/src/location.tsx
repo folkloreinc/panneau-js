@@ -94,10 +94,17 @@ export function setHistoryGuard(next: HistoryGuard): () => void {
     };
 }
 
-/** Navigates to a path of the app, without reloading the page. It doesn't ask the guards. */
-export function navigate(path: string) {
-    current += 1;
-    window.history.pushState({ [INDEX_KEY]: current }, '', path);
+/**
+ * Navigates to a path of the app, without reloading the page. It doesn't ask the guards. With
+ * `replace`, the path replaces the current entry of the history, which Back then skips.
+ */
+export function navigate(path: string, { replace = false }: { replace?: boolean } = {}) {
+    if (replace) {
+        window.history.replaceState({ [INDEX_KEY]: current }, '', path);
+    } else {
+        current += 1;
+        window.history.pushState({ [INDEX_KEY]: current }, '', path);
+    }
     notify();
 }
 
