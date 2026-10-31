@@ -198,6 +198,8 @@ export const en: MessageCatalog;
 // @public
 export const fieldsMessages: {
     add: PanneauMessage<Record<never, never>>;
+    showSecret: PanneauMessage<Record<never, never>>;
+    hideSecret: PanneauMessage<Record<never, never>>;
     addType: PanneauMessage<    {
     type: string;
     }>;
@@ -458,6 +460,7 @@ export const listsMessages: {
     action: string;
     }>;
     empty: PanneauMessage<Record<never, never>>;
+    secretValue: PanneauMessage<Record<never, never>>;
     noResults: PanneauMessage<Record<never, never>>;
     loading: PanneauMessage<Record<never, never>>;
     loadingItem: PanneauMessage<Record<never, never>>;

@@ -22,9 +22,9 @@ The page writes the boot config next to the root element ([protocol.md](../../do
 </script>
 ```
 
-| Export         | Content                                                                                                                               |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `@panneau/app` | `createPanneauApp()`, the `<Panneau>` component, `readBootConfig()` and the types of their options, the component tokens of the shell |
+| Export         | Content                                                                                                                                                                                                                            |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@panneau/app` | `createPanneauApp()`, the `<Panneau>` component, `readBootConfig()` and the types of their options, the component tokens of the shell, and the building blocks of pages for plugin pages: `PageLayout`, `PageHeader`, `LinkButton` |
 
 ## Setup
 
@@ -55,6 +55,25 @@ npm install --save-dev vite @vitejs/plugin-react
 - `location` fields place points on OpenStreetMap's tiles, without an address search. Pass `maps` for other tiles or a search: `maps: { geocoding: createNominatimSource() }`, from `@panneau/fields`.
 - When the API answers `401` (or `419` from Laravel), the app sends the browser to the login URL. Pass `onUnauthorized` to do something else.
 - In `panneau` auth mode, the app shows its login page instead, from `auth` of the definition or of the boot config: an email and a password, a token (`auth.token`), and the OAuth providers. The sidebar has a "Log out" button: in `panneau` mode it calls `adapter.logout()` and shows the login page, in `external` mode it goes to `auth.logoutUrl` ([decisions/0037](../../docs/decisions/0037-login-page-token-and-logout.md)).
+
+## Plugin pages
+
+A page of a plugin (`pages` of a plugin, named by `pages` of the definition) lays itself out as the pages of resources with `PageLayout` and `PageHeader`:
+
+```tsx
+import { PageHeader, PageLayout } from '@panneau/app';
+
+export function UsagePage() {
+    return (
+        <PageLayout>
+            <PageHeader title="Usage and costs" actions={<ExportButton />} />
+            <UsageChart />
+        </PageLayout>
+    );
+}
+```
+
+The edit page of an item shows the actions of its resource placed in `form` (by default, every action of the `item` scope), that the item allows, in its header.
 
 ## Theming the shell
 

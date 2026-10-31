@@ -1,8 +1,9 @@
-import type { ReactNode } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
+import { type ReactNode, useState } from 'react';
 
-import { TextInput, usePanneauIntl } from '@panneau/ui';
+import { IconButton, TextInput, usePanneauIntl } from '@panneau/ui';
 
-import { getFieldProps, getRuleNumber, getSetting, isString } from '../shared/entry';
+import { getFieldProps, getRuleNumber, getSetting, isBoolean, isString } from '../shared/entry';
 import { messages } from '../shared/messages';
 import type { FieldEntryProps, FieldProps } from '../shared/types';
 
@@ -18,6 +19,11 @@ export interface TextFieldProps extends FieldProps<string> {
     type?: 'text' | 'email' | 'url' | 'tel' | 'password' | 'search';
     inputMode?: 'text' | 'email' | 'url' | 'tel' | 'search' | 'numeric' | 'decimal' | 'none';
     autoComplete?: string;
+    /**
+     * A secret, such as an access key: typed in a password input, hidden until a button shows it,
+     * and never filled in by the browser.
+     */
+    secret?: boolean;
     controlClassName?: string;
     inputClassName?: string;
 }
@@ -55,12 +61,34 @@ export function TextField({
     disabled,
     readOnly,
     required,
+    secret = false,
     ...props
 }: TextFieldProps) {
+    const intl = usePanneauIntl();
     const shownDescription = useCountedDescription(description, value, maxLength);
+    const [shown, setShown] = useState(false);
+    const secretProps = secret
+        ? {
+              type: shown ? ('text' as const) : ('password' as const),
+              // Keeps password managers from filling in the user's own password
+              autoComplete: 'new-password',
+              spellCheck: 'false',
+              suffix: (
+                  <IconButton
+                      icon={shown ? EyeOff : Eye}
+                      label={intl.formatMessage(shown ? messages.hideSecret : messages.showSecret)}
+                      size="sm"
+                      aria-pressed={shown}
+                      isDisabled={disabled}
+                      onPress={() => setShown(!shown)}
+                  />
+              ),
+          }
+        : {};
     return (
         <TextInput
             {...props}
+            {...secretProps}
             value={value ?? ''}
             onChange={(next) => onChange?.(next === '' ? null : next)}
             description={shownDescription}
@@ -71,12 +99,16 @@ export function TextField({
     );
 }
 
-/** The `text` type: settings `prefix` and `suffix`, and a character count from the `max` rule. */
+/**
+ * The `text` type: settings `prefix`, `suffix` and `secret`, and a character count from the `max`
+ * rule.
+ */
 export function TextFieldEntry(props: FieldEntryProps) {
     const { field } = props;
     const prefix = getSetting(field, 'prefix', isString);
     const suffix = getSetting(field, 'suffix', isString);
     const max = getRuleNumber(field, 'max');
+    const secret = getSetting(field, 'secret', isBoolean) ?? false;
     return (
         <TextField
             {...getFieldProps(props)}
@@ -85,6 +117,7 @@ export function TextFieldEntry(props: FieldEntryProps) {
             {...(max !== undefined ? { maxLength: max } : {})}
             {...(prefix !== undefined ? { prefix } : {})}
             {...(suffix !== undefined ? { suffix } : {})}
+            secret={secret}
         />
     );
 }

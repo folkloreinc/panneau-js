@@ -1818,6 +1818,11 @@
                     },
                     "disabled": {
                         "type": "boolean"
+                    },
+                    "tone": {
+                        "description": "The tone of the option where it shows as a badge, in lists and details: `neutral` (the default), `accent`, `success`, `warning`, `danger`, `info`, or a tone of the theme.",
+                        "type": "string",
+                        "pattern": "^[a-z0-9-]+$"
                     }
                 },
                 "required": [

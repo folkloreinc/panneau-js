@@ -31,3 +31,8 @@
         transform: scale(0.97);
     }
 }
+
+/* Stops the events that React bubbles out of the overlay, without a box of its own. */
+.boundary {
+    display: contents;
+}

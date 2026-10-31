@@ -119,6 +119,7 @@ export const Action: z.ZodObject<{
             label: z.ZodString;
             description: z.ZodOptional<z.ZodString>;
             disabled: z.ZodOptional<z.ZodBoolean>;
+            tone: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>>>;
         multiple: z.ZodOptional<z.ZodBoolean>;
         resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
@@ -697,6 +698,7 @@ export const Definition: z.ZodObject<{
                 label: z.ZodString;
                 description: z.ZodOptional<z.ZodString>;
                 disabled: z.ZodOptional<z.ZodBoolean>;
+                tone: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>>>;
             multiple: z.ZodOptional<z.ZodBoolean>;
             resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
@@ -763,6 +765,7 @@ export const Definition: z.ZodObject<{
                     label: z.ZodString;
                     description: z.ZodOptional<z.ZodString>;
                     disabled: z.ZodOptional<z.ZodBoolean>;
+                    tone: z.ZodOptional<z.ZodString>;
                 }, z.core.$loose>>>;
                 resource: z.ZodOptional<z.ZodString>;
                 multiple: z.ZodOptional<z.ZodBoolean>;
@@ -887,6 +890,7 @@ export const Definition: z.ZodObject<{
                     label: z.ZodString;
                     description: z.ZodOptional<z.ZodString>;
                     disabled: z.ZodOptional<z.ZodBoolean>;
+                    tone: z.ZodOptional<z.ZodString>;
                 }, z.core.$loose>>>;
                 multiple: z.ZodOptional<z.ZodBoolean>;
                 resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
@@ -1285,6 +1289,7 @@ export const Field: z.ZodObject<{
         label: z.ZodString;
         description: z.ZodOptional<z.ZodString>;
         disabled: z.ZodOptional<z.ZodBoolean>;
+        tone: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>>>;
     multiple: z.ZodOptional<z.ZodBoolean>;
     resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
@@ -1341,6 +1346,7 @@ export const Filter: z.ZodObject<{
         label: z.ZodString;
         description: z.ZodOptional<z.ZodString>;
         disabled: z.ZodOptional<z.ZodBoolean>;
+        tone: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>>>;
     resource: z.ZodOptional<z.ZodString>;
     multiple: z.ZodOptional<z.ZodBoolean>;
@@ -1469,6 +1475,7 @@ export const ListDefinition: z.ZodObject<{
             label: z.ZodString;
             description: z.ZodOptional<z.ZodString>;
             disabled: z.ZodOptional<z.ZodBoolean>;
+            tone: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>>>;
         resource: z.ZodOptional<z.ZodString>;
         multiple: z.ZodOptional<z.ZodBoolean>;
@@ -1802,6 +1809,7 @@ export const namedSchemas: {
         label: z.ZodString;
         description: z.ZodOptional<z.ZodString>;
         disabled: z.ZodOptional<z.ZodBoolean>;
+        tone: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>;
     Rule: z.ZodUnion<readonly [z.ZodObject<{
         rule: z.ZodLiteral<"required">;
@@ -1942,6 +1950,7 @@ export const namedSchemas: {
             label: z.ZodString;
             description: z.ZodOptional<z.ZodString>;
             disabled: z.ZodOptional<z.ZodBoolean>;
+            tone: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>>>;
         multiple: z.ZodOptional<z.ZodBoolean>;
         resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
@@ -2050,6 +2059,7 @@ export const namedSchemas: {
             label: z.ZodString;
             description: z.ZodOptional<z.ZodString>;
             disabled: z.ZodOptional<z.ZodBoolean>;
+            tone: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>>>;
         resource: z.ZodOptional<z.ZodString>;
         multiple: z.ZodOptional<z.ZodBoolean>;
@@ -2078,6 +2088,7 @@ export const namedSchemas: {
                 label: z.ZodString;
                 description: z.ZodOptional<z.ZodString>;
                 disabled: z.ZodOptional<z.ZodBoolean>;
+                tone: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>>>;
             resource: z.ZodOptional<z.ZodString>;
             multiple: z.ZodOptional<z.ZodBoolean>;
@@ -2219,6 +2230,7 @@ export const namedSchemas: {
                 label: z.ZodString;
                 description: z.ZodOptional<z.ZodString>;
                 disabled: z.ZodOptional<z.ZodBoolean>;
+                tone: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>>>;
             multiple: z.ZodOptional<z.ZodBoolean>;
             resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
@@ -2370,6 +2382,7 @@ export const namedSchemas: {
                 label: z.ZodString;
                 description: z.ZodOptional<z.ZodString>;
                 disabled: z.ZodOptional<z.ZodBoolean>;
+                tone: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>>>;
             multiple: z.ZodOptional<z.ZodBoolean>;
             resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
@@ -2436,6 +2449,7 @@ export const namedSchemas: {
                     label: z.ZodString;
                     description: z.ZodOptional<z.ZodString>;
                     disabled: z.ZodOptional<z.ZodBoolean>;
+                    tone: z.ZodOptional<z.ZodString>;
                 }, z.core.$loose>>>;
                 resource: z.ZodOptional<z.ZodString>;
                 multiple: z.ZodOptional<z.ZodBoolean>;
@@ -2560,6 +2574,7 @@ export const namedSchemas: {
                     label: z.ZodString;
                     description: z.ZodOptional<z.ZodString>;
                     disabled: z.ZodOptional<z.ZodBoolean>;
+                    tone: z.ZodOptional<z.ZodString>;
                 }, z.core.$loose>>>;
                 multiple: z.ZodOptional<z.ZodBoolean>;
                 resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
@@ -2970,6 +2985,7 @@ export const namedSchemas: {
                     label: z.ZodString;
                     description: z.ZodOptional<z.ZodString>;
                     disabled: z.ZodOptional<z.ZodBoolean>;
+                    tone: z.ZodOptional<z.ZodString>;
                 }, z.core.$loose>>>;
                 multiple: z.ZodOptional<z.ZodBoolean>;
                 resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
@@ -3036,6 +3052,7 @@ export const namedSchemas: {
                         label: z.ZodString;
                         description: z.ZodOptional<z.ZodString>;
                         disabled: z.ZodOptional<z.ZodBoolean>;
+                        tone: z.ZodOptional<z.ZodString>;
                     }, z.core.$loose>>>;
                     resource: z.ZodOptional<z.ZodString>;
                     multiple: z.ZodOptional<z.ZodBoolean>;
@@ -3160,6 +3177,7 @@ export const namedSchemas: {
                         label: z.ZodString;
                         description: z.ZodOptional<z.ZodString>;
                         disabled: z.ZodOptional<z.ZodBoolean>;
+                        tone: z.ZodOptional<z.ZodString>;
                     }, z.core.$loose>>>;
                     multiple: z.ZodOptional<z.ZodBoolean>;
                     resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
@@ -3891,6 +3909,7 @@ const Option_2: z.ZodObject<{
     label: z.ZodString;
     description: z.ZodOptional<z.ZodString>;
     disabled: z.ZodOptional<z.ZodBoolean>;
+    tone: z.ZodOptional<z.ZodString>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -4076,6 +4095,7 @@ export const Resource: z.ZodObject<{
             label: z.ZodString;
             description: z.ZodOptional<z.ZodString>;
             disabled: z.ZodOptional<z.ZodBoolean>;
+            tone: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>>>;
         multiple: z.ZodOptional<z.ZodBoolean>;
         resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
@@ -4142,6 +4162,7 @@ export const Resource: z.ZodObject<{
                 label: z.ZodString;
                 description: z.ZodOptional<z.ZodString>;
                 disabled: z.ZodOptional<z.ZodBoolean>;
+                tone: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>>>;
             resource: z.ZodOptional<z.ZodString>;
             multiple: z.ZodOptional<z.ZodBoolean>;
@@ -4266,6 +4287,7 @@ export const Resource: z.ZodObject<{
                 label: z.ZodString;
                 description: z.ZodOptional<z.ZodString>;
                 disabled: z.ZodOptional<z.ZodBoolean>;
+                tone: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>>>;
             multiple: z.ZodOptional<z.ZodBoolean>;
             resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;

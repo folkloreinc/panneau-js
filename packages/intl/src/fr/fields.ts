@@ -1,6 +1,8 @@
 /** The French messages of `@panneau/fields`, by id. */
 export const fieldsFr: Record<string, string> = {
     'panneau.fields.add': 'Ajouter',
+    'panneau.fields.showSecret': 'Afficher',
+    'panneau.fields.hideSecret': 'Masquer',
     'panneau.fields.addType': 'Ajouter : {type}',
     'panneau.fields.remove': 'Retirer',
     'panneau.fields.removeItem': 'Retirer l’élément {index}',

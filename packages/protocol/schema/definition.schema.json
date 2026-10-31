@@ -654,6 +654,10 @@
                 },
                 "disabled": {
                     "type": "boolean"
+                },
+                "tone": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9-]+$"
                 }
             },
             "required": [
