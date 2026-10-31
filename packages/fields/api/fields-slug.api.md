@@ -7,7 +7,7 @@
 import type { Field } from '@panneau/protocol';
 import type { FieldCheckResponse } from '@panneau/protocol';
 import { JSX } from 'react';
-import type { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 // @public
 export type SlugCheck = (value: string, options: {

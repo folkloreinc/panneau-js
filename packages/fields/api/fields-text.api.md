@@ -6,7 +6,7 @@
 
 import type { Field } from '@panneau/protocol';
 import { JSX } from 'react';
-import type { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 // @public
 export function TextField(input: TextFieldProps): JSX.Element;
@@ -32,6 +32,7 @@ export interface TextFieldProps extends FieldProps<string> {
     // (undocumented)
     placeholder?: string;
     prefix?: ReactNode;
+    secret?: boolean;
     suffix?: ReactNode;
     type?: 'text' | 'email' | 'url' | 'tel' | 'password' | 'search';
 }

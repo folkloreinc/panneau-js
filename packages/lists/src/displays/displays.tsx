@@ -2,11 +2,11 @@ import { Check, Minus } from 'lucide-react';
 
 import { toReferences } from '@panneau/fields';
 import { formatDuration } from '@panneau/fields/duration';
-import { Badge, Icon, usePanneauIntl } from '@panneau/ui';
+import { Badge, Icon, type Tone, usePanneauIntl } from '@panneau/ui';
 
 import { messages } from '../messages';
 import type { DisplayEntry, DisplayProps } from '../types';
-import { getFieldOptions, getOptionLabel, toText } from '../values';
+import { findOption, getFieldOptions, toText } from '../values';
 import styles from './Displays.module.css';
 
 /** What a cell shows without a value. Hidden from assistive technologies, which skip the cell. */
@@ -27,11 +27,24 @@ function isEmpty(value: unknown): boolean {
     );
 }
 
-/** Text, on two lines at most. The default display. */
-export function TextDisplay({ value }: DisplayProps) {
+/**
+ * Text, on two lines at most. The default display. The value of a `secret` text field
+ * (`settings.secret`) shows as dots, never in clear.
+ */
+export function TextDisplay({ value, field }: DisplayProps) {
     const intl = usePanneauIntl();
     const text = toText(value, intl.locale);
-    return text === '' ? <EmptyValue /> : <span className={styles.text}>{text}</span>;
+    if (text === '') {
+        return <EmptyValue />;
+    }
+    if (field?.settings?.secret === true) {
+        return (
+            <span role="img" aria-label={intl.formatMessage(messages.secretValue)}>
+                ••••••••
+            </span>
+        );
+    }
+    return <span className={styles.text}>{text}</span>;
 }
 
 /** HTML as plain text. */
@@ -134,9 +147,14 @@ export function SelectDisplay({ value, field }: DisplayProps) {
     }
     return (
         <span className={styles.badges}>
-            {values.map((entry) => (
-                <Badge key={String(entry)}>{getOptionLabel(options, entry) ?? String(entry)}</Badge>
-            ))}
+            {values.map((entry) => {
+                const option = findOption(options, entry);
+                return (
+                    <Badge key={String(entry)} tone={(option?.tone ?? 'neutral') as Tone}>
+                        {option?.label ?? String(entry)}
+                    </Badge>
+                );
+            })}
         </span>
     );
 }

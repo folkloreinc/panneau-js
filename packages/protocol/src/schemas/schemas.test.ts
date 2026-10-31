@@ -66,6 +66,17 @@ describe('Field', () => {
         ).toBe(true);
     });
 
+    it('gives the options of a select a tone, a name of the theme', () => {
+        const field = (tone: string) => ({
+            name: 'status',
+            type: 'select',
+            options: [{ value: 'failed', label: 'Failed', tone }],
+        });
+        expect(Field.safeParse(field('danger')).success).toBe(true);
+        expect(Field.safeParse(field('brand-signal')).success).toBe(true);
+        expect(Field.safeParse(field('Danger!')).success).toBe(false);
+    });
+
     it('describes the settings of richtext fields', () => {
         expect(
             RichTextSettings.safeParse({

@@ -6,7 +6,7 @@
 
 import type { Field } from '@panneau/protocol';
 import { JSX } from 'react';
-import type { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 // @public
 export function EmailField(input: EmailFieldProps): JSX.Element;

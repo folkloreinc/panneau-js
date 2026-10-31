@@ -87,4 +87,23 @@ describe('Dialog', () => {
         expect(screen.getByRole('alertdialog', { name: 'Conflict' })).toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Close' })).not.toBeInTheDocument();
     });
+
+    it('keeps the submit of its forms from the form around it', async () => {
+        const outer = vi.fn((event: { preventDefault: () => void }) => event.preventDefault());
+        const inner = vi.fn((event: { preventDefault: () => void }) => event.preventDefault());
+        render(
+            <PanneauRoot>
+                <form onSubmit={outer}>
+                    <Dialog title="New key" isOpen>
+                        <form onSubmit={inner}>
+                            <button type="submit">Create</button>
+                        </form>
+                    </Dialog>
+                </form>
+            </PanneauRoot>,
+        );
+        await userEvent.click(await screen.findByRole('button', { name: 'Create' }));
+        expect(inner).toHaveBeenCalledTimes(1);
+        expect(outer).not.toHaveBeenCalled();
+    });
 });

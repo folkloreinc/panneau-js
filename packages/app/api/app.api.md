@@ -13,6 +13,7 @@ import { MapsConfig } from '@panneau/fields';
 import { NamedIconLoader } from '@panneau/ui';
 import { PanneauPlugin } from '@panneau/core';
 import { QueryClient } from '@tanstack/react-query';
+import type { ReactNode } from 'react';
 
 // @public
 export const appComponentTokens: Readonly<{
@@ -26,6 +27,44 @@ export function createPanneauApp(input: PanneauAppOptions): PanneauApp;
 
 // @public
 export const itemPanelTokens: ComponentTokens<"item-panel", "panneau-item-panel-width" | "panneau-item-panel-radius" | "panneau-item-panel-bg" | "panneau-item-panel-width-wide" | "panneau-item-panel-shadow">;
+
+// @public
+export function LinkButton(input: LinkButtonProps): JSX.Element;
+
+// @public (undocumented)
+export interface LinkButtonProps {
+    // (undocumented)
+    children: ReactNode;
+    // (undocumented)
+    href: string;
+    // (undocumented)
+    icon?: ReactNode;
+}
+
+// @public
+export function PageHeader(input: PageHeaderProps): JSX.Element;
+
+// @public (undocumented)
+export interface PageHeaderProps {
+    actions?: ReactNode;
+    back?: {
+        href: string;
+        label: string;
+    };
+    title: ReactNode;
+}
+
+// @public
+export function PageLayout(input: PageLayoutProps): JSX.Element;
+
+// @public (undocumented)
+export interface PageLayoutProps {
+    // (undocumented)
+    children?: ReactNode;
+    // (undocumented)
+    className?: string;
+    width?: 'default' | 'narrow';
+}
 
 // @public
 export function Panneau(input: PanneauProps): JSX.Element;

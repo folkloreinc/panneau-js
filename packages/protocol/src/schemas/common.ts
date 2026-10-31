@@ -40,6 +40,14 @@ export const Option = z.looseObject({
     label: z.string(),
     description: z.string().optional(),
     disabled: z.boolean().optional(),
+    tone: z
+        .string()
+        .regex(/^[a-z0-9-]+$/)
+        .optional()
+        .meta({
+            description:
+                'The tone of the option where it shows as a badge, in lists and details: `neutral` (the default), `accent`, `success`, `warning`, `danger`, `info`, or a tone of the theme.',
+        }),
 });
 
 export type Id = z.infer<typeof Id>;

@@ -104,6 +104,7 @@ export const listsMessages = {
         defaultMessage: '“{action}” failed.',
     }),
     empty: defineMessage({ id: 'panneau.lists.empty', defaultMessage: 'No items yet.' }),
+    secretValue: defineMessage({ id: 'panneau.lists.secretValue', defaultMessage: 'Hidden value' }),
     noResults: defineMessage({
         id: 'panneau.lists.noResults',
         defaultMessage: 'No items match the search or the filters.',

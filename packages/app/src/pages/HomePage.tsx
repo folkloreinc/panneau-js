@@ -9,7 +9,7 @@ import { Icon, getNamedIcon, usePanneauIntl } from '@panneau/ui';
 import { useDocumentTitle } from '../documentTitle';
 import { capitalize } from '../navigation';
 import { routePath } from '../routes';
-import { PageHeader } from './PageHeader';
+import { PageHeader, PageLayout } from './PageHeader';
 import styles from './pages.module.css';
 
 export interface HomePageProps {
@@ -27,7 +27,7 @@ export function HomePage({ definition, basePath }: HomePageProps) {
     const user = definition.user ?? null;
     useDocumentTitle([]);
     return (
-        <div className={styles.page}>
+        <PageLayout>
             <PageHeader title={definition.name} />
             {user !== null ? (
                 <p className={styles.intro}>
@@ -63,6 +63,6 @@ export function HomePage({ definition, basePath }: HomePageProps) {
                     </li>
                 ))}
             </ul>
-        </div>
+        </PageLayout>
     );
 }

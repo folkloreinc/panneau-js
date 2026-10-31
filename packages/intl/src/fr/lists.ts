@@ -42,6 +42,7 @@ export const listsFr: Record<string, string> = {
     'panneau.lists.cancel': 'Annuler',
     'panneau.lists.actionFailed': '« {action} » a échoué.',
     'panneau.lists.empty': 'Aucun élément pour l’instant.',
+    'panneau.lists.secretValue': 'Valeur masquée',
     'panneau.lists.noResults': 'Aucun élément ne correspond à la recherche ou aux filtres.',
     'panneau.lists.loading': 'Chargement des éléments…',
     'panneau.lists.loadingItem': 'Chargement de l’élément…',
