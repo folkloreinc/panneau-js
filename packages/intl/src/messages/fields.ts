@@ -6,6 +6,8 @@ import { defineMessage } from '../message';
  */
 export const fieldsMessages = {
     add: defineMessage({ id: 'panneau.fields.add', defaultMessage: 'Add' }),
+    showSecret: defineMessage({ id: 'panneau.fields.showSecret', defaultMessage: 'Show' }),
+    hideSecret: defineMessage({ id: 'panneau.fields.hideSecret', defaultMessage: 'Hide' }),
     addType: defineMessage<{ type: string }>({
         id: 'panneau.fields.addType',
         defaultMessage: 'Add: {type}',

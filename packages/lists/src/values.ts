@@ -71,8 +71,12 @@ export function getFieldOptions(field: Field | null | undefined): readonly Optio
     return field?.options ?? [];
 }
 
+/** The option of a value, matched as a string (values from the URL are strings). */
+export function findOption(options: readonly Option[], value: unknown): Option | undefined {
+    return options.find((candidate) => String(candidate.value) === String(value));
+}
+
 /** The label of an option value, matched as a string (values from the URL are strings). */
 export function getOptionLabel(options: readonly Option[], value: unknown): string | null {
-    const option = options.find((candidate) => String(candidate.value) === String(value));
-    return option?.label ?? null;
+    return findOption(options, value)?.label ?? null;
 }

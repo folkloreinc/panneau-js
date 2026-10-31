@@ -98,6 +98,33 @@
     background: var(--panneau-color-accent-hover);
 }
 
+/* A `link` action in the header of an item's page, beside the buttons of its other actions. */
+.actionLink {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    min-height: var(--panneau-control-height);
+    padding: 0 calc(var(--panneau-control-padding-x) + var(--panneau-space-1));
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-radius-md);
+    background: var(--panneau-color-surface);
+    color: var(--panneau-color-text);
+    font-size: var(--panneau-font-size-md);
+    font-weight: var(--panneau-font-weight-medium);
+    text-decoration: none;
+    white-space: nowrap;
+    outline: none;
+    transition: background-color var(--panneau-duration);
+}
+
+.actionLink[data-hovered] {
+    background: var(--panneau-color-hover);
+}
+
+.actionLink[data-focus-visible] {
+    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+}
+
 .intro {
     margin: 0;
     color: var(--panneau-color-text-muted);

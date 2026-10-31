@@ -162,3 +162,8 @@
         transform: translateY(0.5rem);
     }
 }
+
+/* Stops the events that React bubbles out of the overlay, without a box of its own. */
+.boundary {
+    display: contents;
+}

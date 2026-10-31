@@ -13,6 +13,7 @@ import { messages } from '../intl/messages';
 import { usePanneauIntl } from '../intl/usePanneauIntl';
 import { usePortalContainer } from '../root/PanneauRoot';
 import { cx } from '../utils/cx';
+import { stopPropagation } from '../utils/events';
 import styles from './Dialog.module.css';
 
 export interface DialogProps extends Pick<
@@ -92,41 +93,48 @@ export function Dialog({
                     fullScreenOnPhone && styles.fullScreenOnPhone,
                 )}
             >
-                <AriaDialog role={role} className={cx('panneau-dialog', styles.dialog, className)}>
-                    {({ close }) => (
-                        <>
-                            <div className={cx(styles.header, headerClassName)}>
-                                <Heading slot="title" className={styles.title}>
-                                    {title}
-                                </Heading>
-                                {headerContent !== undefined && headerContent !== null ? (
-                                    <div className={styles.headerContent}>
-                                        {typeof headerContent === 'function'
-                                            ? headerContent(close)
-                                            : headerContent}
+                {/* React bubbles events through portals to the components around the dialog: a
+                    form in the dialog must not submit a form of the page (#146). */}
+                <div className={styles.boundary} onSubmit={stopPropagation}>
+                    <AriaDialog
+                        role={role}
+                        className={cx('panneau-dialog', styles.dialog, className)}
+                    >
+                        {({ close }) => (
+                            <>
+                                <div className={cx(styles.header, headerClassName)}>
+                                    <Heading slot="title" className={styles.title}>
+                                        {title}
+                                    </Heading>
+                                    {headerContent !== undefined && headerContent !== null ? (
+                                        <div className={styles.headerContent}>
+                                            {typeof headerContent === 'function'
+                                                ? headerContent(close)
+                                                : headerContent}
+                                        </div>
+                                    ) : null}
+                                    {isDismissable ? (
+                                        <IconButton
+                                            icon={X}
+                                            size="sm"
+                                            label={intl.formatMessage(messages.close)}
+                                            showTooltip={false}
+                                            onPress={close}
+                                        />
+                                    ) : null}
+                                </div>
+                                <div className={cx(styles.body, bodyClassName)}>
+                                    {typeof children === 'function' ? children(close) : children}
+                                </div>
+                                {footer !== undefined && footer !== null ? (
+                                    <div className={cx(styles.footer, footerClassName)}>
+                                        {typeof footer === 'function' ? footer(close) : footer}
                                     </div>
                                 ) : null}
-                                {isDismissable ? (
-                                    <IconButton
-                                        icon={X}
-                                        size="sm"
-                                        label={intl.formatMessage(messages.close)}
-                                        showTooltip={false}
-                                        onPress={close}
-                                    />
-                                ) : null}
-                            </div>
-                            <div className={cx(styles.body, bodyClassName)}>
-                                {typeof children === 'function' ? children(close) : children}
-                            </div>
-                            {footer !== undefined && footer !== null ? (
-                                <div className={cx(styles.footer, footerClassName)}>
-                                    {typeof footer === 'function' ? footer(close) : footer}
-                                </div>
-                            ) : null}
-                        </>
-                    )}
-                </AriaDialog>
+                            </>
+                        )}
+                    </AriaDialog>
+                </div>
             </Modal>
         </ModalOverlay>
     );

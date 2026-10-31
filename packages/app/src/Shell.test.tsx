@@ -297,4 +297,62 @@ describe('the app shell', () => {
             expect(window.location.pathname).toBe('/panneau/pages/job/2');
         });
     });
+
+    it('shows the actions placed in form on the edit page of an item, runs them, and leaves the page of a deleted item', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages/1/edit');
+        const backend = renderApp({
+            resources: [
+                {
+                    id: 'pages',
+                    label: { singular: 'page', plural: 'pages' },
+                    itemTitle: 'title',
+                    fields: [{ name: 'title', type: 'text', label: 'Title' }],
+                    actions: [
+                        {
+                            id: 'edit',
+                            label: 'Edit',
+                            kind: 'link',
+                            url: '/panneau/resources/pages/{id}/edit',
+                            scope: ['item'],
+                        },
+                        {
+                            id: 'site',
+                            label: 'View on the site',
+                            kind: 'link',
+                            url: '/site/{id}',
+                            scope: ['item'],
+                            placement: ['form'],
+                        },
+                        { id: 'publish', label: 'Publish', scope: ['item'], placement: ['row'] },
+                        {
+                            id: 'delete',
+                            label: 'Delete',
+                            scope: ['item'],
+                            destructive: true,
+                            confirm: true,
+                        },
+                    ],
+                },
+            ],
+        });
+        const main = within(screen.getByRole('main'));
+        expect(await main.findByRole('link', { name: 'View on the site' })).toHaveAttribute(
+            'href',
+            '/site/1',
+        );
+        // Placed in `row` only, and the page's own action
+        expect(main.queryByRole('button', { name: 'Publish' })).not.toBeInTheDocument();
+        expect(main.queryByRole('link', { name: 'Edit' })).not.toBeInTheDocument();
+
+        await user.click(main.getByRole('button', { name: 'Delete' }));
+        const dialog = await screen.findByRole('alertdialog');
+        await user.click(within(dialog).getByRole('button', { name: 'Delete' }));
+        expect(await screen.findByText('1 deleted.')).toBeInTheDocument();
+        expect(backend.items('pages').map((page) => page.id)).toEqual(['2']);
+        // The item is gone: back to the list, in place of its page
+        await waitFor(() => expect(window.location.pathname).toBe('/panneau/resources/pages'));
+        expect(await screen.findByRole('table', { name: 'Pages' })).toBeInTheDocument();
+        expect(screen.queryByText('About us')).not.toBeInTheDocument();
+    });
 });
