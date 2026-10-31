@@ -22,9 +22,31 @@ export const Pagination = z.looseObject({
     lastPage: z.number().int().positive(),
 });
 
+export const CursorPagination = z
+    .looseObject({
+        perPage: z.number().int().positive(),
+        nextCursor: z.string().min(1).nullable().meta({
+            description: 'The `cursor` of the next page, or `null` on the last page.',
+        }),
+        previousCursor: z.string().min(1).nullable().optional().meta({
+            description:
+                'The `cursor` of the previous page, or `null` when it is the first page, which has none (and on the first page). Without it, clients go back through the cursors they followed.',
+        }),
+        total: z.number().int().nonnegative().nullable().optional().meta({
+            description: 'How many items match, when the backend counts them.',
+        }),
+    })
+    .meta({
+        description:
+            'The meta of a page of a list whose `pagination` is `cursor`: no page numbers, and no total unless the backend has one.',
+    });
+
 export const ItemResponse = z.looseObject({ data: Item });
 
-export const ListResponse = z.looseObject({ data: z.array(Item), meta: Pagination });
+export const ListResponse = z.looseObject({
+    data: z.array(Item),
+    meta: z.union([Pagination, CursorPagination]),
+});
 
 export const Problem = z
     .looseObject({
@@ -403,6 +425,7 @@ export const LocationValue = z
 export type Item = z.infer<typeof Item>;
 export type Pagination = z.infer<typeof Pagination>;
 export type ItemResponse = z.infer<typeof ItemResponse>;
+export type CursorPagination = z.infer<typeof CursorPagination>;
 export type ListResponse = z.infer<typeof ListResponse>;
 export type Problem = z.infer<typeof Problem>;
 export type Selection = z.infer<typeof Selection>;

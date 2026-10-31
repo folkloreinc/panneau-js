@@ -30,6 +30,8 @@ export interface ResolvedList {
     layouts: string[];
     perPage: number;
     perPageOptions: number[];
+    /** `pages` (numbered, with a total), or `cursor`: the list follows the cursors of its pages. */
+    pagination: 'pages' | 'cursor';
     /** Fields editable in the list. */
     inlineEdit: string[];
     /** Whether items can be selected: the list allows it and a selection action exists. */
@@ -106,6 +108,7 @@ export function resolveList(resource: Resource): ResolvedList {
         layouts: list.layouts ?? ['table'],
         perPage: list.perPage ?? DEFAULT_PER_PAGE,
         perPageOptions: list.perPageOptions ?? [],
+        pagination: list.pagination ?? 'pages',
         inlineEdit: list.inlineEdit ?? [],
         selectable: (list.selectable ?? true) && hasSelectionAction,
         actions,

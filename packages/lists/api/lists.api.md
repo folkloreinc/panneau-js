@@ -17,6 +17,7 @@ import { JSX } from 'react';
 import type { List as List_2 } from '@panneau/core';
 import { ListOptions } from '@panneau/core';
 import type { ListQuery } from '@panneau/protocol';
+import type { ListResponse } from '@panneau/protocol';
 import type { ListSelection } from '@panneau/core';
 import type { ListState } from '@panneau/core';
 import type { Option as Option_2 } from '@panneau/protocol';
@@ -71,6 +72,24 @@ export type ConfirmPreview = {
 
 // @public
 export function countSelected(selection: ListSelection, total: number): number;
+
+// @public
+export function CursorPagination(input: CursorPaginationProps): JSX.Element;
+
+// @public (undocumented)
+export interface CursorPaginationProps {
+    hasNext: boolean;
+    hasPrevious: boolean;
+    // (undocumented)
+    onNext: () => void;
+    // (undocumented)
+    onPerPageChange?: (perPage: number) => void;
+    // (undocumented)
+    onPrevious: () => void;
+    // (undocumented)
+    perPage: number;
+    perPageOptions?: readonly number[] | undefined;
+}
 
 // @public
 export function DateDisplay(input: DisplayProps): JSX.Element;
@@ -136,6 +155,15 @@ export function getLocalizedValue(value: unknown, locale: string): unknown;
 
 // @public
 export function getPageSelection(selection: ListSelection, items: readonly ListItem[]): 'all' | 'some' | 'none';
+
+// @public
+export function getPagingProps(meta: ListResponse['meta'] | undefined): {
+    total?: number;
+    cursors?: {
+        next: string | null;
+        previous?: string | null;
+    };
+};
 
 // @public
 export function groupListActions(actions: ListActions | undefined): Record<ActionPlacement, Action[]>;
@@ -272,6 +300,10 @@ export interface ListViewProps {
     // (undocumented)
     columns: readonly ListColumn[];
     currentItemId?: string | null;
+    cursors?: {
+        next: string | null;
+        previous?: string | null | undefined;
+    } | undefined;
     displays?: Readonly<Record<string, DisplayEntry>>;
     emptyMessage?: ReactNode;
     error?: Error | null;

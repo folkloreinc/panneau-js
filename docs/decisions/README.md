@@ -44,3 +44,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0036](0036-default-icon-loader.md)           | Lucide's icon loader is the default of `createPanneauApp()` only       | Accepted                    |
 | [0037](0037-login-page-token-and-logout.md)   | The login page of the app, a login with a token, and the logout        | Accepted                    |
 | [0038](0038-pages-with-params.md)             | Pages with params                                                      | Accepted                    |
+| [0039](0039-cursor-pagination.md)             | Lists paged with cursors                                               | Accepted                    |

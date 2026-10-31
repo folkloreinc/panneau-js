@@ -4,7 +4,7 @@ import { useActionPreview, useActionRunner } from '@panneau/actions';
 import { type ResolvedResource, useList } from '@panneau/core';
 import { useResourceItem, useResourceList } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
-import { ListView } from '@panneau/lists';
+import { ListView, getPagingProps } from '@panneau/lists';
 import { Icon, usePanneauIntl } from '@panneau/ui';
 
 import { cx } from '../cx';
@@ -84,7 +84,7 @@ export function ResourceListPage({
                     aria-label={title}
                     list={list}
                     items={data?.data}
-                    total={data?.meta.total}
+                    {...getPagingProps(data?.meta)}
                     isLoading={isFetching}
                     error={error}
                     onRetry={() => void refetch()}

@@ -68,6 +68,11 @@ const queryParameter = (name: string, description: string, schema: JsonObject): 
 const listParameters = [
     queryParameter('page', 'Page number, from 1.', { type: 'integer', minimum: 1 }),
     queryParameter('perPage', 'Items per page.', { type: 'integer', minimum: 1 }),
+    queryParameter(
+        'cursor',
+        'Lists whose `pagination` is `cursor`: the `nextCursor` (or `previousCursor`) of a page, instead of `page`.',
+        { type: 'string' },
+    ),
     queryParameter('sort', 'Comma-separated fields; a `-` prefix sorts descending.', {
         type: 'string',
     }),

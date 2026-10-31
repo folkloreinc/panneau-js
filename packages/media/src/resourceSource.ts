@@ -1,6 +1,7 @@
 import type { DataAdapter } from '@panneau/data';
 import { getAccept, getMaxSize } from '@panneau/fields';
 import type { Field, Item, MediaInfo, Resource } from '@panneau/protocol';
+import { isCursorPage } from '@panneau/protocol/runtime';
 
 import type { MediaSort, MediaSource, PickerMedia } from './picker/types';
 
@@ -86,21 +87,32 @@ export function createResourceMediaSource(
         fields,
         canCreate: library.abilities?.create !== false,
         async list({ q, filter, sort, cursor }, options) {
-            const page = cursor === null || cursor === undefined ? 1 : Number(cursor);
+            // The picker's cursor is the library's own, or the number of the next page.
+            const cursors = library.list?.pagination === 'cursor';
+            const given = cursor !== null && cursor !== undefined && cursor !== '';
+            const page = !cursors && given ? Number(cursor) : 1;
             const response = await adapter.list(
                 library.id,
                 {
-                    page,
+                    ...(cursors ? (given ? { cursor } : {}) : { page }),
                     ...(q !== undefined && q !== '' ? { q } : {}),
                     ...(filter !== undefined ? { filter } : {}),
                     ...(sort !== undefined ? { sort: [sort] } : {}),
                 },
                 options,
             );
+            const { meta } = response;
             return {
                 items: response.data.map(read),
-                nextCursor: page < response.meta.lastPage ? String(page + 1) : null,
-                total: response.meta.total,
+                ...(isCursorPage(meta)
+                    ? {
+                          nextCursor: meta.nextCursor,
+                          ...(typeof meta.total === 'number' ? { total: meta.total } : {}),
+                      }
+                    : {
+                          nextCursor: page < meta.lastPage ? String(page + 1) : null,
+                          total: meta.total,
+                      }),
             };
         },
         async get(id, options) {

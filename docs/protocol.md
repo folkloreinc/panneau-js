@@ -350,6 +350,7 @@ All paths are relative to `api.baseUrl`.
 **List query parameters:**
 
 - `page`, `perPage`
+- `cursor`: for a list whose `pagination` is `cursor`, the `nextCursor` (or `previousCursor`) of a page, instead of `page` ([0039](decisions/0039-cursor-pagination.md))
 - `sort=-published_at,title`: comma-separated, `-` for descending
 - `filter[{id}]`: the value of a filter of the list's definition, keyed by its `id`:
     - one value: `filter[status]=published`;
@@ -397,6 +398,20 @@ A field with `"check": true`, at the top of a resource, checks its value with th
     "meta": { "page": 1, "perPage": 20, "total": 134, "lastPage": 7 }
 }
 ```
+
+**Cursor pagination.** A list with `"pagination": "cursor"` in its definition (`list`) pages with opaque cursors, for lists too large or too live to count: thousands of jobs a day, newest first. Its pages have no number and no total:
+
+```jsonc
+// GET /resources/jobs?perPage=50&cursor=eyJpZCI6NDJ9
+{
+    "data": [/* Item */],
+    "meta": { "perPage": 50, "nextCursor": "eyJpZCI6Nzh9", "previousCursor": null, "total": null },
+}
+```
+
+- `nextCursor` is `null` on the last page. `previousCursor` is `null` when the previous page is the first, which has no cursor; a backend can leave it out, and clients then go back through the cursors they followed. `total` is optional.
+- A cursor belongs to its query: changing the sort, filters, search or page size starts over from the first page, without a cursor. A cursor the backend can't read is a `422` problem, with `errors.cursor`.
+- Clients show the previous and next pages, and don't offer to select every matching item, since they can't count them.
 
 **Items:**
 

@@ -52,6 +52,32 @@ describe('createList', () => {
         expect(listener).toHaveBeenCalledTimes(8);
     });
 
+    it('follows the cursors of a list paged with cursors, and goes back the way it came', () => {
+        const list = createList({ list: { ...pages, pagination: 'cursor' } });
+        const query = () => list.getState().query;
+        expect(query()).toEqual({ perPage: 10, sort: ['-published_at', 'title'] });
+
+        list.nextPage('c2');
+        list.nextPage('c3');
+        expect(query().cursor).toBe('c3');
+        // Without the backend's previousCursor, back through the cursors followed
+        list.previousPage();
+        expect(query().cursor).toBe('c2');
+        list.previousPage();
+        expect(query().cursor).toBeUndefined();
+        // With it
+        list.nextPage('c2');
+        list.previousPage(null);
+        expect(query().cursor).toBeUndefined();
+
+        // Another query starts over, from the first page
+        list.nextPage('c2');
+        list.setSearch('festival');
+        expect(query()).toEqual({ perPage: 10, sort: ['-published_at', 'title'], q: 'festival' });
+        list.previousPage();
+        expect(query().cursor).toBeUndefined();
+    });
+
     it('toggles the sort of a field: ascending, descending, default', () => {
         const list = createList({ list: pages });
         list.toggleSort('title');

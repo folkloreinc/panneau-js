@@ -40,6 +40,17 @@ export interface List {
     getState(): ListState;
     subscribe(listener: () => void): () => void;
     setPage(page: number): void;
+    /**
+     * In a list paged with cursors: goes to the page of `nextCursor`, and remembers the cursor of
+     * the page it leaves, for `previousPage()`.
+     */
+    nextPage(cursor: string): void;
+    /**
+     * In a list paged with cursors: goes back a page, to `previousCursor` when the backend gives
+     * one (`null` for the first page), or else to the page it came from. Without either, it goes
+     * to the first page.
+     */
+    previousPage(cursor?: string | null): void;
     /** Sets the page size, and goes back to the first page. */
     setPerPage(perPage: number): void;
     /** Sets the sort (`['-published_at', 'title']`), and goes back to the first page. */
@@ -68,7 +79,9 @@ export interface List {
 }
 
 const EMPTY_SELECTION: ListSelection = { mode: 'ids', ids: [] };
-const LIST_PARAM = /^(page|perPage|sort|q|fields|filter\[.+)$/;
+/** Back to the first page: page 1, or no cursor. */
+const FIRST_PAGE = { page: 1, cursor: undefined };
+const LIST_PARAM = /^(page|perPage|cursor|sort|q|fields|filter\[.+)$/;
 
 /** Removes the values that are the defaults, so the URL only keeps what the user changed. */
 function normalize(query: ListQuery, defaults: Required<ListDefaults>): ListQuery {
@@ -78,6 +91,9 @@ function normalize(query: ListQuery, defaults: Required<ListDefaults>): ListQuer
     }
     if (query.perPage !== undefined && query.perPage !== defaults.perPage) {
         result.perPage = query.perPage;
+    }
+    if (query.cursor !== undefined && query.cursor !== '') {
+        result.cursor = query.cursor;
     }
     if (query.sort !== undefined && !isEqual(query.sort, defaults.sort)) {
         result.sort = [...query.sort];
@@ -117,11 +133,15 @@ export function createList(options: ListOptions = {}): List {
     let params: ListQuery =
         router !== null ? readRouter() : normalize(options.query ?? {}, defaults);
     let selection: ListSelection = EMPTY_SELECTION;
+    // The cursors of the pages before this one, as `nextPage()` followed them.
+    let trail: (string | null)[] = [];
 
+    // A list paged with cursors has no page numbers: its query has a cursor, after the first page.
+    const cursors = options.list?.pagination === 'cursor';
     const compute = (): ListState => ({
         query: {
             ...params,
-            page: params.page ?? 1,
+            ...(cursors ? {} : { page: params.page ?? 1 }),
             perPage: params.perPage ?? defaults.perPage,
             ...(params.sort !== undefined || defaults.sort.length > 0
                 ? { sort: params.sort ?? defaults.sort }
@@ -159,6 +179,12 @@ export function createList(options: ListOptions = {}): List {
         }
         const scopeChanged =
             !isEqual(normalized.filter, params.filter) || normalized.q !== params.q;
+        // Another query starts its pages over.
+        const { cursor: _next, ...nextQuery } = normalized;
+        const { cursor: _current, ...currentQuery } = params;
+        if (!isEqual(nextQuery, currentQuery)) {
+            trail = [];
+        }
         params = normalized;
         if (scopeChanged) {
             selection = EMPTY_SELECTION;
@@ -207,17 +233,28 @@ export function createList(options: ListOptions = {}): List {
             };
         },
         setPage: (page) => setParams({ ...params, page }),
-        setPerPage: (perPage) => setParams({ ...params, perPage, page: 1 }),
-        setSort: (sort) => setParams({ ...params, sort: [...sort], page: 1 }),
+        nextPage(cursor) {
+            const current = params.cursor ?? null;
+            setParams({ ...params, cursor });
+            trail = [...trail, current];
+        },
+        previousPage(cursor) {
+            const back = cursor !== undefined ? cursor : (trail.at(-1) ?? null);
+            const rest = trail.slice(0, -1);
+            setParams({ ...params, cursor: back ?? undefined });
+            trail = rest;
+        },
+        setPerPage: (perPage) => setParams({ ...params, perPage, ...FIRST_PAGE }),
+        setSort: (sort) => setParams({ ...params, sort: [...sort], ...FIRST_PAGE }),
         toggleSort(field) {
             const sort = state.query.sort ?? [];
             if (sort[0] === field) {
-                setParams({ ...params, sort: [`-${field}`], page: 1 });
+                setParams({ ...params, sort: [`-${field}`], ...FIRST_PAGE });
             } else if (sort[0] === `-${field}` && params.sort !== undefined) {
                 const { sort: _sort, ...rest } = params;
-                setParams({ ...rest, page: 1 });
+                setParams({ ...rest, ...FIRST_PAGE });
             } else {
-                setParams({ ...params, sort: [field], page: 1 });
+                setParams({ ...params, sort: [field], ...FIRST_PAGE });
             }
         },
         setFilter(id, value) {
@@ -225,10 +262,10 @@ export function createList(options: ListOptions = {}): List {
             setParams({
                 ...params,
                 filter: value === undefined ? filter : { ...filter, [id]: value },
-                page: 1,
+                ...FIRST_PAGE,
             });
         },
-        setSearch: (q) => setParams({ ...params, q, page: 1 }, { replace: true }),
+        setSearch: (q) => setParams({ ...params, q, ...FIRST_PAGE }, { replace: true }),
         resetQuery: () => setParams({}),
         select(ids) {
             if (selection.mode === 'all') {

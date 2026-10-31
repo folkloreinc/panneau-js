@@ -22,6 +22,7 @@ import { createExampleDefinition, createMockBackend } from '@panneau/protocol/mo
 import { Spinner, useToast } from '@panneau/ui';
 
 import { ListView } from './ListView';
+import { getPagingProps } from './toolbar/Pagination';
 import type { ListActionEvent } from './types';
 
 const TITLES = [
@@ -51,9 +52,10 @@ const TITLES = [
     ['Bureaux', 'Offices'],
 ] as const;
 
-function createSetup() {
+function createSetup(pagination: 'pages' | 'cursor' = 'pages') {
     const definition: DefinitionInput = createExampleDefinition();
     const pages = definition.resources[0] as DefinitionInput['resources'][number];
+    pages.list = { ...pages.list, pagination };
     // The built-in delete action, which the mock backend runs, in the menu of each row.
     pages.actions = [
         ...(pages.actions ?? []),
@@ -147,7 +149,7 @@ function PagesList({ resource, adapter }: { resource: Resource; adapter: DataAda
             aria-label="Pages"
             list={list}
             items={data?.data}
-            total={data?.meta.total}
+            {...getPagingProps(data?.meta)}
             isLoading={isFetching}
             error={error}
             onRetry={() => void refetch()}
@@ -168,8 +170,8 @@ function PagesList({ resource, adapter }: { resource: Resource; adapter: DataAda
     );
 }
 
-function ResourceList() {
-    const [{ adapter, client }] = useState(createSetup);
+function ResourceList({ pagination = 'pages' }: { pagination?: 'pages' | 'cursor' }) {
+    const [{ adapter, client }] = useState(() => createSetup(pagination));
     return (
         <QueryClientProvider client={client}>
             <DataAdapterProvider adapter={adapter}>
@@ -215,6 +217,28 @@ export const Default: Story = {
         );
         // Sorted by title (the default sort of the definition).
         await expect(within(table).getAllByRole('row')[1]).toHaveTextContent('About us');
+    },
+};
+
+/** A list paged with cursors: no page numbers and no total, the next and previous pages. */
+export const Cursors: Story = {
+    args: { pagination: 'cursor' },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const table = await canvas.findByRole('table', { name: 'Pages' });
+        await waitFor(() =>
+            expect(within(table).getAllByRole('row')[1]).toHaveTextContent('About us'),
+        );
+        const pagination = within(canvas.getByRole('navigation', { name: 'Pagination' }));
+        await expect(pagination.queryByText(/ of /)).not.toBeInTheDocument();
+        await expect(pagination.getByRole('button', { name: 'Previous page' })).toBeDisabled();
+        await userEvent.click(pagination.getByRole('button', { name: 'Next page' }));
+        await waitFor(() => expect(within(table).getAllByRole('row')).toHaveLength(5));
+        await expect(pagination.getByRole('button', { name: 'Next page' })).toBeDisabled();
+        await userEvent.click(pagination.getByRole('button', { name: 'Previous page' }));
+        await waitFor(() =>
+            expect(within(table).getAllByRole('row')[1]).toHaveTextContent('About us'),
+        );
     },
 };
 

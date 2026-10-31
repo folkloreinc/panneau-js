@@ -613,6 +613,26 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                     ...query,
                     ...(sort !== undefined ? { sort } : {}),
                 });
+                if (resource.list?.pagination === 'cursor') {
+                    // Cursors are opaque to clients: here, the offset of the page.
+                    const cursor = query.cursor ?? 'o0';
+                    if (!/^o\d+$/.test(cursor)) {
+                        return problem(422, 'The cursor is invalid.', {
+                            errors: { cursor: ['The cursor is invalid.'] },
+                        });
+                    }
+                    const offset = Number(cursor.slice(1));
+                    const end = offset + perPage;
+                    return json(200, {
+                        data: matching.slice(offset, end),
+                        meta: {
+                            perPage,
+                            nextCursor: end < matching.length ? `o${String(end)}` : null,
+                            previousCursor:
+                                offset - perPage > 0 ? `o${String(offset - perPage)}` : null,
+                        },
+                    });
+                }
                 return json(200, {
                     data: matching.slice((page - 1) * perPage, page * perPage),
                     meta: {

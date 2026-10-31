@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { createDefinition } from '../__fixtures__/definition';
+import { ListResponse } from '../schemas';
 import { createExampleDefinition, createMockBackend } from './index';
 
 function createBackend() {
@@ -53,6 +54,34 @@ describe('createMockBackend', () => {
             data: [{ id: '3' }],
             meta: { page: 2, perPage: 2, total: 3, lastPage: 2 },
         });
+    });
+
+    it('pages a list with cursors when its pagination is cursor', async () => {
+        const definition = createDefinition();
+        const backend = createMockBackend({
+            definition: {
+                ...definition,
+                resources: definition.resources.map((resource) =>
+                    resource.id === 'pages'
+                        ? { ...resource, list: { ...resource.list, pagination: 'cursor' } }
+                        : resource,
+                ),
+            },
+            items: {
+                pages: [{ title: { fr: 'A' } }, { title: { fr: 'B' } }, { title: { fr: 'C' } }],
+            },
+        });
+        const list = async (query: string) => {
+            const response = await backend.fetch(`/panneau/api/resources/pages?${query}`);
+            return { status: response.status, body: (await response.json()) as ListResponse };
+        };
+        const first = await list('perPage=2');
+        expect(first.body.meta).toEqual({ perPage: 2, nextCursor: 'o2', previousCursor: null });
+        expect(ListResponse.safeParse(first.body).success).toBe(true);
+        const second = await list('perPage=2&cursor=o2');
+        expect(second.body.data.map((item) => item.id)).toEqual(['3']);
+        expect(second.body.meta).toEqual({ perPage: 2, nextCursor: null, previousCursor: null });
+        expect((await list('cursor=nope')).status).toBe(422);
     });
 
     it('filters by the bounds of a range, both inclusive and both optional', async () => {

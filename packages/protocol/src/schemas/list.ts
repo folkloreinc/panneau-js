@@ -48,6 +48,10 @@ export const ListDefinition = z.looseObject({
     layouts: z.array(z.string().min(1)).optional(),
     perPage: z.number().int().positive().optional(),
     perPageOptions: z.array(z.number().int().positive()).optional(),
+    pagination: z.enum(['pages', 'cursor']).optional().meta({
+        description:
+            "`pages` (the default): numbered pages, with a total. `cursor`: the list follows `nextCursor` of each page with the `cursor` parameter, without page numbers, for large lists that the backend can't count (decision 0039).",
+    }),
     inlineEdit: z
         .array(z.string().min(1))
         .optional()
