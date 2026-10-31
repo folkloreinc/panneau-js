@@ -26,6 +26,25 @@ export const Controlled: Story = {
     },
 };
 
+/** A secret, such as an access key: hidden until the button shows it. */
+export const Secret: Story = {
+    args: { label: 'Secret access key', description: 'Stored encrypted, never shown again.' },
+    render: function Render(args) {
+        const [value, setValue] = useState<string | null>(null);
+        const { maxLength: _, ...props } = args;
+        return <TextField {...props} secret value={value} onChange={setValue} />;
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const input = canvas.getByLabelText('Secret access key');
+        await userEvent.type(input, 'wJalrXUtnFEMI');
+        await expect(input).toHaveAttribute('type', 'password');
+        await userEvent.click(canvas.getByRole('button', { name: 'Show' }));
+        await expect(input).toHaveAttribute('type', 'text');
+        await expect(input).toHaveValue('wJalrXUtnFEMI');
+    },
+};
+
 export const WithErrors: Story = { args: { required: true, errors: ['This field is required.'] } };
 
 export const TextArea: Story = {

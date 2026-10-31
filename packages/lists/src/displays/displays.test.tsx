@@ -60,6 +60,30 @@ describe('displays', () => {
         ).toBe('Ada, Grace');
     });
 
+    it('shows the value of a secret text field as dots', () => {
+        const field: Field = { name: 'key', type: 'text', settings: { secret: true } };
+        const cell = renderDisplay('text', 's3cr3t', field);
+        expect(cell.textContent).not.toContain('s3cr3t');
+        expect(screen.getByRole('img', { name: 'Hidden value' })).toBeInTheDocument();
+        expect(renderDisplay('text', null, field).textContent).toBe('—');
+    });
+
+    it('shows the options of a select in their tone', () => {
+        const field: Field = {
+            name: 'status',
+            type: 'select',
+            options: [
+                { value: 'failed', label: 'Failed', tone: 'danger' },
+                { value: 'queued', label: 'Queued' },
+            ],
+        };
+        const cell = renderDisplay('select', ['failed', 'queued'], field);
+        const [failed, queued] = [...cell.querySelectorAll('.panneau-badge')];
+        expect(failed).toHaveTextContent('Failed');
+        expect(failed).toHaveClass('panneau-tone-danger');
+        expect(queued).toHaveClass('panneau-tone-neutral');
+    });
+
     it('links URLs and emails', () => {
         renderDisplay('url', 'https://example.com/a');
         expect(screen.getByRole('link', { name: 'example.com/a' })).toHaveAttribute(
