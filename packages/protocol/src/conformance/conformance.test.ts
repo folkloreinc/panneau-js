@@ -38,6 +38,45 @@ describe('runConformance', () => {
         expect(report.checks.filter((check) => check.status === 'skipped')).toEqual([]);
     });
 
+    it('checks a list paged with cursors: the next page, and an invalid cursor', async () => {
+        const definition = createDefinition();
+        const cursorDefinition = {
+            ...definition,
+            resources: definition.resources.map((resource) =>
+                resource.id === 'pages'
+                    ? { ...resource, list: { ...resource.list, pagination: 'cursor' as const } }
+                    : resource,
+            ),
+        };
+        const backend = createMockBackend({
+            definition: cursorDefinition,
+            items: {
+                pages: [{ title: { fr: 'A' } }, { title: { fr: 'B' } }, { title: { fr: 'C' } }],
+            },
+        });
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: backend.fetch,
+            resource: 'pages',
+        });
+        expect(report.checks.find((check) => check.id === 'list')).toMatchObject({
+            status: 'passed',
+        });
+
+        // A backend that ignores the cursor: its next page repeats the first, and it reads anything.
+        const ignoring = (input: string, init?: RequestInit) =>
+            backend.fetch(input.replace(/([?&])cursor=[^&]*&?/, '$1'), init);
+        const broken = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: ignoring,
+            resource: 'pages',
+        });
+        const list = broken.checks.find((check) => check.id === 'list');
+        expect(list?.status).toBe('failed');
+        expect(list?.issues.join('\n')).toMatch(/repeats items of the first page/);
+        expect(list?.issues.join('\n')).toMatch(/Expected status 422/);
+    });
+
     it('skips the write checks unless asked', async () => {
         const backend = createBackend();
         const report = await runConformance({
