@@ -37,12 +37,13 @@ export function ThemeScope({
 }: ThemeScopeProps) {
     const parent = use(ScopeContext);
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
-    const { scope, styles: themeStyles } = useThemeStyles(theme);
+    const { scope, styles: themeStyles } = useThemeStyles(theme, parent.nonce);
     // The effective values are always written, so that the dark and density rules of a theme apply.
     // Only those set here take the default tokens back (`.scheme`, `.density`).
     const effective = {
         colorScheme: colorScheme ?? parent.colorScheme,
         density: density ?? parent.density,
+        nonce: parent.nonce,
     };
     return (
         <Element

@@ -7,6 +7,7 @@ import { uiMessages } from '@panneau/intl';
 import { usePanneauIntl } from '../intl/usePanneauIntl';
 import { bootstrapTheme } from '../theme/bootstrap';
 import { PanneauRoot, usePortalContainer } from './PanneauRoot';
+import { ThemeScope } from './ThemeScope';
 
 function Probe() {
     const container = usePortalContainer();
@@ -86,6 +87,60 @@ describe('PanneauRoot', () => {
                 'link[rel="stylesheet"][href="https://fonts.example.com/serif.css"]',
             ),
         ).not.toBeNull();
+    });
+
+    it('gives the styles of its theme and fonts the nonce of the page, for a strict CSP', () => {
+        render(
+            <PanneauRoot
+                data-testid="root"
+                nonce="r4nd0m"
+                theme={{
+                    tokens: { 'panneau-color-accent': '#123456' },
+                    fonts: [{ stylesheet: 'https://fonts.example.com/nonce.css' }],
+                }}
+            >
+                <ThemeScope
+                    data-testid="scope"
+                    theme={{ tokens: { 'panneau-color-bg': '#fefefe' } }}
+                >
+                    <p>Hello</p>
+                </ThemeScope>
+            </PanneauRoot>,
+        );
+        const scopeOf = (id: string) =>
+            String(screen.getByTestId(id).getAttribute('data-panneau-theme'));
+        expect(
+            document.querySelector(`style[data-href="panneau-theme-${scopeOf('root')}"]`),
+        ).toHaveAttribute('nonce', 'r4nd0m');
+        expect(
+            document.querySelector(`style[data-href="panneau-theme-${scopeOf('scope')}"]`),
+        ).toHaveAttribute('nonce', 'r4nd0m');
+        expect(
+            document.querySelector('link[href="https://fonts.example.com/nonce.css"]'),
+        ).toHaveAttribute('nonce', 'r4nd0m');
+    });
+
+    it('reads the nonce where React Aria does, without one given', () => {
+        const meta = document.createElement('meta');
+        meta.setAttribute('property', 'csp-nonce');
+        meta.setAttribute('content', 'fr0m-m3ta');
+        document.head.append(meta);
+        try {
+            render(
+                <PanneauRoot
+                    data-testid="root"
+                    theme={{ tokens: { 'panneau-color-text': '#0a0a0a' } }}
+                >
+                    <p>Hello</p>
+                </PanneauRoot>,
+            );
+            const scope = String(screen.getByTestId('root').getAttribute('data-panneau-theme'));
+            expect(
+                document.querySelector(`style[data-href="panneau-theme-${scope}"]`),
+            ).toHaveAttribute('nonce', 'fr0m-m3ta');
+        } finally {
+            meta.remove();
+        }
     });
 
     it('gives overlays a container inside the root', () => {

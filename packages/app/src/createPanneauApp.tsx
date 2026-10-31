@@ -47,6 +47,11 @@ export interface PanneauAppOptions {
      * createNominatimSource() }`. Defaults to OpenStreetMap's tiles, without an address search.
      */
     maps?: MapsConfig | null;
+    /**
+     * The nonce of the page's Content Security Policy, for the styles of themes. Defaults to that
+     * of `<meta property="csp-nonce">`.
+     */
+    nonce?: string;
 }
 
 /** A mounted app. */

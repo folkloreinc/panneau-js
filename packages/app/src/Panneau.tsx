@@ -80,6 +80,12 @@ export interface PanneauProps {
      * OpenStreetMap's tiles, without an address search (decision 0033).
      */
     maps?: MapsConfig | null;
+    /**
+     * The nonce of the page's Content Security Policy, for the `<style>` elements of themes and
+     * fonts (`style-src 'nonce-…'`). Defaults to that of `<meta property="csp-nonce">`, which React
+     * Aria reads too.
+     */
+    nonce?: string;
 }
 
 function redirectToLogin({ loginUrl }: UnauthorizedContext) {
@@ -110,15 +116,17 @@ function Content({
     session,
     onUnauthorized,
     maps,
-}: Required<Pick<PanneauProps, 'config' | 'adapter' | 'onUnauthorized'>> & {
-    /** The adapter, without the watch of `401` answers. */
-    baseAdapter: DataAdapter;
-    plugins: readonly PanneauPlugin[];
-    registry: PluginRegistry;
-    iconLoader: NamedIconLoader | null;
-    maps: MapsConfig | null;
-    session: SessionState;
-}) {
+    nonce,
+}: Required<Pick<PanneauProps, 'config' | 'adapter' | 'onUnauthorized'>> &
+    Pick<PanneauProps, 'nonce'> & {
+        /** The adapter, without the watch of `401` answers. */
+        baseAdapter: DataAdapter;
+        plugins: readonly PanneauPlugin[];
+        registry: PluginRegistry;
+        iconLoader: NamedIconLoader | null;
+        maps: MapsConfig | null;
+        session: SessionState;
+    }) {
     const [router] = useState(createHistoryRouter);
     const queryClient = useQueryClient();
     const status = useSyncExternalStore(session.subscribe, session.getStatus);
@@ -189,6 +197,7 @@ function Content({
             locale={locale}
             messages={messages}
             iconLoader={iconLoader}
+            {...(nonce !== undefined ? { nonce } : {})}
             className={styles.root}
         >
             {status !== 'active' && auth?.mode === 'panneau' ? (
@@ -267,6 +276,7 @@ export function Panneau({
     iconLoader = null,
     onUnauthorized = redirectToLogin,
     maps = null,
+    nonce,
 }: PanneauProps) {
     const [state] = useState(() => {
         const session = createSessionState();
@@ -292,6 +302,7 @@ export function Panneau({
                     session={state.session}
                     onUnauthorized={onUnauthorized}
                     maps={maps}
+                    {...(nonce !== undefined ? { nonce } : {})}
                 />
             </DataAdapterProvider>
         </QueryClientProvider>
