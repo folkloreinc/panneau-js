@@ -242,7 +242,7 @@ describe('the app shell', () => {
         ).toHaveAttribute('aria-current', 'page');
     });
 
-    it('shows the actions placed in form on the edit page of an item, and runs them', async () => {
+    it('shows the actions placed in form on the edit page of an item, runs them, and leaves the page of a deleted item', async () => {
         const user = userEvent.setup();
         window.history.replaceState(null, '', '/panneau/resources/pages/1/edit');
         const backend = renderApp({
@@ -294,5 +294,9 @@ describe('the app shell', () => {
         await user.click(within(dialog).getByRole('button', { name: 'Delete' }));
         expect(await screen.findByText('1 deleted.')).toBeInTheDocument();
         expect(backend.items('pages').map((page) => page.id)).toEqual(['2']);
+        // The item is gone: back to the list, in place of its page
+        await waitFor(() => expect(window.location.pathname).toBe('/panneau/resources/pages'));
+        expect(await screen.findByRole('table', { name: 'Pages' })).toBeInTheDocument();
+        expect(screen.queryByText('About us')).not.toBeInTheDocument();
     });
 });

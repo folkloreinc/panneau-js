@@ -1,4 +1,5 @@
 import { type ResolvedResource, getItemValues, resolveForm } from '@panneau/core';
+import { NotFoundError } from '@panneau/data';
 import { useCreateItem, useDataAdapter, useResourceItem, useUpdateItem } from '@panneau/data/query';
 import { createRelationSource } from '@panneau/fields';
 import { Form } from '@panneau/forms';
@@ -63,7 +64,24 @@ export function ResourceFormPage({ definition, resolved, basePath, id }: Resourc
     const formActions = resolved.list.actions.form.filter((action) => action.id !== 'edit');
     const itemActions =
         mode === 'update' && item !== undefined && formActions.length > 0 ? (
-            <ItemActions resource={resource.id} actions={formActions} item={item} />
+            <ItemActions
+                resource={resource.id}
+                actions={formActions}
+                item={item}
+                onRun={(_action, outcome) => {
+                    // An action that removed the item (`delete`) leaves its page: back to the list,
+                    // unless its result went somewhere already (`redirect`).
+                    if (outcome.status !== 'done' || (outcome.result.redirect ?? null) !== null) {
+                        return;
+                    }
+                    void itemQuery.refetch().then(({ error }) => {
+                        if (error instanceof NotFoundError) {
+                            // In place of the item's page, which Back can't return to
+                            navigate(back.href, { replace: true });
+                        }
+                    });
+                }}
+            />
         ) : undefined;
 
     let content;

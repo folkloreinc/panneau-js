@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-aria-components';
 
-import { useActionRunner } from '@panneau/actions';
+import { type ActionOutcome, useActionRunner } from '@panneau/actions';
 import { listsMessages } from '@panneau/intl';
 import {
     ConfirmDialog,
@@ -21,6 +21,8 @@ export interface ItemActionsProps {
     /** The actions placed in `form`. Those that don't apply to an item, or to this one, are left out. */
     actions: readonly Action[];
     item: Item;
+    /** Called once an action has run, has been queued or has navigated. */
+    onRun?: (action: Action, outcome: ActionOutcome) => void;
 }
 
 /**
@@ -28,7 +30,7 @@ export interface ItemActionsProps {
  * allows. They run through the action runner (parameters, results, queued runs), after a
  * confirmation when they ask for one. A `link` action with a URL is a link.
  */
-export function ItemActions({ resource, actions, item }: ItemActionsProps) {
+export function ItemActions({ resource, actions, item, onRun }: ItemActionsProps) {
     const intl = usePanneauIntl();
     const toasts = useToast();
     const runAction = useActionRunner(resource);
@@ -47,6 +49,12 @@ export function ItemActions({ resource, actions, item }: ItemActionsProps) {
         // A promise chain rather than `try`, which the React Compiler only handles in part.
         await Promise.resolve()
             .then(() => runAction({ action, scope: 'item', item, count: 1 }))
+            .then((outcome) => {
+                // `false`: the user cancelled its parameters
+                if (outcome !== false) {
+                    onRun?.(action, outcome);
+                }
+            })
             .catch((caught: unknown) => {
                 toasts.show({
                     title: intl.formatMessage(listsMessages.actionFailed, { action: action.label }),
