@@ -8,7 +8,7 @@ export type AppRoute =
     | { name: 'resource.create'; resource: string }
     | { name: 'resource.show'; resource: string; id: string }
     | { name: 'resource.edit'; resource: string; id: string }
-    | { name: 'page'; page: string }
+    | { name: 'page'; page: string; segments?: readonly string[] }
     | { name: 'not-found' };
 
 /** The base path without its trailing slash: `/panneau/` is `/panneau`, and `/` is ``. */
@@ -42,8 +42,12 @@ export function matchRoute(pathname: string, basePath: string): AppRoute | null 
     if (first === undefined) {
         return { name: 'home' };
     }
-    if (first === 'pages' && resource !== undefined && third === undefined) {
-        return { name: 'page', page: resource };
+    if (first === 'pages' && resource !== undefined) {
+        // The segments after the page are its `params`, which the page checks.
+        const rest = segments.slice(2) as string[];
+        return rest.length > 0
+            ? { name: 'page', page: resource, segments: rest }
+            : { name: 'page', page: resource };
     }
     if (first !== 'resources' || resource === undefined || extra.length > 0) {
         return { name: 'not-found' };
@@ -74,7 +78,7 @@ export function routePath(
         case 'home':
             return base === '' ? '/' : base;
         case 'page':
-            return path('pages', route.page);
+            return path('pages', route.page, ...(route.segments ?? []));
         case 'resource.index':
             return path('resources', route.resource);
         case 'resource.create':

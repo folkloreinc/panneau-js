@@ -83,7 +83,8 @@ function toLinks(item: MenuItem, definition: Definition, basePath: string, key: 
                 : [];
         case 'page': {
             const page = item.page !== undefined ? definition.pages?.[item.page] : undefined;
-            if (item.page === undefined || page === undefined) {
+            // A page with `params` is about one thing: a menu can't link to it.
+            if (item.page === undefined || page === undefined || (page.params ?? []).length > 0) {
                 return [];
             }
             return [
@@ -127,7 +128,9 @@ function toLinks(item: MenuItem, definition: Definition, basePath: string, key: 
 export function getNavigation(definition: Definition, basePath: string): NavEntry[] {
     const menu: MenuItem[] = definition.menus?.main ?? [
         { type: 'resources' },
-        ...Object.keys(definition.pages ?? {}).map((page) => ({ type: 'page', page })),
+        ...Object.entries(definition.pages ?? {})
+            .filter(([, page]) => (page.params ?? []).length === 0)
+            .map(([page]) => ({ type: 'page', page })),
     ];
     return menu.flatMap((item, index): NavEntry[] => {
         const key = String(index);

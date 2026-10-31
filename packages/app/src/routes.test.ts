@@ -9,6 +9,8 @@ const routes: [string, Exclude<AppRoute, { name: 'not-found' }>][] = [
     ['/panneau/resources/pages/12', { name: 'resource.show', resource: 'pages', id: '12' }],
     ['/panneau/resources/pages/12/edit', { name: 'resource.edit', resource: 'pages', id: '12' }],
     ['/panneau/pages/settings', { name: 'page', page: 'settings' }],
+    ['/panneau/pages/job/4f2a', { name: 'page', page: 'job', segments: ['4f2a'] }],
+    ['/panneau/pages/run/a%2Fb/2', { name: 'page', page: 'run', segments: ['a/b', '2'] }],
 ];
 
 describe('routes', () => {
