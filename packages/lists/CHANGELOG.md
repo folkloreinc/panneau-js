@@ -1,5 +1,33 @@
 # @panneau/lists
 
+## 5.0.0-alpha.9
+
+### Minor Changes
+
+- 30f227f: Lists can be paged with cursors, for lists too large to count (decision 0039).
+  
+  - `@panneau/protocol`: a list's definition takes `"pagination": "cursor"`. Its pages take `cursor` in the query (`ListQuery.cursor`, `?cursor=…`), and answer `meta: { perPage, nextCursor, previousCursor?, total? }` (`CursorPagination`) instead of page numbers. `meta` of `ListResponse` is now either kind: code that read `meta.total` or `meta.lastPage` checks which with `isCursorPage()` of `@panneau/protocol/runtime`. The mock backend pages such lists with cursors, and the conformance kit accepts them.
+  - `@panneau/core`: the list state of a list paged with cursors has no `page`. `nextPage(cursor)` and `previousPage(previousCursor?)` move through its pages, back through the cursors it followed when the backend gives no `previousCursor`. Another sort, filter, search or page size starts over.
+  - `@panneau/lists`: `ListView` takes `cursors` (`{ next, previous? }`) and shows the previous and next pages without page numbers (`CursorPagination`). `getPagingProps(meta)` gives a `ListView` its `total` or its `cursors` from the `meta` of a page.
+  - `@panneau/media` and `@panneau/app` follow the cursors of the lists and media libraries paged with them.
+- ca1aa46: Secret text fields, and options with a tone.
+  
+  - `text` fields with `"settings": { "secret": true }` hold a secret, such as an access key: the field types it in a password input, with a button that shows it, and keeps the browser from filling it in (`autocomplete="new-password"`). Lists and item details show it as dots. `TextField` takes `secret`.
+  - The options of `select` fields take a `tone` (`{ "value": "failed", "label": "Failed", "tone": "danger" }`): a built-in tone or one of the theme. The `select` display of lists and item details shows each option as a badge in its tone.
+
+### Patch Changes
+
+- Updated dependencies [a49284e]
+- Updated dependencies [30f227f]
+- Updated dependencies [33a2779]
+- Updated dependencies [2a6cf2a]
+- Updated dependencies [ca1aa46]
+  - @panneau/ui@5.0.0-alpha.9
+  - @panneau/protocol@5.0.0-alpha.9
+  - @panneau/core@5.0.0-alpha.9
+  - @panneau/fields@5.0.0-alpha.9
+  - @panneau/intl@5.0.0-alpha.9
+
 ## 5.0.0-alpha.8
 
 ### Patch Changes

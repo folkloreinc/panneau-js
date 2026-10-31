@@ -1,5 +1,17 @@
 # @panneau/ui
 
+## 5.0.0-alpha.9
+
+### Minor Changes
+
+- a49284e: Panneau runs under a Content Security Policy without `'unsafe-inline'` for styles. `PanneauRoot`, `<Panneau>` and `createPanneauApp()` take a `nonce`, which the `<style>` and `<link>` elements of themes and fonts get. Without it, they read the nonce where React Aria does: `<meta property="csp-nonce">`, then `__webpack_nonce__`. The README of `@panneau/ui` explains what a strict policy needs.
+
+### Patch Changes
+
+- 33a2779: Submitting a form in a `Dialog` or a `Popover` no longer submits the form around it. React bubbles events along the component tree, through the portal the overlay renders in, so the dialog's form also submitted the form that opened it (a resource's form, for example). The content of `Dialog` and `Popover` now stops the `submit` events that leave it.
+- Updated dependencies [ca1aa46]
+  - @panneau/intl@5.0.0-alpha.9
+
 ## 5.0.0-alpha.8
 
 ### Minor Changes
