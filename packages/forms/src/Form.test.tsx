@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { withPanneauMessages } from '@panneau/intl';
 import type { Field } from '@panneau/protocol';
+import { Dialog } from '@panneau/ui';
 
 import { Form } from './Form';
 import { problemError, renderForm } from './__fixtures__/render';
@@ -142,5 +143,30 @@ describe('Form without a definition', () => {
         );
         expect(screen.queryByRole('button', { name: 'Save' })).not.toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
+    });
+
+    it('submits only itself when it is in a dialog of another form', async () => {
+        const outer = vi.fn();
+        const inner = vi.fn();
+        // The dialog renders in a portal: React still bubbles its events through it (#146).
+        renderForm(
+            <Form
+                fields={[{ name: 'name', type: 'text', label: 'Name' }]}
+                onSubmit={outer}
+                aria-label="Project"
+                actions={
+                    <Dialog title="New key" isOpen>
+                        <Form
+                            fields={[{ name: 'key', type: 'text', label: 'Key' }]}
+                            onSubmit={inner}
+                            submitLabel="Create the key"
+                        />
+                    </Dialog>
+                }
+            />,
+        );
+        await userEvent.click(await screen.findByRole('button', { name: 'Create the key' }));
+        await waitFor(() => expect(inner).toHaveBeenCalledTimes(1));
+        expect(outer).not.toHaveBeenCalled();
     });
 });
