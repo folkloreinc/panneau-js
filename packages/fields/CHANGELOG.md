@@ -1,5 +1,25 @@
 # @panneau/fields
 
+## 5.0.0-alpha.9
+
+### Minor Changes
+
+- ca1aa46: Secret text fields, and options with a tone.
+  
+  - `text` fields with `"settings": { "secret": true }` hold a secret, such as an access key: the field types it in a password input, with a button that shows it, and keeps the browser from filling it in (`autocomplete="new-password"`). Lists and item details show it as dots. `TextField` takes `secret`.
+  - The options of `select` fields take a `tone` (`{ "value": "failed", "label": "Failed", "tone": "danger" }`): a built-in tone or one of the theme. The `select` display of lists and item details shows each option as a badge in its tone.
+
+### Patch Changes
+
+- Updated dependencies [a49284e]
+- Updated dependencies [30f227f]
+- Updated dependencies [33a2779]
+- Updated dependencies [2a6cf2a]
+- Updated dependencies [ca1aa46]
+  - @panneau/ui@5.0.0-alpha.9
+  - @panneau/protocol@5.0.0-alpha.9
+  - @panneau/intl@5.0.0-alpha.9
+
 ## 5.0.0-alpha.8
 
 ### Patch Changes

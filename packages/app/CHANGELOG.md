@@ -1,5 +1,39 @@
 # @panneau/app
 
+## 5.0.0-alpha.9
+
+### Minor Changes
+
+- d172551: Plugin pages can look like the pages of resources, and the edit page shows the actions of its item.
+  
+  - `@panneau/app` exports the building blocks of its pages: `PageLayout` (the column of a page, `default` or `narrow`), `PageHeader` (the title, a link to the parent page, the actions) and `LinkButton`.
+  - The edit page of an item shows, in its header, the actions of its resource placed in `form`, which is where actions of the `item` scope go by default, for the item's abilities. They run through the action runner, after a confirmation when they ask for one; a `link` action with a URL is a link. Until now, an action placed in `form` was never shown. An action that removes the item, such as `delete`, goes back to the list, in place of the item's page in the history, unless its result has a `redirect`.
+- a49284e: Panneau runs under a Content Security Policy without `'unsafe-inline'` for styles. `PanneauRoot`, `<Panneau>` and `createPanneauApp()` take a `nonce`, which the `<style>` and `<link>` elements of themes and fonts get. Without it, they read the nonce where React Aria does: `<meta property="csp-nonce">`, then `__webpack_nonce__`. The README of `@panneau/ui` explains what a strict policy needs.
+- 2a6cf2a: Pages of the definition can take params (decision 0038). A page with `"params": ["id"]` is at `{basePath}/pages/{page}/{id}`, and its component gets `params` (`{ id: "4f2a" }`), next to its `props` and the definition. Route references can name a page (`{ "route": "job", "params": { "id": … } }`) when `routes` has no route of that name, so a `link` action with `"route": "job"` opens the page of its item. Menus leave pages with params out.
+
+### Patch Changes
+
+- 30f227f: Lists can be paged with cursors, for lists too large to count (decision 0039).
+  
+  - `@panneau/protocol`: a list's definition takes `"pagination": "cursor"`. Its pages take `cursor` in the query (`ListQuery.cursor`, `?cursor=…`), and answer `meta: { perPage, nextCursor, previousCursor?, total? }` (`CursorPagination`) instead of page numbers. `meta` of `ListResponse` is now either kind: code that read `meta.total` or `meta.lastPage` checks which with `isCursorPage()` of `@panneau/protocol/runtime`. The mock backend pages such lists with cursors, and the conformance kit accepts them.
+  - `@panneau/core`: the list state of a list paged with cursors has no `page`. `nextPage(cursor)` and `previousPage(previousCursor?)` move through its pages, back through the cursors it followed when the backend gives no `previousCursor`. Another sort, filter, search or page size starts over.
+  - `@panneau/lists`: `ListView` takes `cursors` (`{ next, previous? }`) and shows the previous and next pages without page numbers (`CursorPagination`). `getPagingProps(meta)` gives a `ListView` its `total` or its `cursors` from the `meta` of a page.
+  - `@panneau/media` and `@panneau/app` follow the cursors of the lists and media libraries paged with them.
+- Updated dependencies [a49284e]
+- Updated dependencies [30f227f]
+- Updated dependencies [33a2779]
+- Updated dependencies [2a6cf2a]
+- Updated dependencies [ca1aa46]
+  - @panneau/ui@5.0.0-alpha.9
+  - @panneau/protocol@5.0.0-alpha.9
+  - @panneau/core@5.0.0-alpha.9
+  - @panneau/lists@5.0.0-alpha.9
+  - @panneau/fields@5.0.0-alpha.9
+  - @panneau/intl@5.0.0-alpha.9
+  - @panneau/actions@5.0.0-alpha.9
+  - @panneau/forms@5.0.0-alpha.9
+  - @panneau/data@5.0.0-alpha.9
+
 ## 5.0.0-alpha.8
 
 ### Minor Changes
