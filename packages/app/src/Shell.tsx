@@ -34,15 +34,37 @@ export interface ShellProps {
     onLogOut?: () => Promise<void> | void;
 }
 
-/** The path of a named route of the definition (`routes`), with its parameters filled in. */
-function resolveRoute(definition: Definition, { route, params = {} }: RouteReference) {
+/**
+ * The path of a route reference, with its parameters filled in: a named route of the definition
+ * (`routes`), or else a page of the definition, with its `params` (decision 0038).
+ */
+function resolveRoute(
+    definition: Definition,
+    basePath: string,
+    { route, params = {} }: RouteReference,
+) {
     const path = definition.routes?.[route];
-    if (path === undefined) {
-        console.warn(`[panneau] The definition has no route "${route}".`);
+    if (path !== undefined) {
+        return path.replace(/\{(\w+)\}/g, (match, name: string) =>
+            params[name] !== undefined ? encodeURIComponent(String(params[name])) : match,
+        );
+    }
+    const page = definition.pages?.[route];
+    if (page === undefined) {
+        console.warn(`[panneau] The definition has no route or page "${route}".`);
         return null;
     }
-    return path.replace(/\{(\w+)\}/g, (match, name: string) =>
-        params[name] !== undefined ? encodeURIComponent(String(params[name])) : match,
+    const names = page.params ?? [];
+    const missing = names.filter((name) => params[name] === undefined || params[name] === null);
+    if (missing.length > 0) {
+        console.warn(
+            `[panneau] The page "${route}" needs ${missing.map((name) => `"${name}"`).join(', ')}.`,
+        );
+        return null;
+    }
+    return routePath(
+        { name: 'page', page: route, segments: names.map((name) => String(params[name])) },
+        basePath,
     );
 }
 
@@ -52,16 +74,19 @@ interface PageProps {
 }
 
 /**
- * A page of the definition's `pages`: a plugin's component, with the page's props and the
- * definition. The built-in `dashboard`, which plugins can replace, is the cards of the resources
+ * A page of the definition's `pages`: a plugin's component, with the page's props, the definition,
+ * and the values of its `params` from the path. The built-in `dashboard`, which plugins can replace, is the cards of the resources
  * until the dashboard of 5.x has widgets.
  */
 function DefinitionPage({
     page,
     definition,
     basePath,
+    params = {},
 }: PageProps & {
     page: NonNullable<Definition['pages']>[string];
+    /** The values of the page's `params`, from its path. */
+    params?: Record<string, string>;
 }) {
     const intl = usePanneauIntl();
     const plugins = usePlugins();
@@ -71,7 +96,7 @@ function DefinitionPage({
         <>
             <DocumentTitle parts={[page.label]} />
             {Component !== undefined ? (
-                createElement(Component, { ...page.props, definition })
+                createElement(Component, { ...page.props, definition, params })
             ) : page.component === 'dashboard' ? (
                 <HomePage definition={definition} basePath={basePath} />
             ) : (
@@ -101,10 +126,22 @@ function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) 
             return notFound;
         case 'page': {
             const page = definition.pages?.[route.page];
-            return page !== undefined ? (
-                <DefinitionPage page={page} definition={definition} basePath={basePath} />
-            ) : (
-                notFound
+            const names = page?.params ?? [];
+            const segments = route.segments ?? [];
+            // A page takes exactly the segments of its `params`.
+            if (page === undefined || segments.length !== names.length) {
+                return notFound;
+            }
+            return (
+                <DefinitionPage
+                    key={segments.join('/')}
+                    page={page}
+                    definition={definition}
+                    basePath={basePath}
+                    params={Object.fromEntries(
+                        names.map((name, index) => [name, segments[index] ?? '']),
+                    )}
+                />
             );
         }
         default: {
@@ -205,7 +242,8 @@ export function Shell({
                         invalidateActionResult(queryClient, resource, result, target.selection)
                     }
                     onNavigate={(to) => {
-                        const path = typeof to === 'string' ? to : resolveRoute(definition, to);
+                        const path =
+                            typeof to === 'string' ? to : resolveRoute(definition, basePath, to);
                         if (path !== null) {
                             go(path);
                         }

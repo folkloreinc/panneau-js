@@ -1115,6 +1115,13 @@
                         "type": "string"
                     },
                     "additionalProperties": {}
+                },
+                "params": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+                    }
                 }
             },
             "required": [
