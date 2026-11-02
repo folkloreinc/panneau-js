@@ -31,6 +31,19 @@ These steps can be done on the current lines and make the move smaller:
 - Require tagged versions (`^1.3`, `^4.1`) instead of dev branches.
 - Move hand-written routes for custom actions into one place, so they map to resource actions.
 - Stop importing from `@panneau/core/contexts` and other internals where a public export exists.
+- **Move the site to `react-intl` 12 with the admin.** The `@panneau/*` 5 packages take `react-intl` `^12.0.0` as a peer dependency, and the admin shares `package.json` and `node_modules` with the site. Dependencies of the site that still pin `react-intl` 10 follow:
+    - `@micromag/*`: update to 0.4.117 or later, which accepts `react-intl` 12 and no longer has `@panneau/*` 4 as peer dependencies. Earlier 0.4 versions can't be installed next to `@panneau/*` 5, even with `overrides`.
+    - `@folklore/utils` 0.1 (through `@folklore/hooks`), and any other package whose range stops at 10: add an `overrides` entry that puts it on the site's copy, until a release accepts 12.
+
+    ```json
+    {
+        "overrides": {
+            "@folklore/utils": { "react-intl": "$react-intl" }
+        }
+    }
+    ```
+
+    Never install with `--legacy-peer-deps`: it installs the admin against the wrong `react-intl`, and hides the next conflict.
 
 ## Mapping: Laravel
 

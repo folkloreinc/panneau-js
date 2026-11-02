@@ -46,6 +46,50 @@ describe('resolveForm', () => {
         expect(update.fieldsByName.get('slug')?.readOnly).toBe(true);
     });
 
+    it('keeps rules limited to a mode in that mode only, nested fields too', () => {
+        const fields = [
+            {
+                name: 'password',
+                type: 'text',
+                rules: [
+                    { rule: 'required' as const, mode: 'create' as const },
+                    { rule: 'min' as const, value: 8 },
+                ],
+            },
+            {
+                name: 'blocks',
+                type: 'repeater',
+                types: [
+                    {
+                        id: 'quote',
+                        label: 'Quote',
+                        fields: [
+                            {
+                                name: 'body',
+                                type: 'text',
+                                rules: [{ rule: 'required' as const, mode: 'update' as const }],
+                            },
+                        ],
+                    },
+                ],
+            },
+        ];
+        const create = resolveFields(fields, [], { mode: 'create' });
+        expect(create.fieldsByName.get('password')?.rules).toEqual([
+            { rule: 'required' },
+            { rule: 'min', value: 8 },
+        ]);
+        expect(create.fieldsByName.get('blocks')?.types?.[0]?.fields[0]?.rules).toEqual([]);
+
+        const update = resolveFields(fields, [], { mode: 'update' });
+        expect(update.fieldsByName.get('password')?.rules).toEqual([{ rule: 'min', value: 8 }]);
+        expect(update.fieldsByName.get('blocks')?.types?.[0]?.fields[0]?.rules).toEqual([
+            { rule: 'required' },
+        ]);
+
+        expect(resolveFields(fields).fields).toEqual(fields);
+    });
+
     it('adds the fields of an item type', () => {
         const form = resolveForm(getResource('authors'), { type: 'guest' });
         expect(form.fields.map((field) => field.name)).toContain('website');

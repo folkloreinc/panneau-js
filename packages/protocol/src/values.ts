@@ -11,7 +11,10 @@ export function getValue(values: unknown, path: string): unknown {
     }, values);
 }
 
-/** Whether a value counts as filled: not null, not an empty or blank string, not an empty array or object. */
+/**
+ * Whether a value counts as filled: not null, not an empty or blank string, not an empty array or
+ * plain object. A file (`Blob`, `File`) or any other object that isn't a plain one is filled.
+ */
 export function isFilled(value: unknown): boolean {
     if (value === null || value === undefined) {
         return false;
@@ -23,9 +26,15 @@ export function isFilled(value: unknown): boolean {
         return value.length > 0;
     }
     if (typeof value === 'object') {
-        return Object.keys(value).length > 0;
+        // A chosen file has no own keys: only plain objects are empty without them.
+        return !isPlainObject(value) || Object.keys(value).length > 0;
     }
     return true;
+}
+
+function isPlainObject(value: object): boolean {
+    const prototype: unknown = Object.getPrototypeOf(value);
+    return prototype === Object.prototype || prototype === null;
 }
 
 export function isRecord(value: unknown): value is Record<string, unknown> {

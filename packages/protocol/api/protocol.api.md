@@ -54,6 +54,10 @@ export const Action: z.ZodObject<{
         rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
             rule: z.ZodLiteral<"required">;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodEnum<{
                 min: "min";
@@ -61,11 +65,19 @@ export const Action: z.ZodObject<{
             }>;
             value: z.ZodNumber;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodLiteral<"pattern">;
             value: z.ZodString;
             flags: z.ZodOptional<z.ZodString>;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodEnum<{
                 email: "email";
@@ -73,18 +85,34 @@ export const Action: z.ZodObject<{
                 json: "json";
             }>;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodLiteral<"in">;
             value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodLiteral<"accept">;
             value: z.ZodArray<z.ZodString>;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodLiteral<"maxSize">;
             value: z.ZodNumber;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodEnum<{
                 before: "before";
@@ -94,6 +122,10 @@ export const Action: z.ZodObject<{
                 field: z.ZodString;
             }, z.core.$loose>]>;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodLiteral<"crop">;
             value: z.ZodObject<{
@@ -101,9 +133,17 @@ export const Action: z.ZodObject<{
                 required: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodString;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>]>>>;
         visibleWhen: z.ZodOptional<z.ZodObject<{
             field: z.ZodOptional<z.ZodString>;
@@ -516,7 +556,7 @@ export interface CheckOptions {
 }
 
 // @public
-export function checkRules(rules: Rule[], value: unknown, root?: Record<string, unknown>): RuleFailure[];
+export function checkRules(rules: Rule[], value: unknown, root?: Record<string, unknown>, mode?: CheckOptions['mode']): RuleFailure[];
 
 // @public
 export function checkValues(fields: Field[], values: Record<string, unknown>, options?: CheckOptions): Record<string, RuleFailure[]>;
@@ -633,6 +673,10 @@ export const Definition: z.ZodObject<{
             rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
                 rule: z.ZodLiteral<"required">;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodEnum<{
                     min: "min";
@@ -640,11 +684,19 @@ export const Definition: z.ZodObject<{
                 }>;
                 value: z.ZodNumber;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"pattern">;
                 value: z.ZodString;
                 flags: z.ZodOptional<z.ZodString>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodEnum<{
                     email: "email";
@@ -652,18 +704,34 @@ export const Definition: z.ZodObject<{
                     json: "json";
                 }>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"in">;
                 value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"accept">;
                 value: z.ZodArray<z.ZodString>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"maxSize">;
                 value: z.ZodNumber;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodEnum<{
                     before: "before";
@@ -673,6 +741,10 @@ export const Definition: z.ZodObject<{
                     field: z.ZodString;
                 }, z.core.$loose>]>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"crop">;
                 value: z.ZodObject<{
@@ -680,9 +752,17 @@ export const Definition: z.ZodObject<{
                     required: z.ZodOptional<z.ZodBoolean>;
                 }, z.core.$loose>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodString;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>]>>>;
             visibleWhen: z.ZodOptional<z.ZodObject<{
                 field: z.ZodOptional<z.ZodString>;
@@ -825,6 +905,10 @@ export const Definition: z.ZodObject<{
                 rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
                     rule: z.ZodLiteral<"required">;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodEnum<{
                         min: "min";
@@ -832,11 +916,19 @@ export const Definition: z.ZodObject<{
                     }>;
                     value: z.ZodNumber;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodLiteral<"pattern">;
                     value: z.ZodString;
                     flags: z.ZodOptional<z.ZodString>;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodEnum<{
                         email: "email";
@@ -844,18 +936,34 @@ export const Definition: z.ZodObject<{
                         json: "json";
                     }>;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodLiteral<"in">;
                     value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodLiteral<"accept">;
                     value: z.ZodArray<z.ZodString>;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodLiteral<"maxSize">;
                     value: z.ZodNumber;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodEnum<{
                         before: "before";
@@ -865,6 +973,10 @@ export const Definition: z.ZodObject<{
                         field: z.ZodString;
                     }, z.core.$loose>]>;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodLiteral<"crop">;
                     value: z.ZodObject<{
@@ -872,9 +984,17 @@ export const Definition: z.ZodObject<{
                         required: z.ZodOptional<z.ZodBoolean>;
                     }, z.core.$loose>;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodString;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>]>>>;
                 visibleWhen: z.ZodOptional<z.ZodObject<{
                     field: z.ZodOptional<z.ZodString>;
@@ -1225,6 +1345,10 @@ export const Field: z.ZodObject<{
     rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
         rule: z.ZodLiteral<"required">;
         message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            create: "create";
+            update: "update";
+        }>>;
     }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodEnum<{
             min: "min";
@@ -1232,11 +1356,19 @@ export const Field: z.ZodObject<{
         }>;
         value: z.ZodNumber;
         message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            create: "create";
+            update: "update";
+        }>>;
     }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodLiteral<"pattern">;
         value: z.ZodString;
         flags: z.ZodOptional<z.ZodString>;
         message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            create: "create";
+            update: "update";
+        }>>;
     }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodEnum<{
             email: "email";
@@ -1244,18 +1376,34 @@ export const Field: z.ZodObject<{
             json: "json";
         }>;
         message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            create: "create";
+            update: "update";
+        }>>;
     }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodLiteral<"in">;
         value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
         message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            create: "create";
+            update: "update";
+        }>>;
     }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodLiteral<"accept">;
         value: z.ZodArray<z.ZodString>;
         message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            create: "create";
+            update: "update";
+        }>>;
     }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodLiteral<"maxSize">;
         value: z.ZodNumber;
         message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            create: "create";
+            update: "update";
+        }>>;
     }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodEnum<{
             before: "before";
@@ -1265,6 +1413,10 @@ export const Field: z.ZodObject<{
             field: z.ZodString;
         }, z.core.$loose>]>;
         message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            create: "create";
+            update: "update";
+        }>>;
     }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodLiteral<"crop">;
         value: z.ZodObject<{
@@ -1272,9 +1424,17 @@ export const Field: z.ZodObject<{
             required: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>;
         message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            create: "create";
+            update: "update";
+        }>>;
     }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodString;
         message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            create: "create";
+            update: "update";
+        }>>;
     }, z.core.$loose>]>>>;
     visibleWhen: z.ZodOptional<z.ZodObject<{
         field: z.ZodOptional<z.ZodString>;
@@ -1815,6 +1975,10 @@ export const namedSchemas: {
     Rule: z.ZodUnion<readonly [z.ZodObject<{
         rule: z.ZodLiteral<"required">;
         message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            create: "create";
+            update: "update";
+        }>>;
     }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodEnum<{
             min: "min";
@@ -1822,11 +1986,19 @@ export const namedSchemas: {
         }>;
         value: z.ZodNumber;
         message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            create: "create";
+            update: "update";
+        }>>;
     }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodLiteral<"pattern">;
         value: z.ZodString;
         flags: z.ZodOptional<z.ZodString>;
         message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            create: "create";
+            update: "update";
+        }>>;
     }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodEnum<{
             email: "email";
@@ -1834,18 +2006,34 @@ export const namedSchemas: {
             json: "json";
         }>;
         message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            create: "create";
+            update: "update";
+        }>>;
     }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodLiteral<"in">;
         value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
         message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            create: "create";
+            update: "update";
+        }>>;
     }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodLiteral<"accept">;
         value: z.ZodArray<z.ZodString>;
         message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            create: "create";
+            update: "update";
+        }>>;
     }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodLiteral<"maxSize">;
         value: z.ZodNumber;
         message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            create: "create";
+            update: "update";
+        }>>;
     }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodEnum<{
             before: "before";
@@ -1855,6 +2043,10 @@ export const namedSchemas: {
             field: z.ZodString;
         }, z.core.$loose>]>;
         message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            create: "create";
+            update: "update";
+        }>>;
     }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodLiteral<"crop">;
         value: z.ZodObject<{
@@ -1862,9 +2054,17 @@ export const namedSchemas: {
             required: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>;
         message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            create: "create";
+            update: "update";
+        }>>;
     }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodString;
         message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            create: "create";
+            update: "update";
+        }>>;
     }, z.core.$loose>]>;
     BlockType: z.ZodObject<{
         id: z.ZodString;
@@ -1886,6 +2086,10 @@ export const namedSchemas: {
         rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
             rule: z.ZodLiteral<"required">;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodEnum<{
                 min: "min";
@@ -1893,11 +2097,19 @@ export const namedSchemas: {
             }>;
             value: z.ZodNumber;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodLiteral<"pattern">;
             value: z.ZodString;
             flags: z.ZodOptional<z.ZodString>;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodEnum<{
                 email: "email";
@@ -1905,18 +2117,34 @@ export const namedSchemas: {
                 json: "json";
             }>;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodLiteral<"in">;
             value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodLiteral<"accept">;
             value: z.ZodArray<z.ZodString>;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodLiteral<"maxSize">;
             value: z.ZodNumber;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodEnum<{
                 before: "before";
@@ -1926,6 +2154,10 @@ export const namedSchemas: {
                 field: z.ZodString;
             }, z.core.$loose>]>;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodLiteral<"crop">;
             value: z.ZodObject<{
@@ -1933,9 +2165,17 @@ export const namedSchemas: {
                 required: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodString;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>]>>>;
         visibleWhen: z.ZodOptional<z.ZodObject<{
             field: z.ZodOptional<z.ZodString>;
@@ -2166,6 +2406,10 @@ export const namedSchemas: {
             rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
                 rule: z.ZodLiteral<"required">;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodEnum<{
                     min: "min";
@@ -2173,11 +2417,19 @@ export const namedSchemas: {
                 }>;
                 value: z.ZodNumber;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"pattern">;
                 value: z.ZodString;
                 flags: z.ZodOptional<z.ZodString>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodEnum<{
                     email: "email";
@@ -2185,18 +2437,34 @@ export const namedSchemas: {
                     json: "json";
                 }>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"in">;
                 value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"accept">;
                 value: z.ZodArray<z.ZodString>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"maxSize">;
                 value: z.ZodNumber;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodEnum<{
                     before: "before";
@@ -2206,6 +2474,10 @@ export const namedSchemas: {
                     field: z.ZodString;
                 }, z.core.$loose>]>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"crop">;
                 value: z.ZodObject<{
@@ -2213,9 +2485,17 @@ export const namedSchemas: {
                     required: z.ZodOptional<z.ZodBoolean>;
                 }, z.core.$loose>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodString;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>]>>>;
             visibleWhen: z.ZodOptional<z.ZodObject<{
                 field: z.ZodOptional<z.ZodString>;
@@ -2318,6 +2598,10 @@ export const namedSchemas: {
             rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
                 rule: z.ZodLiteral<"required">;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodEnum<{
                     min: "min";
@@ -2325,11 +2609,19 @@ export const namedSchemas: {
                 }>;
                 value: z.ZodNumber;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"pattern">;
                 value: z.ZodString;
                 flags: z.ZodOptional<z.ZodString>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodEnum<{
                     email: "email";
@@ -2337,18 +2629,34 @@ export const namedSchemas: {
                     json: "json";
                 }>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"in">;
                 value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"accept">;
                 value: z.ZodArray<z.ZodString>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"maxSize">;
                 value: z.ZodNumber;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodEnum<{
                     before: "before";
@@ -2358,6 +2666,10 @@ export const namedSchemas: {
                     field: z.ZodString;
                 }, z.core.$loose>]>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"crop">;
                 value: z.ZodObject<{
@@ -2365,9 +2677,17 @@ export const namedSchemas: {
                     required: z.ZodOptional<z.ZodBoolean>;
                 }, z.core.$loose>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodString;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>]>>>;
             visibleWhen: z.ZodOptional<z.ZodObject<{
                 field: z.ZodOptional<z.ZodString>;
@@ -2510,6 +2830,10 @@ export const namedSchemas: {
                 rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
                     rule: z.ZodLiteral<"required">;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodEnum<{
                         min: "min";
@@ -2517,11 +2841,19 @@ export const namedSchemas: {
                     }>;
                     value: z.ZodNumber;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodLiteral<"pattern">;
                     value: z.ZodString;
                     flags: z.ZodOptional<z.ZodString>;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodEnum<{
                         email: "email";
@@ -2529,18 +2861,34 @@ export const namedSchemas: {
                         json: "json";
                     }>;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodLiteral<"in">;
                     value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodLiteral<"accept">;
                     value: z.ZodArray<z.ZodString>;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodLiteral<"maxSize">;
                     value: z.ZodNumber;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodEnum<{
                         before: "before";
@@ -2550,6 +2898,10 @@ export const namedSchemas: {
                         field: z.ZodString;
                     }, z.core.$loose>]>;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodLiteral<"crop">;
                     value: z.ZodObject<{
@@ -2557,9 +2909,17 @@ export const namedSchemas: {
                         required: z.ZodOptional<z.ZodBoolean>;
                     }, z.core.$loose>;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodString;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>]>>>;
                 visibleWhen: z.ZodOptional<z.ZodObject<{
                     field: z.ZodOptional<z.ZodString>;
@@ -2922,6 +3282,10 @@ export const namedSchemas: {
                 rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
                     rule: z.ZodLiteral<"required">;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodEnum<{
                         min: "min";
@@ -2929,11 +3293,19 @@ export const namedSchemas: {
                     }>;
                     value: z.ZodNumber;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodLiteral<"pattern">;
                     value: z.ZodString;
                     flags: z.ZodOptional<z.ZodString>;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodEnum<{
                         email: "email";
@@ -2941,18 +3313,34 @@ export const namedSchemas: {
                         json: "json";
                     }>;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodLiteral<"in">;
                     value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodLiteral<"accept">;
                     value: z.ZodArray<z.ZodString>;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodLiteral<"maxSize">;
                     value: z.ZodNumber;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodEnum<{
                         before: "before";
@@ -2962,6 +3350,10 @@ export const namedSchemas: {
                         field: z.ZodString;
                     }, z.core.$loose>]>;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodLiteral<"crop">;
                     value: z.ZodObject<{
@@ -2969,9 +3361,17 @@ export const namedSchemas: {
                         required: z.ZodOptional<z.ZodBoolean>;
                     }, z.core.$loose>;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodString;
                     message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        create: "create";
+                        update: "update";
+                    }>>;
                 }, z.core.$loose>]>>>;
                 visibleWhen: z.ZodOptional<z.ZodObject<{
                     field: z.ZodOptional<z.ZodString>;
@@ -3114,6 +3514,10 @@ export const namedSchemas: {
                     rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
                         rule: z.ZodLiteral<"required">;
                         message: z.ZodOptional<z.ZodString>;
+                        mode: z.ZodOptional<z.ZodEnum<{
+                            create: "create";
+                            update: "update";
+                        }>>;
                     }, z.core.$loose>, z.ZodObject<{
                         rule: z.ZodEnum<{
                             min: "min";
@@ -3121,11 +3525,19 @@ export const namedSchemas: {
                         }>;
                         value: z.ZodNumber;
                         message: z.ZodOptional<z.ZodString>;
+                        mode: z.ZodOptional<z.ZodEnum<{
+                            create: "create";
+                            update: "update";
+                        }>>;
                     }, z.core.$loose>, z.ZodObject<{
                         rule: z.ZodLiteral<"pattern">;
                         value: z.ZodString;
                         flags: z.ZodOptional<z.ZodString>;
                         message: z.ZodOptional<z.ZodString>;
+                        mode: z.ZodOptional<z.ZodEnum<{
+                            create: "create";
+                            update: "update";
+                        }>>;
                     }, z.core.$loose>, z.ZodObject<{
                         rule: z.ZodEnum<{
                             email: "email";
@@ -3133,18 +3545,34 @@ export const namedSchemas: {
                             json: "json";
                         }>;
                         message: z.ZodOptional<z.ZodString>;
+                        mode: z.ZodOptional<z.ZodEnum<{
+                            create: "create";
+                            update: "update";
+                        }>>;
                     }, z.core.$loose>, z.ZodObject<{
                         rule: z.ZodLiteral<"in">;
                         value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
                         message: z.ZodOptional<z.ZodString>;
+                        mode: z.ZodOptional<z.ZodEnum<{
+                            create: "create";
+                            update: "update";
+                        }>>;
                     }, z.core.$loose>, z.ZodObject<{
                         rule: z.ZodLiteral<"accept">;
                         value: z.ZodArray<z.ZodString>;
                         message: z.ZodOptional<z.ZodString>;
+                        mode: z.ZodOptional<z.ZodEnum<{
+                            create: "create";
+                            update: "update";
+                        }>>;
                     }, z.core.$loose>, z.ZodObject<{
                         rule: z.ZodLiteral<"maxSize">;
                         value: z.ZodNumber;
                         message: z.ZodOptional<z.ZodString>;
+                        mode: z.ZodOptional<z.ZodEnum<{
+                            create: "create";
+                            update: "update";
+                        }>>;
                     }, z.core.$loose>, z.ZodObject<{
                         rule: z.ZodEnum<{
                             before: "before";
@@ -3154,6 +3582,10 @@ export const namedSchemas: {
                             field: z.ZodString;
                         }, z.core.$loose>]>;
                         message: z.ZodOptional<z.ZodString>;
+                        mode: z.ZodOptional<z.ZodEnum<{
+                            create: "create";
+                            update: "update";
+                        }>>;
                     }, z.core.$loose>, z.ZodObject<{
                         rule: z.ZodLiteral<"crop">;
                         value: z.ZodObject<{
@@ -3161,9 +3593,17 @@ export const namedSchemas: {
                             required: z.ZodOptional<z.ZodBoolean>;
                         }, z.core.$loose>;
                         message: z.ZodOptional<z.ZodString>;
+                        mode: z.ZodOptional<z.ZodEnum<{
+                            create: "create";
+                            update: "update";
+                        }>>;
                     }, z.core.$loose>, z.ZodObject<{
                         rule: z.ZodString;
                         message: z.ZodOptional<z.ZodString>;
+                        mode: z.ZodOptional<z.ZodEnum<{
+                            create: "create";
+                            update: "update";
+                        }>>;
                     }, z.core.$loose>]>>>;
                     visibleWhen: z.ZodOptional<z.ZodObject<{
                         field: z.ZodOptional<z.ZodString>;
@@ -4034,6 +4474,10 @@ export const Resource: z.ZodObject<{
         rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
             rule: z.ZodLiteral<"required">;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodEnum<{
                 min: "min";
@@ -4041,11 +4485,19 @@ export const Resource: z.ZodObject<{
             }>;
             value: z.ZodNumber;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodLiteral<"pattern">;
             value: z.ZodString;
             flags: z.ZodOptional<z.ZodString>;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodEnum<{
                 email: "email";
@@ -4053,18 +4505,34 @@ export const Resource: z.ZodObject<{
                 json: "json";
             }>;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodLiteral<"in">;
             value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodLiteral<"accept">;
             value: z.ZodArray<z.ZodString>;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodLiteral<"maxSize">;
             value: z.ZodNumber;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodEnum<{
                 before: "before";
@@ -4074,6 +4542,10 @@ export const Resource: z.ZodObject<{
                 field: z.ZodString;
             }, z.core.$loose>]>;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodLiteral<"crop">;
             value: z.ZodObject<{
@@ -4081,9 +4553,17 @@ export const Resource: z.ZodObject<{
                 required: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodString;
             message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                create: "create";
+                update: "update";
+            }>>;
         }, z.core.$loose>]>>>;
         visibleWhen: z.ZodOptional<z.ZodObject<{
             field: z.ZodOptional<z.ZodString>;
@@ -4226,6 +4706,10 @@ export const Resource: z.ZodObject<{
             rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
                 rule: z.ZodLiteral<"required">;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodEnum<{
                     min: "min";
@@ -4233,11 +4717,19 @@ export const Resource: z.ZodObject<{
                 }>;
                 value: z.ZodNumber;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"pattern">;
                 value: z.ZodString;
                 flags: z.ZodOptional<z.ZodString>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodEnum<{
                     email: "email";
@@ -4245,18 +4737,34 @@ export const Resource: z.ZodObject<{
                     json: "json";
                 }>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"in">;
                 value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"accept">;
                 value: z.ZodArray<z.ZodString>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"maxSize">;
                 value: z.ZodNumber;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodEnum<{
                     before: "before";
@@ -4266,6 +4774,10 @@ export const Resource: z.ZodObject<{
                     field: z.ZodString;
                 }, z.core.$loose>]>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"crop">;
                 value: z.ZodObject<{
@@ -4273,9 +4785,17 @@ export const Resource: z.ZodObject<{
                     required: z.ZodOptional<z.ZodBoolean>;
                 }, z.core.$loose>;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodString;
                 message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    create: "create";
+                    update: "update";
+                }>>;
             }, z.core.$loose>]>>>;
             visibleWhen: z.ZodOptional<z.ZodObject<{
                 field: z.ZodOptional<z.ZodString>;
@@ -4459,6 +4979,10 @@ export type RouteReference = z.infer<typeof RouteReference>;
 export const Rule: z.ZodUnion<readonly [z.ZodObject<{
     rule: z.ZodLiteral<"required">;
     message: z.ZodOptional<z.ZodString>;
+    mode: z.ZodOptional<z.ZodEnum<{
+        create: "create";
+        update: "update";
+    }>>;
 }, z.core.$loose>, z.ZodObject<{
     rule: z.ZodEnum<{
         min: "min";
@@ -4466,11 +4990,19 @@ export const Rule: z.ZodUnion<readonly [z.ZodObject<{
     }>;
     value: z.ZodNumber;
     message: z.ZodOptional<z.ZodString>;
+    mode: z.ZodOptional<z.ZodEnum<{
+        create: "create";
+        update: "update";
+    }>>;
 }, z.core.$loose>, z.ZodObject<{
     rule: z.ZodLiteral<"pattern">;
     value: z.ZodString;
     flags: z.ZodOptional<z.ZodString>;
     message: z.ZodOptional<z.ZodString>;
+    mode: z.ZodOptional<z.ZodEnum<{
+        create: "create";
+        update: "update";
+    }>>;
 }, z.core.$loose>, z.ZodObject<{
     rule: z.ZodEnum<{
         email: "email";
@@ -4478,18 +5010,34 @@ export const Rule: z.ZodUnion<readonly [z.ZodObject<{
         json: "json";
     }>;
     message: z.ZodOptional<z.ZodString>;
+    mode: z.ZodOptional<z.ZodEnum<{
+        create: "create";
+        update: "update";
+    }>>;
 }, z.core.$loose>, z.ZodObject<{
     rule: z.ZodLiteral<"in">;
     value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
     message: z.ZodOptional<z.ZodString>;
+    mode: z.ZodOptional<z.ZodEnum<{
+        create: "create";
+        update: "update";
+    }>>;
 }, z.core.$loose>, z.ZodObject<{
     rule: z.ZodLiteral<"accept">;
     value: z.ZodArray<z.ZodString>;
     message: z.ZodOptional<z.ZodString>;
+    mode: z.ZodOptional<z.ZodEnum<{
+        create: "create";
+        update: "update";
+    }>>;
 }, z.core.$loose>, z.ZodObject<{
     rule: z.ZodLiteral<"maxSize">;
     value: z.ZodNumber;
     message: z.ZodOptional<z.ZodString>;
+    mode: z.ZodOptional<z.ZodEnum<{
+        create: "create";
+        update: "update";
+    }>>;
 }, z.core.$loose>, z.ZodObject<{
     rule: z.ZodEnum<{
         before: "before";
@@ -4499,6 +5047,10 @@ export const Rule: z.ZodUnion<readonly [z.ZodObject<{
         field: z.ZodString;
     }, z.core.$loose>]>;
     message: z.ZodOptional<z.ZodString>;
+    mode: z.ZodOptional<z.ZodEnum<{
+        create: "create";
+        update: "update";
+    }>>;
 }, z.core.$loose>, z.ZodObject<{
     rule: z.ZodLiteral<"crop">;
     value: z.ZodObject<{
@@ -4506,9 +5058,17 @@ export const Rule: z.ZodUnion<readonly [z.ZodObject<{
         required: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>;
     message: z.ZodOptional<z.ZodString>;
+    mode: z.ZodOptional<z.ZodEnum<{
+        create: "create";
+        update: "update";
+    }>>;
 }, z.core.$loose>, z.ZodObject<{
     rule: z.ZodString;
     message: z.ZodOptional<z.ZodString>;
+    mode: z.ZodOptional<z.ZodEnum<{
+        create: "create";
+        update: "update";
+    }>>;
 }, z.core.$loose>]>;
 
 // @public (undocumented)

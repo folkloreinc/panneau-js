@@ -155,6 +155,21 @@ describe('createRestAdapter', () => {
         expect(await adapter.runAction('pages', 'export', {})).toEqual({ run });
     });
 
+    it('creates an item with a chosen file as multipart form data', async () => {
+        const { fetch, requests } = createStubFetch(() =>
+            jsonResponse(201, { data: { id: '1', version: '1', abilities: {} } }),
+        );
+        const adapter = createRestAdapter({ baseUrl: BASE_URL, fetch });
+        const file = new File(['png'], 'photo.png', { type: 'image/png' });
+        await adapter.create('media', { file, alt: { fr: 'Photo' } });
+        const body = await requests[0]?.formData();
+        expect(requests[0]?.method).toBe('POST');
+        expect(requests[0]?.headers.get('Content-Type')).toMatch(/^multipart\/form-data/);
+        expect(body?.get('file')).toBeInstanceOf(File);
+        expect((body?.get('file') as File | null)?.name).toBe('photo.png');
+        expect(body?.get('alt[fr]')).toBe('Photo');
+    });
+
     it('sends values with files as multipart form data', async () => {
         const { fetch, requests } = createStubFetch(() =>
             jsonResponse(200, { message: 'Imported.' }),
