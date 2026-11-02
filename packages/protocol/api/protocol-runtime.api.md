@@ -43,7 +43,7 @@ export interface CheckOptions {
 // Warning: (ae-forgotten-export) The symbol "Rule" needs to be exported by the entry point index.d.ts
 //
 // @public
-export function checkRules(rules: Rule[], value: unknown, root?: Record<string, unknown>): RuleFailure[];
+export function checkRules(rules: Rule[], value: unknown, root?: Record<string, unknown>, mode?: CheckOptions['mode']): RuleFailure[];
 
 // Warning: (ae-forgotten-export) The symbol "Field" needs to be exported by the entry point index.d.ts
 //

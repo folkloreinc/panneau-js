@@ -5,8 +5,15 @@ import { createMockBackend } from '../mock';
 import { formatReport, runConformance } from './index';
 
 function createBackend() {
+    const definition = createDefinition();
+    // Required to create a page only, like a password.
+    definition.resources[0]?.fields.push({
+        name: 'code',
+        type: 'text',
+        rules: [{ rule: 'required', mode: 'create' }],
+    });
     return createMockBackend({
-        definition: createDefinition(),
+        definition,
         items: {
             pages: [
                 {
@@ -21,7 +28,7 @@ function createBackend() {
 }
 
 const writes = {
-    create: { title: { fr: 'Nouvelle', en: 'New' }, status: 'draft' },
+    create: { title: { fr: 'Nouvelle', en: 'New' }, status: 'draft', code: 'secret' },
     update: { status: 'published', published_at: '2026-10-14T12:00:00Z' },
 };
 
@@ -47,7 +54,14 @@ describe('runConformance', () => {
         expect(report.passed).toBe(true);
         expect(
             report.checks.filter((check) => check.status === 'skipped').map((check) => check.id),
-        ).toEqual(['create.invalid', 'create', 'update', 'update.conflict', 'delete']);
+        ).toEqual([
+            'create.invalid',
+            'create',
+            'update',
+            'update.create-rules',
+            'update.conflict',
+            'delete',
+        ]);
     });
 
     it('reports what a backend gets wrong', async () => {
@@ -88,6 +102,36 @@ describe('runConformance', () => {
         expect(formatReport(report)).toContain(
             'Expected content type application/problem+json, got "text/html".',
         );
+    });
+
+    it('reports a backend that applies a rule limited to create to updates', async () => {
+        const backend = createBackend();
+        // A backend that requires the code on every write.
+        const strict = async (input: string, init?: RequestInit) => {
+            const body = typeof init?.body === 'string' ? (JSON.parse(init.body) as object) : {};
+            if (init?.method === 'PATCH' && 'code' in body && body.code === null) {
+                return new Response(
+                    JSON.stringify({
+                        type: 'urn:panneau:problem:validation',
+                        title: 'The given data was invalid.',
+                        status: 422,
+                        errors: { code: ['This field is required.'] },
+                    }),
+                    { status: 422, headers: { 'Content-Type': 'application/problem+json' } },
+                );
+            }
+            return backend.fetch(input, init);
+        };
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: strict,
+            writes,
+        });
+        const check = report.checks.find((candidate) => candidate.id === 'update.create-rules');
+        expect(check?.status).toBe('failed');
+        expect(check?.issues).toEqual([
+            'An update with code set to null got status 422, expected 200.',
+        ]);
     });
 
     it('reports a backend that ignores the bounds of a range filter', async () => {

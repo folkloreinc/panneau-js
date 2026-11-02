@@ -140,6 +140,56 @@ describe('createForm', () => {
         expect(form.getState().values).not.toHaveProperty('abilities');
     });
 
+    it('submits a chosen file for a required file field', async () => {
+        const onSubmit = vi.fn(async () => 'ok');
+        const form = createForm({
+            fields: [{ name: 'file', type: 'file', rules: [{ rule: 'required' }] }],
+            onSubmit,
+        });
+        const file = new File(['png'], 'photo.png', { type: 'image/png' });
+        form.setValue('file', file);
+        expect(form.getState().errors).toEqual({});
+        expect(await form.submit()).toEqual({ status: 'submitted', result: 'ok' });
+        const [values, context] = onSubmit.mock.calls[0] as unknown as [
+            Record<string, unknown>,
+            { mode: string; changes: Record<string, unknown> },
+        ];
+        expect(values.file).toBe(file);
+        expect(context.mode).toBe('create');
+        expect(context.changes.file).toBe(file);
+    });
+
+    it('counts another chosen file as a change', () => {
+        const first = new File(['a'], 'a.png', { type: 'image/png' });
+        const second = new File(['b'], 'b.png', { type: 'image/png' });
+        const form = createForm({
+            fields: [{ name: 'file', type: 'file' }],
+            values: { file: first },
+            version: '1',
+        });
+        form.setValue('file', second);
+        expect(form.getState().dirty).toBe(true);
+    });
+
+    it('applies rules limited to the mode of the form', async () => {
+        const passwordFields = [
+            {
+                name: 'password',
+                type: 'text',
+                rules: [{ rule: 'required' as const, mode: 'create' as const }],
+            },
+        ];
+        const create = createForm({ fields: passwordFields });
+        expect(await create.submit()).toMatchObject({ status: 'invalid' });
+        const update = createForm({
+            fields: passwordFields,
+            values: { password: '' },
+            version: '1',
+            onSubmit: async () => 'ok',
+        });
+        expect(await update.submit()).toEqual({ status: 'submitted', result: 'ok' });
+    });
+
     it('keeps the values when onSubmit returns something else than an item', async () => {
         const form = setup({ onSubmit: async () => 'ok' });
         form.setValue('status', 'published');

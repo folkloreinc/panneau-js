@@ -8,6 +8,11 @@ const message = z
     .optional()
     .meta({ description: 'Message shown when the rule fails, instead of the default one.' });
 
+const mode = z.enum(['create', 'update']).optional().meta({
+    description:
+        'The rule only applies when the item is created (`create`) or updated (`update`): a password required to create a user, optional to edit one. Without it, the rule applies in both modes.',
+});
+
 const Ratio = z
     .string()
     .regex(/^[1-9][0-9]*:[1-9][0-9]*$/)
@@ -20,23 +25,35 @@ const DateBound = z.union([
 
 export const Rule = z
     .union([
-        z.looseObject({ rule: z.literal('required'), message }),
-        z.looseObject({ rule: z.enum(['min', 'max']), value: z.number(), message }),
+        z.looseObject({ rule: z.literal('required'), message, mode }),
+        z.looseObject({ rule: z.enum(['min', 'max']), value: z.number(), message, mode }),
         z.looseObject({
             rule: z.literal('pattern'),
             value: z.string(),
             flags: z.string().optional(),
             message,
+            mode,
         }),
-        z.looseObject({ rule: z.enum(['email', 'url', 'json']), message }),
+        z.looseObject({ rule: z.enum(['email', 'url', 'json']), message, mode }),
         z.looseObject({
             rule: z.literal('in'),
             value: z.array(z.union([z.string(), z.number(), z.boolean()])),
             message,
+            mode,
         }),
-        z.looseObject({ rule: z.literal('accept'), value: z.array(z.string().min(1)), message }),
-        z.looseObject({ rule: z.literal('maxSize'), value: z.number().int().positive(), message }),
-        z.looseObject({ rule: z.enum(['before', 'after']), value: DateBound, message }),
+        z.looseObject({
+            rule: z.literal('accept'),
+            value: z.array(z.string().min(1)),
+            message,
+            mode,
+        }),
+        z.looseObject({
+            rule: z.literal('maxSize'),
+            value: z.number().int().positive(),
+            message,
+            mode,
+        }),
+        z.looseObject({ rule: z.enum(['before', 'after']), value: DateBound, message, mode }),
         z.looseObject({
             rule: z.literal('crop'),
             value: z.looseObject({
@@ -50,6 +67,7 @@ export const Rule = z
                     .meta({ description: 'Each image needs a crop for this use.' }),
             }),
             message,
+            mode,
         }),
         z
             .looseObject({
@@ -57,6 +75,7 @@ export const Rule = z
                     .string()
                     .refine((rule) => !(PORTABLE_RULES as readonly string[]).includes(rule)),
                 message,
+                mode,
             })
             .meta({
                 description:

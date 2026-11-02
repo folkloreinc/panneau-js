@@ -33,12 +33,19 @@ export function setValue<T extends Values>(values: T, path: string, value: unkno
     return setIn(values, path.split('.'), value) as T;
 }
 
-/** Deep equality of JSON-like values. */
+function isBlob(value: unknown): value is Blob {
+    return typeof Blob !== 'undefined' && value instanceof Blob;
+}
+
+/** Deep equality of JSON-like values. Files (`Blob`, `File`) are only equal to themselves. */
 export function isEqual(a: unknown, b: unknown): boolean {
     if (Object.is(a, b)) {
         return true;
     }
     if (a === null || b === null || typeof a !== 'object' || typeof b !== 'object') {
+        return false;
+    }
+    if (isBlob(a) || isBlob(b)) {
         return false;
     }
     if (Array.isArray(a) !== Array.isArray(b)) {

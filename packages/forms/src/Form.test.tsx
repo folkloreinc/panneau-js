@@ -70,6 +70,70 @@ describe('Form without a definition', () => {
         await waitFor(() => expect(screen.getByRole('textbox', { name: 'Bio' })).toHaveFocus());
     });
 
+    it('saves a required file chosen without direct uploads', async () => {
+        const onSubmit = vi.fn();
+        const onSubmitted = vi.fn();
+        const { container } = renderForm(
+            <Form
+                fields={[
+                    { name: 'file', type: 'file', label: 'File', rules: [{ rule: 'required' }] },
+                ]}
+                onSubmit={onSubmit}
+                onSubmitted={onSubmitted}
+            />,
+        );
+        const chosen = new File(['png'], 'photo.png', { type: 'image/png' });
+        const input = container.querySelector<HTMLInputElement>('input[type="file"]');
+        if (input === null) {
+            throw new Error('No file input.');
+        }
+        await userEvent.upload(input, chosen);
+        await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(onSubmitted).toHaveBeenCalled());
+        expect(screen.queryByText('This field is required.')).not.toBeInTheDocument();
+        expect(onSubmit).toHaveBeenCalledWith(
+            { file: chosen },
+            expect.objectContaining({ mode: 'create' }),
+        );
+    });
+
+    it('marks a field required in the mode of its rule only, inferred from the version', async () => {
+        const fields: Field[] = [
+            {
+                name: 'password',
+                type: 'text',
+                label: 'Password',
+                settings: { secret: true },
+                rules: [{ rule: 'required', mode: 'create' }],
+            },
+        ];
+        const onSubmit = vi.fn();
+        // Without a mode or a version, the form creates an item
+        const { unmount } = renderForm(<Form fields={fields} onSubmit={onSubmit} />);
+        expect(screen.getByLabelText(/Password/)).toBeRequired();
+        await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+        expect(await screen.findByRole('alert')).toHaveTextContent(
+            'Password: This field is required.',
+        );
+        unmount();
+
+        const onSubmitted = vi.fn();
+        renderForm(
+            <Form
+                fields={fields}
+                version="1"
+                values={{ password: null }}
+                onSubmit={onSubmit}
+                onSubmitted={onSubmitted}
+            />,
+        );
+        expect(screen.getByLabelText(/Password/)).not.toBeRequired();
+        await userEvent.type(screen.getByLabelText(/Password/), 'x');
+        await userEvent.clear(screen.getByLabelText(/Password/));
+        await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(onSubmitted).toHaveBeenCalled());
+    });
+
     it('shows client errors of a field once it lost focus', async () => {
         renderForm(<Form fields={FIELDS} />);
         const name = screen.getByRole('textbox', { name: /Name/ });

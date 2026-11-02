@@ -57,6 +57,46 @@ describe('checkRules', () => {
     it('ignores rules it does not know', () => {
         expect(checkRules([{ rule: 'luhn' }], '1234')).toEqual([]);
     });
+
+    it('counts a chosen file as filled', () => {
+        const file = new File(['png'], 'photo.png', { type: 'image/png' });
+        expect(checkRules([{ rule: 'required' }], file)).toEqual([]);
+        expect(checkRules([{ rule: 'required' }], new Blob([]))).toEqual([]);
+        expect(checkRules([{ rule: 'required' }], [file])).toEqual([]);
+        expect(checkRules([{ rule: 'required' }], {})).toHaveLength(1);
+    });
+
+    it('counts other collections by their length or size', () => {
+        const required = [{ rule: 'required' as const }];
+        expect(checkRules(required, new Map())).toHaveLength(1);
+        expect(checkRules(required, new Set())).toHaveLength(1);
+        expect(checkRules(required, new Set(['a']))).toEqual([]);
+        // A FileList: not a plain object, with a length
+        const files = Object.create({ item: () => null }, { length: { value: 0 } }) as object;
+        expect(checkRules(required, files)).toHaveLength(1);
+        expect(checkRules(required, new Date())).toEqual([]);
+    });
+
+    it('checks the type and size of a chosen file', () => {
+        const file = new File(['12345678901'], 'clip.mp4', { type: 'video/mp4' });
+        expect(
+            checkRules(
+                [
+                    { rule: 'accept', value: ['image/*'] },
+                    { rule: 'maxSize', value: 10 },
+                ],
+                file,
+            ).map((failure) => failure.rule),
+        ).toEqual(['accept', 'maxSize']);
+        expect(checkRules([{ rule: 'accept', value: ['video/*'] }], [file])).toEqual([]);
+    });
+
+    it('only applies a rule limited to a mode in that mode', () => {
+        const rules = [{ rule: 'required' as const, mode: 'create' as const }];
+        expect(checkRules(rules, '', {}, 'create')).toHaveLength(1);
+        expect(checkRules(rules, '', {}, 'update')).toEqual([]);
+        expect(checkRules(rules, '')).toEqual([]);
+    });
 });
 
 describe('the crop rule', () => {
@@ -169,6 +209,30 @@ describe('checkValues', () => {
         ];
         expect(Object.keys(checkValues(fields, {}, { mode: 'create' }))).toEqual(['password']);
         expect(Object.keys(checkValues(fields, {}, { mode: 'update' }))).toEqual(['reason']);
+    });
+
+    it('applies rules limited to a mode in that mode only', () => {
+        const fields: Field[] = [
+            {
+                name: 'password',
+                type: 'text',
+                rules: [
+                    { rule: 'required', mode: 'create' },
+                    { rule: 'min', value: 8 },
+                ],
+            },
+            { name: 'reason', type: 'text', rules: [{ rule: 'required', mode: 'update' }] },
+        ];
+        expect(checkValues(fields, {}, { mode: 'create' })).toEqual({
+            password: [{ rule: 'required' }],
+        });
+        expect(checkValues(fields, { password: '' }, { mode: 'update' })).toEqual({
+            reason: [{ rule: 'required' }],
+        });
+        expect(checkValues(fields, { password: 'short' }, { mode: 'update' })).toMatchObject({
+            password: [{ rule: 'min' }],
+        });
+        expect(checkValues(fields, {})).toEqual({});
     });
 
     it('checks the fields of a group', () => {

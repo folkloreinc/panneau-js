@@ -104,6 +104,11 @@ export interface GetErrorsOptions {
  * (`selectValue()`, `selectErrors()`, `selectErrorCount()`, `selectVisible()`).
  */
 export interface Form {
+    /**
+     * Whether the form creates or updates an item: its `mode` option, or `update` with a version
+     * and `create` without. Rules limited to a mode apply in this one.
+     */
+    readonly mode: FormMode;
     getState(): FormState;
     subscribe(listener: () => void): () => void;
     /** Updates the options that can change between renders. */
@@ -338,6 +343,7 @@ export function createForm(options: FormOptions): Form {
     };
 
     const form: Form = {
+        mode,
         getState() {
             if (unsubscribeStore === null) {
                 onStoreChange();
