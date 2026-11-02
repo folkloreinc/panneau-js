@@ -75,8 +75,8 @@ export function groupActions(actions: readonly Action[]): Record<ActionPlacement
 
 /** The built-in item actions, as the client shows them when a resource doesn't replace them. */
 const BUILT_IN_ITEM_ACTION_DEFINITIONS: Readonly<Record<BuiltInItemAction, Action>> = {
-    show: { id: 'show', kind: 'link', scope: ['item'], placement: ['row'] },
-    edit: { id: 'edit', kind: 'link', scope: ['item'], placement: ['row'] },
+    show: { id: 'show', kind: 'link', scope: ['item'], placement: ['row', 'form'] },
+    edit: { id: 'edit', kind: 'link', scope: ['item'], placement: ['row', 'form'] },
     duplicate: { id: 'duplicate', kind: 'server', scope: ['item'], placement: ['menu', 'form'] },
     delete: {
         id: 'delete',

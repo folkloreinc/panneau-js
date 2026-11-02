@@ -1,5 +1,6 @@
 import { Ellipsis } from 'lucide-react';
 
+import type { ItemAction } from '@panneau/core';
 import { getActionLabel } from '@panneau/intl';
 import type { Action } from '@panneau/protocol';
 import { IconButton, Menu, MenuItem, MenuTrigger, usePanneauIntl } from '@panneau/ui';
@@ -12,12 +13,10 @@ import { type ActionIcons, getActionIcon } from './icons';
 export interface RowActionsProps {
     /** The label of the item, for the accessible names of its actions. */
     itemLabel: string;
-    /** Actions shown as buttons. */
-    actions: readonly Action[];
+    /** Actions shown as buttons, with their links (`getItemActions()` of `@panneau/core`). */
+    actions: readonly ItemAction[];
     /** Actions in the overflow menu. */
-    menu: readonly Action[];
-    /** The link of a `link` action on this item, or `null` for an action that runs. */
-    getHref: (action: Action) => string | null;
+    menu: readonly ItemAction[];
     /** Id of the action that is running on this item, if any. */
     pending: string | null;
     onRun: (action: Action) => void;
@@ -26,24 +25,16 @@ export interface RowActionsProps {
 }
 
 /** The actions of a row: buttons, then an overflow menu. */
-export function RowActions({
-    itemLabel,
-    actions,
-    menu,
-    getHref,
-    pending,
-    onRun,
-    icons,
-}: RowActionsProps) {
+export function RowActions({ itemLabel, actions, menu, pending, onRun, icons }: RowActionsProps) {
     const intl = usePanneauIntl();
     return (
         <div className={styles.row}>
-            {actions.map((action) => (
+            {actions.map(({ action, href }) => (
                 <ActionButton
                     key={action.id}
                     action={action}
                     icons={icons}
-                    href={getHref(action)}
+                    href={href}
                     isPending={pending === action.id}
                     isDisabled={pending !== null && pending !== action.id}
                     aria-label={intl.formatMessage(messages.actionOnItem, {
@@ -59,19 +50,20 @@ export function RowActions({
                         icon={Ellipsis}
                         size="sm"
                         label={intl.formatMessage(messages.itemActions, { item: itemLabel })}
-                        isPending={pending !== null && menu.some((action) => action.id === pending)}
+                        isPending={
+                            pending !== null && menu.some(({ action }) => action.id === pending)
+                        }
                     />
                     <Menu
                         placement="bottom end"
                         onAction={(key) => {
-                            const action = menu.find((candidate) => candidate.id === key);
-                            if (action !== undefined && getHref(action) === null) {
-                                onRun(action);
+                            const entry = menu.find(({ action }) => action.id === key);
+                            if (entry !== undefined && entry.href === null) {
+                                onRun(entry.action);
                             }
                         }}
                     >
-                        {menu.map((action) => {
-                            const href = getHref(action);
+                        {menu.map(({ action, href }) => {
                             const icon = getActionIcon(action, icons);
                             return (
                                 <MenuItem

@@ -26,6 +26,15 @@ import type { Selection as Selection_2 } from '@panneau/protocol';
 import type { Theme } from '@panneau/protocol';
 
 // @public
+export interface ActionItem {
+    // (undocumented)
+    [key: string]: unknown;
+    abilities?: Abilities | undefined;
+    // (undocumented)
+    id: string;
+}
+
+// @public
 export function can(abilities: Abilities | undefined, ability: string): boolean;
 
 // @public
@@ -79,6 +88,9 @@ export const DEFAULT_PER_PAGE = 20;
 
 // @public
 export function definePlugin(plugin: PanneauPlugin): PanneauPlugin;
+
+// @public
+export function fillActionUrl(action: Action, item?: ActionItem): string | null;
 
 // @public
 export function findResource(definition: Definition, id: string): Resource | undefined;
@@ -173,6 +185,9 @@ export interface GetErrorsOptions {
 }
 
 // @public
+export function getItemActions(resource: Resource, item: ActionItem, surface: ItemSurface, options?: ItemActionsOptions): ItemAction[];
+
+// @public
 export function getItemValues(item: Item, names?: readonly string[]): Values;
 
 // @public
@@ -204,6 +219,22 @@ export function isItem(value: unknown): value is Item;
 
 // @public
 export function isSearchable(resource: Resource): boolean;
+
+// @public
+export interface ItemAction {
+    // (undocumented)
+    action: Action;
+    href: string | null;
+}
+
+// @public (undocumented)
+export interface ItemActionsOptions {
+    filter?: ((action: Action) => boolean) | undefined;
+    getLinkHref?: ((action: Action, item: ActionItem) => string | null) | undefined;
+}
+
+// @public
+export type ItemSurface = 'row' | 'menu' | 'panel' | 'form';
 
 // @public
 export type LeaveGuard = () => Promise<boolean>;
@@ -483,6 +514,9 @@ export function selectErrorCount(state: FormState, paths: readonly string[]): nu
 
 // @public
 export function selectErrors(state: FormState, path: string, options?: GetErrorsOptions): string[];
+
+// @public
+export function selectItemActions(actions: readonly Action[], item: ActionItem, surface: ItemSurface, input?: ItemActionsOptions): ItemAction[];
 
 // @public
 export function selectValue(state: FormState, path: string): unknown;

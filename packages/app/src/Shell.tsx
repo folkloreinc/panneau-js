@@ -140,6 +140,7 @@ function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) 
                     resolved={resolved}
                     basePath={basePath}
                     id={route.name === 'resource.create' ? null : route.id}
+                    resolveRoute={(reference) => resolveRoute(definition, basePath, reference)}
                 />
             );
         }

@@ -1,9 +1,5 @@
 import type { Abilities, Action, ActionPlacement, Item } from '@panneau/protocol';
-import {
-    ITEM_ACTION_ABILITIES,
-    isBuiltInItemAction,
-    isBuiltInLink,
-} from '@panneau/protocol/runtime';
+import { ITEM_ACTION_ABILITIES, isBuiltInItemAction } from '@panneau/protocol/runtime';
 
 /**
  * Whether a set of abilities allows something. Without abilities (a backend that sends none),
@@ -53,21 +49,12 @@ export function partitionByAction(
 }
 
 /**
- * Where an action appears when it doesn't say: rows and forms for items, the toolbar otherwise.
- * The built-in links `show` and `edit` that the client resolves (without a `url` or a `route`)
- * are in rows only.
+ * Where an action appears when it doesn't say: rows and forms (the header of an item, in its
+ * panel and its form) for items, the toolbar otherwise.
  */
 export function getActionPlacements(action: Action): ActionPlacement[] {
     if (action.placement !== undefined) {
         return action.placement;
-    }
-    if (
-        action.kind === 'link' &&
-        isBuiltInLink(action.id) &&
-        action.url === undefined &&
-        action.route === undefined
-    ) {
-        return ['row'];
     }
     const placements = new Set<ActionPlacement>();
     action.scope.forEach((scope) => {

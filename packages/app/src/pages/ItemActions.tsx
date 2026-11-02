@@ -1,16 +1,11 @@
+import { ExternalLink } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-aria-components';
 
 import { type ActionOutcome, type ActionTarget, useActionRunner } from '@panneau/actions';
+import type { ItemAction } from '@panneau/core';
 import { getActionLabel, listsMessages } from '@panneau/intl';
-import {
-    ConfirmDialog,
-    type ListActionEvent,
-    getActionHref,
-    getActionIcon,
-    hasOwnTarget,
-    isAllowedOn,
-} from '@panneau/lists';
+import { ConfirmDialog, type ListActionEvent, getActionIcon } from '@panneau/lists';
 import type { Action, Item } from '@panneau/protocol';
 import { Button, Icon, usePanneauIntl, useToast } from '@panneau/ui';
 
@@ -19,27 +14,32 @@ import styles from './pages.module.css';
 export interface ItemActionsProps {
     /** The id of the resource. */
     resource: string;
-    /** The actions placed in `form`. Those that don't apply to an item, or to this one, are left out. */
-    actions: readonly Action[];
+    /**
+     * The actions of the item on this surface, with their links: `getItemActions()` of
+     * `@panneau/core`, as rows and their menu show them.
+     */
+    actions: readonly ItemAction[];
     item: Item;
-    /** The link of a built-in `show` or `edit` without a `url` or a `route`: a route of the app. */
-    getLinkHref?: (action: Action, item: Item) => string | null;
     /** Runs an action, in place of the action runner: the app's, which also duplicates items. */
     runAction?: (target: ActionTarget) => Promise<ActionOutcome | false>;
     /** Called once an action has run, has been queued or has navigated. */
     onRun?: (action: Action, outcome: ActionOutcome) => void;
 }
 
+/** Whether a link leaves the admin: it opens in a new tab. */
+function isExternal(href: string): boolean {
+    return /^https?:\/\//.test(href);
+}
+
 /**
- * The actions of an item in the header of its edit page: those placed in `form`, that the item
- * allows. They run through the action runner (parameters, results, queued runs), after a
- * confirmation when they ask for one. A `link` action with a URL is a link.
+ * The actions of an item in the header of its panel or of its edit page (decision 0040). Links
+ * are links, in a new tab when they leave the admin. Other actions run through the action runner
+ * (parameters, results, queued runs), after a confirmation when they ask for one.
  */
 export function ItemActions({
     resource,
     actions,
     item,
-    getLinkHref,
     runAction: runActionProp,
     onRun,
 }: ItemActionsProps) {
@@ -49,19 +49,7 @@ export function ItemActions({
     const runAction = runActionProp ?? runner;
     const [pending, setPending] = useState<string | null>(null);
     const [confirming, setConfirming] = useState<ListActionEvent | null>(null);
-    const hrefOf = (action: Action): string | null =>
-        getActionHref(action, item) ??
-        (action.kind === 'link' && !hasOwnTarget(action)
-            ? (getLinkHref?.(action, item) ?? null)
-            : null);
-    // A built-in link that nothing resolves goes nowhere: it is left out.
-    const available = actions.filter(
-        (action) =>
-            action.scope.includes('item') &&
-            isAllowedOn(action, item) &&
-            (action.kind !== 'link' || hasOwnTarget(action) || hrefOf(action) !== null),
-    );
-    if (available.length === 0) {
+    if (actions.length === 0) {
         return null;
     }
 
@@ -100,12 +88,18 @@ export function ItemActions({
 
     return (
         <>
-            {available.map((action) => {
-                const icon = getActionIcon(action);
-                const href = hrefOf(action);
+            {actions.map(({ action, href }) => {
                 const label = getActionLabel(action, intl);
+                const external = href !== null && isExternal(href);
+                const icon = external ? ExternalLink : getActionIcon(action);
                 return href !== null ? (
-                    <Link key={action.id} href={href} className={styles.actionLink}>
+                    <Link
+                        key={action.id}
+                        href={href}
+                        target={external ? '_blank' : undefined}
+                        rel={external ? 'noopener noreferrer' : undefined}
+                        className={styles.actionLink}
+                    >
                         {icon !== undefined ? <Icon icon={icon} size="sm" /> : null}
                         {label}
                     </Link>

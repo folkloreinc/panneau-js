@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import type { Action, Item } from '@panneau/protocol';
+import type { Action, Item, Resource } from '@panneau/protocol';
 
 import { createDefinition, getResource } from '../__fixtures__/definition';
 import { can, getActionPlacements, isActionAllowedOn, partitionByAction } from './abilities';
 import { getLayoutFieldNames, resolveFields, resolveForm } from './form';
+import { getItemActions } from './itemActions';
 import { getOpenMode, getResourceActions, resolveList } from './list';
 import { findResource, resolveResource } from './resource';
 
@@ -152,8 +153,8 @@ describe('resolveList', () => {
         const ids = (list: Action[]) => list.map((action) => action.id);
         // The built-in item actions first, `edit` replaced by the declared one
         expect(ids(actions.row)).toEqual(['show', 'edit', 'publish']);
-        // `edit` has a URL: it keeps the placements of an item action
-        expect(ids(actions.form)).toEqual(['edit', 'duplicate', 'delete', 'publish']);
+        // `form` is the header of an item: its panel and its form
+        expect(ids(actions.form)).toEqual(['show', 'edit', 'duplicate', 'delete', 'publish']);
         expect(ids(actions.toolbar)).toEqual(['delete', 'publish']);
         expect(ids(actions.menu)).toEqual(['duplicate', 'delete', 'export']);
     });
@@ -221,16 +222,14 @@ describe('abilities', () => {
         expect(isActionAllowedOn(site, item('1', {}))).toBe(true);
     });
 
-    it('places the built-in links in rows only', () => {
-        expect(getActionPlacements({ id: 'edit', kind: 'link', scope: ['item'] })).toEqual(['row']);
-        expect(getActionPlacements({ id: 'show', kind: 'link', scope: ['item'] })).toEqual(['row']);
+    it('places declared item actions in rows and in the header of items', () => {
+        expect(getActionPlacements({ id: 'edit', kind: 'link', scope: ['item'] })).toEqual([
+            'row',
+            'form',
+        ]);
         expect(
             getActionPlacements({ id: 'edit', kind: 'link', scope: ['item'], placement: ['menu'] }),
         ).toEqual(['menu']);
-        // With a URL, a link keeps the placements it had before decision 0040
-        expect(
-            getActionPlacements({ id: 'show', kind: 'link', url: '/s/{id}', scope: ['item'] }),
-        ).toEqual(['row', 'form']);
     });
 });
 
@@ -290,5 +289,76 @@ describe('resolveResource', () => {
         expect(resolved.form.fieldsByName.has('views')).toBe(false);
         expect(resolved.list.columns).toHaveLength(3);
         expect(findResource(definition, 'unknown')).toBeUndefined();
+    });
+});
+
+describe('getItemActions', () => {
+    const resource: Resource = {
+        ...getResource('pages'),
+        actions: [
+            { id: 'publish', label: 'Publish', kind: 'server', scope: ['item', 'selection'] },
+            {
+                id: 'site',
+                label: 'Site',
+                kind: 'link',
+                url: 'https://example.com/{slug}',
+                scope: ['item'],
+            },
+            { id: 'jobs', label: 'Jobs', kind: 'link', route: 'jobs', scope: ['item'] },
+        ],
+    };
+    // Mixed abilities: it can be viewed, updated, duplicated and published, not deleted
+    const page = {
+        id: '1',
+        slug: 'about',
+        abilities: { view: true, update: true, duplicate: true, delete: false, publish: true },
+    };
+    const getLinkHref = (action: Action, item: { id: string }) =>
+        action.id === 'show' || action.id === 'edit' ? `/${action.id}/${item.id}` : null;
+    const ids = (actions: { action: Action }[]) => actions.map(({ action }) => action.id);
+
+    it('shows the same actions of an item on every surface, but the one that leads there', () => {
+        const row = ids(getItemActions(resource, page, 'row', { getLinkHref }));
+        const menu = ids(getItemActions(resource, page, 'menu', { getLinkHref }));
+        const panel = ids(getItemActions(resource, page, 'panel', { getLinkHref }));
+        const form = ids(getItemActions(resource, page, 'form', { getLinkHref }));
+        expect(row).toEqual(['show', 'edit', 'publish', 'site', 'jobs']);
+        expect(menu).toEqual(['duplicate']);
+        const all = ['show', 'edit', 'duplicate', 'publish', 'site', 'jobs'];
+        expect([...row, ...menu].sort()).toEqual([...all].sort());
+        expect(panel).toEqual(all.filter((id) => id !== 'show'));
+        expect(form).toEqual(all.filter((id) => id !== 'edit'));
+    });
+
+    it('resolves links, and runs the other actions', () => {
+        const actions = getItemActions(resource, page, 'panel', { getLinkHref });
+        const hrefs = Object.fromEntries(actions.map(({ action, href }) => [action.id, href]));
+        expect(hrefs).toEqual({
+            edit: '/edit/1',
+            duplicate: null,
+            publish: null,
+            site: 'https://example.com/about',
+            // A route nothing resolves: the action runner navigates
+            jobs: null,
+        });
+        // A built-in link that nothing resolves is left out
+        expect(ids(getItemActions(resource, page, 'row'))).toEqual(['publish', 'site', 'jobs']);
+    });
+
+    it('leaves out the actions the caller filters, and those of `itemActions`', () => {
+        const filter = (action: Action) => action.id !== 'duplicate';
+        expect(ids(getItemActions(resource, page, 'menu', { filter }))).toEqual([]);
+        const fewer = { ...resource, itemActions: ['edit'] };
+        expect(ids(getItemActions(fewer, page, 'form', { getLinkHref }))).toEqual([
+            'publish',
+            'site',
+            'jobs',
+        ]);
+        expect(ids(getItemActions(fewer, page, 'panel', { getLinkHref }))).toEqual([
+            'edit',
+            'publish',
+            'site',
+            'jobs',
+        ]);
     });
 });

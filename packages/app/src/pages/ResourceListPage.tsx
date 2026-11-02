@@ -17,7 +17,7 @@ import { routePath } from '../routes';
 import { ItemPanel } from './ItemPanel';
 import { LinkButton, PageHeader } from './PageHeader';
 import { filterActions, useItemActionRunner } from './itemActionRunner';
-import { getBuiltInLinkPath, getItemPath, opensInForm } from './itemLinks';
+import { createLinkResolver, getItemPath, opensInForm } from './itemLinks';
 import { getItemTitle } from './itemTitle';
 import styles from './pages.module.css';
 
@@ -114,9 +114,7 @@ export function ResourceListPage({
                     perPageOptions={[10, 20, 50, 100]}
                     // Titles open the panel, with the list's query, or the form (`open` of the resource)
                     getItemHref={(item) => getItemPath(resource, item, basePath, search)}
-                    getLinkHref={(action, item) =>
-                        getBuiltInLinkPath(resource, action, item, basePath, search)
-                    }
+                    getLinkHref={createLinkResolver(resource, basePath, { search, resolveRoute })}
                     currentItemId={selectedId}
                     onAction={runAction}
                     previewAction={previewAction}

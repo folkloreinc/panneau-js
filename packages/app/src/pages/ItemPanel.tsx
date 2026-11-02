@@ -1,24 +1,16 @@
-import { ExternalLink, Maximize2, Minimize2, Pencil, X } from 'lucide-react';
+import { Maximize2, Minimize2, X } from 'lucide-react';
 import { type KeyboardEvent, useEffect, useRef } from 'react';
-import { Link } from 'react-aria-components';
 
-import { type ResolvedResource, getResourceActions } from '@panneau/core';
+import { type ResolvedResource, getItemActions } from '@panneau/core';
 import { NotFoundError } from '@panneau/data';
 import { useResourceItem } from '@panneau/data/query';
-import { appMessages, getActionLabel } from '@panneau/intl';
-import {
-    ItemDetails,
-    type ListColumn,
-    getActionHref,
-    hasOwnTarget,
-    isAllowedOn,
-} from '@panneau/lists';
-import type { Action, Item, RouteReference } from '@panneau/protocol';
+import { appMessages } from '@panneau/intl';
+import { ItemDetails, type ListColumn } from '@panneau/lists';
+import type { RouteReference } from '@panneau/protocol';
 import {
     Alert,
     Button,
     Heading,
-    Icon,
     IconButton,
     Skeleton,
     Tab,
@@ -32,17 +24,12 @@ import { cx } from '../cx';
 import { navigate } from '../location';
 import { usePreference } from '../preferences';
 import { useRecordRecentItem } from '../recentItems';
-import { routePath } from '../routes';
 import { ItemActions } from './ItemActions';
 import styles from './ItemPanel.module.css';
 import { ItemPreview, PreviewSkeleton } from './ItemPreview';
 import { useItemActionRunner } from './itemActionRunner';
+import { createLinkResolver } from './itemLinks';
 import { getItemTitle } from './itemTitle';
-
-/** Whether a link leaves the admin: it opens in a new tab. */
-function isExternal(href: string): boolean {
-    return /^https?:\/\//.test(href);
-}
 
 /** Fields that hold other fields, shown in the form rather than in the details. */
 const NESTED_TYPES = new Set(['group', 'repeater']);
@@ -102,43 +89,15 @@ export function ItemPanel({
             label: field.label ?? field.name,
             display: field.display ?? field.type,
         }));
-    // The link of a `link` action: its URL, or its route in the definition.
-    const hrefOf = (action: Action, current: Item): string | null =>
-        getActionHref(action, current) ??
-        (action.url === undefined && action.route !== undefined
-            ? (resolveRoute?.({ route: action.route, params: { id: current.id } }) ?? null)
-            : null);
-    const actions = getResourceActions(resource);
-    // The panel has its own link to edit the item, and is what the built-in `show` opens: it
-    // doesn't repeat them.
-    const links = actions.flatMap((action) => {
-        if (
-            item === undefined ||
-            action.kind !== 'link' ||
-            action.id === 'edit' ||
-            !hasOwnTarget(action) ||
-            !action.scope.includes('item') ||
-            !isAllowedOn(action, item)
-        ) {
-            return [];
-        }
-        const href = hrefOf(action, item);
-        return href !== null ? [{ action, href }] : [];
-    });
-
-    // The edit link: the built-in `edit`, or a declared one with a URL or a route, which its
-    // ability hides (`update`).
-    const edit = actions.find((action) => action.id === 'edit' && action.kind === 'link');
-    const canEdit = item !== undefined && edit !== undefined && isAllowedOn(edit, item);
-    // The other actions of the item placed in `form`, such as `duplicate` and `delete`
+    // The actions of the item, as its row and its form show them, but `show`: this panel
     const { run, isSupported } = useItemActionRunner(resource, { basePath, locale });
-    const itemActions = resolved.list.actions.form.filter(
-        (action) => action.kind !== 'link' && isSupported(action),
-    );
-    const editHref =
-        (edit !== undefined && item !== undefined ? hrefOf(edit, item) : null) ??
-        routePath({ name: 'resource.edit', resource: resource.id, id }, basePath);
-    const editIsExternal = isExternal(editHref);
+    const itemActions =
+        item !== undefined
+            ? getItemActions(resource, item, 'panel', {
+                  getLinkHref: createLinkResolver(resource, basePath, { resolveRoute }),
+                  filter: isSupported,
+              })
+            : [];
 
     const onKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'Escape' && !event.defaultPrevented) {
@@ -233,17 +192,6 @@ export function ItemPanel({
             ) : null}
             {item !== undefined ? (
                 <div className={styles.actions}>
-                    {canEdit ? (
-                        <Link
-                            href={editHref}
-                            target={editIsExternal ? '_blank' : undefined}
-                            rel={editIsExternal ? 'noopener noreferrer' : undefined}
-                            className={styles.action}
-                        >
-                            <Icon icon={editIsExternal ? ExternalLink : Pencil} size="sm" />
-                            {intl.formatMessage(appMessages.editItem)}
-                        </Link>
-                    ) : null}
                     <ItemActions
                         resource={resource.id}
                         actions={itemActions}
@@ -261,21 +209,6 @@ export function ItemPanel({
                             });
                         }}
                     />
-                    {links.map(({ action, href }) => {
-                        const external = isExternal(href);
-                        return (
-                            <Link
-                                key={action.id}
-                                href={href}
-                                target={external ? '_blank' : undefined}
-                                rel={external ? 'noopener noreferrer' : undefined}
-                                className={styles.action}
-                            >
-                                {external ? <Icon icon={ExternalLink} size="sm" /> : null}
-                                {getActionLabel(action, intl)}
-                            </Link>
-                        );
-                    })}
                 </div>
             ) : null}
             <div className={styles.body}>{content}</div>

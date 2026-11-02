@@ -6,6 +6,15 @@ export {
     partitionByAction,
 } from './definition/abilities';
 export {
+    type ActionItem,
+    type ItemAction,
+    type ItemActionsOptions,
+    type ItemSurface,
+    fillActionUrl,
+    getItemActions,
+    selectItemActions,
+} from './definition/itemActions';
+export {
     type FormMode,
     type ResolveFormOptions,
     type ResolvedForm,

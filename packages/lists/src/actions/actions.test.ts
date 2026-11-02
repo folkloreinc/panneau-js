@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { edit, editLink, exportAction, publish, remove, showLink } from '../__fixtures__/pages';
-import { getActionHref, groupListActions, hasOwnTarget, isAllowedOn } from './actions';
+import { getActionHref, groupListActions, isAllowedOn } from './actions';
 
 describe('groupListActions', () => {
     it('places a list of actions by placement, or by scope', () => {
@@ -50,14 +50,5 @@ describe('getActionHref', () => {
         expect(
             getActionHref({ ...edit, url: undefined, route: 'pages.edit' }, { id: '1' }),
         ).toBeNull();
-    });
-});
-
-describe('hasOwnTarget', () => {
-    it('is false only for the built-in links without a url or a route', () => {
-        expect(hasOwnTarget(editLink)).toBe(false);
-        expect(hasOwnTarget(showLink)).toBe(false);
-        expect(hasOwnTarget(edit)).toBe(true);
-        expect(hasOwnTarget({ ...showLink, route: 'page' })).toBe(true);
     });
 });

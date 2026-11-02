@@ -1,5 +1,6 @@
 import { getOpenMode } from '@panneau/core';
-import type { Abilities, Action, Resource } from '@panneau/protocol';
+import type { ActionItem } from '@panneau/core';
+import type { Abilities, Action, Resource, RouteReference } from '@panneau/protocol';
 
 import { routePath } from '../routes';
 
@@ -44,4 +45,28 @@ export function getBuiltInLinkPath(
         return getItemPath(resource, item, basePath, search);
     }
     return null;
+}
+
+/**
+ * The link of a `link` action without a `url`, for `getItemActions()`: the built-in `show` and
+ * `edit` to the routes of the app, and an action with a `route` to that route of the definition,
+ * with the item's id. `search` is the list's query string, which `show` keeps.
+ */
+export function createLinkResolver(
+    resource: Resource,
+    basePath: string,
+    {
+        search = '',
+        resolveRoute,
+    }: {
+        search?: string;
+        resolveRoute?: ((reference: RouteReference) => string | null) | undefined;
+    } = {},
+): (action: Action, item: ActionItem) => string | null {
+    return (action, item) => {
+        if (action.url === undefined && action.route !== undefined) {
+            return resolveRoute?.({ route: action.route, params: { id: item.id } }) ?? null;
+        }
+        return getBuiltInLinkPath(resource, action, item, basePath, search);
+    };
 }

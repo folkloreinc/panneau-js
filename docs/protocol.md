@@ -270,7 +270,7 @@ An action is an operation applied to one item, a selection, or the whole resourc
 - **`placement`:** where the action appears.
     - `row`: on each list row;
     - `toolbar`: on the list, for selections and resource actions;
-    - `form`: in the item form header;
+    - `form`: in the header of the item, in its panel and its form;
     - `menu`: in an overflow menu.
 - **`confirm`:** `true` uses a default message. Its `message` can use `{count}`.
 - **`destructive`:** styles the action and its confirmation as dangerous.
@@ -297,7 +297,8 @@ Built-in actions use reserved ids:
 - `itemActions` on a resource picks some of them, in its order: `"itemActions": ["edit", "delete"]`. `[]` shows none. Without it, the four are shown.
 - A declared action with one of these ids replaces the built-in one (an `edit` with a `url`, a `delete` with its own confirmation). It is still shown by the ability above, and only if `itemActions` lists it. Its `label` is optional.
 - A resource that can't duplicate sends `duplicate: false` (or no `duplicate`) on its items.
-- `show` and `edit` are in rows; `duplicate` and `delete` in the menu of rows, the edit form and the panel. `edit` is never shown in the edit form.
+- Placements: `show` and `edit` in `row` and `form`; `duplicate` and `delete` in `menu` and `form`, and `delete` in `toolbar` for selections. For item actions, `row` is the buttons of a row, `menu` its menu, and `form` the header of the item, in its panel and its form.
+- An item shows the same actions in its row, its panel and its form, but the one that leads there: no `show` in the panel, no `edit` in the form.
 - The ids `show` and `edit` are only for `link` actions. Every other action needs a `label`. The JSON Schema checks both.
 - Other declared actions are for the resource's own operations, and keep their rules: a `link` is shown unless the item says `false`, other actions when the item lists their id.
 

@@ -1,6 +1,5 @@
-import { canRunAction, groupActions, isActionAllowedOn } from '@panneau/core';
+import { canRunAction, fillActionUrl, groupActions, isActionAllowedOn } from '@panneau/core';
 import type { Action, ActionPlacement } from '@panneau/protocol';
-import { isBuiltInLink } from '@panneau/protocol/runtime';
 
 import type { ListItem } from '../types';
 
@@ -42,28 +41,11 @@ export function isAllowedOn(action: Action, item: ListItem): boolean {
 }
 
 /**
- * Whether a `link` action goes somewhere by itself, with a `url` or a `route`. The built-in links
- * without either need the caller to resolve them (`getLinkHref` of `ListView`).
- */
-export function hasOwnTarget(action: Action): boolean {
-    return action.url !== undefined || action.route !== undefined || !isBuiltInLink(action.id);
-}
-
-/**
  * The link of a `link` action for an item: its `url` template with `{id}` (and other `{field}`
  * values of the item) filled in, or `null` for an action with a `route` or without an item.
  */
 export function getActionHref(action: Action, item?: ListItem): string | null {
-    if (action.kind !== 'link' || action.url === undefined) {
-        return null;
-    }
-    const { url } = action;
-    return url.replace(/\{([^}]+)\}/g, (match, name: string) => {
-        const value = item?.[name];
-        return typeof value === 'string' || typeof value === 'number'
-            ? encodeURIComponent(String(value))
-            : match;
-    });
+    return fillActionUrl(action, item);
 }
 
 /** Whether an action's scope includes another one. */

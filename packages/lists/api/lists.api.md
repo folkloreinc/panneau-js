@@ -169,9 +169,6 @@ export function getPagingProps(meta: ListResponse['meta'] | undefined): {
 export function groupListActions(actions: ListActions | undefined): Record<ActionPlacement, Action[]>;
 
 // @public
-export function hasOwnTarget(action: Action): boolean;
-
-// @public
 export function isAllowedOn(action: Action, item: ListItem): boolean;
 
 // @public

@@ -1,7 +1,7 @@
 import { type ReactNode, useRef, useState } from 'react';
 
 import type { List } from '@panneau/core';
-import { usePlugins } from '@panneau/core';
+import { selectItemActions, usePlugins } from '@panneau/core';
 import { getActionLabel } from '@panneau/intl';
 import type { Action, Field, Filter } from '@panneau/protocol';
 import { Alert, Button, Checkbox, usePanneauIntl, useToast } from '@panneau/ui';
@@ -15,7 +15,6 @@ import {
     type ListActions,
     getActionHref,
     groupListActions,
-    hasOwnTarget,
     hasScope,
     isAllowedOn,
 } from './actions/actions';
@@ -207,8 +206,6 @@ export function ListView({
     const Layout = allLayouts[layout] ?? builtInLayouts.table;
 
     const grouped = groupListActions(actionsProp);
-    const rowActions = grouped.row.filter((action) => hasScope(action, 'item'));
-    const rowMenu = grouped.menu.filter((action) => hasScope(action, 'item'));
     // Actions placed in the menu also apply to selections, from the toolbar (once each).
     const toolbarActions = [...grouped.toolbar, ...grouped.menu].filter(
         (action, index, all) =>
@@ -339,20 +336,10 @@ export function ListView({
     const runOnResource = (action: Action) =>
         run({ action, scope: 'resource', count: count, skipped: [] });
 
-    // The link of an action on an item: its URL, or the caller's for a built-in link.
-    const getRowHref = (action: Action, item: ListItem): string | null =>
-        getActionHref(action, item) ??
-        (action.kind === 'link' && !hasOwnTarget(action)
-            ? (getLinkHref?.(action, item) ?? null)
-            : null);
-    // A built-in link that nothing resolves goes nowhere: it is left out.
-    const isShownOn = (action: Action, item: ListItem): boolean =>
-        isAllowedOn(action, item) &&
-        (action.kind !== 'link' || hasOwnTarget(action) || getRowHref(action, item) !== null);
-
+    // The actions of a row and of its menu, as everywhere else an item shows its actions
     const renderActions = (item: ListItem): ReactNode => {
-        const allowed = rowActions.filter((action) => isShownOn(action, item));
-        const menu = rowMenu.filter((action) => isShownOn(action, item));
+        const allowed = selectItemActions(grouped.row, item, 'row', { getLinkHref });
+        const menu = selectItemActions(grouped.menu, item, 'menu', { getLinkHref });
         if (allowed.length === 0 && menu.length === 0) {
             return null;
         }
@@ -363,7 +350,6 @@ export function ListView({
                 itemLabel={getItemLabel(item)}
                 actions={allowed}
                 menu={menu}
-                getHref={(action) => getRowHref(action, item)}
                 pending={running ?? null}
                 onRun={(action) => runOnItem(action, item)}
                 icons={actionIcons}
