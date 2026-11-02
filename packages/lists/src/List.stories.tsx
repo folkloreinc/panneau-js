@@ -344,6 +344,60 @@ export const BuiltInLinks: Story = {
     },
 };
 
+/**
+ * The built-in links beside the overflow menu of each row, as most resources show them: one
+ * button style for both, whose hover background covers the whole button, with room between them.
+ */
+export const BuiltInLinksAndMenu: Story = {
+    args: {
+        items: members.map((member) => ({
+            ...member,
+            abilities: { ...member.abilities, view: true, update: true, delete: true },
+        })),
+        actions: [
+            { id: 'show', kind: 'link', scope: ['item'] },
+            { id: 'edit', kind: 'link', scope: ['item'] },
+            {
+                id: 'delete',
+                kind: 'server',
+                scope: ['item'],
+                placement: ['menu'],
+                destructive: true,
+            },
+        ],
+        getLinkHref: (action: Action, item: ListItem) =>
+            action.id === 'edit' ? `#/members/${item.id}/edit` : `#/members/${item.id}`,
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const edit = canvas.getByRole('link', { name: 'Edit: Grace Hopper' });
+        const menu = canvas.getByRole('button', { name: 'Actions for Grace Hopper' });
+        const backgroundOf = (element: Element) => getComputedStyle(element).backgroundColor;
+        const transparent = backgroundOf(edit);
+
+        // The link and the menu button hover alike: the button's own background, on its whole box
+        await userEvent.hover(edit);
+        await waitFor(() => expect(backgroundOf(edit)).not.toBe(transparent));
+        const hovered = backgroundOf(edit);
+        await expect(getComputedStyle(edit).backgroundClip).toBe('border-box');
+        for (const child of edit.querySelectorAll('*')) {
+            await expect(backgroundOf(child)).toBe(transparent);
+        }
+        await userEvent.hover(menu);
+        await waitFor(() => expect(backgroundOf(menu)).toBe(hovered));
+        await userEvent.unhover(menu);
+
+        // The same height and corners, aligned, with room between them
+        const link = edit.getBoundingClientRect();
+        const button = menu.getBoundingClientRect();
+        await expect(link.height).toBe(button.height);
+        await expect(link.top).toBe(button.top);
+        await expect(getComputedStyle(edit).borderRadius).toBe(getComputedStyle(menu).borderRadius);
+        // `--panneau-space-2`
+        await expect(button.left - link.right).toBeGreaterThanOrEqual(8);
+    },
+};
+
 export const Empty: Story = {
     args: {
         items: [],

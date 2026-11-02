@@ -45,7 +45,8 @@ function isAlias(variant: string): variant is ButtonVariant {
     return Object.hasOwn(ALIASES, variant);
 }
 
-export interface ButtonProps extends Omit<AriaButtonProps, 'className' | 'style' | 'children'> {
+/** The look of a button, shared by `Button` and `LinkButton`. */
+export interface ButtonStyleProps {
     /** Defaults to `neutral`. */
     tone?: Tone;
     /** Defaults to `outline` for the neutral tone, and `solid` for the others. */
@@ -62,6 +63,55 @@ export interface ButtonProps extends Omit<AriaButtonProps, 'className' | 'style'
     children?: ReactNode;
     className?: string;
     style?: CSSProperties;
+}
+
+export interface ButtonProps
+    extends ButtonStyleProps, Omit<AriaButtonProps, 'className' | 'style' | 'children'> {}
+
+/** The class names of a button from its style props, for `Button` and `LinkButton`. */
+export function getButtonClassName({
+    tone,
+    appearance,
+    variant,
+    size = 'md',
+    fullWidth = false,
+    className,
+}: Pick<
+    ButtonStyleProps,
+    'tone' | 'appearance' | 'variant' | 'size' | 'fullWidth' | 'className'
+>): string {
+    const alias = variant !== undefined && isAlias(variant) ? ALIASES[variant] : undefined;
+    const resolvedTone = tone ?? alias?.tone ?? 'neutral';
+    const resolvedAppearance =
+        appearance ?? alias?.appearance ?? (resolvedTone === 'neutral' ? 'outline' : 'solid');
+    return cx(
+        'panneau-button',
+        styles.button,
+        toneClass(resolvedTone),
+        styles[resolvedAppearance],
+        variant !== undefined && alias === undefined && `panneau-button-variant-${variant}`,
+        size === 'sm' && styles.sm,
+        fullWidth && styles.fullWidth,
+        className,
+    );
+}
+
+/** The icons and label of a button. */
+export function ButtonContent({
+    icon,
+    iconEnd,
+    size = 'md',
+    children,
+}: Pick<ButtonStyleProps, 'icon' | 'iconEnd' | 'size' | 'children'>) {
+    return (
+        <span className={styles.content}>
+            {icon !== undefined ? <Icon icon={icon} size={size === 'sm' ? 'sm' : 'md'} /> : null}
+            {children}
+            {iconEnd !== undefined ? (
+                <Icon icon={iconEnd} size={size === 'sm' ? 'sm' : 'md'} />
+            ) : null}
+        </span>
+    );
 }
 
 /**
@@ -81,35 +131,22 @@ export function Button({
     className,
     ...props
 }: ButtonProps) {
-    const alias = variant !== undefined && isAlias(variant) ? ALIASES[variant] : undefined;
-    const resolvedTone = tone ?? alias?.tone ?? 'neutral';
-    const resolvedAppearance =
-        appearance ?? alias?.appearance ?? (resolvedTone === 'neutral' ? 'outline' : 'solid');
     return (
         <AriaButton
             {...props}
             isPending={isPending}
-            className={cx(
-                'panneau-button',
-                styles.button,
-                toneClass(resolvedTone),
-                styles[resolvedAppearance],
-                variant !== undefined && alias === undefined && `panneau-button-variant-${variant}`,
-                size === 'sm' && styles.sm,
-                fullWidth && styles.fullWidth,
-                isPending && styles.pending,
-                className,
-            )}
+            className={getButtonClassName({
+                tone,
+                appearance,
+                variant,
+                size,
+                fullWidth,
+                className: cx(isPending && styles.pending, className),
+            })}
         >
-            <span className={styles.content}>
-                {icon !== undefined ? (
-                    <Icon icon={icon} size={size === 'sm' ? 'sm' : 'md'} />
-                ) : null}
+            <ButtonContent icon={icon} iconEnd={iconEnd} size={size}>
                 {children}
-                {iconEnd !== undefined ? (
-                    <Icon icon={iconEnd} size={size === 'sm' ? 'sm' : 'md'} />
-                ) : null}
-            </span>
+            </ButtonContent>
             {isPending ? (
                 <span className={styles.spinner}>
                     <Spinner size="sm" />

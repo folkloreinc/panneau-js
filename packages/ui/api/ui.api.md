@@ -15,6 +15,7 @@ import { DialogTrigger } from 'react-aria-components';
 import { HTMLAttributes } from 'react';
 import { IntlShape } from 'react-intl';
 import { JSX } from 'react';
+import { LinkProps } from 'react-aria-components';
 import { MenuItemProps as MenuItemProps_2 } from 'react-aria-components';
 import { MenuProps as MenuProps_2 } from 'react-aria-components';
 import { MenuSectionProps as MenuSectionProps_2 } from 'react-aria-components';
@@ -130,7 +131,11 @@ export function Button(input: ButtonProps): JSX.Element;
 export type ButtonAppearance = 'solid' | 'outline' | 'subtle' | 'ghost';
 
 // @public (undocumented)
-export interface ButtonProps extends Omit<ButtonProps_2, 'className' | 'style' | 'children'> {
+export interface ButtonProps extends ButtonStyleProps, Omit<ButtonProps_2, 'className' | 'style' | 'children'> {
+}
+
+// @public
+export interface ButtonStyleProps {
     appearance?: ButtonAppearance;
     // (undocumented)
     children?: ReactNode;
@@ -611,6 +616,14 @@ export function isApplePlatform(): boolean;
 
 // @public
 export type Justification = 'start' | 'center' | 'end' | 'between';
+
+// @public
+export function LinkButton(input: LinkButtonProps): JSX.Element;
+
+// @public (undocumented)
+export interface LinkButtonProps extends ButtonStyleProps, Omit<LinkProps, 'className' | 'style' | 'children'> {
+    href: string;
+}
 
 // @public
 export function LoadingRegion(input: LoadingRegionProps): JSX.Element;
