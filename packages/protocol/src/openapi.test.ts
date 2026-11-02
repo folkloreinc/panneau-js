@@ -54,6 +54,19 @@ describe('OpenAPI document', () => {
         );
     });
 
+    it('answers a 409 when a copy conflicts with another item', () => {
+        const duplicate = (
+            document.paths as Record<
+                string,
+                { post?: { responses?: Record<string, { description?: string }> } }
+            >
+        )['/resources/{resource}/{id}/duplicate'];
+        expect(Object.keys(duplicate?.post?.responses ?? {})).toEqual(
+            expect.arrayContaining(['201', '403', '404', '409']),
+        );
+        expect(duplicate?.post?.responses?.['409']?.description).toContain('unique value');
+    });
+
     it("answers a 422 for a list cursor it can't read", () => {
         const list = (document.paths as Record<string, { get?: { responses?: object } }>)[
             '/resources/{resource}'

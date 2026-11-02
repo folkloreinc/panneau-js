@@ -377,17 +377,17 @@ All paths are relative to `api.baseUrl`.
 
 ### Resources
 
-| Operation   | Request                                                                                                          |
-| ----------- | ---------------------------------------------------------------------------------------------------------------- |
-| List        | `GET /resources/{resource}`                                                                                      |
-| Show        | `GET /resources/{resource}/{id}`                                                                                 |
-| Create      | `POST /resources/{resource}`                                                                                     |
-| Update      | `PATCH /resources/{resource}/{id}` (partial, with `If-Match`)                                                    |
-| Delete      | `DELETE /resources/{resource}/{id}`                                                                              |
-| Duplicate   | `POST /resources/{resource}/{id}/duplicate`: `201` with the copy (`{ "data": Item }`), for `abilities.duplicate` |
-| Action      | `POST /resources/{resource}/actions/{action}` (see [Actions](#actions-1))                                        |
-| Inline edit | `PATCH /resources/{resource}/{id}` with a single field                                                           |
-| Check       | `POST /resources/{resource}/fields/{field}/check` (see [Checking a field](#checking-a-field))                    |
+| Operation   | Request                                                                                                                                                           |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| List        | `GET /resources/{resource}`                                                                                                                                       |
+| Show        | `GET /resources/{resource}/{id}`                                                                                                                                  |
+| Create      | `POST /resources/{resource}`                                                                                                                                      |
+| Update      | `PATCH /resources/{resource}/{id}` (partial, with `If-Match`)                                                                                                     |
+| Delete      | `DELETE /resources/{resource}/{id}`                                                                                                                               |
+| Duplicate   | `POST /resources/{resource}/{id}/duplicate`: `201` with the copy (`{ "data": Item }`), for `abilities.duplicate`; `409` when the copy conflicts with another item |
+| Action      | `POST /resources/{resource}/actions/{action}` (see [Actions](#actions-1))                                                                                         |
+| Inline edit | `PATCH /resources/{resource}/{id}` with a single field                                                                                                            |
+| Check       | `POST /resources/{resource}/fields/{field}/check` (see [Checking a field](#checking-a-field))                                                                     |
 
 **List query parameters:**
 

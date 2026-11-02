@@ -223,6 +223,11 @@ export function createOpenApiDocument(): JsonObject {
                     responses: {
                         201: ok('The copy, a new item.', ref('ItemResponse'), etag),
                         ...problems(401, 403, 404),
+                        409: {
+                            description:
+                                'The copy conflicts with another item, such as a unique value.',
+                            content: { [PROBLEM_CONTENT_TYPE]: { schema: ref('Problem') } },
+                        },
                     },
                 },
             },

@@ -48,7 +48,7 @@ An item shows its actions on four surfaces: **the buttons of its row**, **the me
 ### Running `duplicate` and `delete`
 
 - **`delete` is the built-in `delete` action** of [0017](0017-actions.md): `POST /resources/{resource}/actions/delete` with the selection, after a confirmation, for one item or a selection. The backend answers its dry runs, so that "Select all" says how many items it will skip. `DELETE /resources/{resource}/{id}` stays the deletion of the API.
-- **`duplicate` is `POST /resources/{resource}/{id}/duplicate`,** without a body. It answers `201` with the copy, a new item (`{ "data": Item }`, with its `ETag`), or a `403` or `404` problem. The client then opens the copy in its form, or in its panel when the copy can't be updated, and refreshes the lists. A form with unsaved changes asks first. `duplicate()` of the data adapter is optional.
+- **`duplicate` is `POST /resources/{resource}/{id}/duplicate`,** without a body. It answers `201` with the copy, a new item (`{ "data": Item }`, with its `ETag`), or a `403` or `404` problem, or a `409` problem when the copy conflicts with another item (a unique value the backend can't make unique). The client shows the problem's message. The client then opens the copy in its form, or in its panel when the copy can't be updated, and refreshes the lists. A form with unsaved changes asks first. `duplicate()` of the data adapter is optional.
 
 ### What opens an item
 
