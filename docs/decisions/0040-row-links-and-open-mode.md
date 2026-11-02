@@ -26,21 +26,25 @@ For some resources (orders, users), the panel adds nothing: their users want the
 
     - Without `url` or `route`, the client resolves them to its own routes: `edit` to the item's edit form, `show` to the item (its panel, or its form, see below).
     - With a `url` or a `route`, they go there, as any link: a project can still replace them.
-    - `label` and `icon` are optional for these two ids only: the client labels them in its locale ("Edit", "View"; "Modifier", "Voir" in French) and gives them their icons (a pencil, an eye). A label or an icon given by the backend wins.
-    - The ids `show` and `edit` are reserved for `link` actions: a definition with `{ "id": "edit", "kind": "server" }` is invalid.
+    - `label` is optional for these two ids only: the client labels them in its locale ("Edit", "View"; "Modifier", "Voir" in French). A label given by the backend wins. As for any built-in action, the client also gives them an icon when they name none (a pencil, an eye).
+    - The ids `show` and `edit` are reserved for `link` actions: a definition with `{ "id": "edit", "kind": "server" }` is invalid. The generated JSON Schema checks it, and the label of every other action, as the Zod schemas do.
 
-- **Placement:** without `placement`, they are in the rows (`row`), as in v4. They can be placed in `menu` (the overflow menu of a row) or `form`. `edit` is never shown in the edit form, which it opens.
-- **Abilities** ([0011](0011-permissions.md)): `edit` is hidden on an item that can't be updated (`abilities.update: false`), and `show` on an item that can't be viewed (`abilities.view: false`). As for every link, `abilities.edit: false` or `abilities.show: false` hides them too, and without abilities they are shown and the backend decides.
-- **The panel** ([0028](0028-item-panel.md)) keeps its own link to edit the item, and doesn't repeat `show` and `edit` among its links. When `edit` has a `url`, the panel's link goes there.
-- **No implicit actions.** A resource that declares no action gets none: the client adds no `edit` button by itself. The defaults belong to the backend, which writes the definition ([0004](0004-definitions-are-data.md)): `laravel-panneau` declares `edit` on a resource that doesn't list its actions, and its migration tools turn the `show`, `edit` and `delete` buttons of v4 into the same declarations. A definition written before this decision renders as it did.
+- **Placement:** without `placement`, the links that the client resolves are in the rows (`row`), as in v4. They can be placed in `menu` (the overflow menu of a row) or `form`. With a `url` or a `route`, they keep the placements of any item action (rows and forms). `edit` is never shown in the edit form, which it opens.
+- **Abilities** ([0011](0011-permissions.md)): `edit` is hidden on an item that can't be updated (`abilities.update: false`), and `show` on an item that can't be viewed (`abilities.view: false`), with or without a `url`. As for every link, `abilities.edit: false` or `abilities.show: false` hides them too.
+    - **A backend that declares `edit` sends `abilities.update` on every item, and one that declares `show` sends `abilities.view`.** The protocol requires it and the conformance kit checks it, so that the UI never shows a link that fails with `403`.
+    - A client that gets an item without them shows the links, and the backend decides, as for any ability.
+- **The panel** ([0028](0028-item-panel.md)) keeps its own link to edit the item, and doesn't repeat `edit` among its links, nor the `show` that the client resolves, which is the panel. When `edit` has a `url` or a `route`, the panel's link goes there, in a new tab for a URL outside the admin. A `show` with a `url` (the item on the site) stays among its links.
+- **No implicit actions.** A resource that declares no action gets none: the client adds no `edit` button by itself. The defaults belong to the backend, which writes the definition ([0004](0004-definitions-are-data.md)): `laravel-panneau` declares `edit` on a resource that doesn't list its actions, and its migration tools turn the `show`, `edit` and `delete` buttons of v4 into the same declarations.
+- **Definitions written before this decision** render as they did, except for one change: an `edit` or a `show` declared with a `url` is now hidden on an item with `abilities.update: false` or `abilities.view: false`. Before, only `abilities.edit: false` or `abilities.show: false` hid them.
 
 ### What opens an item
 
 - **`open` on a resource** says where an item's title goes, in its list and wherever the app links to the item:
     - `"panel"`, the default: the show route, which opens the item's details in a panel next to the list ([0028](0028-item-panel.md));
     - `"edit"`: the edit form of the item.
-- **With `"open": "edit"`, the show route redirects to the edit route** (replacing the entry of the history), so a link to the item, shared or bookmarked, still opens it. The panel is never shown for that resource, and the built-in `show` link is left out, since it would go to the same place as `edit`.
-- An item that can't be updated still opens in its form, which the backend answers read-only or with a `403`, as for a link to its edit route.
+- **With `"open": "edit"`, the show route redirects to the edit route** (replacing the entry of the history, and keeping its hash), so a link to the item, shared or bookmarked, still opens it. The built-in `show` link is left out, since it would go to the same place as `edit`.
+- **An item that can't be updated** (`abilities.update: false`) opens in the panel, as with `"panel"`: its title links to the show route, which doesn't redirect it. The client has no read-only form, and the item's form would fail on save.
+- The show route still needs the resource to be listed (`abilities.viewAny`): it redirects only from the list's page.
 
 ## Not decided here
 
@@ -50,6 +54,6 @@ For some resources (orders, users), the panel adds nothing: their users want the
 ## Consequences
 
 - The protocol's `Action` has an optional `label` (required except for `show` and `edit`) and a resource has `open`. The JSON Schema and the OpenAPI document follow. A backend that already declares `edit` with a `url` is unchanged.
-- The conformance kit checks that the items of a resource that declares `edit` say whether they can be updated (`abilities.update`), so the UI never shows a button that would fail with `403`.
-- `@panneau/core`'s `isActionAllowedOn()` and `getActionPlacements()` know the built-in links. `@panneau/lists` labels them (`getActionLabel()`), and `ListView` takes `getLinkHref` to resolve them: a list without it (outside the app) leaves out links it can't resolve.
+- The conformance kit checks that the items of a resource that declares `edit` or `show` have `abilities.update` or `abilities.view` (`list.link-abilities`).
+- `@panneau/core`'s `isActionAllowedOn()` and `getActionPlacements()` know the built-in links. `@panneau/intl` labels them (`getActionLabel()`), and `ListView` takes `getLinkHref` to resolve them: a list without it (outside the app) leaves out links it can't resolve.
 - `laravel-panneau` needs `EditAction` and `ShowAction` classes, `open()` on `Resource`, and its Rector rule and upgrade check to keep the v4 buttons of `index()` as actions instead of dropping them.

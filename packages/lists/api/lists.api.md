@@ -13,7 +13,6 @@ import type { Field } from '@panneau/protocol';
 import type { Filter } from '@panneau/protocol';
 import type { FilterValue } from '@panneau/protocol';
 import { IconComponent } from '@panneau/ui';
-import type { IntlShape } from 'react-intl';
 import { JSX } from 'react';
 import type { List as List_2 } from '@panneau/core';
 import { ListOptions } from '@panneau/core';
@@ -150,9 +149,6 @@ export function getActionHref(action: Action, item?: ListItem): string | null;
 
 // @public
 export function getActionIcon(action: Action, icons?: ActionIcons): IconComponent | undefined;
-
-// @public
-export function getActionLabel(action: Action, intl: Pick<IntlShape, 'formatMessage'>): string;
 
 // @public
 export function getLocalizedValue(value: unknown, locale: string): unknown;

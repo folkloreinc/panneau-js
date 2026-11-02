@@ -1,6 +1,7 @@
 import { type ReactNode, useEffect, useEffectEvent, useRef, useState } from 'react';
 
 import { usePlugins } from '@panneau/core';
+import { getActionLabel } from '@panneau/intl';
 import type { ActionResult, ActionRun, RouteReference } from '@panneau/protocol';
 import { usePanneauIntl, useToast } from '@panneau/ui';
 
@@ -9,7 +10,7 @@ import { ResultsDialog } from './ResultsDialog';
 import { ActionRunnerContext, type ActionRunnerContextValue } from './context';
 import { describeResult } from './describe';
 import { messages } from './messages';
-import { buildActionRequest, getActionLabel, getLinkTarget, isFinished } from './request';
+import { buildActionRequest, getLinkTarget, isFinished } from './request';
 import type {
     ActionAdapter,
     ActionDownload,
@@ -107,7 +108,7 @@ export function ActionRunnerProvider({
 
     const finish = async (resource: string, target: ActionTarget, result: ActionResult) => {
         await onResult?.(result, { resource, target });
-        const content = describeResult(result, getActionLabel(target.action), intl);
+        const content = describeResult(result, getActionLabel(target.action, intl), intl);
         const hasDetails = (result.results ?? []).length > 0;
         const download = result.download ?? null;
         if (download !== null) {
@@ -120,7 +121,7 @@ export function ActionRunnerProvider({
                       action: {
                           label: intl.formatMessage(messages.details),
                           onAction: () =>
-                              setDetails({ label: getActionLabel(target.action), result }),
+                              setDetails({ label: getActionLabel(target.action, intl), result }),
                       },
                   }
                 : download !== null
@@ -144,7 +145,9 @@ export function ActionRunnerProvider({
             { run, resource, target },
         ]);
         toasts.show({
-            title: intl.formatMessage(messages.queued, { action: getActionLabel(target.action) }),
+            title: intl.formatMessage(messages.queued, {
+                action: getActionLabel(target.action, intl),
+            }),
             description: intl.formatMessage(messages.queuedDescription),
             tone: 'info',
         });
@@ -161,19 +164,21 @@ export function ActionRunnerProvider({
         } else if (run.status === 'cancelled') {
             toasts.show({
                 title: intl.formatMessage(messages.cancelled, {
-                    action: getActionLabel(target.action),
+                    action: getActionLabel(target.action, intl),
                 }),
             });
         } else if (run.status === 'failed') {
             toasts.show({
                 title: intl.formatMessage(messages.failed, {
-                    action: getActionLabel(target.action),
+                    action: getActionLabel(target.action, intl),
                 }),
                 tone: 'danger',
             });
         } else {
             toasts.show({
-                title: intl.formatMessage(messages.done, { action: getActionLabel(target.action) }),
+                title: intl.formatMessage(messages.done, {
+                    action: getActionLabel(target.action, intl),
+                }),
                 tone: 'success',
             });
         }

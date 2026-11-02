@@ -4,15 +4,15 @@ import { Link } from 'react-aria-components';
 
 import type { ResolvedResource } from '@panneau/core';
 import { useResourceItem } from '@panneau/data/query';
-import { appMessages } from '@panneau/intl';
+import { appMessages, getActionLabel } from '@panneau/intl';
 import {
     ItemDetails,
     type ListColumn,
     getActionHref,
-    getActionLabel,
+    hasOwnTarget,
     isAllowedOn,
 } from '@panneau/lists';
-import { isBuiltInLink } from '@panneau/protocol/runtime';
+import type { Action, Item, RouteReference } from '@panneau/protocol';
 import {
     Alert,
     Button,
@@ -36,6 +36,11 @@ import styles from './ItemPanel.module.css';
 import { ItemPreview, PreviewSkeleton } from './ItemPreview';
 import { getItemTitle } from './itemTitle';
 
+/** Whether a link leaves the admin: it opens in a new tab. */
+function isExternal(href: string): boolean {
+    return /^https?:\/\//.test(href);
+}
+
 /** Fields that hold other fields, shown in the form rather than in the details. */
 const NESTED_TYPES = new Set(['group', 'repeater']);
 
@@ -49,6 +54,8 @@ export interface ItemPanelProps {
     id: string;
     /** Where closing the panel goes: the list, with its query. */
     closeHref: string;
+    /** The path of a route reference of the definition, for `link` actions with a `route`. */
+    resolveRoute?: (reference: RouteReference) => string | null;
 }
 
 /**
@@ -57,7 +64,14 @@ export interface ItemPanelProps {
  * A resource with a `features.preview` gets a preview tab first: a component of a plugin, or its
  * page on the site. The panel can be widened, for previews, and remembers it. Escape closes it.
  */
-export function ItemPanel({ resolved, basePath, locale, id, closeHref }: ItemPanelProps) {
+export function ItemPanel({
+    resolved,
+    basePath,
+    locale,
+    id,
+    closeHref,
+    resolveRoute,
+}: ItemPanelProps) {
     const intl = usePanneauIntl();
     const { resource } = resolved;
     const { data: item, isError, refetch } = useResourceItem(resource.id, id);
@@ -85,21 +99,30 @@ export function ItemPanel({ resolved, basePath, locale, id, closeHref }: ItemPan
             label: field.label ?? field.name,
             display: field.display ?? field.type,
         }));
-    // The panel has its own link to edit the item, and is what `show` opens: it doesn't repeat them.
+    // The link of a `link` action: its URL, or its route in the definition.
+    const hrefOf = (action: Action, current: Item): string | null =>
+        getActionHref(action, current) ??
+        (action.url === undefined && action.route !== undefined
+            ? (resolveRoute?.({ route: action.route, params: { id: current.id } }) ?? null)
+            : null);
+    // The panel has its own link to edit the item, and is what the built-in `show` opens: it
+    // doesn't repeat them.
     const links = (resource.actions ?? []).flatMap((action) => {
         if (
             item === undefined ||
-            isBuiltInLink(action.id) ||
+            action.kind !== 'link' ||
+            action.id === 'edit' ||
+            !hasOwnTarget(action) ||
             !action.scope.includes('item') ||
             !isAllowedOn(action, item)
         ) {
             return [];
         }
-        const href = getActionHref(action, item);
+        const href = hrefOf(action, item);
         return href !== null ? [{ action, href }] : [];
     });
 
-    // The edit link: the declared `edit` with a URL goes there, and its abilities hide it.
+    // The edit link: a declared `edit` with a URL or a route goes there, and its abilities hide it.
     const edit = (resource.actions ?? []).find(
         (action) => action.id === 'edit' && action.kind === 'link',
     );
@@ -107,8 +130,9 @@ export function ItemPanel({ resolved, basePath, locale, id, closeHref }: ItemPan
         item !== undefined &&
         (edit !== undefined ? isAllowedOn(edit, item) : item.abilities.update !== false);
     const editHref =
-        (edit !== undefined && item !== undefined ? getActionHref(edit, item) : null) ??
+        (edit !== undefined && item !== undefined ? hrefOf(edit, item) : null) ??
         routePath({ name: 'resource.edit', resource: resource.id, id }, basePath);
+    const editIsExternal = isExternal(editHref);
 
     const onKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'Escape' && !event.defaultPrevented) {
@@ -204,13 +228,18 @@ export function ItemPanel({ resolved, basePath, locale, id, closeHref }: ItemPan
             {item !== undefined ? (
                 <div className={styles.actions}>
                     {canEdit ? (
-                        <Link href={editHref} className={styles.action}>
-                            <Icon icon={Pencil} size="sm" />
+                        <Link
+                            href={editHref}
+                            target={editIsExternal ? '_blank' : undefined}
+                            rel={editIsExternal ? 'noopener noreferrer' : undefined}
+                            className={styles.action}
+                        >
+                            <Icon icon={editIsExternal ? ExternalLink : Pencil} size="sm" />
                             {intl.formatMessage(appMessages.editItem)}
                         </Link>
                     ) : null}
                     {links.map(({ action, href }) => {
-                        const external = /^https?:\/\//.test(href);
+                        const external = isExternal(href);
                         return (
                             <Link
                                 key={action.id}

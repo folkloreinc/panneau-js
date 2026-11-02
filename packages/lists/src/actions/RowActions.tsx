@@ -1,12 +1,12 @@
 import { Ellipsis } from 'lucide-react';
 
+import { getActionLabel } from '@panneau/intl';
 import type { Action } from '@panneau/protocol';
 import { IconButton, Menu, MenuItem, MenuTrigger, usePanneauIntl } from '@panneau/ui';
 
 import { messages } from '../messages';
 import { ActionButton } from './ActionButton';
 import styles from './Actions.module.css';
-import { getActionLabel } from './actions';
 import { type ActionIcons, getActionIcon } from './icons';
 
 export interface RowActionsProps {

@@ -70,7 +70,7 @@ export function ResourceFormPage({ definition, resolved, basePath, id }: Resourc
                 actions={formActions}
                 item={item}
                 getLinkHref={(action, current) =>
-                    getBuiltInLinkPath(resource, action, current.id, basePath)
+                    getBuiltInLinkPath(resource, action, current, basePath)
                 }
                 onRun={(_action, outcome) => {
                     // An action that removed the item (`delete`) leaves its page: back to the list,

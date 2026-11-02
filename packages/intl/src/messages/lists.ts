@@ -77,8 +77,6 @@ export const listsMessages = {
         id: 'panneau.lists.actionOnItem',
         defaultMessage: '{action}: {item}',
     }),
-    showAction: defineMessage({ id: 'panneau.lists.showAction', defaultMessage: 'View' }),
-    editAction: defineMessage({ id: 'panneau.lists.editAction', defaultMessage: 'Edit' }),
     itemActions: defineMessage<{ item: string }>({
         id: 'panneau.lists.itemActions',
         defaultMessage: 'Actions for {item}',

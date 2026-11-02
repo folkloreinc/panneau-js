@@ -147,7 +147,8 @@ describe('resolveList', () => {
         const { actions } = resolveList(getResource('pages'));
         const ids = (list: Action[]) => list.map((action) => action.id);
         expect(ids(actions.row)).toEqual(['edit', 'publish']);
-        expect(ids(actions.form)).toEqual(['publish']);
+        // `edit` has a URL: it keeps the placements of an item action
+        expect(ids(actions.form)).toEqual(['edit', 'publish']);
         expect(ids(actions.toolbar)).toEqual(['publish']);
         expect(ids(actions.menu)).toEqual(['export']);
     });
@@ -211,6 +212,10 @@ describe('abilities', () => {
         expect(
             getActionPlacements({ id: 'edit', kind: 'link', scope: ['item'], placement: ['menu'] }),
         ).toEqual(['menu']);
+        // With a URL, a link keeps the placements it had before decision 0040
+        expect(
+            getActionPlacements({ id: 'show', kind: 'link', url: '/s/{id}', scope: ['item'] }),
+        ).toEqual(['row', 'form']);
     });
 });
 

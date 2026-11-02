@@ -1,11 +1,11 @@
 import type { IntlShape } from 'react-intl';
 
+import { getActionLabel } from '@panneau/intl';
 import { Button, Dialog, Spinner, usePanneauIntl } from '@panneau/ui';
 
 import { messages } from '../messages';
 import type { ListActionEvent, ListActionPreview } from '../types';
 import styles from './Actions.module.css';
-import { getActionLabel } from './actions';
 
 /** Formats an ICU message of the definition (`{count, plural, …}`) in the locale. */
 function formatDefinitionMessage(

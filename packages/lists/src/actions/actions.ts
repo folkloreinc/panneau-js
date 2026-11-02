@@ -1,7 +1,4 @@
-import type { IntlShape } from 'react-intl';
-
 import { canRunAction, groupActions, isActionAllowedOn } from '@panneau/core';
-import { listsMessages } from '@panneau/intl';
 import type { Action, ActionPlacement } from '@panneau/protocol';
 import { isBuiltInLink } from '@panneau/protocol/runtime';
 
@@ -42,23 +39,6 @@ export function isAllowedOn(action: Action, item: ListItem): boolean {
     return abilities === undefined
         ? canRunAction(action)
         : isActionAllowedOn(action, { abilities });
-}
-
-/**
- * The label of an action: its `label`, or, for the built-in links `show` and `edit` that have
- * none, the label of the client in its locale (decision 0040).
- */
-export function getActionLabel(action: Action, intl: Pick<IntlShape, 'formatMessage'>): string {
-    if (action.label !== undefined) {
-        return action.label;
-    }
-    if (action.id === 'show') {
-        return intl.formatMessage(listsMessages.showAction);
-    }
-    if (action.id === 'edit') {
-        return intl.formatMessage(listsMessages.editAction);
-    }
-    return action.id;
 }
 
 /**

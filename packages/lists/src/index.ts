@@ -1,7 +1,6 @@
 export {
     type ListActions,
     getActionHref,
-    getActionLabel,
     groupListActions,
     hasOwnTarget,
     isAllowedOn,

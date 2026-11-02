@@ -1,4 +1,4 @@
-import type { Action, ActionRequest, ActionResult, RouteReference } from '@panneau/protocol';
+import type { ActionRequest, ActionResult, RouteReference } from '@panneau/protocol';
 
 import type { ActionTarget } from './types';
 
@@ -14,14 +14,6 @@ export function buildActionRequest(
         return { selection: target.selection, values };
     }
     return { values };
-}
-
-/**
- * The label of an action, in results and runs. Only the built-in links `show` and `edit` may have
- * none (decision 0040), and they navigate rather than run: their id is enough.
- */
-export function getActionLabel(action: Action): string {
-    return action.label ?? action.id;
 }
 
 /** Where a `link` action goes: its `url` with `{id}` replaced, or its `route` with the item's id. */

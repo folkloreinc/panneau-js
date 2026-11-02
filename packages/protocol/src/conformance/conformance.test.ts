@@ -262,7 +262,7 @@ describe('runConformance', () => {
         });
     });
 
-    it('reports items of a resource with `edit` that do not say whether they can be updated', async () => {
+    it('reports items of a resource with `edit` or `show` that do not say whether they can be updated or viewed', async () => {
         const backend = createBackend();
         // A backend that only lists the abilities of its custom actions.
         const partial = async (input: string, init?: RequestInit) => {
@@ -281,24 +281,26 @@ describe('runConformance', () => {
             baseUrl: 'http://panneau.test/panneau/api',
             fetch: partial,
         });
-        const check = report.checks.find((candidate) => candidate.id === 'list.edit-ability');
+        const check = report.checks.find((candidate) => candidate.id === 'list.link-abilities');
         expect(check?.status).toBe('failed');
-        expect(check?.issues[0]).toContain('has no `abilities.update`');
+        expect(check?.issues[0]).toContain('has no `abilities.update`, which `edit` needs');
     });
 
-    it('skips the edit ability check when the resource has no `edit` link', async () => {
+    it('skips the link abilities check when the resource has no `edit` or `show` link', async () => {
         const definition = createDefinition();
         definition.resources.forEach((resource) => {
-            resource.actions = (resource.actions ?? []).filter((action) => action.id !== 'edit');
+            resource.actions = (resource.actions ?? []).filter(
+                (action) => action.id !== 'edit' && action.id !== 'show',
+            );
         });
         const backend = createMockBackend({ definition });
         const report = await runConformance({
             baseUrl: 'http://panneau.test/panneau/api',
             fetch: backend.fetch,
         });
-        expect(report.checks.find((check) => check.id === 'list.edit-ability')).toMatchObject({
+        expect(report.checks.find((check) => check.id === 'list.link-abilities')).toMatchObject({
             status: 'skipped',
-            issues: ['The resource declares no `edit` link.'],
+            issues: ['The resource declares no `edit` or `show` link.'],
         });
     });
 });

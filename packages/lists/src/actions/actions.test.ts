@@ -1,16 +1,7 @@
-import { createIntl } from 'react-intl';
 import { describe, expect, it } from 'vitest';
 
-import { fr } from '@panneau/intl';
-
 import { edit, editLink, exportAction, publish, remove, showLink } from '../__fixtures__/pages';
-import {
-    getActionHref,
-    getActionLabel,
-    groupListActions,
-    hasOwnTarget,
-    isAllowedOn,
-} from './actions';
+import { getActionHref, groupListActions, hasOwnTarget, isAllowedOn } from './actions';
 
 describe('groupListActions', () => {
     it('places a list of actions by placement, or by scope', () => {
@@ -55,19 +46,6 @@ describe('getActionHref', () => {
         expect(
             getActionHref({ ...edit, url: undefined, route: 'pages.edit' }, { id: '1' }),
         ).toBeNull();
-    });
-});
-
-describe('getActionLabel', () => {
-    it('labels the built-in links in the locale, unless they have a label', () => {
-        const en = createIntl({ locale: 'en' });
-        const french = createIntl({ locale: 'fr', messages: fr });
-        expect(getActionLabel(editLink, en)).toBe('Edit');
-        expect(getActionLabel(showLink, en)).toBe('View');
-        expect(getActionLabel(editLink, french)).toBe('Modifier');
-        expect(getActionLabel(showLink, french)).toBe('Voir');
-        expect(getActionLabel({ ...editLink, label: 'Open' }, french)).toBe('Open');
-        expect(getActionLabel(publish, french)).toBe('Publish');
     });
 });
 

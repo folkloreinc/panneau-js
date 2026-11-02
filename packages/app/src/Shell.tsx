@@ -7,13 +7,12 @@ import {
     LeaveGuardsProvider,
     createLeaveGuards,
     findResource,
-    getOpenMode,
     resolveResource,
     usePlugins,
 } from '@panneau/core';
 import { invalidateActionResult, useDataAdapter } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
-import type { Definition, RouteReference } from '@panneau/protocol';
+import type { Definition } from '@panneau/protocol';
 import { Alert, usePanneauIntl, useToast } from '@panneau/ui';
 
 import { DocumentTitle } from './documentTitle';
@@ -22,6 +21,7 @@ import { HomePage } from './pages/HomePage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { ResourceFormPage } from './pages/ResourceFormPage';
 import { ResourceListPage } from './pages/ResourceListPage';
+import { resolveRoute } from './routeReference';
 import { type AppRoute, matchRoute, routePath } from './routes';
 import { AppLayout } from './shell/AppLayout';
 import type { ColorSchemePreference } from './shell/Sidebar';
@@ -33,48 +33,6 @@ export interface ShellProps {
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
     /** Logs the user out. Without it, the shell offers no logout. */
     onLogOut?: () => Promise<void> | void;
-}
-
-/**
- * The path of a route reference, with its parameters filled in: a named route of the definition
- * (`routes`), or else a page of the definition, with its `params` (decision 0038).
- */
-function resolveRoute(
-    definition: Definition,
-    basePath: string,
-    { route, params = {} }: RouteReference,
-) {
-    const path = definition.routes?.[route];
-    if (path !== undefined) {
-        return path.replace(/\{(\w+)\}/g, (match, name: string) =>
-            params[name] !== undefined ? encodeURIComponent(String(params[name])) : match,
-        );
-    }
-    const page = definition.pages?.[route];
-    if (page === undefined) {
-        console.warn(`[panneau] The definition has no route or page "${route}".`);
-        return null;
-    }
-    const names = page.params ?? [];
-    const missing = names.filter((name) => params[name] === undefined || params[name] === null);
-    if (missing.length > 0) {
-        console.warn(
-            `[panneau] The page "${route}" needs ${missing.map((name) => `"${name}"`).join(', ')}.`,
-        );
-        return null;
-    }
-    return routePath(
-        { name: 'page', page: route, segments: names.map((name) => String(params[name])) },
-        basePath,
-    );
-}
-
-/** Replaces the current entry of the history with another path of the app. */
-function Redirect({ to }: { to: string }) {
-    useEffect(() => {
-        navigate(to, { replace: true });
-    }, [to]);
-    return null;
 }
 
 interface PageProps {
@@ -159,17 +117,6 @@ function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) 
                 return notFound;
             }
             const resolved = resolveResource(resource);
-            if (route.name === 'resource.show' && getOpenMode(resource) === 'edit') {
-                // Its items open in their form (decision 0040): a link to one still opens it.
-                return (
-                    <Redirect
-                        to={routePath(
-                            { name: 'resource.edit', resource: resource.id, id: route.id },
-                            basePath,
-                        )}
-                    />
-                );
-            }
             if (route.name === 'resource.index' || route.name === 'resource.show') {
                 // The show route is the list with the item's details in a panel: the same page,
                 // so the list keeps its state while the panel opens, closes or changes item.
@@ -180,6 +127,7 @@ function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) 
                         basePath={basePath}
                         locale={definition.locale}
                         selectedId={route.name === 'resource.show' ? route.id : null}
+                        resolveRoute={(reference) => resolveRoute(definition, basePath, reference)}
                     />
                 ) : (
                     notFound

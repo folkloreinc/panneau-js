@@ -11,7 +11,12 @@ import { createMockBackend } from '@panneau/protocol/mock';
 import { Panneau } from './Panneau';
 import { createBootConfig, createDefinition } from './__fixtures__/definition';
 
-function renderApp(overrides: Partial<DefinitionInput> = {}, plugins: PanneauPlugin[] = []) {
+function renderApp(
+    overrides: Partial<DefinitionInput> = {},
+    plugins: PanneauPlugin[] = [],
+    // Changes the items of the backend before the app fetches them
+    prepare?: (backend: ReturnType<typeof createMockBackend>) => void,
+) {
     const definition = createDefinition({
         menus: { main: [{ type: 'resources' }, { type: 'link', label: 'Site', url: '/' }] },
         ...overrides,
@@ -26,6 +31,7 @@ function renderApp(overrides: Partial<DefinitionInput> = {}, plugins: PanneauPlu
             authors: [{ id: '1', name: 'Ada' }],
         },
     });
+    prepare?.(backend);
     const result = validateBootConfig(createBootConfig({ definition }));
     if (!result.success) {
         throw new Error(JSON.stringify(result.issues));
@@ -424,8 +430,78 @@ describe('the app shell', () => {
         expect(await screen.findByRole('textbox', { name: 'Name' })).toHaveValue('Ada');
     });
 
+    it('opens an item that can’t be updated in its panel, even with `"open": "edit"`', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/authors');
+        renderApp(
+            {
+                resources: [
+                    {
+                        id: 'authors',
+                        label: { singular: 'author', plural: 'authors' },
+                        itemTitle: 'name',
+                        open: 'edit',
+                        fields: [{ name: 'name', type: 'text', label: 'Name' }],
+                        actions: [{ id: 'edit', kind: 'link', scope: ['item'] }],
+                    },
+                ],
+            },
+            [],
+            (backend) => {
+                const [ada] = backend.items('authors');
+                if (ada !== undefined) {
+                    ada.abilities = { ...ada.abilities, update: false };
+                }
+            },
+        );
+        const table = await screen.findByRole('table', { name: 'Authors' });
+        const title = await within(table).findByRole('link', { name: 'Ada' });
+        expect(title).toHaveAttribute('href', '/panneau/resources/authors/1');
+        expect(within(table).queryByRole('link', { name: 'Edit: Ada' })).toBeNull();
+
+        await user.click(title);
+        const panel = await screen.findByRole('region', { name: 'Details of the author' });
+        expect(await within(panel).findByRole('heading', { name: 'Ada' })).toBeInTheDocument();
+        // The item can't be updated: no redirect to its form, and no link to it
+        expect(window.location.pathname).toBe('/panneau/resources/authors/1');
+        expect(within(panel).queryByRole('link', { name: 'Edit' })).toBeNull();
+    });
+
+    it('goes to the route of a declared `edit` from the panel, as its rows do', async () => {
+        window.history.replaceState(null, '', '/panneau/resources/pages/1');
+        renderApp({
+            routes: { editor: '/editor/{id}' },
+            resources: [
+                {
+                    id: 'pages',
+                    label: { singular: 'page', plural: 'pages' },
+                    fields: [{ name: 'title', type: 'text' }],
+                    actions: [
+                        { id: 'edit', kind: 'link', route: 'editor', scope: ['item'] },
+                        {
+                            id: 'site',
+                            label: 'On the site',
+                            kind: 'link',
+                            url: 'https://example.com/{id}',
+                            scope: ['item'],
+                        },
+                    ],
+                },
+            ],
+        });
+        const panel = await screen.findByRole('region', { name: 'Details of the page' });
+        expect(await within(panel).findByRole('link', { name: 'Edit' })).toHaveAttribute(
+            'href',
+            '/editor/1',
+        );
+        expect(within(panel).getByRole('link', { name: 'On the site' })).toHaveAttribute(
+            'target',
+            '_blank',
+        );
+    });
+
     it('redirects the show route of a resource that opens items in their form', async () => {
-        window.history.replaceState(null, '', '/panneau/resources/authors/1');
+        window.history.replaceState(null, '', '/panneau/resources/authors/1#name');
         renderApp({
             resources: [
                 {
@@ -439,8 +515,26 @@ describe('the app shell', () => {
         await waitFor(() =>
             expect(window.location.pathname).toBe('/panneau/resources/authors/1/edit'),
         );
+        expect(window.location.hash).toBe('#name');
         expect(await screen.findByRole('textbox', { name: 'Name' })).toHaveValue('Ada');
         expect(screen.queryByRole('region', { name: 'Details of the author' })).toBeNull();
+    });
+
+    it('keeps the show route of a resource that the user can’t list', async () => {
+        window.history.replaceState(null, '', '/panneau/resources/authors/1');
+        renderApp({
+            resources: [
+                {
+                    id: 'authors',
+                    label: { singular: 'author', plural: 'authors' },
+                    open: 'edit',
+                    abilities: { viewAny: false },
+                    fields: [{ name: 'name', type: 'text', label: 'Name' }],
+                },
+            ],
+        });
+        expect(await screen.findByRole('heading', { name: /not found/i })).toBeInTheDocument();
+        expect(window.location.pathname).toBe('/panneau/resources/authors/1');
     });
 
     it('pages a list with cursors, back and forth, without page numbers', async () => {

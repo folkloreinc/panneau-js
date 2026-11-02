@@ -1,3 +1,4 @@
+export { getActionLabel } from './actionLabel';
 export { type MessageCatalog, en, fr, getDefaultMessages, panneauMessages } from './catalogs';
 export { type PanneauMessage, type PanneauMessageValues } from './message';
 export { actionsMessages } from './messages/actions';

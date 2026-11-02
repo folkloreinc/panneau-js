@@ -19,8 +19,8 @@ export const Action: z.ZodObject<{
     icon: z.ZodOptional<z.ZodString>;
     kind: z.ZodDefault<z.ZodEnum<{
         link: "link";
-        server: "server";
         client: "client";
+        server: "server";
     }>>;
     scope: z.ZodArray<z.ZodEnum<{
         resource: "resource";
@@ -616,7 +616,7 @@ export function createOpenApiDocument(): JsonObject;
 // @public
 export function createSchemaRegistry(): z.core.$ZodRegistry<{
     id: string;
-}, z.core.$ZodType<unknown, unknown, z.core.$ZodTypeInternals<unknown, unknown>>>;
+} & Record<string, unknown>, z.core.$ZodType<unknown, unknown, z.core.$ZodTypeInternals<unknown, unknown>>>;
 
 // @public
 export function createThemeJsonSchema(): JsonObject;
@@ -880,8 +880,8 @@ export const Definition: z.ZodObject<{
             icon: z.ZodOptional<z.ZodString>;
             kind: z.ZodDefault<z.ZodEnum<{
                 link: "link";
-                server: "server";
                 client: "client";
+                server: "server";
             }>>;
             scope: z.ZodArray<z.ZodEnum<{
                 resource: "resource";
@@ -2384,8 +2384,8 @@ export const namedSchemas: {
         icon: z.ZodOptional<z.ZodString>;
         kind: z.ZodDefault<z.ZodEnum<{
             link: "link";
-            server: "server";
             client: "client";
+            server: "server";
         }>>;
         scope: z.ZodArray<z.ZodEnum<{
             resource: "resource";
@@ -2812,8 +2812,8 @@ export const namedSchemas: {
             icon: z.ZodOptional<z.ZodString>;
             kind: z.ZodDefault<z.ZodEnum<{
                 link: "link";
-                server: "server";
                 client: "client";
+                server: "server";
             }>>;
             scope: z.ZodArray<z.ZodEnum<{
                 resource: "resource";
@@ -3500,8 +3500,8 @@ export const namedSchemas: {
                 icon: z.ZodOptional<z.ZodString>;
                 kind: z.ZodDefault<z.ZodEnum<{
                     link: "link";
-                    server: "server";
                     client: "client";
+                    server: "server";
                 }>>;
                 scope: z.ZodArray<z.ZodEnum<{
                     resource: "resource";
@@ -4696,8 +4696,8 @@ export const Resource: z.ZodObject<{
         icon: z.ZodOptional<z.ZodString>;
         kind: z.ZodDefault<z.ZodEnum<{
             link: "link";
-            server: "server";
             client: "client";
+            server: "server";
         }>>;
         scope: z.ZodArray<z.ZodEnum<{
             resource: "resource";

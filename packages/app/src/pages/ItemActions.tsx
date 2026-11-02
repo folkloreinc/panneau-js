@@ -2,13 +2,12 @@ import { useState } from 'react';
 import { Link } from 'react-aria-components';
 
 import { type ActionOutcome, useActionRunner } from '@panneau/actions';
-import { listsMessages } from '@panneau/intl';
+import { getActionLabel, listsMessages } from '@panneau/intl';
 import {
     ConfirmDialog,
     type ListActionEvent,
     getActionHref,
     getActionIcon,
-    getActionLabel,
     hasOwnTarget,
     isAllowedOn,
 } from '@panneau/lists';

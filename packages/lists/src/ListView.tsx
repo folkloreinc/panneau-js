@@ -2,6 +2,7 @@ import { type ReactNode, useRef, useState } from 'react';
 
 import type { List } from '@panneau/core';
 import { usePlugins } from '@panneau/core';
+import { getActionLabel } from '@panneau/intl';
 import type { Action, Field, Filter } from '@panneau/protocol';
 import { Alert, Button, Checkbox, usePanneauIntl, useToast } from '@panneau/ui';
 
@@ -13,7 +14,6 @@ import { RowActions } from './actions/RowActions';
 import {
     type ListActions,
     getActionHref,
-    getActionLabel,
     groupListActions,
     hasOwnTarget,
     hasScope,

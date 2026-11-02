@@ -49,13 +49,19 @@ export function partitionByAction(
 
 /**
  * Where an action appears when it doesn't say: rows and forms for items, the toolbar otherwise.
- * The built-in links `show` and `edit` are in rows only.
+ * The built-in links `show` and `edit` that the client resolves (without a `url` or a `route`)
+ * are in rows only.
  */
 export function getActionPlacements(action: Action): ActionPlacement[] {
     if (action.placement !== undefined) {
         return action.placement;
     }
-    if (action.kind === 'link' && isBuiltInLink(action.id)) {
+    if (
+        action.kind === 'link' &&
+        isBuiltInLink(action.id) &&
+        action.url === undefined &&
+        action.route === undefined
+    ) {
         return ['row'];
     }
     const placements = new Set<ActionPlacement>();

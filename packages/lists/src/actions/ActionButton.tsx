@@ -1,11 +1,11 @@
 import { Link } from 'react-aria-components';
 
+import { getActionLabel } from '@panneau/intl';
 import type { Action } from '@panneau/protocol';
 import { Button, Icon, usePanneauIntl } from '@panneau/ui';
 
 import { cx } from '../cx';
 import styles from './Actions.module.css';
-import { getActionLabel } from './actions';
 import { type ActionIcons, getActionIcon } from './icons';
 
 export interface ActionButtonProps {

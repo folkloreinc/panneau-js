@@ -294,27 +294,33 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
     });
 
     await run(
-        'list.edit-ability',
-        'Items of a resource with the built-in `edit` say whether they can be updated',
+        'list.link-abilities',
+        'Items of a resource with the built-in `edit` or `show` say whether they can be updated or viewed',
         async (check) => {
-            const edit = (resource as Resource | null)?.actions?.find(
-                (action) => action.id === 'edit' && action.kind === 'link',
+            // The ability each built-in link needs (decision 0040)
+            const needs = { edit: 'update', show: 'view' } as const;
+            const links = ((resource as Resource | null)?.actions ?? []).flatMap((action) =>
+                action.kind === 'link' && (action.id === 'edit' || action.id === 'show')
+                    ? [{ id: action.id, ability: needs[action.id] }]
+                    : [],
             );
             const items = firstPage as ListResponse['data'] | null;
-            if (edit === undefined) {
-                check.skip('The resource declares no `edit` link.');
+            if (links.length === 0) {
+                check.skip('The resource declares no `edit` or `show` link.');
                 return;
             }
             if (items === null || items.length === 0) {
                 check.skip('The list has no items.');
                 return;
             }
-            // The UI shows `edit` unless `update` is false: without it, it would show a link that fails.
+            // Clients show a link when the item doesn't say: it would fail with a 403.
             items.forEach((item) => {
-                check.expect(
-                    typeof item.abilities.update === 'boolean',
-                    `The item "${item.id}" has no \`abilities.update\`: the list can't tell whether to show \`edit\`.`,
-                );
+                links.forEach(({ id, ability }) => {
+                    check.expect(
+                        typeof item.abilities[ability] === 'boolean',
+                        `The item "${item.id}" has no \`abilities.${ability}\`, which \`${id}\` needs.`,
+                    );
+                });
             });
         },
     );

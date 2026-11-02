@@ -273,6 +273,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
 
     const abilitiesFor = (resource: ResourceInput) =>
         Object.fromEntries([
+            ['view', true],
             ['update', true],
             ['delete', true],
             ...(resource.actions ?? []).map((action) => [action.id, true]),

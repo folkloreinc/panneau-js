@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { isBuiltInLink } from '../constants';
 import { Abilities } from './common';
 import { Field } from './field';
+import { actionJsonRules } from './jsonRules';
 import { LayoutNode } from './layout';
 
 export const ActionScope = z.enum(['item', 'selection', 'resource']);
@@ -92,7 +93,10 @@ export const Action = z
             context.addIssue({ code: 'custom', message: 'A `client` action needs a `component`.' });
         }
     })
-    .meta({ description: 'An operation on one item, a selection, or the whole resource.' });
+    .meta({
+        description: 'An operation on one item, a selection, or the whole resource.',
+        ...actionJsonRules,
+    });
 
 export type ActionScope = z.infer<typeof ActionScope>;
 export type ActionPlacement = z.infer<typeof ActionPlacement>;

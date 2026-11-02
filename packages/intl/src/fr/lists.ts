@@ -32,8 +32,6 @@ export const listsFr: Record<string, string> = {
     'panneau.lists.clearSelection': 'Effacer la sélection',
     'panneau.lists.actions': 'Actions',
     'panneau.lists.actionOnItem': '{action} : {item}',
-    'panneau.lists.showAction': 'Voir',
-    'panneau.lists.editAction': 'Modifier',
     'panneau.lists.itemActions': 'Actions pour {item}',
     'panneau.lists.confirmTitle': '{action} ?',
     'panneau.lists.confirmMessage':
