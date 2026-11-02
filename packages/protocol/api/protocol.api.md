@@ -15,7 +15,7 @@ export type Abilities = z.infer<typeof Abilities>;
 // @public (undocumented)
 export const Action: z.ZodObject<{
     id: z.ZodString;
-    label: z.ZodString;
+    label: z.ZodOptional<z.ZodString>;
     icon: z.ZodOptional<z.ZodString>;
     kind: z.ZodDefault<z.ZodEnum<{
         link: "link";
@@ -534,6 +534,9 @@ export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "nu
 export const BUILT_IN_LAYOUT_NODE_TYPES: readonly ["row", "column", "section", "tabs", "tab", "sidebar", "field", "text", "component"];
 
 // @public
+export const BUILT_IN_LINK_ACTIONS: readonly ["show", "edit"];
+
+// @public
 export const BUILT_IN_LIST_LAYOUTS: readonly ["table", "cards", "gallery", "calendar"];
 
 // @public (undocumented)
@@ -544,6 +547,9 @@ export type BuiltInFieldType = (typeof BUILT_IN_FIELD_TYPES)[number];
 
 // @public (undocumented)
 export type BuiltInLayoutNodeType = (typeof BUILT_IN_LAYOUT_NODE_TYPES)[number];
+
+// @public (undocumented)
+export type BuiltInLinkAction = (typeof BUILT_IN_LINK_ACTIONS)[number];
 
 // @public (undocumented)
 export type BuiltInListLayout = (typeof BUILT_IN_LIST_LAYOUTS)[number];
@@ -659,6 +665,10 @@ export const Definition: z.ZodObject<{
         itemTitle: z.ZodOptional<z.ZodString>;
         itemSubtitle: z.ZodOptional<z.ZodString>;
         itemImage: z.ZodOptional<z.ZodString>;
+        open: z.ZodOptional<z.ZodUnion<readonly [z.ZodEnum<{
+            edit: "edit";
+            panel: "panel";
+        }>, z.ZodString]>>;
         fields: z.ZodArray<z.ZodObject<{
             name: z.ZodString;
             type: z.ZodString;
@@ -866,7 +876,7 @@ export const Definition: z.ZodObject<{
         }, z.core.$loose>>;
         actions: z.ZodOptional<z.ZodArray<z.ZodObject<{
             id: z.ZodString;
-            label: z.ZodString;
+            label: z.ZodOptional<z.ZodString>;
             icon: z.ZodOptional<z.ZodString>;
             kind: z.ZodDefault<z.ZodEnum<{
                 link: "link";
@@ -1544,6 +1554,9 @@ export const Id: z.ZodString;
 
 // @public (undocumented)
 export type Id = z.infer<typeof Id>;
+
+// @public
+export function isBuiltInLink(id: string): id is BuiltInLinkAction;
 
 // @public
 export function isCursorPage(meta: object): meta is CursorPageMeta;
@@ -2367,7 +2380,7 @@ export const namedSchemas: {
     }, z.core.$loose>]>;
     Action: z.ZodObject<{
         id: z.ZodString;
-        label: z.ZodString;
+        label: z.ZodOptional<z.ZodString>;
         icon: z.ZodOptional<z.ZodString>;
         kind: z.ZodDefault<z.ZodEnum<{
             link: "link";
@@ -2584,6 +2597,10 @@ export const namedSchemas: {
         itemTitle: z.ZodOptional<z.ZodString>;
         itemSubtitle: z.ZodOptional<z.ZodString>;
         itemImage: z.ZodOptional<z.ZodString>;
+        open: z.ZodOptional<z.ZodUnion<readonly [z.ZodEnum<{
+            edit: "edit";
+            panel: "panel";
+        }>, z.ZodString]>>;
         fields: z.ZodArray<z.ZodObject<{
             name: z.ZodString;
             type: z.ZodString;
@@ -2791,7 +2808,7 @@ export const namedSchemas: {
         }, z.core.$loose>>;
         actions: z.ZodOptional<z.ZodArray<z.ZodObject<{
             id: z.ZodString;
-            label: z.ZodString;
+            label: z.ZodOptional<z.ZodString>;
             icon: z.ZodOptional<z.ZodString>;
             kind: z.ZodDefault<z.ZodEnum<{
                 link: "link";
@@ -3268,6 +3285,10 @@ export const namedSchemas: {
             itemTitle: z.ZodOptional<z.ZodString>;
             itemSubtitle: z.ZodOptional<z.ZodString>;
             itemImage: z.ZodOptional<z.ZodString>;
+            open: z.ZodOptional<z.ZodUnion<readonly [z.ZodEnum<{
+                edit: "edit";
+                panel: "panel";
+            }>, z.ZodString]>>;
             fields: z.ZodArray<z.ZodObject<{
                 name: z.ZodString;
                 type: z.ZodString;
@@ -3475,7 +3496,7 @@ export const namedSchemas: {
             }, z.core.$loose>>;
             actions: z.ZodOptional<z.ZodArray<z.ZodObject<{
                 id: z.ZodString;
-                label: z.ZodString;
+                label: z.ZodOptional<z.ZodString>;
                 icon: z.ZodOptional<z.ZodString>;
                 kind: z.ZodDefault<z.ZodEnum<{
                     link: "link";
@@ -4460,6 +4481,10 @@ export const Resource: z.ZodObject<{
     itemTitle: z.ZodOptional<z.ZodString>;
     itemSubtitle: z.ZodOptional<z.ZodString>;
     itemImage: z.ZodOptional<z.ZodString>;
+    open: z.ZodOptional<z.ZodUnion<readonly [z.ZodEnum<{
+        edit: "edit";
+        panel: "panel";
+    }>, z.ZodString]>>;
     fields: z.ZodArray<z.ZodObject<{
         name: z.ZodString;
         type: z.ZodString;
@@ -4667,7 +4692,7 @@ export const Resource: z.ZodObject<{
     }, z.core.$loose>>;
     actions: z.ZodOptional<z.ZodArray<z.ZodObject<{
         id: z.ZodString;
-        label: z.ZodString;
+        label: z.ZodOptional<z.ZodString>;
         icon: z.ZodOptional<z.ZodString>;
         kind: z.ZodDefault<z.ZodEnum<{
             link: "link";

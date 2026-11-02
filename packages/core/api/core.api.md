@@ -179,7 +179,13 @@ export function getItemValues(item: Item, names?: readonly string[]): Values;
 export function getLayoutFieldNames(layout: readonly LayoutNode[]): string[];
 
 // @public
+export function getOpenMode(resource: Resource): 'panel' | 'edit';
+
+// @public
 export function getProblem(error: unknown): Problem | null;
+
+// @public
+export function getResourceActions(resource: Resource): Action[];
 
 // @public
 export function getSearchableResources(definition: Definition): Resource[];
@@ -188,7 +194,7 @@ export function getSearchableResources(definition: Definition): Resource[];
 export function groupActions(actions: readonly Action[]): Record<ActionPlacement, Action[]>;
 
 // @public
-export function isActionAllowedOn(action: Action, item: Item): boolean;
+export function isActionAllowedOn(action: Action, item: Pick<Item, 'abilities'>): boolean;
 
 // @public
 export function isEqual(a: unknown, b: unknown): boolean;

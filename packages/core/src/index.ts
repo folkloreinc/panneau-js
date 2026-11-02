@@ -17,6 +17,8 @@ export {
     DEFAULT_PER_PAGE,
     type ResolvedColumn,
     type ResolvedList,
+    getOpenMode,
+    getResourceActions,
     groupActions,
     resolveList,
 } from './definition/list';

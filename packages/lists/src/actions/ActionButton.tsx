@@ -1,10 +1,11 @@
 import { Link } from 'react-aria-components';
 
 import type { Action } from '@panneau/protocol';
-import { Button, Icon } from '@panneau/ui';
+import { Button, Icon, usePanneauIntl } from '@panneau/ui';
 
 import { cx } from '../cx';
 import styles from './Actions.module.css';
+import { getActionLabel } from './actions';
 import { type ActionIcons, getActionIcon } from './icons';
 
 export interface ActionButtonProps {
@@ -32,7 +33,9 @@ export function ActionButton({
     size = 'sm',
     'aria-label': ariaLabel,
 }: ActionButtonProps) {
+    const intl = usePanneauIntl();
     const icon = getActionIcon(action, icons);
+    const label = getActionLabel(action, intl);
     if (href !== null) {
         return (
             <Link
@@ -41,7 +44,7 @@ export function ActionButton({
                 className={cx(styles.link, size === 'md' && styles.linkMd)}
             >
                 {icon !== undefined ? <Icon icon={icon} size="sm" /> : null}
-                {action.label}
+                {label}
             </Link>
         );
     }
@@ -55,7 +58,7 @@ export function ActionButton({
             aria-label={ariaLabel}
             onPress={onPress}
         >
-            {action.label}
+            {label}
         </Button>
     );
 }

@@ -1,6 +1,6 @@
 # 0017: Actions
 
-- Status: accepted
+- Status: accepted, amended by [0040](0040-row-links-and-open-mode.md): the built-in links `show` and `edit` need no `url` or `label`, which the client gives them
 - Date: 2026-10-14
 
 ## Context

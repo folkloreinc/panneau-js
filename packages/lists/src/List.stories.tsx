@@ -310,6 +310,40 @@ export const SelectionAndActions: Story = {
     },
 };
 
+/**
+ * The built-in links `show` and `edit` as a backend declares them, without a URL or a label: the
+ * caller resolves them to its routes (`getLinkHref`), and the list labels them in its locale.
+ * Owners can't be updated: they have no "Edit".
+ */
+export const BuiltInLinks: Story = {
+    args: {
+        items: members.map((member) => ({
+            ...member,
+            abilities: { ...member.abilities, update: member.role !== 'owner' },
+        })),
+        actions: [
+            { id: 'show', kind: 'link', scope: ['item'] },
+            { id: 'edit', kind: 'link', scope: ['item'] },
+        ],
+        getLinkHref: (action: Action, item: ListItem) =>
+            action.id === 'edit' ? `#/members/${item.id}/edit` : `#/members/${item.id}`,
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const edit = canvas.getByRole('link', { name: 'Edit: Grace Hopper' });
+        await expect(edit).toHaveAttribute('href', '#/members/2/edit');
+        await expect(edit).toHaveTextContent('Edit');
+        await expect(edit.querySelector('svg')).toHaveClass('lucide-pencil');
+        await expect(canvas.getByRole('link', { name: 'View: Grace Hopper' })).toHaveAttribute(
+            'href',
+            '#/members/2',
+        );
+        // Ada Lovelace is an owner
+        await expect(canvas.queryByRole('link', { name: 'Edit: Ada Lovelace' })).toBeNull();
+        await expect(canvas.getByRole('link', { name: 'View: Ada Lovelace' })).toBeVisible();
+    },
+};
+
 export const Empty: Story = {
     args: {
         items: [],

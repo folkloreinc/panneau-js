@@ -1,5 +1,9 @@
-import { canRunAction, groupActions } from '@panneau/core';
+import type { IntlShape } from 'react-intl';
+
+import { canRunAction, groupActions, isActionAllowedOn } from '@panneau/core';
+import { listsMessages } from '@panneau/intl';
 import type { Action, ActionPlacement } from '@panneau/protocol';
+import { isBuiltInLink } from '@panneau/protocol/runtime';
 
 import type { ListItem } from '../types';
 
@@ -30,19 +34,39 @@ function isActionList(actions: ListActions): actions is readonly Action[] {
 /**
  * Whether an action is available on an item (decision 0011). Without abilities, the item allows
  * everything and the backend decides. With abilities, a link is allowed unless the item says
- * otherwise, and other actions only when the item lists their id.
+ * otherwise (`edit` needs `update`, `show` needs `view`), and other actions only when the item
+ * lists their id.
  */
 export function isAllowedOn(action: Action, item: ListItem): boolean {
-    if (!canRunAction(action)) {
-        return false;
+    const { abilities } = item;
+    return abilities === undefined
+        ? canRunAction(action)
+        : isActionAllowedOn(action, { abilities });
+}
+
+/**
+ * The label of an action: its `label`, or, for the built-in links `show` and `edit` that have
+ * none, the label of the client in its locale (decision 0040).
+ */
+export function getActionLabel(action: Action, intl: Pick<IntlShape, 'formatMessage'>): string {
+    if (action.label !== undefined) {
+        return action.label;
     }
-    if (item.abilities === undefined) {
-        return true;
+    if (action.id === 'show') {
+        return intl.formatMessage(listsMessages.showAction);
     }
-    if (action.kind === 'link') {
-        return item.abilities[action.id] !== false;
+    if (action.id === 'edit') {
+        return intl.formatMessage(listsMessages.editAction);
     }
-    return item.abilities[action.id] === true;
+    return action.id;
+}
+
+/**
+ * Whether a `link` action goes somewhere by itself, with a `url` or a `route`. The built-in links
+ * without either need the caller to resolve them (`getLinkHref` of `ListView`).
+ */
+export function hasOwnTarget(action: Action): boolean {
+    return action.url !== undefined || action.route !== undefined || !isBuiltInLink(action.id);
 }
 
 /**

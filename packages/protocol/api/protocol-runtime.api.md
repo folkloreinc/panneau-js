@@ -19,6 +19,9 @@ export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "nu
 export const BUILT_IN_LAYOUT_NODE_TYPES: readonly ["row", "column", "section", "tabs", "tab", "sidebar", "field", "text", "component"];
 
 // @public
+export const BUILT_IN_LINK_ACTIONS: readonly ["show", "edit"];
+
+// @public
 export const BUILT_IN_LIST_LAYOUTS: readonly ["table", "cards", "gallery", "calendar"];
 
 // @public (undocumented)
@@ -29,6 +32,9 @@ export type BuiltInFieldType = (typeof BUILT_IN_FIELD_TYPES)[number];
 
 // @public (undocumented)
 export type BuiltInLayoutNodeType = (typeof BUILT_IN_LAYOUT_NODE_TYPES)[number];
+
+// @public (undocumented)
+export type BuiltInLinkAction = (typeof BUILT_IN_LINK_ACTIONS)[number];
 
 // @public (undocumented)
 export type BuiltInListLayout = (typeof BUILT_IN_LIST_LAYOUTS)[number];
@@ -88,6 +94,9 @@ export function getMediaLibraries(definition: MediaLibrariesDefinition | null, f
 
 // @public
 export function getValue(values: unknown, path: string): unknown;
+
+// @public
+export function isBuiltInLink(id: string): id is BuiltInLinkAction;
 
 // @public
 export function isCursorPage(meta: object): meta is CursorPageMeta;

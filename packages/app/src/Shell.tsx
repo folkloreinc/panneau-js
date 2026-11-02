@@ -7,6 +7,7 @@ import {
     LeaveGuardsProvider,
     createLeaveGuards,
     findResource,
+    getOpenMode,
     resolveResource,
     usePlugins,
 } from '@panneau/core';
@@ -66,6 +67,14 @@ function resolveRoute(
         { name: 'page', page: route, segments: names.map((name) => String(params[name])) },
         basePath,
     );
+}
+
+/** Replaces the current entry of the history with another path of the app. */
+function Redirect({ to }: { to: string }) {
+    useEffect(() => {
+        navigate(to, { replace: true });
+    }, [to]);
+    return null;
 }
 
 interface PageProps {
@@ -150,6 +159,17 @@ function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) 
                 return notFound;
             }
             const resolved = resolveResource(resource);
+            if (route.name === 'resource.show' && getOpenMode(resource) === 'edit') {
+                // Its items open in their form (decision 0040): a link to one still opens it.
+                return (
+                    <Redirect
+                        to={routePath(
+                            { name: 'resource.edit', resource: resource.id, id: route.id },
+                            basePath,
+                        )}
+                    />
+                );
+            }
             if (route.name === 'resource.index' || route.name === 'resource.show') {
                 // The show route is the list with the item's details in a panel: the same page,
                 // so the list keeps its state while the panel opens, closes or changes item.

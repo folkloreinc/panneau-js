@@ -73,6 +73,10 @@ export const edit: Action = {
     scope: ['item'],
 };
 
+/** The built-in links, as a backend declares them: the client resolves and labels them. */
+export const showLink: Action = { id: 'show', kind: 'link', scope: ['item'] };
+export const editLink: Action = { id: 'edit', kind: 'link', scope: ['item'] };
+
 export const exportAction: Action = {
     id: 'export',
     label: 'Export',

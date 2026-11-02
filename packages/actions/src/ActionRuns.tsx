@@ -8,7 +8,7 @@ import { Button, IconButton, usePanneauIntl } from '@panneau/ui';
 import styles from './ActionRunner.module.css';
 import { ActionRunnerContext } from './context';
 import { messages } from './messages';
-import { isFinished } from './request';
+import { getActionLabel, isFinished } from './request';
 
 const STATUS_MESSAGES = {
     queued: messages.runQueued,
@@ -43,7 +43,7 @@ export function ActionRuns({ 'aria-label': ariaLabel, className }: ActionRunsPro
             className={[styles.runs, className].filter(Boolean).join(' ')}
         >
             {context.runs.map(({ run, target }) => {
-                const label = target.action.label;
+                const label = getActionLabel(target.action);
                 const finished = isFinished(run.status);
                 const status = intl.formatMessage(STATUS_MESSAGES[run.status]);
                 return (

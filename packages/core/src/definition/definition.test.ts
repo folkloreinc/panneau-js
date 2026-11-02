@@ -5,7 +5,7 @@ import type { Action, Item } from '@panneau/protocol';
 import { createDefinition, getResource } from '../__fixtures__/definition';
 import { can, getActionPlacements, isActionAllowedOn, partitionByAction } from './abilities';
 import { getLayoutFieldNames, resolveFields, resolveForm } from './form';
-import { resolveList } from './list';
+import { getOpenMode, getResourceActions, resolveList } from './list';
 import { findResource, resolveResource } from './resource';
 
 const item = (id: string, abilities: Record<string, boolean>): Item => ({
@@ -147,7 +147,7 @@ describe('resolveList', () => {
         const { actions } = resolveList(getResource('pages'));
         const ids = (list: Action[]) => list.map((action) => action.id);
         expect(ids(actions.row)).toEqual(['edit', 'publish']);
-        expect(ids(actions.form)).toEqual(['edit', 'publish']);
+        expect(ids(actions.form)).toEqual(['publish']);
         expect(ids(actions.toolbar)).toEqual(['publish']);
         expect(ids(actions.menu)).toEqual(['export']);
     });
@@ -168,6 +168,8 @@ describe('abilities', () => {
         expect(isActionAllowedOn(edit, item('1', {}))).toBe(true);
         expect(isActionAllowedOn(edit, item('1', { edit: false }))).toBe(false);
         expect(isActionAllowedOn(purge, item('1', { purge: true }))).toBe(false);
+        expect(isActionAllowedOn(edit, item('1', { update: false }))).toBe(false);
+        expect(isActionAllowedOn(edit, item('1', { update: true }))).toBe(true);
 
         const { allowed, skipped } = partitionByAction(publish, [
             item('1', { publish: true }),
@@ -189,6 +191,45 @@ describe('abilities', () => {
                 scope: ['selection', 'resource'],
             }),
         ).toEqual(['toolbar']);
+    });
+
+    it('hides the built-in links on items that can not be updated or viewed', () => {
+        const show: Action = { id: 'show', kind: 'link', scope: ['item'] };
+        const edit: Action = { id: 'edit', kind: 'link', scope: ['item'] };
+        expect(isActionAllowedOn(show, item('1', { update: false }))).toBe(true);
+        expect(isActionAllowedOn(show, item('1', { view: false }))).toBe(false);
+        expect(isActionAllowedOn(edit, item('1', { view: false }))).toBe(true);
+        expect(isActionAllowedOn(edit, item('1', { update: false }))).toBe(false);
+        // Another link named like an ability is not a built-in one
+        const site: Action = { id: 'site', label: 'Site', kind: 'link', url: '/', scope: ['item'] };
+        expect(isActionAllowedOn(site, item('1', { update: false }))).toBe(true);
+    });
+
+    it('places the built-in links in rows only', () => {
+        expect(getActionPlacements({ id: 'edit', kind: 'link', scope: ['item'] })).toEqual(['row']);
+        expect(getActionPlacements({ id: 'show', kind: 'link', scope: ['item'] })).toEqual(['row']);
+        expect(
+            getActionPlacements({ id: 'edit', kind: 'link', scope: ['item'], placement: ['menu'] }),
+        ).toEqual(['menu']);
+    });
+});
+
+describe('getResourceActions', () => {
+    const show: Action = { id: 'show', kind: 'link', scope: ['item'] };
+    const edit: Action = { id: 'edit', kind: 'link', scope: ['item'] };
+    const resource = { ...getResource('authors'), actions: [show, edit] };
+
+    it('keeps the actions of a resource that opens items in a panel', () => {
+        expect(getOpenMode(resource)).toBe('panel');
+        expect(getResourceActions(resource)).toEqual([show, edit]);
+        expect(getOpenMode({ ...resource, open: 'site' })).toBe('panel');
+    });
+
+    it('leaves out `show` when items open in their form', () => {
+        const opened = { ...resource, open: 'edit' };
+        expect(getOpenMode(opened)).toBe('edit');
+        expect(getResourceActions(opened)).toEqual([edit]);
+        expect(resolveList(opened).actions.row).toEqual([edit]);
     });
 });
 

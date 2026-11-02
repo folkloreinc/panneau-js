@@ -441,6 +441,8 @@ export const listsMessages: {
     action: string;
     item: string;
     }>;
+    showAction: PanneauMessage<Record<never, never>>;
+    editAction: PanneauMessage<Record<never, never>>;
     itemActions: PanneauMessage<    {
     item: string;
     }>;

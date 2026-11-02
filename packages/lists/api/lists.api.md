@@ -13,6 +13,7 @@ import type { Field } from '@panneau/protocol';
 import type { Filter } from '@panneau/protocol';
 import type { FilterValue } from '@panneau/protocol';
 import { IconComponent } from '@panneau/ui';
+import type { IntlShape } from 'react-intl';
 import { JSX } from 'react';
 import type { List as List_2 } from '@panneau/core';
 import { ListOptions } from '@panneau/core';
@@ -151,6 +152,9 @@ export function getActionHref(action: Action, item?: ListItem): string | null;
 export function getActionIcon(action: Action, icons?: ActionIcons): IconComponent | undefined;
 
 // @public
+export function getActionLabel(action: Action, intl: Pick<IntlShape, 'formatMessage'>): string;
+
+// @public
 export function getLocalizedValue(value: unknown, locale: string): unknown;
 
 // @public
@@ -167,6 +171,9 @@ export function getPagingProps(meta: ListResponse['meta'] | undefined): {
 
 // @public
 export function groupListActions(actions: ListActions | undefined): Record<ActionPlacement, Action[]>;
+
+// @public
+export function hasOwnTarget(action: Action): boolean;
 
 // @public
 export function isAllowedOn(action: Action, item: ListItem): boolean;
@@ -312,6 +319,7 @@ export interface ListViewProps {
     filters?: readonly Filter[];
     getItemHref?: (item: ListItem) => string | null;
     getItemLabel?: (item: ListItem) => string;
+    getLinkHref?: (action: Action, item: ListItem) => string | null;
     isLoading?: boolean;
     items: readonly ListItem[] | undefined;
     itemTitle?: string;

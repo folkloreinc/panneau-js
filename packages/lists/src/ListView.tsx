@@ -13,7 +13,9 @@ import { RowActions } from './actions/RowActions';
 import {
     type ListActions,
     getActionHref,
+    getActionLabel,
     groupListActions,
+    hasOwnTarget,
     hasScope,
     isAllowedOn,
 } from './actions/actions';
@@ -106,6 +108,12 @@ export interface ListViewProps {
     /** A link to an item, on its title. */
     getItemHref?: (item: ListItem) => string | null;
     /**
+     * The link of a built-in `show` or `edit` action without a `url` or a `route` (decision 0040),
+     * which the caller resolves to its own routes. Without it, or when it answers `null`, the list
+     * leaves those links out.
+     */
+    getLinkHref?: (action: Action, item: ListItem) => string | null;
+    /**
      * The item shown next to the list, such as in a panel of its details: its row is marked, and
      * the link of its title is the current page.
      */
@@ -158,6 +166,7 @@ export function ListView({
     itemTitle,
     getItemLabel: getItemLabelProp,
     getItemHref,
+    getLinkHref,
     currentItemId = null,
     displays,
     layoutComponents,
@@ -253,7 +262,7 @@ export function ListView({
             .catch((caught: unknown) => {
                 toasts.show({
                     title: intl.formatMessage(messages.actionFailed, {
-                        action: event.action.label,
+                        action: getActionLabel(event.action, intl),
                     }),
                     ...(caught instanceof Error && caught.message !== ''
                         ? { description: caught.message }
@@ -330,9 +339,20 @@ export function ListView({
     const runOnResource = (action: Action) =>
         run({ action, scope: 'resource', count: count, skipped: [] });
 
+    // The link of an action on an item: its URL, or the caller's for a built-in link.
+    const getRowHref = (action: Action, item: ListItem): string | null =>
+        getActionHref(action, item) ??
+        (action.kind === 'link' && !hasOwnTarget(action)
+            ? (getLinkHref?.(action, item) ?? null)
+            : null);
+    // A built-in link that nothing resolves goes nowhere: it is left out.
+    const isShownOn = (action: Action, item: ListItem): boolean =>
+        isAllowedOn(action, item) &&
+        (action.kind !== 'link' || hasOwnTarget(action) || getRowHref(action, item) !== null);
+
     const renderActions = (item: ListItem): ReactNode => {
-        const allowed = rowActions.filter((action) => isAllowedOn(action, item));
-        const menu = rowMenu.filter((action) => isAllowedOn(action, item));
+        const allowed = rowActions.filter((action) => isShownOn(action, item));
+        const menu = rowMenu.filter((action) => isShownOn(action, item));
         if (allowed.length === 0 && menu.length === 0) {
             return null;
         }
@@ -340,10 +360,10 @@ export function ListView({
             pending?.endsWith(`\u0000${item.id}`) === true ? pending.split('\u0000')[0] : null;
         return (
             <RowActions
-                item={item}
                 itemLabel={getItemLabel(item)}
                 actions={allowed}
                 menu={menu}
+                getHref={(action) => getRowHref(action, item)}
                 pending={running ?? null}
                 onRun={(action) => runOnItem(action, item)}
                 icons={actionIcons}

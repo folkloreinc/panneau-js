@@ -69,6 +69,25 @@ export function groupActions(actions: readonly Action[]): Record<ActionPlacement
 }
 
 /**
+ * The actions of a resource. With `"open": "edit"`, the built-in `show` link is left out: it would
+ * go to the edit form too (decision 0040).
+ */
+export function getResourceActions(resource: Resource): Action[] {
+    const actions = resource.actions ?? [];
+    return getOpenMode(resource) === 'edit'
+        ? actions.filter((action) => !(action.id === 'show' && action.kind === 'link'))
+        : actions;
+}
+
+/**
+ * Where the title of an item goes (`open` of the resource, decision 0040): `panel`, the show route
+ * with the item's details next to the list, or `edit`, its form. A value it doesn't know is `panel`.
+ */
+export function getOpenMode(resource: Resource): 'panel' | 'edit' {
+    return resource.open === 'edit' ? 'edit' : 'panel';
+}
+
+/**
  * Resolves the list of a resource. Without columns, it shows the item title and the next fields
  * (up to four, skipping groups, repeaters and rich text).
  */
@@ -95,8 +114,8 @@ export function resolveList(resource: Resource): ResolvedList {
         }
         return resolved;
     });
-    const actions = groupActions(resource.actions ?? []);
-    const hasSelectionAction = (resource.actions ?? []).some(
+    const actions = groupActions(getResourceActions(resource));
+    const hasSelectionAction = getResourceActions(resource).some(
         (action) => action.scope.includes('selection') && canRunAction(action),
     );
     return {

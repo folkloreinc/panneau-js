@@ -5,7 +5,14 @@ import { Link } from 'react-aria-components';
 import type { ResolvedResource } from '@panneau/core';
 import { useResourceItem } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
-import { ItemDetails, type ListColumn, getActionHref, isAllowedOn } from '@panneau/lists';
+import {
+    ItemDetails,
+    type ListColumn,
+    getActionHref,
+    getActionLabel,
+    isAllowedOn,
+} from '@panneau/lists';
+import { isBuiltInLink } from '@panneau/protocol/runtime';
 import {
     Alert,
     Button,
@@ -78,13 +85,30 @@ export function ItemPanel({ resolved, basePath, locale, id, closeHref }: ItemPan
             label: field.label ?? field.name,
             display: field.display ?? field.type,
         }));
+    // The panel has its own link to edit the item, and is what `show` opens: it doesn't repeat them.
     const links = (resource.actions ?? []).flatMap((action) => {
-        if (item === undefined || !action.scope.includes('item') || !isAllowedOn(action, item)) {
+        if (
+            item === undefined ||
+            isBuiltInLink(action.id) ||
+            !action.scope.includes('item') ||
+            !isAllowedOn(action, item)
+        ) {
             return [];
         }
         const href = getActionHref(action, item);
         return href !== null ? [{ action, href }] : [];
     });
+
+    // The edit link: the declared `edit` with a URL goes there, and its abilities hide it.
+    const edit = (resource.actions ?? []).find(
+        (action) => action.id === 'edit' && action.kind === 'link',
+    );
+    const canEdit =
+        item !== undefined &&
+        (edit !== undefined ? isAllowedOn(edit, item) : item.abilities.update !== false);
+    const editHref =
+        (edit !== undefined && item !== undefined ? getActionHref(edit, item) : null) ??
+        routePath({ name: 'resource.edit', resource: resource.id, id }, basePath);
 
     const onKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'Escape' && !event.defaultPrevented) {
@@ -179,14 +203,8 @@ export function ItemPanel({ resolved, basePath, locale, id, closeHref }: ItemPan
             ) : null}
             {item !== undefined ? (
                 <div className={styles.actions}>
-                    {item.abilities.update !== false ? (
-                        <Link
-                            href={routePath(
-                                { name: 'resource.edit', resource: resource.id, id },
-                                basePath,
-                            )}
-                            className={styles.action}
-                        >
+                    {canEdit ? (
+                        <Link href={editHref} className={styles.action}>
                             <Icon icon={Pencil} size="sm" />
                             {intl.formatMessage(appMessages.editItem)}
                         </Link>
@@ -202,7 +220,7 @@ export function ItemPanel({ resolved, basePath, locale, id, closeHref }: ItemPan
                                 className={styles.action}
                             >
                                 {external ? <Icon icon={ExternalLink} size="sm" /> : null}
-                                {action.label}
+                                {getActionLabel(action, intl)}
                             </Link>
                         );
                     })}

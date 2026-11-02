@@ -4,20 +4,20 @@ import type { Action } from '@panneau/protocol';
 import { IconButton, Menu, MenuItem, MenuTrigger, usePanneauIntl } from '@panneau/ui';
 
 import { messages } from '../messages';
-import type { ListItem } from '../types';
 import { ActionButton } from './ActionButton';
 import styles from './Actions.module.css';
-import { getActionHref } from './actions';
+import { getActionLabel } from './actions';
 import { type ActionIcons, getActionIcon } from './icons';
 
 export interface RowActionsProps {
-    item: ListItem;
     /** The label of the item, for the accessible names of its actions. */
     itemLabel: string;
     /** Actions shown as buttons. */
     actions: readonly Action[];
     /** Actions in the overflow menu. */
     menu: readonly Action[];
+    /** The link of a `link` action on this item, or `null` for an action that runs. */
+    getHref: (action: Action) => string | null;
     /** Id of the action that is running on this item, if any. */
     pending: string | null;
     onRun: (action: Action) => void;
@@ -27,10 +27,10 @@ export interface RowActionsProps {
 
 /** The actions of a row: buttons, then an overflow menu. */
 export function RowActions({
-    item,
     itemLabel,
     actions,
     menu,
+    getHref,
     pending,
     onRun,
     icons,
@@ -43,11 +43,11 @@ export function RowActions({
                     key={action.id}
                     action={action}
                     icons={icons}
-                    href={getActionHref(action, item)}
+                    href={getHref(action)}
                     isPending={pending === action.id}
                     isDisabled={pending !== null && pending !== action.id}
                     aria-label={intl.formatMessage(messages.actionOnItem, {
-                        action: action.label,
+                        action: getActionLabel(action, intl),
                         item: itemLabel,
                     })}
                     onPress={() => onRun(action)}
@@ -65,13 +65,13 @@ export function RowActions({
                         placement="bottom end"
                         onAction={(key) => {
                             const action = menu.find((candidate) => candidate.id === key);
-                            if (action !== undefined && getActionHref(action, item) === null) {
+                            if (action !== undefined && getHref(action) === null) {
                                 onRun(action);
                             }
                         }}
                     >
                         {menu.map((action) => {
-                            const href = getActionHref(action, item);
+                            const href = getHref(action);
                             const icon = getActionIcon(action, icons);
                             return (
                                 <MenuItem
@@ -81,7 +81,7 @@ export function RowActions({
                                     {...(icon !== undefined ? { icon } : {})}
                                     {...(href !== null ? { href } : {})}
                                 >
-                                    {action.label}
+                                    {getActionLabel(action, intl)}
                                 </MenuItem>
                             );
                         })}

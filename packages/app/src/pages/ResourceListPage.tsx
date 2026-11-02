@@ -1,7 +1,7 @@
 import { Plus } from 'lucide-react';
 
 import { useActionPreview, useActionRunner } from '@panneau/actions';
-import { type ResolvedResource, useList } from '@panneau/core';
+import { type ResolvedResource, getOpenMode, useList } from '@panneau/core';
 import { useResourceItem, useResourceList } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
 import { ListView, getPagingProps } from '@panneau/lists';
@@ -13,6 +13,7 @@ import { capitalize } from '../navigation';
 import { routePath } from '../routes';
 import { ItemPanel } from './ItemPanel';
 import { LinkButton, PageHeader } from './PageHeader';
+import { getBuiltInLinkPath, getItemPath } from './itemLinks';
 import { getItemTitle } from './itemTitle';
 import styles from './pages.module.css';
 
@@ -92,8 +93,14 @@ export function ResourceListPage({
                     itemTitle={resource.itemTitle}
                     layouts={['table', 'cards']}
                     perPageOptions={[10, 20, 50, 100]}
+                    // Titles open the panel, with the list's query, or the form (`open` of the resource)
                     getItemHref={(item) =>
-                        `${routePath({ name: 'resource.show', resource: resource.id, id: item.id }, basePath)}${search}`
+                        getOpenMode(resource) === 'edit'
+                            ? getItemPath(resource, item.id, basePath)
+                            : `${getItemPath(resource, item.id, basePath)}${search}`
+                    }
+                    getLinkHref={(action, item) =>
+                        getBuiltInLinkPath(resource, action, item.id, basePath, search)
                     }
                     currentItemId={selectedId}
                     onAction={runAction}

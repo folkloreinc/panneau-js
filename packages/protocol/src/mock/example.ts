@@ -146,19 +146,17 @@ export function createExampleDefinition(): DefinitionInput {
                         fields: [{ name: 'notify', type: 'boolean' }],
                         dryRun: true,
                     },
-                    {
-                        id: 'edit',
-                        label: 'Modifier',
-                        kind: 'link',
-                        url: '/pages/{id}/edit',
-                        scope: ['item'],
-                    },
+                    // The built-in link: the client resolves it to its edit route, and labels it.
+                    { id: 'edit', kind: 'link', scope: ['item'] },
                 ],
                 abilities: { viewAny: true, create: true },
             },
             {
                 id: 'authors',
                 label: { singular: 'auteur', plural: 'auteurs' },
+                // Titles open the form, without the panel of the details.
+                open: 'edit',
+                actions: [{ id: 'edit', kind: 'link', scope: ['item'] }],
                 fields: [
                     { name: 'name', type: 'text', rules: [{ rule: 'required' }] },
                     { name: 'photo', type: 'media', accept: ['image/*'] },

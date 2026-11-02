@@ -22,7 +22,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0014](0014-testing.md)                       | Testing strategy                                                       | Accepted                    |
 | [0015](0015-dashboards-and-search.md)         | Dashboards and global search                                           | Accepted                    |
 | [0016](0016-migration-strategy.md)            | Clean break, maintained old lines, Niche as pilot                      | Accepted                    |
-| [0017](0017-actions.md)                       | Actions on items, selections and resources                             | Accepted                    |
+| [0017](0017-actions.md)                       | Actions on items, selections and resources                             | Amended by 0040             |
 | [0018](0018-new-packages-next-to-v4.md)       | New packages next to the v4 code, which moves to `legacy/`             | Accepted                    |
 | [0019](0019-app-entry.md)                     | The app entry: boot config, mount function and client routes           | Amended by 0036, 0037, 0038 |
 | [0020](0020-default-theme-and-icons.md)       | A sober default theme, and Lucide as the only icon set                 | Amended by 0036             |
@@ -33,7 +33,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0025](0025-presigned-uploads.md)             | Direct uploads to storage, separate from media                         | Amended by 0026             |
 | [0026](0026-media-libraries.md)               | Media libraries are resources                                          | Amended by 0027             |
 | [0027](0027-media-picker.md)                  | A media picker on a source that products can implement                 | Accepted                    |
-| [0028](0028-item-panel.md)                    | The show route opens an item's details in a panel next to its list     | Accepted                    |
+| [0028](0028-item-panel.md)                    | The show route opens an item's details in a panel next to its list     | Amended by 0040             |
 | [0029](0029-go-to-palette.md)                 | A "Go to…" command palette that products can use without the app       | Accepted                    |
 | [0030](0030-search-parameters-and-scope.md)   | The parameters of the global search, its errors, a scope per resource  | Accepted                    |
 | [0031](0031-image-editor-and-image-field.md)  | An image editor with tools, and an `image` field                       | Accepted                    |
@@ -45,3 +45,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0037](0037-login-page-token-and-logout.md)   | The login page of the app, a login with a token, and the logout        | Accepted                    |
 | [0038](0038-pages-with-params.md)             | Pages with params                                                      | Accepted                    |
 | [0039](0039-cursor-pagination.md)             | Lists paged with cursors                                               | Accepted                    |
+| [0040](0040-row-links-and-open-mode.md)       | Built-in `show` and `edit` links, and what opens an item               | Accepted                    |

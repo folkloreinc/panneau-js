@@ -206,6 +206,7 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
     let definition: Definition | null = null;
     let resource: Resource | null = null;
     let firstItemId: string | null = null;
+    let firstPage: ListResponse['data'] | null = null;
 
     await run('definition', 'GET /definition returns a valid definition', async (check) => {
         const reply = await request('/definition');
@@ -252,7 +253,34 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
         check.expect(list.meta.page === 1, `meta.page is ${list.meta.page}, expected 1.`);
         check.expect(list.meta.perPage === 2, `meta.perPage is ${list.meta.perPage}, expected 2.`);
         firstItemId = list.data[0]?.id ?? null;
+        firstPage = list.data;
     });
+
+    await run(
+        'list.edit-ability',
+        'Items of a resource with the built-in `edit` say whether they can be updated',
+        async (check) => {
+            const edit = (resource as Resource | null)?.actions?.find(
+                (action) => action.id === 'edit' && action.kind === 'link',
+            );
+            const items = firstPage as ListResponse['data'] | null;
+            if (edit === undefined) {
+                check.skip('The resource declares no `edit` link.');
+                return;
+            }
+            if (items === null || items.length === 0) {
+                check.skip('The list has no items.');
+                return;
+            }
+            // The UI shows `edit` unless `update` is false: without it, it would show a link that fails.
+            items.forEach((item) => {
+                check.expect(
+                    typeof item.abilities.update === 'boolean',
+                    `The item "${item.id}" has no \`abilities.update\`: the list can't tell whether to show \`edit\`.`,
+                );
+            });
+        },
+    );
 
     await run('list.sort', 'GET /resources/{resource} accepts a sort', async (check) => {
         const sort = (resource as Resource | null)?.list?.sorts?.[0];

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { isBuiltInLink } from '../constants';
 import { Abilities } from './common';
 import { Field } from './field';
 import { LayoutNode } from './layout';
@@ -24,7 +25,10 @@ export const ActionConfirm = z.union([
 export const Action = z
     .looseObject({
         id: z.string().min(1),
-        label: z.string(),
+        label: z.string().optional().meta({
+            description:
+                'Required, except for the built-in links `show` and `edit`, which the client labels in its locale.',
+        }),
         icon: z.string().optional(),
         kind: z.enum(['server', 'link', 'client']).default('server').meta({
             description:
@@ -58,7 +62,27 @@ export const Action = z
         }),
     })
     .superRefine((action, context) => {
-        if (action.kind === 'link' && action.url === undefined && action.route === undefined) {
+        const builtInLink = isBuiltInLink(action.id);
+        if (builtInLink && action.kind !== 'link') {
+            context.addIssue({
+                code: 'custom',
+                path: ['kind'],
+                message: `The id \`${action.id}\` is reserved for the built-in link: its \`kind\` must be \`link\`.`,
+            });
+        }
+        if (action.label === undefined && !builtInLink) {
+            context.addIssue({
+                code: 'custom',
+                path: ['label'],
+                message: 'An action needs a `label`.',
+            });
+        }
+        if (
+            action.kind === 'link' &&
+            action.url === undefined &&
+            action.route === undefined &&
+            !builtInLink
+        ) {
             context.addIssue({
                 code: 'custom',
                 message: 'A `link` action needs a `url` or a `route`.',

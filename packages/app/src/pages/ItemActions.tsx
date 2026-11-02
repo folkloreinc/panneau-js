@@ -8,6 +8,8 @@ import {
     type ListActionEvent,
     getActionHref,
     getActionIcon,
+    getActionLabel,
+    hasOwnTarget,
     isAllowedOn,
 } from '@panneau/lists';
 import type { Action, Item } from '@panneau/protocol';
@@ -21,6 +23,8 @@ export interface ItemActionsProps {
     /** The actions placed in `form`. Those that don't apply to an item, or to this one, are left out. */
     actions: readonly Action[];
     item: Item;
+    /** The link of a built-in `show` or `edit` without a `url` or a `route`: a route of the app. */
+    getLinkHref?: (action: Action, item: Item) => string | null;
     /** Called once an action has run, has been queued or has navigated. */
     onRun?: (action: Action, outcome: ActionOutcome) => void;
 }
@@ -30,14 +34,23 @@ export interface ItemActionsProps {
  * allows. They run through the action runner (parameters, results, queued runs), after a
  * confirmation when they ask for one. A `link` action with a URL is a link.
  */
-export function ItemActions({ resource, actions, item, onRun }: ItemActionsProps) {
+export function ItemActions({ resource, actions, item, getLinkHref, onRun }: ItemActionsProps) {
     const intl = usePanneauIntl();
     const toasts = useToast();
     const runAction = useActionRunner(resource);
     const [pending, setPending] = useState<string | null>(null);
     const [confirming, setConfirming] = useState<ListActionEvent | null>(null);
+    const hrefOf = (action: Action): string | null =>
+        getActionHref(action, item) ??
+        (action.kind === 'link' && !hasOwnTarget(action)
+            ? (getLinkHref?.(action, item) ?? null)
+            : null);
+    // A built-in link that nothing resolves goes nowhere: it is left out.
     const available = actions.filter(
-        (action) => action.scope.includes('item') && isAllowedOn(action, item),
+        (action) =>
+            action.scope.includes('item') &&
+            isAllowedOn(action, item) &&
+            (action.kind !== 'link' || hasOwnTarget(action) || hrefOf(action) !== null),
     );
     if (available.length === 0) {
         return null;
@@ -57,7 +70,9 @@ export function ItemActions({ resource, actions, item, onRun }: ItemActionsProps
             })
             .catch((caught: unknown) => {
                 toasts.show({
-                    title: intl.formatMessage(listsMessages.actionFailed, { action: action.label }),
+                    title: intl.formatMessage(listsMessages.actionFailed, {
+                        action: getActionLabel(action, intl),
+                    }),
                     ...(caught instanceof Error && caught.message !== ''
                         ? { description: caught.message }
                         : {}),
@@ -78,11 +93,12 @@ export function ItemActions({ resource, actions, item, onRun }: ItemActionsProps
         <>
             {available.map((action) => {
                 const icon = getActionIcon(action);
-                const href = getActionHref(action, item);
+                const href = hrefOf(action);
+                const label = getActionLabel(action, intl);
                 return href !== null ? (
                     <Link key={action.id} href={href} className={styles.actionLink}>
                         {icon !== undefined ? <Icon icon={icon} size="sm" /> : null}
-                        {action.label}
+                        {label}
                     </Link>
                 ) : (
                     <Button
@@ -93,7 +109,7 @@ export function ItemActions({ resource, actions, item, onRun }: ItemActionsProps
                         isDisabled={pending !== null && pending !== action.id}
                         onPress={() => run(action)}
                     >
-                        {action.label}
+                        {label}
                     </Button>
                 );
             })}

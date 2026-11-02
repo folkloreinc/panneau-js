@@ -13,6 +13,18 @@ export const BUILT_IN_ACTIONS = [
 ] as const;
 export type BuiltInAction = (typeof BUILT_IN_ACTIONS)[number];
 
+/**
+ * Built-in `link` actions (decision 0040). Without a `url` or a `route`, the client resolves them
+ * to its own routes, and labels them itself when they have no `label`.
+ */
+export const BUILT_IN_LINK_ACTIONS = ['show', 'edit'] as const;
+export type BuiltInLinkAction = (typeof BUILT_IN_LINK_ACTIONS)[number];
+
+/** Whether an action id is one of the built-in links, `show` and `edit`. */
+export function isBuiltInLink(id: string): id is BuiltInLinkAction {
+    return (BUILT_IN_LINK_ACTIONS as readonly string[]).includes(id);
+}
+
 /** Field types every Panneau frontend renders. Plugins add others. */
 export const BUILT_IN_FIELD_TYPES = [
     'text',

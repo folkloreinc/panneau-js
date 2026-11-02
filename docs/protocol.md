@@ -45,6 +45,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     "id": "pages",
     "kind": null, // "media" for a media library
     "label": { "singular": "page", "plural": "pages" },
+    "open": "panel", // where an item's title goes: "panel" (the default) or "edit"
     "fields": [ /* Field */ ],
     "form": { "layout": [ /* LayoutNode */ ] },
     "list": {
@@ -283,7 +284,20 @@ Built-in actions use reserved ids:
 | `export`            | `server` | `selection`, `resource` |
 | `import`            | `server` | `resource`              |
 
-A resource lists the built-in actions it enables, possibly with overrides (label, placement, confirm).
+A resource lists the built-in actions it enables, possibly with overrides (label, placement, confirm). The client adds none by itself.
+
+**The built-in links** `show` and `edit` need only their id, `kind` and `scope` ([decisions/0040](decisions/0040-row-links-and-open-mode.md)):
+
+```jsonc
+{ "id": "edit", "kind": "link", "scope": ["item"] }
+```
+
+- Without `url` or `route`, the client resolves them to its routes: `edit` to the item's form, `show` to the item (its panel, or its form with `"open": "edit"`). With one, they go there.
+- `label` and `icon` are optional for these two ids only: the client labels them in its locale and gives them an icon. Every other action needs a `label`. The ids `show` and `edit` are only for `link` actions.
+- Without `placement`, they are in rows (`row`). `edit` is never shown in the edit form.
+- `edit` is hidden on an item with `abilities.update: false`, `show` on one with `abilities.view: false`.
+
+**What opens an item.** `open` on a resource says where an item's title goes, in its list and wherever the app links to the item: `panel` (the default), the show route with its details next to the list ([decisions/0028](decisions/0028-item-panel.md)); `edit`, its form. With `edit`, the show route redirects to the edit route, and the built-in `show` link is left out. Clients treat a value they don't know as `panel`.
 
 ### Pages
 
@@ -743,7 +757,7 @@ Global search ([decisions/0029](decisions/0029-go-to-palette.md)):
 - **a light entry point for browsers** (`@panneau/protocol/runtime`): the constants and the helpers above that don't need the schemas (`checkValues()`, `evaluateCondition()`, `lintDefinition()`, the list query helpers, `isProblem()`), without loading zod. UI packages import them from there, and only types from the main entry point.
 - **generated files**: `@panneau/protocol/definition.schema.json` and `@panneau/protocol/boot.schema.json` (JSON Schema 2020-12), and `@panneau/protocol/openapi.json` (OpenAPI 3.1).
 - **a mock backend** (`@panneau/protocol/mock`): an in-memory implementation of the resource routes.
-- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. With `writes`, it also checks that rules limited to `create` don't apply to updates: an update with those fields set to `null` succeeds. It also checks that the backend reads the bounds of the resource's first `date-range` filter, if it has one, and that `GET /search` finds an item by a word of its title, reads `limit` and `resources`, and refuses invalid parameters with a `422`.
+- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. With `writes`, it also checks that rules limited to `create` don't apply to updates: an update with those fields set to `null` succeeds. It also checks that the items of a resource that declares the built-in `edit` say whether they can be updated (`abilities.update`), that the backend reads the bounds of the resource's first `date-range` filter, if it has one, and that `GET /search` finds an item by a word of its title, reads `limit` and `resources`, and refuses invalid parameters with a `422`.
 
 ```ts
 import { formatReport, runConformance } from '@panneau/protocol/conformance';

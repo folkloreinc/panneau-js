@@ -222,4 +222,44 @@ describe('runConformance', () => {
             issues: ['The resource declares no date-range filter.'],
         });
     });
+
+    it('reports items of a resource with `edit` that do not say whether they can be updated', async () => {
+        const backend = createBackend();
+        // A backend that only lists the abilities of its custom actions.
+        const partial = async (input: string, init?: RequestInit) => {
+            const response = await backend.fetch(input, init);
+            if (!new URL(input).pathname.endsWith('/resources/pages')) {
+                return response;
+            }
+            const body = (await response.json()) as { data: { abilities: object }[] };
+            body.data.forEach((item) => (item.abilities = { publish: true }));
+            return new Response(JSON.stringify(body), {
+                status: response.status,
+                headers: response.headers,
+            });
+        };
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: partial,
+        });
+        const check = report.checks.find((candidate) => candidate.id === 'list.edit-ability');
+        expect(check?.status).toBe('failed');
+        expect(check?.issues[0]).toContain('has no `abilities.update`');
+    });
+
+    it('skips the edit ability check when the resource has no `edit` link', async () => {
+        const definition = createDefinition();
+        definition.resources.forEach((resource) => {
+            resource.actions = (resource.actions ?? []).filter((action) => action.id !== 'edit');
+        });
+        const backend = createMockBackend({ definition });
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: backend.fetch,
+        });
+        expect(report.checks.find((check) => check.id === 'list.edit-ability')).toMatchObject({
+            status: 'skipped',
+            issues: ['The resource declares no `edit` link.'],
+        });
+    });
 });

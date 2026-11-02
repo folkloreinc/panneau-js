@@ -356,6 +356,93 @@ describe('the app shell', () => {
         expect(screen.queryByText('About us')).not.toBeInTheDocument();
     });
 
+    it('links each row to the edit and the show route with the built-in links', async () => {
+        const user = userEvent.setup();
+        renderApp({
+            resources: [
+                {
+                    id: 'pages',
+                    label: { singular: 'page', plural: 'pages' },
+                    itemTitle: 'title',
+                    fields: [{ name: 'title', type: 'text', label: 'Title' }],
+                    actions: [
+                        { id: 'show', kind: 'link', scope: ['item'] },
+                        { id: 'edit', kind: 'link', scope: ['item'] },
+                    ],
+                },
+            ],
+        });
+        await user.click(navigation().getByRole('link', { name: 'Pages' }));
+        const table = await screen.findByRole('table', { name: 'Pages' });
+        expect(await within(table).findByRole('link', { name: 'Edit: Contact' })).toHaveAttribute(
+            'href',
+            '/panneau/resources/pages/2/edit',
+        );
+
+        await user.click(within(table).getByRole('link', { name: 'View: About us' }));
+        expect(window.location.pathname).toBe('/panneau/resources/pages/1');
+        const panel = await screen.findByRole('region', { name: 'Details of the page' });
+        // The panel has its own link to edit, and doesn't repeat the built-in links
+        expect(await within(panel).findAllByRole('link', { name: 'Edit' })).toHaveLength(1);
+        expect(within(panel).queryByRole('link', { name: 'View' })).toBeNull();
+
+        await user.click(within(table).getByRole('link', { name: 'Edit: Contact' }));
+        expect(window.location.pathname).toBe('/panneau/resources/pages/2/edit');
+        expect(await screen.findByRole('textbox', { name: 'Title' })).toHaveValue('Contact');
+        // On the edit page, `edit` is the page itself
+        expect(
+            within(screen.getByRole('main')).queryByRole('link', { name: 'Edit' }),
+        ).not.toBeInTheDocument();
+    });
+
+    it('opens the items of a resource with `"open": "edit"` in their form, and redirects its show route', async () => {
+        const user = userEvent.setup();
+        const authors = {
+            id: 'authors',
+            label: { singular: 'author', plural: 'authors' },
+            itemTitle: 'name',
+            open: 'edit',
+            fields: [{ name: 'name', type: 'text', label: 'Name' }],
+            actions: [
+                { id: 'show', kind: 'link', scope: ['item'] },
+                { id: 'edit', kind: 'link', scope: ['item'] },
+            ],
+        } satisfies DefinitionInput['resources'][number];
+        renderApp({ resources: [authors] });
+        await user.click(navigation().getByRole('link', { name: 'Authors' }));
+        const table = await screen.findByRole('table', { name: 'Authors' });
+        expect(await within(table).findByRole('link', { name: 'Ada' })).toHaveAttribute(
+            'href',
+            '/panneau/resources/authors/1/edit',
+        );
+        // `show` would open the form too: only `edit` is left
+        expect(within(table).getByRole('link', { name: 'Edit: Ada' })).toBeInTheDocument();
+        expect(within(table).queryByRole('link', { name: 'View: Ada' })).toBeNull();
+
+        await user.click(within(table).getByRole('link', { name: 'Ada' }));
+        expect(window.location.pathname).toBe('/panneau/resources/authors/1/edit');
+        expect(await screen.findByRole('textbox', { name: 'Name' })).toHaveValue('Ada');
+    });
+
+    it('redirects the show route of a resource that opens items in their form', async () => {
+        window.history.replaceState(null, '', '/panneau/resources/authors/1');
+        renderApp({
+            resources: [
+                {
+                    id: 'authors',
+                    label: { singular: 'author', plural: 'authors' },
+                    open: 'edit',
+                    fields: [{ name: 'name', type: 'text', label: 'Name' }],
+                },
+            ],
+        });
+        await waitFor(() =>
+            expect(window.location.pathname).toBe('/panneau/resources/authors/1/edit'),
+        );
+        expect(await screen.findByRole('textbox', { name: 'Name' })).toHaveValue('Ada');
+        expect(screen.queryByRole('region', { name: 'Details of the author' })).toBeNull();
+    });
+
     it('pages a list with cursors, back and forth, without page numbers', async () => {
         const user = userEvent.setup();
         window.history.replaceState(null, '', '/panneau/resources/pages');

@@ -14,6 +14,7 @@ import { useRecordRecentItem } from '../recentItems';
 import { routePath } from '../routes';
 import { ItemActions } from './ItemActions';
 import { PageHeader, PageLayout } from './PageHeader';
+import { getBuiltInLinkPath } from './itemLinks';
 import { getItemTitle } from './itemTitle';
 
 export interface ResourceFormPageProps {
@@ -68,6 +69,9 @@ export function ResourceFormPage({ definition, resolved, basePath, id }: Resourc
                 resource={resource.id}
                 actions={formActions}
                 item={item}
+                getLinkHref={(action, current) =>
+                    getBuiltInLinkPath(resource, action, current.id, basePath)
+                }
                 onRun={(_action, outcome) => {
                     // An action that removed the item (`delete`) leaves its page: back to the list,
                     // unless its result went somewhere already (`redirect`).

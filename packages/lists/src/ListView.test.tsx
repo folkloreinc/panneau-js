@@ -12,11 +12,13 @@ import { ListView } from './ListView';
 import {
     columns,
     edit,
+    editLink,
     exportAction,
     manyPages,
     pages,
     publish,
     remove,
+    showLink,
     statusField,
 } from './__fixtures__/pages';
 import { renderList } from './__fixtures__/render';
@@ -423,6 +425,64 @@ describe('ListView', () => {
         await user.click(await screen.findByRole('menuitem', { name: 'Delete' }));
         expect(onAction).toHaveBeenCalledWith(
             expect.objectContaining({ scope: 'item', count: 1, item: pages[1] }),
+        );
+    });
+
+    it('resolves the built-in links with getLinkHref, and hides `edit` where the item can’t be updated', () => {
+        const items = pages.map((item, index) =>
+            index === 2 ? { ...item, abilities: { ...item.abilities, update: false } } : item,
+        );
+        renderList(
+            <ListView
+                list={createList()}
+                columns={columns}
+                items={items}
+                actions={[showLink, editLink]}
+                getLinkHref={(action, item) => `/${action.id}/${item.id}`}
+                selectable={false}
+            />,
+        );
+        const link = screen.getByRole('link', { name: 'Edit: About us' });
+        expect(link).toHaveAttribute('href', '/edit/1');
+        expect(link).toHaveTextContent('Edit');
+        expect(screen.getByRole('link', { name: 'View: Contact' })).toHaveAttribute(
+            'href',
+            '/show/2',
+        );
+        // Blog can't be updated
+        expect(screen.queryByRole('link', { name: 'Edit: Blog' })).not.toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'View: Blog' })).toBeInTheDocument();
+    });
+
+    it('leaves out the built-in links that nothing resolves', () => {
+        renderList(
+            <ListView
+                list={createList()}
+                columns={columns}
+                items={pages}
+                actions={[editLink, { ...showLink, placement: ['menu'] }]}
+                getLinkHref={(action, item) => (action.id === 'edit' ? `/edit/${item.id}` : null)}
+                selectable={false}
+            />,
+        );
+        expect(screen.getByRole('link', { name: 'Edit: About us' })).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Actions for About us' })).toBeNull();
+    });
+
+    it('labels the built-in links in the locale of the list', () => {
+        renderList(
+            <ListView
+                list={createList()}
+                columns={columns}
+                items={pages}
+                actions={[editLink]}
+                getLinkHref={(_action, item) => `/edit/${item.id}`}
+                selectable={false}
+            />,
+            { locale: 'fr', messages: fr },
+        );
+        expect(screen.getByRole('link', { name: 'Modifier : À propos' })).toHaveTextContent(
+            'Modifier',
         );
     });
 
