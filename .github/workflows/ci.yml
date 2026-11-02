@@ -66,6 +66,21 @@ jobs:
             - name: Test
               run: npm test
 
+    test-react-intl-10:
+        # Sites on Panneau 4 use react-intl 10, which the peer range of @panneau/* allows
+        name: Test with react-intl 10
+        runs-on: ubuntu-24.04
+        steps:
+            - uses: actions/checkout@v5
+
+            - uses: ./.github/actions/setup
+
+            - name: Install react-intl 10
+              run: npm install --no-save react-intl@^10.0.0
+
+            - name: Test
+              run: npm test
+
     build:
         name: Build and API reports
         runs-on: ubuntu-24.04

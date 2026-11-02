@@ -32,6 +32,8 @@ These steps can be done on the current lines and make the move smaller:
 - Move hand-written routes for custom actions into one place, so they map to resource actions.
 - Stop importing from `@panneau/core/contexts` and other internals where a public export exists.
 
+**React-intl.** `@panneau/*` 5 works with `react-intl` 10 or 12, so a site on 10 doesn't have to move first, nor its dependencies that require 10 (`@micromag/*` 0.4, `@folklore/utils`). CI runs the tests of every package with both. Only the types differ: the messages of Panneau type their values with react-intl 12 (`TypedMessageDescriptor`), which react-intl 10 doesn't have. A TypeScript project on react-intl 10 sets `skipLibCheck`, and `formatMessage()` doesn't check the values of Panneau's messages there.
+
 ## Mapping: Laravel
 
 | v1                                                                                                       | 5                                                                                                                                         |
