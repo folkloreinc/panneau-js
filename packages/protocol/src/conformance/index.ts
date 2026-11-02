@@ -1,6 +1,6 @@
 import type { z } from 'zod';
 
-import { type FilterRange, toSearchParams } from '../query';
+import { type FilterRange, isCursorPage, toSearchParams } from '../query';
 import { Definition, type Resource } from '../schemas';
 import {
     ActionResult,
@@ -240,7 +240,9 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
             check.skip('No resource to test.');
             return;
         }
-        const reply = await request(`${resourcePath()}?page=1&perPage=2`);
+        // A list paged with cursors has no page numbers (decision 0039).
+        const cursors = (resource as Resource).list?.pagination === 'cursor';
+        const reply = await request(`${resourcePath()}?${cursors ? '' : 'page=1&'}perPage=2`);
         if (!check.expectStatus(reply, 200)) {
             return;
         }
@@ -249,9 +251,44 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
             return;
         }
         check.expect(list.data.length <= 2, `perPage=2 returned ${list.data.length} items.`);
-        check.expect(list.meta.page === 1, `meta.page is ${list.meta.page}, expected 1.`);
         check.expect(list.meta.perPage === 2, `meta.perPage is ${list.meta.perPage}, expected 2.`);
         firstItemId = list.data[0]?.id ?? null;
+        const { meta } = list;
+        if (!cursors) {
+            check.expect(
+                !isCursorPage(meta) && meta.page === 1,
+                `meta.page is ${String((meta as { page?: unknown }).page)}, expected 1.`,
+            );
+            return;
+        }
+        if (!isCursorPage(meta)) {
+            check.expect(false, 'The list pages with cursors, but its meta has no nextCursor.');
+            return;
+        }
+        // The next page follows on from the first, and a cursor the backend can't read is a 422.
+        if (meta.nextCursor !== null) {
+            const next = await request(
+                `${resourcePath()}?${toSearchParams({ perPage: 2, cursor: meta.nextCursor })}`,
+            );
+            if (check.expectStatus(next, 200)) {
+                const page = check.expectSchema(ListResponse, next.body, 'The next page');
+                const repeated = (page?.data ?? []).filter((item) =>
+                    list.data.some((first) => first.id === item.id),
+                );
+                check.expect(
+                    repeated.length === 0,
+                    `The page of nextCursor repeats items of the first page: ${repeated.map((item) => item.id).join(', ')}.`,
+                );
+            }
+        }
+        const invalid = await request(
+            `${resourcePath()}?${toSearchParams({ perPage: 2, cursor: 'panneau-conformance-invalid' })}`,
+        );
+        const problem = check.expectProblem(invalid, 422);
+        check.expect(
+            problem === null || (problem.errors?.cursor ?? []).length > 0,
+            'An invalid cursor answers a 422 without errors.cursor.',
+        );
     });
 
     await run('list.sort', 'GET /resources/{resource} accepts a sort', async (check) => {

@@ -50,6 +50,13 @@ describe('OpenAPI document', () => {
         );
     });
 
+    it("answers a 422 for a list cursor it can't read", () => {
+        const list = (document.paths as Record<string, { get?: { responses?: object } }>)[
+            '/resources/{resource}'
+        ];
+        expect(Object.keys(list?.get?.responses ?? {})).toContain('422');
+    });
+
     it('only references schemas it defines', () => {
         const missing = [...collectRefs(document)].filter((ref) => {
             const name = ref.replace('#/components/schemas/', '');
