@@ -66,6 +66,17 @@ describe('checkRules', () => {
         expect(checkRules([{ rule: 'required' }], {})).toHaveLength(1);
     });
 
+    it('counts other collections by their length or size', () => {
+        const required = [{ rule: 'required' as const }];
+        expect(checkRules(required, new Map())).toHaveLength(1);
+        expect(checkRules(required, new Set())).toHaveLength(1);
+        expect(checkRules(required, new Set(['a']))).toEqual([]);
+        // A FileList: not a plain object, with a length
+        const files = Object.create({ item: () => null }, { length: { value: 0 } }) as object;
+        expect(checkRules(required, files)).toHaveLength(1);
+        expect(checkRules(required, new Date())).toEqual([]);
+    });
+
     it('checks the type and size of a chosen file', () => {
         const file = new File(['12345678901'], 'clip.mp4', { type: 'video/mp4' });
         expect(

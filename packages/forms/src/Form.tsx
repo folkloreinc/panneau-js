@@ -37,7 +37,9 @@ export function Form({
     ...props
 }: FormProps) {
     const { definition } = usePanneau();
-    const resolved = resolveFields(fields, layout, mode !== undefined ? { mode } : {});
+    // The mode `useForm()` would infer: rules limited to a mode are resolved in it
+    const formMode = mode ?? (version !== undefined && version !== null ? 'update' : 'create');
+    const resolved = resolveFields(fields, layout, { mode: formMode });
     const formatRuleFailure = useFormatRuleFailure(resolved.fields);
     const formLocales = locales ?? definition?.locales ?? [];
     const { form } = useForm({
@@ -46,7 +48,7 @@ export function Form({
         formatError: formatError ?? formatRuleFailure,
         ...(values !== undefined ? { values } : {}),
         ...(version !== undefined ? { version } : {}),
-        ...(mode !== undefined ? { mode } : {}),
+        mode: formMode,
         ...(store !== undefined ? { store } : {}),
         ...(onSubmit !== undefined ? { onSubmit } : {}),
     });

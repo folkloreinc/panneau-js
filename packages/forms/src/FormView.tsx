@@ -168,7 +168,9 @@ export function FormView({
     const leave = useLeaveConfirmation(guarded);
     useLeaveGuard(guarded, leave.confirmLeave);
 
-    const resolved = resolveFields(fields, layout);
+    // In the mode of the form, as its rules are checked: the required mark of a password
+    // required on create shows on create only
+    const resolved = resolveFields(fields, layout, { mode: form.mode });
     const main = resolved.layout.filter((node) => node.type !== 'sidebar');
     const sidebar = resolved.layout.filter(
         (node) => node.type === 'sidebar' && selectVisible(state, node),

@@ -97,7 +97,7 @@ describe('Form without a definition', () => {
         );
     });
 
-    it('marks a field required in the mode of its rule only', async () => {
+    it('marks a field required in the mode of its rule only, inferred from the version', async () => {
         const fields: Field[] = [
             {
                 name: 'password',
@@ -108,7 +108,8 @@ describe('Form without a definition', () => {
             },
         ];
         const onSubmit = vi.fn();
-        const { unmount } = renderForm(<Form fields={fields} mode="create" onSubmit={onSubmit} />);
+        // Without a mode or a version, the form creates an item
+        const { unmount } = renderForm(<Form fields={fields} onSubmit={onSubmit} />);
         expect(screen.getByLabelText(/Password/)).toBeRequired();
         await userEvent.click(screen.getByRole('button', { name: 'Save' }));
         expect(await screen.findByRole('alert')).toHaveTextContent(
@@ -120,7 +121,6 @@ describe('Form without a definition', () => {
         renderForm(
             <Form
                 fields={fields}
-                mode="update"
                 version="1"
                 values={{ password: null }}
                 onSubmit={onSubmit}
