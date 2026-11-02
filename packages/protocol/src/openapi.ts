@@ -169,7 +169,8 @@ export function createOpenApiDocument(): JsonObject {
                     parameters: listParameters,
                     responses: {
                         200: ok('A page of items.', ref('ListResponse')),
-                        ...problems(401, 403, 404),
+                        // A `cursor` the backend can't read (decision 0039)
+                        ...problems(401, 403, 404, 422),
                     },
                 },
                 post: {
