@@ -2,7 +2,7 @@ import { Plus } from 'lucide-react';
 import { useEffect } from 'react';
 
 import { useActionPreview } from '@panneau/actions';
-import { type ResolvedResource, useList } from '@panneau/core';
+import { type ResolvedResource, getOpenMode, useList } from '@panneau/core';
 import { useResourceItem, useResourceList } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
 import { ListView, getPagingProps } from '@panneau/lists';
@@ -53,7 +53,7 @@ export function ResourceListPage({
     const previewAction = useActionPreview(resource.id);
     const title = capitalize(resource.label.plural, locale);
     // The item of the panel, which the panel fetches too
-    const { data: selected } = useResourceItem(resource.id, selectedId);
+    const { data: selected, isError: selectedError } = useResourceItem(resource.id, selectedId);
     useDocumentTitle([
         selectedId !== null
             ? (getItemTitle(selected, resource.itemTitle, locale) ?? selectedId)
@@ -74,6 +74,17 @@ export function ResourceListPage({
             navigate(redirect, { replace: true });
         }
     }, [redirect]);
+    // Until the item says whether it opens in its form, the page waits, rather than showing the
+    // list and its panel for an instant.
+    if (
+        redirect !== null ||
+        (getOpenMode(resource) === 'edit' &&
+            selectedId !== null &&
+            selected === undefined &&
+            !selectedError)
+    ) {
+        return null;
+    }
     return (
         <div className={cx(styles.page, selectedId !== null && styles.withPanel)}>
             <PageHeader

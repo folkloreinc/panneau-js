@@ -1,7 +1,7 @@
 import type { Abilities, Action, ActionPlacement, Resource } from '@panneau/protocol';
 import { isBuiltInLink } from '@panneau/protocol/runtime';
 
-import { canRunAction, isActionAllowedOn } from './abilities';
+import { isActionAllowedOn } from './abilities';
 import { getResourceActions, groupActions } from './list';
 
 /**
@@ -13,7 +13,10 @@ export type ItemSurface = 'row' | 'menu' | 'panel' | 'form';
 /** An item as its actions need it: its id, its abilities, and its values for URL templates. */
 export interface ActionItem {
     id: string;
-    /** What the user can do with the item. Without abilities, every action is allowed. */
+    /**
+     * What the user can do with the item. Without abilities, the built-in item actions are hidden,
+     * and the other actions are allowed: the backend decides.
+     */
     abilities?: Abilities | undefined;
     [key: string]: unknown;
 }
@@ -78,12 +81,8 @@ export function selectItemActions(
     surface: ItemSurface,
     { getLinkHref, filter }: ItemActionsOptions = {},
 ): ItemAction[] {
-    const { abilities } = item;
     return actions.flatMap((action): ItemAction[] => {
-        const allowed =
-            abilities === undefined
-                ? canRunAction(action)
-                : isActionAllowedOn(action, { abilities });
+        const allowed = isActionAllowedOn(action, item);
         if (
             !action.scope.includes('item') ||
             action.id === SELF_ACTIONS[surface] ||

@@ -17,24 +17,33 @@ export function canRunAction(action: Action): boolean {
 /**
  * Whether an action is available on an item: the user can run it, and the item allows it.
  * - The built-in item actions need their ability (decision 0040): `view` for `show`, `update` for
- *   `edit`, `duplicate` and `delete`. A missing or false ability hides them.
+ *   `edit`, `duplicate` and `delete`. A missing or false ability hides them, and so does their
+ *   own id set to `false` (`"edit": false`). An item without abilities shows none of them.
  * - Other links are allowed unless the item says otherwise (`"site": false`).
  * - Other actions need their id in the abilities of the item (`"publish": true`).
+ * - On an item without abilities (a product's own records), other actions are allowed: the
+ *   backend decides.
  */
-export function isActionAllowedOn(action: Action, item: Pick<Item, 'abilities'>): boolean {
+export function isActionAllowedOn(
+    action: Action,
+    item: { readonly abilities?: Abilities | undefined },
+): boolean {
     if (!canRunAction(action)) {
         return false;
     }
+    const { abilities } = item;
     if (isBuiltInItemAction(action.id)) {
         return (
-            item.abilities[ITEM_ACTION_ABILITIES[action.id]] === true &&
-            item.abilities[action.id] !== false
+            abilities?.[ITEM_ACTION_ABILITIES[action.id]] === true && abilities[action.id] !== false
         );
     }
-    if (action.kind === 'link') {
-        return item.abilities[action.id] !== false;
+    if (abilities === undefined) {
+        return true;
     }
-    return item.abilities[action.id] === true;
+    if (action.kind === 'link') {
+        return abilities[action.id] !== false;
+    }
+    return abilities[action.id] === true;
 }
 
 /** Splits the items of a selection by whether an action is allowed on them. */

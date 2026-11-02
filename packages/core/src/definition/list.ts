@@ -92,8 +92,9 @@ const BUILT_IN_ITEM_ACTION_DEFINITIONS: Readonly<Record<BuiltInItemAction, Actio
 /**
  * The actions of a resource (decision 0040): its built-in item actions (`show`, `edit`,
  * `duplicate`, `delete`, or those of its `itemActions`, in their order), then the actions it
- * declares. A declared action with the id of a built-in one replaces it, at its place, and is left
- * out with it when `itemActions` doesn't list it. With `"open": "edit"`, `show` is left out: it
+ * declares. A declared action with the id of a built-in one replaces it, at its place, with the
+ * built-in one's placement, confirmation, `destructive` and `dryRun` when it doesn't set them, and
+ * is left out with it when `itemActions` doesn't list it. With `"open": "edit"`, `show` is left out: it
  * would go to the edit form too. Abilities of the items then hide what they don't allow.
  */
 export function getResourceActions(resource: Resource): Action[] {
@@ -105,10 +106,14 @@ export function getResourceActions(resource: Resource): Action[] {
             !(id === 'show' && getOpenMode(resource) === 'edit'),
     );
     return [
-        ...ids.map(
-            (id) =>
-                declared.find((action) => action.id === id) ?? BUILT_IN_ITEM_ACTION_DEFINITIONS[id],
-        ),
+        ...ids.map((id): Action => {
+            const replacement = declared.find((action) => action.id === id);
+            // What the declared action doesn't set (placement, confirmation, dry runs) is the
+            // built-in one's.
+            return replacement !== undefined
+                ? { ...BUILT_IN_ITEM_ACTION_DEFINITIONS[id], ...replacement }
+                : BUILT_IN_ITEM_ACTION_DEFINITIONS[id];
+        }),
         ...declared.filter((action) => !isBuiltInItemAction(action.id)),
     ];
 }

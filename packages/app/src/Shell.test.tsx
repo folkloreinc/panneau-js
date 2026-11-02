@@ -684,6 +684,21 @@ describe('the app shell', () => {
         expect(backend.items('pages').map((page) => page.id)).toEqual(['1', '2', '3']);
     });
 
+    it('asks before duplicating from a form with unsaved changes, and copies nothing if the user stays', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages/2/edit');
+        const backend = renderApp();
+        await user.type(await screen.findByRole('textbox', { name: /title/i }), '!');
+        await user.click(
+            await within(screen.getByRole('main')).findByRole('button', { name: 'Duplicate' }),
+        );
+        const dialog = await screen.findByRole('alertdialog', { name: 'Leave without saving?' });
+        await user.click(within(dialog).getByRole('button', { name: 'Stay' }));
+        await waitFor(() => expect(screen.queryByRole('alertdialog')).toBeNull());
+        expect(backend.items('pages').map((page) => page.id)).toEqual(['1', '2']);
+        expect(window.location.pathname).toBe('/panneau/resources/pages/2/edit');
+    });
+
     it('deletes an item from its row after a confirmation', async () => {
         const user = userEvent.setup();
         window.history.replaceState(null, '', '/panneau/resources/pages');

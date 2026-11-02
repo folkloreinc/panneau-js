@@ -17,7 +17,10 @@ import type {
  */
 export interface ListItem {
     id: string;
-    /** What the user can do with the item. Without abilities, every action is shown. */
+    /**
+     * What the user can do with the item. Without abilities, the built-in item actions (`show`,
+     * `edit`, `duplicate`, `delete`) are hidden, and the other actions are shown.
+     */
     abilities?: Abilities;
     [key: string]: unknown;
 }

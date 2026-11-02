@@ -28,16 +28,13 @@ function isActionList(actions: ListActions): actions is readonly Action[] {
 }
 
 /**
- * Whether an action is available on an item (decision 0011). Without abilities, the item allows
- * everything and the backend decides. With abilities, a link is allowed unless the item says
- * otherwise (`edit` needs `update`, `show` needs `view`), and other actions only when the item
- * lists their id.
+ * Whether an action is available on an item (decisions 0011 and 0040), as `isActionAllowedOn()`
+ * of `@panneau/core` says: the built-in item actions need their ability (`view`, `update`,
+ * `duplicate`, `delete`), even on an item without abilities. Other links are allowed unless the
+ * item says otherwise, and other actions when the item lists their id, or has no abilities.
  */
 export function isAllowedOn(action: Action, item: ListItem): boolean {
-    const { abilities } = item;
-    return abilities === undefined
-        ? canRunAction(action)
-        : isActionAllowedOn(action, { abilities });
+    return isActionAllowedOn(action, item);
 }
 
 /**

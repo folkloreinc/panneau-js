@@ -37,9 +37,13 @@ describe('isAllowedOn', () => {
         expect(isAllowedOn(showLink, { id: '1', abilities: { view: true } })).toBe(true);
     });
 
-    it('allows everything on items without abilities', () => {
+    it('allows other actions on items without abilities, but no built-in item action', () => {
         expect(isAllowedOn(publish, { id: '1' })).toBe(true);
         expect(isAllowedOn({ ...publish, abilities: { run: false } }, { id: '1' })).toBe(false);
+        // Without abilities, nothing says the item can be deleted, updated or viewed
+        expect(isAllowedOn(remove, { id: '1' })).toBe(false);
+        expect(isAllowedOn(edit, { id: '1' })).toBe(false);
+        expect(isAllowedOn(showLink, { id: '1' })).toBe(false);
     });
 });
 

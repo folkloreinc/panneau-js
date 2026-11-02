@@ -54,6 +54,40 @@ describe('createMockBackend', () => {
         ).toBe(404);
     });
 
+    it('refuses to delete or duplicate items that don’t allow it, as clients read abilities', async () => {
+        const backend = createBackend();
+        const [first, second] = backend.items('pages');
+        if (first === undefined || second === undefined) {
+            throw new Error('No pages.');
+        }
+        // A missing ability doesn't allow, as `false` doesn't
+        first.abilities = { view: true };
+        second.abilities = { ...second.abilities, delete: false };
+        const remove = (body: unknown) =>
+            backend.fetch(
+                '/panneau/api/resources/pages/actions/delete',
+                json(body, { method: 'POST' }),
+            );
+        const dryRun = await remove({ selection: { ids: ['1', '2', '3'] }, dryRun: true });
+        expect(await dryRun.json()).toMatchObject({
+            summary: { succeeded: 1, skipped: 2 },
+        });
+        expect((await remove({ selection: { ids: ['1'] } })).status).toBe(403);
+        const response = await remove({ selection: { ids: ['1', '2', '3'] } });
+        expect(await response.json()).toMatchObject({
+            summary: { succeeded: 1, failed: 0, skipped: 2 },
+            results: [
+                { id: '1', status: 'skipped', reason: 'forbidden' },
+                { id: '2', status: 'skipped', reason: 'forbidden' },
+            ],
+        });
+        expect(backend.items('pages').map((item) => item.id)).toEqual(['1', '2']);
+        expect(
+            (await backend.fetch('/panneau/api/resources/pages/1/duplicate', { method: 'POST' }))
+                .status,
+        ).toBe(403);
+    });
+
     it('answers dry runs of the built-in delete', async () => {
         const response = await createBackend().fetch(
             '/panneau/api/resources/authors/actions/delete',

@@ -1,3 +1,4 @@
+import { ITEM_ACTION_ABILITIES, isBuiltInItemAction } from '../constants';
 import { getMediaLibraries } from '../libraries';
 import { type ListQuery, fromSearchParams, isFilterRange, matchesFilterRange } from '../query';
 import { type RuleFailure, checkValues } from '../rules';
@@ -258,6 +259,15 @@ function withOwnTransform(resource: ResourceInput, item: Item): Item {
         ...item,
         media: isRecord(item.transform) ? { ...media, transform: item.transform } : media,
     };
+}
+
+/**
+ * Whether an item allows an action, as clients read its abilities (decision 0040): a built-in item
+ * action needs its ability (`delete`, `duplicate`…), and another action its id.
+ */
+function allows(item: Item, actionId: string): boolean {
+    const ability = isBuiltInItemAction(actionId) ? ITEM_ACTION_ABILITIES[actionId] : actionId;
+    return item.abilities[ability] === true && item.abilities[actionId] !== false;
 }
 
 /**
@@ -724,7 +734,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                     return problem(400, 'This action does not support dry runs.');
                 }
                 const selected = selectItems(list, body.selection as Selection | undefined);
-                const allowed = selected.filter((item) => item.abilities?.[actionId] !== false);
+                const allowed = selected.filter((item) => allows(item, actionId));
                 const result: ActionResult = {
                     summary: {
                         succeeded: allowed.length,
@@ -741,14 +751,34 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             if (actionId !== 'delete') {
                 return problem(404, 'Action not found.');
             }
-            const selected = selectItems(list, body.selection as Selection | undefined);
+            const selection = body.selection as Selection | undefined;
+            const selected = selectItems(list, selection);
+            const deleted = selected.filter((item) => allows(item, 'delete'));
+            const skipped = selected.filter((item) => !deleted.includes(item));
+            // The only item of an item action is an error, not a skipped result
+            const ids =
+                selection !== undefined && 'ids' in selection && Array.isArray(selection.ids)
+                    ? selection.ids
+                    : null;
+            if (ids?.length === 1 && skipped.length > 0) {
+                return problem(403, 'This item can’t be deleted.');
+            }
             store.set(
                 resource.id,
-                list.filter((item) => !selected.includes(item)),
+                list.filter((item) => !deleted.includes(item)),
             );
             const result: ActionResult = {
-                message: `${selected.length} deleted.`,
-                summary: { succeeded: selected.length, failed: 0, skipped: 0 },
+                message: `${deleted.length} deleted.`,
+                summary: { succeeded: deleted.length, failed: 0, skipped: skipped.length },
+                ...(skipped.length > 0
+                    ? {
+                          results: skipped.slice(0, 20).map((item) => ({
+                              id: item.id,
+                              status: 'skipped' as const,
+                              reason: 'forbidden',
+                          })),
+                      }
+                    : {}),
                 refresh: 'list',
             };
             return json(200, result);
@@ -761,6 +791,9 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             }
             if (method !== 'POST') {
                 return problem(405, 'Method not allowed.');
+            }
+            if (!allows(current, 'duplicate')) {
+                return problem(403, 'This item can’t be duplicated.');
             }
             // A copy of its values, under an id no item has
             const { id: _id, version: _version, abilities: _abilities, ...values } = current;

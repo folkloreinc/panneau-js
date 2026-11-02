@@ -266,6 +266,32 @@ describe('getResourceActions', () => {
         ]);
     });
 
+    it('gives a declared built-in id the defaults of the built-in one it doesn’t set', () => {
+        // As laravel-panneau's `DeleteAction` declares it
+        const resource = {
+            ...getResource('authors'),
+            actions: [
+                {
+                    id: 'delete',
+                    label: 'Delete',
+                    kind: 'server',
+                    scope: ['item', 'selection'],
+                    confirm: { title: 'Delete it?' },
+                } satisfies Action,
+            ],
+        };
+        expect(getResourceActions(resource)[3]).toEqual({
+            id: 'delete',
+            label: 'Delete',
+            kind: 'server',
+            scope: ['item', 'selection'],
+            placement: ['menu', 'toolbar', 'form'],
+            destructive: true,
+            confirm: { title: 'Delete it?' },
+            dryRun: true,
+        });
+    });
+
     it('leaves out `show` when items open in their form', () => {
         const resource = getResource('authors');
         expect(getOpenMode(resource)).toBe('panel');
@@ -343,6 +369,21 @@ describe('getItemActions', () => {
         });
         // A built-in link that nothing resolves is left out
         expect(ids(getItemActions(resource, page, 'row'))).toEqual(['publish', 'site', 'jobs']);
+    });
+
+    it('shows no built-in item action on an item without abilities', () => {
+        const record = { id: '1', slug: 'about' };
+        expect(ids(getItemActions(resource, record, 'row', { getLinkHref }))).toEqual([
+            'publish',
+            'site',
+            'jobs',
+        ]);
+        expect(ids(getItemActions(resource, record, 'menu', { getLinkHref }))).toEqual([]);
+        expect(ids(getItemActions(resource, record, 'form', { getLinkHref }))).toEqual([
+            'publish',
+            'site',
+            'jobs',
+        ]);
     });
 
     it('leaves out the actions the caller filters, and those of `itemActions`', () => {

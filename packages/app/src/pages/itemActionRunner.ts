@@ -20,7 +20,7 @@ function isBuiltInDuplicate(resource: Resource, action: Action): boolean {
 /**
  * Runs the actions of a resource's items (decision 0040): the built-in `duplicate` copies the item
  * through the adapter (`duplicate()`), then opens the copy in its form, or in its panel when it
- * can't be updated. Every other action goes to the action runner. `isSupported()` leaves out the
+ * can't be updated. A form with unsaved changes asks first: `false` when the user stays. Every other action goes to the action runner. `isSupported()` leaves out the
  * built-in `duplicate` when the adapter can't duplicate.
  */
 export function useItemActionRunner(
@@ -42,6 +42,10 @@ export function useItemActionRunner(
         if (!isBuiltInDuplicate(resource, action) || item === undefined) {
             return runAction(target);
         }
+        // Like a link: a form with unsaved changes asks first, before the copy is made.
+        if (!((await guards?.confirmLeave()) ?? true)) {
+            return false;
+        }
         const copy = await duplicate.mutateAsync(item.id);
         toasts.show({
             title: intl.formatMessage(actionsMessages.duplicated, {
@@ -57,10 +61,7 @@ export function useItemActionRunner(
             },
             basePath,
         );
-        // Like a link: a form with unsaved changes asks first.
-        if ((await guards?.confirmLeave()) ?? true) {
-            navigate(to);
-        }
+        navigate(to);
         return { status: 'navigated', to };
     };
 

@@ -209,7 +209,9 @@ export function getSearchableResources(definition: Definition): Resource[];
 export function groupActions(actions: readonly Action[]): Record<ActionPlacement, Action[]>;
 
 // @public
-export function isActionAllowedOn(action: Action, item: Pick<Item, 'abilities'>): boolean;
+export function isActionAllowedOn(action: Action, item: {
+    readonly abilities?: Abilities | undefined;
+}): boolean;
 
 // @public
 export function isEqual(a: unknown, b: unknown): boolean;
