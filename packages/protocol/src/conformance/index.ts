@@ -665,6 +665,7 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
     const writes = options.writes;
     let createdId: string | null = null;
     let createdVersion: string | null = null;
+    let updatedVersion: string | null = null;
 
     await run('create.invalid', 'Invalid values are refused with a 422 problem', async (check) => {
         if (writes === undefined || resource === null) {
@@ -672,7 +673,9 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
             return;
         }
         const hasRequired = resource.fields.some((field) =>
-            (field.rules ?? []).some((rule) => rule.rule === 'required'),
+            (field.rules ?? []).some(
+                (rule) => rule.rule === 'required' && (rule.mode ?? 'create') === 'create',
+            ),
         );
         if (writes.invalid === undefined && !hasRequired) {
             check.skip('No invalid values given, and the resource has no required field.');
@@ -730,7 +733,43 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                 'The version did not change after an update.',
             );
         }
+        updatedVersion = item?.data.version ?? null;
     });
+
+    await run(
+        'update.create-rules',
+        'Rules limited to create do not apply to updates',
+        async (check) => {
+            if (createdId === null || writes === undefined || resource === null) {
+                check.skip('No item was created.');
+                return;
+            }
+            // A password: required to create the item, left empty to keep it on an update.
+            const names = resource.fields
+                .filter(
+                    (field) =>
+                        field.readOnly !== true &&
+                        field.createOnly !== true &&
+                        (field.rules ?? []).some(
+                            (rule) => rule.rule === 'required' && rule.mode === 'create',
+                        ),
+                )
+                .map((field) => field.name);
+            if (names.length === 0) {
+                check.skip('The resource has no rule limited to create.');
+                return;
+            }
+            const reply = await request(itemPath(), {
+                method: 'PATCH',
+                body: JSON.stringify(Object.fromEntries(names.map((name) => [name, null]))),
+                headers: updatedVersion !== null ? { 'If-Match': `"${updatedVersion}"` } : {},
+            });
+            check.expect(
+                reply.status === 200,
+                `An update with ${names.join(', ')} set to null got status ${reply.status}, expected 200.`,
+            );
+        },
+    );
 
     await run(
         'update.conflict',

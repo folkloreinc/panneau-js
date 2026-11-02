@@ -94,6 +94,7 @@ export interface Form {
     isVisible(target: {
         visibleWhen?: Condition | undefined;
     }, parentPath?: string): boolean;
+    readonly mode: FormMode;
     reset(values?: Values, version?: string | null): void;
     resolveConflict(choice: 'reload' | 'overwrite'): Promise<SubmitResult | null>;
     setOptions(options: Partial<UpdatableFormOptions>): void;

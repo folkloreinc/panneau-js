@@ -33,6 +33,26 @@ describe('FormView', () => {
         await waitFor(() => expect(onSubmit).toHaveBeenCalled());
     });
 
+    it('marks a field required in the mode of the form', () => {
+        const fields: Field[] = [
+            {
+                name: 'password',
+                type: 'text',
+                label: 'Password',
+                rules: [{ rule: 'required', mode: 'create' }],
+            },
+        ];
+        function Editor({ version }: { version: string | null }) {
+            const { form } = useForm({ fields, version, onSubmit: vi.fn() });
+            return <FormView form={form} fields={fields} aria-label="Editor" />;
+        }
+        const { unmount } = renderForm(<Editor version={null} />);
+        expect(screen.getByRole('textbox', { name: /Password/ })).toBeRequired();
+        unmount();
+        renderForm(<Editor version="1" />);
+        expect(screen.getByRole('textbox', { name: /Password/ })).not.toBeRequired();
+    });
+
     it('draws a skeleton of its layout and fields while its values load', () => {
         const fields: Field[] = [
             { name: 'title', type: 'text', label: 'Title' },

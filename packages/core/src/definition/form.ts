@@ -1,4 +1,4 @@
-import type { Field, LayoutNode, Resource } from '@panneau/protocol';
+import type { Field, LayoutNode, Resource, Rule } from '@panneau/protocol';
 
 /** Whether a form creates an item or updates one. */
 export type FormMode = 'create' | 'update';
@@ -18,8 +18,9 @@ export interface ResolvedForm {
 
 export interface ResolveFormOptions {
     /**
-     * `create` removes `updateOnly` fields; `update` makes `createOnly` fields read-only. Without a
-     * mode, every field is kept as is.
+     * `create` removes `updateOnly` fields; `update` makes `createOnly` fields read-only. Rules
+     * limited to a mode (`{ "rule": "required", "mode": "create" }`) are kept, without their
+     * `mode`, in that mode only, in nested fields too. Without a mode, every field is kept as is.
      */
     mode?: FormMode;
     /** The type of the item, among the resource's `types`: its fields are added. */
@@ -51,6 +52,38 @@ function pruneLayout(
     });
 }
 
+/** The rules that apply in the mode, without their `mode`. */
+function resolveRules(rules: readonly Rule[], mode: FormMode): Rule[] {
+    return rules.flatMap((rule) => {
+        if (rule.mode === undefined) {
+            return [rule];
+        }
+        if (rule.mode !== mode) {
+            return [];
+        }
+        const { mode: _mode, ...resolved } = rule;
+        return [resolved as Rule];
+    });
+}
+
+/** A field with the rules of the mode, and those of its nested fields and block types. */
+function resolveFieldRules(field: Field, mode: FormMode): Field {
+    const resolved: Field = { ...field };
+    if (field.rules !== undefined) {
+        resolved.rules = resolveRules(field.rules, mode);
+    }
+    if (field.fields !== undefined) {
+        resolved.fields = field.fields.map((nested) => resolveFieldRules(nested, mode));
+    }
+    if (field.types !== undefined) {
+        resolved.types = field.types.map((type) => ({
+            ...type,
+            fields: type.fields.map((nested) => resolveFieldRules(nested, mode)),
+        }));
+    }
+    return resolved;
+}
+
 /** Resolves fields and a layout into a form. */
 export function resolveFields(
     fields: readonly Field[],
@@ -58,13 +91,17 @@ export function resolveFields(
     { mode }: Pick<ResolveFormOptions, 'mode'> = {},
 ): ResolvedForm {
     const resolved = fields.flatMap((field) => {
+        if (mode === undefined) {
+            return [field];
+        }
         if (mode === 'create' && field.updateOnly === true) {
             return [];
         }
+        const withRules = resolveFieldRules(field, mode);
         if (mode === 'update' && field.createOnly === true) {
-            return [{ ...field, readOnly: true }];
+            return [{ ...withRules, readOnly: true }];
         }
-        return [field];
+        return [withRules];
     });
     const fieldsByName = new Map(resolved.map((field) => [field.name, field]));
     const pruned = pruneLayout(layout, fieldsByName);

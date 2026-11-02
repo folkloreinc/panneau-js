@@ -176,6 +176,27 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 | `before`, `after`   | dates (value or other field)            |
 | `crop`              | `image` and `media` values              |
 
+- **`required`** fails on `null`, an empty or blank string, and an empty array or object. A file chosen in the browser (`File`), to send in `multipart/form-data`, is filled; `accept` and `maxSize` read its type and size.
+- **`mode`** limits a rule to one mode of the form: `create` (the item is created) or `update` (it is updated). Without it, a rule applies in both.
+
+    ```jsonc
+    // A password: required to create a user, optional to edit one (empty keeps the current one).
+    // The backend never sends its value.
+    {
+        "name": "password",
+        "type": "text",
+        "settings": { "secret": true },
+        "rules": [
+            { "rule": "required", "mode": "create" },
+            { "rule": "min", "value": 8 },
+        ],
+    }
+    ```
+
+    - Clients check the rule, and show the required mark, in that mode only. `resolveFields()` and `resolveForm()` of `@panneau/core` keep it, without its `mode`, in that mode, and drop it in the other.
+    - A backend applies the rule in that mode only. On an update, a field whose `required` is limited to `create` accepts `null`, or no value at all.
+    - Rules with a `mode` that a client checks without knowing the mode (`checkRules()` without one) are skipped: the backend still checks them.
+
 - **`crop`** checks the transform of each image of a value: `{ "rule": "crop", "value": { "ratios": ["16:9", "1:1"], "required": true } }`.
     - With `required`, each image needs a crop for this use. An id alone has none.
     - With `ratios`, a crop must have one of them once rendered (a quarter turn swaps its width and height). A crop has a ratio when its height is within one pixel of its width divided by the ratio, since crops are in whole pixels.
@@ -722,7 +743,7 @@ Global search ([decisions/0029](decisions/0029-go-to-palette.md)):
 - **a light entry point for browsers** (`@panneau/protocol/runtime`): the constants and the helpers above that don't need the schemas (`checkValues()`, `evaluateCondition()`, `lintDefinition()`, the list query helpers, `isProblem()`), without loading zod. UI packages import them from there, and only types from the main entry point.
 - **generated files**: `@panneau/protocol/definition.schema.json` and `@panneau/protocol/boot.schema.json` (JSON Schema 2020-12), and `@panneau/protocol/openapi.json` (OpenAPI 3.1).
 - **a mock backend** (`@panneau/protocol/mock`): an in-memory implementation of the resource routes.
-- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. For a list paged with cursors, it also follows `nextCursor`, and checks that an invalid cursor is a `422`. It also checks that the backend reads the bounds of the resource's first `date-range` filter, if it has one, and that `GET /search` finds an item by a word of its title, reads `limit` and `resources`, and refuses invalid parameters with a `422`.
+- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. For a list paged with cursors, it also follows `nextCursor`, and checks that an invalid cursor is a `422`. With `writes`, it also checks that rules limited to `create` don't apply to updates: an update with those fields set to `null` succeeds. It also checks that the backend reads the bounds of the resource's first `date-range` filter, if it has one, and that `GET /search` finds an item by a word of its title, reads `limit` and `resources`, and refuses invalid parameters with a `422`.
 
 ```ts
 import { formatReport, runConformance } from '@panneau/protocol/conformance';

@@ -11,7 +11,11 @@ export function getValue(values: unknown, path: string): unknown {
     }, values);
 }
 
-/** Whether a value counts as filled: not null, not an empty or blank string, not an empty array or object. */
+/**
+ * Whether a value counts as filled: not null, not an empty or blank string, not an empty array or
+ * plain object. A file (`Blob`, `File`, even empty) is filled. Other collections count by their
+ * `length` or `size` (an empty `FileList`, `Map` or `Set` isn't filled); other objects are filled.
+ */
 export function isFilled(value: unknown): boolean {
     if (value === null || value === undefined) {
         return false;
@@ -23,9 +27,25 @@ export function isFilled(value: unknown): boolean {
         return value.length > 0;
     }
     if (typeof value === 'object') {
-        return Object.keys(value).length > 0;
+        if (typeof Blob !== 'undefined' && value instanceof Blob) {
+            return true;
+        }
+        // A chosen file has no own keys: only plain objects are empty without them.
+        if (isPlainObject(value)) {
+            return Object.keys(value).length > 0;
+        }
+        const { length, size } = value as { length?: unknown; size?: unknown };
+        if (typeof length === 'number') {
+            return length > 0;
+        }
+        return typeof size === 'number' ? size > 0 : true;
     }
     return true;
+}
+
+function isPlainObject(value: object): boolean {
+    const prototype: unknown = Object.getPrototypeOf(value);
+    return prototype === Object.prototype || prototype === null;
 }
 
 export function isRecord(value: unknown): value is Record<string, unknown> {

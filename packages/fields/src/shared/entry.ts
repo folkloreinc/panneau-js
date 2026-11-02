@@ -2,9 +2,15 @@ import type { Field, Rule } from '@panneau/protocol';
 
 import type { FieldEntryProps, FieldProps } from './types';
 
-/** The rule of a field with this name, if any. */
+/**
+ * The rule of a field with this name, if any. A rule limited to a mode (`"mode": "create"`)
+ * doesn't count: forms keep it, without its `mode`, in that mode only (`resolveFields()` of
+ * `@panneau/core`).
+ */
 export function findRule(field: Field, rule: Rule['rule']): Rule | undefined {
-    return field.rules?.find((candidate) => candidate.rule === rule);
+    return field.rules?.find(
+        (candidate) => candidate.rule === rule && candidate.mode === undefined,
+    );
 }
 
 /** The number of a `min` or `max` rule of a field, if any. */

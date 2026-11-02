@@ -37,6 +37,14 @@ function isKnownRule(rule: Rule): boolean {
     return (PORTABLE_RULES as readonly string[]).includes(rule.rule);
 }
 
+/**
+ * Whether a rule applies in a mode: a rule with a `mode` applies only in that mode, and not when the
+ * mode isn't known.
+ */
+function appliesIn(rule: Rule, mode: CheckOptions['mode']): boolean {
+    return rule.mode === undefined || rule.mode === mode;
+}
+
 function failure(rule: Rule): RuleFailure {
     const result: RuleFailure = { rule: rule.rule };
     if ('value' in rule && rule.value !== undefined) {
@@ -67,9 +75,16 @@ function matchesMime(mime: string, patterns: string[]): boolean {
     });
 }
 
+/** The files of a value, with their MIME type and size: stored files, or chosen ones (`File`). */
 function mediaList(value: unknown): Record<string, unknown>[] {
     const list = Array.isArray(value) ? value : [value];
-    return list.filter(isRecord);
+    return list
+        .filter(isRecord)
+        .map((media) =>
+            typeof Blob !== 'undefined' && media instanceof Blob
+                ? { mime: media.type === '' ? undefined : media.type, size: media.size }
+                : media,
+        );
 }
 
 /**
@@ -100,15 +115,20 @@ function toTime(value: unknown): number | null {
     return Number.isNaN(time) ? null : time;
 }
 
-/** Checks one value against a field's rules. Returns the rules that fail. */
+/**
+ * Checks one value against a field's rules. Returns the rules that fail. Rules limited to a `mode`
+ * only apply when it is given.
+ */
 export function checkRules(
     rules: Rule[],
     value: unknown,
     root: Record<string, unknown> = {},
+    mode?: CheckOptions['mode'],
 ): RuleFailure[] {
     const failures: RuleFailure[] = [];
     const filled = isFilled(value);
-    rules.filter(isKnownRule).forEach((rule) => {
+    const applying = rules.filter((rule) => isKnownRule(rule) && appliesIn(rule, mode));
+    applying.forEach((rule) => {
         if (rule.rule === 'required') {
             if (!filled) {
                 failures.push(failure(rule));
@@ -192,16 +212,19 @@ function addFailures(context: Context, path: string, failures: RuleFailure[]) {
     }
 }
 
-/** The rules of a field, with those its type implies: `json` for the `json` type. */
-function rulesOf(field: Field): Rule[] {
-    const rules = field.rules ?? [];
+/**
+ * The rules of a field that apply in the mode, with those its type implies: `json` for the `json`
+ * type.
+ */
+function rulesOf(field: Field, mode: CheckOptions['mode']): Rule[] {
+    const rules = (field.rules ?? []).filter((rule) => appliesIn(rule, mode));
     return field.type === 'json' && !rules.some((rule) => rule.rule === 'json')
         ? [...rules, { rule: 'json' }]
         : rules;
 }
 
 function checkFieldValue(field: Field, value: unknown, path: string, context: Context) {
-    const rules = rulesOf(field);
+    const rules = rulesOf(field, context.mode);
     if (field.localized === true) {
         const localized = isRecord(value) ? value : {};
         const required = rules.filter((rule) => rule.rule === 'required');
@@ -217,7 +240,7 @@ function checkFieldValue(field: Field, value: unknown, path: string, context: Co
                     addFailures(
                         context,
                         `${path}.${locale}`,
-                        checkRules(required, localized[locale], context.root),
+                        checkRules(required, localized[locale], context.root, context.mode),
                     );
                 });
             }
@@ -226,13 +249,13 @@ function checkFieldValue(field: Field, value: unknown, path: string, context: Co
             addFailures(
                 context,
                 `${path}.${locale}`,
-                checkRules(others, localeValue, context.root),
+                checkRules(others, localeValue, context.root, context.mode),
             );
         });
         return;
     }
 
-    addFailures(context, path, checkRules(rules, value, context.root));
+    addFailures(context, path, checkRules(rules, value, context.root, context.mode));
 
     if (field.type === 'group' && field.fields !== undefined && isRecord(value)) {
         checkFields(field.fields, value, `${path}.`, context);
