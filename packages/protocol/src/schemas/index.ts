@@ -46,6 +46,7 @@ import {
     Widget,
 } from './definition';
 import { BlockType, Field, RichTextSettings, RichTextStyle, Rule } from './field';
+import { actionJsonRules } from './jsonRules';
 import { LayoutNode } from './layout';
 import { Column, Filter, ListDefinition } from './list';
 import { Resource, ResourceFeatures } from './resource';
@@ -144,7 +145,9 @@ export const namedSchemas = {
 
 /** A registry of the named schemas, used to reference them by name in generated files. */
 export function createSchemaRegistry() {
-    const registry = z.registry<{ id: string }>();
+    const registry = z.registry<{ id: string } & Record<string, unknown>>();
     Object.entries(namedSchemas).forEach(([id, schema]) => registry.add(schema, { id }));
+    // Checks that Zod makes in code, which the JSON Schema of the definition must make too.
+    registry.add(Action, { id: 'Action', ...actionJsonRules });
     return registry;
 }

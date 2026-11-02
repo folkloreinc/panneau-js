@@ -49,6 +49,17 @@ export const Resource = z
             description:
                 'The field that holds the image of an item (a media or a URL), in search results, cards and pickers.',
         }),
+        open: z
+            .union([z.enum(['panel', 'edit']), z.string().min(1)])
+            .optional()
+            .meta({
+                description:
+                    "Where an item's title goes, in its list and wherever the app links to the item (decision 0040). `panel`, the default: the show route, with the item's details in a panel next to the list. `edit`: its edit form, and the show route redirects there. Clients treat a value they don't know as `panel`.",
+            }),
+        itemActions: z.array(z.string().min(1)).optional().meta({
+            description:
+                "The built-in item actions the resource shows, in their order (decision 0040): some of `show`, `edit`, `duplicate` and `delete`. Defaults to all four. Each one is shown on the items whose abilities allow it (`view`, `update`, `duplicate`, `delete`). `[]` shows none. Clients ignore ids they don't know.",
+        }),
         fields: z.array(Field),
         form: z.looseObject({ layout: z.array(LayoutNode).optional() }).optional(),
         list: ListDefinition.optional(),

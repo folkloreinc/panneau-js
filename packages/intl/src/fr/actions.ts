@@ -1,6 +1,11 @@
 /** The French messages of `@panneau/actions`, by id. */
 export const actionsFr: Record<string, string> = {
     'panneau.actions.cancel': 'Annuler',
+    'panneau.actions.show': 'Voir',
+    'panneau.actions.edit': 'Modifier',
+    'panneau.actions.duplicate': 'Dupliquer',
+    'panneau.actions.delete': 'Supprimer',
+    'panneau.actions.duplicated': '« {title} » est dupliqué.',
     'panneau.actions.done': '« {action} » est terminé.',
     'panneau.actions.failed': '« {action} » a échoué.',
     'panneau.actions.cancelled': '« {action} » a été annulé.',

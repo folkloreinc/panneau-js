@@ -11,7 +11,12 @@ import { createMockBackend } from '@panneau/protocol/mock';
 import { Panneau } from './Panneau';
 import { createBootConfig, createDefinition } from './__fixtures__/definition';
 
-function renderApp(overrides: Partial<DefinitionInput> = {}, plugins: PanneauPlugin[] = []) {
+function renderApp(
+    overrides: Partial<DefinitionInput> = {},
+    plugins: PanneauPlugin[] = [],
+    // Changes the items of the backend before the app fetches them
+    prepare?: (backend: ReturnType<typeof createMockBackend>) => void,
+) {
     const definition = createDefinition({
         menus: { main: [{ type: 'resources' }, { type: 'link', label: 'Site', url: '/' }] },
         ...overrides,
@@ -26,6 +31,7 @@ function renderApp(overrides: Partial<DefinitionInput> = {}, plugins: PanneauPlu
             authors: [{ id: '1', name: 'Ada' }],
         },
     });
+    prepare?.(backend);
     const result = validateBootConfig(createBootConfig({ definition }));
     if (!result.success) {
         throw new Error(JSON.stringify(result.issues));
@@ -292,7 +298,10 @@ describe('the app shell', () => {
             const user = userEvent.setup();
             window.history.replaceState(null, '', '/panneau/resources/pages');
             renderApp(overrides, plugins);
-            await user.click(await screen.findByRole('button', { name: 'Timeline: Contact' }));
+            // Resolved to the page's path, a link as in the panel and the form
+            const link = await screen.findByRole('link', { name: 'Timeline: Contact' });
+            expect(link).toHaveAttribute('href', '/panneau/pages/job/2');
+            await user.click(link);
             expect(await screen.findByRole('heading', { name: 'Job 2' })).toBeInTheDocument();
             expect(window.location.pathname).toBe('/panneau/pages/job/2');
         });
@@ -354,6 +363,365 @@ describe('the app shell', () => {
         await waitFor(() => expect(window.location.pathname).toBe('/panneau/resources/pages'));
         expect(await screen.findByRole('table', { name: 'Pages' })).toBeInTheDocument();
         expect(screen.queryByText('About us')).not.toBeInTheDocument();
+    });
+
+    it('links each row to the edit and the show route with the built-in links', async () => {
+        const user = userEvent.setup();
+        renderApp({
+            resources: [
+                {
+                    id: 'pages',
+                    label: { singular: 'page', plural: 'pages' },
+                    itemTitle: 'title',
+                    fields: [{ name: 'title', type: 'text', label: 'Title' }],
+                    actions: [
+                        { id: 'show', kind: 'link', scope: ['item'] },
+                        { id: 'edit', kind: 'link', scope: ['item'] },
+                    ],
+                },
+            ],
+        });
+        await user.click(navigation().getByRole('link', { name: 'Pages' }));
+        const table = await screen.findByRole('table', { name: 'Pages' });
+        expect(await within(table).findByRole('link', { name: 'Edit: Contact' })).toHaveAttribute(
+            'href',
+            '/panneau/resources/pages/2/edit',
+        );
+
+        await user.click(within(table).getByRole('link', { name: 'View: About us' }));
+        expect(window.location.pathname).toBe('/panneau/resources/pages/1');
+        const panel = await screen.findByRole('region', { name: 'Details of the page' });
+        // The panel has its own link to edit, and doesn't repeat the built-in links
+        expect(await within(panel).findAllByRole('link', { name: 'Edit' })).toHaveLength(1);
+        expect(within(panel).queryByRole('link', { name: 'View' })).toBeNull();
+
+        await user.click(within(table).getByRole('link', { name: 'Edit: Contact' }));
+        expect(window.location.pathname).toBe('/panneau/resources/pages/2/edit');
+        expect(await screen.findByRole('textbox', { name: 'Title' })).toHaveValue('Contact');
+        // On the edit page, `edit` is the page itself
+        expect(
+            within(screen.getByRole('main')).queryByRole('link', { name: 'Edit' }),
+        ).not.toBeInTheDocument();
+    });
+
+    it('opens the items of a resource with `"open": "edit"` in their form, and redirects its show route', async () => {
+        const user = userEvent.setup();
+        const authors = {
+            id: 'authors',
+            label: { singular: 'author', plural: 'authors' },
+            itemTitle: 'name',
+            open: 'edit',
+            fields: [{ name: 'name', type: 'text', label: 'Name' }],
+            actions: [
+                { id: 'show', kind: 'link', scope: ['item'] },
+                { id: 'edit', kind: 'link', scope: ['item'] },
+            ],
+        } satisfies DefinitionInput['resources'][number];
+        renderApp({ resources: [authors] });
+        await user.click(navigation().getByRole('link', { name: 'Authors' }));
+        const table = await screen.findByRole('table', { name: 'Authors' });
+        expect(await within(table).findByRole('link', { name: 'Ada' })).toHaveAttribute(
+            'href',
+            '/panneau/resources/authors/1/edit',
+        );
+        // `show` would open the form too: only `edit` is left
+        expect(within(table).getByRole('link', { name: 'Edit: Ada' })).toBeInTheDocument();
+        expect(within(table).queryByRole('link', { name: 'View: Ada' })).toBeNull();
+
+        await user.click(within(table).getByRole('link', { name: 'Ada' }));
+        expect(window.location.pathname).toBe('/panneau/resources/authors/1/edit');
+        expect(await screen.findByRole('textbox', { name: 'Name' })).toHaveValue('Ada');
+    });
+
+    it('opens an item that can’t be updated in its panel, even with `"open": "edit"`', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/authors');
+        renderApp(
+            {
+                resources: [
+                    {
+                        id: 'authors',
+                        label: { singular: 'author', plural: 'authors' },
+                        itemTitle: 'name',
+                        open: 'edit',
+                        fields: [{ name: 'name', type: 'text', label: 'Name' }],
+                        actions: [{ id: 'edit', kind: 'link', scope: ['item'] }],
+                    },
+                ],
+            },
+            [],
+            (backend) => {
+                const [ada] = backend.items('authors');
+                if (ada !== undefined) {
+                    ada.abilities = { ...ada.abilities, update: false };
+                }
+            },
+        );
+        const table = await screen.findByRole('table', { name: 'Authors' });
+        const title = await within(table).findByRole('link', { name: 'Ada' });
+        expect(title).toHaveAttribute('href', '/panneau/resources/authors/1');
+        expect(within(table).queryByRole('link', { name: 'Edit: Ada' })).toBeNull();
+
+        await user.click(title);
+        const panel = await screen.findByRole('region', { name: 'Details of the author' });
+        expect(await within(panel).findByRole('heading', { name: 'Ada' })).toBeInTheDocument();
+        // The item can't be updated: no redirect to its form, and no link to it
+        expect(window.location.pathname).toBe('/panneau/resources/authors/1');
+        expect(within(panel).queryByRole('link', { name: 'Edit' })).toBeNull();
+    });
+
+    it('goes to the route of a declared `edit` from the panel, as its rows do', async () => {
+        window.history.replaceState(null, '', '/panneau/resources/pages/1');
+        renderApp({
+            routes: { editor: '/editor/{id}' },
+            resources: [
+                {
+                    id: 'pages',
+                    label: { singular: 'page', plural: 'pages' },
+                    fields: [{ name: 'title', type: 'text' }],
+                    actions: [
+                        { id: 'edit', kind: 'link', route: 'editor', scope: ['item'] },
+                        {
+                            id: 'site',
+                            label: 'On the site',
+                            kind: 'link',
+                            url: 'https://example.com/{id}',
+                            scope: ['item'],
+                        },
+                    ],
+                },
+            ],
+        });
+        const panel = await screen.findByRole('region', { name: 'Details of the page' });
+        expect(await within(panel).findByRole('link', { name: 'Edit' })).toHaveAttribute(
+            'href',
+            '/editor/1',
+        );
+        expect(within(panel).getByRole('link', { name: 'On the site' })).toHaveAttribute(
+            'target',
+            '_blank',
+        );
+    });
+
+    it('redirects the show route of a resource that opens items in their form', async () => {
+        window.history.replaceState(null, '', '/panneau/resources/authors/1#name');
+        renderApp({
+            resources: [
+                {
+                    id: 'authors',
+                    label: { singular: 'author', plural: 'authors' },
+                    open: 'edit',
+                    fields: [{ name: 'name', type: 'text', label: 'Name' }],
+                },
+            ],
+        });
+        await waitFor(() =>
+            expect(window.location.pathname).toBe('/panneau/resources/authors/1/edit'),
+        );
+        expect(window.location.hash).toBe('#name');
+        expect(await screen.findByRole('textbox', { name: 'Name' })).toHaveValue('Ada');
+        expect(screen.queryByRole('region', { name: 'Details of the author' })).toBeNull();
+    });
+
+    it('keeps the show route of a resource that the user can’t list', async () => {
+        window.history.replaceState(null, '', '/panneau/resources/authors/1');
+        renderApp({
+            resources: [
+                {
+                    id: 'authors',
+                    label: { singular: 'author', plural: 'authors' },
+                    open: 'edit',
+                    abilities: { viewAny: false },
+                    fields: [{ name: 'name', type: 'text', label: 'Name' }],
+                },
+            ],
+        });
+        expect(await screen.findByRole('heading', { name: /not found/i })).toBeInTheDocument();
+        expect(window.location.pathname).toBe('/panneau/resources/authors/1');
+    });
+
+    it('shows the built-in item actions on each row by its abilities, without declaring them', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        renderApp({}, [], (backend) => {
+            const contact = backend.items('pages')[1];
+            if (contact !== undefined) {
+                // Contact can only be viewed
+                contact.abilities = { view: true };
+            }
+        });
+        const table = await screen.findByRole('table', { name: 'Pages' });
+        expect(await within(table).findByRole('link', { name: 'Edit: About us' })).toHaveAttribute(
+            'href',
+            '/panneau/resources/pages/1/edit',
+        );
+        expect(within(table).getByRole('link', { name: 'View: About us' })).toBeInTheDocument();
+        expect(within(table).getByRole('link', { name: 'View: Contact' })).toBeInTheDocument();
+        expect(within(table).queryByRole('link', { name: 'Edit: Contact' })).toBeNull();
+        expect(within(table).queryByRole('button', { name: 'Actions for Contact' })).toBeNull();
+
+        await user.click(within(table).getByRole('button', { name: 'Actions for About us' }));
+        expect(await screen.findByRole('menuitem', { name: 'Duplicate' })).toBeInTheDocument();
+        expect(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument();
+    });
+
+    it('shows the same actions of an item in its row, its menu, its panel and its form', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        renderApp(
+            {
+                resources: [
+                    {
+                        id: 'pages',
+                        label: { singular: 'page', plural: 'pages' },
+                        itemTitle: 'title',
+                        fields: [{ name: 'title', type: 'text', label: 'Title' }],
+                        actions: [
+                            {
+                                id: 'site',
+                                label: 'On the site',
+                                kind: 'link',
+                                url: '/site/{id}',
+                                scope: ['item'],
+                            },
+                        ],
+                    },
+                ],
+            },
+            [],
+            (backend) => {
+                const about = backend.items('pages')[0];
+                if (about !== undefined) {
+                    // It can't be deleted
+                    about.abilities = { view: true, update: true, duplicate: true, site: true };
+                }
+            },
+        );
+        const names = (scope: HTMLElement, role: 'link' | 'button') =>
+            within(scope)
+                .queryAllByRole(role)
+                .map((element) => element.textContent);
+
+        const table = await screen.findByRole('table', { name: 'Pages' });
+        const row = within(table).getByRole('link', { name: 'About us' }).closest('tr');
+        if (row === null) {
+            throw new Error('No row.');
+        }
+        await waitFor(() =>
+            expect(names(row, 'link')).toEqual(['About us', 'View', 'Edit', 'On the site']),
+        );
+        await user.click(within(row).getByRole('button', { name: 'Actions for About us' }));
+        expect((await screen.findAllByRole('menuitem')).map((item) => item.textContent)).toEqual([
+            'Duplicate',
+        ]);
+        await user.keyboard('{Escape}');
+
+        await user.click(within(row).getByRole('link', { name: 'About us' }));
+        const panel = await screen.findByRole('region', { name: 'Details of the page' });
+        // The panel is what `show` opens
+        await waitFor(() => expect(names(panel, 'link')).toEqual(['Edit', 'On the site']));
+        expect(names(panel, 'button')).toContain('Duplicate');
+        expect(names(panel, 'button')).not.toContain('Delete');
+
+        await user.click(within(panel).getByRole('link', { name: 'Edit' }));
+        await waitFor(() =>
+            expect(window.location.pathname).toBe('/panneau/resources/pages/1/edit'),
+        );
+        const main = screen.getByRole('main');
+        // The form is what `edit` opens
+        await waitFor(() =>
+            expect(within(main).getByRole('link', { name: 'View' })).toBeInTheDocument(),
+        );
+        expect(within(main).getByRole('link', { name: 'On the site' })).toBeInTheDocument();
+        expect(within(main).getByRole('button', { name: 'Duplicate' })).toBeInTheDocument();
+        expect(within(main).queryByRole('link', { name: 'Edit' })).toBeNull();
+        expect(within(main).queryByRole('button', { name: 'Delete' })).toBeNull();
+    });
+
+    it('shows only the built-in item actions of `itemActions`, in its order', async () => {
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        renderApp({
+            resources: [
+                {
+                    id: 'pages',
+                    label: { singular: 'page', plural: 'pages' },
+                    itemActions: ['edit'],
+                    fields: [{ name: 'title', type: 'text' }],
+                },
+            ],
+        });
+        const table = await screen.findByRole('table', { name: 'Pages' });
+        expect(
+            await within(table).findByRole('link', { name: 'Edit: Contact' }),
+        ).toBeInTheDocument();
+        expect(within(table).queryByRole('link', { name: 'View: Contact' })).toBeNull();
+        expect(within(table).queryByRole('button', { name: 'Actions for Contact' })).toBeNull();
+        // Without `delete`, nothing applies to a selection
+        expect(within(table).queryByRole('checkbox')).toBeNull();
+    });
+
+    it('duplicates an item from its row, and opens the copy in its form', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        const backend = renderApp({
+            resources: [
+                {
+                    id: 'pages',
+                    label: { singular: 'page', plural: 'pages' },
+                    itemTitle: 'title',
+                    fields: [{ name: 'title', type: 'text', label: 'Title' }],
+                },
+            ],
+        });
+        const table = await screen.findByRole('table', { name: 'Pages' });
+        await user.click(await within(table).findByRole('button', { name: 'Actions for Contact' }));
+        await user.click(await screen.findByRole('menuitem', { name: 'Duplicate' }));
+        await waitFor(() =>
+            expect(window.location.pathname).toBe('/panneau/resources/pages/3/edit'),
+        );
+        expect(await screen.findByText('“Contact” is duplicated.')).toBeInTheDocument();
+        expect(await screen.findByRole('textbox', { name: /title/i })).toHaveValue('Contact');
+        expect(backend.items('pages').map((page) => page.id)).toEqual(['1', '2', '3']);
+    });
+
+    it('asks before duplicating from a form with unsaved changes, and copies nothing if the user stays', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages/2/edit');
+        const backend = renderApp();
+        await user.type(await screen.findByRole('textbox', { name: /title/i }), '!');
+        await user.click(
+            await within(screen.getByRole('main')).findByRole('button', { name: 'Duplicate' }),
+        );
+        const dialog = await screen.findByRole('alertdialog', { name: 'Leave without saving?' });
+        await user.click(within(dialog).getByRole('button', { name: 'Stay' }));
+        await waitFor(() => expect(screen.queryByRole('alertdialog')).toBeNull());
+        expect(backend.items('pages').map((page) => page.id)).toEqual(['1', '2']);
+        expect(window.location.pathname).toBe('/panneau/resources/pages/2/edit');
+    });
+
+    it('deletes an item from its row after a confirmation', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        const backend = renderApp();
+        const table = await screen.findByRole('table', { name: 'Pages' });
+        await user.click(await within(table).findByRole('button', { name: 'Actions for Contact' }));
+        await user.click(await screen.findByRole('menuitem', { name: 'Delete' }));
+        const dialog = await screen.findByRole('alertdialog');
+        await user.click(within(dialog).getByRole('button', { name: 'Delete' }));
+        await waitFor(() => expect(backend.items('pages').map((page) => page.id)).toEqual(['1']));
+        await waitFor(() => expect(within(table).queryByText('Contact')).toBeNull());
+    });
+
+    it('deletes an item from its panel, and closes the panel', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages/2');
+        const backend = renderApp();
+        const panel = await screen.findByRole('region', { name: 'Details of the page' });
+        await user.click(await within(panel).findByRole('button', { name: 'Delete' }));
+        const dialog = await screen.findByRole('alertdialog');
+        await user.click(within(dialog).getByRole('button', { name: 'Delete' }));
+        await waitFor(() => expect(window.location.pathname).toBe('/panneau/resources/pages'));
+        expect(backend.items('pages').map((page) => page.id)).toEqual(['1']);
     });
 
     it('pages a list with cursors, back and forth, without page numbers', async () => {

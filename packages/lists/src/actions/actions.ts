@@ -1,4 +1,4 @@
-import { canRunAction, groupActions } from '@panneau/core';
+import { canRunAction, fillActionUrl, groupActions, isActionAllowedOn } from '@panneau/core';
 import type { Action, ActionPlacement } from '@panneau/protocol';
 
 import type { ListItem } from '../types';
@@ -28,21 +28,13 @@ function isActionList(actions: ListActions): actions is readonly Action[] {
 }
 
 /**
- * Whether an action is available on an item (decision 0011). Without abilities, the item allows
- * everything and the backend decides. With abilities, a link is allowed unless the item says
- * otherwise, and other actions only when the item lists their id.
+ * Whether an action is available on an item (decisions 0011 and 0040), as `isActionAllowedOn()`
+ * of `@panneau/core` says: the built-in item actions need their ability (`view`, `update`,
+ * `duplicate`, `delete`), even on an item without abilities. Other links are allowed unless the
+ * item says otherwise, and other actions when the item lists their id, or has no abilities.
  */
 export function isAllowedOn(action: Action, item: ListItem): boolean {
-    if (!canRunAction(action)) {
-        return false;
-    }
-    if (item.abilities === undefined) {
-        return true;
-    }
-    if (action.kind === 'link') {
-        return item.abilities[action.id] !== false;
-    }
-    return item.abilities[action.id] === true;
+    return isActionAllowedOn(action, item);
 }
 
 /**
@@ -50,16 +42,7 @@ export function isAllowedOn(action: Action, item: ListItem): boolean {
  * values of the item) filled in, or `null` for an action with a `route` or without an item.
  */
 export function getActionHref(action: Action, item?: ListItem): string | null {
-    if (action.kind !== 'link' || action.url === undefined) {
-        return null;
-    }
-    const { url } = action;
-    return url.replace(/\{([^}]+)\}/g, (match, name: string) => {
-        const value = item?.[name];
-        return typeof value === 'string' || typeof value === 'number'
-            ? encodeURIComponent(String(value))
-            : match;
-    });
+    return fillActionUrl(action, item);
 }
 
 /** Whether an action's scope includes another one. */

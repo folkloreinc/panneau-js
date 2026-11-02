@@ -15,6 +15,7 @@ import {
     useCreateItem,
     useDefinition,
     useDeleteItem,
+    useDuplicateItem,
     useResourceItem,
     useResourceList,
     useRunAction,
@@ -200,6 +201,29 @@ describe('query hooks', () => {
         await act(() => result.current.remove.mutateAsync('2'));
         await waitFor(() => expect(result.current.list.data?.meta.total).toBe(2));
         expect(client.getQueryData(queryKeys.item('pages', '2'))).toBeUndefined();
+    });
+
+    it('duplicate an item, cache the copy and refetch the lists', async () => {
+        const { wrapper, client } = setup();
+        const { result } = renderHook(
+            () => ({ list: useResourceList('pages'), duplicate: useDuplicateItem('pages') }),
+            { wrapper },
+        );
+        await waitFor(() => expect(result.current.list.isSuccess).toBe(true));
+        const copy = await act(() => result.current.duplicate.mutateAsync('1'));
+        await waitFor(() => expect(result.current.list.data?.meta.total).toBe(4));
+        expect(client.getQueryData(queryKeys.item('pages', copy.id))).toEqual(copy);
+    });
+
+    it('fail to duplicate with an adapter that can’t', async () => {
+        const backend = createBackend();
+        const { duplicate: _duplicate, ...adapter } = createRestAdapter({
+            baseUrl: BASE_URL,
+            fetch: backend.fetch,
+        });
+        const { wrapper } = setup(adapter);
+        const { result } = renderHook(() => useDuplicateItem('pages'), { wrapper });
+        await expect(act(() => result.current.mutateAsync('1'))).rejects.toThrow('can’t duplicate');
     });
 
     it('run an action and refresh what its result asks', async () => {

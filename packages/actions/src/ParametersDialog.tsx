@@ -1,4 +1,5 @@
 import { Form } from '@panneau/forms';
+import { getActionLabel } from '@panneau/intl';
 import type { Action } from '@panneau/protocol';
 import { Button, Dialog, usePanneauIntl } from '@panneau/ui';
 
@@ -33,7 +34,7 @@ export function ParametersDialog({
     const confirmLabel =
         typeof action.confirm === 'object' && action.confirm.confirmLabel !== undefined
             ? action.confirm.confirmLabel
-            : action.label;
+            : getActionLabel(action, intl);
     return (
         <Dialog
             isOpen
@@ -42,14 +43,14 @@ export function ParametersDialog({
                     onCancel();
                 }
             }}
-            title={action.label}
+            title={getActionLabel(action, intl)}
             size="md"
         >
             <Form
                 fields={action.fields ?? []}
                 layout={action.layout ?? []}
                 {...(locales !== undefined ? { locales } : {})}
-                aria-label={action.label}
+                aria-label={getActionLabel(action, intl)}
                 submitLabel={confirmLabel}
                 actions={
                     <Button variant="secondary" onPress={onCancel}>

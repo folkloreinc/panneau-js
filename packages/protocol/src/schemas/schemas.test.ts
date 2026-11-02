@@ -48,6 +48,22 @@ describe('Definition', () => {
         }
     });
 
+    it('takes what opens an item, and keeps a value it does not know', () => {
+        const definition = createDefinition();
+        const [first, second] = definition.resources;
+        if (first === undefined || second === undefined) {
+            throw new Error('Fixture has no resources.');
+        }
+        first.open = 'edit';
+        second.open = 'site';
+        const parsed = Definition.parse(definition);
+        expect(parsed.resources[0]?.open).toBe('edit');
+        expect(parsed.resources[1]?.open).toBe('site');
+        expect(
+            validateDefinition({ ...definition, resources: [{ ...first, open: '' }] }).success,
+        ).toBe(false);
+    });
+
     it('reports where a value is invalid', () => {
         const definition = createDefinition() as unknown as { resources: { fields: unknown[] }[] };
         definition.resources[0]?.fields.push({ name: '', type: 'text' });
@@ -137,6 +153,37 @@ describe('Action', () => {
                 scope: ['item'],
             }).success,
         ).toBe(true);
+    });
+
+    it('needs a label, except for the built-in item actions', () => {
+        expect(Action.safeParse({ id: 'delete', scope: ['item'] }).success).toBe(true);
+        expect(Action.safeParse({ id: 'duplicate', scope: ['item'] }).success).toBe(true);
+        expect(Action.safeParse({ id: 'publish', scope: ['item'] }).success).toBe(false);
+        expect(Action.safeParse({ id: 'edit', kind: 'link', scope: ['item'] }).success).toBe(true);
+        expect(Action.safeParse({ id: 'show', kind: 'link', scope: ['item'] }).success).toBe(true);
+    });
+
+    it('resolves the built-in links without a url or a route', () => {
+        expect(Action.parse({ id: 'edit', kind: 'link', scope: ['item'] })).toEqual({
+            id: 'edit',
+            kind: 'link',
+            scope: ['item'],
+        });
+        expect(
+            Action.safeParse({
+                id: 'edit',
+                label: 'Edit',
+                kind: 'link',
+                url: '/e/{id}',
+                scope: ['item'],
+            }).success,
+        ).toBe(true);
+    });
+
+    it('reserves the ids of the built-in links for links', () => {
+        const result = Action.safeParse({ id: 'edit', label: 'Edit', scope: ['item'] });
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['kind']);
     });
 
     it('needs at least one scope', () => {

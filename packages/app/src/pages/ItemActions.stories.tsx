@@ -6,7 +6,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { ActionRunnerProvider } from '@panneau/actions';
-import type { Action, ActionResult } from '@panneau/protocol';
+import { selectItemActions } from '@panneau/core';
+import type { Action, ActionResult, Item } from '@panneau/protocol';
 
 import { ItemActions } from './ItemActions';
 import { PageHeader } from './PageHeader';
@@ -31,6 +32,14 @@ const actions: Action[] = [
     },
 ];
 
+// An active project: it can be disabled, not enabled.
+const project: Item = {
+    id: 'prj_1',
+    version: null,
+    name: 'Northwind',
+    abilities: { jobs: true, disable: true, delete: true },
+};
+
 const runAction = fn((_resource: string, action: string) =>
     Promise.resolve({
         result: {
@@ -44,14 +53,9 @@ const meta = {
     component: ItemActions,
     args: {
         resource: 'projects',
-        actions,
-        // An active project: it can be disabled, not enabled.
-        item: {
-            id: 'prj_1',
-            version: null,
-            name: 'Northwind',
-            abilities: { jobs: true, disable: true, delete: true },
-        },
+        // The actions of the item in the header, as `getItemActions()` gives them
+        actions: selectItemActions(actions, project, 'form'),
+        item: project,
     },
     render: (args) => (
         <ActionRunnerProvider

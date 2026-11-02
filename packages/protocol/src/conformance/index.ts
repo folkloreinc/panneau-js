@@ -416,6 +416,49 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
     );
 
     await run(
+        'action.delete',
+        'The built-in `delete` answers, with dry runs, without being declared',
+        async (check) => {
+            const current = resource as Resource | null;
+            if (current === null) {
+                check.skip('No resource to test.');
+                return;
+            }
+            if (current.itemActions !== undefined && !current.itemActions.includes('delete')) {
+                check.skip('The resource leaves out `delete` (`itemActions`).');
+                return;
+            }
+            if (firstItemId === null) {
+                check.skip('The list has no items.');
+                return;
+            }
+            // A dry run changes nothing: the check runs without `writes`.
+            const reply = await request(`${resourcePath()}/actions/delete`, {
+                method: 'POST',
+                body: JSON.stringify({ selection: { ids: [firstItemId] }, dryRun: true }),
+            });
+            if (!check.expectStatus(reply, 200)) {
+                return;
+            }
+            const result = check.expectSchema(ActionResult, reply.body, 'The dry run of `delete`');
+            if (result !== null) {
+                check.expect(
+                    result.summary !== undefined &&
+                        result.summary.succeeded +
+                            result.summary.skipped +
+                            result.summary.failed ===
+                            1,
+                    'The dry run of `delete` on one item must count it, as deleted or skipped.',
+                );
+            }
+            check.expectStatus(
+                await request(`${resourcePath()}/${encodeURIComponent(firstItemId)}`),
+                200,
+            );
+        },
+    );
+
+    await run(
         'uploads.sign',
         'POST /uploads/sign signs the first request of a file, and only the keys of open uploads',
         async (check) => {
@@ -795,6 +838,49 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                     'A 412 problem must include the current item.',
                 );
             }
+        },
+    );
+
+    await run(
+        'duplicate',
+        'POST /resources/{resource}/{id}/duplicate copies an item that allows it',
+        async (check) => {
+            if (createdId === null) {
+                check.skip('No item was created.');
+                return;
+            }
+            const reply = await request(itemPath());
+            const created = check.expectStatus(reply, 200)
+                ? check.expectSchema(ItemResponse, reply.body, 'The item')
+                : null;
+            if (created === null) {
+                return;
+            }
+            // The built-in `duplicate` is only shown on items that allow it (decision 0040).
+            if (created.data.abilities.duplicate !== true) {
+                check.skip("The item doesn't allow `duplicate`.");
+                return;
+            }
+            const copy = await request(`${itemPath()}/duplicate`, { method: 'POST' });
+            if (!check.expectStatus(copy, 201)) {
+                return;
+            }
+            const duplicated = check.expectSchema(ItemResponse, copy.body, 'The copy');
+            if (duplicated === null) {
+                return;
+            }
+            check.expect(
+                copy.etag !== null && normalizeEtag(copy.etag) === `"${duplicated.data.version}"`,
+                `Expected the ETag of the copy, "${duplicated.data.version}" (quoted), got ${copy.etag ?? 'none'}.`,
+            );
+            check.expect(
+                duplicated.data.id !== created.data.id,
+                'The copy has the id of the item it copies.',
+            );
+            // Clean up the copy
+            await request(`${resourcePath()}/${encodeURIComponent(duplicated.data.id)}`, {
+                method: 'DELETE',
+            });
         },
     );
 

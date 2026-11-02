@@ -84,6 +84,12 @@ export interface DataAdapter {
     update(resource: string, id: string, values: Values, options?: UpdateOptions): Promise<Item>;
     /** Deletes an item. */
     delete(resource: string, id: string, options?: RequestOptions): Promise<void>;
+    /**
+     * Copies an item, and gives the copy (`POST /resources/{resource}/{id}/duplicate`), for the
+     * built-in `duplicate` of items that allow it (decision 0040). Optional: without it, the app
+     * doesn't show `duplicate`.
+     */
+    duplicate?(resource: string, id: string, options?: RequestOptions): Promise<Item>;
 
     /** Runs an action on a selection, or on the whole resource without a selection. */
     runAction(

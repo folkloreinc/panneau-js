@@ -30,21 +30,21 @@ export const pages: ListItem[] = [
         title: { en: 'About us', fr: 'À propos' },
         status: 'published',
         published_on: '2026-03-02',
-        abilities: { update: true, delete: true, publish: false },
+        abilities: { view: true, update: true, delete: true, publish: false },
     },
     {
         id: '2',
         title: { en: 'Contact', fr: 'Contact' },
         status: 'draft',
         published_on: null,
-        abilities: { update: true, delete: true, publish: true },
+        abilities: { view: true, update: true, delete: true, publish: true },
     },
     {
         id: '3',
         title: { en: 'Blog', fr: 'Blogue' },
         status: 'draft',
         published_on: null,
-        abilities: { update: true, delete: false, publish: true },
+        abilities: { view: true, update: true, delete: false, publish: true },
     },
 ];
 
@@ -72,6 +72,10 @@ export const edit: Action = {
     url: '/pages/{id}/edit',
     scope: ['item'],
 };
+
+/** The built-in links, as a backend declares them: the client resolves and labels them. */
+export const showLink: Action = { id: 'show', kind: 'link', scope: ['item'] };
+export const editLink: Action = { id: 'edit', kind: 'link', scope: ['item'] };
 
 export const exportAction: Action = {
     id: 'export',

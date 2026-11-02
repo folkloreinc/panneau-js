@@ -1,7 +1,9 @@
 import { z } from 'zod';
 
+import { isBuiltInItemAction, isBuiltInLink } from '../constants';
 import { Abilities } from './common';
 import { Field } from './field';
+import { actionJsonRules } from './jsonRules';
 import { LayoutNode } from './layout';
 
 export const ActionScope = z.enum(['item', 'selection', 'resource']);
@@ -24,7 +26,10 @@ export const ActionConfirm = z.union([
 export const Action = z
     .looseObject({
         id: z.string().min(1),
-        label: z.string(),
+        label: z.string().optional().meta({
+            description:
+                'Required, except for the built-in item actions (`show`, `edit`, `duplicate`, `delete`), which the client labels in its locale.',
+        }),
         icon: z.string().optional(),
         kind: z.enum(['server', 'link', 'client']).default('server').meta({
             description:
@@ -58,7 +63,27 @@ export const Action = z
         }),
     })
     .superRefine((action, context) => {
-        if (action.kind === 'link' && action.url === undefined && action.route === undefined) {
+        const builtInLink = isBuiltInLink(action.id);
+        if (builtInLink && action.kind !== 'link') {
+            context.addIssue({
+                code: 'custom',
+                path: ['kind'],
+                message: `The id \`${action.id}\` is reserved for the built-in link: its \`kind\` must be \`link\`.`,
+            });
+        }
+        if (action.label === undefined && !isBuiltInItemAction(action.id)) {
+            context.addIssue({
+                code: 'custom',
+                path: ['label'],
+                message: 'An action needs a `label`.',
+            });
+        }
+        if (
+            action.kind === 'link' &&
+            action.url === undefined &&
+            action.route === undefined &&
+            !builtInLink
+        ) {
             context.addIssue({
                 code: 'custom',
                 message: 'A `link` action needs a `url` or a `route`.',
@@ -68,7 +93,10 @@ export const Action = z
             context.addIssue({ code: 'custom', message: 'A `client` action needs a `component`.' });
         }
     })
-    .meta({ description: 'An operation on one item, a selection, or the whole resource.' });
+    .meta({
+        description: 'An operation on one item, a selection, or the whole resource.',
+        ...actionJsonRules,
+    });
 
 export type ActionScope = z.infer<typeof ActionScope>;
 export type ActionPlacement = z.infer<typeof ActionPlacement>;

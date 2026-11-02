@@ -14,6 +14,7 @@ export {
     useCreateItem,
     useDefinition,
     useDeleteItem,
+    useDuplicateItem,
     useItemPreview,
     useResourceItem,
     useResourceList,

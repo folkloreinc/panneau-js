@@ -1,5 +1,6 @@
 import type { IntlShape } from 'react-intl';
 
+import { getActionLabel } from '@panneau/intl';
 import { Button, Dialog, Spinner, usePanneauIntl } from '@panneau/ui';
 
 import { messages } from '../messages';
@@ -58,7 +59,8 @@ export function ConfirmDialog({ event, preview = null, onConfirm, onCancel }: Co
     const loading = preview?.status === 'loading';
     const skipped = preview?.status === 'done' ? preview.skipped : event.skipped.length;
     const confirm = typeof action.confirm === 'object' ? action.confirm : {};
-    const values = { count, action: action.label };
+    const label = getActionLabel(action, intl);
+    const values = { count, action: label };
     return (
         <Dialog
             isOpen
@@ -73,7 +75,7 @@ export function ConfirmDialog({ event, preview = null, onConfirm, onCancel }: Co
             title={
                 confirm.title !== undefined
                     ? formatDefinitionMessage(intl, confirm.title, values)
-                    : intl.formatMessage(messages.confirmTitle, { action: action.label })
+                    : intl.formatMessage(messages.confirmTitle, { action: label })
             }
             footer={
                 <>
@@ -86,7 +88,7 @@ export function ConfirmDialog({ event, preview = null, onConfirm, onCancel }: Co
                         isDisabled={loading}
                         onPress={() => onConfirm(event)}
                     >
-                        {confirm.confirmLabel ?? action.label}
+                        {confirm.confirmLabel ?? label}
                     </Button>
                 </>
             }

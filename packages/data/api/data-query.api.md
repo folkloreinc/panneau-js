@@ -127,6 +127,9 @@ export function useDefinition(options?: QueryHookOptions<Definition, ReturnType<
 export function useDeleteItem(resource: string): UseMutationResult<void, Error, string>;
 
 // @public
+export function useDuplicateItem(resource: string): UseMutationResult<Item, Error, string>;
+
+// @public
 export function useItemPreview(resource: string, id: string, values?: Values, options?: QueryHookOptions<PreviewResponse, ReturnType<typeof queryKeys.itemPreview>>): UseQueryResult<PreviewResponse>;
 
 // @public

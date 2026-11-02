@@ -1,6 +1,6 @@
 # 0017: Actions
 
-- Status: accepted
+- Status: accepted, amended by [0040](0040-row-links-and-open-mode.md): `show`, `edit`, `duplicate` and `delete` exist on every resource without being declared, shown by the abilities of each item
 - Date: 2026-10-14
 
 ## Context

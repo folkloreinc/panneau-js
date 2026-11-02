@@ -99,6 +99,7 @@ describe('runConformance', () => {
             'update',
             'update.create-rules',
             'update.conflict',
+            'duplicate',
             'delete',
         ]);
     });
@@ -136,6 +137,7 @@ describe('runConformance', () => {
             'search.invalid',
             'create.invalid',
             'update.conflict',
+            'duplicate',
             'delete',
         ]);
         expect(formatReport(report)).toContain(
@@ -259,6 +261,68 @@ describe('runConformance', () => {
         expect(report.checks.find((check) => check.id === 'list.filter-range')).toMatchObject({
             status: 'skipped',
             issues: ['The resource declares no date-range filter.'],
+        });
+    });
+
+    it('reports a backend whose copy keeps the id of the item', async () => {
+        const backend = createBackend();
+        // A backend that answers the item itself instead of a copy.
+        const broken = async (input: string, init?: RequestInit) => {
+            if (new URL(input).pathname.endsWith('/duplicate')) {
+                const item = await backend.fetch(input.replace(/\/duplicate$/, ''));
+                return new Response(await item.text(), {
+                    status: 201,
+                    headers: { 'Content-Type': 'application/json' },
+                });
+            }
+            return backend.fetch(input, init);
+        };
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: broken,
+            writes,
+        });
+        expect(report.checks.find((check) => check.id === 'duplicate')).toMatchObject({
+            status: 'failed',
+            issues: expect.arrayContaining(['The copy has the id of the item it copies.']),
+        });
+    });
+
+    it('reports a backend that only answers the actions it declares', async () => {
+        const backend = createBackend();
+        const broken = async (input: string, init?: RequestInit) =>
+            new URL(input).pathname.endsWith('/actions/delete')
+                ? new Response(JSON.stringify({ title: 'Action not found.', status: 404 }), {
+                      status: 404,
+                      headers: { 'Content-Type': 'application/problem+json' },
+                  })
+                : backend.fetch(input, init);
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: broken,
+        });
+        expect(report.checks.find((check) => check.id === 'action.delete')?.status).toBe('failed');
+    });
+
+    it('reports a copy without its ETag', async () => {
+        const backend = createBackend();
+        const broken = async (input: string, init?: RequestInit) => {
+            const response = await backend.fetch(input, init);
+            if (!new URL(input).pathname.endsWith('/duplicate')) {
+                return response;
+            }
+            const headers = new Headers(response.headers);
+            headers.delete('ETag');
+            return new Response(response.body, { status: response.status, headers });
+        };
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: broken,
+            writes,
+        });
+        expect(report.checks.find((check) => check.id === 'duplicate')).toMatchObject({
+            status: 'failed',
+            issues: [expect.stringContaining('Expected the ETag of the copy')],
         });
     });
 });

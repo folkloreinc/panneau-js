@@ -45,6 +45,8 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     "id": "pages",
     "kind": null, // "media" for a media library
     "label": { "singular": "page", "plural": "pages" },
+    "open": "panel", // where an item's title goes: "panel" (the default) or "edit"
+    "itemActions": ["show", "edit", "duplicate", "delete"], // the built-in item actions shown, the default
     "fields": [ /* Field */ ],
     "form": { "layout": [ /* LayoutNode */ ] },
     "list": {
@@ -268,7 +270,7 @@ An action is an operation applied to one item, a selection, or the whole resourc
 - **`placement`:** where the action appears.
     - `row`: on each list row;
     - `toolbar`: on the list, for selections and resource actions;
-    - `form`: in the item form header;
+    - `form`: in the header of the item, in its panel and its form;
     - `menu`: in an overflow menu.
 - **`confirm`:** `true` uses a default message. Its `message` can use `{count}`.
 - **`destructive`:** styles the action and its confirmation as dangerous.
@@ -283,7 +285,25 @@ Built-in actions use reserved ids:
 | `export`            | `server` | `selection`, `resource` |
 | `import`            | `server` | `resource`              |
 
-A resource lists the built-in actions it enables, possibly with overrides (label, placement, confirm).
+**Built-in item actions** ([decisions/0040](decisions/0040-row-links-and-open-mode.md)). `show`, `edit`, `duplicate` and `delete` exist on every resource without being declared. The client shows each one on the items whose abilities allow it; a missing or false ability hides it:
+
+| Action      | Ability     | What it does                                                     |
+| ----------- | ----------- | ---------------------------------------------------------------- |
+| `show`      | `view`      | links to the item: its panel, or its form with `"open": "edit"`  |
+| `edit`      | `update`    | links to the item's form                                         |
+| `duplicate` | `duplicate` | `POST /resources/{resource}/{id}/duplicate`, then opens the copy |
+| `delete`    | `delete`    | the `delete` action, after a confirmation, also on selections    |
+
+- `itemActions` on a resource picks some of them, in its order: `"itemActions": ["edit", "delete"]`. `[]` shows none. Without it, the four are shown.
+- A declared action with one of these ids replaces the built-in one (an `edit` with a `url`, a `delete` with its own confirmation), and takes the built-in one's `placement`, `confirm`, `destructive` and `dryRun` when it doesn't set them. It is still shown by the ability above, and only if `itemActions` lists it. Its `label` is optional.
+- The id of the action set to `false` hides it too: `{ "update": true, "edit": false }` hides "Edit". An item without abilities shows none of the four.
+- A resource that can't duplicate sends `duplicate: false` (or no `duplicate`) on its items.
+- Placements: `show` and `edit` in `row` and `form`; `duplicate` and `delete` in `menu` and `form`, and `delete` in `toolbar` for selections. For item actions, `row` is the buttons of a row, `menu` its menu, and `form` the header of the item, in its panel and its form.
+- An item shows the same actions in its row, its panel and its form, but the one that leads there: no `show` in the panel, no `edit` in the form.
+- The ids `show` and `edit` are only for `link` actions. Every other action needs a `label`. The JSON Schema checks both.
+- Other declared actions are for the resource's own operations, and keep their rules: a `link` is shown unless the item says `false`, other actions when the item lists their id.
+
+**What opens an item.** `open` on a resource says where an item's title goes, in its list and wherever the app links to the item: `panel` (the default), the show route with its details next to the list ([decisions/0028](decisions/0028-item-panel.md)); `edit`, its form. With `edit`, the show route redirects to the edit route, and `show` is left out. An item without `abilities.update: true` still opens in the panel. Clients treat a value they don't know as `panel`.
 
 ### Pages
 
@@ -357,16 +377,17 @@ All paths are relative to `api.baseUrl`.
 
 ### Resources
 
-| Operation   | Request                                                                                       |
-| ----------- | --------------------------------------------------------------------------------------------- |
-| List        | `GET /resources/{resource}`                                                                   |
-| Show        | `GET /resources/{resource}/{id}`                                                              |
-| Create      | `POST /resources/{resource}`                                                                  |
-| Update      | `PATCH /resources/{resource}/{id}` (partial, with `If-Match`)                                 |
-| Delete      | `DELETE /resources/{resource}/{id}`                                                           |
-| Action      | `POST /resources/{resource}/actions/{action}` (see [Actions](#actions-1))                     |
-| Inline edit | `PATCH /resources/{resource}/{id}` with a single field                                        |
-| Check       | `POST /resources/{resource}/fields/{field}/check` (see [Checking a field](#checking-a-field)) |
+| Operation   | Request                                                                                                                                                           |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| List        | `GET /resources/{resource}`                                                                                                                                       |
+| Show        | `GET /resources/{resource}/{id}`                                                                                                                                  |
+| Create      | `POST /resources/{resource}`                                                                                                                                      |
+| Update      | `PATCH /resources/{resource}/{id}` (partial, with `If-Match`)                                                                                                     |
+| Delete      | `DELETE /resources/{resource}/{id}`                                                                                                                               |
+| Duplicate   | `POST /resources/{resource}/{id}/duplicate`: `201` with the copy (`{ "data": Item }`), for `abilities.duplicate`; `409` when the copy conflicts with another item |
+| Action      | `POST /resources/{resource}/actions/{action}` (see [Actions](#actions-1))                                                                                         |
+| Inline edit | `PATCH /resources/{resource}/{id}` with a single field                                                                                                            |
+| Check       | `POST /resources/{resource}/fields/{field}/check` (see [Checking a field](#checking-a-field))                                                                     |
 
 **List query parameters:**
 
@@ -436,7 +457,7 @@ A field with `"check": true`, at the top of a resource, checks its value with th
 
 **Items:**
 
-- Every item has `id`, `version` and `abilities`. `abilities` includes the ids of the actions allowed on that item (`"publish": true`).
+- Every item has `id`, `version` and `abilities`. `abilities` includes the ids of the actions allowed on that item (`"publish": true`). `view`, `update`, `duplicate` and `delete` show the built-in item actions ([decisions/0040](decisions/0040-row-links-and-open-mode.md)): without them, the client shows none.
 - **Single items.** Show, create and update return `{ "data": Item }`. They also send `version` as a quoted `ETag` header (`"3"`).
 - **Version conflicts.** An update with a stale `If-Match` returns `412 Precondition Failed`. The current item is in `current`.
 - **`version: null`.** The backend has no versions: it sends no `ETag`, and it ignores `If-Match`.
@@ -743,7 +764,7 @@ Global search ([decisions/0029](decisions/0029-go-to-palette.md)):
 - **a light entry point for browsers** (`@panneau/protocol/runtime`): the constants and the helpers above that don't need the schemas (`checkValues()`, `evaluateCondition()`, `lintDefinition()`, the list query helpers, `isProblem()`), without loading zod. UI packages import them from there, and only types from the main entry point.
 - **generated files**: `@panneau/protocol/definition.schema.json` and `@panneau/protocol/boot.schema.json` (JSON Schema 2020-12), and `@panneau/protocol/openapi.json` (OpenAPI 3.1).
 - **a mock backend** (`@panneau/protocol/mock`): an in-memory implementation of the resource routes.
-- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. For a list paged with cursors, it also follows `nextCursor`, and checks that an invalid cursor is a `422`. With `writes`, it also checks that rules limited to `create` don't apply to updates: an update with those fields set to `null` succeeds. It also checks that the backend reads the bounds of the resource's first `date-range` filter, if it has one, and that `GET /search` finds an item by a word of its title, reads `limit` and `resources`, and refuses invalid parameters with a `422`.
+- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. For a list paged with cursors, it also follows `nextCursor`, and checks that an invalid cursor is a `422`. With `writes`, it also checks that rules limited to `create` don't apply to updates: an update with those fields set to `null` succeeds. It also checks that the built-in `delete` answers a dry run without being declared and, with `writes`, that an item that allows `duplicate` is copied under a new id, with its `ETag`. It also checks that the backend reads the bounds of the resource's first `date-range` filter, if it has one, and that `GET /search` finds an item by a word of its title, reads `limit` and `resources`, and refuses invalid parameters with a `422`.
 
 ```ts
 import { formatReport, runConformance } from '@panneau/protocol/conformance';

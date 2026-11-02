@@ -16,7 +16,13 @@ export const BUILT_IN_ACTIONS: readonly ["show", "edit", "duplicate", "delete", 
 export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "image", "relation", "group", "repeater", "slug", "tel", "range", "duration", "json", "tags", "embed", "location"];
 
 // @public
+export const BUILT_IN_ITEM_ACTIONS: readonly ["show", "edit", "duplicate", "delete"];
+
+// @public
 export const BUILT_IN_LAYOUT_NODE_TYPES: readonly ["row", "column", "section", "tabs", "tab", "sidebar", "field", "text", "component"];
+
+// @public
+export const BUILT_IN_LINK_ACTIONS: readonly ["show", "edit"];
 
 // @public
 export const BUILT_IN_LIST_LAYOUTS: readonly ["table", "cards", "gallery", "calendar"];
@@ -28,7 +34,13 @@ export type BuiltInAction = (typeof BUILT_IN_ACTIONS)[number];
 export type BuiltInFieldType = (typeof BUILT_IN_FIELD_TYPES)[number];
 
 // @public (undocumented)
+export type BuiltInItemAction = (typeof BUILT_IN_ITEM_ACTIONS)[number];
+
+// @public (undocumented)
 export type BuiltInLayoutNodeType = (typeof BUILT_IN_LAYOUT_NODE_TYPES)[number];
+
+// @public (undocumented)
+export type BuiltInLinkAction = (typeof BUILT_IN_LINK_ACTIONS)[number];
 
 // @public (undocumented)
 export type BuiltInListLayout = (typeof BUILT_IN_LIST_LAYOUTS)[number];
@@ -90,6 +102,12 @@ export function getMediaLibraries(definition: MediaLibrariesDefinition | null, f
 export function getValue(values: unknown, path: string): unknown;
 
 // @public
+export function isBuiltInItemAction(id: string): id is BuiltInItemAction;
+
+// @public
+export function isBuiltInLink(id: string): id is BuiltInLinkAction;
+
+// @public
 export function isCursorPage(meta: object): meta is CursorPageMeta;
 
 // @public
@@ -105,6 +123,9 @@ export function isProblem(value: unknown): value is Problem;
 
 // @public
 export function isSearchableResource(resource: Omit<SearchableResource, 'id'>): boolean;
+
+// @public
+export const ITEM_ACTION_ABILITIES: Readonly<Record<BuiltInItemAction, string>>;
 
 // Warning: (ae-forgotten-export) The symbol "DefinitionInput" needs to be exported by the entry point index.d.ts
 //

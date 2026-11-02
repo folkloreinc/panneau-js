@@ -155,6 +155,27 @@ export function useDeleteItem(resource: string): UseMutationResult<void, Error, 
     });
 }
 
+/**
+ * Copies an item (`duplicate()` of the adapter), then caches the copy and refetches the lists of
+ * the resource. Fails when the adapter has no `duplicate()`.
+ */
+export function useDuplicateItem(resource: string): UseMutationResult<Item, Error, string> {
+    const adapter = useDataAdapter();
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: (id: string) => {
+            if (adapter.duplicate === undefined) {
+                return Promise.reject(new Error('The data adapter can’t duplicate items.'));
+            }
+            return adapter.duplicate(resource, id);
+        },
+        onSuccess: (item) => {
+            client.setQueryData(queryKeys.item(resource, item.id), item);
+            return client.invalidateQueries({ queryKey: queryKeys.lists(resource) });
+        },
+    });
+}
+
 export interface RunActionVariables extends ActionRequest {
     /** Id of the action. */
     action: string;

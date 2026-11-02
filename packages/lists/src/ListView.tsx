@@ -1,7 +1,8 @@
 import { type ReactNode, useRef, useState } from 'react';
 
 import type { List } from '@panneau/core';
-import { usePlugins } from '@panneau/core';
+import { selectItemActions, usePlugins } from '@panneau/core';
+import { getActionLabel } from '@panneau/intl';
 import type { Action, Field, Filter } from '@panneau/protocol';
 import { Alert, Button, Checkbox, usePanneauIntl, useToast } from '@panneau/ui';
 
@@ -106,6 +107,12 @@ export interface ListViewProps {
     /** A link to an item, on its title. */
     getItemHref?: (item: ListItem) => string | null;
     /**
+     * The link of a built-in `show` or `edit` action without a `url` or a `route` (decision 0040),
+     * which the caller resolves to its own routes. Without it, or when it answers `null`, the list
+     * leaves those links out.
+     */
+    getLinkHref?: (action: Action, item: ListItem) => string | null;
+    /**
      * The item shown next to the list, such as in a panel of its details: its row is marked, and
      * the link of its title is the current page.
      */
@@ -158,6 +165,7 @@ export function ListView({
     itemTitle,
     getItemLabel: getItemLabelProp,
     getItemHref,
+    getLinkHref,
     currentItemId = null,
     displays,
     layoutComponents,
@@ -198,8 +206,6 @@ export function ListView({
     const Layout = allLayouts[layout] ?? builtInLayouts.table;
 
     const grouped = groupListActions(actionsProp);
-    const rowActions = grouped.row.filter((action) => hasScope(action, 'item'));
-    const rowMenu = grouped.menu.filter((action) => hasScope(action, 'item'));
     // Actions placed in the menu also apply to selections, from the toolbar (once each).
     const toolbarActions = [...grouped.toolbar, ...grouped.menu].filter(
         (action, index, all) =>
@@ -253,7 +259,7 @@ export function ListView({
             .catch((caught: unknown) => {
                 toasts.show({
                     title: intl.formatMessage(messages.actionFailed, {
-                        action: event.action.label,
+                        action: getActionLabel(event.action, intl),
                     }),
                     ...(caught instanceof Error && caught.message !== ''
                         ? { description: caught.message }
@@ -330,9 +336,10 @@ export function ListView({
     const runOnResource = (action: Action) =>
         run({ action, scope: 'resource', count: count, skipped: [] });
 
+    // The actions of a row and of its menu, as everywhere else an item shows its actions
     const renderActions = (item: ListItem): ReactNode => {
-        const allowed = rowActions.filter((action) => isAllowedOn(action, item));
-        const menu = rowMenu.filter((action) => isAllowedOn(action, item));
+        const allowed = selectItemActions(grouped.row, item, 'row', { getLinkHref });
+        const menu = selectItemActions(grouped.menu, item, 'menu', { getLinkHref });
         if (allowed.length === 0 && menu.length === 0) {
             return null;
         }
@@ -340,7 +347,6 @@ export function ListView({
             pending?.endsWith(`\u0000${item.id}`) === true ? pending.split('\u0000')[0] : null;
         return (
             <RowActions
-                item={item}
                 itemLabel={getItemLabel(item)}
                 actions={allowed}
                 menu={menu}

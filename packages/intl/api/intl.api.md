@@ -4,11 +4,19 @@
 
 ```ts
 
+import type { IntlShape } from 'react-intl';
 import type { TypedMessageDescriptor } from 'react-intl';
 
 // @public
 export const actionsMessages: {
     cancel: PanneauMessage<Record<never, never>>;
+    show: PanneauMessage<Record<never, never>>;
+    edit: PanneauMessage<Record<never, never>>;
+    duplicate: PanneauMessage<Record<never, never>>;
+    delete: PanneauMessage<Record<never, never>>;
+    duplicated: PanneauMessage<    {
+    title: string;
+    }>;
     done: PanneauMessage<    {
     action: string;
     }>;
@@ -381,6 +389,12 @@ export const formsMessages: {
 
 // @public
 export const fr: MessageCatalog;
+
+// @public
+export function getActionLabel(action: {
+    readonly id: string;
+    readonly label?: string | undefined;
+}, intl: Pick<IntlShape, 'formatMessage'>): string;
 
 // @public
 export function getDefaultMessages(group: object): MessageCatalog;

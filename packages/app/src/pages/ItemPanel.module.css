@@ -59,29 +59,6 @@
     border-bottom: var(--panneau-border-width) solid var(--panneau-color-border);
 }
 
-.action {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--panneau-space-1);
-    min-height: var(--panneau-control-height-sm);
-    padding: 0 var(--panneau-space-3);
-    border: var(--panneau-border-width) solid var(--panneau-color-border-control);
-    border-radius: var(--panneau-radius-md);
-    color: var(--panneau-color-text);
-    font-size: var(--panneau-font-size-sm);
-    font-weight: var(--panneau-font-weight-medium);
-    text-decoration: none;
-    outline: none;
-}
-
-.action[data-hovered] {
-    background: var(--panneau-color-hover);
-}
-
-.action[data-focus-visible] {
-    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
-}
-
 .body {
     display: flex;
     flex: 1 1 auto;

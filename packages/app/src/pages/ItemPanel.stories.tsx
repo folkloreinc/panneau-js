@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { RouterProvider } from 'react-aria-components';
 import { expect, within } from 'storybook/test';
 
+import { ActionRunnerProvider } from '@panneau/actions';
 import { PanneauProvider, type PreviewProps, resolveResource } from '@panneau/core';
 import { createRestAdapter } from '@panneau/data';
 import { DataAdapterProvider } from '@panneau/data/query';
@@ -130,19 +131,21 @@ function Panel({
     return (
         <QueryClientProvider client={client}>
             <DataAdapterProvider adapter={adapter}>
-                <RouterProvider navigate={() => undefined}>
-                    <PanneauProvider
-                        plugins={[{ id: 'site', previews: { article: ArticlePreview } }]}
-                    >
-                        <ItemPanel
-                            resolved={resolveResource(resource)}
-                            basePath="/admin"
-                            locale="en"
-                            id="1"
-                            closeHref="/admin/resources/articles"
-                        />
-                    </PanneauProvider>
-                </RouterProvider>
+                <ActionRunnerProvider adapter={adapter}>
+                    <RouterProvider navigate={() => undefined}>
+                        <PanneauProvider
+                            plugins={[{ id: 'site', previews: { article: ArticlePreview } }]}
+                        >
+                            <ItemPanel
+                                resolved={resolveResource(resource)}
+                                basePath="/admin"
+                                locale="en"
+                                id="1"
+                                closeHref="/admin/resources/articles"
+                            />
+                        </PanneauProvider>
+                    </RouterProvider>
+                </ActionRunnerProvider>
             </DataAdapterProvider>
         </QueryClientProvider>
     );

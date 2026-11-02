@@ -2,6 +2,7 @@ import { X } from 'lucide-react';
 import { use } from 'react';
 import { ProgressBar } from 'react-aria-components';
 
+import { getActionLabel } from '@panneau/intl';
 import type { ActionRun } from '@panneau/protocol';
 import { Button, IconButton, usePanneauIntl } from '@panneau/ui';
 
@@ -43,7 +44,7 @@ export function ActionRuns({ 'aria-label': ariaLabel, className }: ActionRunsPro
             className={[styles.runs, className].filter(Boolean).join(' ')}
         >
             {context.runs.map(({ run, target }) => {
-                const label = target.action.label;
+                const label = getActionLabel(target.action, intl);
                 const finished = isFinished(run.status);
                 const status = intl.formatMessage(STATUS_MESSAGES[run.status]);
                 return (

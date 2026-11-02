@@ -1,10 +1,10 @@
-import { type ResolvedResource, getItemValues, resolveForm } from '@panneau/core';
+import { type ResolvedResource, getItemActions, getItemValues, resolveForm } from '@panneau/core';
 import { NotFoundError } from '@panneau/data';
 import { useCreateItem, useDataAdapter, useResourceItem, useUpdateItem } from '@panneau/data/query';
 import { createRelationSource } from '@panneau/fields';
 import { Form } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
-import type { Definition, Item } from '@panneau/protocol';
+import type { Definition, Item, RouteReference } from '@panneau/protocol';
 import { Alert, Button, usePanneauIntl } from '@panneau/ui';
 
 import { useDocumentTitle } from '../documentTitle';
@@ -14,6 +14,8 @@ import { useRecordRecentItem } from '../recentItems';
 import { routePath } from '../routes';
 import { ItemActions } from './ItemActions';
 import { PageHeader, PageLayout } from './PageHeader';
+import { useItemActionRunner } from './itemActionRunner';
+import { createLinkResolver } from './itemLinks';
 import { getItemTitle } from './itemTitle';
 
 export interface ResourceFormPageProps {
@@ -22,13 +24,21 @@ export interface ResourceFormPageProps {
     basePath: string;
     /** The item to edit, or `null` to create one. */
     id: string | null;
+    /** The path of a route reference of the definition, for `link` actions with a `route`. */
+    resolveRoute?: (reference: RouteReference) => string | null;
 }
 
 /**
  * The form to create or edit an item: saved through the adapter, with validation errors from the
  * server, version conflicts and a guard on unsaved changes. A new item opens in its edit page.
  */
-export function ResourceFormPage({ definition, resolved, basePath, id }: ResourceFormPageProps) {
+export function ResourceFormPage({
+    definition,
+    resolved,
+    basePath,
+    id,
+    resolveRoute,
+}: ResourceFormPageProps) {
     const intl = usePanneauIntl();
     const adapter = useDataAdapter();
     const { resource } = resolved;
@@ -60,14 +70,25 @@ export function ResourceFormPage({ definition, resolved, basePath, id }: Resourc
         label: capitalize(resource.label.plural, definition.locale),
     };
     useDocumentTitle([title, back.label]);
-    // The actions placed in `form`, once the item says which it allows, but the page's own
-    const formActions = resolved.list.actions.form.filter((action) => action.id !== 'edit');
+    // The actions of the item, as its row and its panel show them, but `edit`: this page
+    const { run, isSupported } = useItemActionRunner(resource, {
+        basePath,
+        locale: definition.locale,
+    });
+    const formActions =
+        item !== undefined
+            ? getItemActions(resource, item, 'form', {
+                  getLinkHref: createLinkResolver(resource, basePath, { resolveRoute }),
+                  filter: isSupported,
+              })
+            : [];
     const itemActions =
         mode === 'update' && item !== undefined && formActions.length > 0 ? (
             <ItemActions
                 resource={resource.id}
                 actions={formActions}
                 item={item}
+                runAction={run}
                 onRun={(_action, outcome) => {
                     // An action that removed the item (`delete`) leaves its page: back to the list,
                     // unless its result went somewhere already (`redirect`).

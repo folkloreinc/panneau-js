@@ -1,16 +1,16 @@
-import { ExternalLink, Maximize2, Minimize2, Pencil, X } from 'lucide-react';
+import { Maximize2, Minimize2, X } from 'lucide-react';
 import { type KeyboardEvent, useEffect, useRef } from 'react';
-import { Link } from 'react-aria-components';
 
-import type { ResolvedResource } from '@panneau/core';
+import { type ResolvedResource, getItemActions } from '@panneau/core';
+import { NotFoundError } from '@panneau/data';
 import { useResourceItem } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
-import { ItemDetails, type ListColumn, getActionHref, isAllowedOn } from '@panneau/lists';
+import { ItemDetails, type ListColumn } from '@panneau/lists';
+import type { RouteReference } from '@panneau/protocol';
 import {
     Alert,
     Button,
     Heading,
-    Icon,
     IconButton,
     Skeleton,
     Tab,
@@ -24,9 +24,11 @@ import { cx } from '../cx';
 import { navigate } from '../location';
 import { usePreference } from '../preferences';
 import { useRecordRecentItem } from '../recentItems';
-import { routePath } from '../routes';
+import { ItemActions } from './ItemActions';
 import styles from './ItemPanel.module.css';
 import { ItemPreview, PreviewSkeleton } from './ItemPreview';
+import { useItemActionRunner } from './itemActionRunner';
+import { createLinkResolver } from './itemLinks';
 import { getItemTitle } from './itemTitle';
 
 /** Fields that hold other fields, shown in the form rather than in the details. */
@@ -42,6 +44,8 @@ export interface ItemPanelProps {
     id: string;
     /** Where closing the panel goes: the list, with its query. */
     closeHref: string;
+    /** The path of a route reference of the definition, for `link` actions with a `route`. */
+    resolveRoute?: (reference: RouteReference) => string | null;
 }
 
 /**
@@ -50,7 +54,14 @@ export interface ItemPanelProps {
  * A resource with a `features.preview` gets a preview tab first: a component of a plugin, or its
  * page on the site. The panel can be widened, for previews, and remembers it. Escape closes it.
  */
-export function ItemPanel({ resolved, basePath, locale, id, closeHref }: ItemPanelProps) {
+export function ItemPanel({
+    resolved,
+    basePath,
+    locale,
+    id,
+    closeHref,
+    resolveRoute,
+}: ItemPanelProps) {
     const intl = usePanneauIntl();
     const { resource } = resolved;
     const { data: item, isError, refetch } = useResourceItem(resource.id, id);
@@ -78,13 +89,15 @@ export function ItemPanel({ resolved, basePath, locale, id, closeHref }: ItemPan
             label: field.label ?? field.name,
             display: field.display ?? field.type,
         }));
-    const links = (resource.actions ?? []).flatMap((action) => {
-        if (item === undefined || !action.scope.includes('item') || !isAllowedOn(action, item)) {
-            return [];
-        }
-        const href = getActionHref(action, item);
-        return href !== null ? [{ action, href }] : [];
-    });
+    // The actions of the item, as its row and its form show them, but `show`: this panel
+    const { run, isSupported } = useItemActionRunner(resource, { basePath, locale });
+    const itemActions =
+        item !== undefined
+            ? getItemActions(resource, item, 'panel', {
+                  getLinkHref: createLinkResolver(resource, basePath, { resolveRoute }),
+                  filter: isSupported,
+              })
+            : [];
 
     const onKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'Escape' && !event.defaultPrevented) {
@@ -179,33 +192,23 @@ export function ItemPanel({ resolved, basePath, locale, id, closeHref }: ItemPan
             ) : null}
             {item !== undefined ? (
                 <div className={styles.actions}>
-                    {item.abilities.update !== false ? (
-                        <Link
-                            href={routePath(
-                                { name: 'resource.edit', resource: resource.id, id },
-                                basePath,
-                            )}
-                            className={styles.action}
-                        >
-                            <Icon icon={Pencil} size="sm" />
-                            {intl.formatMessage(appMessages.editItem)}
-                        </Link>
-                    ) : null}
-                    {links.map(({ action, href }) => {
-                        const external = /^https?:\/\//.test(href);
-                        return (
-                            <Link
-                                key={action.id}
-                                href={href}
-                                target={external ? '_blank' : undefined}
-                                rel={external ? 'noopener noreferrer' : undefined}
-                                className={styles.action}
-                            >
-                                {external ? <Icon icon={ExternalLink} size="sm" /> : null}
-                                {action.label}
-                            </Link>
-                        );
-                    })}
+                    <ItemActions
+                        resource={resource.id}
+                        actions={itemActions}
+                        item={item}
+                        runAction={run}
+                        onRun={(_action, outcome) => {
+                            // An action that removed the item (`delete`) closes the panel.
+                            if (outcome.status !== 'done') {
+                                return;
+                            }
+                            void refetch().then(({ error }) => {
+                                if (error instanceof NotFoundError) {
+                                    navigate(closeHref, { replace: true });
+                                }
+                            });
+                        }}
+                    />
                 </div>
             ) : null}
             <div className={styles.body}>{content}</div>

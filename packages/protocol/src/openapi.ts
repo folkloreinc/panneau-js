@@ -214,6 +214,23 @@ export function createOpenApiDocument(): JsonObject {
                     responses: { 204: ok('Deleted.'), ...problems(401, 403, 404, 409) },
                 },
             },
+            '/resources/{resource}/{id}/duplicate': {
+                parameters: [resource, id],
+                post: {
+                    operationId: 'duplicateItem',
+                    description:
+                        'Copies an item, for the built-in `duplicate` (decision 0040). Allowed on the items whose `abilities.duplicate` is `true`.',
+                    responses: {
+                        201: ok('The copy, a new item.', ref('ItemResponse'), etag),
+                        ...problems(401, 403, 404),
+                        409: {
+                            description:
+                                'The copy conflicts with another item, such as a unique value.',
+                            content: { [PROBLEM_CONTENT_TYPE]: { schema: ref('Problem') } },
+                        },
+                    },
+                },
+            },
             '/resources/{resource}/{id}/preview': {
                 parameters: [resource, id],
                 post: {

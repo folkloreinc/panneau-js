@@ -1,4 +1,9 @@
 import type { Action, ActionPlacement, Column, Field, Filter, Resource } from '@panneau/protocol';
+import {
+    BUILT_IN_ITEM_ACTIONS,
+    type BuiltInItemAction,
+    isBuiltInItemAction,
+} from '@panneau/protocol/runtime';
 
 import { canRunAction, getActionPlacements } from './abilities';
 
@@ -68,6 +73,59 @@ export function groupActions(actions: readonly Action[]): Record<ActionPlacement
     return groups;
 }
 
+/** The built-in item actions, as the client shows them when a resource doesn't replace them. */
+const BUILT_IN_ITEM_ACTION_DEFINITIONS: Readonly<Record<BuiltInItemAction, Action>> = {
+    show: { id: 'show', kind: 'link', scope: ['item'], placement: ['row', 'form'] },
+    edit: { id: 'edit', kind: 'link', scope: ['item'], placement: ['row', 'form'] },
+    duplicate: { id: 'duplicate', kind: 'server', scope: ['item'], placement: ['menu', 'form'] },
+    delete: {
+        id: 'delete',
+        kind: 'server',
+        scope: ['item', 'selection'],
+        placement: ['menu', 'toolbar', 'form'],
+        destructive: true,
+        confirm: true,
+        dryRun: true,
+    },
+};
+
+/**
+ * The actions of a resource (decision 0040): its built-in item actions (`show`, `edit`,
+ * `duplicate`, `delete`, or those of its `itemActions`, in their order), then the actions it
+ * declares. A declared action with the id of a built-in one replaces it, at its place, with the
+ * built-in one's placement, confirmation, `destructive` and `dryRun` when it doesn't set them, and
+ * is left out with it when `itemActions` doesn't list it. With `"open": "edit"`, `show` is left out: it
+ * would go to the edit form too. Abilities of the items then hide what they don't allow.
+ */
+export function getResourceActions(resource: Resource): Action[] {
+    const declared = resource.actions ?? [];
+    const ids = (resource.itemActions ?? BUILT_IN_ITEM_ACTIONS).filter(
+        (id, index, all): id is BuiltInItemAction =>
+            isBuiltInItemAction(id) &&
+            all.indexOf(id) === index &&
+            !(id === 'show' && getOpenMode(resource) === 'edit'),
+    );
+    return [
+        ...ids.map((id): Action => {
+            const replacement = declared.find((action) => action.id === id);
+            // What the declared action doesn't set (placement, confirmation, dry runs) is the
+            // built-in one's.
+            return replacement !== undefined
+                ? { ...BUILT_IN_ITEM_ACTION_DEFINITIONS[id], ...replacement }
+                : BUILT_IN_ITEM_ACTION_DEFINITIONS[id];
+        }),
+        ...declared.filter((action) => !isBuiltInItemAction(action.id)),
+    ];
+}
+
+/**
+ * Where the title of an item goes (`open` of the resource, decision 0040): `panel`, the show route
+ * with the item's details next to the list, or `edit`, its form. A value it doesn't know is `panel`.
+ */
+export function getOpenMode(resource: Resource): 'panel' | 'edit' {
+    return resource.open === 'edit' ? 'edit' : 'panel';
+}
+
 /**
  * Resolves the list of a resource. Without columns, it shows the item title and the next fields
  * (up to four, skipping groups, repeaters and rich text).
@@ -95,8 +153,8 @@ export function resolveList(resource: Resource): ResolvedList {
         }
         return resolved;
     });
-    const actions = groupActions(resource.actions ?? []);
-    const hasSelectionAction = (resource.actions ?? []).some(
+    const actions = groupActions(getResourceActions(resource));
+    const hasSelectionAction = getResourceActions(resource).some(
         (action) => action.scope.includes('selection') && canRunAction(action),
     );
     return {

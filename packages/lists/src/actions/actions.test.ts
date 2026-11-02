@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { edit, exportAction, publish, remove } from '../__fixtures__/pages';
+import { edit, editLink, exportAction, publish, remove, showLink } from '../__fixtures__/pages';
 import { getActionHref, groupListActions, isAllowedOn } from './actions';
 
 describe('groupListActions', () => {
@@ -22,13 +22,28 @@ describe('isAllowedOn', () => {
     it('follows the abilities of the item', () => {
         expect(isAllowedOn(publish, { id: '1', abilities: { publish: true } })).toBe(true);
         expect(isAllowedOn(publish, { id: '1', abilities: { update: true } })).toBe(false);
-        expect(isAllowedOn(edit, { id: '1', abilities: {} })).toBe(true);
-        expect(isAllowedOn(edit, { id: '1', abilities: { edit: false } })).toBe(false);
+        // `edit` is a built-in item action: it needs `update`
+        expect(isAllowedOn(edit, { id: '1', abilities: {} })).toBe(false);
+        expect(isAllowedOn(edit, { id: '1', abilities: { update: true } })).toBe(true);
+        expect(isAllowedOn(edit, { id: '1', abilities: { update: true, edit: false } })).toBe(
+            false,
+        );
     });
 
-    it('allows everything on items without abilities', () => {
+    it('shows `edit` on items that can be updated, and `show` on those that can be viewed', () => {
+        expect(isAllowedOn(editLink, { id: '1', abilities: { update: false } })).toBe(false);
+        expect(isAllowedOn(editLink, { id: '1', abilities: { update: true } })).toBe(true);
+        expect(isAllowedOn(showLink, { id: '1', abilities: { update: true } })).toBe(false);
+        expect(isAllowedOn(showLink, { id: '1', abilities: { view: true } })).toBe(true);
+    });
+
+    it('allows other actions on items without abilities, but no built-in item action', () => {
         expect(isAllowedOn(publish, { id: '1' })).toBe(true);
         expect(isAllowedOn({ ...publish, abilities: { run: false } }, { id: '1' })).toBe(false);
+        // Without abilities, nothing says the item can be deleted, updated or viewed
+        expect(isAllowedOn(remove, { id: '1' })).toBe(false);
+        expect(isAllowedOn(edit, { id: '1' })).toBe(false);
+        expect(isAllowedOn(showLink, { id: '1' })).toBe(false);
     });
 });
 

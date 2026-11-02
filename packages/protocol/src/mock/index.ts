@@ -1,3 +1,4 @@
+import { ITEM_ACTION_ABILITIES, isBuiltInItemAction } from '../constants';
 import { getMediaLibraries } from '../libraries';
 import { type ListQuery, fromSearchParams, isFilterRange, matchesFilterRange } from '../query';
 import { type RuleFailure, checkValues } from '../rules';
@@ -261,8 +262,18 @@ function withOwnTransform(resource: ResourceInput, item: Item): Item {
 }
 
 /**
+ * Whether an item allows an action, as clients read its abilities (decision 0040): a built-in item
+ * action needs its ability (`delete`, `duplicate`…), and another action its id.
+ */
+function allows(item: Item, actionId: string): boolean {
+    const ability = isBuiltInItemAction(actionId) ? ITEM_ACTION_ABILITIES[actionId] : actionId;
+    return item.abilities[ability] === true && item.abilities[actionId] !== false;
+}
+
+/**
  * An in-memory backend that implements the protocol's resource routes: definition, list, show,
- * create, update (with `If-Match`), delete and the built-in `delete` action. Values are checked
+ * create, update (with `If-Match`), delete, duplicate and the built-in `delete` action. Its items
+ * allow every built-in item action (`view`, `update`, `duplicate`, `delete`). Values are checked
  * with the portable rules. Used to test the conformance kit, and to develop frontends without a
  * real backend.
  */
@@ -273,7 +284,9 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
 
     const abilitiesFor = (resource: ResourceInput) =>
         Object.fromEntries([
+            ['view', true],
             ['update', true],
+            ['duplicate', true],
             ['delete', true],
             ...(resource.actions ?? []).map((action) => [action.id, true]),
         ]);
@@ -716,11 +729,12 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             const body = await readBody();
             if (body.dryRun === true) {
                 // A dry run counts what the action would do, and changes nothing.
-                if (action?.dryRun !== true) {
+                // The built-in `delete` answers dry runs, declared or not
+                if (action?.dryRun !== true && actionId !== 'delete') {
                     return problem(400, 'This action does not support dry runs.');
                 }
                 const selected = selectItems(list, body.selection as Selection | undefined);
-                const allowed = selected.filter((item) => item.abilities?.[actionId] !== false);
+                const allowed = selected.filter((item) => allows(item, actionId));
                 const result: ActionResult = {
                     summary: {
                         succeeded: allowed.length,
@@ -737,17 +751,59 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             if (actionId !== 'delete') {
                 return problem(404, 'Action not found.');
             }
-            const selected = selectItems(list, body.selection as Selection | undefined);
+            const selection = body.selection as Selection | undefined;
+            const selected = selectItems(list, selection);
+            const deleted = selected.filter((item) => allows(item, 'delete'));
+            const skipped = selected.filter((item) => !deleted.includes(item));
+            // The only item of an item action is an error, not a skipped result
+            const ids =
+                selection !== undefined && 'ids' in selection && Array.isArray(selection.ids)
+                    ? selection.ids
+                    : null;
+            if (ids?.length === 1 && skipped.length > 0) {
+                return problem(403, 'This item can’t be deleted.');
+            }
             store.set(
                 resource.id,
-                list.filter((item) => !selected.includes(item)),
+                list.filter((item) => !deleted.includes(item)),
             );
             const result: ActionResult = {
-                message: `${selected.length} deleted.`,
-                summary: { succeeded: selected.length, failed: 0, skipped: 0 },
+                message: `${deleted.length} deleted.`,
+                summary: { succeeded: deleted.length, failed: 0, skipped: skipped.length },
+                ...(skipped.length > 0
+                    ? {
+                          results: skipped.slice(0, 20).map((item) => ({
+                              id: item.id,
+                              status: 'skipped' as const,
+                              reason: 'forbidden',
+                          })),
+                      }
+                    : {}),
                 refresh: 'list',
             };
             return json(200, result);
+        }
+
+        if (segments.length === 4 && segments[3] === 'duplicate' && segments[2] !== undefined) {
+            const current = list.find((item) => item.id === segments[2]);
+            if (current === undefined) {
+                return problem(404, 'Item not found.');
+            }
+            if (method !== 'POST') {
+                return problem(405, 'Method not allowed.');
+            }
+            if (!allows(current, 'duplicate')) {
+                return problem(403, 'This item can’t be duplicated.');
+            }
+            // A copy of its values, under an id no item has
+            const { id: _id, version: _version, abilities: _abilities, ...values } = current;
+            let copyId = String(nextId++);
+            while (list.some((item) => item.id === copyId)) {
+                copyId = String(nextId++);
+            }
+            const copy = makeItem(resource, { ...values, id: copyId });
+            list.push(copy);
+            return json(201, { data: copy }, etag(copy));
         }
 
         if (segments.length === 4 && segments[3] === 'preview' && segments[2] !== undefined) {

@@ -146,19 +146,14 @@ export function createExampleDefinition(): DefinitionInput {
                         fields: [{ name: 'notify', type: 'boolean' }],
                         dryRun: true,
                     },
-                    {
-                        id: 'edit',
-                        label: 'Modifier',
-                        kind: 'link',
-                        url: '/pages/{id}/edit',
-                        scope: ['item'],
-                    },
                 ],
                 abilities: { viewAny: true, create: true },
             },
             {
                 id: 'authors',
                 label: { singular: 'auteur', plural: 'auteurs' },
+                // Titles open the form, without the panel of the details.
+                open: 'edit',
                 fields: [
                     { name: 'name', type: 'text', rules: [{ rule: 'required' }] },
                     { name: 'photo', type: 'media', accept: ['image/*'] },
@@ -168,6 +163,8 @@ export function createExampleDefinition(): DefinitionInput {
                 id: 'media',
                 kind: 'media',
                 label: { singular: 'média', plural: 'médias' },
+                // Of the built-in item actions, only these, in this order
+                itemActions: ['edit', 'delete'],
                 itemTitle: 'name',
                 fields: [
                     {

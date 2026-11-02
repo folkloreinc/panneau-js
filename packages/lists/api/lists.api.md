@@ -312,6 +312,7 @@ export interface ListViewProps {
     filters?: readonly Filter[];
     getItemHref?: (item: ListItem) => string | null;
     getItemLabel?: (item: ListItem) => string;
+    getLinkHref?: (action: Action, item: ListItem) => string | null;
     isLoading?: boolean;
     items: readonly ListItem[] | undefined;
     itemTitle?: string;

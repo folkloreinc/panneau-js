@@ -1,4 +1,5 @@
 import type { Abilities, Action, ActionPlacement, Item } from '@panneau/protocol';
+import { ITEM_ACTION_ABILITIES, isBuiltInItemAction } from '@panneau/protocol/runtime';
 
 /**
  * Whether a set of abilities allows something. Without abilities (a backend that sends none),
@@ -14,17 +15,35 @@ export function canRunAction(action: Action): boolean {
 }
 
 /**
- * Whether an action is available on an item: the user can run it, and the item lists its id in
- * its abilities. Links to show and edit are allowed unless the item says otherwise.
+ * Whether an action is available on an item: the user can run it, and the item allows it.
+ * - The built-in item actions need their ability (decision 0040): `view` for `show`, `update` for
+ *   `edit`, `duplicate` and `delete`. A missing or false ability hides them, and so does their
+ *   own id set to `false` (`"edit": false`). An item without abilities shows none of them.
+ * - Other links are allowed unless the item says otherwise (`"site": false`).
+ * - Other actions need their id in the abilities of the item (`"publish": true`).
+ * - On an item without abilities (a product's own records), other actions are allowed: the
+ *   backend decides.
  */
-export function isActionAllowedOn(action: Action, item: Item): boolean {
+export function isActionAllowedOn(
+    action: Action,
+    item: { readonly abilities?: Abilities | undefined },
+): boolean {
     if (!canRunAction(action)) {
         return false;
     }
-    if (action.kind === 'link') {
-        return item.abilities[action.id] !== false;
+    const { abilities } = item;
+    if (isBuiltInItemAction(action.id)) {
+        return (
+            abilities?.[ITEM_ACTION_ABILITIES[action.id]] === true && abilities[action.id] !== false
+        );
     }
-    return item.abilities[action.id] === true;
+    if (abilities === undefined) {
+        return true;
+    }
+    if (action.kind === 'link') {
+        return abilities[action.id] !== false;
+    }
+    return abilities[action.id] === true;
 }
 
 /** Splits the items of a selection by whether an action is allowed on them. */
@@ -38,7 +57,10 @@ export function partitionByAction(
     return { allowed, skipped };
 }
 
-/** Where an action appears when it doesn't say: rows and forms for items, the toolbar otherwise. */
+/**
+ * Where an action appears when it doesn't say: rows and forms (the header of an item, in its
+ * panel and its form) for items, the toolbar otherwise.
+ */
 export function getActionPlacements(action: Action): ActionPlacement[] {
     if (action.placement !== undefined) {
         return action.placement;

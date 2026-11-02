@@ -13,6 +13,39 @@ export const BUILT_IN_ACTIONS = [
 ] as const;
 export type BuiltInAction = (typeof BUILT_IN_ACTIONS)[number];
 
+/**
+ * Built-in `link` actions (decision 0040). Without a `url` or a `route`, the client resolves them
+ * to its own routes, and labels them itself when they have no `label`.
+ */
+export const BUILT_IN_LINK_ACTIONS = ['show', 'edit'] as const;
+export type BuiltInLinkAction = (typeof BUILT_IN_LINK_ACTIONS)[number];
+
+/** Whether an action id is one of the built-in links, `show` and `edit`. */
+export function isBuiltInLink(id: string): id is BuiltInLinkAction {
+    return (BUILT_IN_LINK_ACTIONS as readonly string[]).includes(id);
+}
+
+/**
+ * Built-in item actions, in their default order (decision 0040). Every resource has them without
+ * declaring them, and clients show each one on the items whose abilities allow it
+ * (`ITEM_ACTION_ABILITIES`). A resource's `itemActions` picks some of them, in its order.
+ */
+export const BUILT_IN_ITEM_ACTIONS = ['show', 'edit', 'duplicate', 'delete'] as const;
+export type BuiltInItemAction = (typeof BUILT_IN_ITEM_ACTIONS)[number];
+
+/** The ability of an item that each built-in item action needs: `true`, or the action is hidden. */
+export const ITEM_ACTION_ABILITIES: Readonly<Record<BuiltInItemAction, string>> = {
+    show: 'view',
+    edit: 'update',
+    duplicate: 'duplicate',
+    delete: 'delete',
+};
+
+/** Whether an action id is one of the built-in item actions. */
+export function isBuiltInItemAction(id: string): id is BuiltInItemAction {
+    return (BUILT_IN_ITEM_ACTIONS as readonly string[]).includes(id);
+}
+
 /** Field types every Panneau frontend renders. Plugins add others. */
 export const BUILT_IN_FIELD_TYPES = [
     'text',
