@@ -319,7 +319,7 @@ export const BuiltInLinks: Story = {
     args: {
         items: members.map((member) => ({
             ...member,
-            abilities: { ...member.abilities, update: member.role !== 'owner' },
+            abilities: { ...member.abilities, view: true, update: member.role !== 'owner' },
         })),
         actions: [
             { id: 'show', kind: 'link', scope: ['item'] },

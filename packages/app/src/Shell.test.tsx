@@ -537,6 +537,102 @@ describe('the app shell', () => {
         expect(window.location.pathname).toBe('/panneau/resources/authors/1');
     });
 
+    it('shows the built-in item actions on each row by its abilities, without declaring them', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        renderApp({}, [], (backend) => {
+            const contact = backend.items('pages')[1];
+            if (contact !== undefined) {
+                // Contact can only be viewed
+                contact.abilities = { view: true };
+            }
+        });
+        const table = await screen.findByRole('table', { name: 'Pages' });
+        expect(await within(table).findByRole('link', { name: 'Edit: About us' })).toHaveAttribute(
+            'href',
+            '/panneau/resources/pages/1/edit',
+        );
+        expect(within(table).getByRole('link', { name: 'View: About us' })).toBeInTheDocument();
+        expect(within(table).getByRole('link', { name: 'View: Contact' })).toBeInTheDocument();
+        expect(within(table).queryByRole('link', { name: 'Edit: Contact' })).toBeNull();
+        expect(within(table).queryByRole('button', { name: 'Actions for Contact' })).toBeNull();
+
+        await user.click(within(table).getByRole('button', { name: 'Actions for About us' }));
+        expect(await screen.findByRole('menuitem', { name: 'Duplicate' })).toBeInTheDocument();
+        expect(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument();
+    });
+
+    it('shows only the built-in item actions of `itemActions`, in its order', async () => {
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        renderApp({
+            resources: [
+                {
+                    id: 'pages',
+                    label: { singular: 'page', plural: 'pages' },
+                    itemActions: ['edit'],
+                    fields: [{ name: 'title', type: 'text' }],
+                },
+            ],
+        });
+        const table = await screen.findByRole('table', { name: 'Pages' });
+        expect(
+            await within(table).findByRole('link', { name: 'Edit: Contact' }),
+        ).toBeInTheDocument();
+        expect(within(table).queryByRole('link', { name: 'View: Contact' })).toBeNull();
+        expect(within(table).queryByRole('button', { name: 'Actions for Contact' })).toBeNull();
+        // Without `delete`, nothing applies to a selection
+        expect(within(table).queryByRole('checkbox')).toBeNull();
+    });
+
+    it('duplicates an item from its row, and opens the copy in its form', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        const backend = renderApp({
+            resources: [
+                {
+                    id: 'pages',
+                    label: { singular: 'page', plural: 'pages' },
+                    itemTitle: 'title',
+                    fields: [{ name: 'title', type: 'text', label: 'Title' }],
+                },
+            ],
+        });
+        const table = await screen.findByRole('table', { name: 'Pages' });
+        await user.click(await within(table).findByRole('button', { name: 'Actions for Contact' }));
+        await user.click(await screen.findByRole('menuitem', { name: 'Duplicate' }));
+        await waitFor(() =>
+            expect(window.location.pathname).toBe('/panneau/resources/pages/3/edit'),
+        );
+        expect(await screen.findByText('“Contact” is duplicated.')).toBeInTheDocument();
+        expect(await screen.findByRole('textbox', { name: /title/i })).toHaveValue('Contact');
+        expect(backend.items('pages').map((page) => page.id)).toEqual(['1', '2', '3']);
+    });
+
+    it('deletes an item from its row after a confirmation', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        const backend = renderApp();
+        const table = await screen.findByRole('table', { name: 'Pages' });
+        await user.click(await within(table).findByRole('button', { name: 'Actions for Contact' }));
+        await user.click(await screen.findByRole('menuitem', { name: 'Delete' }));
+        const dialog = await screen.findByRole('alertdialog');
+        await user.click(within(dialog).getByRole('button', { name: 'Delete' }));
+        await waitFor(() => expect(backend.items('pages').map((page) => page.id)).toEqual(['1']));
+        await waitFor(() => expect(within(table).queryByText('Contact')).toBeNull());
+    });
+
+    it('deletes an item from its panel, and closes the panel', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages/2');
+        const backend = renderApp();
+        const panel = await screen.findByRole('region', { name: 'Details of the page' });
+        await user.click(await within(panel).findByRole('button', { name: 'Delete' }));
+        const dialog = await screen.findByRole('alertdialog');
+        await user.click(within(dialog).getByRole('button', { name: 'Delete' }));
+        await waitFor(() => expect(window.location.pathname).toBe('/panneau/resources/pages'));
+        expect(backend.items('pages').map((page) => page.id)).toEqual(['1']);
+    });
+
     it('pages a list with cursors, back and forth, without page numbers', async () => {
         const user = userEvent.setup();
         window.history.replaceState(null, '', '/panneau/resources/pages');

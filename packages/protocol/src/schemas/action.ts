@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { isBuiltInLink } from '../constants';
+import { isBuiltInItemAction, isBuiltInLink } from '../constants';
 import { Abilities } from './common';
 import { Field } from './field';
 import { actionJsonRules } from './jsonRules';
@@ -28,7 +28,7 @@ export const Action = z
         id: z.string().min(1),
         label: z.string().optional().meta({
             description:
-                'Required, except for the built-in links `show` and `edit`, which the client labels in its locale.',
+                'Required, except for the built-in item actions (`show`, `edit`, `duplicate`, `delete`), which the client labels in its locale.',
         }),
         icon: z.string().optional(),
         kind: z.enum(['server', 'link', 'client']).default('server').meta({
@@ -71,7 +71,7 @@ export const Action = z
                 message: `The id \`${action.id}\` is reserved for the built-in link: its \`kind\` must be \`link\`.`,
             });
         }
-        if (action.label === undefined && !builtInLink) {
+        if (action.label === undefined && !isBuiltInItemAction(action.id)) {
             context.addIssue({
                 code: 'custom',
                 path: ['label'],

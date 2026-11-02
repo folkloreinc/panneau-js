@@ -155,7 +155,9 @@ describe('Action', () => {
         ).toBe(true);
     });
 
-    it('needs a label, except for the built-in links', () => {
+    it('needs a label, except for the built-in item actions', () => {
+        expect(Action.safeParse({ id: 'delete', scope: ['item'] }).success).toBe(true);
+        expect(Action.safeParse({ id: 'duplicate', scope: ['item'] }).success).toBe(true);
         expect(Action.safeParse({ id: 'publish', scope: ['item'] }).success).toBe(false);
         expect(Action.safeParse({ id: 'edit', kind: 'link', scope: ['item'] }).success).toBe(true);
         expect(Action.safeParse({ id: 'show', kind: 'link', scope: ['item'] }).success).toBe(true);

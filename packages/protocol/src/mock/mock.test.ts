@@ -35,6 +35,34 @@ describe('createMockBackend', () => {
         expect(await response.json()).toMatchObject({ protocol: 1, name: 'Test site' });
     });
 
+    it('duplicates an item under a new id, with every built-in item action allowed', async () => {
+        const backend = createBackend();
+        const response = await backend.fetch('/panneau/api/resources/pages/2/duplicate', {
+            method: 'POST',
+        });
+        expect(response.status).toBe(201);
+        const { data } = (await response.json()) as { data: Record<string, unknown> };
+        expect(data).toMatchObject({
+            id: '4',
+            title: { fr: 'À propos' },
+            abilities: { view: true, update: true, duplicate: true, delete: true },
+        });
+        expect(backend.items('pages').map((item) => item.id)).toEqual(['1', '2', '3', '4']);
+        expect(
+            (await backend.fetch('/panneau/api/resources/pages/9/duplicate', { method: 'POST' }))
+                .status,
+        ).toBe(404);
+    });
+
+    it('answers dry runs of the built-in delete', async () => {
+        const response = await createBackend().fetch(
+            '/panneau/api/resources/authors/actions/delete',
+            json({ selection: { ids: ['ada'] }, dryRun: true }, { method: 'POST' }),
+        );
+        expect(response.status).toBe(200);
+        expect(await response.json()).toMatchObject({ summary: { succeeded: 1, skipped: 0 } });
+    });
+
     it('lists, filters, searches, sorts and paginates', async () => {
         const backend = createBackend();
         const list = async (query: string) => {
@@ -185,8 +213,9 @@ describe('createMockBackend', () => {
             summary: { succeeded: before.length, failed: 0, skipped: 0 },
         });
         expect(backend.items('pages').map((item) => item.id)).toEqual(before);
+        // An action without `dryRun` (the built-in `delete` answers them)
         const unsupported = await backend.fetch(
-            '/panneau/api/resources/pages/actions/delete',
+            '/panneau/api/resources/pages/actions/archive',
             json({ selection: { query: {} }, dryRun: true }, { method: 'POST' }),
         );
         expect(unsupported.status).toBe(400);

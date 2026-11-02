@@ -12,6 +12,11 @@ export const actionsMessages: {
     cancel: PanneauMessage<Record<never, never>>;
     show: PanneauMessage<Record<never, never>>;
     edit: PanneauMessage<Record<never, never>>;
+    duplicate: PanneauMessage<Record<never, never>>;
+    delete: PanneauMessage<Record<never, never>>;
+    duplicated: PanneauMessage<    {
+    title: string;
+    }>;
     done: PanneauMessage<    {
     action: string;
     }>;

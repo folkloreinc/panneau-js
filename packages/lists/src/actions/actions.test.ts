@@ -22,15 +22,19 @@ describe('isAllowedOn', () => {
     it('follows the abilities of the item', () => {
         expect(isAllowedOn(publish, { id: '1', abilities: { publish: true } })).toBe(true);
         expect(isAllowedOn(publish, { id: '1', abilities: { update: true } })).toBe(false);
-        expect(isAllowedOn(edit, { id: '1', abilities: {} })).toBe(true);
-        expect(isAllowedOn(edit, { id: '1', abilities: { edit: false } })).toBe(false);
+        // `edit` is a built-in item action: it needs `update`
+        expect(isAllowedOn(edit, { id: '1', abilities: {} })).toBe(false);
+        expect(isAllowedOn(edit, { id: '1', abilities: { update: true } })).toBe(true);
+        expect(isAllowedOn(edit, { id: '1', abilities: { update: true, edit: false } })).toBe(
+            false,
+        );
     });
 
-    it('hides `edit` on items that can’t be updated, and `show` on those that can’t be viewed', () => {
+    it('shows `edit` on items that can be updated, and `show` on those that can be viewed', () => {
         expect(isAllowedOn(editLink, { id: '1', abilities: { update: false } })).toBe(false);
         expect(isAllowedOn(editLink, { id: '1', abilities: { update: true } })).toBe(true);
-        expect(isAllowedOn(showLink, { id: '1', abilities: { update: false } })).toBe(true);
-        expect(isAllowedOn(showLink, { id: '1', abilities: { view: false } })).toBe(false);
+        expect(isAllowedOn(showLink, { id: '1', abilities: { update: true } })).toBe(false);
+        expect(isAllowedOn(showLink, { id: '1', abilities: { view: true } })).toBe(true);
     });
 
     it('allows everything on items without abilities', () => {

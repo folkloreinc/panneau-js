@@ -5,10 +5,10 @@ import { routePath } from '../routes';
 
 /**
  * Whether an item opens in its form (`"open": "edit"` of its resource, decision 0040). An item
- * that can't be updated (`abilities.update: false`) still opens in the panel of its details.
+ * that can't be updated (without `abilities.update: true`) still opens in the panel of its details.
  */
 export function opensInForm(resource: Resource, abilities: Abilities | undefined): boolean {
-    return getOpenMode(resource) === 'edit' && abilities?.update !== false;
+    return getOpenMode(resource) === 'edit' && abilities?.update === true;
 }
 
 /**

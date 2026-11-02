@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-aria-components';
 
-import { type ActionOutcome, useActionRunner } from '@panneau/actions';
+import { type ActionOutcome, type ActionTarget, useActionRunner } from '@panneau/actions';
 import { getActionLabel, listsMessages } from '@panneau/intl';
 import {
     ConfirmDialog,
@@ -24,6 +24,8 @@ export interface ItemActionsProps {
     item: Item;
     /** The link of a built-in `show` or `edit` without a `url` or a `route`: a route of the app. */
     getLinkHref?: (action: Action, item: Item) => string | null;
+    /** Runs an action, in place of the action runner: the app's, which also duplicates items. */
+    runAction?: (target: ActionTarget) => Promise<ActionOutcome | false>;
     /** Called once an action has run, has been queued or has navigated. */
     onRun?: (action: Action, outcome: ActionOutcome) => void;
 }
@@ -33,10 +35,18 @@ export interface ItemActionsProps {
  * allows. They run through the action runner (parameters, results, queued runs), after a
  * confirmation when they ask for one. A `link` action with a URL is a link.
  */
-export function ItemActions({ resource, actions, item, getLinkHref, onRun }: ItemActionsProps) {
+export function ItemActions({
+    resource,
+    actions,
+    item,
+    getLinkHref,
+    runAction: runActionProp,
+    onRun,
+}: ItemActionsProps) {
     const intl = usePanneauIntl();
     const toasts = useToast();
-    const runAction = useActionRunner(resource);
+    const runner = useActionRunner(resource);
+    const runAction = runActionProp ?? runner;
     const [pending, setPending] = useState<string | null>(null);
     const [confirming, setConfirming] = useState<ListActionEvent | null>(null);
     const hrefOf = (action: Action): string | null =>

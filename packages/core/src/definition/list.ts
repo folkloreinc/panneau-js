@@ -1,4 +1,9 @@
 import type { Action, ActionPlacement, Column, Field, Filter, Resource } from '@panneau/protocol';
+import {
+    BUILT_IN_ITEM_ACTIONS,
+    type BuiltInItemAction,
+    isBuiltInItemAction,
+} from '@panneau/protocol/runtime';
 
 import { canRunAction, getActionPlacements } from './abilities';
 
@@ -68,15 +73,44 @@ export function groupActions(actions: readonly Action[]): Record<ActionPlacement
     return groups;
 }
 
+/** The built-in item actions, as the client shows them when a resource doesn't replace them. */
+const BUILT_IN_ITEM_ACTION_DEFINITIONS: Readonly<Record<BuiltInItemAction, Action>> = {
+    show: { id: 'show', kind: 'link', scope: ['item'], placement: ['row'] },
+    edit: { id: 'edit', kind: 'link', scope: ['item'], placement: ['row'] },
+    duplicate: { id: 'duplicate', kind: 'server', scope: ['item'], placement: ['menu', 'form'] },
+    delete: {
+        id: 'delete',
+        kind: 'server',
+        scope: ['item', 'selection'],
+        placement: ['menu', 'toolbar', 'form'],
+        destructive: true,
+        confirm: true,
+        dryRun: true,
+    },
+};
+
 /**
- * The actions of a resource. With `"open": "edit"`, the built-in `show` link is left out: it would
- * go to the edit form too (decision 0040).
+ * The actions of a resource (decision 0040): its built-in item actions (`show`, `edit`,
+ * `duplicate`, `delete`, or those of its `itemActions`, in their order), then the actions it
+ * declares. A declared action with the id of a built-in one replaces it, at its place, and is left
+ * out with it when `itemActions` doesn't list it. With `"open": "edit"`, `show` is left out: it
+ * would go to the edit form too. Abilities of the items then hide what they don't allow.
  */
 export function getResourceActions(resource: Resource): Action[] {
-    const actions = resource.actions ?? [];
-    return getOpenMode(resource) === 'edit'
-        ? actions.filter((action) => !(action.id === 'show' && action.kind === 'link'))
-        : actions;
+    const declared = resource.actions ?? [];
+    const ids = (resource.itemActions ?? BUILT_IN_ITEM_ACTIONS).filter(
+        (id, index, all): id is BuiltInItemAction =>
+            isBuiltInItemAction(id) &&
+            all.indexOf(id) === index &&
+            !(id === 'show' && getOpenMode(resource) === 'edit'),
+    );
+    return [
+        ...ids.map(
+            (id) =>
+                declared.find((action) => action.id === id) ?? BUILT_IN_ITEM_ACTION_DEFINITIONS[id],
+        ),
+        ...declared.filter((action) => !isBuiltInItemAction(action.id)),
+    ];
 }
 
 /**

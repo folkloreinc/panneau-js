@@ -99,6 +99,7 @@ describe('runConformance', () => {
             'update',
             'update.create-rules',
             'update.conflict',
+            'duplicate',
             'delete',
         ]);
     });
@@ -262,45 +263,27 @@ describe('runConformance', () => {
         });
     });
 
-    it('reports items of a resource with `edit` or `show` that do not say whether they can be updated or viewed', async () => {
+    it('reports a backend whose copy keeps the id of the item', async () => {
         const backend = createBackend();
-        // A backend that only lists the abilities of its custom actions.
-        const partial = async (input: string, init?: RequestInit) => {
-            const response = await backend.fetch(input, init);
-            if (!new URL(input).pathname.endsWith('/resources/pages')) {
-                return response;
+        // A backend that answers the item itself instead of a copy.
+        const broken = async (input: string, init?: RequestInit) => {
+            if (new URL(input).pathname.endsWith('/duplicate')) {
+                const item = await backend.fetch(input.replace(/\/duplicate$/, ''));
+                return new Response(await item.text(), {
+                    status: 201,
+                    headers: { 'Content-Type': 'application/json' },
+                });
             }
-            const body = (await response.json()) as { data: { abilities: object }[] };
-            body.data.forEach((item) => (item.abilities = { publish: true }));
-            return new Response(JSON.stringify(body), {
-                status: response.status,
-                headers: response.headers,
-            });
+            return backend.fetch(input, init);
         };
         const report = await runConformance({
             baseUrl: 'http://panneau.test/panneau/api',
-            fetch: partial,
+            fetch: broken,
+            writes,
         });
-        const check = report.checks.find((candidate) => candidate.id === 'list.link-abilities');
-        expect(check?.status).toBe('failed');
-        expect(check?.issues[0]).toContain('has no `abilities.update`, which `edit` needs');
-    });
-
-    it('skips the link abilities check when the resource has no `edit` or `show` link', async () => {
-        const definition = createDefinition();
-        definition.resources.forEach((resource) => {
-            resource.actions = (resource.actions ?? []).filter(
-                (action) => action.id !== 'edit' && action.id !== 'show',
-            );
-        });
-        const backend = createMockBackend({ definition });
-        const report = await runConformance({
-            baseUrl: 'http://panneau.test/panneau/api',
-            fetch: backend.fetch,
-        });
-        expect(report.checks.find((check) => check.id === 'list.link-abilities')).toMatchObject({
-            status: 'skipped',
-            issues: ['The resource declares no `edit` or `show` link.'],
+        expect(report.checks.find((check) => check.id === 'duplicate')).toMatchObject({
+            status: 'failed',
+            issues: ['The copy has the id of the item it copies.'],
         });
     });
 });

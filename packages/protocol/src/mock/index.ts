@@ -262,7 +262,8 @@ function withOwnTransform(resource: ResourceInput, item: Item): Item {
 
 /**
  * An in-memory backend that implements the protocol's resource routes: definition, list, show,
- * create, update (with `If-Match`), delete and the built-in `delete` action. Values are checked
+ * create, update (with `If-Match`), delete, duplicate and the built-in `delete` action. Its items
+ * allow every built-in item action (`view`, `update`, `duplicate`, `delete`). Values are checked
  * with the portable rules. Used to test the conformance kit, and to develop frontends without a
  * real backend.
  */
@@ -275,6 +276,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
         Object.fromEntries([
             ['view', true],
             ['update', true],
+            ['duplicate', true],
             ['delete', true],
             ...(resource.actions ?? []).map((action) => [action.id, true]),
         ]);
@@ -717,7 +719,8 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             const body = await readBody();
             if (body.dryRun === true) {
                 // A dry run counts what the action would do, and changes nothing.
-                if (action?.dryRun !== true) {
+                // The built-in `delete` answers dry runs, declared or not
+                if (action?.dryRun !== true && actionId !== 'delete') {
                     return problem(400, 'This action does not support dry runs.');
                 }
                 const selected = selectItems(list, body.selection as Selection | undefined);
@@ -749,6 +752,25 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                 refresh: 'list',
             };
             return json(200, result);
+        }
+
+        if (segments.length === 4 && segments[3] === 'duplicate' && segments[2] !== undefined) {
+            const current = list.find((item) => item.id === segments[2]);
+            if (current === undefined) {
+                return problem(404, 'Item not found.');
+            }
+            if (method !== 'POST') {
+                return problem(405, 'Method not allowed.');
+            }
+            // A copy of its values, under an id no item has
+            const { id: _id, version: _version, abilities: _abilities, ...values } = current;
+            let copyId = String(nextId++);
+            while (list.some((item) => item.id === copyId)) {
+                copyId = String(nextId++);
+            }
+            const copy = makeItem(resource, { ...values, id: copyId });
+            list.push(copy);
+            return json(201, { data: copy }, etag(copy));
         }
 
         if (segments.length === 4 && segments[3] === 'preview' && segments[2] !== undefined) {

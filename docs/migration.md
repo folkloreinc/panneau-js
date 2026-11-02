@@ -62,14 +62,11 @@ These steps can be done on the current lines and make the move smaller:
 
 Rector rules will cover the mechanical parts: field class renames, `localized()`, and static properties to methods.
 
-**The `actions` column of lists.** In v4, the `show`, `edit` and `delete` buttons of a list's `actions` column are on every row. In 5 they are actions of the resource ([decisions/0040](decisions/0040-row-links-and-open-mode.md)): `show` and `edit` are built-in links, which the app resolves to its routes and labels itself, and `delete` the built-in server action. A resource that declares none has no buttons in its rows: its titles open the item's panel, which links to its form. For a resource whose panel adds nothing (orders, users), `"open": "edit"` makes the titles open the form.
+**The `actions` column of lists.** In v4, the `show`, `edit` and `delete` buttons of a list's `actions` column are on every row. In 5, `show`, `edit`, `duplicate` and `delete` are built-in item actions of every resource ([decisions/0040](decisions/0040-row-links-and-open-mode.md)): the app shows each one on the items whose abilities allow it (`view`, `update`, `duplicate`, `delete`), without declaring them. A resource that shows fewer, or in another order, says so in `itemActions`, which the column of v4 becomes. For a resource whose panel adds nothing (orders, users), `"open": "edit"` makes the titles open the form.
 
 ```jsonc
 "open": "edit",
-"actions": [
-    { "id": "edit", "kind": "link", "scope": ["item"] },
-    { "id": "delete", "label": "Delete", "scope": ["item", "selection"], "destructive": true, "confirm": true }
-]
+"itemActions": ["edit", "delete"]
 ```
 
 ## Mapping: JS

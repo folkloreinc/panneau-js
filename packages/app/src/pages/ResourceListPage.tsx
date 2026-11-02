@@ -1,7 +1,7 @@
 import { Plus } from 'lucide-react';
 import { useEffect } from 'react';
 
-import { useActionPreview, useActionRunner } from '@panneau/actions';
+import { useActionPreview } from '@panneau/actions';
 import { type ResolvedResource, useList } from '@panneau/core';
 import { useResourceItem, useResourceList } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
@@ -16,6 +16,7 @@ import { capitalize } from '../navigation';
 import { routePath } from '../routes';
 import { ItemPanel } from './ItemPanel';
 import { LinkButton, PageHeader } from './PageHeader';
+import { filterActions, useItemActionRunner } from './itemActionRunner';
 import { getBuiltInLinkPath, getItemPath, opensInForm } from './itemLinks';
 import { getItemTitle } from './itemTitle';
 import styles from './pages.module.css';
@@ -48,7 +49,7 @@ export function ResourceListPage({
     const { data, error, isFetching, refetch } = useResourceList(resource.id, query, {
         placeholderData: (previous) => previous,
     });
-    const runAction = useActionRunner(resource.id);
+    const { run: runAction, isSupported } = useItemActionRunner(resource, { basePath, locale });
     const previewAction = useActionPreview(resource.id);
     const title = capitalize(resource.label.plural, locale);
     // The item of the panel, which the panel fetches too
@@ -99,6 +100,7 @@ export function ResourceListPage({
             <div className={styles.split}>
                 <ListView
                     {...definitionList}
+                    actions={filterActions(definitionList.actions, isSupported)}
                     aria-label={title}
                     list={list}
                     items={data?.data}

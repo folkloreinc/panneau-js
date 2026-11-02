@@ -1,4 +1,4 @@
-import { BUILT_IN_LINK_ACTIONS } from '../constants';
+import { BUILT_IN_ITEM_ACTIONS, BUILT_IN_LINK_ACTIONS } from '../constants';
 
 /**
  * The checks of `Action` that its `superRefine` makes in Zod, as JSON Schema keywords, so that the
@@ -7,10 +7,14 @@ import { BUILT_IN_LINK_ACTIONS } from '../constants';
 export const actionJsonRules = {
     allOf: [
         {
-            // The ids of the built-in links are only for links, which need no label.
+            // The built-in item actions need no label: the client labels them.
+            if: { properties: { id: { enum: [...BUILT_IN_ITEM_ACTIONS] } }, required: ['id'] },
+            else: { required: ['label'] },
+        },
+        {
+            // The ids of the built-in links are only for links.
             if: { properties: { id: { enum: [...BUILT_IN_LINK_ACTIONS] } }, required: ['id'] },
             then: { properties: { kind: { const: 'link' } }, required: ['kind'] },
-            else: { required: ['label'] },
         },
         {
             if: {

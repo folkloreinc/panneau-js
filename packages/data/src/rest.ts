@@ -205,6 +205,14 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
             });
         },
 
+        duplicate(resource, id, { signal } = {}) {
+            return data<Item>({
+                method: 'POST',
+                path: `/resources/${encode(resource)}/${encode(id)}/duplicate`,
+                signal,
+            });
+        },
+
         async runAction(resource, action, request, { signal } = {}) {
             const response = await send({
                 method: 'POST',

@@ -45,4 +45,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0037](0037-login-page-token-and-logout.md)   | The login page of the app, a login with a token, and the logout        | Accepted                    |
 | [0038](0038-pages-with-params.md)             | Pages with params                                                      | Accepted                    |
 | [0039](0039-cursor-pagination.md)             | Lists paged with cursors                                               | Accepted                    |
-| [0040](0040-row-links-and-open-mode.md)       | Built-in `show` and `edit` links, and what opens an item               | Accepted                    |
+| [0040](0040-row-links-and-open-mode.md)       | Built-in item actions by abilities, and what opens an item             | Accepted                    |

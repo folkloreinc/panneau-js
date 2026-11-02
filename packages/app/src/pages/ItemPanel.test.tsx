@@ -3,6 +3,7 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it } from 'vitest';
 
+import { ActionRunnerProvider } from '@panneau/actions';
 import { PanneauProvider, type PreviewProps, resolveResource } from '@panneau/core';
 import { createRestAdapter } from '@panneau/data';
 import { DataAdapterProvider } from '@panneau/data/query';
@@ -43,23 +44,26 @@ function renderPanel(preview: ResourceInput['features']) {
         items: { pages: [{ id: '1', title: 'About us' }] },
         previewUrl: ({ item }) => `https://example.com/preview/${item.id}`,
     });
+    const adapter = createRestAdapter({ baseUrl: '/api', fetch: backend.fetch });
     render(
         <PanneauRoot>
             <QueryClientProvider
                 client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}
             >
-                <DataAdapterProvider
-                    adapter={createRestAdapter({ baseUrl: '/api', fetch: backend.fetch })}
-                >
-                    <PanneauProvider plugins={[{ id: 'site', previews: { page: PagePreview } }]}>
-                        <ItemPanel
-                            resolved={resolveResource(resource)}
-                            basePath="/admin"
-                            locale="en"
-                            id="1"
-                            closeHref="/admin/resources/pages"
-                        />
-                    </PanneauProvider>
+                <DataAdapterProvider adapter={adapter}>
+                    <ActionRunnerProvider adapter={adapter}>
+                        <PanneauProvider
+                            plugins={[{ id: 'site', previews: { page: PagePreview } }]}
+                        >
+                            <ItemPanel
+                                resolved={resolveResource(resource)}
+                                basePath="/admin"
+                                locale="en"
+                                id="1"
+                                closeHref="/admin/resources/pages"
+                            />
+                        </PanneauProvider>
+                    </ActionRunnerProvider>
                 </DataAdapterProvider>
             </QueryClientProvider>
         </PanneauRoot>,

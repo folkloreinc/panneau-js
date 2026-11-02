@@ -206,7 +206,6 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
     let definition: Definition | null = null;
     let resource: Resource | null = null;
     let firstItemId: string | null = null;
-    let firstPage: ListResponse['data'] | null = null;
 
     await run('definition', 'GET /definition returns a valid definition', async (check) => {
         const reply = await request('/definition');
@@ -254,7 +253,6 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
         check.expect(list.data.length <= 2, `perPage=2 returned ${list.data.length} items.`);
         check.expect(list.meta.perPage === 2, `meta.perPage is ${list.meta.perPage}, expected 2.`);
         firstItemId = list.data[0]?.id ?? null;
-        firstPage = list.data;
         const { meta } = list;
         if (!cursors) {
             check.expect(
@@ -292,38 +290,6 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
             'An invalid cursor answers a 422 without errors.cursor.',
         );
     });
-
-    await run(
-        'list.link-abilities',
-        'Items of a resource with the built-in `edit` or `show` say whether they can be updated or viewed',
-        async (check) => {
-            // The ability each built-in link needs (decision 0040)
-            const needs = { edit: 'update', show: 'view' } as const;
-            const links = ((resource as Resource | null)?.actions ?? []).flatMap((action) =>
-                action.kind === 'link' && (action.id === 'edit' || action.id === 'show')
-                    ? [{ id: action.id, ability: needs[action.id] }]
-                    : [],
-            );
-            const items = firstPage as ListResponse['data'] | null;
-            if (links.length === 0) {
-                check.skip('The resource declares no `edit` or `show` link.');
-                return;
-            }
-            if (items === null || items.length === 0) {
-                check.skip('The list has no items.');
-                return;
-            }
-            // Clients show a link when the item doesn't say: it would fail with a 403.
-            items.forEach((item) => {
-                links.forEach(({ id, ability }) => {
-                    check.expect(
-                        typeof item.abilities[ability] === 'boolean',
-                        `The item "${item.id}" has no \`abilities.${ability}\`, which \`${id}\` needs.`,
-                    );
-                });
-            });
-        },
-    );
 
     await run('list.sort', 'GET /resources/{resource} accepts a sort', async (check) => {
         const sort = (resource as Resource | null)?.list?.sorts?.[0];
@@ -829,6 +795,45 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                     'A 412 problem must include the current item.',
                 );
             }
+        },
+    );
+
+    await run(
+        'duplicate',
+        'POST /resources/{resource}/{id}/duplicate copies an item that allows it',
+        async (check) => {
+            if (createdId === null) {
+                check.skip('No item was created.');
+                return;
+            }
+            const reply = await request(itemPath());
+            const created = check.expectStatus(reply, 200)
+                ? check.expectSchema(ItemResponse, reply.body, 'The item')
+                : null;
+            if (created === null) {
+                return;
+            }
+            // The built-in `duplicate` is only shown on items that allow it (decision 0040).
+            if (created.data.abilities.duplicate !== true) {
+                check.skip("The item doesn't allow `duplicate`.");
+                return;
+            }
+            const copy = await request(`${itemPath()}/duplicate`, { method: 'POST' });
+            if (!check.expectStatus(copy, 201)) {
+                return;
+            }
+            const duplicated = check.expectSchema(ItemResponse, copy.body, 'The copy');
+            if (duplicated === null) {
+                return;
+            }
+            check.expect(
+                duplicated.data.id !== created.data.id,
+                'The copy has the id of the item it copies.',
+            );
+            // Clean up the copy
+            await request(`${resourcePath()}/${encodeURIComponent(duplicated.data.id)}`, {
+                method: 'DELETE',
+            });
         },
     );
 

@@ -6,9 +6,15 @@ import { defineMessage } from '../message';
  */
 export const actionsMessages = {
     cancel: defineMessage({ id: 'panneau.actions.cancel', defaultMessage: 'Cancel' }),
-    /** The labels of the built-in links, which backends don't label (decision 0040). */
+    /** The labels of the built-in item actions, which backends don't label (decision 0040). */
     show: defineMessage({ id: 'panneau.actions.show', defaultMessage: 'View' }),
     edit: defineMessage({ id: 'panneau.actions.edit', defaultMessage: 'Edit' }),
+    duplicate: defineMessage({ id: 'panneau.actions.duplicate', defaultMessage: 'Duplicate' }),
+    delete: defineMessage({ id: 'panneau.actions.delete', defaultMessage: 'Delete' }),
+    duplicated: defineMessage<{ title: string }>({
+        id: 'panneau.actions.duplicated',
+        defaultMessage: '“{title}” is duplicated.',
+    }),
     done: defineMessage<{ action: string }>({
         id: 'panneau.actions.done',
         defaultMessage: '“{action}” is done.',

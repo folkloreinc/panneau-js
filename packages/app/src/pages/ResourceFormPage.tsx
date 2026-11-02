@@ -14,6 +14,7 @@ import { useRecordRecentItem } from '../recentItems';
 import { routePath } from '../routes';
 import { ItemActions } from './ItemActions';
 import { PageHeader, PageLayout } from './PageHeader';
+import { useItemActionRunner } from './itemActionRunner';
 import { getBuiltInLinkPath } from './itemLinks';
 import { getItemTitle } from './itemTitle';
 
@@ -62,13 +63,20 @@ export function ResourceFormPage({ definition, resolved, basePath, id }: Resourc
     };
     useDocumentTitle([title, back.label]);
     // The actions placed in `form`, once the item says which it allows, but the page's own
-    const formActions = resolved.list.actions.form.filter((action) => action.id !== 'edit');
+    const { run, isSupported } = useItemActionRunner(resource, {
+        basePath,
+        locale: definition.locale,
+    });
+    const formActions = resolved.list.actions.form.filter(
+        (action) => action.id !== 'edit' && isSupported(action),
+    );
     const itemActions =
         mode === 'update' && item !== undefined && formActions.length > 0 ? (
             <ItemActions
                 resource={resource.id}
                 actions={formActions}
                 item={item}
+                runAction={run}
                 getLinkHref={(action, current) =>
                     getBuiltInLinkPath(resource, action, current, basePath)
                 }

@@ -1,6 +1,6 @@
 # 0028: The show route opens an item's details in a panel next to its list
 
-- Status: accepted, amended by [0040](0040-row-links-and-open-mode.md): with `"open": "edit"`, titles open the form and the show route redirects to it
+- Status: accepted, amended by [0040](0040-row-links-and-open-mode.md): the panel shows `duplicate` and `delete` of the item, and with `"open": "edit"` titles open the form and the show route redirects to it
 - Date: 2026-10-22
 - Part of: [#6](https://github.com/folkloreinc/panneau-js/issues/6), Phase 2 (app shell)
 

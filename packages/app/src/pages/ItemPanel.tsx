@@ -2,7 +2,8 @@ import { ExternalLink, Maximize2, Minimize2, Pencil, X } from 'lucide-react';
 import { type KeyboardEvent, useEffect, useRef } from 'react';
 import { Link } from 'react-aria-components';
 
-import type { ResolvedResource } from '@panneau/core';
+import { type ResolvedResource, getResourceActions } from '@panneau/core';
+import { NotFoundError } from '@panneau/data';
 import { useResourceItem } from '@panneau/data/query';
 import { appMessages, getActionLabel } from '@panneau/intl';
 import {
@@ -32,8 +33,10 @@ import { navigate } from '../location';
 import { usePreference } from '../preferences';
 import { useRecordRecentItem } from '../recentItems';
 import { routePath } from '../routes';
+import { ItemActions } from './ItemActions';
 import styles from './ItemPanel.module.css';
 import { ItemPreview, PreviewSkeleton } from './ItemPreview';
+import { useItemActionRunner } from './itemActionRunner';
 import { getItemTitle } from './itemTitle';
 
 /** Whether a link leaves the admin: it opens in a new tab. */
@@ -105,9 +108,10 @@ export function ItemPanel({
         (action.url === undefined && action.route !== undefined
             ? (resolveRoute?.({ route: action.route, params: { id: current.id } }) ?? null)
             : null);
+    const actions = getResourceActions(resource);
     // The panel has its own link to edit the item, and is what the built-in `show` opens: it
     // doesn't repeat them.
-    const links = (resource.actions ?? []).flatMap((action) => {
+    const links = actions.flatMap((action) => {
         if (
             item === undefined ||
             action.kind !== 'link' ||
@@ -122,13 +126,15 @@ export function ItemPanel({
         return href !== null ? [{ action, href }] : [];
     });
 
-    // The edit link: a declared `edit` with a URL or a route goes there, and its abilities hide it.
-    const edit = (resource.actions ?? []).find(
-        (action) => action.id === 'edit' && action.kind === 'link',
+    // The edit link: the built-in `edit`, or a declared one with a URL or a route, which its
+    // ability hides (`update`).
+    const edit = actions.find((action) => action.id === 'edit' && action.kind === 'link');
+    const canEdit = item !== undefined && edit !== undefined && isAllowedOn(edit, item);
+    // The other actions of the item placed in `form`, such as `duplicate` and `delete`
+    const { run, isSupported } = useItemActionRunner(resource, { basePath, locale });
+    const itemActions = resolved.list.actions.form.filter(
+        (action) => action.kind !== 'link' && isSupported(action),
     );
-    const canEdit =
-        item !== undefined &&
-        (edit !== undefined ? isAllowedOn(edit, item) : item.abilities.update !== false);
     const editHref =
         (edit !== undefined && item !== undefined ? hrefOf(edit, item) : null) ??
         routePath({ name: 'resource.edit', resource: resource.id, id }, basePath);
@@ -238,6 +244,23 @@ export function ItemPanel({
                             {intl.formatMessage(appMessages.editItem)}
                         </Link>
                     ) : null}
+                    <ItemActions
+                        resource={resource.id}
+                        actions={itemActions}
+                        item={item}
+                        runAction={run}
+                        onRun={(_action, outcome) => {
+                            // An action that removed the item (`delete`) closes the panel.
+                            if (outcome.status !== 'done') {
+                                return;
+                            }
+                            void refetch().then(({ error }) => {
+                                if (error instanceof NotFoundError) {
+                                    navigate(closeHref, { replace: true });
+                                }
+                            });
+                        }}
+                    />
                     {links.map(({ action, href }) => {
                         const external = isExternal(href);
                         return (

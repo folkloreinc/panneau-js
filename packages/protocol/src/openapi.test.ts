@@ -44,6 +44,7 @@ describe('OpenAPI document', () => {
                 '/definition',
                 '/resources/{resource}',
                 '/resources/{resource}/{id}',
+                '/resources/{resource}/{id}/duplicate',
                 '/resources/{resource}/actions/{action}',
                 '/actions/runs/{run}',
                 '/uploads/sign',
@@ -92,6 +93,7 @@ describe('the JSON Schema of the definition', () => {
         ['a built-in link without a label', { id: 'edit', kind: 'link', scope: ['item'] }, true],
         ['`show` without a label', { id: 'show', kind: 'link', scope: ['item'] }, true],
         ['an action without a label', { id: 'publish', scope: ['item'] }, false],
+        ['`delete` without a label', { id: 'delete', scope: ['item', 'selection'] }, true],
         ['a built-in id on a server action', { id: 'edit', label: 'Edit', scope: ['item'] }, false],
         [
             'a link without a url or a route',

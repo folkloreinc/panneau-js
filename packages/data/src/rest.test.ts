@@ -76,6 +76,13 @@ describe('createRestAdapter', () => {
         await expect(adapter.get('pages', created.id)).rejects.toBeInstanceOf(NotFoundError);
     });
 
+    it('duplicates an item, and gives the copy', async () => {
+        const { adapter } = setup();
+        const copy = await adapter.duplicate?.('pages', '1');
+        expect(copy).toMatchObject({ id: '4', version: '1' });
+        expect(await adapter.get('pages', '4')).toMatchObject({ id: '4' });
+    });
+
     it('gets the preview URL of an item with unsaved values', async () => {
         const { adapter, backend } = setup();
         const preview = await adapter.previewItem?.('pages', '1', { status: 'published' });

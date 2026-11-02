@@ -146,8 +146,6 @@ export function createExampleDefinition(): DefinitionInput {
                         fields: [{ name: 'notify', type: 'boolean' }],
                         dryRun: true,
                     },
-                    // The built-in link: the client resolves it to its edit route, and labels it.
-                    { id: 'edit', kind: 'link', scope: ['item'] },
                 ],
                 abilities: { viewAny: true, create: true },
             },
@@ -156,7 +154,6 @@ export function createExampleDefinition(): DefinitionInput {
                 label: { singular: 'auteur', plural: 'auteurs' },
                 // Titles open the form, without the panel of the details.
                 open: 'edit',
-                actions: [{ id: 'edit', kind: 'link', scope: ['item'] }],
                 fields: [
                     { name: 'name', type: 'text', rules: [{ rule: 'required' }] },
                     { name: 'photo', type: 'media', accept: ['image/*'] },
@@ -166,6 +163,8 @@ export function createExampleDefinition(): DefinitionInput {
                 id: 'media',
                 kind: 'media',
                 label: { singular: 'média', plural: 'médias' },
+                // Of the built-in item actions, only these, in this order
+                itemActions: ['edit', 'delete'],
                 itemTitle: 'name',
                 fields: [
                     {

@@ -65,6 +65,7 @@ export interface DataAdapter {
     checkField?(resource: string, field: string, request: FieldCheckRequest, options?: RequestOptions): Promise<FieldCheckResponse>;
     create(resource: string, values: Values, options?: RequestOptions): Promise<Item>;
     delete(resource: string, id: string, options?: RequestOptions): Promise<void>;
+    duplicate?(resource: string, id: string, options?: RequestOptions): Promise<Item>;
     get(resource: string, id: string, options?: RequestOptions): Promise<Item>;
     getActionRun(id: string, options?: RequestOptions): Promise<ActionRun>;
     getDefinition(options?: RequestOptions): Promise<Definition>;
