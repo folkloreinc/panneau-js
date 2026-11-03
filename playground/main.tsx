@@ -34,6 +34,67 @@ const backend = createMockBackend({
     previewUrl: ({ item }) => articlePreviewUrl(item),
 });
 
+/**
+ * The mock backend, with the queued runs of the `export` action of articles: each one counts to
+ * its total, a step a second, so that the notification area of the shell has something to show.
+ */
+function withQueuedRuns(fetch: typeof backend.fetch): typeof backend.fetch {
+    const runs = new Map<string, { startedAt: number; total: number; cancelled?: boolean }>();
+    const reply = (status: number, body: unknown) =>
+        Promise.resolve(
+            new Response(JSON.stringify(body), {
+                status,
+                headers: { 'Content-Type': 'application/json' },
+            }),
+        );
+    const runOf = (id: string) => {
+        const { startedAt, total, cancelled = false } = runs.get(id) ?? { startedAt: 0, total: 0 };
+        const progress = Math.min(total, Math.floor((Date.now() - startedAt) / 1000));
+        const done = progress >= total;
+        if (cancelled) {
+            return {
+                id,
+                action: 'export',
+                resource: 'articles',
+                status: 'cancelled',
+                progress,
+                total,
+            };
+        }
+        return {
+            id,
+            action: 'export',
+            resource: 'articles',
+            status: done ? 'succeeded' : progress > 0 ? 'running' : 'queued',
+            progress,
+            total,
+            ...(done ? { result: { message: `${String(total)} articles exported.` } } : {}),
+        };
+    };
+    return (input, init) => {
+        const request = new Request(input, init);
+        const path = new URL(request.url, window.location.href).pathname;
+        const base = definition.api.baseUrl.replace(/\/$/, '');
+        if (request.method === 'POST' && path === `${base}/resources/articles/actions/export`) {
+            const id = `export-${String(runs.size + 1)}`;
+            runs.set(id, { startedAt: Date.now(), total: 8 });
+            return reply(202, { run: runOf(id) });
+        }
+        const run = /\/actions\/runs\/([^/]+)$/.exec(path)?.[1];
+        if (run !== undefined && runs.has(run)) {
+            if (request.method === 'DELETE') {
+                const current = runs.get(run);
+                if (current !== undefined) {
+                    runs.set(run, { ...current, cancelled: true });
+                }
+                return Promise.resolve(new Response(null, { status: 204 }));
+            }
+            return reply(200, { run: runOf(run) });
+        }
+        return fetch(input, init);
+    };
+}
+
 const element = document.getElementById('panneau');
 if (element === null) {
     throw new Error('The page has no #panneau element.');
@@ -60,7 +121,10 @@ createPanneauApp({
             ],
         },
     ],
-    adapter: createRestAdapter({ baseUrl: definition.api.baseUrl, fetch: backend.fetch }),
+    adapter: createRestAdapter({
+        baseUrl: definition.api.baseUrl,
+        fetch: withQueuedRuns(backend.fetch),
+    }),
     // The address search of location fields, on OpenStreetMap's public geocoder
     maps: { geocoding: createNominatimSource() },
     config: { protocol: 1, apiBaseUrl: definition.api.baseUrl, basePath, locale: 'en', definition },
