@@ -659,17 +659,23 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                 check.skip('Every item of the first page can be deleted.');
                 return;
             }
+            // With an item it can delete too: the only item of an action would be a 403 instead
+            const allowed = items.find((item) => item.abilities.delete === true);
+            const ids = allowed !== undefined ? [denied.id, allowed.id] : [denied.id];
             const reply = await request(`${resourcePath()}/actions/delete`, {
                 method: 'POST',
-                body: JSON.stringify({ selection: { ids: [denied.id] }, dryRun: true }),
+                body: JSON.stringify({ selection: { ids }, dryRun: true }),
             });
+            if (allowed === undefined && reply.status === 403) {
+                return;
+            }
             if (!check.expectStatus(reply, 200)) {
                 return;
             }
             const result = check.expectSchema(ActionResult, reply.body, 'The dry run of `delete`');
             check.expect(
                 result === null ||
-                    (result.summary?.skipped === 1 && result.summary.succeeded === 0),
+                    (result.summary?.skipped === 1 && result.summary.succeeded === ids.length - 1),
                 `Item ${denied.id} can’t be deleted, but the dry run of \`delete\` doesn’t skip it.`,
             );
         },
