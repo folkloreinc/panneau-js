@@ -1,5 +1,5 @@
 import { QueryClient } from '@tanstack/react-query';
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -752,5 +752,26 @@ describe('the app shell', () => {
         await user.click(pagination.getByRole('button', { name: 'Previous page' }));
         expect(await main.findByText('About us')).toBeInTheDocument();
         expect(window.location.search).toBe('');
+    });
+    it('remembers the view of a list, unless its URL says another', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        renderApp();
+        await user.click(await screen.findByRole('radio', { name: 'Cards' }));
+        expect(window.location.search).toBe('?layout=cards');
+        cleanup();
+
+        // From the menu: the list opens as the user left it, and says so in its URL
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        renderApp();
+        expect(await screen.findByRole('list', { name: 'Pages' })).toBeInTheDocument();
+        await waitFor(() => expect(window.location.search).toBe('?layout=cards'));
+        cleanup();
+
+        // A link with a query opens what it says
+        window.history.replaceState(null, '', '/panneau/resources/pages?sort=-title');
+        renderApp();
+        expect(await screen.findByRole('table', { name: 'Pages' })).toBeInTheDocument();
+        expect(window.location.search).toBe('?sort=-title');
     });
 });

@@ -636,3 +636,66 @@ describe('ListView layouts', () => {
         expect(screen.getByRole('list', { name: 'Items' })).toBeInTheDocument();
     });
 });
+
+describe('ListView columns', () => {
+    // The menu is a modal popover: the table behind it is hidden from the accessibility tree.
+    const headers = () =>
+        screen
+            .getAllByRole('columnheader', { hidden: true })
+            .map((header) => header.textContent ?? '');
+    const withAuthor = [
+        { ...columns[0], hideable: false },
+        ...columns.slice(1),
+        { id: 'author', label: 'Author', hidden: true },
+    ] as typeof columns;
+
+    it('shows, hides and orders the columns, in the URL of the list', async () => {
+        const user = userEvent.setup();
+        const router = createMemoryRouter();
+        renderList(<ListView list={createList({ router })} columns={withAuthor} items={pages} />);
+        expect(headers()).toEqual(['Title', 'Status', 'Published on']);
+
+        await user.click(screen.getByRole('button', { name: 'Columns' }));
+        const menu = await screen.findByRole('dialog', { name: 'Columns' });
+        expect(within(menu).getByRole('checkbox', { name: 'Title' })).toBeDisabled();
+        expect(within(menu).getByRole('button', { name: 'Reset columns' })).toBeDisabled();
+        await user.click(within(menu).getByRole('checkbox', { name: 'Author' }));
+        await user.click(within(menu).getByRole('checkbox', { name: 'Status' }));
+        expect(headers()).toEqual(['Title', 'Published on', 'Author']);
+        await user.click(within(menu).getByRole('button', { name: 'Move Author up' }));
+        expect(headers()).toEqual(['Title', 'Author', 'Published on']);
+        expect(router.getSearch()).toBe('columns=title%2Cauthor%2Cpublished_on');
+
+        await user.click(within(menu).getByRole('button', { name: 'Reset columns' }));
+        expect(headers()).toEqual(['Title', 'Status', 'Published on']);
+        expect(router.getSearch()).toBe('');
+    });
+
+    it('opens in the layout and with the columns of its view', () => {
+        const router = createMemoryRouter('layout=cards&columns=status');
+        renderList(
+            <ListView
+                list={createList({ router })}
+                columns={withAuthor}
+                items={pages}
+                layouts={['table', 'cards']}
+            />,
+        );
+        const cards = screen.getByRole('list', { name: 'Items' });
+        // The title can't be hidden: it comes back, at its place
+        expect(within(cards).getAllByRole('listitem')[0]).toHaveTextContent(
+            'About usStatusPublished',
+        );
+        expect(within(cards).getAllByRole('listitem')[0]).not.toHaveTextContent('Published on');
+    });
+
+    it('has no column choice when asked, or with one column', () => {
+        const { unmount } = renderList(
+            <ListView list={createList()} columns={columns} items={pages} columnChoice={false} />,
+        );
+        expect(screen.queryByRole('button', { name: 'Columns' })).not.toBeInTheDocument();
+        unmount();
+        renderList(<ListView list={createList()} columns={columns.slice(0, 1)} items={pages} />);
+        expect(screen.queryByRole('button', { name: 'Columns' })).not.toBeInTheDocument();
+    });
+});

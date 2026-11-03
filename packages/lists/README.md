@@ -81,7 +81,8 @@ const { data, isFetching, error } = useResourceList('pages', query); // @panneau
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Columns    | `item[id]` shown with a display: the column's `display`, else text. Localized values in the UI's locale. `render` for a cell of its own                                      |
 | Displays   | `text`, `textarea`, `slug`, `richtext`, `number`, `boolean`, `date`, `datetime`, `time`, `select`, `relation`, `url`, `email`, `color`, `media`                              |
-| Layouts    | `table` and `cards` (`layouts`, the first is the default). On narrow lists, table rows stack and show the label of each value                                                |
+| Columns    | A "Columns" menu shows, hides and orders them: `hidden` columns are shown when the user picks them, and `hideable: false` ones always are. In the view of the list state     |
+| Layouts    | `table` and `cards` (`layouts`, the first is the default), in the view of the list state. On narrow lists, table rows stack and show the label of each value                 |
 | Sorting    | Sortable column headers (`aria-sort`), and a select for cards and phones                                                                                                     |
 | Filters    | `text`, `select`, `toggle`, `date`, `date-range` (sent as bounds: `filter[id][from]`, `filter[id][to]`), `relation`, with chips for the active filters and the search        |
 | Pagination | With `total`: the range, previous and next pages, and the page size (`perPageOptions`)                                                                                       |

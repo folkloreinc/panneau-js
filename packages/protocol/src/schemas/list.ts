@@ -15,6 +15,14 @@ export const Column = z
         sortable: z.boolean().optional(),
         width: z.union([z.number(), z.string()]).optional(),
         align: z.enum(['start', 'center', 'end']).optional(),
+        hidden: z.boolean().optional().meta({
+            description:
+                'Not shown by default: the user can show it from the columns of the list (decision 0042).',
+        }),
+        hideable: z.boolean().optional().meta({
+            description:
+                '`false`: always shown, the user can move it but not hide it. Columns are hideable by default.',
+        }),
     })
     .refine((column) => column.field !== undefined || column.id !== undefined, {
         message: 'A column needs a `field` or an `id`.',

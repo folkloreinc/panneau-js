@@ -446,6 +446,14 @@ export const listsMessages: {
     layout: PanneauMessage<Record<never, never>>;
     layoutTable: PanneauMessage<Record<never, never>>;
     layoutCards: PanneauMessage<Record<never, never>>;
+    columns: PanneauMessage<Record<never, never>>;
+    moveColumnUp: PanneauMessage<    {
+    column: string;
+    }>;
+    moveColumnDown: PanneauMessage<    {
+    column: string;
+    }>;
+    resetColumns: PanneauMessage<Record<never, never>>;
     selectItem: PanneauMessage<    {
     item: string;
     }>;

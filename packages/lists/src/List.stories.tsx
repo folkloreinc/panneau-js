@@ -244,6 +244,43 @@ export const Cards: Story = {
     },
 };
 
+/**
+ * The "Columns" menu: the name can't be hidden, the email is hidden until the user shows it, and
+ * the others can be hidden and moved (decision 0042).
+ */
+export const ChooseColumns: Story = {
+    args: {
+        columns: columns.map((column) =>
+            column.id === 'name'
+                ? { ...column, hideable: false }
+                : column.id === 'email'
+                  ? { ...column, hidden: true }
+                  : column,
+        ),
+        search: false,
+        filters: [],
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        const headers = () =>
+            canvas
+                .getAllByRole('columnheader', { hidden: true })
+                .map((header) => header.textContent);
+        await expect(headers()).toEqual(['Name', 'Role', 'Active', 'Joined']);
+
+        await userEvent.click(canvas.getByRole('button', { name: 'Columns' }));
+        const menu = await body.findByRole('dialog', { name: 'Columns' });
+        await expect(within(menu).getByRole('checkbox', { name: 'Name' })).toBeDisabled();
+        await userEvent.click(within(menu).getByRole('checkbox', { name: 'Email' }));
+        await userEvent.click(within(menu).getByRole('checkbox', { name: 'Active' }));
+        await userEvent.click(within(menu).getByRole('button', { name: 'Move Email up' }));
+        await expect(headers()).toEqual(['Name', 'Role', 'Email', 'Joined']);
+        await userEvent.keyboard('{Escape}');
+        await waitFor(() => expect(canvas.getByRole('button', { name: 'Columns' })).toHaveFocus());
+    },
+};
+
 export const OnAPhone: Story = {
     decorators: [
         (Story) => (

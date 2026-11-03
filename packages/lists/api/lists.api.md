@@ -231,6 +231,8 @@ export interface ListColumn {
     align?: 'start' | 'center' | 'end';
     display?: string | null;
     field?: Field | null;
+    hidden?: boolean;
+    hideable?: boolean;
     id: string;
     // (undocumented)
     label?: ReactNode;
@@ -302,7 +304,7 @@ export interface ListViewProps {
     actions?: ListActions;
     // (undocumented)
     className?: string;
-    // (undocumented)
+    columnChoice?: boolean;
     columns: readonly ListColumn[];
     currentItemId?: string | null;
     cursors?: {
