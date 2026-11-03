@@ -1,15 +1,18 @@
 import {
     ActionResult,
     ActionRun,
+    CONTEXT_HEADER,
     Definition,
     type ListQuery,
     PROBLEM_CONTENT_TYPE,
     type Problem,
+    formatContextHeader,
     toSearchParams,
     toSearchQueryParams,
     validate,
 } from '@panneau/protocol';
 import type {
+    ContextOption,
     EmbedResponse,
     FieldCheckResponse,
     Item,
@@ -319,6 +322,33 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
         },
         getWidgetData(widget, { signal } = {}) {
             return json<unknown>({ path: `/dashboard/widgets/${encode(widget)}`, signal });
+        },
+
+        withContext(values) {
+            const context = formatContextHeader(values);
+            return createRestAdapter({
+                ...options,
+                headers: async () => {
+                    const headers = new Headers(
+                        typeof options.headers === 'function'
+                            ? await options.headers()
+                            : options.headers,
+                    );
+                    if (context !== '') {
+                        headers.set(CONTEXT_HEADER, context);
+                    } else {
+                        headers.delete(CONTEXT_HEADER);
+                    }
+                    return headers;
+                },
+            });
+        },
+        getContextOptions(name, { q, signal } = {}) {
+            return data<ContextOption[]>({
+                path: `/context/${encode(name)}/options`,
+                query: new URLSearchParams(q !== undefined && q !== '' ? { q } : {}),
+                signal,
+            });
         },
     };
 }

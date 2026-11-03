@@ -329,6 +329,25 @@ Built-in actions use reserved ids:
 - The component gets the page's `props`, the definition, and `params`: the values of the path segments that `params` names ([decisions/0038](decisions/0038-pages-with-params.md)). A page takes exactly its params.
 - A route reference can name a page: `{ "route": "job", "params": { "id": "4f2a" } }`, when `routes` has no route of that name. Menus don't link to pages with params.
 
+### Context
+
+`context` declares a current context that the user picks in the app, such as a client and a contest ([decisions/0045](decisions/0045-current-context.md)). The client sends its values with every request, and the definition is built for them:
+
+```jsonc
+"context": {
+    "params": [
+        { "name": "client", "label": "Client", "fixed": true, "value": "4", "valueLabel": "Northwind" },
+        { "name": "contest", "label": "Contest", "required": true, "value": null },
+    ],
+}
+```
+
+- Params are in order: each one depends on those before it. `name` is an identifier that isn't a reserved first segment of the client routes (`resources`, `pages`, `media`, `search`, `account`, `auth`).
+- The choices of a param are its `options`, or `GET /context/{name}/options?q=…` (see [Context header](#context-header)).
+- `value` and `valueLabel` say what the definition was built for. A required param without a value has the app show a page to pick it.
+- A `fixed` param has a value that the backend sets from the request, such as its domain (the client of a client's domain): the app shows it without a field, and leaves it out of the path and of the header. Elsewhere, the same param can be picked, with an `allLabel` when it is optional.
+- In the app, the values of the params that aren't fixed are a prefix of the client routes: `{basePath}/{name}/{value}/…`, in order.
+
 ### Auth
 
 ```jsonc
@@ -558,6 +577,17 @@ A field with `"check": true`, at the top of a resource, checks its value with th
 | `GET /actions/runs`          | the current user's recent runs, for the notification area                                                                |
 | `DELETE /actions/runs/{run}` | cancel a run that hasn't finished, when the action allows it                                                             |
 
+### Context header
+
+When the definition has `context`, the client sends the values of its params in a `Panneau-Context` header, on every request, in the format of a query string, in order: `Panneau-Context: client=4&contest=12` ([decisions/0045](decisions/0045-current-context.md)).
+
+- The backend checks each value for the user. A value the user can't use is a `403` problem of type `urn:panneau:problem:context`, with the refused `param`. Names it doesn't know are ignored.
+- `GET /definition` is built for the values. Without a value for a required param, the backend may choose one and say it in `value`.
+- A `fixed` param keeps the value the backend sets from the request. Another value in the header is the `403` context problem of that param.
+- Each resource applies the values in its scope. Without a value for a required param, the resource routes may answer the same `403` problem.
+- `GET /context/{name}/options?q=…` gives the first choices of a param without inline `options` that match `q`, for the values of the params before it: `{ "data": [{ "value": "12", "label": "Summer 2026", "description": "Northwind" }] }`.
+- Responses vary with the header (`Vary: Panneau-Context`). A backend on another origin allows it in CORS.
+
 ### Errors
 
 Errors use [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) `application/problem+json`:
@@ -578,6 +608,7 @@ Errors use [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) `application/probl
 - **`type`:**
     - `urn:panneau:problem:validation` for `422`;
     - `urn:panneau:problem:version-conflict` for `412`;
+    - `urn:panneau:problem:context` for a `403` on a value of `Panneau-Context`, with its `param`;
     - `about:blank` when the status says it all.
 
     Clients rely on the status, not on `type`.
@@ -774,7 +805,7 @@ Global search ([decisions/0029](decisions/0029-go-to-palette.md)):
 - **a light entry point for browsers** (`@panneau/protocol/runtime`): the constants and the helpers above that don't need the schemas (`checkValues()`, `evaluateCondition()`, `lintDefinition()`, the list query helpers, `isProblem()`), without loading zod. UI packages import them from there, and only types from the main entry point.
 - **generated files**: `@panneau/protocol/definition.schema.json` and `@panneau/protocol/boot.schema.json` (JSON Schema 2020-12), and `@panneau/protocol/openapi.json` (OpenAPI 3.1).
 - **a mock backend** (`@panneau/protocol/mock`): an in-memory implementation of the resource routes.
-- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. For a list paged with cursors, it also follows `nextCursor`, and checks that an invalid cursor is a `422`. With `writes`, it also checks that rules limited to `create` don't apply to updates: an update with those fields set to `null` succeeds. It also checks that an update of a single field, with `If-Match`, changes that field alone. It also checks that the built-in `delete` answers a dry run without being declared and, with `writes`, that an item that allows `duplicate` is copied under a new id, with its `ETag`. It also checks that the backend reads the bounds of the resource's first `date-range` filter, if it has one, and that `GET /search` finds an item by a word of its title, reads `limit` and `resources`, and refuses invalid parameters with a `422`.
+- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. For a list paged with cursors, it also follows `nextCursor`, and checks that an invalid cursor is a `422`. With `writes`, it also checks that rules limited to `create` don't apply to updates: an update with those fields set to `null` succeeds. It also checks that an update of a single field, with `If-Match`, changes that field alone. It also checks that the built-in `delete` answers a dry run without being declared and, with `writes`, that an item that allows `duplicate` is copied under a new id, with its `ETag`. It also checks that the backend reads the bounds of the resource's first `date-range` filter, if it has one, and that `GET /search` finds an item by a word of its title, reads `limit` and `resources`, and refuses invalid parameters with a `422`. With a `context` in the definition, it checks the choices of each param, a definition built for a value of the first param, and a value that doesn't exist refused with a `403` context problem. `context` sends values with every request, for a backend whose resources need one.
 
 ```ts
 import { formatReport, runConformance } from '@panneau/protocol/conformance';

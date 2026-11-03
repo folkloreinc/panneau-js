@@ -18,6 +18,7 @@ export interface ConformanceCheck {
 // @public (undocumented)
 export interface ConformanceOptions {
     baseUrl: string;
+    context?: Record<string, string>;
     fetch?: (input: string, init?: RequestInit) => Promise<Response>;
     init?: RequestInit;
     resource?: string;

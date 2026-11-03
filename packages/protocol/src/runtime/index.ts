@@ -34,5 +34,11 @@ export {
     toSearchQueryParams,
 } from '../search';
 export { getValue, isFilled } from '../values';
+export {
+    type ContextValues,
+    contextBefore,
+    formatContextHeader,
+    parseContextHeader,
+} from '../context';
 export { isProblem } from '../problem';
 export { type PartialTheme, mergeThemes } from '../themes';
