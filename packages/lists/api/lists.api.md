@@ -177,13 +177,18 @@ export function isItemSelected(selection: ListSelection, id: string): boolean;
 // @public
 export function ItemDetails(input: ItemDetailsProps): JSX.Element;
 
+// @public
+export interface ItemDetailsColumn extends ListColumn {
+    columns?: readonly ItemDetailsColumn[];
+}
+
 // @public (undocumented)
 export interface ItemDetailsProps {
     // (undocumented)
     'aria-label'?: string;
     // (undocumented)
     className?: string;
-    columns: readonly ListColumn[];
+    columns: readonly ItemDetailsColumn[];
     displays?: Readonly<Record<string, DisplayEntry>>;
     item: ListItem | undefined;
 }

@@ -17,7 +17,13 @@ function PagePreview({ item, locale }: PreviewProps) {
     return <p>{`${String(item.title)} as the site shows it, in ${locale}`}</p>;
 }
 
-function renderPanel(preview: ResourceInput['features']) {
+function renderPanel(
+    preview: ResourceInput['features'],
+    {
+        fields = [],
+        values = {},
+    }: { fields?: ResourceInput['fields']; values?: Record<string, unknown> } = {},
+) {
     const input = {
         protocol: 1 as const,
         name: 'Site',
@@ -29,7 +35,7 @@ function renderPanel(preview: ResourceInput['features']) {
                 id: 'pages',
                 label: { singular: 'page', plural: 'pages' },
                 itemTitle: 'title',
-                fields: [{ name: 'title', type: 'text', label: 'Title' }],
+                fields: [{ name: 'title', type: 'text', label: 'Title' }, ...fields],
                 features: preview,
             },
         ],
@@ -41,7 +47,7 @@ function renderPanel(preview: ResourceInput['features']) {
     }
     const backend = createMockBackend({
         definition: input,
-        items: { pages: [{ id: '1', title: 'About us' }] },
+        items: { pages: [{ id: '1', title: 'About us', ...values }] },
         previewUrl: ({ item }) => `https://example.com/preview/${item.id}`,
     });
     const adapter = createRestAdapter({ baseUrl: '/api', fetch: backend.fetch });
@@ -81,6 +87,41 @@ describe('ItemPanel', () => {
         expect(await within(panel).findByRole('heading', { name: 'About us' })).toBeInTheDocument();
         expect(within(panel).queryByRole('tab')).toBeNull();
         expect(within(panel).getByRole('term')).toHaveTextContent('Title');
+    });
+
+    it('lists the values of a group under its label, and leaves repeaters to the form', async () => {
+        const panel = renderPanel(undefined, {
+            fields: [
+                {
+                    name: 'contact',
+                    type: 'group',
+                    label: 'Contact',
+                    fields: [
+                        { name: 'name', type: 'text', label: 'Name' },
+                        { name: 'email', type: 'email', label: 'Email' },
+                    ],
+                },
+                {
+                    name: 'links',
+                    type: 'repeater',
+                    label: 'Links',
+                    fields: [{ name: 'url', type: 'url', label: 'URL' }],
+                },
+            ],
+            values: {
+                contact: { name: 'Ada Lovelace', email: 'ada@example.com' },
+                links: [{ url: 'https://example.com' }],
+            },
+        });
+        expect(await within(panel).findByRole('heading', { name: 'About us' })).toBeInTheDocument();
+        expect(
+            within(panel)
+                .getAllByRole('term')
+                .map((term) => term.textContent),
+        ).toEqual(['Title', 'Contact', 'Name', 'Email']);
+        const contact = within(panel).getAllByRole('definition')[1];
+        expect(contact).toHaveTextContent('Ada Lovelace');
+        expect(contact).toHaveTextContent('ada@example.com');
     });
 
     it('draws the skeleton of the details while the item loads', async () => {
