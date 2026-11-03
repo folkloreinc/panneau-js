@@ -484,6 +484,21 @@ export function createOpenApiDocument(): JsonObject {
                     },
                 },
             },
+            '/auth/providers/{provider}/callback': {
+                parameters: [pathParameter('provider', 'Provider id.')],
+                get: {
+                    operationId: 'providerCallback',
+                    summary:
+                        "Optional: the callback of the provider, when the backend has it here. Its URL is the backend's, registered with the provider; the app never calls it.",
+                    responses: {
+                        302: {
+                            description:
+                                'To `next`, or to the base path of the app with `authError` when the login failed.',
+                        },
+                        ...problems(404),
+                    },
+                },
+            },
             '/auth/password/forgot': {
                 post: {
                     operationId: 'forgotPassword',
