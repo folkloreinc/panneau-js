@@ -1,0 +1,153 @@
+.calendar {
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-2);
+}
+
+.header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--panneau-space-2);
+}
+
+.month {
+    margin: 0;
+    font-size: var(--panneau-font-size-lg);
+    font-weight: var(--panneau-font-weight-medium);
+}
+
+.month::first-letter {
+    text-transform: uppercase;
+}
+
+.navigation {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-1);
+}
+
+.more {
+    margin: 0;
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-text-muted);
+}
+
+.grid {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    background-color: var(--panneau-color-surface);
+}
+
+.grid th {
+    padding: var(--panneau-space-1);
+    font-size: var(--panneau-font-size-sm);
+    font-weight: var(--panneau-font-weight-medium);
+    color: var(--panneau-color-text-muted);
+    text-align: start;
+}
+
+.grid abbr {
+    text-decoration: none;
+}
+
+.grid td {
+    height: 6rem;
+    padding: var(--panneau-space-1);
+    vertical-align: top;
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
+.grid td[data-outside] {
+    background-color: var(--panneau-color-surface-sunken);
+    color: var(--panneau-color-text-muted);
+}
+
+.day {
+    display: block;
+    font-size: var(--panneau-font-size-sm);
+}
+
+.grid td[aria-current='date'] .dayNumber {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    color: var(--panneau-color-accent-text);
+    background-color: var(--panneau-color-accent);
+    border-radius: 999px;
+}
+
+/* The full date, for assistive technologies; shown on narrow lists. */
+.dayLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.items {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: var(--panneau-space-1) 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--panneau-font-size-sm);
+}
+
+.items li {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.items li[data-current] {
+    font-weight: var(--panneau-font-weight-medium);
+}
+
+/* On narrow lists: the days that have items, one under the other. */
+@container (max-width: 40rem) {
+    .grid,
+    .grid tbody,
+    .grid tr,
+    .grid td {
+        display: block;
+        width: auto;
+        height: auto;
+    }
+
+    .grid thead,
+    .grid td[data-empty],
+    .dayNumber {
+        display: none;
+    }
+
+    .grid td {
+        border-width: 0 0 var(--panneau-border-width);
+        padding: var(--panneau-space-2) 0;
+    }
+
+    .grid td[data-outside] {
+        background: none;
+    }
+
+    .dayLabel {
+        position: static;
+        width: auto;
+        height: auto;
+        overflow: visible;
+        clip-path: none;
+        font-weight: var(--panneau-font-weight-medium);
+    }
+
+    .items li {
+        white-space: normal;
+    }
+}

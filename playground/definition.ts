@@ -189,11 +189,14 @@ export function createPlaygroundDefinition(): DefinitionInput {
                     filters: [
                         { id: 'status', type: 'select' },
                         { id: 'featured', type: 'toggle', label: 'Featured' },
+                        { id: 'published_at', type: 'date-range', label: 'Published' },
                     ],
                     sorts: ['title', 'published_at'],
                     defaultSort: '-published_at',
                     perPage: 20,
                     search: true,
+                    layouts: ['table', 'cards', 'calendar'],
+                    calendar: { field: 'published_at' },
                 },
                 actions: [
                     {

@@ -2,7 +2,7 @@ import type { Field, Option } from '@panneau/protocol';
 
 import type { ListColumn, ListItem } from './types';
 
-function isRecord(value: unknown): value is Record<string, unknown> {
+export function isRecord(value: unknown): value is Record<string, unknown> {
     return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
 

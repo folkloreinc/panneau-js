@@ -1,8 +1,9 @@
 import type { FilterValue, ListQuery, Selection } from '@panneau/protocol';
 import { fromSearchParams, isFilterRange, toSearchParams } from '@panneau/protocol/runtime';
 
-import type { ResolvedList } from '../definition/list';
+import type { ResolvedCalendar, ResolvedList } from '../definition/list';
 import { isEqual } from '../values';
+import { currentMonth, getCalendarRange, isMonth } from './calendar';
 import type { Router } from './router';
 import {
     type ListViewState,
@@ -34,6 +35,8 @@ export interface ListDefaults {
     layout?: string;
     /** The ids of the columns shown by default, in their order. */
     columns?: string[];
+    /** The calendar of the list, for its `calendar` layout (decision 0044). */
+    calendar?: ResolvedCalendar | null;
 }
 
 export interface ListOptions {
@@ -87,6 +90,8 @@ export interface List {
     setColumns(ids: readonly string[]): void;
     /** Back to the columns of the definition. */
     resetColumns(): void;
+    /** Shows a month in the calendar (`2026-11`). */
+    setMonth(month: string): void;
     /** Adds ids to the selection (removes them from the exceptions in "all matching" mode). */
     select(ids: readonly string[]): void;
     /** Removes ids from the selection (adds them to the exceptions in "all matching" mode). */
@@ -105,10 +110,10 @@ export interface List {
 const EMPTY_SELECTION: ListSelection = { mode: 'ids', ids: [] };
 /** Back to the first page: page 1, or no cursor. */
 const FIRST_PAGE = { page: 1, cursor: undefined };
-const LIST_PARAM = /^(page|perPage|cursor|sort|q|fields|layout|columns|filter\[.+)$/;
+const LIST_PARAM = /^(page|perPage|cursor|sort|q|fields|layout|columns|month|filter\[.+)$/;
 
 type Defaults = Required<Pick<ListDefaults, 'perPage' | 'sort'>> &
-    Pick<ListDefaults, 'layout' | 'columns'>;
+    Pick<ListDefaults, 'layout' | 'columns'> & { calendar: ResolvedCalendar | null };
 
 /** Removes the values that are the defaults, so the URL only keeps what the user changed. */
 function normalize(query: ListQuery, defaults: Defaults): ListQuery {
@@ -158,6 +163,9 @@ function normalizeView(view: ListViewState, defaults: Defaults): ListViewState {
     ) {
         result.columns = [...view.columns];
     }
+    if (isMonth(view.month) && view.month !== currentMonth()) {
+        result.month = view.month;
+    }
     return result;
 }
 
@@ -170,6 +178,10 @@ function readView(search: URLSearchParams): ListViewState {
     const columns = search.get('columns');
     if (columns !== null) {
         view.columns = columns.split(',').filter((id) => id !== '');
+    }
+    const month = search.get('month');
+    if (month !== null) {
+        view.month = month;
     }
     return view;
 }
@@ -194,6 +206,7 @@ export function createList(options: ListOptions = {}): List {
     const defaults: Defaults = {
         perPage: options.defaults?.perPage ?? options.list?.perPage ?? 20,
         sort: options.defaults?.sort ?? options.list?.defaultSort ?? [],
+        calendar: options.defaults?.calendar ?? options.list?.calendar ?? null,
     };
     const defaultLayout = options.defaults?.layout ?? options.list?.layouts[0];
     if (defaultLayout !== undefined) {
@@ -245,15 +258,33 @@ export function createList(options: ListOptions = {}): List {
 
     // A list paged with cursors has no page numbers: its query has a cursor, after the first page.
     const cursors = options.list?.pagination === 'cursor';
+    const sortQuery = (): Pick<ListQuery, 'sort'> =>
+        params.sort !== undefined || defaults.sort.length > 0
+            ? { sort: params.sort ?? defaults.sort }
+            : {};
+    // In the calendar, a month: the days around it through its filter, instead of a page.
+    const calendarQuery = (calendar: ResolvedCalendar): ListQuery => {
+        const { page: _page, cursor: _cursor, perPage: _perPage, ...rest } = params;
+        return {
+            ...rest,
+            ...sortQuery(),
+            perPage: calendar.perPage,
+            filter: {
+                ...params.filter,
+                [calendar.filter]: getCalendarRange(view.month ?? currentMonth()),
+            },
+        };
+    };
     const compute = (): ListState => ({
-        query: {
-            ...params,
-            ...(cursors ? {} : { page: params.page ?? 1 }),
-            perPage: params.perPage ?? defaults.perPage,
-            ...(params.sort !== undefined || defaults.sort.length > 0
-                ? { sort: params.sort ?? defaults.sort }
-                : {}),
-        },
+        query:
+            defaults.calendar !== null && (view.layout ?? defaults.layout) === 'calendar'
+                ? calendarQuery(defaults.calendar)
+                : {
+                      ...params,
+                      ...(cursors ? {} : { page: params.page ?? 1 }),
+                      perPage: params.perPage ?? defaults.perPage,
+                      ...sortQuery(),
+                  },
         view,
         selection,
     });
@@ -280,6 +311,9 @@ export function createList(options: ListOptions = {}): List {
         if (view.columns !== undefined) {
             search.set('columns', view.columns.join(','));
         }
+        if (view.month !== undefined) {
+            search.set('month', view.month);
+        }
         const next = search.toString();
         if (next !== router.getSearch()) {
             router.setSearch(next, { replace });
@@ -292,9 +326,13 @@ export function createList(options: ListOptions = {}): List {
             return;
         }
         const query = rememberedQuery(params);
+        // A calendar opens on the current month.
+        const { month: _month, ...remembered } = view;
         store.set(
             remember.key,
-            Object.keys(query).length > 0 || Object.keys(view).length > 0 ? { query, view } : null,
+            Object.keys(query).length > 0 || Object.keys(remembered).length > 0
+                ? { query, view: remembered }
+                : null,
         );
     };
 
@@ -422,6 +460,7 @@ export function createList(options: ListOptions = {}): List {
             const { columns: _columns, ...rest } = view;
             setView(rest, { replace: true });
         },
+        setMonth: (month) => setView({ ...view, month }),
         select(ids) {
             if (selection.mode === 'all') {
                 setSelection({

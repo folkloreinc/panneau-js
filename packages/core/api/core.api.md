@@ -96,6 +96,12 @@ export function createPluginRegistry(plugins: readonly PanneauPlugin[]): PluginR
 // @public
 export function createStorageViewStore(storage?: () => Storage | null): ListViewStore;
 
+// @public
+export function currentMonth(now?: Date): string;
+
+// @public
+export const DEFAULT_CALENDAR_PER_PAGE = 100;
+
 // @public (undocumented)
 export const DEFAULT_PER_PAGE = 20;
 
@@ -187,6 +193,12 @@ export interface FormStore {
 export function getActionPlacements(action: Action): ActionPlacement[];
 
 // @public
+export function getCalendarRange(month: string): {
+    from: string;
+    to: string;
+};
+
+// @public
 export function getCommands(sources: readonly CommandSource[], context: CommandContext): Command[];
 
 // @public
@@ -234,6 +246,9 @@ export function isEqual(a: unknown, b: unknown): boolean;
 
 // @public
 export function isItem(value: unknown): value is Item;
+
+// @public
+export function isMonth(value: unknown): value is string;
 
 // @public
 export function isSearchable(resource: Resource): boolean;
@@ -295,6 +310,7 @@ export interface List {
     setColumns(ids: readonly string[]): void;
     setFilter(id: string, value: FilterValue | undefined): void;
     setLayout(layout: string): void;
+    setMonth(month: string): void;
     // (undocumented)
     setPage(page: number): void;
     setPerPage(perPage: number): void;
@@ -309,6 +325,7 @@ export interface List {
 
 // @public (undocumented)
 export interface ListDefaults {
+    calendar?: ResolvedCalendar | null;
     columns?: string[];
     layout?: string;
     // (undocumented)
@@ -349,6 +366,7 @@ export interface ListState {
 export interface ListViewState {
     columns?: string[];
     layout?: string;
+    month?: string;
 }
 
 // @public
@@ -468,6 +486,13 @@ export interface RememberedView {
 }
 
 // @public
+export interface ResolvedCalendar {
+    field: string;
+    filter: string;
+    perPage: number;
+}
+
+// @public
 export interface ResolvedColumn {
     // (undocumented)
     align?: 'start' | 'center' | 'end';
@@ -494,6 +519,7 @@ export interface ResolvedForm {
 // @public
 export interface ResolvedList {
     actions: Record<ActionPlacement, Action[]>;
+    calendar: ResolvedCalendar | null;
     // (undocumented)
     columns: ResolvedColumn[];
     defaultSort: string[];
@@ -579,6 +605,9 @@ export function selectVisible(state: FormState, target: {
 
 // @public
 export function setValue<T extends Values>(values: T, path: string, value: unknown): T;
+
+// @public
+export function shiftMonth(month: string, offset: number): string;
 
 // @public (undocumented)
 export interface SubmitContext {

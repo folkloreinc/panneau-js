@@ -41,6 +41,21 @@ export const Filter = z.looseObject({
     default: z.unknown().optional(),
 });
 
+export const ListCalendar = z.looseObject({
+    field: z
+        .string()
+        .min(1)
+        .meta({ description: 'The `date` or `datetime` field each item is shown on the day of.' }),
+    filter: z.string().min(1).optional().meta({
+        description:
+            "The id of the list's `date-range` filter on that field, through which the calendar asks for the days around a month. Defaults to the field's name.",
+    }),
+    perPage: z.number().int().positive().optional().meta({
+        description:
+            'How many items the calendar asks for a month, in one request. Defaults to 100.',
+    }),
+});
+
 export const ListDefinition = z.looseObject({
     columns: z.array(Column).optional(),
     filters: z.array(Filter).optional(),
@@ -53,7 +68,10 @@ export const ListDefinition = z.looseObject({
         .optional()
         .meta({ description: 'Same format as the `sort` query parameter: `-published_at,title`.' }),
     search: z.boolean().optional().meta({ description: 'Whether the `q` parameter is supported.' }),
-    layouts: z.array(z.string().min(1)).optional(),
+    layouts: z.array(z.string().min(1)).optional().meta({
+        description:
+            'The layouts the list offers, the first being the default. Built in: `table`, `cards`, `gallery` (on the `itemImage` of the resource) and `calendar` (with `calendar`).',
+    }),
     perPage: z.number().int().positive().optional(),
     perPageOptions: z.array(z.number().int().positive()).optional(),
     pagination: z.enum(['pages', 'cursor']).optional().meta({
@@ -65,8 +83,13 @@ export const ListDefinition = z.looseObject({
             'Fields that columns edit in place, on items that can be updated: `text`, `number`, `select`, `boolean` and `date`. Each change is a `PATCH` with the one field and `If-Match` (decision 0043).',
     }),
     selectable: z.boolean().optional(),
+    calendar: ListCalendar.optional().meta({
+        description:
+            'The calendar of the list: the items of a month on the days of a date field, asked for through a `date-range` filter instead of pages (decision 0044).',
+    }),
 });
 
 export type Column = z.infer<typeof Column>;
 export type Filter = z.infer<typeof Filter>;
 export type ListDefinition = z.infer<typeof ListDefinition>;
+export type ListCalendar = z.infer<typeof ListCalendar>;

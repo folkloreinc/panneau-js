@@ -9,7 +9,7 @@ Each item becomes a sub-issue of #6 (or of laravel-panneau#35) when work on it s
 Updated on 2026-11-03. The latest pre-releases are `@panneau/*` 5.0.0-alpha.11 and `laravel-panneau` v5.0.0-alpha.8.
 
 - **Phases 0 and 1:** done.
-- **Phase 2:** in progress, still in alphas. Done: loading states, the app shell, actions, permissions, rich text, the new field types and media. Started: auth, lists and migration. To do: the Folklore plugin.
+- **Phase 2:** in progress, still in alphas. Done: loading states, the app shell, actions, permissions, rich text, the new field types, media and lists. Started: auth and migration. To do: the Folklore plugin.
 - **5.x:** image editing and the "Go to…" palette were done early, in phase 2.
 
 Each item below says where it is: **done**, **started** (with what is left) or **to do**.
@@ -85,11 +85,11 @@ Goal: a complete admin panel, ready for client projects.
 - **Permissions (done):** abilities in the UI; an optional roles module on the Laravel side.
     - The built-in item actions (`show`, `edit`, `duplicate`, `delete`) follow the item's abilities ([decisions/0040](decisions/0040-row-links-and-open-mode.md)).
     - The rest of the UI follows them too ([#183](https://github.com/folkloreinc/panneau-js/issues/183), [decisions/0046](decisions/0046-abilities-in-the-ui.md)): pages and fields have abilities, menus leave out what the user can't reach, a route reached without the ability shows a forbidden page, fields are hidden or read-only by ability, and a resource hides its bulk delete with `abilities.run: false`. The conformance kit checks that the API agrees.
-    - `laravel-panneau` sends the abilities of fields, hides the bulk delete by the policy's `deleteAny()`, answers every action through `runAction()` ([folkloreinc/laravel-panneau#148](https://github.com/folkloreinc/laravel-panneau/issues/148)), and has an optional roles module: roles in config, grants per user, a base policy and ownership on every route ([folkloreinc/laravel-panneau#149](https://github.com/folkloreinc/laravel-panneau/issues/149), its decision 0014). The abilities of pages come with its pages ([folkloreinc/laravel-panneau#33](https://github.com/folkloreinc/laravel-panneau/issues/33)).
-- **Lists (started):**
+    - `laravel-panneau` sends the abilities of fields, hides the bulk delete by the policy's `deleteAny()`, answers every action through `runAction()` ([folkloreinc/laravel-panneau#148](https://github.com/folkloreinc/laravel-panneau/issues/148)), and has an optional roles module: roles in config, grants per user, a base policy and ownership on every route ([folkloreinc/laravel-panneau#149](https://github.com/folkloreinc/laravel-panneau/issues/149), its decision 0014)., and `Page::can()` for its pages.
+- **Lists (done):**
     - sorting, filters (with active filter chips), column choice: done. Sorting, filters and their chips ([#32](https://github.com/folkloreinc/panneau-js/issues/32)), cursor pagination ([#150](https://github.com/folkloreinc/panneau-js/issues/150), [decisions/0039](decisions/0039-cursor-pagination.md)), and columns the user shows, hides and orders, with those the definition hides by default or keeps ([#176](https://github.com/folkloreinc/panneau-js/issues/176), [decisions/0042](decisions/0042-list-view-columns-and-remembered-view.md));
     - inline editing (done): a column edits its field in place, for the simple types (text, number, select, boolean, date). Each change saves the one field (`PATCH` with a single field and `If-Match`), checked by its portable rules, and an error or a conflict shows on the cell ([#177](https://github.com/folkloreinc/panneau-js/issues/177), [decisions/0043](decisions/0043-inline-editing.md));
-    - layouts (table, cards, gallery, calendar), bulk actions. Done: table, cards and bulk actions. Left: gallery and calendar;
+    - layouts (table, cards, gallery, calendar), bulk actions: done. The gallery on the `itemImage` of the resource, and the calendar on a date field of the definition, which asks for the days around a month through its `date-range` filter instead of pages ([#178](https://github.com/folkloreinc/panneau-js/issues/178), [decisions/0044](decisions/0044-gallery-and-calendar.md));
     - remembered view per user (done): the filters, sort, page size, layout and columns of each list, in the browser, restored when the URL has no query of its own ([#179](https://github.com/folkloreinc/panneau-js/issues/179), [decisions/0042](decisions/0042-list-view-columns-and-remembered-view.md)).
 - **Actions (done):**
     - built-in and custom actions, with parameters and confirmation: done ([#35](https://github.com/folkloreinc/panneau-js/issues/35));

@@ -320,6 +320,11 @@ Built-in actions use reserved ids:
 
 **What opens an item.** `open` on a resource says where an item's title goes, in its list and wherever the app links to the item: `panel` (the default), the show route with its details next to the list ([decisions/0028](decisions/0028-item-panel.md)); `edit`, its form. With `edit`, the show route redirects to the edit route, and `show` is left out. An item without `abilities.update: true` still opens in the panel. Clients treat a value they don't know as `panel`.
 
+**Layouts.** `layouts` lists those a list offers, the first being the default. Clients build in `table`, `cards`, `gallery` and `calendar`, and leave out those they can't show ([decisions/0044](decisions/0044-gallery-and-calendar.md)):
+
+- `gallery` shows the image of each item, its `itemImage` field (a media reference, a file or a URL), and is offered when the resource has one.
+- `calendar` shows the items of a month on the days of a `date` or `datetime` field, set by `calendar`: `{ "field": "starts_at", "filter": "starts_at", "perPage": 100 }`. `filter` is the list's `date-range` filter on that field (the field's name by default), and `perPage` how many items it asks for a month (100 by default). Instead of a page, the calendar asks for the list's query with that filter set to the days around the month, from 6 days before its first day to 6 days after its last, without `page` or `cursor`: `filter[starts_at][from]=2026-10-26&filter[starts_at][to]=2026-12-06&perPage=100`. When the answer has more items than it gives, the calendar says so. A backend needs nothing else.
+
 **Columns users choose.** The user of a list shows, hides and orders its columns. A column with `"hidden": true` isn't shown until the user shows it; one with `"hideable": false` is always shown. The chosen columns and the layout are the view of the list: clients keep them in the URL with the query, and may remember them for the user. They are never sent to the backend ([decisions/0042](decisions/0042-list-view-columns-and-remembered-view.md)).
 
 ### Pages
