@@ -128,7 +128,12 @@ export function createPlaygroundDefinition(): DefinitionInput {
                         ],
                         settings: { step: 0.5, suffix: '/ 5' },
                     },
-                    { name: 'contact', type: 'tel', label: 'Press contact' },
+                    {
+                        name: 'contact',
+                        type: 'tel',
+                        label: 'Press contact',
+                        settings: { country: 'CA' },
+                    },
                     {
                         name: 'video',
                         type: 'embed',

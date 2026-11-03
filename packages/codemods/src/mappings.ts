@@ -80,6 +80,19 @@ const text: FieldTarget = {
     renames: TEXT_RENAMES,
     valueType: 'string',
 };
+const tel: FieldTarget = {
+    source: '@panneau/fields/tel',
+    name: 'TelField',
+    props: [
+        ...TEXT_PROPS.filter(
+            (prop) => !['maxLength', 'prefix', 'type', 'inputMode'].includes(prop),
+        ),
+        'country',
+    ],
+    renames: { append: 'suffix' },
+    valueType: 'string',
+    note: 'Its value is now E.164 (`+15145550199`): convert the numbers kept as typed.',
+};
 const select: FieldTarget = {
     source: '@panneau/fields/select',
     name: 'SelectField',
@@ -133,8 +146,8 @@ export const FIELD_TARGETS: Readonly<Record<string, FieldTarget>> = {
         props: [...TEXT_PROPS.filter((prop) => prop !== 'suffix'), 'defaultScheme'],
         renames: { prepend: 'prefix' },
     },
-    telephone: { ...text, source: '@panneau/fields/tel', name: 'TelField' },
-    tel: { ...text, source: '@panneau/fields/tel', name: 'TelField' },
+    telephone: tel,
+    tel,
     number: {
         source: '@panneau/fields/number',
         name: 'NumberField',

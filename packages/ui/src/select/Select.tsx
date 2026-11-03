@@ -1,4 +1,5 @@
 import { Check, ChevronDown } from 'lucide-react';
+import type { ReactNode } from 'react';
 import type { Key } from 'react-aria-components';
 import {
     Select as AriaSelect,
@@ -32,6 +33,8 @@ export interface SelectOption {
     label: string;
     description?: string;
     disabled?: boolean;
+    /** Decorative content before the label, such as a flag. Assistive technologies skip it. */
+    prefix?: ReactNode;
 }
 
 /** Props of both single and multiple selects. */
@@ -46,6 +49,11 @@ export interface SelectBaseProps extends FieldChromeProps {
     onBlur?: () => void;
     'aria-label'?: string;
     id?: string;
+    /**
+     * `field` (default): a control with its box. `bare`: the button alone, without a box, inside
+     * another control (the country of a phone number).
+     */
+    appearance?: 'field' | 'bare';
     /** Class name of the button that opens the options. */
     triggerClassName?: string;
     popoverClassName?: string;
@@ -56,6 +64,11 @@ export interface SingleSelectProps extends SelectBaseProps {
     /** The selected value, or `null`. */
     value?: OptionValue | null;
     onChange?: (value: OptionValue | null) => void;
+    /**
+     * What the button shows for the selected option, instead of its label: a shorter text when
+     * the button is narrow. The options keep their labels.
+     */
+    renderValue?: (option: SelectOption) => ReactNode;
 }
 
 export interface MultipleSelectProps extends SelectBaseProps {
@@ -102,6 +115,7 @@ export function Select(props: SelectProps) {
         labelClassName,
         descriptionClassName,
         errorsClassName,
+        appearance = 'field',
         triggerClassName,
         popoverClassName,
     } = props;
@@ -109,6 +123,11 @@ export function Select(props: SelectProps) {
     const invalid = errors.length > 0;
     const items = options.map((option, index) => ({ ...option, key: String(index) }));
     const withEmpty = props.multiple !== true && !isRequired;
+    const renderValue = props.multiple !== true ? props.renderValue : undefined;
+    const selected =
+        props.multiple !== true && props.value !== undefined && props.value !== null
+            ? options.find((option) => option.value === props.value)
+            : undefined;
 
     const shared = {
         id,
@@ -130,8 +149,31 @@ export function Select(props: SelectProps) {
             <FieldLabel isRequired={isRequired} className={labelClassName}>
                 {label}
             </FieldLabel>
-            <Button className={cx(fieldStyles.control, styles.trigger, triggerClassName)}>
-                <SelectValue className={styles.value} />
+            <Button
+                className={cx(
+                    appearance === 'bare' ? styles.bareTrigger : fieldStyles.control,
+                    styles.trigger,
+                    triggerClassName,
+                )}
+            >
+                <SelectValue className={styles.value}>
+                    {({ defaultChildren, isPlaceholder }) =>
+                        !isPlaceholder && selected !== undefined ? (
+                            <span className={styles.valueText}>
+                                {selected.prefix !== undefined ? (
+                                    <span className={styles.prefix} aria-hidden="true">
+                                        {selected.prefix}
+                                    </span>
+                                ) : null}
+                                {renderValue !== undefined
+                                    ? renderValue(selected)
+                                    : defaultChildren}
+                            </span>
+                        ) : (
+                            defaultChildren
+                        )
+                    }
+                </SelectValue>
                 <Icon icon={ChevronDown} className={styles.chevron} />
             </Button>
             <FieldDescription className={descriptionClassName}>{description}</FieldDescription>
@@ -156,6 +198,11 @@ export function Select(props: SelectProps) {
                                     <span className={styles.check}>
                                         {isSelected ? <Icon icon={Check} size="sm" /> : null}
                                     </span>
+                                    {item.prefix !== undefined ? (
+                                        <span className={styles.prefix} aria-hidden="true">
+                                            {item.prefix}
+                                        </span>
+                                    ) : null}
                                     <span className={styles.itemText}>
                                         <Text slot="label" className={styles.itemLabel}>
                                             {item.label}

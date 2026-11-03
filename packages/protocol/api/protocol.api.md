@@ -82,6 +82,7 @@ export const Action: z.ZodObject<{
             rule: z.ZodEnum<{
                 email: "email";
                 url: "url";
+                tel: "tel";
                 json: "json";
             }>;
             message: z.ZodOptional<z.ZodString>;
@@ -528,7 +529,7 @@ export type BootConfigInput = z.input<typeof BootConfig>;
 export const BUILT_IN_ACTIONS: readonly ["show", "edit", "duplicate", "delete", "restore", "export", "import"];
 
 // @public
-export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "image", "relation", "group", "repeater", "slug", "tel", "range", "duration", "json", "tags", "embed", "location"];
+export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "image", "relation", "group", "repeater", "slug", "tel", "range", "duration", "json", "tags", "embed", "location", "country", "region"];
 
 // @public
 export const BUILT_IN_ITEM_ACTIONS: readonly ["show", "edit", "duplicate", "delete"];
@@ -774,6 +775,7 @@ export const Definition: z.ZodObject<{
                 rule: z.ZodEnum<{
                     email: "email";
                     url: "url";
+                    tel: "tel";
                     json: "json";
                 }>;
                 message: z.ZodOptional<z.ZodString>;
@@ -1008,6 +1010,7 @@ export const Definition: z.ZodObject<{
                     rule: z.ZodEnum<{
                         email: "email";
                         url: "url";
+                        tel: "tel";
                         json: "json";
                     }>;
                     message: z.ZodOptional<z.ZodString>;
@@ -1485,6 +1488,7 @@ export const Field: z.ZodObject<{
         rule: z.ZodEnum<{
             email: "email";
             url: "url";
+            tel: "tel";
             json: "json";
         }>;
         message: z.ZodOptional<z.ZodString>;
@@ -2129,6 +2133,7 @@ export const namedSchemas: {
         rule: z.ZodEnum<{
             email: "email";
             url: "url";
+            tel: "tel";
             json: "json";
         }>;
         message: z.ZodOptional<z.ZodString>;
@@ -2240,6 +2245,7 @@ export const namedSchemas: {
             rule: z.ZodEnum<{
                 email: "email";
                 url: "url";
+                tel: "tel";
                 json: "json";
             }>;
             message: z.ZodOptional<z.ZodString>;
@@ -2564,6 +2570,7 @@ export const namedSchemas: {
                 rule: z.ZodEnum<{
                     email: "email";
                     url: "url";
+                    tel: "tel";
                     json: "json";
                 }>;
                 message: z.ZodOptional<z.ZodString>;
@@ -2761,6 +2768,7 @@ export const namedSchemas: {
                 rule: z.ZodEnum<{
                     email: "email";
                     url: "url";
+                    tel: "tel";
                     json: "json";
                 }>;
                 message: z.ZodOptional<z.ZodString>;
@@ -2995,6 +3003,7 @@ export const namedSchemas: {
                     rule: z.ZodEnum<{
                         email: "email";
                         url: "url";
+                        tel: "tel";
                         json: "json";
                     }>;
                     message: z.ZodOptional<z.ZodString>;
@@ -3487,6 +3496,7 @@ export const namedSchemas: {
                     rule: z.ZodEnum<{
                         email: "email";
                         url: "url";
+                        tel: "tel";
                         json: "json";
                     }>;
                     message: z.ZodOptional<z.ZodString>;
@@ -3721,6 +3731,7 @@ export const namedSchemas: {
                         rule: z.ZodEnum<{
                             email: "email";
                             url: "url";
+                            tel: "tel";
                             json: "json";
                         }>;
                         message: z.ZodOptional<z.ZodString>;
@@ -4595,7 +4606,7 @@ export function parseRatio(ratio: string): number | null;
 export type PartialTheme = Partial<Theme>;
 
 // @public
-export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "json", "in", "accept", "maxSize", "before", "after", "crop"];
+export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "json", "tel", "in", "accept", "maxSize", "before", "after", "crop"];
 
 // @public (undocumented)
 export type PortableRule = (typeof PORTABLE_RULES)[number];
@@ -4717,6 +4728,7 @@ export const Resource: z.ZodObject<{
             rule: z.ZodEnum<{
                 email: "email";
                 url: "url";
+                tel: "tel";
                 json: "json";
             }>;
             message: z.ZodOptional<z.ZodString>;
@@ -4951,6 +4963,7 @@ export const Resource: z.ZodObject<{
                 rule: z.ZodEnum<{
                     email: "email";
                     url: "url";
+                    tel: "tel";
                     json: "json";
                 }>;
                 message: z.ZodOptional<z.ZodString>;
@@ -5224,6 +5237,7 @@ export const Rule: z.ZodUnion<readonly [z.ZodObject<{
     rule: z.ZodEnum<{
         email: "email";
         url: "url";
+        tel: "tel";
         json: "json";
     }>;
     message: z.ZodOptional<z.ZodString>;

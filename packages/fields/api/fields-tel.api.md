@@ -9,6 +9,33 @@ import { JSX } from 'react';
 import { ReactNode } from 'react';
 
 // @public
+export function formatPhoneInput(text: string, country: string | null): string;
+
+// @public
+export function getCallingCode(country: string | null | undefined): string | null;
+
+// @public
+export function getPhoneCountries(): string[];
+
+// @public
+export function parsePhone(value: unknown): PhoneNumber | null;
+
+// @public
+export interface PhoneNumber {
+    country: string | null;
+    international: string;
+    national: string;
+    nationalNumber: string;
+    number: string;
+}
+
+// @public
+export function readPhone(text: string, country: string | null): {
+    value: string | null;
+    country: string | null;
+};
+
+// @public
 export function TelField(input: TelFieldProps): JSX.Element;
 
 // Warning: (ae-forgotten-export) The symbol "FieldEntryProps" needs to be exported by the entry point index.d.ts
@@ -19,7 +46,9 @@ export function TelFieldEntry(props: FieldEntryProps): JSX.Element;
 // Warning: (ae-forgotten-export) The symbol "TextFieldProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export type TelFieldProps = Omit<TextFieldProps, 'type' | 'inputMode'>;
+export interface TelFieldProps extends Omit<TextFieldProps, 'type' | 'inputMode' | 'prefix' | 'maxLength' | 'secret'> {
+    country?: string | null;
+}
 
 // (No @packageDocumentation comment for this package)
 

@@ -50,3 +50,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0042](0042-list-view-columns-and-remembered-view.md) | The view of a list: chosen columns, and the view the browser remembers | Accepted                          |
 | [0043](0043-inline-editing.md)                        | Inline editing in lists, one field at a time                           | Accepted                          |
 | [0045](0045-current-context.md)                       | A current context, picked in the app and sent with every request       | Proposed                          |
+| [0047](0047-countries-regions-and-phone-numbers.md)   | Countries, regions and phone numbers                                   | Accepted                          |

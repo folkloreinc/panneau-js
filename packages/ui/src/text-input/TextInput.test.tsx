@@ -60,6 +60,11 @@ describe('TextInput', () => {
         expect(screen.getByRole('textbox')).toHaveAttribute('readonly');
     });
 
+    it('draws a read-only control with adornments as read-only', () => {
+        render(<TextInput label="Phone" prefix="+1" value="514" isReadOnly />);
+        expect(screen.getByRole('textbox').parentElement).toHaveAttribute('data-readonly', 'true');
+    });
+
     it('adds class names to inner elements', () => {
         const { container } = render(
             <TextInput
