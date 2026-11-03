@@ -46,6 +46,7 @@ export function TableLayout({
     onSort,
     label,
     pageSelection,
+    renderCell,
 }: ListLayoutProps) {
     const intl = usePanneauIntl();
     const actions = items.map((item) => renderActions(item));
@@ -132,28 +133,34 @@ export function TableLayout({
                                         />
                                     </td>
                                 ) : null}
-                                {columns.map((column, index) => (
-                                    <td
-                                        key={column.id}
-                                        className={cx(
-                                            alignClass(column),
-                                            index === 0 && styles.title,
-                                        )}
-                                    >
-                                        <span className={styles.cellLabel}>
-                                            {column.label ?? column.id}
-                                        </span>
-                                        <span>
-                                            {index === 0 ? (
-                                                <ItemTitle href={href} current={current}>
-                                                    {renderValue(item, column)}
-                                                </ItemTitle>
-                                            ) : (
-                                                renderValue(item, column)
+                                {columns.map((column, index) => {
+                                    const content =
+                                        index === 0 ? (
+                                            <ItemTitle href={href} current={current}>
+                                                {renderValue(item, column)}
+                                            </ItemTitle>
+                                        ) : (
+                                            renderValue(item, column)
+                                        );
+                                    return (
+                                        <td
+                                            key={column.id}
+                                            className={cx(
+                                                alignClass(column),
+                                                index === 0 && styles.title,
                                             )}
-                                        </span>
-                                    </td>
-                                ))}
+                                        >
+                                            <span className={styles.cellLabel}>
+                                                {column.label ?? column.id}
+                                            </span>
+                                            <span>
+                                                {renderCell !== undefined
+                                                    ? renderCell(item, column, content)
+                                                    : content}
+                                            </span>
+                                        </td>
+                                    );
+                                })}
                                 {hasActions ? (
                                     <td className={styles.actionsCell}>{actions[row]}</td>
                                 ) : null}

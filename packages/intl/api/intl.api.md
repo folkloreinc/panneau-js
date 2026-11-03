@@ -138,6 +138,10 @@ export const appMessages: {
     narrowPanel: PanneauMessage<Record<never, never>>;
     closePanel: PanneauMessage<Record<never, never>>;
     goTo: PanneauMessage<Record<never, never>>;
+    actionRuns: PanneauMessage<Record<never, never>>;
+    actionRunsLabel: PanneauMessage<    {
+    count: number;
+    }>;
     profile: PanneauMessage<    {
     name: string;
     }>;
@@ -513,6 +517,15 @@ export const listsMessages: {
     previousPage: PanneauMessage<Record<never, never>>;
     nextPage: PanneauMessage<Record<never, never>>;
     perPage: PanneauMessage<Record<never, never>>;
+    editValue: PanneauMessage<    {
+    field: string;
+    item: string;
+    }>;
+    savingValue: PanneauMessage<Record<never, never>>;
+    saveValueFailed: PanneauMessage<Record<never, never>>;
+    valueConflict: PanneauMessage<Record<never, never>>;
+    keepTheirs: PanneauMessage<Record<never, never>>;
+    saveMine: PanneauMessage<Record<never, never>>;
 };
 
 // @public

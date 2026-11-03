@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { createElement, useEffect, useState } from 'react';
 import { RouterProvider } from 'react-aria-components';
 
-import { ActionRunnerProvider, ActionRuns } from '@panneau/actions';
+import { ActionRunnerProvider } from '@panneau/actions';
 import {
     LeaveGuardsProvider,
     createLeaveGuards,
@@ -230,7 +230,6 @@ export function Shell({
                         onColorSchemeChange={onColorSchemeChange}
                         onLogOut={logOut}
                     >
-                        <ActionRuns />
                         <PageErrorBoundary
                             homeHref={routePath({ name: 'home' }, basePath)}
                             path={pathname}

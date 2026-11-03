@@ -154,6 +154,30 @@ describe('query hooks', () => {
         expect(client.getQueryData(queryKeys.item('pages', '2'))).toMatchObject({ version: '2' });
     });
 
+    it('put an updated item in the cached lists that show it, before they are refetched', async () => {
+        const { wrapper, client } = setup();
+        const { result } = renderHook(
+            () => ({ list: useResourceList('pages'), update: useUpdateItem('pages') }),
+            { wrapper },
+        );
+        await waitFor(() => expect(result.current.list.isSuccess).toBe(true));
+        const before = result.current.list.data?.data.find((item) => item.id === '2');
+        const invalidate = vi.spyOn(client, 'invalidateQueries').mockResolvedValue();
+        await act(() =>
+            result.current.update.mutateAsync({
+                id: '2',
+                values: { status: 'published' },
+                version: before?.version ?? null,
+            }),
+        );
+        expect(invalidate).toHaveBeenCalled();
+        await waitFor(() =>
+            expect(result.current.list.data?.data.find((item) => item.id === '2')).toMatchObject({
+                status: 'published',
+            }),
+        );
+    });
+
     it('fail an update with a ConflictError when the version is stale', async () => {
         const { wrapper } = setup();
         const { result } = renderHook(() => useUpdateItem('pages'), { wrapper });
