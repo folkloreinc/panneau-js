@@ -284,6 +284,18 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
         async logout({ signal } = {}) {
             await send({ method: 'POST', path: '/auth/logout', signal });
         },
+        async forgotPassword(email, { signal } = {}) {
+            await send({ method: 'POST', path: '/auth/password/forgot', body: { email }, signal });
+        },
+        async resetPassword(reset, { signal } = {}) {
+            await send({ method: 'POST', path: '/auth/password/reset', body: reset, signal });
+        },
+        async sendEmailVerification({ signal } = {}) {
+            await send({ method: 'POST', path: '/auth/email/verification', signal });
+        },
+        async verifyEmail(token, { signal } = {}) {
+            await send({ method: 'POST', path: '/auth/email/verify', body: { token }, signal });
+        },
 
         previewItem(resource, id, values, { signal } = {}) {
             return json<PreviewResponse>({

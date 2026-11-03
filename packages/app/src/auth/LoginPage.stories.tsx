@@ -104,6 +104,43 @@ export const Errors: Story = {
     },
 };
 
+/**
+ * `auth.passwordReset`: a link to a form that asks for a reset link, with the email typed so far.
+ * The page says the link is on its way whether or not the address has an account.
+ */
+export const ForgotPassword: Story = {
+    args: {
+        auth: { mode: 'panneau', passwordReset: true },
+        onForgotPassword: fn(() => Promise.resolve()),
+    },
+    play: async ({ args, canvasElement }) => {
+        const canvas = within(canvasElement);
+        await userEvent.type(canvas.getByLabelText(/^Email/), 'ada@example.com');
+        await userEvent.click(canvas.getByRole('button', { name: 'Forgot your password?' }));
+        await expect(canvas.getByRole('heading', { name: 'Reset your password' })).toBeVisible();
+        await expect(canvas.getByLabelText(/^Email/)).toHaveValue('ada@example.com');
+        await userEvent.click(canvas.getByRole('button', { name: 'Send the link' }));
+        await expect(args.onForgotPassword).toHaveBeenCalledWith('ada@example.com');
+        await expect(await canvas.findByRole('status')).toHaveTextContent(
+            /a link to choose a new password is on its way/,
+        );
+        await userEvent.click(canvas.getByRole('button', { name: 'Back to login' }));
+        await expect(canvas.getByRole('heading', { name: 'Log in' })).toBeVisible();
+    },
+};
+
+/** After a password reset: a message, and the email filled in. */
+export const AfterPasswordReset: Story = {
+    args: { notice: 'password-reset', email: 'ada@example.com' },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByRole('status')).toHaveTextContent(
+            'Your password was changed. Log in with your new password.',
+        );
+        await expect(canvas.getByLabelText(/^Email/)).toHaveValue('ada@example.com');
+    },
+};
+
 /** The session ended while the user was in the app. */
 export const SessionEnded: Story = {
     args: { name: 'Northwind Journal', sessionEnded: true },

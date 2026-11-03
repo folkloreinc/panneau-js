@@ -25,6 +25,7 @@ import {
     type BootConfig,
     CONTEXT_PROBLEM_TYPE,
     type Definition,
+    EMAIL_UNVERIFIED_PROBLEM_TYPE,
     contextBefore,
     formatContextHeader,
     parseContextHeader,
@@ -33,7 +34,9 @@ import { type NamedIconLoader, PanneauRoot, usePanneauIntl } from '@panneau/ui';
 
 import styles from './Panneau.module.css';
 import { Shell } from './Shell';
-import { LoginPage } from './auth/LoginPage';
+import { type LoginNotice, LoginPage } from './auth/LoginPage';
+import { ResetPasswordPage } from './auth/ResetPasswordPage';
+import { EmailVerificationLinkPage, VerifyEmailPage } from './auth/VerifyEmailPage';
 import {
     CurrentContextProvider,
     type CurrentContextValue,
@@ -46,7 +49,14 @@ import { loadPage, navigate, usePathname } from './location';
 import { usePluginMessages } from './messages';
 import { ErrorPage, getErrorPageKind } from './pages/ErrorPage';
 import { usePreference } from './preferences';
-import { type AppRoute, contextPath, matchContext, matchRoute, routePath } from './routes';
+import {
+    type AppRoute,
+    contextPath,
+    matchAuthPage,
+    matchContext,
+    matchRoute,
+    routePath,
+} from './routes';
 import { ShellSkeleton } from './shell/ShellSkeleton';
 import { COLOR_SCHEMES } from './shell/Sidebar';
 import {
@@ -159,6 +169,11 @@ function Content({
     const pathname = usePathname();
     const [names, setNames] = useState(() => getContextNames(config.definition));
     const url = matchContext(pathname, config.basePath, names);
+    // The pages that the links of the backend's emails open, outside the context (decision 0048)
+    const authPage =
+        getAuth(config.definition, config)?.mode === 'panneau'
+            ? matchAuthPage(pathname, config.basePath)
+            : null;
     const contextKey = formatContextHeader(url.values, names);
     // One adapter per context, kept from render to render: hooks and sources depend on it.
     const [bound, setBound] = useState(() => ({
@@ -178,7 +193,7 @@ function Content({
         queryFn: ({ signal }) => scoped.getDefinition({ signal }),
         staleTime: Infinity,
         initialData: isBuiltFor(inlined, url.values) ? inlined : undefined,
-        enabled: status === 'active',
+        enabled: status === 'active' && authPage === null,
     });
     const [colorScheme, setColorScheme] = usePreference('color-scheme', COLOR_SCHEMES);
     const definition = definitionQuery.data;
@@ -279,8 +294,22 @@ function Content({
     const logIn = async (credentials: LoginCredentials) => {
         await adapter.login(credentials);
         forgetUser();
+        setNotice(null);
         session.logIn();
     };
+    // What the login page says after an auth page, and the email it starts with
+    const [notice, setNotice] = useState<{ notice: LoginNotice; email?: string } | null>(null);
+    const home = routePath({ name: 'home' }, config.basePath);
+    // From an auth page to the app, or to its login page: the definition is fetched again.
+    const leaveAuthPage = (next: { notice: LoginNotice; email?: string }) => {
+        forgetUser();
+        setNotice(next);
+        navigate(home, { replace: true });
+    };
+    const emailUnverified =
+        definitionQuery.error instanceof ForbiddenError &&
+        definitionQuery.error.problem.type === EMAIL_UNVERIFIED_PROBLEM_TYPE;
+    const search = new URLSearchParams(window.location.search);
     // `panneau` mode: the API logs out, and the login page shows. `external` mode: the site's own
     // logout, when the definition has one.
     const logoutUrl = auth?.mode === 'external' ? (auth.logoutUrl ?? null) : null;
@@ -315,13 +344,47 @@ function Content({
             {...(nonce !== undefined ? { nonce } : {})}
             className={styles.root}
         >
-            {status !== 'active' && auth?.mode === 'panneau' ? (
+            {authPage === 'resetPassword' && adapter.resetPassword !== undefined ? (
+                <ResetPasswordPage
+                    token={search.get('token')}
+                    email={search.get('email')}
+                    onReset={(reset) => adapter.resetPassword?.(reset) ?? Promise.resolve()}
+                    onDone={(email) => leaveAuthPage({ notice: 'password-reset', email })}
+                    onBack={() => navigate(home, { replace: true })}
+                />
+            ) : authPage === 'verifyEmail' && adapter.verifyEmail !== undefined ? (
+                <EmailVerificationLinkPage
+                    token={search.get('token')}
+                    onVerify={(token) => adapter.verifyEmail?.(token) ?? Promise.resolve()}
+                    onContinue={() => leaveAuthPage({ notice: 'email-verified' })}
+                />
+            ) : status !== 'active' && auth?.mode === 'panneau' ? (
                 <LoginPage
                     auth={auth}
                     name={definition?.name}
                     // A guest who just arrived had no session
                     sessionEnded={status === 'ended' && definition !== undefined}
+                    {...(notice?.notice !== undefined ? { notice: notice.notice } : {})}
+                    {...(notice?.email !== undefined ? { email: notice.email } : {})}
                     onLogIn={logIn}
+                    {...(adapter.forgotPassword !== undefined
+                        ? {
+                              onForgotPassword: (email: string) =>
+                                  adapter.forgotPassword?.(email) ?? Promise.resolve(),
+                          }
+                        : {})}
+                />
+            ) : emailUnverified ? (
+                <VerifyEmailPage
+                    {...(adapter.sendEmailVerification !== undefined
+                        ? {
+                              onSend: () => adapter.sendEmailVerification?.() ?? Promise.resolve(),
+                          }
+                        : {})}
+                    onContinue={() => void definitionQuery.refetch()}
+                    {...(logOut !== undefined
+                        ? { onLogOut: () => void Promise.resolve(logOut()).catch(() => undefined) }
+                        : {})}
                 />
             ) : status !== 'active' ? (
                 <SessionEnded loginUrl={loginUrl} />

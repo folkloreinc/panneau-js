@@ -2,7 +2,7 @@ import { createPanneauApp } from '@panneau/app';
 import { createRestAdapter } from '@panneau/data';
 import { editorPlugin } from '@panneau/editor';
 import { createNominatimSource } from '@panneau/fields';
-import { createMockBackend } from '@panneau/protocol/mock';
+import { type MockMail, createMockBackend } from '@panneau/protocol/mock';
 
 import { PUBLICATIONS, createPlaygroundDefinition, createPlaygroundItems } from './definition';
 import { PagePreview, articlePreviewUrl } from './previews';
@@ -26,10 +26,34 @@ if (theme !== null) {
 
 const definition = {
     ...createPlaygroundDefinition(),
+    // Panneau's own login, with its password reset and email verification (decision 0048)
+    auth: { mode: 'panneau' as const, passwordReset: true, emailVerification: true },
     ...(theme === 'flat' ? { theme: { extends: 'flat' } } : {}),
 };
+
+/**
+ * Opens the link of an email of the mock backend in place, a moment after it is "sent": its tokens
+ * live in memory, and a reload would forget them.
+ */
+function openMail({ kind, to, path }: MockMail) {
+    console.info(`[playground] The ${kind} email to ${to} links to ${path}`);
+    window.setTimeout(() => {
+        window.history.pushState(null, '', `${basePath.replace(/\/$/, '')}/${path}`);
+        window.dispatchEvent(new PopStateEvent('popstate'));
+    }, 2000);
+}
+
 const backend = createMockBackend({
     definition,
+    // Logged in as Ada. Log out to see the login page: Ada's password is "panneau", and Sam
+    // hasn't verified their address yet.
+    auth: {
+        users: [
+            { email: 'ada@example.com', password: 'panneau', name: 'Ada Lovelace' },
+            { email: 'sam@example.com', password: 'panneau', name: 'Sam', emailVerified: false },
+        ],
+        onMail: openMail,
+    },
     items: createPlaygroundItems(),
     previewUrl: ({ item }) => articlePreviewUrl(item),
     context: {
@@ -145,5 +169,12 @@ createPanneauApp({
     }),
     // The address search of location fields, on OpenStreetMap's public geocoder
     maps: { geocoding: createNominatimSource() },
-    config: { protocol: 1, apiBaseUrl: definition.api.baseUrl, basePath, locale: 'en', definition },
+    config: {
+        protocol: 1,
+        apiBaseUrl: definition.api.baseUrl,
+        basePath,
+        locale: 'en',
+        auth: definition.auth,
+        definition,
+    },
 });

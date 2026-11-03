@@ -1,4 +1,5 @@
-/* The login page: a narrow column, centered in the window. */
+/* The auth pages (login, password reset, email verification): a narrow column, centered in the
+   window. */
 
 .page {
     display: grid;
@@ -53,4 +54,18 @@
 
 .providers > a {
     justify-content: center;
+}
+
+/* "Remember me" and "Forgot your password?", on a line. */
+.options {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--panneau-space-2);
+}
+
+.help {
+    margin: 0;
+    color: var(--panneau-color-text-muted);
 }

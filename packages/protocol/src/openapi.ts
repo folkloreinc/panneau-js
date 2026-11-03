@@ -1,6 +1,11 @@
 import { z } from 'zod';
 
-import { CONTEXT_HEADER, CONTEXT_PROBLEM_TYPE } from './constants';
+import {
+    AUTH_PAGE_PATHS,
+    CONTEXT_HEADER,
+    CONTEXT_PROBLEM_TYPE,
+    EMAIL_UNVERIFIED_PROBLEM_TYPE,
+} from './constants';
 import { createSchemaRegistry } from './schemas';
 import { BootConfig } from './schemas/boot';
 import { Definition } from './schemas/definition';
@@ -28,7 +33,7 @@ const ok = (description: string, schema?: JsonObject, headers?: JsonObject): Jso
 const PROBLEMS: Record<number, string> = {
     400: 'Bad request, such as a dry run of an action that does not declare `dryRun`.',
     401: 'Not authenticated.',
-    403: `Not allowed. A value of \`${CONTEXT_HEADER}\` that the user can't use is a problem of type \`${CONTEXT_PROBLEM_TYPE}\`, with its \`param\`.`,
+    403: `Not allowed. A value of \`${CONTEXT_HEADER}\` that the user can't use is a problem of type \`${CONTEXT_PROBLEM_TYPE}\`, with its \`param\`. With \`auth.emailVerification\`, a user whose email address isn't verified gets a problem of type \`${EMAIL_UNVERIFIED_PROBLEM_TYPE}\` on every operation but those of the auth.`,
     404: 'Not found.',
     409: 'Conflict with a business rule.',
     412: 'Version conflict: `If-Match` does not match the current version, which is in `current`.',
@@ -476,6 +481,7 @@ export function createOpenApiDocument(): JsonObject {
             '/auth/password/forgot': {
                 post: {
                     operationId: 'forgotPassword',
+                    summary: `With \`auth.passwordReset\`: emails a link to the page of the app at \`{basePath}/${AUTH_PAGE_PATHS.resetPassword}?token=…&email=…\`.`,
                     requestBody: {
                         required: true,
                         content: json({
@@ -485,14 +491,18 @@ export function createOpenApiDocument(): JsonObject {
                         }),
                     },
                     responses: {
-                        204: ok('A reset link was sent, if the account exists.'),
-                        ...problems(422),
+                        204: ok(
+                            "A reset link was sent, if the address has an account. The answer is the same when it hasn't, or when a link was sent recently.",
+                        ),
+                        ...problems(422, 429),
                     },
                 },
             },
             '/auth/password/reset': {
                 post: {
                     operationId: 'resetPassword',
+                    summary:
+                        'With `auth.passwordReset`: sets a new password, with the token and the email of the link. It does not log in.',
                     requestBody: {
                         required: true,
                         content: json({
@@ -505,7 +515,39 @@ export function createOpenApiDocument(): JsonObject {
                             },
                         }),
                     },
-                    responses: { 204: ok('The password was reset.'), ...problems(422) },
+                    responses: {
+                        204: ok('The password was reset.'),
+                        ...problems(422, 429),
+                    },
+                },
+            },
+            '/auth/email/verification': {
+                post: {
+                    operationId: 'sendEmailVerification',
+                    summary: `With \`auth.emailVerification\`: emails the current user a link to the page of the app at \`{basePath}/${AUTH_PAGE_PATHS.verifyEmail}?token=…\`.`,
+                    responses: {
+                        204: ok('A link was sent, or the address is already verified.'),
+                        ...problems(401, 429),
+                    },
+                },
+            },
+            '/auth/email/verify': {
+                post: {
+                    operationId: 'verifyEmail',
+                    summary:
+                        'With `auth.emailVerification`: verifies the address of the token of a link. The user does not need to be logged in.',
+                    requestBody: {
+                        required: true,
+                        content: json({
+                            type: 'object',
+                            required: ['token'],
+                            properties: { token: { type: 'string' } },
+                        }),
+                    },
+                    responses: {
+                        204: ok('The address is verified.'),
+                        ...problems(422, 429),
+                    },
                 },
             },
             '/auth/two-factor/challenge': {

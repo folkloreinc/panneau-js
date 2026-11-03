@@ -76,6 +76,7 @@ describe('@panneau/protocol/runtime', () => {
 
     it('exports the constants and the runtime helpers', () => {
         expect(Object.keys(runtime).sort()).toEqual([
+            'AUTH_PAGE_PATHS',
             'BOOT_CONFIG_ELEMENT_ID',
             'BUILT_IN_ACTIONS',
             'BUILT_IN_FIELD_TYPES',
@@ -85,6 +86,7 @@ describe('@panneau/protocol/runtime', () => {
             'BUILT_IN_LIST_LAYOUTS',
             'CONTEXT_HEADER',
             'CONTEXT_PROBLEM_TYPE',
+            'EMAIL_UNVERIFIED_PROBLEM_TYPE',
             'ITEM_ACTION_ABILITIES',
             'PORTABLE_RULES',
             'PROBLEM_CONTENT_TYPE',

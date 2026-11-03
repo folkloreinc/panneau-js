@@ -33,6 +33,96 @@ export const appMessages = {
         defaultMessage: 'Log in with {provider}',
     }),
     or: defineMessage({ id: 'panneau.app.or', defaultMessage: 'or' }),
+    forgotPassword: defineMessage({
+        id: 'panneau.app.forgotPassword',
+        defaultMessage: 'Forgot your password?',
+    }),
+    forgotPasswordTitle: defineMessage({
+        id: 'panneau.app.forgotPasswordTitle',
+        defaultMessage: 'Reset your password',
+    }),
+    forgotPasswordHelp: defineMessage({
+        id: 'panneau.app.forgotPasswordHelp',
+        defaultMessage:
+            'Enter the email address of your account, and we’ll send you a link to choose a new password.',
+    }),
+    sendResetLink: defineMessage({
+        id: 'panneau.app.sendResetLink',
+        defaultMessage: 'Send the link',
+    }),
+    resetLinkSent: defineMessage({
+        id: 'panneau.app.resetLinkSent',
+        defaultMessage:
+            'If an account has this address, a link to choose a new password is on its way. It can take a few minutes.',
+    }),
+    sendError: defineMessage({
+        id: 'panneau.app.sendError',
+        defaultMessage: 'The link could not be sent. Try again.',
+    }),
+    backToLogIn: defineMessage({ id: 'panneau.app.backToLogIn', defaultMessage: 'Back to login' }),
+    resetPasswordTitle: defineMessage({
+        id: 'panneau.app.resetPasswordTitle',
+        defaultMessage: 'Choose a new password',
+    }),
+    newPassword: defineMessage({ id: 'panneau.app.newPassword', defaultMessage: 'New password' }),
+    confirmPassword: defineMessage({
+        id: 'panneau.app.confirmPassword',
+        defaultMessage: 'Confirm the new password',
+    }),
+    passwordsDiffer: defineMessage({
+        id: 'panneau.app.passwordsDiffer',
+        defaultMessage: 'The two passwords are different.',
+    }),
+    resetPassword: defineMessage({
+        id: 'panneau.app.resetPassword',
+        defaultMessage: 'Change the password',
+    }),
+    resetPasswordError: defineMessage({
+        id: 'panneau.app.resetPasswordError',
+        defaultMessage: 'The password could not be changed. Try again.',
+    }),
+    resetLinkIncomplete: defineMessage({
+        id: 'panneau.app.resetLinkIncomplete',
+        defaultMessage: 'This link is incomplete. Ask for a new one from the login page.',
+    }),
+    passwordWasReset: defineMessage({
+        id: 'panneau.app.passwordWasReset',
+        defaultMessage: 'Your password was changed. Log in with your new password.',
+    }),
+    verifyEmailTitle: defineMessage({
+        id: 'panneau.app.verifyEmailTitle',
+        defaultMessage: 'Verify your email address',
+    }),
+    verifyEmailHelp: defineMessage({
+        id: 'panneau.app.verifyEmailHelp',
+        defaultMessage:
+            'Open the link we sent to your email address to verify it, then continue. If you can’t find it, we can send a new one.',
+    }),
+    sendVerificationLink: defineMessage({
+        id: 'panneau.app.sendVerificationLink',
+        defaultMessage: 'Send a new link',
+    }),
+    verificationLinkSent: defineMessage({
+        id: 'panneau.app.verificationLinkSent',
+        defaultMessage: 'A new link is on its way. It can take a few minutes.',
+    }),
+    verifyingEmail: defineMessage({
+        id: 'panneau.app.verifyingEmail',
+        defaultMessage: 'Verifying your email address…',
+    }),
+    emailWasVerified: defineMessage({
+        id: 'panneau.app.emailWasVerified',
+        defaultMessage: 'Your email address is verified.',
+    }),
+    verifyEmailError: defineMessage({
+        id: 'panneau.app.verifyEmailError',
+        defaultMessage: 'Your email address could not be verified. Try again.',
+    }),
+    verifyLinkIncomplete: defineMessage({
+        id: 'panneau.app.verifyLinkIncomplete',
+        defaultMessage: 'This link is incomplete. Open the link of the email again.',
+    }),
+    continue: defineMessage({ id: 'panneau.app.continue', defaultMessage: 'Continue' }),
     logOut: defineMessage({ id: 'panneau.app.logOut', defaultMessage: 'Log out' }),
     logOutError: defineMessage({
         id: 'panneau.app.logOutError',

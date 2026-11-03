@@ -386,6 +386,8 @@ Built-in actions use reserved ids:
 
 - **Login.** In `panneau` mode, the app shows its login page when the API answers `401`: a form for an email and a password, a form for the secret of `token`, and a link for each provider, as `auth` says. `POST /auth/login` takes `{ "email", "password", "remember" }`, or `{ "token", "remember" }` with `token`. See [decisions/0037](decisions/0037-login-page-token-and-logout.md).
 - **Logout.** In `panneau` mode, the app calls `POST /auth/logout`, then shows the login page. In `external` mode, the browser goes to `logoutUrl`; without it, the app offers no logout.
+- **Password reset.** With `passwordReset`, the login page links to a form that calls `POST /auth/password/forgot` with `{ "email" }`. The backend answers `204` whether or not the address has an account, and emails a link to the page of the app at `{basePath}/auth/reset-password?token=…&email=…` (`AUTH_PAGE_PATHS.resetPassword`). That page sends `{ "token", "email", "password" }` to `POST /auth/password/reset`, then shows the login page: the reset doesn't log in. See [decisions/0048](decisions/0048-password-reset-and-email-verification.md).
+- **Email verification.** With `emailVerification`, the backend answers a user whose address isn't verified with a `403` problem of type `urn:panneau:problem:email-unverified` (`EMAIL_UNVERIFIED_PROBLEM_TYPE`) on every operation but those of the auth. The app then shows a page that sends a new link (`POST /auth/email/verification`). The link opens the page of the app at `{basePath}/auth/verify-email?token=…` (`AUTH_PAGE_PATHS.verifyEmail`), which sends `{ "token" }` to `POST /auth/email/verify`, logged in or not.
 
 ## Boot config
 
@@ -782,6 +784,7 @@ These endpoints only exist with `auth.mode = "panneau"`:
 | `POST /auth/login`, `POST /auth/logout`                         | login (password or token) and logout                |
 | `GET /auth/providers/{provider}/redirect`                       | OAuth start; the callback is handled by the backend |
 | `POST /auth/password/forgot`, `POST /auth/password/reset`       | password reset                                      |
+| `POST /auth/email/verification`, `POST /auth/email/verify`      | email verification: send a link, verify its token   |
 | `POST /auth/two-factor/challenge`                               | second factor at login                              |
 | `POST /auth/passkeys/options`, `POST /auth/passkeys/login`      | WebAuthn login                                      |
 | `GET`/`PATCH /account`                                          | profile                                             |

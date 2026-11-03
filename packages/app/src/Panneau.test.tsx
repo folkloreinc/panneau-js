@@ -12,9 +12,16 @@ import {
     NetworkError,
     UnauthorizedError,
     ValidationError,
+    createRestAdapter,
 } from '@panneau/data';
 import { queryKeys } from '@panneau/data/query';
-import { type BootConfigInput, type DefinitionInput, validateBootConfig } from '@panneau/protocol';
+import {
+    type Auth,
+    type BootConfigInput,
+    type DefinitionInput,
+    validateBootConfig,
+} from '@panneau/protocol';
+import { type MockMail, type MockUser, createMockBackend } from '@panneau/protocol/mock';
 
 import { Panneau, type PanneauProps } from './Panneau';
 import { createBootConfig, createDefinition } from './__fixtures__/definition';
@@ -501,6 +508,148 @@ describe('Panneau', () => {
                 await screen.findByText('You could not be logged out. Try again.'),
             ).toBeInTheDocument();
             expect(screen.getByRole('heading', { name: 'Test site' })).toBeInTheDocument();
+        });
+    });
+
+    describe('password reset and email verification', () => {
+        /** The app on the mock backend, with its users and the emails it "sends". */
+        function renderWithBackend(
+            auth: Auth,
+            users: MockUser[],
+            options: { loggedIn?: string | null; mails?: MockMail[] } = {},
+        ) {
+            const backend = createMockBackend({
+                definition: createDefinition({ auth }),
+                auth: {
+                    users,
+                    ...(options.loggedIn !== undefined ? { loggedIn: options.loggedIn } : {}),
+                    onMail: (mail) => options.mails?.push(mail),
+                },
+            });
+            const adapter = createRestAdapter({ baseUrl: '/panneau/api', fetch: backend.fetch });
+            const renderAt = (path: string) => {
+                window.history.replaceState(null, '', path);
+                return renderPanneau({
+                    adapter,
+                    queryClient: createQueryClient(),
+                    config: createBootConfig({ auth }),
+                });
+            };
+            return { renderAt };
+        }
+
+        const ada = { email: 'ada@example.com', password: 'secret', name: 'Ada' };
+
+        it('resets a forgotten password through the link of its email, then logs in', async () => {
+            const user = userEvent.setup();
+            const mails: MockMail[] = [];
+            const { renderAt } = renderWithBackend(
+                { mode: 'panneau', passwordReset: true },
+                [ada],
+                {
+                    loggedIn: null,
+                    mails,
+                },
+            );
+            const first = renderAt('/panneau');
+            await user.click(await screen.findByRole('button', { name: 'Forgot your password?' }));
+            expect(
+                screen.getByRole('heading', { name: 'Reset your password' }),
+            ).toBeInTheDocument();
+            await user.type(screen.getByLabelText(/^Email/), 'ada@example.com');
+            await user.click(screen.getByRole('button', { name: 'Send the link' }));
+            expect(
+                await screen.findByText(/a link to choose a new password is on its way/),
+            ).toBeInTheDocument();
+            const [mail] = mails;
+            expect(mail).toMatchObject({ kind: 'password-reset', to: 'ada@example.com' });
+            first.unmount();
+
+            // The link of the email
+            renderAt(`/panneau/${mail?.path ?? ''}`);
+            expect(
+                await screen.findByRole('heading', { name: 'Choose a new password' }),
+            ).toBeInTheDocument();
+            expect(screen.getByLabelText(/^Email/)).toHaveValue('ada@example.com');
+            await user.type(screen.getByLabelText(/^New password/), 'new password');
+            await user.type(screen.getByLabelText(/^Confirm the new password/), 'other password');
+            await user.click(screen.getByRole('button', { name: 'Change the password' }));
+            expect(screen.getByLabelText(/^Confirm the new password/)).toHaveAccessibleDescription(
+                'The two passwords are different.',
+            );
+            await user.clear(screen.getByLabelText(/^Confirm the new password/));
+            await user.type(screen.getByLabelText(/^Confirm the new password/), 'new password');
+            await user.click(screen.getByRole('button', { name: 'Change the password' }));
+
+            // The login page, with the email of the reset
+            expect(
+                await screen.findByText(
+                    'Your password was changed. Log in with your new password.',
+                ),
+            ).toBeInTheDocument();
+            expect(window.location.pathname).toBe('/panneau');
+            expect(screen.getByLabelText(/^Email/)).toHaveValue('ada@example.com');
+            await user.type(screen.getByLabelText(/^Password/), 'new password');
+            await user.click(screen.getByRole('button', { name: 'Log in' }));
+            expect(await screen.findByRole('heading', { name: 'Test site' })).toBeInTheDocument();
+        });
+
+        it('shows the error of a reset link that no longer works', async () => {
+            const user = userEvent.setup();
+            const { renderAt } = renderWithBackend({ mode: 'panneau', passwordReset: true }, [ada]);
+            renderAt('/panneau/auth/reset-password?token=used&email=ada%40example.com');
+            await user.type(await screen.findByLabelText(/^New password/), 'new password');
+            await user.type(screen.getByLabelText(/^Confirm the new password/), 'new password');
+            await user.click(screen.getByRole('button', { name: 'Change the password' }));
+            expect(await screen.findByLabelText(/^Email/)).toHaveAccessibleDescription(
+                'This password reset token is invalid.',
+            );
+        });
+
+        it('has no "Forgot your password?" link without auth.passwordReset', async () => {
+            const { renderAt } = renderWithBackend({ mode: 'panneau' }, [ada], { loggedIn: null });
+            renderAt('/panneau');
+            expect(await screen.findByRole('heading', { name: 'Log in' })).toBeInTheDocument();
+            expect(
+                screen.queryByRole('button', { name: 'Forgot your password?' }),
+            ).not.toBeInTheDocument();
+        });
+
+        it('asks a user to verify their address, then verifies it through the link', async () => {
+            const user = userEvent.setup();
+            const mails: MockMail[] = [];
+            const { renderAt } = renderWithBackend(
+                { mode: 'panneau', emailVerification: true },
+                [{ ...ada, emailVerified: false }],
+                { mails },
+            );
+            const first = renderAt('/panneau/resources/pages');
+            expect(
+                await screen.findByRole('heading', { name: 'Verify your email address' }),
+            ).toBeInTheDocument();
+            expect(mails).toEqual([]);
+            await user.click(screen.getByRole('button', { name: 'Send a new link' }));
+            expect(await screen.findByText(/A new link is on its way/)).toBeInTheDocument();
+            const [mail] = mails;
+            expect(mail).toMatchObject({ kind: 'email-verification', to: 'ada@example.com' });
+            first.unmount();
+
+            renderAt(`/panneau/${mail?.path ?? ''}`);
+            expect(await screen.findByText('Your email address is verified.')).toBeInTheDocument();
+            await user.click(screen.getByRole('button', { name: 'Continue' }));
+            expect(await screen.findByRole('heading', { name: 'Test site' })).toBeInTheDocument();
+            expect(window.location.pathname).toBe('/panneau');
+        });
+
+        it('says when a verification link is wrong', async () => {
+            const { renderAt } = renderWithBackend({ mode: 'panneau', emailVerification: true }, [
+                ada,
+            ]);
+            renderAt('/panneau/auth/verify-email?token=wrong');
+            expect(
+                await screen.findByText('This verification link is invalid or has expired.'),
+            ).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: 'Continue' })).toBeEnabled();
         });
     });
 

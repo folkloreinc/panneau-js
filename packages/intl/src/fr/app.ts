@@ -13,6 +13,37 @@ export const appFr: Record<string, string> = {
     'panneau.app.remember': 'Rester connecté',
     'panneau.app.logInWith': 'Se connecter avec {provider}',
     'panneau.app.or': 'ou',
+    'panneau.app.forgotPassword': 'Mot de passe oublié ?',
+    'panneau.app.forgotPasswordTitle': 'Réinitialiser votre mot de passe',
+    'panneau.app.forgotPasswordHelp':
+        'Entrez l’adresse courriel de votre compte : nous vous enverrons un lien pour choisir un nouveau mot de passe.',
+    'panneau.app.sendResetLink': 'Envoyer le lien',
+    'panneau.app.resetLinkSent':
+        'Si un compte a cette adresse, un lien pour choisir un nouveau mot de passe est en route. Il peut prendre quelques minutes.',
+    'panneau.app.sendError': 'Le lien n’a pas pu être envoyé. Réessayez.',
+    'panneau.app.backToLogIn': 'Retour à la connexion',
+    'panneau.app.resetPasswordTitle': 'Choisir un nouveau mot de passe',
+    'panneau.app.newPassword': 'Nouveau mot de passe',
+    'panneau.app.confirmPassword': 'Confirmer le nouveau mot de passe',
+    'panneau.app.passwordsDiffer': 'Les deux mots de passe sont différents.',
+    'panneau.app.resetPassword': 'Changer le mot de passe',
+    'panneau.app.resetPasswordError': 'Le mot de passe n’a pas pu être changé. Réessayez.',
+    'panneau.app.resetLinkIncomplete':
+        'Ce lien est incomplet. Demandez-en un nouveau depuis la page de connexion.',
+    'panneau.app.passwordWasReset':
+        'Votre mot de passe a été changé. Connectez-vous avec le nouveau.',
+    'panneau.app.verifyEmailTitle': 'Vérifier votre adresse courriel',
+    'panneau.app.verifyEmailHelp':
+        'Ouvrez le lien que nous avons envoyé à votre adresse courriel pour la vérifier, puis continuez. Si vous ne le trouvez pas, nous pouvons en envoyer un nouveau.',
+    'panneau.app.sendVerificationLink': 'Envoyer un nouveau lien',
+    'panneau.app.verificationLinkSent':
+        'Un nouveau lien est en route. Il peut prendre quelques minutes.',
+    'panneau.app.verifyingEmail': 'Vérification de votre adresse courriel…',
+    'panneau.app.emailWasVerified': 'Votre adresse courriel est vérifiée.',
+    'panneau.app.verifyEmailError': 'Votre adresse courriel n’a pas pu être vérifiée. Réessayez.',
+    'panneau.app.verifyLinkIncomplete':
+        'Ce lien est incomplet. Ouvrez de nouveau le lien du courriel.',
+    'panneau.app.continue': 'Continuer',
     'panneau.app.logOut': 'Se déconnecter',
     'panneau.app.logOutError': 'La déconnexion n’a pas pu se faire. Réessayez.',
     'panneau.app.skipToContent': 'Aller au contenu',

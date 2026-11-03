@@ -62,6 +62,13 @@ export interface TokenCredentials {
 /** What `login()` sends: an email and a password, or a token. */
 export type LoginCredentials = PasswordCredentials | TokenCredentials;
 
+/** What `resetPassword()` sends: the token and the email of the link, and the new password. */
+export interface PasswordReset {
+    token: string;
+    email: string;
+    password: string;
+}
+
 /**
  * Everything Panneau needs from a backend. `createRestAdapter()` implements it over the HTTP API of
  * the protocol. A product with its own API implements it to use the engine and the app.
@@ -122,6 +129,29 @@ export interface DataAdapter {
     login(credentials: LoginCredentials, options?: RequestOptions): Promise<Session>;
     /** Logs out. */
     logout(options?: RequestOptions): Promise<void>;
+    /**
+     * Asks the backend to email a link that resets the password of an address
+     * (`POST /auth/password/forgot`), for `auth.passwordReset` (decision 0048). It resolves the
+     * same whether the address has an account or not. Optional: without it, the login page has no
+     * "Forgot your password?" link.
+     */
+    forgotPassword?(email: string, options?: RequestOptions): Promise<void>;
+    /**
+     * Sets a new password with the token and the email of a reset link
+     * (`POST /auth/password/reset`). Rejects with a `ValidationError` for a wrong or expired token,
+     * or a password the backend refuses. It doesn't log in.
+     */
+    resetPassword?(reset: PasswordReset, options?: RequestOptions): Promise<void>;
+    /**
+     * Emails the current user a new link that verifies their address
+     * (`POST /auth/email/verification`), for `auth.emailVerification` (decision 0048). Optional.
+     */
+    sendEmailVerification?(options?: RequestOptions): Promise<void>;
+    /**
+     * Verifies an address with the token of its link (`POST /auth/email/verify`). Rejects with a
+     * `ValidationError` for a wrong or expired token. Optional.
+     */
+    verifyEmail?(token: string, options?: RequestOptions): Promise<void>;
 
     /**
      * A short-lived URL of the item's page on the site, rendered with these values, for the iframe

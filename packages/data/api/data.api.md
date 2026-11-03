@@ -68,6 +68,7 @@ export interface DataAdapter {
     create(resource: string, values: Values, options?: RequestOptions): Promise<Item>;
     delete(resource: string, id: string, options?: RequestOptions): Promise<void>;
     duplicate?(resource: string, id: string, options?: RequestOptions): Promise<Item>;
+    forgotPassword?(email: string, options?: RequestOptions): Promise<void>;
     get(resource: string, id: string, options?: RequestOptions): Promise<Item>;
     getActionRun(id: string, options?: RequestOptions): Promise<ActionRun>;
     getContextOptions?(name: string, options?: RequestOptions & {
@@ -84,10 +85,13 @@ export interface DataAdapter {
         endpoint?: string;
     }): PresignedUploads;
     previewItem?(resource: string, id: string, values: Values, options?: RequestOptions): Promise<PreviewResponse>;
+    resetPassword?(reset: PasswordReset, options?: RequestOptions): Promise<void>;
     resolveEmbed?(url: string, options?: RequestOptions): Promise<EmbedValue>;
     runAction(resource: string, action: string, request: ActionRequest, options?: RequestOptions): Promise<ActionResponse>;
     search(q: string, options?: SearchOptions): Promise<SearchResponse>;
+    sendEmailVerification?(options?: RequestOptions): Promise<void>;
     update(resource: string, id: string, values: Values, options?: UpdateOptions): Promise<Item>;
+    verifyEmail?(token: string, options?: RequestOptions): Promise<void>;
     withContext?(values: ContextValues): DataAdapter;
 }
 
@@ -132,6 +136,16 @@ export interface PasswordCredentials {
     password: string;
     // (undocumented)
     remember?: boolean;
+}
+
+// @public
+export interface PasswordReset {
+    // (undocumented)
+    email: string;
+    // (undocumented)
+    password: string;
+    // (undocumented)
+    token: string;
 }
 
 // @public

@@ -53,3 +53,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0045](0045-current-context.md)                       | A current context, picked in the app and sent with every request       | Proposed                          |
 | [0046](0046-abilities-in-the-ui.md)                   | Abilities of pages and fields, and a forbidden state                   | Accepted                          |
 | [0047](0047-countries-regions-and-phone-numbers.md)   | Countries, regions and phone numbers                                   | Accepted                          |
+| [0048](0048-password-reset-and-email-verification.md) | Password reset and email verification                                  | Proposed                          |

@@ -453,6 +453,12 @@ export const Auth: z.ZodObject<{
 // @public (undocumented)
 export type Auth = z.infer<typeof Auth>;
 
+// @public
+export const AUTH_PAGE_PATHS: {
+    readonly resetPassword: "auth/reset-password";
+    readonly verifyEmail: "auth/verify-email";
+};
+
 // @public (undocumented)
 export const AuthProvider: z.ZodObject<{
     id: z.ZodString;
@@ -1406,6 +1412,9 @@ export const DefinitionTheme: z.ZodObject<{
 
 // @public (undocumented)
 export type DefinitionTheme = z.infer<typeof DefinitionTheme>;
+
+// @public
+export const EMAIL_UNVERIFIED_PROBLEM_TYPE = "urn:panneau:problem:email-unverified";
 
 // @public (undocumented)
 export const EmbedResponse: z.ZodObject<{

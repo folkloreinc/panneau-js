@@ -345,6 +345,85 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
         },
     );
 
+    // Password reset and email verification (decision 0048), with addresses and tokens that don't
+    // exist: no email is sent.
+    const auth = () => (definition as Definition | null)?.auth;
+    const NOBODY = 'nobody@conformance.invalid';
+
+    await run(
+        'auth.password-forgot',
+        'POST /auth/password/forgot answers the same for an unknown address, and refuses an invalid one',
+        async (check) => {
+            if (auth()?.passwordReset !== true) {
+                check.skip('The definition has no `auth.passwordReset`.');
+                return;
+            }
+            check.expectStatus(
+                await request('/auth/password/forgot', {
+                    method: 'POST',
+                    body: JSON.stringify({ email: NOBODY }),
+                }),
+                204,
+            );
+            const invalid = check.expectProblem(
+                await request('/auth/password/forgot', { method: 'POST', body: '{}' }),
+                422,
+            );
+            if (invalid !== null) {
+                check.expect(
+                    (invalid.errors?.email?.length ?? 0) > 0,
+                    'Expected a message in `errors.email`.',
+                );
+            }
+        },
+    );
+
+    await run(
+        'auth.password-reset',
+        'POST /auth/password/reset refuses a token that does not exist',
+        async (check) => {
+            if (auth()?.passwordReset !== true) {
+                check.skip('The definition has no `auth.passwordReset`.');
+                return;
+            }
+            check.expectProblem(
+                await request('/auth/password/reset', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        token: UNKNOWN,
+                        email: NOBODY,
+                        password: 'Conformance-Password-1',
+                    }),
+                }),
+                422,
+            );
+        },
+    );
+
+    await run(
+        'auth.email-verify',
+        'POST /auth/email/verify refuses a token that does not exist',
+        async (check) => {
+            if (auth()?.emailVerification !== true) {
+                check.skip('The definition has no `auth.emailVerification`.');
+                return;
+            }
+            const invalid = check.expectProblem(
+                await request('/auth/email/verify', {
+                    method: 'POST',
+                    body: JSON.stringify({ token: UNKNOWN }),
+                }),
+                422,
+            );
+            if (invalid !== null) {
+                check.expect(
+                    (invalid.errors?.token?.length ?? 0) > 0,
+                    'Expected a message in `errors.token`.',
+                );
+            }
+        },
+    );
+
     const resourcePath = () =>
         `/resources/${encodeURIComponent((resource as Resource | null)?.id ?? '')}`;
 
