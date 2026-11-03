@@ -15,7 +15,7 @@ const meta = {
     parameters: { layout: 'fullscreen' },
     args: {
         auth: { mode: 'panneau' },
-        onLogIn: fn((): Promise<'two-factor' | void> => Promise.resolve()),
+        onLogIn: fn((): Promise<'two-factor' | undefined> => Promise.resolve(undefined)),
     },
 } satisfies Meta<typeof LoginPage>;
 
@@ -144,7 +144,7 @@ export const AfterPasswordReset: Story = {
 /** A login that waits for its second factor: a code of the app, or a recovery code. */
 export const TwoFactor: Story = {
     args: {
-        onLogIn: fn((): Promise<'two-factor' | void> => Promise.resolve('two-factor')),
+        onLogIn: fn((): Promise<'two-factor' | undefined> => Promise.resolve('two-factor')),
         onTwoFactorChallenge: fn(() => Promise.resolve()),
     },
     play: async ({ args, canvasElement }) => {

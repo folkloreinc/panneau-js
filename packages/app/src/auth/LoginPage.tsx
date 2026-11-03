@@ -27,7 +27,7 @@ export interface LoginPageProps {
      * Logs in. Rejects with a `ValidationError` for credentials the backend refuses. Resolves with
      * `'two-factor'` when the login waits for a second factor: the page then asks for it.
      */
-    onLogIn: (credentials: LoginCredentials) => Promise<'two-factor' | void>;
+    onLogIn: (credentials: LoginCredentials) => Promise<'two-factor' | undefined>;
     /** Ends a login that waits for its second factor (decision 0049). */
     onTwoFactorChallenge?: (answer: TwoFactorAnswer) => Promise<void>;
     /**
