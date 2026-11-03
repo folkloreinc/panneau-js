@@ -76,7 +76,8 @@ export const Link: LinkStory = {
     play: async ({ args, canvasElement }) => {
         const canvas = within(canvasElement);
         await expect(await canvas.findByText('Your email address is verified.')).toBeVisible();
-        await expect(args.onVerify).toHaveBeenCalledExactlyOnceWith('a1b2c3');
+        await expect(args.onVerify).toHaveBeenCalledTimes(1);
+        await expect(args.onVerify).toHaveBeenCalledWith('a1b2c3');
         await userEvent.click(canvas.getByRole('button', { name: 'Continue' }));
         await expect(args.onContinue).toHaveBeenCalled();
     },
