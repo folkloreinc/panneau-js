@@ -38,6 +38,8 @@ interface Context extends CheckOptions {
 }
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/** An international phone number in E.164: `+`, then 7 to 15 digits, without a leading zero. */
+const TEL = /^\+[1-9]\d{6,14}$/;
 
 function isKnownRule(rule: Rule): boolean {
     return (PORTABLE_RULES as readonly string[]).includes(rule.rule);
@@ -170,6 +172,9 @@ export function checkRules(
                 // Text that doesn't parse stays a string in the form: only objects and arrays pass
                 valid = isRecord(value) || Array.isArray(value);
                 break;
+            case 'tel':
+                valid = typeof value !== 'string' || TEL.test(value);
+                break;
             case 'in': {
                 const allowed = rule.value as unknown[];
                 const values = Array.isArray(value) ? value : [value];
@@ -218,14 +223,21 @@ function addFailures(context: Context, path: string, failures: RuleFailure[]) {
     }
 }
 
+/** The rule each type implies: its values are checked whatever rules the field lists. */
+const IMPLIED_RULES: Readonly<Record<string, Rule>> = {
+    json: { rule: 'json' },
+    tel: { rule: 'tel' },
+};
+
 /**
- * The rules of a field that apply in the mode, with those its type implies: `json` for the `json`
- * type.
+ * The rules of a field that apply in the mode, with the one its type implies: `json` for the
+ * `json` type, `tel` for the `tel` type.
  */
 function rulesOf(field: Field, mode: CheckOptions['mode']): Rule[] {
     const rules = (field.rules ?? []).filter((rule) => appliesIn(rule, mode));
-    return field.type === 'json' && !rules.some((rule) => rule.rule === 'json')
-        ? [...rules, { rule: 'json' }]
+    const implied = IMPLIED_RULES[field.type];
+    return implied !== undefined && !rules.some((rule) => rule.rule === implied.rule)
+        ? [...rules, implied]
         : rules;
 }
 

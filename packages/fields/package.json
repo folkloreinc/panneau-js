@@ -108,6 +108,16 @@
             "types": "./dist/embed/index.d.ts",
             "default": "./dist/embed/index.js"
         },
+        "./country": {
+            "@panneau/source": "./src/country/index.ts",
+            "types": "./dist/country/index.d.ts",
+            "default": "./dist/country/index.js"
+        },
+        "./region": {
+            "@panneau/source": "./src/region/index.ts",
+            "types": "./dist/region/index.d.ts",
+            "default": "./dist/region/index.js"
+        },
         "./location": {
             "@panneau/source": "./src/location/index.ts",
             "types": "./dist/location/index.d.ts",
@@ -182,6 +192,7 @@
         "@panneau/protocol": "5.0.0-alpha.12",
         "@panneau/ui": "5.0.0-alpha.12",
         "leaflet": "^1.9.4",
+        "libphonenumber-js": "^1.13.15",
         "lucide-react": "^1.57.0"
     },
     "devDependencies": {

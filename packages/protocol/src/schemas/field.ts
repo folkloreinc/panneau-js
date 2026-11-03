@@ -34,7 +34,7 @@ export const Rule = z
             message,
             mode,
         }),
-        z.looseObject({ rule: z.enum(['email', 'url', 'json']), message, mode }),
+        z.looseObject({ rule: z.enum(['email', 'url', 'json', 'tel']), message, mode }),
         z.looseObject({
             rule: z.literal('in'),
             value: z.array(z.union([z.string(), z.number(), z.boolean()])),
@@ -153,10 +153,10 @@ export const Field = z
             description:
                 "`image`: what a transform for one use starts from: the media's own transform (`media`, the default), the original file, or the user's choice in the editor (decision 0031).",
         }),
-        from: z
-            .string()
-            .optional()
-            .meta({ description: '`slug`: the field the slug is generated from.' }),
+        from: z.string().optional().meta({
+            description:
+                '`slug`: the field the slug is generated from. `region`: the field of the same object that holds its country.',
+        }),
         check: z.boolean().optional().meta({
             description:
                 'The client checks the value with the backend as it is typed, with `POST /resources/{resource}/fields/{field}/check`: whether a `slug` is available, and its URL. A field at the top of the resource only.',

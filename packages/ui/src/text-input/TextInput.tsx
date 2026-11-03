@@ -69,7 +69,7 @@ export function TextInput({
                 <Group
                     className={cx(styles.control, controlClassName)}
                     data-invalid={invalid || undefined}
-                    data-readonly={isReadOnly || undefined}
+                    isReadOnly={isReadOnly}
                     isDisabled={props.isDisabled}
                 >
                     {prefix !== undefined ? (

@@ -485,7 +485,8 @@
                             "enum": [
                                 "email",
                                 "url",
-                                "json"
+                                "json",
+                                "tel"
                             ]
                         },
                         "message": {

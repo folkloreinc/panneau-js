@@ -1,4 +1,5 @@
 import { Check, ChevronDown } from 'lucide-react';
+import type { ReactNode } from 'react';
 import {
     ComboBox as AriaComboBox,
     type ComboBoxProps as AriaComboBoxProps,
@@ -32,6 +33,8 @@ export interface ComboBoxItem {
     label: string;
     description?: string;
     disabled?: boolean;
+    /** Decorative content before the label, such as a flag. Assistive technologies skip it. */
+    prefix?: ReactNode;
 }
 
 export interface ComboBoxProps
@@ -59,6 +62,8 @@ export interface ComboBoxProps
     value?: string | null;
     onChange?: (id: string | null) => void;
     placeholder?: string;
+    /** Decorative content before the text, inside the control: the flag of the chosen country. */
+    prefix?: ReactNode;
     /** Shows a spinner while items load. */
     isLoading?: boolean;
     /** Text shown without items. Defaults to "No results". */
@@ -80,9 +85,11 @@ export function ComboBox({
     description,
     errors = [],
     placeholder,
+    prefix,
     isLoading = false,
     emptyMessage,
     isRequired,
+    isReadOnly,
     menuTrigger = 'focus',
     className,
     labelClassName,
@@ -109,6 +116,7 @@ export function ComboBox({
             menuTrigger={menuTrigger}
             allowsEmptyCollection
             isRequired={isRequired}
+            isReadOnly={isReadOnly}
             isInvalid={invalid}
             validationBehavior="aria"
             className={cx('panneau-combo-box', fieldStyles.field, className)}
@@ -119,19 +127,27 @@ export function ComboBox({
             <Group
                 className={cx(fieldStyles.control, styles.control, controlClassName)}
                 data-invalid={invalid || undefined}
+                isReadOnly={isReadOnly}
             >
+                {prefix !== undefined && prefix !== null ? (
+                    <span className={cx(fieldStyles.adornment, styles.prefix)} aria-hidden="true">
+                        {prefix}
+                    </span>
+                ) : null}
                 <Input placeholder={placeholder} className={cx(fieldStyles.bare, inputClassName)} />
                 {isLoading ? (
                     <span className={styles.status}>
                         <Spinner size="sm" />
                     </span>
                 ) : null}
-                <Button
-                    className={styles.button}
-                    aria-label={intl.formatMessage(messages.showOptions)}
-                >
-                    <Icon icon={ChevronDown} />
-                </Button>
+                {isReadOnly === true ? null : (
+                    <Button
+                        className={styles.button}
+                        aria-label={intl.formatMessage(messages.showOptions)}
+                    >
+                        <Icon icon={ChevronDown} />
+                    </Button>
+                )}
             </Group>
             <FieldDescription className={descriptionClassName}>{description}</FieldDescription>
             <FieldErrors errors={errors} className={errorsClassName} />
@@ -157,6 +173,11 @@ export function ComboBox({
                                     <span className={listStyles.check}>
                                         {isSelected ? <Icon icon={Check} size="sm" /> : null}
                                     </span>
+                                    {item.prefix !== undefined ? (
+                                        <span className={listStyles.prefix} aria-hidden="true">
+                                            {item.prefix}
+                                        </span>
+                                    ) : null}
                                     <span className={listStyles.itemText}>
                                         <Text slot="label" className={listStyles.itemLabel}>
                                             {item.label}

@@ -261,6 +261,7 @@ export interface ComboBoxItem {
     id: string;
     // (undocumented)
     label: string;
+    prefix?: ReactNode;
 }
 
 // @public (undocumented)
@@ -278,6 +279,7 @@ export interface ComboBoxProps extends Omit<ComboBoxProps_2<ComboBoxItem>, 'clas
     placeholder?: string;
     // (undocumented)
     popoverClassName?: string;
+    prefix?: ReactNode;
     value?: string | null;
 }
 
@@ -901,6 +903,7 @@ export function Select(props: SelectProps): JSX.Element;
 export interface SelectBaseProps extends FieldChromeProps {
     // (undocumented)
     'aria-label'?: string;
+    appearance?: 'field' | 'bare';
     // (undocumented)
     autoFocus?: boolean;
     // (undocumented)
@@ -929,6 +932,7 @@ export interface SelectOption {
     disabled?: boolean;
     // (undocumented)
     label: string;
+    prefix?: ReactNode;
     // (undocumented)
     value: OptionValue;
 }
@@ -948,6 +952,7 @@ export interface SingleSelectProps extends SelectBaseProps {
     multiple?: false;
     // (undocumented)
     onChange?: (value: OptionValue | null) => void;
+    renderValue?: (option: SelectOption) => ReactNode;
     value?: OptionValue | null;
 }
 

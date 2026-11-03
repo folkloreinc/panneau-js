@@ -8,6 +8,7 @@ export { type ActionIcons, getActionIcon } from './actions/icons';
 export {
     BooleanDisplay,
     ColorDisplay,
+    CountryDisplay,
     DateDisplay,
     DateTimeDisplay,
     DurationDisplay,
@@ -18,6 +19,7 @@ export {
     LocationDisplay,
     MediaDisplay,
     NumberDisplay,
+    RegionDisplay,
     RelationDisplay,
     RichTextDisplay,
     SelectDisplay,

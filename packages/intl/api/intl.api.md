@@ -341,6 +341,11 @@ export const fieldsMessages: {
     addLocale: PanneauMessage<    {
     locale: string;
     }>;
+    countryPlaceholder: PanneauMessage<Record<never, never>>;
+    noCountries: PanneauMessage<Record<never, never>>;
+    regionPlaceholder: PanneauMessage<Record<never, never>>;
+    noRegions: PanneauMessage<Record<never, never>>;
+    telCountry: PanneauMessage<Record<never, never>>;
     missingPlugin: PanneauMessage<    {
     type: string;
     }>;
@@ -408,6 +413,7 @@ export const formsMessages: {
         email: PanneauMessage<Record<never, never>>;
         url: PanneauMessage<Record<never, never>>;
         json: PanneauMessage<Record<never, never>>;
+        tel: PanneauMessage<Record<never, never>>;
         in: PanneauMessage<Record<never, never>>;
         accept: PanneauMessage<Record<never, never>>;
         maxSize: PanneauMessage<Record<never, never>>;

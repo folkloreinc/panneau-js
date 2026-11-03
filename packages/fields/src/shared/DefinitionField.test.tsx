@@ -89,6 +89,8 @@ describe('fieldsPlugin', () => {
                 'tags',
                 'embed',
                 'location',
+                'country',
+                'region',
             ].sort(),
         );
         expect(fieldsPlugin.fields).toBe(builtInFields);

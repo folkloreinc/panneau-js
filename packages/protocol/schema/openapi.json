@@ -2339,7 +2339,8 @@
                                 "enum": [
                                     "email",
                                     "url",
-                                    "json"
+                                    "json",
+                                    "tel"
                                 ]
                             },
                             "message": {
@@ -2722,7 +2723,7 @@
                         ]
                     },
                     "from": {
-                        "description": "`slug`: the field the slug is generated from.",
+                        "description": "`slug`: the field the slug is generated from. `region`: the field of the same object that holds its country.",
                         "type": "string"
                     },
                     "check": {

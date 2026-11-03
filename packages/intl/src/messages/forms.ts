@@ -119,6 +119,10 @@ export const formsMessages = {
             id: 'panneau.forms.rule.json',
             defaultMessage: 'This value must be valid JSON: an object or an array.',
         }),
+        tel: defineMessage({
+            id: 'panneau.forms.rule.tel',
+            defaultMessage: 'This value must be a complete phone number.',
+        }),
         in: defineMessage({
             id: 'panneau.forms.rule.in',
             defaultMessage: 'This value is not one of the choices.',

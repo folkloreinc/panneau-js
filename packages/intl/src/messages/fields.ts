@@ -166,6 +166,26 @@ export const fieldsMessages = {
         id: 'panneau.fields.addLocale',
         defaultMessage: 'Add a translation: {locale}',
     }),
+    countryPlaceholder: defineMessage({
+        id: 'panneau.fields.countryPlaceholder',
+        defaultMessage: 'Choose a country',
+    }),
+    noCountries: defineMessage({
+        id: 'panneau.fields.noCountries',
+        defaultMessage: 'No countries match',
+    }),
+    regionPlaceholder: defineMessage({
+        id: 'panneau.fields.regionPlaceholder',
+        defaultMessage: 'Choose a region',
+    }),
+    noRegions: defineMessage({
+        id: 'panneau.fields.noRegions',
+        defaultMessage: 'No regions match',
+    }),
+    telCountry: defineMessage({
+        id: 'panneau.fields.telCountry',
+        defaultMessage: 'Country of the number',
+    }),
     missingPlugin: defineMessage<{ type: string }>({
         id: 'panneau.fields.missingPlugin',
         defaultMessage: 'This field needs a plugin for the “{type}” type.',

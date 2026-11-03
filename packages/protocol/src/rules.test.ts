@@ -158,6 +158,27 @@ describe('the json rule', () => {
     });
 });
 
+describe('the tel rule', () => {
+    it('accepts E.164 numbers, and refuses numbers as typed', () => {
+        const rules = [{ rule: 'tel' as const }];
+        expect(checkRules(rules, '+15145550199')).toEqual([]);
+        expect(checkRules(rules, '+2902345')).toEqual([]);
+        expect(checkRules(rules, null)).toEqual([]);
+        expect(checkRules(rules, '514 555-0199')).toEqual([{ rule: 'tel' }]);
+        expect(checkRules(rules, '+1 514 555 0199')).toEqual([{ rule: 'tel' }]);
+        expect(checkRules(rules, '+0145550199')).toEqual([{ rule: 'tel' }]);
+        expect(checkRules(rules, '+1234567890123456')).toEqual([{ rule: 'tel' }]);
+    });
+
+    it('applies to every tel field', () => {
+        const fields: Field[] = [{ name: 'phone', type: 'tel' }];
+        expect(checkValues(fields, { phone: '(514) 555-0199' })).toEqual({
+            phone: [{ rule: 'tel' }],
+        });
+        expect(checkValues(fields, { phone: '+15145550199' })).toEqual({});
+    });
+});
+
 describe('checkValues', () => {
     it('keys failures by dot path, with locales and repeater indexes', () => {
         const failures = checkValues(

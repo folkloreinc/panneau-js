@@ -66,6 +66,12 @@
     color: var(--panneau-color-text-muted);
 }
 
+/* Decorative content before a label: a flag. */
+.prefix {
+    flex: 0 0 auto;
+    line-height: 1;
+}
+
 .check {
     flex: 0 0 auto;
     width: 1rem;
@@ -116,6 +122,45 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.valueText {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    max-width: 100%;
+}
+
+/* A select inside another control: the button alone, the height of the control, with a line
+   between it and the rest of the control. */
+.bareTrigger {
+    display: flex;
+    align-items: center;
+    align-self: stretch;
+    min-width: 0;
+    padding: 0 var(--panneau-space-2) 0 0;
+    font: inherit;
+    color: var(--panneau-color-text);
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    border-inline-end: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: 0;
+    outline: none;
+}
+
+.bareTrigger[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 2px;
+}
+
+.bareTrigger[data-disabled] {
+    cursor: default;
+}
+
+/* A select that can't be changed, inside a control that can't either: its value alone. */
+.bareTrigger[data-disabled] .chevron {
+    display: none;
 }
 
 .value[data-placeholder] {
