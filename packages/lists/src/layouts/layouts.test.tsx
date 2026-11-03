@@ -26,14 +26,14 @@ describe('the gallery', () => {
             <ListView
                 list={createList()}
                 columns={columns}
-                items={[
-                    { ...pages[0], cover: 'https://example.com/a.jpg' },
-                    {
-                        ...pages[1],
-                        cover: { media: { thumbnailUrl: 'https://example.com/b.jpg' } },
-                    },
-                    pages[2],
-                ]}
+                items={pages.map((page, index) => ({
+                    ...page,
+                    cover: [
+                        'https://example.com/a.jpg',
+                        { media: { thumbnailUrl: 'https://example.com/b.jpg' } },
+                        null,
+                    ][index],
+                }))}
                 itemImage="cover"
                 layouts={['gallery', 'table']}
             />,
