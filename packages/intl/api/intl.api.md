@@ -138,6 +138,13 @@ export const appMessages: {
     narrowPanel: PanneauMessage<Record<never, never>>;
     closePanel: PanneauMessage<Record<never, never>>;
     goTo: PanneauMessage<Record<never, never>>;
+    context: PanneauMessage<Record<never, never>>;
+    contextNone: PanneauMessage<Record<never, never>>;
+    contextChange: PanneauMessage<    {
+    context: string;
+    }>;
+    contextRequired: PanneauMessage<Record<never, never>>;
+    contextRequiredText: PanneauMessage<Record<never, never>>;
     profile: PanneauMessage<    {
     name: string;
     }>;

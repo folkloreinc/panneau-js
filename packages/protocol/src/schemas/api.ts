@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { Abilities, Id, RouteReference } from './common';
-import { User } from './definition';
+import { ContextOption, User } from './definition';
 
 export const Item = z
     .looseObject({
@@ -60,6 +60,10 @@ export const Problem = z
             .optional()
             .meta({ description: '`422`: messages keyed by the dot path of the invalid value.' }),
         current: Item.optional().meta({ description: '`412`: the current version of the item.' }),
+        param: z.string().optional().meta({
+            description:
+                "`403` of type `urn:panneau:problem:context`: the param of the context whose value the user can't use.",
+        }),
     })
     .meta({ description: 'An error, as RFC 9457 problem details (`application/problem+json`).' });
 
@@ -373,6 +377,10 @@ export const FieldCheckResponse = z
 
 export const Session = z.looseObject({ user: User });
 
+export const ContextOptionsResponse = z
+    .looseObject({ data: z.array(ContextOption) })
+    .meta({ description: 'The first choices of a param of the context that match `q`.' });
+
 export const SearchResponse = z
     .looseObject({
         data: z.array(
@@ -427,6 +435,7 @@ export type Pagination = z.infer<typeof Pagination>;
 export type ItemResponse = z.infer<typeof ItemResponse>;
 export type CursorPagination = z.infer<typeof CursorPagination>;
 export type ListResponse = z.infer<typeof ListResponse>;
+export type ContextOptionsResponse = z.infer<typeof ContextOptionsResponse>;
 export type Problem = z.infer<typeof Problem>;
 export type Selection = z.infer<typeof Selection>;
 export type ActionRequest = z.infer<typeof ActionRequest>;

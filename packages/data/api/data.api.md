@@ -7,6 +7,8 @@
 import type { ActionRequest } from '@panneau/protocol';
 import type { ActionResult } from '@panneau/protocol';
 import type { ActionRun } from '@panneau/protocol';
+import type { ContextOption } from '@panneau/protocol';
+import type { ContextValues } from '@panneau/protocol';
 import type { Definition } from '@panneau/protocol';
 import type { EmbedValue } from '@panneau/protocol';
 import type { FieldCheckRequest } from '@panneau/protocol';
@@ -68,6 +70,9 @@ export interface DataAdapter {
     duplicate?(resource: string, id: string, options?: RequestOptions): Promise<Item>;
     get(resource: string, id: string, options?: RequestOptions): Promise<Item>;
     getActionRun(id: string, options?: RequestOptions): Promise<ActionRun>;
+    getContextOptions?(name: string, options?: RequestOptions & {
+        q?: string;
+    }): Promise<ContextOption[]>;
     getDefinition(options?: RequestOptions): Promise<Definition>;
     getSession(options?: RequestOptions): Promise<Session>;
     getWidgetData(widget: string, options?: RequestOptions): Promise<unknown>;
@@ -83,6 +88,7 @@ export interface DataAdapter {
     runAction(resource: string, action: string, request: ActionRequest, options?: RequestOptions): Promise<ActionResponse>;
     search(q: string, options?: SearchOptions): Promise<SearchResponse>;
     update(resource: string, id: string, values: Values, options?: UpdateOptions): Promise<Item>;
+    withContext?(values: ContextValues): DataAdapter;
 }
 
 // @public

@@ -17,6 +17,7 @@ import { Alert, usePanneauIntl, useToast } from '@panneau/ui';
 
 import { DocumentTitle } from './documentTitle';
 import { navigate, setHistoryGuard, usePathname } from './location';
+import { ContextPage } from './pages/ContextPage';
 import { ErrorPage } from './pages/ErrorPage';
 import { HomePage } from './pages/HomePage';
 import { PageErrorBoundary } from './pages/PageErrorBoundary';
@@ -79,6 +80,14 @@ function DefinitionPage({
 }
 
 function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) {
+    // A required param of the context without a value: every route asks for it (decision 0043)
+    if (
+        definition.context?.params.some(
+            ({ required, value }) => required === true && (value ?? null) === null,
+        ) === true
+    ) {
+        return <ContextPage />;
+    }
     const homeHref = routePath({ name: 'home' }, basePath);
     const notFound = <ErrorPage kind="not-found" homeHref={homeHref} />;
     // The resource is in the definition: it exists, the user can't see it.

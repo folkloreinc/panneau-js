@@ -2,6 +2,8 @@ import type {
     ActionRequest,
     ActionResult,
     ActionRun,
+    ContextOption,
+    ContextValues,
     Definition,
     EmbedValue,
     FieldCheckRequest,
@@ -153,4 +155,20 @@ export interface DataAdapter {
     resolveEmbed?(url: string, options?: RequestOptions): Promise<EmbedValue>;
     /** Data of a dashboard widget, in the shape its type defines. */
     getWidgetData(widget: string, options?: RequestOptions): Promise<unknown>;
+
+    /**
+     * The same adapter, sending the values of the current context in the `Panneau-Context` header
+     * with every request (decision 0043). Optional: the app needs it when the definition has
+     * `context`.
+     */
+    withContext?(values: ContextValues): DataAdapter;
+    /**
+     * The first choices of a param of the context that match `q` (`GET /context/{name}/options`),
+     * for the values of the params before it, which the adapter sends. Optional: the app needs it
+     * for the params of the context without inline `options`.
+     */
+    getContextOptions?(
+        name: string,
+        options?: RequestOptions & { q?: string },
+    ): Promise<ContextOption[]>;
 }

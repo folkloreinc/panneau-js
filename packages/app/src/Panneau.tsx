@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useEffectEvent, useState, useSyncExternalStore } from 'react';
+import { useEffect, useEffectEvent, useMemo, useState, useSyncExternalStore } from 'react';
 
 import {
     type PanneauPlugin,
@@ -11,23 +11,41 @@ import {
 } from '@panneau/core';
 import {
     type DataAdapter,
+    ForbiddenError,
     type LoginCredentials,
     UnauthorizedError,
     isApiError,
 } from '@panneau/data';
 import { createLaravelAdapter } from '@panneau/data/laravel';
-import { DataAdapterProvider, definitionQueryOptions, queryKeys } from '@panneau/data/query';
+import { DataAdapterProvider, queryKeys } from '@panneau/data/query';
 import { FieldsProvider, type MapsConfig, createEmbedSource } from '@panneau/fields';
 import { appMessages } from '@panneau/intl';
-import type { Auth, BootConfig } from '@panneau/protocol';
+import {
+    type Auth,
+    type BootConfig,
+    CONTEXT_PROBLEM_TYPE,
+    type Definition,
+    contextBefore,
+    formatContextHeader,
+} from '@panneau/protocol';
 import { type NamedIconLoader, PanneauRoot, usePanneauIntl } from '@panneau/ui';
 
 import styles from './Panneau.module.css';
 import { Shell } from './Shell';
 import { LoginPage } from './auth/LoginPage';
+import {
+    CurrentContextProvider,
+    type CurrentContextValue,
+    getContextNames,
+    getContextValues,
+    isBuiltFor,
+    selectValue,
+} from './currentContext';
+import { loadPage, navigate, usePathname } from './location';
 import { usePluginMessages } from './messages';
 import { ErrorPage, getErrorPageKind } from './pages/ErrorPage';
 import { usePreference } from './preferences';
+import { type AppRoute, contextPath, matchContext, matchRoute, routePath } from './routes';
 import { ShellSkeleton } from './shell/ShellSkeleton';
 import { COLOR_SCHEMES } from './shell/Sidebar';
 import {
@@ -134,13 +152,103 @@ function Content({
     // The inlined definition is that of the user the page was loaded for: after a login or a
     // logout in the app, the definition is fetched.
     const [inlined, setInlined] = useState(config.definition);
+
+    // The current context (decision 0043): its values are a prefix of the path, and every request
+    // sends them. The names of its params don't depend on the values: those of the last definition.
+    const pathname = usePathname();
+    const [names, setNames] = useState(() => getContextNames(config.definition));
+    const url = matchContext(pathname, config.basePath, names);
+    const contextKey = formatContextHeader(url.values, names);
+    // One adapter per context, kept from render to render: hooks and sources depend on it.
+    const scoped = useMemo(
+        () => (contextKey === '' ? adapter : withContext(adapter, url.values)),
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- the key stands for the values
+        [adapter, contextKey],
+    );
     const definitionQuery = useQuery({
-        ...definitionQueryOptions(adapter),
-        initialData: inlined,
+        // `definitionQueryOptions()`, with the values of the context in the key
+        queryKey: [...queryKeys.definition(), contextKey],
+        queryFn: ({ signal }) => scoped.getDefinition({ signal }),
+        staleTime: Infinity,
+        initialData: isBuiltFor(inlined, url.values) ? inlined : undefined,
         enabled: status === 'active',
     });
     const [colorScheme, setColorScheme] = usePreference('color-scheme', COLOR_SCHEMES);
     const definition = definitionQuery.data;
+    const definitionNames = getContextNames(definition);
+    if (definition !== undefined && definitionNames.join('&') !== names.join('&')) {
+        // Before anything renders for the values of the path read with the names of no definition
+        setNames(definitionNames);
+    }
+
+    // The context the shell shows: going to other values, back or forward, loads the app again,
+    // so that nothing of the previous context shows, not even from the cache.
+    const applied = getContextValues(definition);
+    const appliedKey = formatContextHeader(applied, names);
+    // The values of the path the shell was first shown for, and those of its definition, which
+    // the path gets when the backend chose some
+    const [shown, setShown] = useState<{ url: string; applied: string } | null>(null);
+    if (shown === null && definition !== undefined && status === 'active') {
+        setShown({ url: contextKey, applied: appliedKey });
+    }
+    const switched = shown !== null && contextKey !== shown.url && contextKey !== shown.applied;
+    const contextProblem =
+        definitionQuery.error instanceof ForbiddenError &&
+        definitionQuery.error.problem.type === CONTEXT_PROBLEM_TYPE
+            ? definitionQuery.error.problem.param
+            : undefined;
+    // A value the user can't use: the app without it and the values after it
+    const refusedPath =
+        typeof contextProblem === 'string' && url.values[contextProblem] !== undefined
+            ? `${normalizeBase(config.basePath)}${contextPath(
+                  selectValue(paramsOf(url.values, names), contextProblem, null),
+                  names,
+              )}`
+            : null;
+    const shownDefinition = definition !== undefined && !switched;
+    useEffect(() => {
+        if (switched) {
+            loadPage(window.location.href, { replace: true });
+        } else if (refusedPath !== null) {
+            loadPage(refusedPath, { replace: true });
+        }
+    }, [switched, refusedPath]);
+    useEffect(() => {
+        if (!shownDefinition || status !== 'active') {
+            return;
+        }
+        if (appliedKey !== contextKey) {
+            // The backend chose values the path hasn't: the path gets them, in place.
+            queryClient.setQueryData([...queryKeys.definition(), appliedKey], definition);
+            const rest = window.location.pathname.slice(url.basePath.length);
+            navigate(
+                `${normalizeBase(config.basePath)}${contextPath(applied, names)}${rest}${window.location.search}${window.location.hash}`,
+                { replace: true },
+            );
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- once per definition shown
+    }, [shownDefinition, appliedKey, contextKey, status]);
+
+    const currentContext: CurrentContextValue | null =
+        definition?.context !== undefined
+            ? {
+                  params: definition.context.params,
+                  getOptions: (name, q, signal) => {
+                      const before = contextBefore(applied, names, name);
+                      const source = withContext(adapter, before);
+                      return source.getContextOptions !== undefined
+                          ? source.getContextOptions(name, { q, ...(signal ? { signal } : {}) })
+                          : Promise.resolve([]);
+                  },
+                  select: (name, value) => {
+                      const values = selectValue(definition.context?.params ?? [], name, value);
+                      const base = `${normalizeBase(config.basePath)}${contextPath(values, names)}`;
+                      loadPage(
+                          contextTarget(matchRoute(window.location.pathname, url.basePath), base),
+                      );
+                  },
+              }
+            : null;
     // The auth settings outlive the definition of a user who logged out.
     const [lastAuth, setLastAuth] = useState<Auth | null>(null);
     const auth = getAuth(definition, config) ?? lastAuth;
@@ -211,6 +319,8 @@ function Content({
                 />
             ) : status !== 'active' ? (
                 <SessionEnded loginUrl={loginUrl} />
+            ) : switched || refusedPath !== null ? (
+                <ShellSkeleton />
             ) : definition === undefined ? (
                 <Loading
                     error={definitionQuery.error}
@@ -220,20 +330,69 @@ function Content({
                 <ShellSkeleton />
             ) : (
                 <PanneauProvider plugins={plugins} definition={definition} router={router}>
-                    {/* What `embed` and `location` fields need, in every form */}
-                    <FieldsProvider embedSource={createEmbedSource(adapter)} maps={maps}>
-                        <Shell
-                            definition={definition}
-                            basePath={config.basePath}
-                            colorScheme={scheme}
-                            onColorSchemeChange={setColorScheme}
-                            onLogOut={logOut}
-                        />
-                    </FieldsProvider>
+                    <DataAdapterProvider adapter={scoped}>
+                        <CurrentContextProvider value={currentContext}>
+                            {/* What `embed` and `location` fields need, in every form */}
+                            <FieldsProvider embedSource={createEmbedSource(scoped)} maps={maps}>
+                                <Shell
+                                    definition={definition}
+                                    basePath={url.basePath}
+                                    colorScheme={scheme}
+                                    onColorSchemeChange={setColorScheme}
+                                    onLogOut={logOut}
+                                />
+                            </FieldsProvider>
+                        </CurrentContextProvider>
+                    </DataAdapterProvider>
                 </PanneauProvider>
             )}
         </PanneauRoot>
     );
+}
+
+function normalizeBase(basePath: string): string {
+    return basePath.replace(/\/+$/, '');
+}
+
+const warned = new WeakSet<DataAdapter>();
+
+/** The adapter that sends these values of the context, or the adapter itself without values. */
+function withContext(adapter: DataAdapter, values: Readonly<Record<string, string>>): DataAdapter {
+    if (Object.keys(values).length === 0) {
+        return adapter;
+    }
+    if (adapter.withContext === undefined) {
+        if (!warned.has(adapter)) {
+            warned.add(adapter);
+            console.warn(
+                '[panneau] The definition has a context, but the data adapter has no withContext(): requests are sent without it.',
+            );
+        }
+        return adapter;
+    }
+    return adapter.withContext(values);
+}
+
+/** Params with only their values, to drop a value and those after it. */
+function paramsOf(
+    values: Readonly<Record<string, string>>,
+    names: readonly string[],
+): NonNullable<Definition['context']>['params'] {
+    return names.map((name) => ({ name, label: name, value: values[name] ?? null }));
+}
+
+/**
+ * Where to go for other values of the context: the list of the resource of the current route,
+ * or the home page. An item, or a page about one thing, may not be in the other context.
+ */
+function contextTarget(route: AppRoute | null, base: string): string {
+    if (route !== null && 'resource' in route) {
+        return routePath({ name: 'resource.index', resource: route.resource }, base);
+    }
+    if (route?.name === 'page' && (route.segments ?? []).length === 0) {
+        return routePath(route, base);
+    }
+    return routePath({ name: 'home' }, base);
 }
 
 function SessionEnded({ loginUrl }: { loginUrl: string | null }) {

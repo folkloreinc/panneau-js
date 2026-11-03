@@ -4,7 +4,7 @@ import { editorPlugin } from '@panneau/editor';
 import { createNominatimSource } from '@panneau/fields';
 import { createMockBackend } from '@panneau/protocol/mock';
 
-import { createPlaygroundDefinition, createPlaygroundItems } from './definition';
+import { PUBLICATIONS, createPlaygroundDefinition, createPlaygroundItems } from './definition';
 import { PagePreview, articlePreviewUrl } from './previews';
 import { flatTheme } from './themes';
 
@@ -32,6 +32,24 @@ const backend = createMockBackend({
     definition,
     items: createPlaygroundItems(),
     previewUrl: ({ item }) => articlePreviewUrl(item),
+    context: {
+        options: (name, before) =>
+            name === 'desk'
+                ? PUBLICATIONS.filter(
+                      ({ id }) => before.publication === undefined || id === before.publication,
+                  ).flatMap(({ id, label, desks }) =>
+                      desks.map((desk) => ({
+                          value: `${id}-${desk.toLowerCase()}`,
+                          label: desk,
+                          description: label,
+                      })),
+                  )
+                : [],
+        scope: (resource, item, values) =>
+            resource !== 'articles' ||
+            values.publication === undefined ||
+            item.publication === values.publication,
+    },
 });
 
 const element = document.getElementById('panneau');

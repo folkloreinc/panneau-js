@@ -1,6 +1,6 @@
 # 0019: The app entry: boot config, mount function and client routes
 
-- Status: accepted, amended by [0036](0036-default-icon-loader.md): `<Panneau>` has no default `iconLoader`; and by [0037](0037-login-page-token-and-logout.md): the login page when the session ends in `panneau` mode, and `auth` in the boot config; and by [0038](0038-pages-with-params.md): pages with params
+- Status: accepted, amended by [0036](0036-default-icon-loader.md): `<Panneau>` has no default `iconLoader`; and by [0037](0037-login-page-token-and-logout.md): the login page when the session ends in `panneau` mode, and `auth` in the boot config; and by [0038](0038-pages-with-params.md): pages with params; and by [0043](0043-current-context.md): the values of the current context as a prefix of the routes
 - Date: 2026-10-15
 
 ## Context

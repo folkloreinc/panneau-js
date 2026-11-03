@@ -123,6 +123,20 @@ export const appMessages = {
         defaultMessage: 'Close the details',
     }),
     goTo: defineMessage({ id: 'panneau.app.goTo', defaultMessage: 'Go to…' }),
+    context: defineMessage({ id: 'panneau.app.context', defaultMessage: 'Context' }),
+    contextNone: defineMessage({ id: 'panneau.app.contextNone', defaultMessage: 'All' }),
+    contextChange: defineMessage<{ context: string }>({
+        id: 'panneau.app.contextChange',
+        defaultMessage: 'Change the context ({context})',
+    }),
+    contextRequired: defineMessage({
+        id: 'panneau.app.contextRequired',
+        defaultMessage: 'Choose where to work',
+    }),
+    contextRequiredText: defineMessage({
+        id: 'panneau.app.contextRequiredText',
+        defaultMessage: 'What the admin shows depends on it.',
+    }),
     profile: defineMessage<{ name: string }>({
         id: 'panneau.app.profile',
         defaultMessage: 'Your profile ({name})',

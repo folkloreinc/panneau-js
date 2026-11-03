@@ -108,6 +108,18 @@ export function navigate(path: string, { replace = false }: { replace?: boolean 
     notify();
 }
 
+/**
+ * Loads a page with a navigation of the browser, rather than in place: for another context of the
+ * app (decision 0043), whose state starts over.
+ */
+export function loadPage(url: string, { replace = false }: { replace?: boolean } = {}) {
+    if (replace) {
+        window.location.replace(url);
+    } else {
+        window.location.assign(url);
+    }
+}
+
 /** A link to a path of the app. Plain clicks navigate without reloading the page. */
 export function Link({ href, onClick, ...props }: ComponentProps<'a'> & { href: string }) {
     const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {

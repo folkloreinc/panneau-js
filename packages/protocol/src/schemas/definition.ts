@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { RESERVED_ROUTE_SEGMENTS } from '../constants';
 import { PROTOCOL_VERSION } from '../version';
 import { Abilities, Id } from './common';
 import { Resource } from './resource';
@@ -92,6 +93,61 @@ export const Page = z.looseObject({
         }),
 });
 
+export const ContextOption = z
+    .looseObject({
+        value: z.string().min(1),
+        label: z.string(),
+        description: z.string().optional(),
+    })
+    .meta({ description: 'A choice of a param of the context.' });
+
+export const ContextParam = z
+    .looseObject({
+        name: z
+            .string()
+            .regex(
+                new RegExp(`^(?!(?:${RESERVED_ROUTE_SEGMENTS.join('|')})$)[A-Za-z_][A-Za-z0-9_]*$`),
+            )
+            .meta({
+                description:
+                    'The name of the param, in the `Panneau-Context` header and in the client routes (`{basePath}/{name}/{value}/…`): an identifier, not a reserved first segment of the routes.',
+            }),
+        label: z.string(),
+        required: z.boolean().optional().meta({
+            description:
+                'Whether the app needs a value: without one, it shows a page to pick it in place of the page of the route.',
+        }),
+        allLabel: z.string().optional().meta({
+            description: 'An optional param: the label of no value, such as "All clients".',
+        }),
+        options: z.array(ContextOption).optional().meta({
+            description:
+                'The choices, inline. Without them, the client searches them with `GET /context/{name}/options`.',
+        }),
+        value: z.string().min(1).nullable().optional().meta({
+            description:
+                'The value the definition was built for: the one the client sent, checked, or the one the backend chose for a required param.',
+        }),
+        valueLabel: z
+            .string()
+            .nullable()
+            .optional()
+            .meta({ description: 'The label of `value`, for the picker.' }),
+    })
+    .meta({ description: 'A param of the current context (decision 0043).' });
+
+export const DefinitionContext = z
+    .looseObject({
+        params: z.array(ContextParam).min(1).meta({
+            description:
+                'In order: each param depends on the params before it. The params are the same whatever the values.',
+        }),
+    })
+    .meta({
+        description:
+            'The current context the user picks in the app, sent with every request in the `Panneau-Context` header (decision 0043).',
+    });
+
 export const Widget = z.looseObject({
     id: z.string().min(1),
     type: z.string().min(1).meta({
@@ -137,6 +193,7 @@ export const Definition = z
         dashboard: z.looseObject({ widgets: z.array(Widget) }).optional(),
         search: z.looseObject({ enabled: z.boolean() }).optional(),
         uploads: Uploads.optional(),
+        context: DefinitionContext.optional(),
         theme: DefinitionTheme.optional(),
         user: User.nullable().optional(),
     })
@@ -152,6 +209,17 @@ export const Definition = z
             }
             ids.add(resource.id);
         });
+        const names = new Set<string>();
+        definition.context?.params.forEach((param, index) => {
+            if (names.has(param.name)) {
+                context.addIssue({
+                    code: 'custom',
+                    message: `Duplicate context param \`${param.name}\`.`,
+                    path: ['context', 'params', index, 'name'],
+                });
+            }
+            names.add(param.name);
+        });
     })
     .meta({ description: 'Everything a frontend needs to render the admin for the current user.' });
 
@@ -161,6 +229,9 @@ export type AuthToken = z.infer<typeof AuthToken>;
 export type Auth = z.infer<typeof Auth>;
 export type MenuItem = z.infer<typeof MenuItem>;
 export type Page = z.infer<typeof Page>;
+export type ContextOption = z.infer<typeof ContextOption>;
+export type ContextParam = z.infer<typeof ContextParam>;
+export type DefinitionContext = z.infer<typeof DefinitionContext>;
 export type Widget = z.infer<typeof Widget>;
 export type Uploads = z.infer<typeof Uploads>;
 export type Definition = z.infer<typeof Definition>;

@@ -89,3 +89,52 @@ export function routePath(
             return `${path('resources', route.resource, route.id)}/edit`;
     }
 }
+
+/**
+ * The prefix of the routes for the values of the context, in the order of `names`:
+ * `/client/4/contest/12`, or `` without values (decision 0043).
+ */
+export function contextPath(values: Readonly<Record<string, string>>, names: readonly string[]) {
+    return names
+        .filter((name) => values[name] !== undefined && values[name] !== '')
+        .map((name) => `/${encodeURIComponent(name)}/${encodeURIComponent(values[name] ?? '')}`)
+        .join('');
+}
+
+/**
+ * The values of the context in a path, from the segments right after the base path: each name of
+ * `names` followed by its value. `basePath` is the base path with them, under which the routes
+ * of the app are.
+ */
+export function matchContext(
+    pathname: string,
+    basePath: string,
+    names: readonly string[],
+): { values: Record<string, string>; basePath: string } {
+    const base = normalizeBasePath(basePath);
+    const values: Record<string, string> = {};
+    if (names.length === 0 || (pathname !== base && !pathname.startsWith(`${base}/`))) {
+        return { values, basePath: base };
+    }
+    const segments = pathname.slice(base.length).split('/').slice(1);
+    let consumed = 0;
+    for (;;) {
+        const name = decode(segments[consumed] ?? '');
+        const value = decode(segments[consumed + 1] ?? '');
+        if (
+            name === null ||
+            !names.includes(name) ||
+            name in values ||
+            value === null ||
+            value === ''
+        ) {
+            break;
+        }
+        values[name] = value;
+        consumed += 2;
+    }
+    return {
+        values,
+        basePath: consumed > 0 ? `${base}/${segments.slice(0, consumed).join('/')}` : base,
+    };
+}

@@ -1,0 +1,16 @@
+/* The fields of the params of the current context: in the sidebar, in a popover of the rail, and
+ * on the page that asks for them. */
+
+.picker {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-2);
+}
+
+.field {
+    min-width: 0;
+}
+
+.popover {
+    width: min(18rem, calc(100vw - 2 * var(--panneau-space-4)));
+}

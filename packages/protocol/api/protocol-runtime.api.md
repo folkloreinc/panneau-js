@@ -63,6 +63,18 @@ export function checkRules(rules: Rule[], value: unknown, root?: Record<string, 
 export function checkValues(fields: Field[], values: Record<string, unknown>, options?: CheckOptions): Record<string, RuleFailure[]>;
 
 // @public
+export const CONTEXT_HEADER = "Panneau-Context";
+
+// @public
+export const CONTEXT_PROBLEM_TYPE = "urn:panneau:problem:context";
+
+// @public
+export function contextBefore(values: ContextValues, names: readonly string[], name: string): ContextValues;
+
+// @public
+export type ContextValues = Readonly<Record<string, string>>;
+
+// @public
 export interface CursorPageMeta {
     // (undocumented)
     nextCursor: string | null;
@@ -89,6 +101,9 @@ export interface FilterRange {
 
 // @public
 export type FilterValue = string | number | boolean | Array<string | number | boolean> | FilterRange;
+
+// @public
+export function formatContextHeader(values: Readonly<Record<string, string | null | undefined>>, names?: readonly string[]): string;
 
 // @public
 export function fromSearchParams(params: URLSearchParams): ListQuery;
@@ -168,6 +183,9 @@ export interface MediaLibrariesDefinition {
 export function mergeThemes(...themes: readonly PartialTheme[]): Theme;
 
 // @public
+export function parseContextHeader(header: string | null | undefined): ContextValues;
+
+// @public
 export function parseRatio(ratio: string): number | null;
 
 // @public
@@ -206,6 +224,9 @@ export function renderedCropSize(transform: Pick<MediaTransform, 'crop' | 'rotat
     width: number;
     height: number;
 } | null;
+
+// @public
+export const RESERVED_ROUTE_SEGMENTS: readonly ["resources", "pages", "media", "search", "account", "auth"];
 
 // @public
 export const RICH_TEXT_STYLE_ELEMENTS: readonly ["p", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "ul", "ol", "li"];
