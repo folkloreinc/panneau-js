@@ -503,6 +503,15 @@ export const listsMessages: {
     previousPage: PanneauMessage<Record<never, never>>;
     nextPage: PanneauMessage<Record<never, never>>;
     perPage: PanneauMessage<Record<never, never>>;
+    editValue: PanneauMessage<    {
+    field: string;
+    item: string;
+    }>;
+    savingValue: PanneauMessage<Record<never, never>>;
+    saveValueFailed: PanneauMessage<Record<never, never>>;
+    valueConflict: PanneauMessage<Record<never, never>>;
+    keepTheirs: PanneauMessage<Record<never, never>>;
+    saveMine: PanneauMessage<Record<never, never>>;
 };
 
 // @public

@@ -18,7 +18,7 @@ import {
     isSearchableResource,
     toSearchQueryParams,
 } from '../search';
-import { isFilled } from '../values';
+import { isEqual, isFilled } from '../values';
 import { PROBLEM_CONTENT_TYPE } from '../version';
 
 export interface ConformanceOptions {
@@ -811,6 +811,63 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                 reply.status === 200,
                 `An update with ${names.join(', ')} set to null got status ${reply.status}, expected 200.`,
             );
+        },
+    );
+
+    await run(
+        'update.single-field',
+        'A PATCH with a single field and If-Match changes that field alone',
+        async (check) => {
+            if (createdId === null || writes === undefined || resource === null) {
+                check.skip('No item was created.');
+                return;
+            }
+            const name = Object.keys(writes.update)[0];
+            if (name === undefined) {
+                check.skip('The update of `writes` has no value.');
+                return;
+            }
+            // As a list edits a field in place: the item's version, and the one field
+            const current = await request(itemPath());
+            const before = check.expectStatus(current, 200)
+                ? check.expectSchema(ItemResponse, current.body, 'The item')
+                : null;
+            if (before === null) {
+                return;
+            }
+            const version = before.data.version;
+            const reply = await request(itemPath(), {
+                method: 'PATCH',
+                body: JSON.stringify({ [name]: writes.update[name] }),
+                headers: version !== null ? { 'If-Match': `"${version}"` } : {},
+            });
+            if (!check.expectStatus(reply, 200)) {
+                return;
+            }
+            const after = check.expectSchema(ItemResponse, reply.body, 'The updated item');
+            if (after === null) {
+                return;
+            }
+            if (version !== null) {
+                check.expect(
+                    after.data.version !== version,
+                    'The version did not change after an update of a single field.',
+                );
+            }
+            const changed = resource.fields
+                .filter(
+                    (field) =>
+                        field.name !== name &&
+                        field.readOnly !== true &&
+                        field.settings?.secret !== true &&
+                        !isEqual(before.data[field.name], after.data[field.name]),
+                )
+                .map((field) => field.name);
+            check.expect(
+                changed.length === 0,
+                `An update of ${name} alone also changed ${changed.join(', ')}.`,
+            );
+            updatedVersion = after.data.version;
         },
     );
 

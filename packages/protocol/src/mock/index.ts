@@ -318,11 +318,14 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
         resource: ResourceInput,
         values: Values,
         mode: 'create' | 'update',
+        item?: Item,
     ) => {
+        // A partial update reads the conditions with the item's values (decision 0043).
         const failures = checkValues(resource.fields, values, {
             mode,
             partial: mode === 'update',
             locales: definition.locales,
+            ...(item !== undefined ? { item } : {}),
         });
         const paths = Object.keys(failures);
         if (paths.length === 0) {
@@ -850,7 +853,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                 });
             }
             const body = await readBody();
-            const invalid = validationProblem(resource, body, 'update');
+            const invalid = validationProblem(resource, body, 'update', current);
             if (invalid !== null) {
                 return invalid;
             }

@@ -124,8 +124,8 @@ export interface UpdateItemVariables {
 }
 
 /**
- * Updates an item, then caches the updated item and refetches the lists of the resource. Fails
- * with a `ConflictError` when the item changed since `version`.
+ * Updates an item, then caches the updated item, puts it in the cached lists of the resource that
+ * show it, and refetches them. Fails with a `ConflictError` when the item changed since `version`.
  */
 export function useUpdateItem(
     resource: string,
@@ -137,6 +137,17 @@ export function useUpdateItem(
             adapter.update(resource, id, values, { version }),
         onSuccess: (item) => {
             client.setQueryData(queryKeys.item(resource, item.id), item);
+            // Lists show it at once, as an edit in place does, until they are refetched.
+            client.setQueriesData<ListResponse>({ queryKey: queryKeys.lists(resource) }, (list) =>
+                list?.data.some((candidate) => candidate.id === item.id) === true
+                    ? {
+                          ...list,
+                          data: list.data.map((candidate) =>
+                              candidate.id === item.id ? item : candidate,
+                          ),
+                      }
+                    : list,
+            );
             return client.invalidateQueries({ queryKey: queryKeys.lists(resource) });
         },
     });
