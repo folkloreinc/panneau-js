@@ -47,6 +47,27 @@ export const listsMessages = {
     layout: defineMessage({ id: 'panneau.lists.layout', defaultMessage: 'Layout' }),
     layoutTable: defineMessage({ id: 'panneau.lists.layoutTable', defaultMessage: 'Table' }),
     layoutCards: defineMessage({ id: 'panneau.lists.layoutCards', defaultMessage: 'Cards' }),
+    layoutGallery: defineMessage({ id: 'panneau.lists.layoutGallery', defaultMessage: 'Gallery' }),
+    layoutCalendar: defineMessage({
+        id: 'panneau.lists.layoutCalendar',
+        defaultMessage: 'Calendar',
+    }),
+    previousMonth: defineMessage({
+        id: 'panneau.lists.previousMonth',
+        defaultMessage: 'Previous month',
+    }),
+    nextMonth: defineMessage({ id: 'panneau.lists.nextMonth', defaultMessage: 'Next month' }),
+    thisMonth: defineMessage({ id: 'panneau.lists.thisMonth', defaultMessage: 'Today' }),
+    calendarMore: defineMessage<{ shown: number; total: number }>({
+        id: 'panneau.lists.calendarMore',
+        defaultMessage:
+            'The calendar shows {shown, number} of {total, plural, one {# item} other {# items}}. Filter the list to see the others.',
+    }),
+    calendarMoreUnknown: defineMessage<{ shown: number }>({
+        id: 'panneau.lists.calendarMoreUnknown',
+        defaultMessage:
+            'The calendar shows the first {shown, plural, one {# item} other {# items}}. Filter the list to see the others.',
+    }),
     columns: defineMessage({ id: 'panneau.lists.columns', defaultMessage: 'Columns' }),
     moveColumnUp: defineMessage<{ column: string }>({
         id: 'panneau.lists.moveColumnUp',

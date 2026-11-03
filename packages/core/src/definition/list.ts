@@ -25,6 +25,16 @@ export interface ResolvedColumn {
     hideable: boolean;
 }
 
+/** The calendar of a list (decision 0044). */
+export interface ResolvedCalendar {
+    /** The `date` or `datetime` field each item is shown on the day of. */
+    field: string;
+    /** The id of the `date-range` filter the calendar asks for a month through. */
+    filter: string;
+    /** How many items the calendar asks for a month. */
+    perPage: number;
+}
+
 /** A list ready to render. */
 export interface ResolvedList {
     columns: ResolvedColumn[];
@@ -47,6 +57,8 @@ export interface ResolvedList {
     selectable: boolean;
     /** Actions the user can run, by placement. */
     actions: Record<ActionPlacement, Action[]>;
+    /** The calendar of the list, for its `calendar` layout, or `null`. */
+    calendar: ResolvedCalendar | null;
 }
 
 /** Fields shown when the list declares no columns. */
@@ -54,6 +66,9 @@ const DEFAULT_COLUMN_COUNT = 4;
 const NON_COLUMN_TYPES = new Set(['group', 'repeater', 'richtext']);
 
 export const DEFAULT_PER_PAGE = 20;
+
+/** How many items a calendar asks for a month, without its own `perPage`. */
+export const DEFAULT_CALENDAR_PER_PAGE = 100;
 
 function columnsFromFields(resource: Resource): Column[] {
     const title = resource.itemTitle;
@@ -176,5 +191,13 @@ export function resolveList(resource: Resource): ResolvedList {
         inlineEdit: list.inlineEdit ?? [],
         selectable: (list.selectable ?? true) && hasSelectionAction,
         actions,
+        calendar:
+            list.calendar !== undefined
+                ? {
+                      field: list.calendar.field,
+                      filter: list.calendar.filter ?? list.calendar.field,
+                      perPage: list.calendar.perPage ?? DEFAULT_CALENDAR_PER_PAGE,
+                  }
+                : null,
     };
 }

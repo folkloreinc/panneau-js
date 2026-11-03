@@ -9,7 +9,7 @@ Each item becomes a sub-issue of #6 (or of laravel-panneau#35) when work on it s
 Updated on 2026-11-03. The latest pre-releases are `@panneau/*` 5.0.0-alpha.11 and `laravel-panneau` v5.0.0-alpha.8.
 
 - **Phases 0 and 1:** done.
-- **Phase 2:** in progress, still in alphas. Done: loading states, the app shell, actions, rich text, the new field types and media. Started: auth, permissions, lists and migration. To do: the Folklore plugin.
+- **Phase 2:** in progress, still in alphas. Done: loading states, the app shell, actions, rich text, the new field types, media and lists. Started: auth, permissions and migration. To do: the Folklore plugin.
 - **5.x:** image editing and the "Go to…" palette were done early, in phase 2.
 
 Each item below says where it is: **done**, **started** (with what is left) or **to do**.
@@ -83,10 +83,10 @@ Goal: a complete admin panel, ready for client projects.
     - the `external` mode for sites with their own auth: done, with a logout URL ([folkloreinc/laravel-panneau#132](https://github.com/folkloreinc/laravel-panneau/issues/132));
     - account page: to do. The shell links to the user's profile.
 - **Permissions (started):** abilities in the UI; an optional roles module on the Laravel side. Done: the built-in item actions (`show`, `edit`, `duplicate`, `delete`) follow the item's abilities ([decisions/0040](decisions/0040-row-links-and-open-mode.md)). Left: abilities in the rest of the UI, and the roles module.
-- **Lists (started):**
+- **Lists (done):**
     - sorting, filters (with active filter chips), column choice: done. Sorting, filters and their chips ([#32](https://github.com/folkloreinc/panneau-js/issues/32)), cursor pagination ([#150](https://github.com/folkloreinc/panneau-js/issues/150), [decisions/0039](decisions/0039-cursor-pagination.md)), and columns the user shows, hides and orders, with those the definition hides by default or keeps ([#176](https://github.com/folkloreinc/panneau-js/issues/176), [decisions/0042](decisions/0042-list-view-columns-and-remembered-view.md));
     - inline editing (done): a column edits its field in place, for the simple types (text, number, select, boolean, date). Each change saves the one field (`PATCH` with a single field and `If-Match`), checked by its portable rules, and an error or a conflict shows on the cell ([#177](https://github.com/folkloreinc/panneau-js/issues/177), [decisions/0043](decisions/0043-inline-editing.md));
-    - layouts (table, cards, gallery, calendar), bulk actions. Done: table, cards and bulk actions. Left: gallery and calendar;
+    - layouts (table, cards, gallery, calendar), bulk actions: done. The gallery on the `itemImage` of the resource, and the calendar on a date field of the definition, which asks for the days around a month through its `date-range` filter instead of pages ([#178](https://github.com/folkloreinc/panneau-js/issues/178), [decisions/0044](decisions/0044-gallery-and-calendar.md));
     - remembered view per user (done): the filters, sort, page size, layout and columns of each list, in the browser, restored when the URL has no query of its own ([#179](https://github.com/folkloreinc/panneau-js/issues/179), [decisions/0042](decisions/0042-list-view-columns-and-remembered-view.md)).
 - **Actions (done):**
     - built-in and custom actions, with parameters and confirmation: done ([#35](https://github.com/folkloreinc/panneau-js/issues/35));

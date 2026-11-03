@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { UserMinus } from 'lucide-react';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
-import { createList } from '@panneau/core';
+import { createList, createMemoryRouter } from '@panneau/core';
 import type { Action, Field } from '@panneau/protocol';
 import { Button } from '@panneau/ui';
 
@@ -278,6 +278,78 @@ export const ChooseColumns: Story = {
         await expect(headers()).toEqual(['Name', 'Role', 'Email', 'Joined']);
         await userEvent.keyboard('{Escape}');
         await waitFor(() => expect(canvas.getByRole('button', { name: 'Columns' })).toHaveFocus());
+    },
+};
+
+/** An image for each member, drawn in place: stories don't fetch images. */
+function portrait(index: number): string {
+    const hue = (index * 47) % 360;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 3"><rect width="4" height="3" fill="hsl(${String(hue)} 60% 70%)"/><circle cx="2" cy="1.3" r="0.7" fill="hsl(${String(hue)} 40% 40%)"/></svg>`;
+    return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
+/** The gallery, on the `itemImage` of the items (decision 0044). Some members have no photo. */
+export const Gallery: Story = {
+    args: {
+        layouts: ['gallery', 'table'],
+        itemImage: 'photo',
+        items: members.map((member, index) => ({
+            ...member,
+            photo: index % 4 === 3 ? null : { media: { thumbnailUrl: portrait(index) } },
+        })),
+        actions,
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const gallery = canvas.getByRole('list', { name: 'Members' });
+        await expect(within(gallery).getAllByRole('listitem')).toHaveLength(10);
+        await expect(gallery.querySelectorAll('img')).toHaveLength(8);
+        await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Ada Lovelace' }));
+        await expect(canvas.getByText('1 item selected')).toBeVisible();
+    },
+};
+
+/**
+ * The calendar: the members on the day they joined, in March (decision 0044). It asks for the
+ * days around the month through the `joined_on` filter, and moves from month to month.
+ */
+export const Calendar: Story = {
+    args: {
+        layouts: ['calendar', 'table'],
+        calendar: { field: 'joined_on', filter: 'joined_on' },
+        filters: [{ id: 'role', type: 'select', label: 'Role' }],
+        router: createMemoryRouter('month=2026-03'),
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const grid = canvas.getByRole('table', { name: 'Members, March 2026' });
+        await expect(grid).toHaveTextContent('Alan Turing');
+        await userEvent.click(canvas.getByRole('button', { name: 'Next month' }));
+        await expect(
+            await canvas.findByRole('table', { name: 'Members, April 2026' }),
+        ).toHaveTextContent('Katherine Johnson');
+        await userEvent.click(canvas.getByRole('button', { name: 'Previous month' }));
+        await expect(canvas.getByRole('table', { name: 'Members, March 2026' })).toBeVisible();
+    },
+};
+
+/** On a phone, the calendar lists the days that have items. */
+export const CalendarOnAPhone: Story = {
+    ...Calendar,
+    args: { ...Calendar.args, router: createMemoryRouter('month=2026-03') },
+    decorators: [
+        (Story) => (
+            <div style={{ maxWidth: 360 }}>
+                <Story />
+            </div>
+        ),
+    ],
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const grid = canvas.getByRole('table', { name: 'Members, March 2026' });
+        const headers = within(grid).getAllByRole('columnheader', { hidden: true });
+        await expect(headers[0]).not.toBeVisible();
+        await expect(within(grid).getAllByRole('listitem')[0]).toBeVisible();
     },
 };
 

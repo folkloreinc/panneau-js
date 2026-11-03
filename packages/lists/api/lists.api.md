@@ -22,6 +22,7 @@ import type { ListSelection } from '@panneau/core';
 import type { ListState } from '@panneau/core';
 import type { Option as Option_2 } from '@panneau/protocol';
 import { ReactNode } from 'react';
+import type { ResolvedCalendar } from '@panneau/core';
 import type { RuleFailure } from '@panneau/protocol';
 import type { Selection as Selection_2 } from '@panneau/protocol';
 
@@ -44,6 +45,9 @@ export const builtInFilters: Readonly<Record<string, FilterEntry>>;
 export const builtInLayouts: Readonly<Record<string, ListLayoutEntry>> & {
     table: ListLayoutEntry;
 };
+
+// @public
+export function CalendarLayout(input: ListLayoutProps): JSX.Element;
 
 // @public
 export function CardsLayout(input: ListLayoutProps): JSX.Element;
@@ -149,10 +153,16 @@ export interface FilterControlProps {
 export type FilterEntry = ComponentType<FilterControlProps>;
 
 // @public
+export function GalleryLayout(input: ListLayoutProps): JSX.Element;
+
+// @public
 export function getActionHref(action: Action, item?: ListItem): string | null;
 
 // @public
 export function getActionIcon(action: Action, icons?: ActionIcons): IconComponent | undefined;
+
+// @public
+export function getImageUrl(value: unknown): string | null;
 
 // @public
 export function getLocalizedValue(value: unknown, locale: string): unknown;
@@ -230,6 +240,17 @@ export type ListActionPreviewer = (event: ListActionEvent) => Promise<ListAction
 export type ListActions = readonly Action[] | Partial<Record<ActionPlacement, readonly Action[]>>;
 
 // @public
+export interface ListCalendarProps {
+    field: string;
+    month: string;
+    more: {
+        total: number | null;
+    } | null;
+    // (undocumented)
+    onMonthChange: (month: string) => void;
+}
+
+// @public
 export interface ListColumn {
     // (undocumented)
     align?: 'start' | 'center' | 'end';
@@ -261,9 +282,11 @@ export type ListLayoutEntry = ComponentType<ListLayoutProps>;
 
 // @public
 export interface ListLayoutProps {
+    calendar?: ListCalendarProps | undefined;
     // (undocumented)
     columns: readonly ListColumn[];
     getItemHref?: ((item: ListItem) => string | null) | undefined;
+    getItemImage?: ((item: ListItem) => string | null) | undefined;
     getItemLabel: (item: ListItem) => string;
     isCurrent?: ((item: ListItem) => boolean) | undefined;
     // (undocumented)
@@ -307,6 +330,7 @@ export interface ListViewProps {
     'aria-label'?: string;
     actionIcons?: ActionIcons;
     actions?: ListActions;
+    calendar?: Pick<ResolvedCalendar, 'field' | 'filter'> | null | undefined;
     // (undocumented)
     className?: string;
     columnChoice?: boolean;
@@ -328,6 +352,7 @@ export interface ListViewProps {
     getLinkHref?: (action: Action, item: ListItem) => string | null;
     inlineEdit?: readonly string[];
     isLoading?: boolean;
+    itemImage?: string | undefined;
     items: readonly ListItem[] | undefined;
     itemTitle?: string;
     layout?: string;

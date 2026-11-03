@@ -54,6 +54,32 @@ function checkResource(resource: ResourceInput, path: string, issues: Validation
             });
         }
     });
+    const calendar = resource.list?.calendar;
+    if (calendar !== undefined) {
+        const field = resource.fields.find((candidate) => candidate.name === calendar.field);
+        const filter = calendar.filter ?? calendar.field;
+        if (field === undefined) {
+            issues.push({
+                path: `${path}.list.calendar.field`,
+                message: `No field named \`${calendar.field}\`.`,
+            });
+        } else if (field.type !== 'date' && field.type !== 'datetime') {
+            issues.push({
+                path: `${path}.list.calendar.field`,
+                message: 'The field of a calendar must be a `date` or a `datetime`.',
+            });
+        }
+        if (
+            !(resource.list?.filters ?? []).some(
+                (candidate) => candidate.id === filter && candidate.type === 'date-range',
+            )
+        ) {
+            issues.push({
+                path: `${path}.list.calendar`,
+                message: `The calendar needs a \`date-range\` filter \`${filter}\` in the list.`,
+            });
+        }
+    }
     (resource.actions ?? []).forEach((action, index) => {
         if (action.layout !== undefined) {
             checkLayout(

@@ -1,4 +1,4 @@
-import { type ListOptions, useList } from '@panneau/core';
+import { DEFAULT_CALENDAR_PER_PAGE, type ListOptions, useList } from '@panneau/core';
 import { usePanneauIntl } from '@panneau/ui';
 
 import { ListView, type ListViewProps } from './ListView';
@@ -25,12 +25,19 @@ export interface ListProps extends Omit<ListViewProps, 'list' | 'total' | 'items
  * For items fetched page by page, create the state with `useList()`, fetch its `query`, and render
  * `ListView`.
  *
- * The page size and the default sort are read once.
+ * The page size, the default sort, the first layout and the calendar are read once.
  */
 export function List({ items, perPage = 20, defaultSort = [], router, ...props }: ListProps) {
     const intl = usePanneauIntl();
     const { query, list } = useList({
-        defaults: { perPage, sort: defaultSort },
+        defaults: {
+            perPage,
+            sort: defaultSort,
+            ...(props.layouts?.[0] !== undefined ? { layout: props.layouts[0] } : {}),
+            ...(props.calendar !== null && props.calendar !== undefined
+                ? { calendar: { ...props.calendar, perPage: DEFAULT_CALENDAR_PER_PAGE } }
+                : {}),
+        },
         ...(router !== undefined ? { router } : {}),
     });
     const result =
