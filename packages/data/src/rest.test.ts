@@ -484,6 +484,30 @@ describe('createRestAdapter', () => {
         expect(await requests[5]?.json()).toEqual({ code: '123456' });
     });
 
+    it('reads and saves the account', async () => {
+        const { fetch, requests } = createStubFetch((request) =>
+            request.method === 'PUT'
+                ? new Response(null, { status: 204 })
+                : jsonResponse(200, { data: { id: 'u1', name: 'Ada' } }),
+        );
+        const adapter = createRestAdapter({ baseUrl: BASE_URL, fetch });
+
+        expect(await adapter.getAccount?.()).toEqual({ id: 'u1', name: 'Ada' });
+        expect(await adapter.updateAccount?.({ name: 'Ada', email: 'ada@example.com' })).toEqual({
+            id: 'u1',
+            name: 'Ada',
+        });
+        await adapter.updatePassword?.({ currentPassword: 'old', password: 'new' });
+        expect(
+            requests.map((request) => `${request.method} ${new URL(request.url).pathname}`),
+        ).toEqual([
+            'GET /panneau/api/account',
+            'PATCH /panneau/api/account',
+            'PUT /panneau/api/account/password',
+        ]);
+        expect(await requests[2]?.json()).toEqual({ currentPassword: 'old', password: 'new' });
+    });
+
     it('rejects with a PasswordConfirmationError on a 423', async () => {
         const { fetch } = createStubFetch(
             () =>

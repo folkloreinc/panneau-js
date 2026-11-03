@@ -37,13 +37,17 @@ export interface NavSeparator {
 export type NavEntry = NavLink | NavGroup | NavSeparator;
 
 /**
- * The path of the user's profile: the user's item in the resource of users (`user.resource`, or
- * the resource `users`), or `null` when the definition has no such resource.
+ * The path of the user's profile: the account page with `auth.account` (decision 0050), or else the
+ * user's item in the resource of users (`user.resource`, or the resource `users`), or `null` when
+ * the definition has no such resource.
  */
 export function getProfilePath(definition: Definition, basePath: string): string | null {
     const user = definition.user;
     if (user === undefined || user === null) {
         return null;
+    }
+    if (definition.auth?.account === true) {
+        return routePath({ name: 'account' }, basePath);
     }
     const id = user.resource ?? 'users';
     const resource = definition.resources.find((candidate) => candidate.id === id);

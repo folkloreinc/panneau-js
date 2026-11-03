@@ -52,6 +52,10 @@ export const Auth = z.looseObject({
             '`panneau`: a login with a single secret, such as an access token, sent as `token` to `POST /auth/login`.',
     }),
     providers: z.array(AuthProvider).optional(),
+    account: z.boolean().optional().meta({
+        description:
+            '`panneau`: the account page of the user, on `/account`: their name and email, their password, their two-factor authentication.',
+    }),
     passwordReset: z.boolean().optional().meta({
         description:
             '`panneau`: a "Forgot your password?" link on the login page, through `POST /auth/password/forgot` and `POST /auth/password/reset`.',

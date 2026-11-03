@@ -18,6 +18,7 @@ import type {
     TwoFactorChallenge,
     TwoFactorSetup,
     TwoFactorStatus,
+    User,
 } from '@panneau/protocol';
 
 import type { PresignedUploads } from './uploads';
@@ -74,6 +75,18 @@ export type LoginResult = Session | TwoFactorChallenge;
 
 /** The second factor of a login: a code of the authenticator app, or a recovery code. */
 export type TwoFactorAnswer = { code: string } | { recoveryCode: string };
+
+/** What `updateAccount()` sends: the name and the email of the current user. */
+export interface AccountValues {
+    name: string;
+    email: string;
+}
+
+/** What `updatePassword()` sends: the current password, and the new one. */
+export interface PasswordChange {
+    currentPassword: string;
+    password: string;
+}
 
 /** What `resetPassword()` sends: the token and the email of the link, and the new password. */
 export interface PasswordReset {
@@ -155,6 +168,18 @@ export interface DataAdapter {
      * operations that reject with a `PasswordConfirmationError`. Optional.
      */
     confirmPassword?(password: string, options?: RequestOptions): Promise<void>;
+    /** The current user, for the account page (`GET /account`, decision 0050). Optional. */
+    getAccount?(options?: RequestOptions): Promise<User>;
+    /**
+     * Saves the name and the email of the current user (`PATCH /account`), and gives the user.
+     * Rejects with a `ValidationError` for values the backend refuses. Optional.
+     */
+    updateAccount?(values: AccountValues, options?: RequestOptions): Promise<User>;
+    /**
+     * Changes the password of the current user (`PUT /account/password`). Rejects with a
+     * `ValidationError` for a wrong current password, or a new one the backend refuses. Optional.
+     */
+    updatePassword?(change: PasswordChange, options?: RequestOptions): Promise<void>;
     /** The two-factor authentication of the current user (`GET /account/two-factor`). Optional. */
     getTwoFactor?(options?: RequestOptions): Promise<TwoFactorStatus>;
     /** Starts setting it up: a new secret, to confirm with `confirmTwoFactor()`. Optional. */

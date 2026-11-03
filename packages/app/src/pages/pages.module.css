@@ -139,3 +139,21 @@
     padding-block: var(--panneau-space-10);
     text-align: center;
 }
+
+/* The forms of the account page, in their cards. */
+.accountForm {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-4);
+}
+
+.accountActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--panneau-space-2);
+}
+
+.accountHelp {
+    margin: 0;
+    color: var(--panneau-color-text-muted);
+}

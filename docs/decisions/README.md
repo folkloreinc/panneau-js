@@ -55,3 +55,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0047](0047-countries-regions-and-phone-numbers.md)   | Countries, regions and phone numbers                                          | Accepted                          |
 | [0048](0048-password-reset-and-email-verification.md) | Password reset and email verification                                         | Proposed                          |
 | [0049](0049-two-factor-authentication.md)             | Two-factor authentication, required for some users, and password confirmation | Proposed                          |
+| [0050](0050-account-page.md)                          | The account page                                                              | Proposed                          |

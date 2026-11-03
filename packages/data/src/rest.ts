@@ -23,6 +23,7 @@ import type {
     Session,
     TwoFactorSetup,
     TwoFactorStatus,
+    User,
 } from '@panneau/protocol';
 
 import type { ActionResponse, DataAdapter, LoginResult } from './adapter';
@@ -302,6 +303,22 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
                 body: { password },
                 signal,
             });
+        },
+        async getAccount({ signal } = {}) {
+            return (await json<{ data: User }>({ path: '/account', signal })).data;
+        },
+        async updateAccount(values, { signal } = {}) {
+            return (
+                await json<{ data: User }>({
+                    method: 'PATCH',
+                    path: '/account',
+                    body: values,
+                    signal,
+                })
+            ).data;
+        },
+        async updatePassword(change, { signal } = {}) {
+            await send({ method: 'PUT', path: '/account/password', body: change, signal });
         },
         getTwoFactor({ signal } = {}) {
             return json<TwoFactorStatus>({ path: '/account/two-factor', signal });

@@ -1,8 +1,10 @@
 export type {
+    AccountValues,
     ActionResponse,
     DataAdapter,
     LoginCredentials,
     LoginResult,
+    PasswordChange,
     PasswordCredentials,
     PasswordReset,
     RequestOptions,

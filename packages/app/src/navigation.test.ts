@@ -160,6 +160,16 @@ describe('getProfilePath', () => {
         expect(getProfilePath(definition, '/panneau')).toBe('/panneau/resources/users/usr_1/edit');
     });
 
+    it('leads to the account page with auth.account', () => {
+        const definition = parse(
+            createDefinition({
+                resources: [...createDefinition().resources, users],
+                auth: { mode: 'panneau', account: true },
+            }),
+        );
+        expect(getProfilePath(definition, '/panneau')).toBe('/panneau/account');
+    });
+
     it('reads the resource of users from the user', () => {
         const definition = parse(
             createDefinition({ user: { id: '7', name: 'Ada', resource: 'authors' } }),

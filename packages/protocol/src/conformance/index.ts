@@ -1,9 +1,9 @@
-import type { z } from 'zod';
+import { z } from 'zod';
 
 import { CONTEXT_HEADER, CONTEXT_PROBLEM_TYPE } from '../constants';
 import { formatContextHeader } from '../context';
 import { type FilterRange, isCursorPage, toSearchParams } from '../query';
-import { Definition, type Resource } from '../schemas';
+import { Definition, type Resource, User } from '../schemas';
 import {
     ActionResult,
     ContextOptionsResponse,
@@ -78,6 +78,8 @@ interface Reply {
 }
 
 const UNKNOWN = '__panneau_conformance_unknown__';
+
+const AccountResponse = z.looseObject({ data: User });
 
 function describeIssues(error: z.ZodError): string[] {
     return error.issues.slice(0, 10).map((issue) => {
@@ -424,6 +426,18 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
             }
         },
     );
+
+    // The account page (decision 0050): the current user, without changing it.
+    await run('account', 'GET /account gives the current user', async (check) => {
+        if (auth()?.account !== true) {
+            check.skip('The definition has no `auth.account`.');
+            return;
+        }
+        const reply = await request('/account');
+        if (check.expectStatus(reply, 200)) {
+            check.expectSchema(AccountResponse, reply.body, 'The account');
+        }
+    });
 
     // Two-factor authentication (decision 0049): the status of the user, and a challenge without a
     // login that waits for it. Nothing about the user changes.

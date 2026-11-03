@@ -939,6 +939,55 @@ describe('two-factor authentication in the mock backend', () => {
     });
 });
 
+describe('the account in the mock backend', () => {
+    it('saves the name and the email, and changes the password', async () => {
+        const mails: MockMail[] = [];
+        const definition = createDefinition();
+        definition.auth = { mode: 'panneau', account: true, emailVerification: true };
+        const backend = createMockBackend({
+            definition,
+            auth: {
+                users: [
+                    { email: 'ada@example.com', password: 'secret', name: 'Ada' },
+                    { email: 'eve@example.com', password: 'secret' },
+                ],
+                onMail: (mail) => mails.push(mail),
+            },
+        });
+        const api = (path: string, init?: RequestInit) =>
+            backend.fetch(`/panneau/api/${path}`, init);
+
+        expect(await (await api('account')).json()).toMatchObject({
+            data: { name: 'Ada', email: 'ada@example.com' },
+        });
+        const taken = await api(
+            'account',
+            json({ name: 'Ada', email: 'eve@example.com' }, { method: 'PATCH' }),
+        );
+        expect(taken.status).toBe(422);
+        const saved = await api(
+            'account',
+            json({ name: 'Ada L.', email: 'ada@example.org' }, { method: 'PATCH' }),
+        );
+        expect(await saved.json()).toMatchObject({
+            data: { name: 'Ada L.', email: 'ada@example.org' },
+        });
+        // A new address is verified again
+        expect(mails).toMatchObject([{ kind: 'email-verification', to: 'ada@example.org' }]);
+        expect((await api('definition')).status).toBe(403);
+        expect((await api('account')).status).toBe(403);
+        await api('auth/email/verify', json({ token: mails[0]?.token }, { method: 'POST' }));
+
+        const change = (body: unknown) => api('account/password', json(body, { method: 'PUT' }));
+        expect((await change({ currentPassword: 'wrong', password: 'new password' })).status).toBe(
+            422,
+        );
+        expect((await change({ currentPassword: 'secret', password: 'new password' })).status).toBe(
+            204,
+        );
+    });
+});
+
 describe('createExampleDefinition', () => {
     it('is a valid definition', async () => {
         const { validateDefinition } = await import('../validate');

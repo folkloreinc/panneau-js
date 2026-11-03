@@ -11,6 +11,7 @@ export type AppRoute =
     | { name: 'resource.show'; resource: string; id: string }
     | { name: 'resource.edit'; resource: string; id: string }
     | { name: 'page'; page: string; segments?: readonly string[] }
+    | { name: 'account' }
     | { name: 'not-found' };
 
 /** An auth page of the app, which the links of the backend's emails open (decision 0048). */
@@ -62,6 +63,9 @@ export function matchRoute(pathname: string, basePath: string): AppRoute | null 
     if (first === undefined) {
         return { name: 'home' };
     }
+    if (first === 'account') {
+        return resource === undefined ? { name: 'account' } : { name: 'not-found' };
+    }
     if (first === 'pages' && resource !== undefined) {
         // The segments after the page are its `params`, which the page checks.
         const rest = segments.slice(2) as string[];
@@ -99,6 +103,8 @@ export function routePath(
             return base === '' ? '/' : base;
         case 'page':
             return path('pages', route.page, ...(route.segments ?? []));
+        case 'account':
+            return path('account');
         case 'resource.index':
             return path('resources', route.resource);
         case 'resource.create':

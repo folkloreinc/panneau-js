@@ -18,6 +18,7 @@ import { Alert, usePanneauIntl, useToast } from '@panneau/ui';
 
 import { DocumentTitle } from './documentTitle';
 import { navigate, setHistoryGuard, usePathname } from './location';
+import { AccountPage } from './pages/AccountPage';
 import { ContextPage } from './pages/ContextPage';
 import { ErrorPage } from './pages/ErrorPage';
 import { HomePage } from './pages/HomePage';
@@ -107,6 +108,12 @@ function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) 
         }
         case 'not-found':
             return notFound;
+        case 'account':
+            return definition.auth?.account === true ? (
+                <AccountPage definition={definition} />
+            ) : (
+                notFound
+            );
         case 'page': {
             const page = definition.pages?.[route.page];
             const names = page?.params ?? [];

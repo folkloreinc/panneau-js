@@ -26,7 +26,16 @@ import type { TwoFactorSetup } from '@panneau/protocol';
 import type { TwoFactorStatus } from '@panneau/protocol';
 import type { Upload } from '@panneau/protocol';
 import type { UploadSignRequest } from '@panneau/protocol';
+import type { User } from '@panneau/protocol';
 import type { ValidationIssue } from '@panneau/protocol';
+
+// @public
+export interface AccountValues {
+    // (undocumented)
+    email: string;
+    // (undocumented)
+    name: string;
+}
 
 // @public
 export type ActionResponse = {
@@ -78,6 +87,7 @@ export interface DataAdapter {
     enableTwoFactor?(options?: RequestOptions): Promise<TwoFactorSetup>;
     forgotPassword?(email: string, options?: RequestOptions): Promise<void>;
     get(resource: string, id: string, options?: RequestOptions): Promise<Item>;
+    getAccount?(options?: RequestOptions): Promise<User>;
     getActionRun(id: string, options?: RequestOptions): Promise<ActionRun>;
     getContextOptions?(name: string, options?: RequestOptions & {
         q?: string;
@@ -102,6 +112,8 @@ export interface DataAdapter {
     sendEmailVerification?(options?: RequestOptions): Promise<void>;
     twoFactorChallenge?(answer: TwoFactorAnswer, options?: RequestOptions): Promise<Session>;
     update(resource: string, id: string, values: Values, options?: UpdateOptions): Promise<Item>;
+    updateAccount?(values: AccountValues, options?: RequestOptions): Promise<User>;
+    updatePassword?(change: PasswordChange, options?: RequestOptions): Promise<void>;
     verifyEmail?(token: string, options?: RequestOptions): Promise<void>;
     withContext?(values: ContextValues): DataAdapter;
 }
@@ -140,6 +152,14 @@ export class NetworkError extends Error {
 export class NotFoundError extends ApiError {
     // (undocumented)
     readonly name: string;
+}
+
+// @public
+export interface PasswordChange {
+    // (undocumented)
+    currentPassword: string;
+    // (undocumented)
+    password: string;
 }
 
 // @public

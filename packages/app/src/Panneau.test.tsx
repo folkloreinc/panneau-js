@@ -1,5 +1,5 @@
 import { QueryClient } from '@tanstack/react-query';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { act } from 'react';
 import { useIntl } from 'react-intl';
@@ -688,6 +688,57 @@ describe('Panneau', () => {
             expect(within(codes).getAllByRole('listitem')).toHaveLength(8);
             await user.click(screen.getByRole('button', { name: 'Done' }));
             expect(await screen.findByRole('heading', { name: 'Test site' })).toBeInTheDocument();
+        });
+
+        it('saves the account, changes the password and sets up two-factor authentication', async () => {
+            const user = userEvent.setup();
+            const { renderAt } = renderWithBackend(
+                { mode: 'panneau', account: true, twoFactor: true },
+                [ada],
+            );
+            renderAt('/panneau');
+            await screen.findByRole('heading', { name: 'Test site' });
+            const profile = screen
+                .getAllByRole('link')
+                .find((link) => link.getAttribute('href') === '/panneau/account');
+            expect(profile).toHaveTextContent('Ada');
+            await user.click(profile ?? document.body);
+            expect(
+                await screen.findByRole('heading', { level: 1, name: 'Your account' }),
+            ).toBeInTheDocument();
+            expect(window.location.pathname).toBe('/panneau/account');
+
+            const name = await screen.findByLabelText(/^Name/);
+            await user.clear(name);
+            await user.type(name, 'Ada Lovelace');
+            await user.click(screen.getByRole('button', { name: 'Save' }));
+            expect(await screen.findByText('Your account was saved.')).toBeInTheDocument();
+            await waitFor(() => expect(profile).toHaveTextContent('Ada Lovelace'));
+
+            await user.type(screen.getByLabelText(/^Current password/), 'wrong');
+            await user.type(screen.getByLabelText(/^New password/), 'new password');
+            await user.type(screen.getByLabelText(/^Confirm the new password/), 'new password');
+            await user.click(screen.getByRole('button', { name: 'Change the password' }));
+            expect(await screen.findByLabelText(/^Current password/)).toHaveAccessibleDescription(
+                'The provided password does not match your current password.',
+            );
+            await user.clear(screen.getByLabelText(/^Current password/));
+            await user.type(screen.getByLabelText(/^Current password/), 'secret');
+            await user.click(screen.getByRole('button', { name: 'Change the password' }));
+            expect(await screen.findByText('Your password was changed.')).toBeInTheDocument();
+            expect(screen.getByLabelText(/^Current password/)).toHaveValue('');
+
+            await user.click(
+                await screen.findByRole('button', { name: 'Set up two-factor authentication' }),
+            );
+            await user.type(await screen.findByLabelText(/^Code/), '123456');
+            await user.click(screen.getByRole('button', { name: 'Confirm' }));
+            await user.click(await screen.findByRole('button', { name: 'Done' }));
+            expect(await screen.findByText('Two-factor authentication is on.')).toBeInTheDocument();
+            await user.click(screen.getByRole('button', { name: 'Turn it off' }));
+            expect(
+                await screen.findByRole('button', { name: 'Set up two-factor authentication' }),
+            ).toBeInTheDocument();
         });
 
         it('says when a verification link is wrong', async () => {
