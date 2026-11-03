@@ -171,6 +171,29 @@ describe('RichTextFieldEntry', () => {
         expect(within(toolbar).queryAllByRole('separator')).toHaveLength(0);
     });
 
+    it('turns a paragraph into a heading, and back', async () => {
+        const onChange = vi.fn();
+        renderDefinition(
+            {
+                name: 'body',
+                type: 'richtext',
+                label: 'Body',
+                settings: { toolbar: ['heading'] },
+            },
+            '<p>Text</p>',
+            onChange,
+        );
+        await userEvent.click(screen.getByRole('textbox', { name: 'Body' }));
+        const select = screen.getByRole('button', { name: /Text style/ });
+        expect(select).toBeEnabled();
+        await userEvent.click(select);
+        await userEvent.click(screen.getByRole('option', { name: 'Heading 2' }));
+        expect(onChange).toHaveBeenLastCalledWith('<h2>Text</h2>');
+        await userEvent.click(screen.getByRole('button', { name: /Text style/ }));
+        await userEvent.click(screen.getByRole('option', { name: 'Paragraph' }));
+        expect(onChange).toHaveBeenLastCalledWith('<p>Text</p>');
+    });
+
     it('puts a block style on a paragraph, and takes it off', async () => {
         const onChange = vi.fn();
         renderDefinition(

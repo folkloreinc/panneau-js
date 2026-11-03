@@ -142,7 +142,13 @@ export function Toolbar({
                 }),
             ),
             textStyle: getTextStyle(current),
-            canSetTextStyle: current.can().setParagraph(),
+            // `setParagraph()` can't run in a paragraph, and `setHeading()` can't run in a heading of
+            // the same level: the select is usable when the selection can take any of its styles
+            canSetTextStyle:
+                current.can().setParagraph() ||
+                headings.some((level) =>
+                    current.can().setHeading({ level: level as 1 | 2 | 3 | 4 | 5 | 6 }),
+                ),
             style: (() => {
                 const active = getActiveStyle(current.state, blockStyles);
                 return active !== null ? blockStyles.indexOf(active) : -1;

@@ -1,11 +1,11 @@
 /* The region carries the root's class (tokens), since React Aria renders it in the body. */
 .region.region {
     position: fixed;
-    inset-block-end: var(--panneau-space-4);
+    inset-block-start: var(--panneau-space-4);
     inset-inline-end: var(--panneau-space-4);
     z-index: var(--panneau-z-toast);
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     gap: var(--panneau-space-2);
     width: min(var(--panneau-toast-width, 24rem), calc(100vw - 2 * var(--panneau-space-4)));
     background: transparent;
@@ -20,7 +20,7 @@
 @media (max-width: 30rem) {
     .region.region {
         inset-inline: var(--panneau-space-2);
-        inset-block-end: var(--panneau-space-2);
+        inset-block-start: var(--panneau-space-2);
         width: auto;
     }
 }
