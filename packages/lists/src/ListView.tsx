@@ -1,9 +1,9 @@
 import { type ReactNode, useRef, useState } from 'react';
 
 import type { List, ResolvedCalendar } from '@panneau/core';
-import { currentMonth, selectItemActions, usePlugins } from '@panneau/core';
+import { currentMonth, formatRuleFailure, selectItemActions, usePlugins } from '@panneau/core';
 import { getActionLabel } from '@panneau/intl';
-import type { Action, Field, Filter } from '@panneau/protocol';
+import type { Action, Field, Filter, RuleFailure } from '@panneau/protocol';
 import { Alert, Button, Checkbox, usePanneauIntl, useToast } from '@panneau/ui';
 
 import { ListSkeleton } from './ListSkeleton';
@@ -23,6 +23,8 @@ import { getShownColumns } from './columns';
 import { cx } from './cx';
 import { FilterChips, FilterControls, useFilterLabels } from './filters/Filters';
 import { getImageUrl } from './images';
+import { InlineCell } from './inline/InlineCell';
+import { getInlineField } from './inline/editable';
 import { builtInLayouts } from './layouts/builtIn';
 import { messages } from './messages';
 import { countSelected, getPageSelection, isItemSelected } from './selection';
@@ -38,6 +40,7 @@ import type {
     ListActionHandler,
     ListActionPreviewer,
     ListColumn,
+    ListInlineEditHandler,
     ListItem,
     ListLayoutEntry,
 } from './types';
@@ -142,6 +145,19 @@ export interface ListViewProps {
     layoutComponents?: Readonly<Record<string, ListLayoutEntry>>;
     /** Filter controls by filter type, over the built-in ones. */
     filterControls?: Readonly<Record<string, FilterEntry>>;
+    /**
+     * The fields that columns edit in place (`inlineEdit` of the list), on the items that can be
+     * updated, in the table (decision 0043). Needs `onInlineEdit`.
+     */
+    inlineEdit?: readonly string[];
+    /** Saves a field edited in place, and resolves with the updated item. */
+    onInlineEdit?: ListInlineEditHandler;
+    /**
+     * The message of a portable rule that a value edited in place fails. Defaults to
+     * `formatRuleFailure()` of `@panneau/core`, in English; `useFormatRuleFailure()` of
+     * `@panneau/forms` translates them.
+     */
+    formatError?: (failure: RuleFailure, path: string) => string;
     /** Content at the end of the toolbar, such as a button to create an item. */
     toolbar?: ReactNode;
     /** Shown when the list has no items, without filters or search. */
@@ -192,6 +208,9 @@ export function ListView({
     displays,
     layoutComponents,
     filterControls,
+    inlineEdit = [],
+    onInlineEdit,
+    formatError = formatRuleFailure,
     toolbar,
     emptyMessage,
     'aria-label': ariaLabel,
@@ -208,8 +227,21 @@ export function ListView({
     const confirmation = useRef(0);
     const [pending, setPending] = useState<string | null>(null);
 
+    // Items saved in place, over the item the caller gave, until it gives another one.
+    const [saved, setSaved] = useState<
+        Readonly<Record<string, { base: ListItem; item: ListItem }>>
+    >({});
+    const showItem = (item: ListItem) => {
+        const base = items?.find((candidate) => candidate.id === item.id);
+        if (base !== undefined) {
+            setSaved((current) => ({ ...current, [item.id]: { base, item } }));
+        }
+    };
+
     const label = ariaLabel ?? intl.formatMessage(messages.list);
-    const pageItems = items ?? [];
+    const pageItems = (items ?? []).map((item) =>
+        saved[item.id]?.base === item ? (saved[item.id]?.item ?? item) : item,
+    );
     const count = total ?? pageItems.length;
     const sort = query.sort ?? [];
 
@@ -276,6 +308,27 @@ export function ListView({
     };
 
     const renderValue = useRenderValue(displays);
+
+    const renderCell = (item: ListItem, column: ListColumn, content: ReactNode): ReactNode => {
+        const field = onInlineEdit !== undefined ? getInlineField(column, item, inlineEdit) : null;
+        if (field === null || onInlineEdit === undefined) {
+            return content;
+        }
+        return (
+            <InlineCell
+                key={`${item.id}\u0000${column.id}`}
+                item={item}
+                field={field}
+                itemLabel={getItemLabel(item)}
+                renderValue={(current) => renderValue(current, column)}
+                onSave={(base, value) => onInlineEdit({ item: base, field, value })}
+                onItem={showItem}
+                formatError={(failure) => formatError(failure, field.name)}
+            >
+                {content}
+            </InlineCell>
+        );
+    };
 
     const closeConfirmation = () => {
         confirmation.current += 1;
@@ -511,6 +564,7 @@ export function ListView({
                 onSort={(column) => list.toggleSort(column.id)}
                 label={label}
                 pageSelection={pageCheckbox}
+                renderCell={renderCell}
             />
         );
     })();

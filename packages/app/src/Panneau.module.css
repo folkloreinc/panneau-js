@@ -2,7 +2,7 @@
     min-height: 100dvh;
 }
 
-/* A definition that failed to load, and an ended session: centered in the window. */
+/* An ended session: centered in the window. */
 .state {
     display: flex;
     flex-direction: column;
@@ -16,4 +16,27 @@
 
 .state p {
     margin: 0;
+}
+
+/* A definition that failed to load: the error page on a panel, on the background of the shell. */
+.frame {
+    display: flex;
+    min-height: 100dvh;
+    padding: var(--panneau-shell-inset, var(--panneau-space-2));
+    background: var(--panneau-shell-bg, var(--panneau-color-surface-sunken));
+}
+
+.panel {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    padding: var(--panneau-space-5) var(--panneau-space-4);
+    background: var(--panneau-shell-panel-bg, var(--panneau-color-surface));
+    border: var(
+        --panneau-shell-panel-border,
+        var(--panneau-border-width) solid var(--panneau-color-border)
+    );
+    border-radius: var(--panneau-shell-panel-radius, calc(var(--panneau-radius-lg) * 1.5));
+    box-shadow: var(--panneau-shell-panel-shadow, var(--panneau-shadow-sm));
 }

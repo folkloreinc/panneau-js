@@ -2760,7 +2760,7 @@
                         ]
                     },
                     "inlineEdit": {
-                        "description": "Fields editable in the list.",
+                        "description": "Fields that columns edit in place, on items that can be updated: `text`, `number`, `select`, `boolean` and `date`. Each change is a `PATCH` with the one field and `If-Match` (decision 0043).",
                         "type": "array",
                         "items": {
                             "type": "string",

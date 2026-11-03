@@ -20,12 +20,13 @@ import { DataAdapterProvider, definitionQueryOptions, queryKeys } from '@panneau
 import { FieldsProvider, type MapsConfig, createEmbedSource } from '@panneau/fields';
 import { appMessages } from '@panneau/intl';
 import type { Auth, BootConfig } from '@panneau/protocol';
-import { Button, type NamedIconLoader, PanneauRoot, usePanneauIntl } from '@panneau/ui';
+import { type NamedIconLoader, PanneauRoot, usePanneauIntl } from '@panneau/ui';
 
 import styles from './Panneau.module.css';
 import { Shell } from './Shell';
 import { LoginPage } from './auth/LoginPage';
 import { usePluginMessages } from './messages';
+import { ErrorPage, getErrorPageKind } from './pages/ErrorPage';
 import { usePreference } from './preferences';
 import { ShellSkeleton } from './shell/ShellSkeleton';
 import { COLOR_SCHEMES } from './shell/Sidebar';
@@ -212,7 +213,7 @@ function Content({
                 <SessionEnded loginUrl={loginUrl} />
             ) : definition === undefined ? (
                 <Loading
-                    isError={definitionQuery.isError}
+                    error={definitionQuery.error}
                     onRetry={() => void definitionQuery.refetch()}
                 />
             ) : messages === undefined ? (
@@ -247,13 +248,18 @@ function SessionEnded({ loginUrl }: { loginUrl: string | null }) {
     );
 }
 
-function Loading({ isError, onRetry }: { isError: boolean; onRetry: () => void }) {
-    const intl = usePanneauIntl();
-    if (isError) {
+/**
+ * The boot, until the definition is loaded: the skeleton of the shell, or, when it failed, the
+ * error page on a panel, in the frame of the shell: the user isn't allowed in (`403`), the server
+ * failed, or it can't be reached.
+ */
+function Loading({ error, onRetry }: { error: unknown; onRetry: () => void }) {
+    if (error !== null) {
         return (
-            <div role="alert" className={styles.state}>
-                <p>{intl.formatMessage(appMessages.loadError)}</p>
-                <Button onPress={onRetry}>{intl.formatMessage(appMessages.retry)}</Button>
+            <div className={styles.frame}>
+                <div className={styles.panel}>
+                    <ErrorPage kind={getErrorPageKind(error)} onRetry={onRetry} />
+                </div>
             </div>
         );
     }

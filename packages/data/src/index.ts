@@ -15,6 +15,7 @@ export {
     ConflictError,
     ForbiddenError,
     InvalidResponseError,
+    NetworkError,
     NotFoundError,
     RateLimitedError,
     UnauthorizedError,

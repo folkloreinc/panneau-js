@@ -48,4 +48,5 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0040](0040-row-links-and-open-mode.md)               | Built-in item actions by abilities, and what opens an item             | Accepted                    |
 | [0041](0041-groups-in-item-details.md)                | The panel of an item shows the values of its groups                    | Accepted                    |
 | [0042](0042-list-view-columns-and-remembered-view.md) | The view of a list: chosen columns, and the view the browser remembers | Accepted                    |
+| [0043](0043-inline-editing.md)                        | Inline editing in lists, one field at a time                           | Accepted                    |
 | [0044](0044-gallery-and-calendar.md)                  | Gallery and calendar layouts, and the query of a calendar              | Accepted                    |

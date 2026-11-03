@@ -3,7 +3,8 @@ import { useEffect } from 'react';
 
 import { useActionPreview } from '@panneau/actions';
 import { type ResolvedResource, getOpenMode, useList, usePanneau } from '@panneau/core';
-import { useResourceItem, useResourceList } from '@panneau/data/query';
+import { useResourceItem, useResourceList, useUpdateItem } from '@panneau/data/query';
+import { useFormatRuleFailure } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
 import { ListView, getPagingProps } from '@panneau/lists';
 import type { RouteReference } from '@panneau/protocol';
@@ -14,6 +15,7 @@ import { useDocumentTitle } from '../documentTitle';
 import { navigate } from '../location';
 import { capitalize } from '../navigation';
 import { routePath } from '../routes';
+import { ErrorPage, getErrorPageKind } from './ErrorPage';
 import { ItemPanel } from './ItemPanel';
 import { PageHeader } from './PageHeader';
 import { filterActions, useItemActionRunner } from './itemActionRunner';
@@ -57,6 +59,9 @@ export function ResourceListPage({
     });
     const { run: runAction, isSupported } = useItemActionRunner(resource, { basePath, locale });
     const previewAction = useActionPreview(resource.id);
+    // Fields edited in place are saved alone, with the version of the item (decision 0043).
+    const update = useUpdateItem(resource.id);
+    const formatError = useFormatRuleFailure(resource.fields);
     const title = capitalize(resource.label.plural, locale);
     // The item of the panel, which the panel fetches too
     const { data: selected, isError: selectedError } = useResourceItem(resource.id, selectedId);
@@ -90,6 +95,17 @@ export function ResourceListPage({
             !selectedError)
     ) {
         return null;
+    }
+    // A list that never loaded: the error page, in place of the page. Once it has items, an error
+    // of a refetch shows in the list, which keeps them.
+    if (error !== null && data === undefined) {
+        return (
+            <ErrorPage
+                kind={getErrorPageKind(error)}
+                homeHref={routePath({ name: 'home' }, basePath)}
+                onRetry={() => void refetch()}
+            />
+        );
     }
     return (
         <div className={cx(styles.page, selectedId !== null && styles.withPanel)}>
@@ -142,6 +158,14 @@ export function ResourceListPage({
                     currentItemId={selectedId}
                     onAction={runAction}
                     previewAction={previewAction}
+                    onInlineEdit={({ item, field, value }) =>
+                        update.mutateAsync({
+                            id: item.id,
+                            values: { [field.name]: value },
+                            version: typeof item.version === 'string' ? item.version : null,
+                        })
+                    }
+                    formatError={formatError}
                 />
                 {selectedId !== null ? (
                     <ItemPanel

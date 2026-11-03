@@ -1,0 +1,58 @@
+.cell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-1);
+    min-width: 8rem;
+}
+
+.cell:has(> .value) {
+    flex-direction: row;
+    align-items: center;
+    min-width: 0;
+}
+
+.value {
+    min-width: 0;
+}
+
+/* The edit button shows on the row under the pointer, and when it has focus. */
+.edit {
+    flex-shrink: 0;
+    opacity: 0;
+}
+
+:global(tr):hover .edit,
+.edit[data-focus-visible],
+.edit[data-pressed] {
+    opacity: 1;
+}
+
+@media (hover: none) {
+    .edit {
+        opacity: 1;
+    }
+}
+
+.control {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+}
+
+.control > :first-child {
+    flex: 1;
+}
+
+.conflict {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-1);
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-text-muted);
+}
+
+.conflictActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--panneau-space-1);
+}
