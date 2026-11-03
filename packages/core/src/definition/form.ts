@@ -1,5 +1,7 @@
 import type { Field, LayoutNode, Resource, Rule } from '@panneau/protocol';
 
+import { canUpdateField, canViewField } from './abilities';
+
 /** Whether a form creates an item or updates one. */
 export type FormMode = 'create' | 'update';
 
@@ -84,13 +86,21 @@ function resolveFieldRules(field: Field, mode: FormMode): Field {
     return resolved;
 }
 
-/** Resolves fields and a layout into a form. */
+/**
+ * Resolves fields and a layout into a form. Fields the current user can't see
+ * (`abilities.view: false`) are left out, and those they can't edit (`abilities.update: false`)
+ * are read-only (decision 0042).
+ */
 export function resolveFields(
     fields: readonly Field[],
     layout: readonly LayoutNode[] = [],
     { mode }: Pick<ResolveFormOptions, 'mode'> = {},
 ): ResolvedForm {
-    const resolved = fields.flatMap((field) => {
+    const resolved = fields.flatMap((declared): Field[] => {
+        if (!canViewField(declared)) {
+            return [];
+        }
+        const field = canUpdateField(declared) ? declared : { ...declared, readOnly: true };
         if (mode === undefined) {
             return [field];
         }

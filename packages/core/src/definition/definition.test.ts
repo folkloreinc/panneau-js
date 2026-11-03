@@ -3,7 +3,16 @@ import { describe, expect, it } from 'vitest';
 import type { Action, Item, Resource } from '@panneau/protocol';
 
 import { createDefinition, getResource } from '../__fixtures__/definition';
-import { can, getActionPlacements, isActionAllowedOn, partitionByAction } from './abilities';
+import {
+    can,
+    canUpdateField,
+    canViewField,
+    canViewPage,
+    getActionPlacements,
+    getVisibleFields,
+    isActionAllowedOn,
+    partitionByAction,
+} from './abilities';
 import { getLayoutFieldNames, resolveFields, resolveForm } from './form';
 import { getItemActions } from './itemActions';
 import { getOpenMode, getResourceActions, resolveList } from './list';
@@ -103,6 +112,68 @@ describe('resolveForm', () => {
     });
 });
 
+describe('abilities of fields', () => {
+    // The user can't see `published_at`, nor edit `title` (decision 0042).
+    const restricted = (): Resource => {
+        const pages = getResource('pages');
+        return {
+            ...pages,
+            fields: pages.fields.map((field) =>
+                field.name === 'published_at'
+                    ? { ...field, abilities: { view: false } }
+                    : field.name === 'title'
+                      ? { ...field, abilities: { update: false } }
+                      : field,
+            ),
+            list: { ...pages.list, inlineEdit: ['title', 'status'] },
+        };
+    };
+
+    it('only restrict with false', () => {
+        expect(canViewField({})).toBe(true);
+        expect(canViewField({ abilities: { update: false } })).toBe(true);
+        expect(canViewField({ abilities: { view: false } })).toBe(false);
+        expect(canUpdateField({ abilities: { view: true } })).toBe(true);
+        expect(canUpdateField({ abilities: { update: false } })).toBe(false);
+        expect(canUpdateField({ abilities: { view: false } })).toBe(false);
+        expect(getVisibleFields(restricted().fields).map((field) => field.name)).not.toContain(
+            'published_at',
+        );
+        expect(canViewPage({})).toBe(true);
+        expect(canViewPage({ abilities: { view: false } })).toBe(false);
+    });
+
+    it('leave hidden fields out of forms, and make those the user can’t edit read-only', () => {
+        for (const mode of [undefined, 'create', 'update'] as const) {
+            const form = resolveForm(restricted(), mode !== undefined ? { mode } : {});
+            expect(form.fieldsByName.has('published_at')).toBe(false);
+            expect(getLayoutFieldNames(form.layout)).not.toContain('published_at');
+            expect(form.fieldsByName.get('title')?.readOnly).toBe(true);
+            expect(form.fieldsByName.get('status')?.readOnly).toBeUndefined();
+        }
+    });
+
+    it('leave hidden fields out of lists, and those the user can’t edit out of inline editing', () => {
+        const list = resolveList(restricted());
+        expect(list.columns.map((column) => column.id)).toEqual(['title', 'preview']);
+        expect(list.sorts).toEqual(['title']);
+        expect(list.inlineEdit).toEqual(['status']);
+        const authors = getResource('authors');
+        const withoutEmail = resolveList({
+            ...authors,
+            fields: authors.fields.map((field) =>
+                field.name === 'email' ? { ...field, abilities: { view: false } } : field,
+            ),
+        });
+        expect(withoutEmail.columns.map((column) => column.id)).toEqual([
+            'name',
+            'phone',
+            'city',
+            'country',
+        ]);
+    });
+});
+
 describe('resolveList', () => {
     it('resolves columns from the fields they show', () => {
         const list = resolveList(getResource('pages'));
@@ -146,6 +217,20 @@ describe('resolveList', () => {
         expect(resolveList({ ...getResource('authors'), itemActions: ['edit'] }).selectable).toBe(
             false,
         );
+        // A user who can't delete any item (decision 0042): no checkboxes, no "Delete"
+        const undeletable = resolveList({
+            ...getResource('authors'),
+            actions: [
+                {
+                    id: 'delete',
+                    kind: 'server',
+                    scope: ['item', 'selection'],
+                    abilities: { run: false },
+                },
+            ],
+        });
+        expect(undeletable.selectable).toBe(false);
+        expect(undeletable.actions.menu.map((action) => action.id)).toEqual(['duplicate']);
     });
 
     it('groups the actions the user can run by placement', () => {

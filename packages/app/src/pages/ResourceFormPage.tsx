@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
+
 import { type ResolvedResource, getItemActions, getItemValues, resolveForm } from '@panneau/core';
-import { NotFoundError } from '@panneau/data';
+import { ForbiddenError, NotFoundError } from '@panneau/data';
 import { useCreateItem, useDataAdapter, useResourceItem, useUpdateItem } from '@panneau/data/query';
 import { createRelationSource } from '@panneau/fields';
 import { Form } from '@panneau/forms';
@@ -12,6 +14,7 @@ import { navigate } from '../location';
 import { capitalize } from '../navigation';
 import { useRecordRecentItem } from '../recentItems';
 import { routePath } from '../routes';
+import { ForbiddenPage } from './ForbiddenPage';
 import { ItemActions } from './ItemActions';
 import { PageHeader, PageLayout } from './PageHeader';
 import { useItemActionRunner } from './itemActionRunner';
@@ -104,6 +107,30 @@ export function ResourceFormPage({
                 }}
             />
         ) : undefined;
+
+    // An item the user can't update opens in its panel, as its title does (decisions 0040 and
+    // 0042), or is forbidden when they can't view it either.
+    const updatable = item === undefined || item.abilities.update === true;
+    const viewable =
+        item !== undefined && item.abilities.view === true && resolved.abilities.viewAny;
+    const showHref =
+        id !== null && !updatable && viewable
+            ? `${routePath({ name: 'resource.show', resource: resource.id, id }, basePath)}${window.location.hash}`
+            : null;
+    useEffect(() => {
+        if (showHref !== null) {
+            navigate(showHref, { replace: true });
+        }
+    }, [showHref]);
+    if (showHref !== null) {
+        return null;
+    }
+    if (
+        mode === 'update' &&
+        (!updatable || (item === undefined && itemQuery.error instanceof ForbiddenError))
+    ) {
+        return <ForbiddenPage homeHref={routePath({ name: 'home' }, basePath)} />;
+    }
 
     let content;
     if (mode === 'update' && item === undefined && itemQuery.isError) {

@@ -1,5 +1,5 @@
 import { QueryClient } from '@tanstack/react-query';
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -47,6 +47,26 @@ function renderApp(
         />,
     );
     return backend;
+}
+
+/** `renderApp()`, and a way to unmount the app between two routes of a test. */
+function renderAppResult(...args: Parameters<typeof renderApp>) {
+    return { backend: renderApp(...args), unmount: cleanup };
+}
+
+/** The app with authors that the user can or can't list and create. */
+function renderForbidden(abilities: { viewAny: boolean; create: boolean }) {
+    return renderAppResult({
+        resources: [
+            {
+                id: 'authors',
+                label: { singular: 'author', plural: 'authors' },
+                itemTitle: 'name',
+                fields: [{ name: 'name', type: 'text', label: 'Name' }],
+                abilities,
+            },
+        ],
+    });
 }
 
 const navigation = () => within(screen.getByRole('navigation', { name: 'Main navigation' }));
@@ -536,7 +556,10 @@ describe('the app shell', () => {
                 },
             ],
         });
-        expect(await screen.findByRole('heading', { name: /not found/i })).toBeInTheDocument();
+        // Forbidden, without a redirect to the form (decision 0042)
+        expect(
+            await screen.findByRole('heading', { name: 'You can’t open this page' }),
+        ).toBeInTheDocument();
         expect(window.location.pathname).toBe('/panneau/resources/authors/1');
     });
 
@@ -752,5 +775,143 @@ describe('the app shell', () => {
         await user.click(pagination.getByRole('button', { name: 'Previous page' }));
         expect(await main.findByText('About us')).toBeInTheDocument();
         expect(window.location.search).toBe('');
+    });
+    describe('abilities (decision 0042)', () => {
+        const forbidden = () => screen.findByRole('heading', { name: 'You can’t open this page' });
+
+        it('shows the forbidden state on a resource the user can’t list, and its create route', async () => {
+            window.history.replaceState(null, '', '/panneau/resources/authors');
+            const { unmount } = renderForbidden({ viewAny: false, create: false });
+            expect(await forbidden()).toBeInTheDocument();
+            expect(screen.getByRole('link', { name: 'Back to home' })).toHaveAttribute(
+                'href',
+                '/panneau',
+            );
+            expect(navigation().queryByRole('link', { name: 'Authors' })).toBeNull();
+            unmount();
+
+            window.history.replaceState(null, '', '/panneau/resources/authors/create');
+            renderForbidden({ viewAny: true, create: false });
+            expect(await forbidden()).toBeInTheDocument();
+            expect(screen.queryByRole('button', { name: 'Save' })).toBeNull();
+        });
+
+        it('hides the create button of a resource without `create`', async () => {
+            window.history.replaceState(null, '', '/panneau/resources/authors');
+            renderForbidden({ viewAny: true, create: false });
+            expect(await screen.findByRole('table', { name: 'Authors' })).toBeInTheDocument();
+            expect(screen.queryByRole('link', { name: 'New author' })).toBeNull();
+        });
+
+        it('shows the forbidden state on a page the user can’t open, and the built-in home for `pages.home`', async () => {
+            window.history.replaceState(null, '', '/panneau/pages/stats');
+            const stats = definePlugin({
+                id: 'stats',
+                pages: { stats: () => <p>Stats</p>, home: () => <p>Custom home</p> },
+            });
+            const { unmount } = renderAppResult(
+                {
+                    pages: {
+                        stats: { component: 'stats', label: 'Stats', abilities: { view: false } },
+                        home: { component: 'home', abilities: { view: false } },
+                    },
+                    menus: { main: [{ type: 'page', page: 'stats' }, { type: 'resources' }] },
+                },
+                [stats],
+            );
+            expect(await forbidden()).toBeInTheDocument();
+            expect(screen.queryByText('Stats')).toBeNull();
+            expect(navigation().queryByRole('link', { name: 'Stats' })).toBeNull();
+            unmount();
+
+            window.history.replaceState(null, '', '/panneau');
+            renderAppResult(
+                { pages: { home: { component: 'home', abilities: { view: false } } } },
+                [stats],
+            );
+            expect(screen.queryByText('Custom home')).toBeNull();
+            expect(screen.getByText('Welcome, Ada.')).toBeInTheDocument();
+        });
+
+        it('sends the edit route of an item that can’t be updated to its panel', async () => {
+            window.history.replaceState(null, '', '/panneau/resources/authors/1/edit');
+            renderApp({}, [], (backend) => {
+                const [ada] = backend.items('authors');
+                if (ada !== undefined) {
+                    ada.abilities = { ...ada.abilities, update: false };
+                }
+            });
+            await waitFor(() =>
+                expect(window.location.pathname).toBe('/panneau/resources/authors/1'),
+            );
+            const panel = await screen.findByRole('region', { name: 'Details of the author' });
+            expect(await within(panel).findByText('Ada')).toBeInTheDocument();
+        });
+
+        it('shows the forbidden state when the API answers 403', async () => {
+            window.history.replaceState(null, '', '/panneau/resources/authors/1/edit');
+            const { unmount } = renderAppResult({}, [], (backend) => {
+                const [ada] = backend.items('authors');
+                if (ada !== undefined) {
+                    ada.abilities = { ...ada.abilities, view: false, update: false };
+                }
+            });
+            expect(await forbidden()).toBeInTheDocument();
+            unmount();
+
+            // The panel of an item the user can't view
+            window.history.replaceState(null, '', '/panneau/resources/authors/1');
+            renderApp({}, [], (backend) => {
+                const [ada] = backend.items('authors');
+                if (ada !== undefined) {
+                    ada.abilities = { ...ada.abilities, view: false };
+                }
+            });
+            const panel = await screen.findByRole('region', { name: 'Details of the author' });
+            expect(
+                await within(panel).findByText('You can’t view this author.'),
+            ).toBeInTheDocument();
+            expect(within(panel).queryByRole('button', { name: 'Retry' })).toBeNull();
+        });
+
+        it('leaves fields the user can’t see out of the list, the panel and the form, and makes those they can’t edit read-only', async () => {
+            const user = userEvent.setup();
+            window.history.replaceState(null, '', '/panneau/resources/authors/1');
+            renderApp({
+                resources: [
+                    {
+                        id: 'authors',
+                        label: { singular: 'author', plural: 'authors' },
+                        itemTitle: 'name',
+                        fields: [
+                            {
+                                name: 'name',
+                                type: 'text',
+                                label: 'Name',
+                                abilities: { update: false },
+                            },
+                            {
+                                name: 'email',
+                                type: 'email',
+                                label: 'Email',
+                                abilities: { view: false },
+                            },
+                            { name: 'city', type: 'text', label: 'City' },
+                        ],
+                    },
+                ],
+            });
+            const table = await screen.findByRole('table', { name: 'Authors' });
+            expect(within(table).queryByRole('columnheader', { name: 'Email' })).toBeNull();
+            const panel = await screen.findByRole('region', { name: 'Details of the author' });
+            expect(await within(panel).findByText('City')).toBeInTheDocument();
+            expect(within(panel).queryByText('Email')).toBeNull();
+
+            await user.click(within(panel).getByRole('link', { name: 'Edit' }));
+            const name = await screen.findByRole('textbox', { name: 'Name' });
+            expect(name).toHaveAttribute('readonly');
+            expect(screen.queryByRole('textbox', { name: 'Email' })).toBeNull();
+            expect(screen.getByRole('textbox', { name: 'City' })).not.toHaveAttribute('readonly');
+        });
     });
 });

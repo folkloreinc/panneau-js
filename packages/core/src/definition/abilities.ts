@@ -1,4 +1,4 @@
-import type { Abilities, Action, ActionPlacement, Item } from '@panneau/protocol';
+import type { Abilities, Action, ActionPlacement, Field, Item, Page } from '@panneau/protocol';
 import { ITEM_ACTION_ABILITIES, isBuiltInItemAction } from '@panneau/protocol/runtime';
 
 /**
@@ -7,6 +7,35 @@ import { ITEM_ACTION_ABILITIES, isBuiltInItemAction } from '@panneau/protocol/ru
  */
 export function can(abilities: Abilities | undefined, ability: string): boolean {
     return abilities === undefined || abilities[ability] === true;
+}
+
+/**
+ * Whether the current user can see a field (decision 0042): unless its `abilities.view` is
+ * `false`. A hidden field is left out of forms, details and lists.
+ */
+export function canViewField(field: Pick<Field, 'abilities'>): boolean {
+    return field.abilities?.view !== false;
+}
+
+/**
+ * Whether the current user can edit a field (decision 0042): they can see it, and its
+ * `abilities.update` isn't `false`. A field they can't edit is read-only.
+ */
+export function canUpdateField(field: Pick<Field, 'abilities'>): boolean {
+    return canViewField(field) && field.abilities?.update !== false;
+}
+
+/** The fields the current user can see, in their order. */
+export function getVisibleFields<T extends Pick<Field, 'abilities'>>(fields: readonly T[]): T[] {
+    return fields.filter(canViewField);
+}
+
+/**
+ * Whether the current user can open a page of the definition (decision 0042): unless its
+ * `abilities.view` is `false`.
+ */
+export function canViewPage(page: Pick<Page, 'abilities'>): boolean {
+    return page.abilities?.view !== false;
 }
 
 /** Whether the current user can run an action on the resource (`abilities.run`). */

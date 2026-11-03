@@ -162,6 +162,18 @@ export const appMessages = {
         id: 'panneau.app.notFoundText',
         defaultMessage: 'This page doesn’t exist, or you can’t see it.',
     }),
+    forbidden: defineMessage({
+        id: 'panneau.app.forbidden',
+        defaultMessage: 'You can’t open this page',
+    }),
+    forbiddenText: defineMessage({
+        id: 'panneau.app.forbiddenText',
+        defaultMessage: 'Your account doesn’t allow it. Ask an administrator if you need it.',
+    }),
+    itemForbidden: defineMessage<{ resource: string }>({
+        id: 'panneau.app.itemForbidden',
+        defaultMessage: 'You can’t view this {resource}.',
+    }),
     backHome: defineMessage({ id: 'panneau.app.backHome', defaultMessage: 'Back to home' }),
     missingPage: defineMessage<{ component: string }>({
         id: 'panneau.app.missingPage',

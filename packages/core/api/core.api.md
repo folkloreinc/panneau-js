@@ -18,6 +18,7 @@ import type { Item } from '@panneau/protocol';
 import { JSX } from 'react';
 import type { LayoutNode } from '@panneau/protocol';
 import type { ListQuery } from '@panneau/protocol';
+import type { Page } from '@panneau/protocol';
 import type { Problem } from '@panneau/protocol';
 import { ReactNode } from 'react';
 import type { Resource } from '@panneau/protocol';
@@ -39,6 +40,15 @@ export function can(abilities: Abilities | undefined, ability: string): boolean;
 
 // @public
 export function canRunAction(action: Action): boolean;
+
+// @public
+export function canUpdateField(field: Pick<Field, 'abilities'>): boolean;
+
+// @public
+export function canViewField(field: Pick<Field, 'abilities'>): boolean;
+
+// @public
+export function canViewPage(page: Pick<Page, 'abilities'>): boolean;
 
 // @public
 export interface Command {
@@ -204,6 +214,9 @@ export function getResourceActions(resource: Resource): Action[];
 
 // @public
 export function getSearchableResources(definition: Definition): Resource[];
+
+// @public
+export function getVisibleFields<T extends Pick<Field, 'abilities'>>(fields: readonly T[]): T[];
 
 // @public
 export function groupActions(actions: readonly Action[]): Record<ActionPlacement, Action[]>;

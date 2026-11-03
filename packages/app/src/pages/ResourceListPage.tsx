@@ -2,7 +2,8 @@ import { Plus } from 'lucide-react';
 import { useEffect } from 'react';
 
 import { useActionPreview } from '@panneau/actions';
-import { type ResolvedResource, getOpenMode, useList } from '@panneau/core';
+import { type ResolvedResource, getOpenMode, getVisibleFields, useList } from '@panneau/core';
+import { ForbiddenError } from '@panneau/data';
 import { useResourceItem, useResourceList } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
 import { ListView, getPagingProps } from '@panneau/lists';
@@ -14,6 +15,7 @@ import { useDocumentTitle } from '../documentTitle';
 import { navigate } from '../location';
 import { capitalize } from '../navigation';
 import { routePath } from '../routes';
+import { ForbiddenPage } from './ForbiddenPage';
 import { ItemPanel } from './ItemPanel';
 import { PageHeader } from './PageHeader';
 import { filterActions, useItemActionRunner } from './itemActionRunner';
@@ -85,6 +87,10 @@ export function ResourceListPage({
     ) {
         return null;
     }
+    // A list the backend refuses (decision 0042)
+    if (error instanceof ForbiddenError) {
+        return <ForbiddenPage homeHref={routePath({ name: 'home' }, basePath)} />;
+    }
     return (
         <div className={cx(styles.page, selectedId !== null && styles.withPanel)}>
             <PageHeader
@@ -120,7 +126,7 @@ export function ResourceListPage({
                     isLoading={isFetching}
                     error={error}
                     onRetry={() => void refetch()}
-                    fields={resource.fields}
+                    fields={getVisibleFields(resource.fields)}
                     itemTitle={resource.itemTitle}
                     layouts={['table', 'cards']}
                     perPageOptions={[10, 20, 50, 100]}

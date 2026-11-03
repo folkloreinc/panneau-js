@@ -5,6 +5,7 @@ import { RouterProvider } from 'react-aria-components';
 import { ActionRunnerProvider, ActionRuns } from '@panneau/actions';
 import {
     LeaveGuardsProvider,
+    canViewPage,
     createLeaveGuards,
     findResource,
     resolveResource,
@@ -17,6 +18,7 @@ import { Alert, usePanneauIntl, useToast } from '@panneau/ui';
 
 import { DocumentTitle } from './documentTitle';
 import { navigate, setHistoryGuard, usePathname } from './location';
+import { ForbiddenPage } from './pages/ForbiddenPage';
 import { HomePage } from './pages/HomePage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { ResourceFormPage } from './pages/ResourceFormPage';
@@ -78,12 +80,16 @@ function DefinitionPage({
 }
 
 function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) {
-    const notFound = <NotFoundPage homeHref={routePath({ name: 'home' }, basePath)} />;
+    const homeHref = routePath({ name: 'home' }, basePath);
+    const notFound = <NotFoundPage homeHref={homeHref} />;
+    // A route the user can't open (decision 0042)
+    const forbidden = <ForbiddenPage homeHref={homeHref} />;
     switch (route.name) {
         case 'home': {
-            // `pages.home` of the definition, or the cards of the resources (decision 0019)
+            // `pages.home` of the definition, or the cards of the resources (decision 0019), also
+            // when the user can't open `pages.home` (decision 0042)
             const page = definition.pages?.home;
-            return page !== undefined ? (
+            return page !== undefined && canViewPage(page) ? (
                 <DefinitionPage page={page} definition={definition} basePath={basePath} />
             ) : (
                 <HomePage definition={definition} basePath={basePath} />
@@ -98,6 +104,9 @@ function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) 
             // A page takes exactly the segments of its `params`.
             if (page === undefined || segments.length !== names.length) {
                 return notFound;
+            }
+            if (!canViewPage(page)) {
+                return forbidden;
             }
             return (
                 <DefinitionPage
@@ -130,8 +139,11 @@ function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) 
                         resolveRoute={(reference) => resolveRoute(definition, basePath, reference)}
                     />
                 ) : (
-                    notFound
+                    forbidden
                 );
+            }
+            if (route.name === 'resource.create' && !resolved.abilities.create) {
+                return forbidden;
             }
             return (
                 <ResourceFormPage

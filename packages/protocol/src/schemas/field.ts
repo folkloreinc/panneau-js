@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { PORTABLE_RULES, RICH_TEXT_STYLE_ELEMENTS } from '../constants';
-import { Condition, Option } from './common';
+import { Abilities, Condition, Option } from './common';
 
 const message = z
     .string()
@@ -112,7 +112,14 @@ export const Field = z
             .boolean()
             .optional()
             .meta({ description: 'The value is an object keyed by locale.' }),
-        readOnly: z.boolean().optional(),
+        readOnly: z.boolean().optional().meta({
+            description:
+                "Nobody edits the field (a computed value). For a field the current user can't edit, use `abilities.update: false`.",
+        }),
+        abilities: Abilities.optional().meta({
+            description:
+                "What the current user can do with the field (decision 0042). Only `false` restricts: `view: false` leaves the field out of forms, details and lists, and items don't carry its value; `update: false` makes it read-only, and the backend ignores its value. For the fields at the top of a resource and of its types.",
+        }),
         createOnly: z.boolean().optional(),
         updateOnly: z.boolean().optional(),
         rules: z.array(Rule).optional(),

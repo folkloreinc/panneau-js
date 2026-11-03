@@ -24,6 +24,16 @@ describe('NestedField', () => {
         expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
     });
 
+    it('is read-only when the user can’t edit it (`abilities.update: false`)', () => {
+        renderField(
+            <NestedField
+                field={{ name: 'code', type: 'text', label: 'Code', abilities: { update: false } }}
+                path="code"
+            />,
+        );
+        expect(screen.getByRole('textbox', { name: 'Code' })).toHaveAttribute('readonly');
+    });
+
     it('binds the fields inside a repeater', async () => {
         const setValue = vi.fn();
         const Binding: FieldBinding = ({ path, render }) =>
