@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { RouterProvider } from 'react-aria-components';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
+import { ActionRunnerProvider } from '@panneau/actions';
 import { createRestAdapter } from '@panneau/data';
 import { DataAdapterProvider } from '@panneau/data/query';
 import { type DefinitionInput, validateDefinition } from '@panneau/protocol';
@@ -75,17 +76,19 @@ function Layout({ onLogOut }: { onLogOut?: () => void }) {
         <QueryClientProvider client={client}>
             <DataAdapterProvider adapter={adapter}>
                 <RouterProvider navigate={() => undefined}>
-                    <AppLayout
-                        definition={getDefinition()}
-                        basePath="/admin"
-                        route={{ name: 'resource.index', resource: 'articles' }}
-                        colorScheme={colorScheme}
-                        onColorSchemeChange={setColorScheme}
-                        onLogOut={onLogOut}
-                    >
-                        <Heading level={1}>Articles</Heading>
-                        <Text muted>The page of the current route.</Text>
-                    </AppLayout>
+                    <ActionRunnerProvider adapter={adapter}>
+                        <AppLayout
+                            definition={getDefinition()}
+                            basePath="/admin"
+                            route={{ name: 'resource.index', resource: 'articles' }}
+                            colorScheme={colorScheme}
+                            onColorSchemeChange={setColorScheme}
+                            onLogOut={onLogOut}
+                        >
+                            <Heading level={1}>Articles</Heading>
+                            <Text muted>The page of the current route.</Text>
+                        </AppLayout>
+                    </ActionRunnerProvider>
                 </RouterProvider>
             </DataAdapterProvider>
         </QueryClientProvider>
