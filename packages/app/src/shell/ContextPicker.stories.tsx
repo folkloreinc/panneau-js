@@ -151,3 +151,25 @@ export const Required: Story = {
         await expect(canvas.getByRole('combobox', { name: /Contest/ })).toHaveValue('');
     },
 };
+
+/** On the domain of a client: the backend fixes the client, and the user picks the contest. */
+export const Fixed: Story = {
+    args: {
+        params: [
+            { name: 'client', label: 'Client', fixed: true, value: '4', valueLabel: 'Northwind' },
+            {
+                name: 'contest',
+                label: 'Contest',
+                required: true,
+                value: 'summer-2026',
+                valueLabel: 'Summer 2026',
+            },
+        ],
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByText('Northwind')).toBeVisible();
+        await expect(canvas.queryByRole('combobox', { name: 'Client' })).toBeNull();
+        await expect(canvas.getByRole('combobox', { name: /Contest/ })).toHaveValue('Summer 2026');
+    },
+};

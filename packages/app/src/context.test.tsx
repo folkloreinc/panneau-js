@@ -158,6 +158,44 @@ describe('the current context (decision 0045)', () => {
         expect(loadPage).not.toHaveBeenCalled();
     });
 
+    describe('a param that the backend fixes from the request', () => {
+        const context = {
+            params: [
+                {
+                    name: 'site',
+                    label: 'Site',
+                    fixed: true,
+                    value: 'kids',
+                    valueLabel: 'Kids',
+                },
+                { name: 'section', label: 'Section', allLabel: 'All sections' },
+            ],
+        };
+
+        it('shows its value without a field, and keeps it out of the path and of the header', async () => {
+            window.history.replaceState(null, '', '/panneau/resources/pages');
+            const { requests } = renderApp(context);
+            expect(await screen.findByRole('link', { name: 'Kids page' })).toBeInTheDocument();
+            const sidebar = within(screen.getByRole('complementary'));
+            expect(sidebar.getByText('Kids')).toBeInTheDocument();
+            expect(sidebar.queryByRole('combobox', { name: 'Site' })).not.toBeInTheDocument();
+            expect(sidebar.getByRole('combobox', { name: 'Section' })).toBeInTheDocument();
+            expect(requests.some((request) => request.headers.has('Panneau-Context'))).toBe(false);
+            expect(navigation().getByRole('link', { name: 'Authors' })).toHaveAttribute(
+                'href',
+                '/panneau/resources/authors',
+            );
+        });
+
+        it('leaves another value of it in the path, which the backend refuses', async () => {
+            window.history.replaceState(null, '', '/panneau/site/main/resources/pages');
+            renderApp(context);
+            await waitFor(() =>
+                expect(loadPage).toHaveBeenCalledWith('/panneau', { replace: true }),
+            );
+        });
+    });
+
     it('leaves a value the user can’t use, and the values after it', async () => {
         window.history.replaceState(null, '', '/panneau/site/gone/resources/pages');
         renderApp({ params: [{ name: 'site', label: 'Site', options: SITES }] });

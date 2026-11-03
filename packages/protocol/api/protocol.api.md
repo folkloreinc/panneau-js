@@ -641,6 +641,7 @@ export const ContextParam: z.ZodObject<{
     name: z.ZodString;
     label: z.ZodString;
     required: z.ZodOptional<z.ZodBoolean>;
+    fixed: z.ZodOptional<z.ZodBoolean>;
     allLabel: z.ZodOptional<z.ZodString>;
     options: z.ZodOptional<z.ZodArray<z.ZodObject<{
         value: z.ZodString;
@@ -1216,6 +1217,7 @@ export const Definition: z.ZodObject<{
             name: z.ZodString;
             label: z.ZodString;
             required: z.ZodOptional<z.ZodBoolean>;
+            fixed: z.ZodOptional<z.ZodBoolean>;
             allLabel: z.ZodOptional<z.ZodString>;
             options: z.ZodOptional<z.ZodArray<z.ZodObject<{
                 value: z.ZodString;
@@ -1305,6 +1307,7 @@ export const DefinitionContext: z.ZodObject<{
         name: z.ZodString;
         label: z.ZodString;
         required: z.ZodOptional<z.ZodBoolean>;
+        fixed: z.ZodOptional<z.ZodBoolean>;
         allLabel: z.ZodOptional<z.ZodString>;
         options: z.ZodOptional<z.ZodArray<z.ZodObject<{
             value: z.ZodString;
@@ -3209,6 +3212,7 @@ export const namedSchemas: {
         name: z.ZodString;
         label: z.ZodString;
         required: z.ZodOptional<z.ZodBoolean>;
+        fixed: z.ZodOptional<z.ZodBoolean>;
         allLabel: z.ZodOptional<z.ZodString>;
         options: z.ZodOptional<z.ZodArray<z.ZodObject<{
             value: z.ZodString;
@@ -3223,6 +3227,7 @@ export const namedSchemas: {
             name: z.ZodString;
             label: z.ZodString;
             required: z.ZodOptional<z.ZodBoolean>;
+            fixed: z.ZodOptional<z.ZodBoolean>;
             allLabel: z.ZodOptional<z.ZodString>;
             options: z.ZodOptional<z.ZodArray<z.ZodObject<{
                 value: z.ZodString;
@@ -3915,6 +3920,7 @@ export const namedSchemas: {
                 name: z.ZodString;
                 label: z.ZodString;
                 required: z.ZodOptional<z.ZodBoolean>;
+                fixed: z.ZodOptional<z.ZodBoolean>;
                 allLabel: z.ZodOptional<z.ZodString>;
                 options: z.ZodOptional<z.ZodArray<z.ZodObject<{
                     value: z.ZodString;

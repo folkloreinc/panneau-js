@@ -14,3 +14,24 @@
 .popover {
     width: min(18rem, calc(100vw - 2 * var(--panneau-space-4)));
 }
+
+/* A param that the backend fixes from the request: its label and its value, read only. */
+.fixed {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-1);
+    min-width: 0;
+}
+
+.fixedLabel {
+    font-size: var(--panneau-font-size-sm);
+    font-weight: var(--panneau-font-weight-medium);
+}
+
+.fixedValue {
+    overflow: hidden;
+    color: var(--panneau-color-text-muted);
+    font-size: var(--panneau-font-size-sm);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

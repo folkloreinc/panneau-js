@@ -260,6 +260,10 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
             }
             const values: Record<string, string> = {};
             for (const param of params) {
+                // The backend sets it from the request: there is nothing to pick
+                if (param.fixed === true) {
+                    continue;
+                }
                 let first = param.options?.[0]?.value;
                 if (param.options === undefined) {
                     const reply = await request(

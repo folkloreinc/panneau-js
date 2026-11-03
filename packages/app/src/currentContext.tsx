@@ -26,16 +26,23 @@ export function useCurrentContext(): CurrentContextValue | null {
     return use(CurrentContext);
 }
 
-/** The names of the params of the context of a definition, in order. */
+/**
+ * The names of the params of the context of a definition, in order, to read the path. Those
+ * that the backend fixes from the request are read too, from a link of another admin: the
+ * backend refuses another value, and the path loses the same one.
+ */
 export function getContextNames(definition: Definition | undefined): string[] {
     return (definition?.context?.params ?? []).map(({ name }) => name);
 }
 
-/** The values a definition was built for, by name. */
+/**
+ * The values a definition was built for, by name, which the path keeps and requests send: not
+ * those of the params that the backend fixes from the request.
+ */
 export function getContextValues(definition: Definition | undefined): Record<string, string> {
     return Object.fromEntries(
-        (definition?.context?.params ?? []).flatMap(({ name, value }) =>
-            typeof value === 'string' && value !== '' ? [[name, value]] : [],
+        (definition?.context?.params ?? []).flatMap(({ name, value, fixed }) =>
+            fixed !== true && typeof value === 'string' && value !== '' ? [[name, value]] : [],
         ),
     );
 }
@@ -58,7 +65,7 @@ export function selectValue(
     const index = params.findIndex((param) => param.name === name);
     const values: Record<string, string> = {};
     params.slice(0, Math.max(0, index)).forEach((param) => {
-        if (typeof param.value === 'string' && param.value !== '') {
+        if (param.fixed !== true && typeof param.value === 'string' && param.value !== '') {
             values[param.name] = param.value;
         }
     });

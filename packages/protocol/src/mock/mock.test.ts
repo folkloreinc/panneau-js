@@ -98,6 +98,31 @@ describe('the context of the mock backend', () => {
         expect(unknown.status).toBe(404);
     });
 
+    it('keeps a fixed param to its value, and refuses another one', async () => {
+        const definition = createDefinition();
+        definition.context = {
+            params: [
+                { name: 'client', label: 'Client', fixed: true, value: '4', valueLabel: 'Acme' },
+                { name: 'contest', label: 'Contest', options: [{ value: '12', label: 'Summer' }] },
+            ],
+        };
+        const backend = createMockBackend({ definition });
+        const built = await backend.fetch('/panneau/api/definition', headers('contest=12'));
+        expect(await built.json()).toMatchObject({
+            context: {
+                params: [
+                    { name: 'client', value: '4', valueLabel: 'Acme' },
+                    { name: 'contest', value: '12' },
+                ],
+            },
+        });
+        const same = await backend.fetch('/panneau/api/definition', headers('client=4'));
+        expect(same.status).toBe(200);
+        const other = await backend.fetch('/panneau/api/definition', headers('client=7'));
+        expect(other.status).toBe(403);
+        expect(await other.json()).toMatchObject({ param: 'client' });
+    });
+
     it('keeps lists to the items of the context', async () => {
         const response = await createContextBackend().fetch(
             '/panneau/api/resources/pages',

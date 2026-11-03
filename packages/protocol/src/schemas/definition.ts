@@ -117,6 +117,10 @@ export const ContextParam = z
             description:
                 'Whether the app needs a value: without one, it shows a page to pick it in place of the page of the route.',
         }),
+        fixed: z.boolean().optional().meta({
+            description:
+                'The backend sets the value from the request, such as its domain: the app shows it without a picker, and leaves it out of the path and of the `Panneau-Context` header. Another value in the header is a `403` context problem. A fixed param has a `value`.',
+        }),
         allLabel: z.string().optional().meta({
             description: 'An optional param: the label of no value, such as "All clients".',
         }),
@@ -219,6 +223,13 @@ export const Definition = z
                 });
             }
             names.add(param.name);
+            if (param.fixed === true && (param.value ?? null) === null) {
+                context.addIssue({
+                    code: 'custom',
+                    message: `The context param \`${param.name}\` is fixed without a value.`,
+                    path: ['context', 'params', index, 'value'],
+                });
+            }
         });
     })
     .meta({ description: 'Everything a frontend needs to render the admin for the current user.' });

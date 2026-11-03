@@ -327,7 +327,7 @@ Built-in actions use reserved ids:
 ```jsonc
 "context": {
     "params": [
-        { "name": "client", "label": "Client", "allLabel": "All clients", "value": "4", "valueLabel": "Northwind" },
+        { "name": "client", "label": "Client", "fixed": true, "value": "4", "valueLabel": "Northwind" },
         { "name": "contest", "label": "Contest", "required": true, "value": null },
     ],
 }
@@ -336,7 +336,8 @@ Built-in actions use reserved ids:
 - Params are in order: each one depends on those before it. `name` is an identifier that isn't a reserved first segment of the client routes (`resources`, `pages`, `media`, `search`, `account`, `auth`).
 - The choices of a param are its `options`, or `GET /context/{name}/options?q=…` (see [Context header](#context-header)).
 - `value` and `valueLabel` say what the definition was built for. A required param without a value has the app show a page to pick it.
-- In the app, the values are a prefix of the client routes: `{basePath}/{name}/{value}/…`, in order.
+- A `fixed` param has a value that the backend sets from the request, such as its domain (the client of a client's domain): the app shows it without a field, and leaves it out of the path and of the header. Elsewhere, the same param can be picked, with an `allLabel` when it is optional.
+- In the app, the values of the params that aren't fixed are a prefix of the client routes: `{basePath}/{name}/{value}/…`, in order.
 
 ### Auth
 
@@ -572,6 +573,7 @@ When the definition has `context`, the client sends the values of its params in 
 
 - The backend checks each value for the user. A value the user can't use is a `403` problem of type `urn:panneau:problem:context`, with the refused `param`. Names it doesn't know are ignored.
 - `GET /definition` is built for the values. Without a value for a required param, the backend may choose one and say it in `value`.
+- A `fixed` param keeps the value the backend sets from the request. Another value in the header is the `403` context problem of that param.
 - Each resource applies the values in its scope. Without a value for a required param, the resource routes may answer the same `403` problem.
 - `GET /context/{name}/options?q=…` gives the first choices of a param without inline `options` that match `q`, for the values of the params before it: `{ "data": [{ "value": "12", "label": "Summer 2026", "description": "Northwind" }] }`.
 - Responses vary with the header (`Vary: Panneau-Context`). A backend on another origin allows it in CORS.

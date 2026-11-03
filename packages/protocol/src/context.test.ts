@@ -54,6 +54,20 @@ describe('the context of the definition', () => {
         expect(result.success).toBe(true);
     });
 
+    it('refuses a fixed param without a value', () => {
+        const fixed = validateDefinition(
+            definition([{ name: 'client', label: 'Client', fixed: true, value: null }]),
+        );
+        expect(fixed.success ? [] : fixed.issues.map(({ path }) => path)).toContain(
+            'context.params.0.value',
+        );
+        expect(
+            validateDefinition(
+                definition([{ name: 'client', label: 'Client', fixed: true, value: '4' }]),
+            ).success,
+        ).toBe(true);
+    });
+
     it('refuses the name of a reserved route segment, and the same name twice', () => {
         const reserved = validateDefinition(definition([{ name: 'resources', label: 'R' }]));
         expect(reserved.success).toBe(false);

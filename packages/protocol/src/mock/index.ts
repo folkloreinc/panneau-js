@@ -607,23 +607,35 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             []
         );
     };
+    const refused = (name: string) =>
+        problem(403, 'This value of the context can’t be used.', {
+            type: CONTEXT_PROBLEM_TYPE,
+            param: name,
+        });
     /**
      * The values of the header that the definition declares, each one checked against its
-     * choices, in order: a value that isn't one is a `403` problem with its `param`.
+     * choices, in order: a value that isn't one is a `403` problem with its `param`. A `fixed`
+     * param has the value of the definition, as a backend would take it from the request: another
+     * value in the header is refused.
      */
     const readContext = (header: string | null): ContextValues | Response => {
         const sent = parseContextHeader(header);
         const values: Record<string, string> = {};
-        for (const name of names) {
+        for (const param of params) {
+            const { name } = param;
             const value = sent[name];
+            if (param.fixed === true && typeof param.value === 'string') {
+                if (value !== undefined && value !== param.value) {
+                    return refused(name);
+                }
+                values[name] = param.value;
+                continue;
+            }
             if (value === undefined) {
                 continue;
             }
             if (!choicesOf(name, values).some((choice) => choice.value === value)) {
-                return problem(403, 'This value of the context can’t be used.', {
-                    type: CONTEXT_PROBLEM_TYPE,
-                    param: name,
-                });
+                return refused(name);
             }
             values[name] = value;
         }
@@ -638,6 +650,9 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                   context: {
                       ...definition.context,
                       params: params.map((param) => {
+                          if (param.fixed === true) {
+                              return param;
+                          }
                           const value = values[param.name] ?? null;
                           const label =
                               value !== null

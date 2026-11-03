@@ -102,7 +102,8 @@ export interface ContextPickerProps {
 
 /**
  * The fields of the params of the current context (decision 0045), each one with its choices,
- * inline or searched. Picking a value loads the app for it. Renders nothing without a context.
+ * inline or searched. Picking a value loads the app for it. A param that the backend fixes from
+ * the request shows its value, without a field. Renders nothing without a context.
  */
 export function ContextPicker({ missing = false, className }: ContextPickerProps) {
     const context = useCurrentContext();
@@ -116,13 +117,21 @@ export function ContextPicker({ missing = false, className }: ContextPickerProps
     const params = missing ? context.params.slice(0, lastMissing + 1) : context.params;
     return (
         <div className={cx(styles.picker, className)}>
-            {params.map((param) => (
-                <ParamField
-                    key={`${param.name}:${param.value ?? ''}`}
-                    param={param}
-                    context={context}
-                />
-            ))}
+            {params.map((param) =>
+                param.fixed === true ? (
+                    // Set by the backend from the request, such as its domain: nothing to pick
+                    <div key={param.name} className={styles.fixed}>
+                        <span className={styles.fixedLabel}>{param.label}</span>
+                        <span className={styles.fixedValue}>{param.valueLabel ?? param.value}</span>
+                    </div>
+                ) : (
+                    <ParamField
+                        key={`${param.name}:${param.value ?? ''}`}
+                        param={param}
+                        context={context}
+                    />
+                ),
+            )}
         </div>
     );
 }
