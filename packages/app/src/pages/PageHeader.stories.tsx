@@ -6,9 +6,9 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Plus } from 'lucide-react';
 import { expect, within } from 'storybook/test';
 
-import { Button, Icon, Text } from '@panneau/ui';
+import { Button, LinkButton, Text } from '@panneau/ui';
 
-import { LinkButton, PageHeader, PageLayout } from './PageHeader';
+import { PageHeader, PageLayout } from './PageHeader';
 
 const meta = {
     title: 'App/Page header',
@@ -28,7 +28,7 @@ export const PluginPage: Story = {
                 actions={
                     <>
                         <Button variant="secondary">Export</Button>
-                        <LinkButton href="/admin/pages/budgets" icon={<Icon icon={Plus} />}>
+                        <LinkButton href="/admin/pages/budgets" variant="primary" icon={Plus}>
                             New budget
                         </LinkButton>
                     </>

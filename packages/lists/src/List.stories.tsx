@@ -10,6 +10,12 @@ import { List } from './List';
 import { ListView } from './ListView';
 import type { ListColumn, ListItem } from './types';
 
+/** The background of an element once its transitions are over (buttons fade their hover in). */
+async function settledBackground(element: Element): Promise<string> {
+    await Promise.all(element.getAnimations().map((animation) => animation.finished));
+    return getComputedStyle(element).backgroundColor;
+}
+
 const roleField: Field = {
     name: 'role',
     type: 'select',
@@ -344,6 +350,13 @@ export const BuiltInLinks: Story = {
     },
 };
 
+/** The built-in links, and `delete` in the menu of rows. */
+const builtInActions: Action[] = [
+    { id: 'show', kind: 'link', scope: ['item'] },
+    { id: 'edit', kind: 'link', scope: ['item'] },
+    { id: 'delete', kind: 'server', scope: ['item'], placement: ['menu'], destructive: true },
+];
+
 /**
  * The built-in links beside the overflow menu of each row, as most resources show them: one
  * button style for both, whose hover background covers the whole button, with room between them.
@@ -354,17 +367,7 @@ export const BuiltInLinksAndMenu: Story = {
             ...member,
             abilities: { ...member.abilities, view: true, update: true, delete: true },
         })),
-        actions: [
-            { id: 'show', kind: 'link', scope: ['item'] },
-            { id: 'edit', kind: 'link', scope: ['item'] },
-            {
-                id: 'delete',
-                kind: 'server',
-                scope: ['item'],
-                placement: ['menu'],
-                destructive: true,
-            },
-        ],
+        actions: builtInActions,
         getLinkHref: (action: Action, item: ListItem) =>
             action.id === 'edit' ? `#/members/${item.id}/edit` : `#/members/${item.id}`,
     },
@@ -372,20 +375,35 @@ export const BuiltInLinksAndMenu: Story = {
         const canvas = within(canvasElement);
         const edit = canvas.getByRole('link', { name: 'Edit: Grace Hopper' });
         const menu = canvas.getByRole('button', { name: 'Actions for Grace Hopper' });
-        const backgroundOf = (element: Element) => getComputedStyle(element).backgroundColor;
-        const transparent = backgroundOf(edit);
+        const idle = await settledBackground(edit);
 
-        // The link and the menu button hover alike: the button's own background, on its whole box
+        // The link and the menu button hover alike, with the same background once it has faded in
         await userEvent.hover(edit);
-        await waitFor(() => expect(backgroundOf(edit)).not.toBe(transparent));
-        const hovered = backgroundOf(edit);
-        await expect(getComputedStyle(edit).backgroundClip).toBe('border-box');
-        for (const child of edit.querySelectorAll('*')) {
-            await expect(backgroundOf(child)).toBe(transparent);
-        }
+        await waitFor(() => expect(edit).toHaveAttribute('data-hovered'));
+        const hovered = await settledBackground(edit);
+        await expect(hovered).not.toBe(idle);
         await userEvent.hover(menu);
-        await waitFor(() => expect(backgroundOf(menu)).toBe(hovered));
+        await waitFor(() => expect(menu).toHaveAttribute('data-hovered'));
+        await expect(await settledBackground(menu)).toBe(hovered);
         await userEvent.unhover(menu);
+
+        // The background is the link's own, so it paints its whole box, and that box is the area
+        // that takes the pointer: nothing inside paints another background, and points just
+        // inside each of its edges hit the link.
+        for (const child of edit.querySelectorAll('*')) {
+            await expect(getComputedStyle(child).backgroundColor).toBe('rgba(0, 0, 0, 0)');
+        }
+        const box = edit.getBoundingClientRect();
+        const middle = { x: box.left + box.width / 2, y: box.top + box.height / 2 };
+        for (const [x, y] of [
+            [box.left + 1, middle.y],
+            [box.right - 1, middle.y],
+            [middle.x, box.top + 1],
+            [middle.x, box.bottom - 1],
+        ] as const) {
+            const hit = edit.ownerDocument.elementFromPoint(x, y);
+            await expect(hit !== null && edit.contains(hit)).toBe(true);
+        }
 
         // The same height and corners, aligned, with room between them
         const link = edit.getBoundingClientRect();
@@ -395,6 +413,52 @@ export const BuiltInLinksAndMenu: Story = {
         await expect(getComputedStyle(edit).borderRadius).toBe(getComputedStyle(menu).borderRadius);
         // `--panneau-space-2`
         await expect(button.left - link.right).toBeGreaterThanOrEqual(8);
+    },
+};
+
+/**
+ * The actions of rows on a phone, with a long one: they wrap below each other rather than
+ * overflow the item.
+ */
+export const RowActionsOnAPhone: Story = {
+    ...BuiltInLinksAndMenu,
+    args: {
+        ...BuiltInLinksAndMenu.args,
+        actions: [
+            ...builtInActions,
+            {
+                id: 'invoices',
+                label: 'Invoices and payment history',
+                kind: 'link',
+                url: '#/members/{id}/invoices',
+                scope: ['item'],
+                placement: ['row'],
+            },
+        ],
+    },
+    decorators: [
+        (Story) => (
+            <div style={{ maxWidth: 360 }}>
+                <Story />
+            </div>
+        ),
+    ],
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const table = canvas.getByRole('table', { name: 'Members' });
+        const edit = canvas.getByRole('link', { name: 'Edit: Grace Hopper' });
+        const invoices = canvas.getByRole('link', {
+            name: 'Invoices and payment history: Grace Hopper',
+        });
+        const menu = canvas.getByRole('button', { name: 'Actions for Grace Hopper' });
+        const right = table.getBoundingClientRect().right;
+        for (const action of [edit, invoices, menu]) {
+            await expect(action.getBoundingClientRect().right).toBeLessThanOrEqual(right);
+        }
+        // On two lines at least
+        await expect(menu.getBoundingClientRect().top).toBeGreaterThan(
+            edit.getBoundingClientRect().top,
+        );
     },
 };
 

@@ -95,7 +95,7 @@ export function ItemActions({
                         href={href}
                         variant={action.destructive === true ? 'danger' : 'secondary'}
                         {...(icon !== undefined ? { icon } : {})}
-                        {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                        external={external}
                     >
                         {label}
                     </LinkButton>

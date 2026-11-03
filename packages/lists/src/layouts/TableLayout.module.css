@@ -68,6 +68,11 @@
     white-space: nowrap;
 }
 
+/* As narrow as the actions of the row on one line: they only wrap in a narrow list. */
+.table .actionsCell > * {
+    flex-wrap: nowrap;
+}
+
 .sort {
     display: inline-flex;
     align-items: center;
@@ -159,6 +164,10 @@
     .table td.actionsCell {
         display: flex;
         width: auto;
+    }
+
+    .table td.actionsCell > * {
+        flex-wrap: wrap;
     }
 
     .table td.check {

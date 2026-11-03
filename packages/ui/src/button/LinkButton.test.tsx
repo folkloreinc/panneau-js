@@ -34,6 +34,21 @@ describe('LinkButton', () => {
         expect(container.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
     });
 
+    it('opens an external link in a new tab, without access to the admin', () => {
+        render(
+            <>
+                <LinkButton href="https://example.com/page" external>
+                    Site
+                </LinkButton>
+                <LinkButton href="https://accounts.example.com/sign-in">Sign in</LinkButton>
+            </>,
+        );
+        const site = screen.getByRole('link', { name: 'Site' });
+        expect(site).toHaveAttribute('target', '_blank');
+        expect(site).toHaveAttribute('rel', 'noopener noreferrer');
+        expect(screen.getByRole('link', { name: 'Sign in' })).not.toHaveAttribute('target');
+    });
+
     it("goes through the app's router", async () => {
         const navigate = vi.fn();
         render(

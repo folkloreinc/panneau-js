@@ -60,13 +60,14 @@ export interface ButtonStyleProps {
     iconEnd?: IconComponent;
     /** Takes the full width of its container. */
     fullWidth?: boolean;
+}
+
+export interface ButtonProps
+    extends ButtonStyleProps, Omit<AriaButtonProps, 'className' | 'style' | 'children'> {
     children?: ReactNode;
     className?: string;
     style?: CSSProperties;
 }
-
-export interface ButtonProps
-    extends ButtonStyleProps, Omit<AriaButtonProps, 'className' | 'style' | 'children'> {}
 
 /** The class names of a button from its style props, for `Button` and `LinkButton`. */
 export function getButtonClassName({
@@ -76,10 +77,9 @@ export function getButtonClassName({
     size = 'md',
     fullWidth = false,
     className,
-}: Pick<
-    ButtonStyleProps,
-    'tone' | 'appearance' | 'variant' | 'size' | 'fullWidth' | 'className'
->): string {
+}: Pick<ButtonStyleProps, 'tone' | 'appearance' | 'variant' | 'size' | 'fullWidth'> & {
+    className?: string | undefined;
+}): string {
     const alias = variant !== undefined && isAlias(variant) ? ALIASES[variant] : undefined;
     const resolvedTone = tone ?? alias?.tone ?? 'neutral';
     const resolvedAppearance =
@@ -102,7 +102,7 @@ export function ButtonContent({
     iconEnd,
     size = 'md',
     children,
-}: Pick<ButtonStyleProps, 'icon' | 'iconEnd' | 'size' | 'children'>) {
+}: Pick<ButtonStyleProps, 'icon' | 'iconEnd' | 'size'> & { children?: ReactNode }) {
     return (
         <span className={styles.content}>
             {icon !== undefined ? <Icon icon={icon} size={size === 'sm' ? 'sm' : 'md'} /> : null}

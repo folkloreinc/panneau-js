@@ -18,6 +18,11 @@ export interface ActionButtonProps {
     'aria-label'?: string;
 }
 
+/** Whether a link leaves the admin: it opens in a new tab. */
+function isExternal(href: string): boolean {
+    return /^https?:\/\//.test(href);
+}
+
 /** An action as a button, or as a link for a `link` action with a URL. */
 export function ActionButton({
     action,
@@ -41,6 +46,7 @@ export function ActionButton({
                 size={size}
                 variant={variant}
                 {...(icon !== undefined ? { icon } : {})}
+                external={isExternal(href)}
                 aria-label={ariaLabel}
             >
                 {label}

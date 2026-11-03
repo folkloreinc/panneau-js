@@ -1,8 +1,9 @@
+/* The actions of a row wrap where they don't fit, in a narrow list or a card. */
 .row {
     display: inline-flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
+    max-width: 100%;
     align-items: center;
-    justify-content: flex-end;
     gap: var(--panneau-space-2);
 }
 

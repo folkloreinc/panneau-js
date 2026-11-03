@@ -2,7 +2,7 @@ import { ChevronLeft } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-aria-components';
 
-import { Heading, Icon } from '@panneau/ui';
+import { LinkButton as ButtonLink, Heading, Icon } from '@panneau/ui';
 
 import { cx } from '../cx';
 import styles from './pages.module.css';
@@ -61,16 +61,22 @@ export function PageHeader({ title, back, actions }: PageHeaderProps) {
 
 export interface LinkButtonProps {
     href: string;
+    /** An element before the label. */
     icon?: ReactNode;
     children: ReactNode;
 }
 
-/** A link that looks like the primary button, for the actions of a `PageHeader`. */
+/**
+ * A link that looks like the primary button, for the actions of a `PageHeader`.
+ *
+ * @deprecated Use `LinkButton` of `@panneau/ui` with `variant="primary"`, which takes an icon
+ * component (`icon={Plus}`).
+ */
 export function LinkButton({ href, icon, children }: LinkButtonProps) {
     return (
-        <Link href={href} className={styles.linkButton}>
+        <ButtonLink href={href} variant="primary">
             {icon}
             {children}
-        </Link>
+        </ButtonLink>
     );
 }

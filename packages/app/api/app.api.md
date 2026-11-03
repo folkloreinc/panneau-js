@@ -28,7 +28,7 @@ export function createPanneauApp(input: PanneauAppOptions): PanneauApp;
 // @public
 export const itemPanelTokens: ComponentTokens<"item-panel", "panneau-item-panel-width" | "panneau-item-panel-radius" | "panneau-item-panel-bg" | "panneau-item-panel-width-wide" | "panneau-item-panel-shadow">;
 
-// @public
+// @public @deprecated
 export function LinkButton(input: LinkButtonProps): JSX.Element;
 
 // @public (undocumented)
@@ -37,7 +37,6 @@ export interface LinkButtonProps {
     children: ReactNode;
     // (undocumented)
     href: string;
-    // (undocumented)
     icon?: ReactNode;
 }
 

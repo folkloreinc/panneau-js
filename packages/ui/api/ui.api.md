@@ -132,22 +132,22 @@ export type ButtonAppearance = 'solid' | 'outline' | 'subtle' | 'ghost';
 
 // @public (undocumented)
 export interface ButtonProps extends ButtonStyleProps, Omit<ButtonProps_2, 'className' | 'style' | 'children'> {
+    // (undocumented)
+    children?: ReactNode;
+    // (undocumented)
+    className?: string;
+    // (undocumented)
+    style?: CSSProperties;
 }
 
 // @public
 export interface ButtonStyleProps {
     appearance?: ButtonAppearance;
-    // (undocumented)
-    children?: ReactNode;
-    // (undocumented)
-    className?: string;
     fullWidth?: boolean;
     icon?: IconComponent;
     iconEnd?: IconComponent;
     // (undocumented)
     size?: 'sm' | 'md';
-    // (undocumented)
-    style?: CSSProperties;
     tone?: Tone;
     variant?: ButtonVariant | (keyof ButtonVariants & string);
 }
@@ -622,7 +622,14 @@ export function LinkButton(input: LinkButtonProps): JSX.Element;
 
 // @public (undocumented)
 export interface LinkButtonProps extends ButtonStyleProps, Omit<LinkProps, 'className' | 'style' | 'children'> {
+    // (undocumented)
+    children?: ReactNode;
+    // (undocumented)
+    className?: string;
+    external?: boolean;
     href: string;
+    // (undocumented)
+    style?: CSSProperties;
 }
 
 // @public

@@ -6,6 +6,12 @@ import { IconButton } from '../icon-button/IconButton';
 import { Button } from './Button';
 import { LinkButton } from './LinkButton';
 
+/** The background of an element once its transitions are over (buttons fade their hover in). */
+async function settledBackground(element: Element): Promise<string> {
+    await Promise.all(element.getAnimations().map((animation) => animation.finished));
+    return getComputedStyle(element).backgroundColor;
+}
+
 const meta = {
     title: 'UI/LinkButton',
     component: LinkButton,
@@ -61,15 +67,17 @@ export const BesideButtons: Story = {
         const canvas = within(canvasElement);
         const link = canvas.getByRole('link', { name: 'Edit' });
         const button = canvas.getByRole('button', { name: 'Rename' });
-        const backgroundOf = (element: Element) => getComputedStyle(element).backgroundColor;
         await expect(link.getBoundingClientRect().height).toBe(
             button.getBoundingClientRect().height,
         );
+        const idle = await settledBackground(link);
         await userEvent.hover(link);
         await waitFor(() => expect(link).toHaveAttribute('data-hovered'));
-        const hovered = backgroundOf(link);
+        const hovered = await settledBackground(link);
+        await expect(hovered).not.toBe(idle);
         await userEvent.hover(button);
-        await waitFor(() => expect(backgroundOf(button)).toBe(hovered));
+        await waitFor(() => expect(button).toHaveAttribute('data-hovered'));
+        await expect(await settledBackground(button)).toBe(hovered);
         await userEvent.unhover(button);
     },
 };

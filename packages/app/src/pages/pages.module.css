@@ -73,29 +73,8 @@
 }
 
 .back[data-focus-visible],
-.linkButton[data-focus-visible],
 .card[data-focus-visible] {
     box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
-}
-
-.linkButton {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--panneau-space-2);
-    min-height: var(--panneau-control-height);
-    padding: 0 var(--panneau-control-padding-x);
-    border-radius: var(--panneau-radius-md);
-    background: var(--panneau-color-accent);
-    color: var(--panneau-color-accent-text);
-    font-size: var(--panneau-font-size-control);
-    font-weight: var(--panneau-font-weight-medium);
-    text-decoration: none;
-    outline: none;
-    transition: background-color var(--panneau-duration);
-}
-
-.linkButton[data-hovered] {
-    background: var(--panneau-color-accent-hover);
 }
 
 .intro {
