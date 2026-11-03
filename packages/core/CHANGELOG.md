@@ -1,5 +1,11 @@
 # @panneau/core
 
+## 5.0.0-alpha.11
+
+### Patch Changes
+
+- @panneau/protocol@5.0.0-alpha.11
+
 ## 5.0.0-alpha.10
 
 ### Minor Changes
