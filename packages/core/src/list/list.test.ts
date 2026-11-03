@@ -4,6 +4,7 @@ import { getResource } from '../__fixtures__/definition';
 import { resolveList } from '../definition/list';
 import { createList } from './list';
 import { createHistoryRouter, createMemoryRouter } from './router';
+import { type ListViewStore, type RememberedView, createStorageViewStore } from './viewStore';
 
 const pages = resolveList(getResource('pages'));
 
@@ -179,6 +180,143 @@ describe('createList', () => {
         unsubscribe();
         router.setSearch('page=5');
         expect(list.getState().query.page).toBe(5);
+    });
+});
+
+describe('the view of a list', () => {
+    const withColumns = {
+        ...pages,
+        layouts: ['table', 'cards'],
+        columns: pages.columns.map((column) =>
+            column.id === 'preview' ? { ...column, hidden: true } : column,
+        ),
+    };
+
+    function memoryStore(initial: Record<string, RememberedView> = {}) {
+        const views = new Map(Object.entries(initial));
+        const store: ListViewStore = {
+            get: (key) => views.get(key) ?? null,
+            set: vi.fn((key: string, view: RememberedView | null) => {
+                if (view === null) {
+                    views.delete(key);
+                } else {
+                    views.set(key, view);
+                }
+            }),
+        };
+        return { store, views };
+    }
+
+    it('keeps the layout and the columns in the URL, without the defaults', () => {
+        const router = createMemoryRouter();
+        const list = createList({ list: withColumns, router });
+        expect(list.getState().view).toEqual({});
+
+        list.setLayout('cards');
+        expect(router.getSearch()).toBe('layout=cards');
+        list.setColumns(['title', 'preview']);
+        expect(router.getSearch()).toBe('layout=cards&columns=title%2Cpreview');
+        // Columns change in place: no entry of the history for each checkbox
+        expect(router.history).toHaveLength(2);
+        expect(list.getState().view).toEqual({ layout: 'cards', columns: ['title', 'preview'] });
+
+        list.setColumns(['title', 'published_at']);
+        expect(list.getState().view).toEqual({ layout: 'cards' });
+        list.setColumns(['published_at']);
+        list.resetColumns();
+        list.setLayout('table');
+        expect(router.getSearch()).toBe('');
+
+        // The view isn't part of the query sent to the backend
+        router.setSearch('layout=cards&columns=title');
+        expect(list.getState().view).toEqual({ layout: 'cards', columns: ['title'] });
+        expect(list.getState().query).not.toHaveProperty('layout');
+        list.resetQuery();
+        expect(list.getState().view).toEqual({ layout: 'cards', columns: ['title'] });
+    });
+
+    it('restores the view it remembers when the URL has none of its parameters', () => {
+        const { store } = memoryStore({
+            pages: {
+                query: { filter: { status: 'draft' }, sort: ['title'] },
+                view: { layout: 'cards' },
+            },
+        });
+        const router = createMemoryRouter('tab=2');
+        const list = createList({ list: withColumns, router, remember: { key: 'pages', store } });
+        expect(list.getState().query).toMatchObject({
+            filter: { status: 'draft' },
+            sort: ['title'],
+        });
+        expect(list.getState().view).toEqual({ layout: 'cards' });
+        // Written to the URL once subscribed, in place of the bare URL
+        expect(router.getSearch()).toBe('tab=2');
+        list.subscribe(() => undefined);
+        expect(router.getSearch()).toBe('tab=2&sort=title&filter%5Bstatus%5D=draft&layout=cards');
+        expect(router.history).toHaveLength(1);
+        expect(store.set).not.toHaveBeenCalled();
+    });
+
+    it('opens a URL with a query as it is, and remembers what the user changes', () => {
+        const { store, views } = memoryStore({
+            pages: { query: { filter: { status: 'draft' } }, view: {} },
+        });
+        const router = createMemoryRouter('page=2&q=home');
+        const list = createList({ list: withColumns, router, remember: { key: 'pages', store } });
+        list.subscribe(() => undefined);
+        expect(list.getState().query).toMatchObject({ page: 2, q: 'home' });
+        expect(list.getState().query.filter).toBeUndefined();
+        // Opening a link doesn't replace the view the user remembers
+        expect(store.set).not.toHaveBeenCalled();
+
+        list.setSort(['title']);
+        list.setColumns(['title']);
+        // Neither the page nor the search
+        expect(views.get('pages')).toEqual({
+            query: { sort: ['title'] },
+            view: { columns: ['title'] },
+        });
+        list.resetQuery();
+        list.resetColumns();
+        expect(views.has('pages')).toBe(false);
+    });
+
+    it('remembers the view of a list without a router', () => {
+        const { store } = memoryStore({ pages: { query: { perPage: 50 }, view: {} } });
+        expect(
+            createList({ list: pages, remember: { key: 'pages', store } }).getState().query,
+        ).toMatchObject({ perPage: 50 });
+        // A starting query is the list's own
+        expect(
+            createList({
+                list: pages,
+                query: { q: 'a' },
+                remember: { key: 'pages', store },
+            }).getState().query.perPage,
+        ).toBe(10);
+    });
+});
+
+describe('createStorageViewStore', () => {
+    it('keeps views in a storage, and ignores what it cannot read', () => {
+        const storage = window.localStorage;
+        const store = createStorageViewStore(() => storage);
+        const view: RememberedView = { query: { sort: ['-title'] }, view: { layout: 'cards' } };
+        store.set('pages', view);
+        expect(storage.getItem('panneau:list:pages')).toBe(JSON.stringify(view));
+        expect(store.get('pages')).toEqual(view);
+        storage.setItem('panneau:list:pages', '{"query":{"sort":3},"view":{"columns":"a"}}');
+        expect(store.get('pages')).toEqual({ query: {}, view: {} });
+        storage.setItem('panneau:list:pages', 'not json');
+        expect(store.get('pages')).toBeNull();
+        store.set('pages', null);
+        expect(storage.getItem('panneau:list:pages')).toBeNull();
+
+        const blocked = createStorageViewStore(() => {
+            throw new Error('Blocked');
+        });
+        expect(blocked.get('pages')).toBeNull();
+        expect(() => blocked.set('pages', view)).not.toThrow();
     });
 });
 

@@ -40,6 +40,10 @@ export interface ListColumn {
     sortable?: boolean;
     width?: number | string;
     align?: 'start' | 'center' | 'end';
+    /** Not shown until the user shows it, from the columns of the list (decision 0042). */
+    hidden?: boolean;
+    /** `false`: always shown. The user can move it, not hide it. */
+    hideable?: boolean;
     /** Renders the cell, instead of a display. */
     render?: (item: ListItem) => ReactNode;
 }

@@ -83,6 +83,9 @@ export function createMemoryRouter(initialSearch?: string): MemoryRouter;
 // @public
 export function createPluginRegistry(plugins: readonly PanneauPlugin[]): PluginRegistry;
 
+// @public
+export function createStorageViewStore(storage?: () => Storage | null): ListViewStore;
+
 // @public (undocumented)
 export const DEFAULT_PER_PAGE = 20;
 
@@ -272,10 +275,13 @@ export interface List {
     isSelected(id: string): boolean;
     nextPage(cursor: string): void;
     previousPage(cursor?: string | null): void;
+    resetColumns(): void;
     resetQuery(): void;
     select(ids: readonly string[]): void;
     selectAllMatching(): void;
+    setColumns(ids: readonly string[]): void;
     setFilter(id: string, value: FilterValue | undefined): void;
+    setLayout(layout: string): void;
     // (undocumented)
     setPage(page: number): void;
     setPerPage(perPage: number): void;
@@ -290,6 +296,8 @@ export interface List {
 
 // @public (undocumented)
 export interface ListDefaults {
+    columns?: string[];
+    layout?: string;
     // (undocumented)
     perPage?: number;
     sort?: string[];
@@ -300,6 +308,10 @@ export interface ListOptions {
     defaults?: ListDefaults;
     list?: ResolvedList;
     query?: ListQuery;
+    remember?: {
+        key: string;
+        store?: ListViewStore;
+    } | null;
     router?: Router | null;
 }
 
@@ -317,6 +329,20 @@ export interface ListState {
     query: ListQuery;
     // (undocumented)
     selection: ListSelection;
+    view: ListViewState;
+}
+
+// @public
+export interface ListViewState {
+    columns?: string[];
+    layout?: string;
+}
+
+// @public
+export interface ListViewStore {
+    // (undocumented)
+    get(key: string): RememberedView | null;
+    set(key: string, view: RememberedView | null): void;
 }
 
 // @public
@@ -421,11 +447,21 @@ export interface PreviewProps {
 }
 
 // @public
+export interface RememberedView {
+    // (undocumented)
+    query: Pick<ListQuery, 'filter' | 'sort' | 'perPage'>;
+    // (undocumented)
+    view: ListViewState;
+}
+
+// @public
 export interface ResolvedColumn {
     // (undocumented)
     align?: 'start' | 'center' | 'end';
     display: string | null;
     field: Field | null;
+    hidden: boolean;
+    hideable: boolean;
     id: string;
     // (undocumented)
     label: string;
