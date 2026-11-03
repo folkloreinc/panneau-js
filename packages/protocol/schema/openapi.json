@@ -2631,6 +2631,14 @@
                             "center",
                             "end"
                         ]
+                    },
+                    "hidden": {
+                        "description": "Not shown by default: the user can show it from the columns of the list (decision 0042).",
+                        "type": "boolean"
+                    },
+                    "hideable": {
+                        "description": "`false`: always shown, the user can move it but not hide it. Columns are hideable by default.",
+                        "type": "boolean"
                     }
                 },
                 "additionalProperties": {}
@@ -2731,7 +2739,7 @@
                         ]
                     },
                     "inlineEdit": {
-                        "description": "Fields editable in the list.",
+                        "description": "Fields that columns edit in place, on items that can be updated: `text`, `number`, `select`, `boolean` and `date`. Each change is a `PATCH` with the one field and `If-Match` (decision 0043).",
                         "type": "array",
                         "items": {
                             "type": "string",

@@ -15,6 +15,14 @@ export const Column = z
         sortable: z.boolean().optional(),
         width: z.union([z.number(), z.string()]).optional(),
         align: z.enum(['start', 'center', 'end']).optional(),
+        hidden: z.boolean().optional().meta({
+            description:
+                'Not shown by default: the user can show it from the columns of the list (decision 0042).',
+        }),
+        hideable: z.boolean().optional().meta({
+            description:
+                '`false`: always shown, the user can move it but not hide it. Columns are hideable by default.',
+        }),
     })
     .refine((column) => column.field !== undefined || column.id !== undefined, {
         message: 'A column needs a `field` or an `id`.',
@@ -52,10 +60,10 @@ export const ListDefinition = z.looseObject({
         description:
             "`pages` (the default): numbered pages, with a total. `cursor`: the list follows `nextCursor` of each page with the `cursor` parameter, without page numbers, for large lists that the backend can't count (decision 0039).",
     }),
-    inlineEdit: z
-        .array(z.string().min(1))
-        .optional()
-        .meta({ description: 'Fields editable in the list.' }),
+    inlineEdit: z.array(z.string().min(1)).optional().meta({
+        description:
+            'Fields that columns edit in place, on items that can be updated: `text`, `number`, `select`, `boolean` and `date`. Each change is a `PATCH` with the one field and `If-Match` (decision 0043).',
+    }),
     selectable: z.boolean().optional(),
 });
 

@@ -18,9 +18,9 @@ import { Alert, usePanneauIntl, useToast } from '@panneau/ui';
 
 import { DocumentTitle } from './documentTitle';
 import { navigate, setHistoryGuard, usePathname } from './location';
-import { ForbiddenPage } from './pages/ForbiddenPage';
+import { ErrorPage } from './pages/ErrorPage';
 import { HomePage } from './pages/HomePage';
-import { NotFoundPage } from './pages/NotFoundPage';
+import { PageErrorBoundary } from './pages/PageErrorBoundary';
 import { ResourceFormPage } from './pages/ResourceFormPage';
 import { ResourceListPage } from './pages/ResourceListPage';
 import { resolveRoute } from './routeReference';
@@ -81,9 +81,10 @@ function DefinitionPage({
 
 function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) {
     const homeHref = routePath({ name: 'home' }, basePath);
-    const notFound = <NotFoundPage homeHref={homeHref} />;
-    // A route the user can't open (decision 0046)
-    const forbidden = <ForbiddenPage homeHref={homeHref} />;
+    const notFound = <ErrorPage kind="not-found" homeHref={homeHref} />;
+    // A route the user can't open: a resource in the definition, a page, the create route
+    // (decision 0046)
+    const forbidden = <ErrorPage kind="forbidden" homeHref={homeHref} />;
     switch (route.name) {
         case 'home': {
             // `pages.home` of the definition, or the cards of the resources (decision 0019), also
@@ -238,7 +239,12 @@ export function Shell({
                         onColorSchemeChange={onColorSchemeChange}
                         onLogOut={logOut}
                     >
-                        <Page definition={definition} basePath={basePath} route={route} />
+                        <PageErrorBoundary
+                            homeHref={routePath({ name: 'home' }, basePath)}
+                            path={pathname}
+                        >
+                            <Page definition={definition} basePath={basePath} route={route} />
+                        </PageErrorBoundary>
                     </AppLayout>
                 </ActionRunnerProvider>
             </RouterProvider>

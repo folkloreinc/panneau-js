@@ -62,10 +62,21 @@ export const appFr: Record<string, string> = {
     'panneau.app.searchError': 'La recherche a échoué. Les autres résultats restent là.',
     'panneau.app.notFound': 'Page introuvable',
     'panneau.app.notFoundText': 'Cette page n’existe pas, ou vous ne pouvez pas la voir.',
-    'panneau.app.forbidden': 'Vous ne pouvez pas ouvrir cette page',
-    'panneau.app.forbiddenText':
-        'Votre compte ne le permet pas. Demandez à un administrateur si vous en avez besoin.',
     'panneau.app.itemForbidden': 'Vous ne pouvez pas voir cet élément ({resource}).',
     'panneau.app.backHome': 'Retour à l’accueil',
+    'panneau.app.forbidden': 'Accès refusé',
+    'panneau.app.forbiddenText':
+        'Vous n’avez pas accès à cette page. Demandez-le à un administrateur si vous en avez besoin.',
+    'panneau.app.serverError': 'Une erreur est survenue',
+    'panneau.app.serverErrorText': 'Le serveur a rencontré un problème. Réessayez dans un instant.',
+    'panneau.app.pageError': 'Une erreur est survenue',
+    'panneau.app.pageErrorText':
+        'Cette page a rencontré un problème. Réessayez, ou retournez à l’accueil.',
+    'panneau.app.offline': 'Vous êtes hors ligne',
+    'panneau.app.offlineText':
+        'Vérifiez votre connexion. La page se recharge dès que vous êtes de nouveau en ligne.',
+    'panneau.app.unreachable': 'Le serveur est injoignable',
+    'panneau.app.unreachableText':
+        'Il est peut-être arrêté ou en train de redémarrer. Réessayez dans un instant.',
     'panneau.app.missingPage': 'Aucun plugin ne fournit la page « {component} ».',
 };

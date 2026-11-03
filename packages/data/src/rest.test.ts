@@ -7,6 +7,7 @@ import {
     ConflictError,
     ForbiddenError,
     InvalidResponseError,
+    NetworkError,
     NotFoundError,
     RateLimitedError,
     UnauthorizedError,
@@ -26,6 +27,35 @@ describe('createRestAdapter', () => {
         const definition = await adapter.getDefinition();
         expect(definition.name).toBe('Test site');
         expect(definition.resources[0]?.actions?.[0]?.kind).toBe('server');
+    });
+
+    it('rejects with a NetworkError when the request gets no answer', async () => {
+        const failure = new TypeError('Failed to fetch');
+        const adapter = createRestAdapter({
+            baseUrl: BASE_URL,
+            fetch: () => Promise.reject(failure),
+        });
+        const error = await adapter.getDefinition().catch((caught: unknown) => caught);
+        expect(error).toBeInstanceOf(NetworkError);
+        expect((error as NetworkError).cause).toBe(failure);
+    });
+
+    it('keeps the AbortError of an aborted request', async () => {
+        const controller = new AbortController();
+        const adapter = createRestAdapter({
+            baseUrl: BASE_URL,
+            fetch: (_input, init) =>
+                new Promise((_resolve, reject) => {
+                    init?.signal?.addEventListener('abort', () =>
+                        reject(new DOMException('Aborted', 'AbortError')),
+                    );
+                }),
+        });
+        const request = adapter.getDefinition({ signal: controller.signal });
+        controller.abort();
+        const error = await request.catch((caught: unknown) => caught);
+        expect(error).not.toBeInstanceOf(NetworkError);
+        expect((error as Error).name).toBe('AbortError');
     });
 
     it('rejects an invalid definition', async () => {

@@ -21,6 +21,10 @@ export const listsFr: Record<string, string> = {
     'panneau.lists.layout': 'Affichage',
     'panneau.lists.layoutTable': 'Tableau',
     'panneau.lists.layoutCards': 'Cartes',
+    'panneau.lists.columns': 'Colonnes',
+    'panneau.lists.moveColumnUp': 'Monter {column}',
+    'panneau.lists.moveColumnDown': 'Descendre {column}',
+    'panneau.lists.resetColumns': 'Colonnes par défaut',
     'panneau.lists.selectItem': 'Sélectionner {item}',
     'panneau.lists.selectPage': 'Sélectionner tous les éléments de la page',
     'panneau.lists.selectedCount':
@@ -54,4 +58,10 @@ export const listsFr: Record<string, string> = {
     'panneau.lists.previousPage': 'Page précédente',
     'panneau.lists.nextPage': 'Page suivante',
     'panneau.lists.perPage': 'Par page',
+    'panneau.lists.editValue': 'Modifier {field} de {item}',
+    'panneau.lists.savingValue': 'Enregistrement…',
+    'panneau.lists.saveValueFailed': 'La modification n’a pas pu être enregistrée.',
+    'panneau.lists.valueConflict': 'Quelqu’un d’autre l’a changé en :',
+    'panneau.lists.keepTheirs': 'Garder la sienne',
+    'panneau.lists.saveMine': 'Enregistrer la mienne',
 };

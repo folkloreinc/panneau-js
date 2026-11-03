@@ -19,6 +19,10 @@ export interface ResolvedColumn {
     sortable: boolean;
     width?: number | string;
     align?: 'start' | 'center' | 'end';
+    /** Not shown until the user shows it (decision 0042). */
+    hidden: boolean;
+    /** Whether the user can hide it. */
+    hideable: boolean;
 }
 
 /** A list ready to render. */
@@ -154,6 +158,8 @@ export function resolveList(resource: Resource): ResolvedList {
             display: column.display ?? field?.display ?? field?.type ?? null,
             sortable:
                 column.sortable ?? (column.field !== undefined && sorts.includes(column.field)),
+            hidden: column.hidden === true && column.hideable !== false,
+            hideable: column.hideable !== false,
         };
         if (column.width !== undefined) {
             resolved.width = column.width;

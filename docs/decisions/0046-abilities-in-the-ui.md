@@ -34,7 +34,7 @@ Other admins do it the same way. Nova and Filament hide a resource from the navi
 
 ### Routes and the forbidden state
 
-- **The forbidden state** is a page of the app: a title ("You can't open this page"), a sentence, and a link to the home page. It keeps the shell and its menu. A `401` still goes to the login, as before.
+- **The forbidden state** is the `forbidden` error page of the app ("Access denied", `ErrorPage` of [#181](https://github.com/folkloreinc/panneau-js/issues/181)), with a link to the home page. It keeps the shell and its menu. A `401` still goes to the login, as before.
 - It shows:
     - on the list and show routes of a resource without `viewAny`;
     - on the create route of a resource without `create`;
@@ -79,5 +79,5 @@ The conformance kit checks that the API agrees with the abilities the definition
 
 - Additive in the protocol: `abilities` is optional on `Page` and on `Field`, with the meaning above. The JSON Schema and the OpenAPI document follow. The mock backend reads the abilities of resources (`403` on lists without `viewAny`, creates without `create`), of items (`403` on updates without `update`), and of fields (values of hidden fields left out, values of read-only ones ignored).
 - **What changes for definitions written before this decision:** the list of a resource without `viewAny` was "not found", and is now forbidden. The edit route of an item without `update: true` goes to its panel: with a backend that sends no abilities on its items, the edit route needs `update: true` on each item, as 0040 already asks for "Edit".
-- `@panneau/core`'s `resolveFields()` and `resolveForm()` leave out fields with `view: false` and make those with `update: false` read-only; `resolveList()` leaves their columns, sorts and inline editing out. `canViewField()` and `canUpdateField()` say it for one field, and `canViewPage()` for a page. `@panneau/app` has a forbidden page, and leaves out the menu entries the user can't reach.
+- `@panneau/core`'s `resolveFields()` and `resolveForm()` leave out fields with `view: false` and make those with `update: false` read-only; `resolveList()` leaves their columns, sorts and inline editing out. `canViewField()` and `canUpdateField()` say it for one field, and `canViewPage()` for a page. `@panneau/app` shows its forbidden error page on the routes above, and leaves out the menu entries the user can't reach.
 - `laravel-panneau` sends the abilities of fields and pages, leaves the values of hidden fields out of its items, ignores those of read-only ones, and declares the built-in `delete` with `run: false` when the policy's `deleteAny` refuses it.

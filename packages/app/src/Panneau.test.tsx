@@ -6,7 +6,13 @@ import { useIntl } from 'react-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { type PanneauPlugin, definePlugin } from '@panneau/core';
-import { type DataAdapter, UnauthorizedError, ValidationError } from '@panneau/data';
+import {
+    type DataAdapter,
+    ForbiddenError,
+    NetworkError,
+    UnauthorizedError,
+    ValidationError,
+} from '@panneau/data';
 import { queryKeys } from '@panneau/data/query';
 import { type BootConfigInput, type DefinitionInput, validateBootConfig } from '@panneau/protocol';
 
@@ -119,8 +125,39 @@ describe('Panneau', () => {
             adapter,
             queryClient: createQueryClient(),
         });
-        expect(await screen.findByRole('alert')).toHaveTextContent('could not be loaded');
+        expect(await screen.findByRole('alert')).toHaveTextContent('Something went wrong');
         await user.click(screen.getByRole('button', { name: 'Try again' }));
+        expect(await screen.findByRole('heading', { name: 'Test site' })).toBeInTheDocument();
+    });
+
+    it('says when the user isn’t allowed in, without a retry', async () => {
+        const adapter = createAdapter(() =>
+            Promise.reject(
+                new ForbiddenError({ type: 'about:blank', title: 'Forbidden', status: 403 }),
+            ),
+        );
+        renderPanneau({ adapter, queryClient: createQueryClient() });
+        expect(await screen.findByRole('heading', { name: 'Access denied' })).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Try again' })).not.toBeInTheDocument();
+    });
+
+    it('says when the server can’t be reached, and tries again once the browser is online', async () => {
+        let calls = 0;
+        const adapter = createAdapter(() => {
+            calls += 1;
+            return calls === 1
+                ? Promise.reject(new NetworkError())
+                : Promise.resolve(
+                      parse(createBootConfig({ definition: createDefinition() })).definition,
+                  );
+        });
+        renderPanneau({ adapter, queryClient: createQueryClient() });
+        expect(
+            await screen.findByRole('heading', { name: 'The server can’t be reached' }),
+        ).toBeInTheDocument();
+        act(() => {
+            window.dispatchEvent(new Event('online'));
+        });
         expect(await screen.findByRole('heading', { name: 'Test site' })).toBeInTheDocument();
     });
 
@@ -302,6 +339,12 @@ describe('Panneau', () => {
         function createAuthAdapter(overrides: Partial<DataAdapter> = {}) {
             return {
                 getDefinition: vi.fn(() => Promise.resolve(definition())),
+                list: vi.fn(() =>
+                    Promise.resolve({
+                        data: [],
+                        meta: { page: 1, perPage: 15, total: 0, lastPage: 1 },
+                    }),
+                ),
                 login: vi.fn(() => Promise.resolve({ user: { id: 'usr_1', name: 'Ada' } })),
                 logout: vi.fn(() => Promise.resolve()),
                 ...overrides,

@@ -79,7 +79,9 @@ The form's methods that read the state (`form.getValue()`, `form.getErrors()`, `
 `createList(options)`, or `useList(options)`, manages:
 
 - **The query**: page, page size, sort, filters and search, with the list's defaults. Changing filters, search, sort or page size goes back to the first page.
+- **The view**: the layout (`setLayout()`) and the columns shown, in their order (`setColumns()`, `resetColumns()`). It isn't sent to the backend.
 - **The selection**: some ids, kept across pages, or every item matching the query except some (`selectAllMatching()`). `getSelection()` returns the protocol's `Selection` for an action. Changing filters or search clears it.
-- **URL sync** through a `Router`: `getSearch()`, `setSearch()` and `subscribe()`. Only values that differ from the defaults are written, next to the other parameters. `createHistoryRouter()` uses `window.history`; `createMemoryRouter()` keeps it in memory. `useList()` uses the provider's router unless given one, or `router: null`.
+- **URL sync** through a `Router`: `getSearch()`, `setSearch()` and `subscribe()`. Only values that differ from the defaults are written, next to the other parameters. `createHistoryRouter()` uses `window.history`; `createMemoryRouter()` keeps it in memory. `useList()` uses the provider's router unless given one, or `router: null`. The view is in the URL too (`layout`, `columns`).
+- **The remembered view**, with `remember: { key }`: the filters, sort, page size, layout and columns the user last chose, in `localStorage` (`createStorageViewStore()`) or another `ListViewStore`. A list that opens without any of its parameters in the URL shows it, and writes it to the URL; a URL with some opens as it is ([0042](../../docs/decisions/0042-list-view-columns-and-remembered-view.md)).
 
 The package layout, scripts and API reports are explained in [`docs/packages.md`](../../docs/packages.md).

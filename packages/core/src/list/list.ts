@@ -4,6 +4,12 @@ import { fromSearchParams, isFilterRange, toSearchParams } from '@panneau/protoc
 import type { ResolvedList } from '../definition/list';
 import { isEqual } from '../values';
 import type { Router } from './router';
+import {
+    type ListViewState,
+    type ListViewStore,
+    type RememberedView,
+    createStorageViewStore,
+} from './viewStore';
 
 /**
  * Selected items: some ids, or every item matching the list query (filters and search) except
@@ -15,6 +21,8 @@ export type ListSelection =
 export interface ListState {
     /** The query to fetch: the list's defaults, overridden by the current state. */
     query: ListQuery;
+    /** How the items are shown: the layout and the columns, when they aren't the defaults. */
+    view: ListViewState;
     selection: ListSelection;
 }
 
@@ -22,6 +30,10 @@ export interface ListDefaults {
     perPage?: number;
     /** Default sort, as `sort` query values (`['-published_at']`). */
     sort?: string[];
+    /** The default layout. */
+    layout?: string;
+    /** The ids of the columns shown by default, in their order. */
+    columns?: string[];
 }
 
 export interface ListOptions {
@@ -33,6 +45,12 @@ export interface ListOptions {
     query?: ListQuery;
     /** Keeps the query in the URL. The router's query string wins over `query`. */
     router?: Router | null;
+    /**
+     * Remembers the view of the list (filters, sort, page size, layout and columns) under `key`,
+     * in `store` (the browser's `localStorage` by default), and restores it when the list opens
+     * without a query of its own: a URL without any parameter of the list (decision 0042).
+     */
+    remember?: { key: string; store?: ListViewStore } | null;
 }
 
 /** A headless list: query and selection. React components use `useList()`. */
@@ -61,8 +79,14 @@ export interface List {
     setFilter(id: string, value: FilterValue | undefined): void;
     /** Sets the search, goes back to the first page, and clears the selection. */
     setSearch(q: string): void;
-    /** Removes the page, filters, search and sort: back to the defaults. */
+    /** Removes the page, filters, search and sort: back to the defaults. The view stays. */
     resetQuery(): void;
+    /** Shows the items in a layout (`cards`). */
+    setLayout(layout: string): void;
+    /** Shows these columns, by id, in this order. */
+    setColumns(ids: readonly string[]): void;
+    /** Back to the columns of the definition. */
+    resetColumns(): void;
     /** Adds ids to the selection (removes them from the exceptions in "all matching" mode). */
     select(ids: readonly string[]): void;
     /** Removes ids from the selection (adds them to the exceptions in "all matching" mode). */
@@ -81,10 +105,13 @@ export interface List {
 const EMPTY_SELECTION: ListSelection = { mode: 'ids', ids: [] };
 /** Back to the first page: page 1, or no cursor. */
 const FIRST_PAGE = { page: 1, cursor: undefined };
-const LIST_PARAM = /^(page|perPage|cursor|sort|q|fields|filter\[.+)$/;
+const LIST_PARAM = /^(page|perPage|cursor|sort|q|fields|layout|columns|filter\[.+)$/;
+
+type Defaults = Required<Pick<ListDefaults, 'perPage' | 'sort'>> &
+    Pick<ListDefaults, 'layout' | 'columns'>;
 
 /** Removes the values that are the defaults, so the URL only keeps what the user changed. */
-function normalize(query: ListQuery, defaults: Required<ListDefaults>): ListQuery {
+function normalize(query: ListQuery, defaults: Defaults): ListQuery {
     const result: ListQuery = {};
     if (query.page !== undefined && query.page > 1) {
         result.page = query.page;
@@ -118,20 +145,100 @@ function normalize(query: ListQuery, defaults: Required<ListDefaults>): ListQuer
     return result;
 }
 
+/** Removes the parts of the view that are the defaults. */
+function normalizeView(view: ListViewState, defaults: Defaults): ListViewState {
+    const result: ListViewState = {};
+    if (view.layout !== undefined && view.layout !== '' && view.layout !== defaults.layout) {
+        result.layout = view.layout;
+    }
+    if (
+        view.columns !== undefined &&
+        view.columns.length > 0 &&
+        !isEqual(view.columns, defaults.columns)
+    ) {
+        result.columns = [...view.columns];
+    }
+    return result;
+}
+
+function readView(search: URLSearchParams): ListViewState {
+    const view: ListViewState = {};
+    const layout = search.get('layout');
+    if (layout !== null) {
+        view.layout = layout;
+    }
+    const columns = search.get('columns');
+    if (columns !== null) {
+        view.columns = columns.split(',').filter((id) => id !== '');
+    }
+    return view;
+}
+
+/** What a list remembers of its query: not its page, cursor or search. */
+function rememberedQuery(query: ListQuery): RememberedView['query'] {
+    const result: RememberedView['query'] = {};
+    if (query.filter !== undefined) {
+        result.filter = query.filter;
+    }
+    if (query.sort !== undefined) {
+        result.sort = query.sort;
+    }
+    if (query.perPage !== undefined) {
+        result.perPage = query.perPage;
+    }
+    return result;
+}
+
 /** Creates a headless list. */
 export function createList(options: ListOptions = {}): List {
-    const defaults: Required<ListDefaults> = {
+    const defaults: Defaults = {
         perPage: options.defaults?.perPage ?? options.list?.perPage ?? 20,
         sort: options.defaults?.sort ?? options.list?.defaultSort ?? [],
     };
+    const defaultLayout = options.defaults?.layout ?? options.list?.layouts[0];
+    if (defaultLayout !== undefined) {
+        defaults.layout = defaultLayout;
+    }
+    const defaultColumns =
+        options.defaults?.columns ??
+        options.list?.columns.filter((column) => !column.hidden).map((column) => column.id);
+    if (defaultColumns !== undefined) {
+        defaults.columns = defaultColumns;
+    }
     const router = options.router ?? null;
-    const readRouter = (): ListQuery =>
-        router !== null
-            ? normalize(fromSearchParams(new URLSearchParams(router.getSearch())), defaults)
-            : {};
+    const readRouter = (): { query: ListQuery; view: ListViewState } => {
+        if (router === null) {
+            return { query: {}, view: {} };
+        }
+        const search = new URLSearchParams(router.getSearch());
+        return {
+            query: normalize(fromSearchParams(search), defaults),
+            view: normalizeView(readView(search), defaults),
+        };
+    };
+    const hasListParams = (): boolean =>
+        router !== null &&
+        [...new URLSearchParams(router.getSearch()).keys()].some((key) => LIST_PARAM.test(key));
 
-    let params: ListQuery =
-        router !== null ? readRouter() : normalize(options.query ?? {}, defaults);
+    const remember = options.remember ?? null;
+    const store = remember !== null ? (remember.store ?? createStorageViewStore()) : null;
+    // A list that opens without a query of its own shows the view it remembers.
+    const remembered =
+        remember !== null &&
+        store !== null &&
+        (router !== null ? !hasListParams() : options.query === undefined)
+            ? store.get(remember.key)
+            : null;
+
+    const initial = router !== null ? readRouter() : null;
+    let params: ListQuery = normalize(
+        remembered?.query ?? initial?.query ?? options.query ?? {},
+        defaults,
+    );
+    let view: ListViewState = normalizeView(remembered?.view ?? initial?.view ?? {}, defaults);
+    // The remembered view is written to the URL once the list is subscribed to: not while it
+    // renders.
+    let restoring = remembered !== null && router !== null;
     let selection: ListSelection = EMPTY_SELECTION;
     // The cursors of the pages before this one, as `nextPage()` followed them.
     let trail: (string | null)[] = [];
@@ -147,6 +254,7 @@ export function createList(options: ListOptions = {}): List {
                 ? { sort: params.sort ?? defaults.sort }
                 : {}),
         },
+        view,
         selection,
     });
 
@@ -166,10 +274,39 @@ export function createList(options: ListOptions = {}): List {
             .filter((key) => LIST_PARAM.test(key))
             .forEach((key) => search.delete(key));
         toSearchParams(params).forEach((value, key) => search.append(key, value));
+        if (view.layout !== undefined) {
+            search.set('layout', view.layout);
+        }
+        if (view.columns !== undefined) {
+            search.set('columns', view.columns.join(','));
+        }
         const next = search.toString();
         if (next !== router.getSearch()) {
             router.setSearch(next, { replace });
         }
+    };
+
+    // Only what the user changes is remembered: not the view of a link they opened.
+    const save = () => {
+        if (remember === null || store === null) {
+            return;
+        }
+        const query = rememberedQuery(params);
+        store.set(
+            remember.key,
+            Object.keys(query).length > 0 || Object.keys(view).length > 0 ? { query, view } : null,
+        );
+    };
+
+    const setView = (next: ListViewState, { replace = false } = {}) => {
+        const normalized = normalizeView(next, defaults);
+        if (isEqual(normalized, view)) {
+            return;
+        }
+        view = normalized;
+        writeRouter(replace);
+        save();
+        notify();
     };
 
     const setParams = (next: ListQuery, { replace = false } = {}) => {
@@ -190,6 +327,7 @@ export function createList(options: ListOptions = {}): List {
             selection = EMPTY_SELECTION;
         }
         writeRouter(replace);
+        save();
         notify();
     };
 
@@ -200,14 +338,20 @@ export function createList(options: ListOptions = {}): List {
 
     let unsubscribeRouter: (() => void) | null = null;
     const onRouterChange = () => {
-        const next = readRouter();
-        if (isEqual(next, params)) {
+        // Until the remembered view is in the URL, the bare URL doesn't replace it.
+        if (restoring && !hasListParams()) {
+            return;
+        }
+        restoring = false;
+        const { query: next, view: nextView } = readRouter();
+        if (isEqual(next, params) && isEqual(nextView, view)) {
             return;
         }
         if (!isEqual(next.filter, params.filter) || next.q !== params.q) {
             selection = EMPTY_SELECTION;
         }
         params = next;
+        view = nextView;
         notify();
     };
 
@@ -222,6 +366,11 @@ export function createList(options: ListOptions = {}): List {
             listeners.add(listener);
             if (router !== null && unsubscribeRouter === null) {
                 unsubscribeRouter = router.subscribe(onRouterChange);
+                if (restoring) {
+                    // Replacing the entry: Back doesn't go through the bare URL.
+                    restoring = false;
+                    writeRouter(true);
+                }
                 onRouterChange();
             }
             return () => {
@@ -267,6 +416,12 @@ export function createList(options: ListOptions = {}): List {
         },
         setSearch: (q) => setParams({ ...params, q, ...FIRST_PAGE }, { replace: true }),
         resetQuery: () => setParams({}),
+        setLayout: (layout) => setView({ ...view, layout }),
+        setColumns: (ids) => setView({ ...view, columns: [...ids] }, { replace: true }),
+        resetColumns() {
+            const { columns: _columns, ...rest } = view;
+            setView(rest, { replace: true });
+        },
         select(ids) {
             if (selection.mode === 'all') {
                 setSelection({

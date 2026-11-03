@@ -187,6 +187,7 @@ describe('runConformance', () => {
             'create',
             'update',
             'update.create-rules',
+            'update.single-field',
             'update.conflict',
             'duplicate',
             'delete',
@@ -262,6 +263,38 @@ describe('runConformance', () => {
         expect(check?.issues).toEqual([
             'An update with code set to null got status 422, expected 200.',
         ]);
+    });
+
+    it('reports a backend that clears the fields an update of a single field does not send', async () => {
+        const backend = createBackend();
+        // A backend that replaces the item with the values it gets: a new slug each time.
+        let count = 0;
+        const replacing = (input: string, init?: RequestInit) => {
+            const body =
+                init?.method === 'PATCH' && typeof init.body === 'string'
+                    ? (JSON.parse(init.body) as Record<string, unknown>)
+                    : null;
+            return backend.fetch(
+                input,
+                body !== null && Object.keys(body).length === 1
+                    ? {
+                          ...init,
+                          body: JSON.stringify({
+                              slug: { en: `page-${String((count += 1))}` },
+                              ...body,
+                          }),
+                      }
+                    : init,
+            );
+        };
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: replacing,
+            writes,
+        });
+        const check = report.checks.find((candidate) => candidate.id === 'update.single-field');
+        expect(check?.status).toBe('failed');
+        expect(check?.issues).toEqual(['An update of status alone also changed slug.']);
     });
 
     it('reports a backend that ignores the bounds of a range filter', async () => {

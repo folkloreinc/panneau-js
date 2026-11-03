@@ -1,9 +1,9 @@
 import { type ReactNode, useRef, useState } from 'react';
 
 import type { List } from '@panneau/core';
-import { selectItemActions, usePlugins } from '@panneau/core';
+import { formatRuleFailure, selectItemActions, usePlugins } from '@panneau/core';
 import { getActionLabel } from '@panneau/intl';
-import type { Action, Field, Filter } from '@panneau/protocol';
+import type { Action, Field, Filter, RuleFailure } from '@panneau/protocol';
 import { Alert, Button, Checkbox, usePanneauIntl, useToast } from '@panneau/ui';
 
 import { ListSkeleton } from './ListSkeleton';
@@ -19,11 +19,15 @@ import {
     isAllowedOn,
 } from './actions/actions';
 import type { ActionIcons } from './actions/icons';
+import { getShownColumns } from './columns';
 import { cx } from './cx';
 import { FilterChips, FilterControls, useFilterLabels } from './filters/Filters';
+import { InlineCell } from './inline/InlineCell';
+import { getInlineField } from './inline/editable';
 import { builtInLayouts } from './layouts/builtIn';
 import { messages } from './messages';
 import { countSelected, getPageSelection, isItemSelected } from './selection';
+import { ColumnMenu } from './toolbar/ColumnMenu';
 import { LayoutSwitch } from './toolbar/LayoutSwitch';
 import { CursorPagination, Pagination } from './toolbar/Pagination';
 import { SearchField } from './toolbar/SearchField';
@@ -35,6 +39,7 @@ import type {
     ListActionHandler,
     ListActionPreviewer,
     ListColumn,
+    ListInlineEditHandler,
     ListItem,
     ListLayoutEntry,
 } from './types';
@@ -50,7 +55,13 @@ export interface ListViewProps {
      * draws a skeleton of its rows, from its columns and its page size.
      */
     items: readonly ListItem[] | undefined;
+    /**
+     * Every column of the list. Those with `hidden` are shown when the user chooses them, from
+     * the "Columns" menu, and the view of the list state says which ones are shown (decision 0042).
+     */
     columns: readonly ListColumn[];
+    /** Offers the user to show, hide and order the columns. Defaults to `true`. */
+    columnChoice?: boolean;
     /**
      * How many items match the query, on every page (`meta.total`). With it, the list shows
      * pagination and offers to select every matching item. Without it, `items` is the whole list.
@@ -75,7 +86,7 @@ export interface ListViewProps {
     search?: boolean;
     /** Layouts to choose from, the first one being the default. Defaults to `['table']`. */
     layouts?: readonly string[];
-    /** The layout, controlled. */
+    /** The layout, controlled. Without it, the layout is the view of the list state. */
     layout?: string;
     onLayoutChange?: (layout: string) => void;
     /** Page sizes to choose from. */
@@ -123,6 +134,19 @@ export interface ListViewProps {
     layoutComponents?: Readonly<Record<string, ListLayoutEntry>>;
     /** Filter controls by filter type, over the built-in ones. */
     filterControls?: Readonly<Record<string, FilterEntry>>;
+    /**
+     * The fields that columns edit in place (`inlineEdit` of the list), on the items that can be
+     * updated, in the table (decision 0043). Needs `onInlineEdit`.
+     */
+    inlineEdit?: readonly string[];
+    /** Saves a field edited in place, and resolves with the updated item. */
+    onInlineEdit?: ListInlineEditHandler;
+    /**
+     * The message of a portable rule that a value edited in place fails. Defaults to
+     * `formatRuleFailure()` of `@panneau/core`, in English; `useFormatRuleFailure()` of
+     * `@panneau/forms` translates them.
+     */
+    formatError?: (failure: RuleFailure, path: string) => string;
     /** Content at the end of the toolbar, such as a button to create an item. */
     toolbar?: ReactNode;
     /** Shown when the list has no items, without filters or search. */
@@ -144,7 +168,8 @@ function keyOf(action: Action, item?: ListItem): string {
 export function ListView({
     list,
     items,
-    columns,
+    columns: allColumns,
+    columnChoice = true,
     total,
     cursors,
     isLoading = false,
@@ -170,6 +195,9 @@ export function ListView({
     displays,
     layoutComponents,
     filterControls,
+    inlineEdit = [],
+    onInlineEdit,
+    formatError = formatRuleFailure,
     toolbar,
     emptyMessage,
     'aria-label': ariaLabel,
@@ -178,17 +206,29 @@ export function ListView({
     const intl = usePanneauIntl();
     const toasts = useToast();
     const plugins = usePlugins();
-    const { query, selection } = useListState(list);
+    const { query, view, selection } = useListState(list);
     const filterLabels = useFilterLabels();
-    const [uncontrolledLayout, setLayout] = useState<string | null>(null);
     const [confirming, setConfirming] = useState<ListActionEvent | null>(null);
     const [preview, setPreview] = useState<ConfirmPreview | null>(null);
     // The confirmation a dry run belongs to: a later one, or a cancel, discards its answer.
     const confirmation = useRef(0);
     const [pending, setPending] = useState<string | null>(null);
 
+    // Items saved in place, over the item the caller gave, until it gives another one.
+    const [saved, setSaved] = useState<
+        Readonly<Record<string, { base: ListItem; item: ListItem }>>
+    >({});
+    const showItem = (item: ListItem) => {
+        const base = items?.find((candidate) => candidate.id === item.id);
+        if (base !== undefined) {
+            setSaved((current) => ({ ...current, [item.id]: { base, item } }));
+        }
+    };
+
     const label = ariaLabel ?? intl.formatMessage(messages.list);
-    const pageItems = items ?? [];
+    const pageItems = (items ?? []).map((item) =>
+        saved[item.id]?.base === item ? (saved[item.id]?.item ?? item) : item,
+    );
     const count = total ?? pageItems.length;
     const sort = query.sort ?? [];
     const filterValues = query.filter ?? {};
@@ -202,7 +242,10 @@ export function ListView({
     // Layouts without a component (a plugin's that isn't installed) are left out.
     const available = layoutsProp.filter((id) => allLayouts[id] !== undefined);
     const layouts = available.length > 0 ? available : ['table'];
-    const layout = controlledLayout ?? uncontrolledLayout ?? layouts[0] ?? 'table';
+    const chosenLayout =
+        view.layout !== undefined && layouts.includes(view.layout) ? view.layout : undefined;
+    const layout = controlledLayout ?? chosenLayout ?? layouts[0] ?? 'table';
+    const columns = getShownColumns(allColumns, view.columns);
     const Layout = allLayouts[layout] ?? builtInLayouts.table;
 
     const grouped = groupListActions(actionsProp);
@@ -225,7 +268,7 @@ export function ListView({
             return getItemLabelProp(item);
         }
         const titleColumn =
-            columns.find((column) => column.id === itemTitle) ??
+            allColumns.find((column) => column.id === itemTitle) ??
             (itemTitle === undefined ? columns[0] : undefined);
         const title =
             titleColumn !== undefined
@@ -237,6 +280,27 @@ export function ListView({
     };
 
     const renderValue = useRenderValue(displays);
+
+    const renderCell = (item: ListItem, column: ListColumn, content: ReactNode): ReactNode => {
+        const field = onInlineEdit !== undefined ? getInlineField(column, item, inlineEdit) : null;
+        if (field === null || onInlineEdit === undefined) {
+            return content;
+        }
+        return (
+            <InlineCell
+                key={`${item.id}\u0000${column.id}`}
+                item={item}
+                field={field}
+                itemLabel={getItemLabel(item)}
+                renderValue={(current) => renderValue(current, column)}
+                onSave={(base, value) => onInlineEdit({ item: base, field, value })}
+                onItem={showItem}
+                formatError={(failure) => formatError(failure, field.name)}
+            >
+                {content}
+            </InlineCell>
+        );
+    };
 
     const closeConfirmation = () => {
         confirmation.current += 1;
@@ -374,11 +438,13 @@ export function ListView({
         />
     );
 
-    const sortable = columns.some((column) => column.sortable === true);
+    const sortable = allColumns.some((column) => column.sortable === true);
+    const choosesColumns = columnChoice && allColumns.length > 1;
     const showToolbar =
         search ||
         filters.length > 0 ||
         sortable ||
+        choosesColumns ||
         layouts.length > 1 ||
         resourceActions.length > 0 ||
         toolbar !== undefined;
@@ -451,6 +517,7 @@ export function ListView({
                 onSort={(column) => list.toggleSort(column.id)}
                 label={label}
                 pageSelection={pageCheckbox}
+                renderCell={renderCell}
             />
         );
     })();
@@ -473,7 +540,7 @@ export function ListView({
                                 onChange={(id, value) => list.setFilter(id, value)}
                                 onLabel={filterLabels.remember}
                                 controls={filterControls}
-                                columns={columns}
+                                columns={allColumns}
                                 fields={fields}
                                 labels={filterLabels.labels}
                             />
@@ -483,7 +550,7 @@ export function ListView({
                         {sortable ? (
                             <div className={layout === 'table' ? styles.tableSort : undefined}>
                                 <SortSelect
-                                    columns={columns}
+                                    columns={allColumns}
                                     sort={sort}
                                     onChange={(next) => list.setSort(next)}
                                 />
@@ -494,9 +561,21 @@ export function ListView({
                                 layouts={layouts}
                                 value={layout}
                                 onChange={(next) => {
-                                    setLayout(next);
+                                    if (controlledLayout === undefined) {
+                                        list.setLayout(next);
+                                    }
                                     onLayoutChange?.(next);
                                 }}
+                            />
+                        ) : null}
+                        {choosesColumns ? (
+                            <ColumnMenu
+                                columns={allColumns}
+                                shown={columns}
+                                onChange={(ids) => list.setColumns(ids)}
+                                onReset={
+                                    view.columns !== undefined ? () => list.resetColumns() : null
+                                }
                             />
                         ) : null}
                         {resourceActions
@@ -525,7 +604,7 @@ export function ListView({
                 onRemove={(id) => list.setFilter(id, undefined)}
                 onClearSearch={() => list.setSearch('')}
                 onClear={clearFilters}
-                columns={columns}
+                columns={allColumns}
                 fields={fields}
                 labels={filterLabels.labels}
             />

@@ -26,6 +26,23 @@ export const appComponentTokens: Readonly<{
 export function createPanneauApp(input: PanneauAppOptions): PanneauApp;
 
 // @public
+export function ErrorPage(input: ErrorPageProps): JSX.Element;
+
+// @public
+export type ErrorPageKind = 'not-found' | 'forbidden' | 'server-error' | 'offline' | 'error';
+
+// @public (undocumented)
+export interface ErrorPageProps {
+    className?: string;
+    homeHref?: string;
+    kind: ErrorPageKind;
+    onRetry?: () => void;
+}
+
+// @public
+export function getErrorPageKind(error: unknown): ErrorPageKind;
+
+// @public
 export const itemPanelTokens: ComponentTokens<"item-panel", "panneau-item-panel-width" | "panneau-item-panel-radius" | "panneau-item-panel-bg" | "panneau-item-panel-width-wide" | "panneau-item-panel-shadow">;
 
 // @public @deprecated
