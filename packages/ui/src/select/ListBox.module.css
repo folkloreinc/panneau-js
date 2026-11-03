@@ -124,11 +124,18 @@
     white-space: nowrap;
 }
 
+/* A flex box rather than an inline one: inside the block of the value, an inline box sits on a
+   line of text, whose strut pushed the label below the middle of the trigger. */
 .valueText {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: var(--panneau-space-2);
     max-width: 100%;
+}
+
+/* The check marks the chosen option in the list: the trigger shows the option without it. */
+.value .check {
+    display: none;
 }
 
 /* A select inside another control: the button alone, the height of the control, with a line

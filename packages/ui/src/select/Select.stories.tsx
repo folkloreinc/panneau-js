@@ -30,7 +30,16 @@ export const Single: Story = {
         const body = within(canvasElement.ownerDocument.body);
         await userEvent.click(canvas.getByRole('button', { name: /Status/ }));
         await userEvent.click(await body.findByRole('option', { name: /In review/ }));
-        await expect(canvas.getByRole('button', { name: /Status/ })).toHaveTextContent('In review');
+        const trigger = canvas.getByRole('button', { name: /Status/ });
+        await expect(trigger).toHaveTextContent('In review');
+        // The chosen label starts at the padding of the trigger, and sits in its middle
+        const box = trigger.getBoundingClientRect();
+        const label = within(trigger).getByText('In review').getBoundingClientRect();
+        const padding = parseFloat(getComputedStyle(trigger).paddingInlineStart);
+        await expect(Math.abs(label.left - box.left - padding)).toBeLessThanOrEqual(1);
+        await expect(
+            Math.abs((label.top + label.bottom) / 2 - (box.top + box.bottom) / 2),
+        ).toBeLessThanOrEqual(1);
     },
 };
 
