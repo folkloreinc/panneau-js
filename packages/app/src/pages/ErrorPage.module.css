@@ -1,0 +1,36 @@
+/* An error page: centered in the page's panel, as the not found page. */
+
+.root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--panneau-space-3);
+    max-width: 32rem;
+    margin-inline: auto;
+    padding-block: var(--panneau-space-10);
+    text-align: center;
+}
+
+.icon {
+    display: inline-grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: var(--panneau-space-1);
+    border-radius: var(--panneau-radius-full);
+    background: var(--panneau-color-surface-sunken);
+    color: var(--panneau-color-text-muted);
+}
+
+.text {
+    margin: 0;
+    color: var(--panneau-color-text-muted);
+}
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--panneau-space-2);
+    margin-top: var(--panneau-space-2);
+}

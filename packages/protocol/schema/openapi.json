@@ -2627,6 +2627,14 @@
                             "center",
                             "end"
                         ]
+                    },
+                    "hidden": {
+                        "description": "Not shown by default: the user can show it from the columns of the list (decision 0042).",
+                        "type": "boolean"
+                    },
+                    "hideable": {
+                        "description": "`false`: always shown, the user can move it but not hide it. Columns are hideable by default.",
+                        "type": "boolean"
                     }
                 },
                 "additionalProperties": {}

@@ -17,8 +17,9 @@ import { Alert, usePanneauIntl, useToast } from '@panneau/ui';
 
 import { DocumentTitle } from './documentTitle';
 import { navigate, setHistoryGuard, usePathname } from './location';
+import { ErrorPage } from './pages/ErrorPage';
 import { HomePage } from './pages/HomePage';
-import { NotFoundPage } from './pages/NotFoundPage';
+import { PageErrorBoundary } from './pages/PageErrorBoundary';
 import { ResourceFormPage } from './pages/ResourceFormPage';
 import { ResourceListPage } from './pages/ResourceListPage';
 import { resolveRoute } from './routeReference';
@@ -78,7 +79,10 @@ function DefinitionPage({
 }
 
 function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) {
-    const notFound = <NotFoundPage homeHref={routePath({ name: 'home' }, basePath)} />;
+    const homeHref = routePath({ name: 'home' }, basePath);
+    const notFound = <ErrorPage kind="not-found" homeHref={homeHref} />;
+    // The resource is in the definition: it exists, the user can't see it.
+    const forbidden = <ErrorPage kind="forbidden" homeHref={homeHref} />;
     switch (route.name) {
         case 'home': {
             // `pages.home` of the definition, or the cards of the resources (decision 0019)
@@ -130,7 +134,7 @@ function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) 
                         resolveRoute={(reference) => resolveRoute(definition, basePath, reference)}
                     />
                 ) : (
-                    notFound
+                    forbidden
                 );
             }
             return (
@@ -226,7 +230,12 @@ export function Shell({
                         onColorSchemeChange={onColorSchemeChange}
                         onLogOut={logOut}
                     >
-                        <Page definition={definition} basePath={basePath} route={route} />
+                        <PageErrorBoundary
+                            homeHref={routePath({ name: 'home' }, basePath)}
+                            path={pathname}
+                        >
+                            <Page definition={definition} basePath={basePath} route={route} />
+                        </PageErrorBoundary>
                     </AppLayout>
                 </ActionRunnerProvider>
             </RouterProvider>

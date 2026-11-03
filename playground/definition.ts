@@ -173,12 +173,12 @@ export function createPlaygroundDefinition(): DefinitionInput {
                 },
                 list: {
                     columns: [
-                        { field: 'title', sortable: true },
+                        { field: 'title', sortable: true, hideable: false },
                         { field: 'status' },
                         { field: 'category' },
                         { field: 'published_at', sortable: true },
-                        { field: 'tags' },
-                        { field: 'reading_time' },
+                        { field: 'tags', hidden: true },
+                        { field: 'reading_time', hidden: true },
                     ],
                     filters: [
                         { id: 'status', type: 'select' },

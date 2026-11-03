@@ -47,6 +47,19 @@ export const listsMessages = {
     layout: defineMessage({ id: 'panneau.lists.layout', defaultMessage: 'Layout' }),
     layoutTable: defineMessage({ id: 'panneau.lists.layoutTable', defaultMessage: 'Table' }),
     layoutCards: defineMessage({ id: 'panneau.lists.layoutCards', defaultMessage: 'Cards' }),
+    columns: defineMessage({ id: 'panneau.lists.columns', defaultMessage: 'Columns' }),
+    moveColumnUp: defineMessage<{ column: string }>({
+        id: 'panneau.lists.moveColumnUp',
+        defaultMessage: 'Move {column} up',
+    }),
+    moveColumnDown: defineMessage<{ column: string }>({
+        id: 'panneau.lists.moveColumnDown',
+        defaultMessage: 'Move {column} down',
+    }),
+    resetColumns: defineMessage({
+        id: 'panneau.lists.resetColumns',
+        defaultMessage: 'Reset columns',
+    }),
     selectItem: defineMessage<{ item: string }>({
         id: 'panneau.lists.selectItem',
         defaultMessage: 'Select {item}',

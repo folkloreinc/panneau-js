@@ -2,6 +2,12 @@ export { createPanneauApp, type PanneauApp, type PanneauAppOptions } from './cre
 export { Panneau, type PanneauProps, type UnauthorizedContext } from './Panneau';
 export { readBootConfig } from './boot';
 export {
+    ErrorPage,
+    type ErrorPageKind,
+    type ErrorPageProps,
+    getErrorPageKind,
+} from './pages/ErrorPage';
+export {
     LinkButton,
     type LinkButtonProps,
     PageHeader,

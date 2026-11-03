@@ -5,13 +5,14 @@ import { createRelationSource } from '@panneau/fields';
 import { Form } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
 import type { Definition, Item, RouteReference } from '@panneau/protocol';
-import { Alert, Button, usePanneauIntl } from '@panneau/ui';
+import { usePanneauIntl } from '@panneau/ui';
 
 import { useDocumentTitle } from '../documentTitle';
 import { navigate } from '../location';
 import { capitalize } from '../navigation';
 import { useRecordRecentItem } from '../recentItems';
 import { routePath } from '../routes';
+import { ErrorPage, getErrorPageKind } from './ErrorPage';
 import { ItemActions } from './ItemActions';
 import { PageHeader, PageLayout } from './PageHeader';
 import { useItemActionRunner } from './itemActionRunner';
@@ -105,62 +106,60 @@ export function ResourceFormPage({
             />
         ) : undefined;
 
-    let content;
     if (mode === 'update' && item === undefined && itemQuery.isError) {
-        content = (
-            <Alert tone="danger">
-                <p>{intl.formatMessage(appMessages.itemLoadError, { resource: singular })}</p>
-                <Button size="sm" onPress={() => void itemQuery.refetch()}>
-                    {intl.formatMessage(appMessages.retry)}
-                </Button>
-            </Alert>
-        );
-    } else {
-        // While the item loads, the form draws its skeleton; it starts over from the item's values.
-        content = (
-            <Form
-                key={item?.version ?? item?.id ?? 'new'}
-                aria-label={title}
-                isLoading={mode === 'update' && item === undefined}
-                fields={fields}
-                layout={layout}
-                values={
-                    item !== undefined
-                        ? getItemValues(
-                              item,
-                              fields.map((field) => field.name),
-                          )
-                        : undefined
-                }
-                version={item?.version ?? null}
-                mode={mode}
-                locales={definition.locales}
-                relationSource={relationSource}
-                guardUnsavedChanges
-                showSavedToast
-                onSubmit={(values, { version, changes }) =>
-                    id === null
-                        ? createItem.mutateAsync(values)
-                        : updateItem.mutateAsync({ id, values: changes, version })
-                }
-                onSubmitted={(result) => {
-                    if (id === null) {
-                        navigate(
-                            routePath(
-                                {
-                                    name: 'resource.edit',
-                                    resource: resource.id,
-                                    id: (result as Item).id,
-                                },
-                                basePath,
-                            ),
-                        );
-                    }
-                }}
-                onReload={() => void itemQuery.refetch()}
+        // In place of the page: the item is missing or forbidden, or the server failed
+        return (
+            <ErrorPage
+                kind={getErrorPageKind(itemQuery.error)}
+                homeHref={routePath({ name: 'home' }, basePath)}
+                onRetry={() => void itemQuery.refetch()}
             />
         );
     }
+    // While the item loads, the form draws its skeleton; it starts over from the item's values.
+    const content = (
+        <Form
+            key={item?.version ?? item?.id ?? 'new'}
+            aria-label={title}
+            isLoading={mode === 'update' && item === undefined}
+            fields={fields}
+            layout={layout}
+            values={
+                item !== undefined
+                    ? getItemValues(
+                          item,
+                          fields.map((field) => field.name),
+                      )
+                    : undefined
+            }
+            version={item?.version ?? null}
+            mode={mode}
+            locales={definition.locales}
+            relationSource={relationSource}
+            guardUnsavedChanges
+            showSavedToast
+            onSubmit={(values, { version, changes }) =>
+                id === null
+                    ? createItem.mutateAsync(values)
+                    : updateItem.mutateAsync({ id, values: changes, version })
+            }
+            onSubmitted={(result) => {
+                if (id === null) {
+                    navigate(
+                        routePath(
+                            {
+                                name: 'resource.edit',
+                                resource: resource.id,
+                                id: (result as Item).id,
+                            },
+                            basePath,
+                        ),
+                    );
+                }
+            }}
+            onReload={() => void itemQuery.refetch()}
+        />
+    );
 
     // A form with a sidebar takes the width of a list: its main column stays wide enough
     const hasSidebar = layout.some((node) => node.type === 'sidebar');

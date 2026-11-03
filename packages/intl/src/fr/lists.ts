@@ -21,6 +21,10 @@ export const listsFr: Record<string, string> = {
     'panneau.lists.layout': 'Affichage',
     'panneau.lists.layoutTable': 'Tableau',
     'panneau.lists.layoutCards': 'Cartes',
+    'panneau.lists.columns': 'Colonnes',
+    'panneau.lists.moveColumnUp': 'Monter {column}',
+    'panneau.lists.moveColumnDown': 'Descendre {column}',
+    'panneau.lists.resetColumns': 'Colonnes par défaut',
     'panneau.lists.selectItem': 'Sélectionner {item}',
     'panneau.lists.selectPage': 'Sélectionner tous les éléments de la page',
     'panneau.lists.selectedCount':

@@ -1,5 +1,5 @@
 import { QueryClient } from '@tanstack/react-query';
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -248,6 +248,92 @@ describe('the app shell', () => {
         expect(
             within(screen.getByRole('complementary')).getByRole('link', { name: /Ada/ }),
         ).toHaveAttribute('aria-current', 'page');
+    });
+
+    describe('error pages', () => {
+        it('shows the error page of a page that throws, with the sidebar, and renders it again', async () => {
+            const user = userEvent.setup();
+            let fail = true;
+            function Report() {
+                if (fail) {
+                    throw new Error('The report broke.');
+                }
+                return <h1>Report</h1>;
+            }
+            vi.spyOn(console, 'error').mockImplementation(() => undefined);
+            window.history.replaceState(null, '', '/panneau/pages/report');
+            renderApp({ pages: { report: { component: 'report', label: 'Report' } } }, [
+                definePlugin({ id: 'reports', pages: { report: Report } }),
+            ]);
+            expect(await screen.findByRole('alert')).toHaveTextContent(
+                'This page ran into a problem',
+            );
+            expect(navigation().getByRole('link', { name: 'Pages' })).toBeInTheDocument();
+            fail = false;
+            await user.click(screen.getByRole('button', { name: 'Try again' }));
+            expect(await screen.findByRole('heading', { name: 'Report' })).toBeInTheDocument();
+        });
+
+        it('shows the error page of a list that fails to load, with a retry', async () => {
+            const user = userEvent.setup();
+            let fail = true;
+            window.history.replaceState(null, '', '/panneau/resources/pages');
+            renderApp({}, [], (backend) => {
+                const { fetch } = backend;
+                backend.fetch = (input, init) =>
+                    fail
+                        ? Promise.resolve(
+                              new Response(
+                                  JSON.stringify({
+                                      type: 'about:blank',
+                                      title: 'Oops',
+                                      status: 500,
+                                  }),
+                                  {
+                                      status: 500,
+                                      headers: { 'Content-Type': 'application/problem+json' },
+                                  },
+                              ),
+                          )
+                        : fetch(input, init);
+            });
+            expect(await screen.findByRole('alert')).toHaveTextContent(
+                'The server ran into a problem.',
+            );
+            fail = false;
+            await user.click(screen.getByRole('button', { name: 'Try again' }));
+            expect(await screen.findByRole('heading', { name: 'Pages' })).toBeInTheDocument();
+        });
+
+        it('shows the forbidden page of an item the user can’t see', async () => {
+            window.history.replaceState(null, '', '/panneau/resources/pages/1/edit');
+            renderApp({}, [], (backend) => {
+                const { fetch } = backend;
+                backend.fetch = (input, init) =>
+                    String(input).endsWith('/resources/pages/1')
+                        ? Promise.resolve(
+                              new Response(
+                                  JSON.stringify({
+                                      type: 'about:blank',
+                                      title: 'Forbidden',
+                                      status: 403,
+                                  }),
+                                  {
+                                      status: 403,
+                                      headers: { 'Content-Type': 'application/problem+json' },
+                                  },
+                              ),
+                          )
+                        : fetch(input, init);
+            });
+            expect(
+                await screen.findByRole('heading', { name: 'Access denied' }),
+            ).toBeInTheDocument();
+            expect(screen.getByRole('link', { name: 'Back to home' })).toHaveAttribute(
+                'href',
+                '/panneau',
+            );
+        });
     });
 
     describe('a page with params', () => {
@@ -536,7 +622,7 @@ describe('the app shell', () => {
                 },
             ],
         });
-        expect(await screen.findByRole('heading', { name: /not found/i })).toBeInTheDocument();
+        expect(await screen.findByRole('heading', { name: 'Access denied' })).toBeInTheDocument();
         expect(window.location.pathname).toBe('/panneau/resources/authors/1');
     });
 
@@ -752,6 +838,27 @@ describe('the app shell', () => {
         await user.click(pagination.getByRole('button', { name: 'Previous page' }));
         expect(await main.findByText('About us')).toBeInTheDocument();
         expect(window.location.search).toBe('');
+    });
+    it('remembers the view of a list, unless its URL says another', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        renderApp();
+        await user.click(await screen.findByRole('radio', { name: 'Cards' }));
+        expect(window.location.search).toBe('?layout=cards');
+        cleanup();
+
+        // From the menu: the list opens as the user left it, and says so in its URL
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        renderApp();
+        expect(await screen.findByRole('list', { name: 'Pages' })).toBeInTheDocument();
+        await waitFor(() => expect(window.location.search).toBe('?layout=cards'));
+        cleanup();
+
+        // A link with a query opens what it says
+        window.history.replaceState(null, '', '/panneau/resources/pages?sort=-title');
+        renderApp();
+        expect(await screen.findByRole('table', { name: 'Pages' })).toBeInTheDocument();
+        expect(window.location.search).toBe('?sort=-title');
     });
 
     it('edits a field in place in the list, and saves it alone', async () => {

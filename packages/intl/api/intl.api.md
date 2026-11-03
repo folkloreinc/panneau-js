@@ -164,6 +164,16 @@ export const appMessages: {
     notFound: PanneauMessage<Record<never, never>>;
     notFoundText: PanneauMessage<Record<never, never>>;
     backHome: PanneauMessage<Record<never, never>>;
+    forbidden: PanneauMessage<Record<never, never>>;
+    forbiddenText: PanneauMessage<Record<never, never>>;
+    serverError: PanneauMessage<Record<never, never>>;
+    serverErrorText: PanneauMessage<Record<never, never>>;
+    pageError: PanneauMessage<Record<never, never>>;
+    pageErrorText: PanneauMessage<Record<never, never>>;
+    offline: PanneauMessage<Record<never, never>>;
+    offlineText: PanneauMessage<Record<never, never>>;
+    unreachable: PanneauMessage<Record<never, never>>;
+    unreachableText: PanneauMessage<Record<never, never>>;
     missingPage: PanneauMessage<    {
     component: string;
     }>;
@@ -456,6 +466,14 @@ export const listsMessages: {
     layout: PanneauMessage<Record<never, never>>;
     layoutTable: PanneauMessage<Record<never, never>>;
     layoutCards: PanneauMessage<Record<never, never>>;
+    columns: PanneauMessage<Record<never, never>>;
+    moveColumnUp: PanneauMessage<    {
+    column: string;
+    }>;
+    moveColumnDown: PanneauMessage<    {
+    column: string;
+    }>;
+    resetColumns: PanneauMessage<Record<never, never>>;
     selectItem: PanneauMessage<    {
     item: string;
     }>;

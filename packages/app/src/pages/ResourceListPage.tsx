@@ -2,7 +2,7 @@ import { Plus } from 'lucide-react';
 import { useEffect } from 'react';
 
 import { useActionPreview } from '@panneau/actions';
-import { type ResolvedResource, getOpenMode, useList } from '@panneau/core';
+import { type ResolvedResource, getOpenMode, useList, usePanneau } from '@panneau/core';
 import { useResourceItem, useResourceList, useUpdateItem } from '@panneau/data/query';
 import { useFormatRuleFailure } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
@@ -15,6 +15,7 @@ import { useDocumentTitle } from '../documentTitle';
 import { navigate } from '../location';
 import { capitalize } from '../navigation';
 import { routePath } from '../routes';
+import { ErrorPage, getErrorPageKind } from './ErrorPage';
 import { ItemPanel } from './ItemPanel';
 import { PageHeader } from './PageHeader';
 import { filterActions, useItemActionRunner } from './itemActionRunner';
@@ -46,7 +47,13 @@ export function ResourceListPage({
 }: ResourceListPageProps) {
     const intl = usePanneauIntl();
     const { resource, list: definitionList, abilities } = resolved;
-    const { query, list } = useList({ list: definitionList });
+    const { definition } = usePanneau();
+    // The view of the list (filters, sort, layout, columns) is remembered for the user, in this
+    // browser (decision 0042).
+    const { query, list } = useList({
+        list: definitionList,
+        remember: { key: `${basePath}:${definition?.user?.id ?? ''}:${resource.id}` },
+    });
     const { data, error, isFetching, refetch } = useResourceList(resource.id, query, {
         placeholderData: (previous) => previous,
     });
@@ -88,6 +95,17 @@ export function ResourceListPage({
             !selectedError)
     ) {
         return null;
+    }
+    // A list that never loaded: the error page, in place of the page. Once it has items, an error
+    // of a refetch shows in the list, which keeps them.
+    if (error !== null && data === undefined) {
+        return (
+            <ErrorPage
+                kind={getErrorPageKind(error)}
+                homeHref={routePath({ name: 'home' }, basePath)}
+                onRetry={() => void refetch()}
+            />
+        );
     }
     return (
         <div className={cx(styles.page, selectedId !== null && styles.withPanel)}>
