@@ -197,6 +197,14 @@ export function createPlaygroundDefinition(): DefinitionInput {
                         scope: ['item'],
                         placement: ['menu'],
                     },
+                    // Queued: the notification area of the shell follows it (see `main.tsx`)
+                    {
+                        id: 'export',
+                        label: 'Export',
+                        icon: 'download',
+                        scope: ['resource', 'selection'],
+                        placement: ['toolbar'],
+                    },
                     DELETE,
                 ],
                 abilities: { viewAny: true, create: true },
