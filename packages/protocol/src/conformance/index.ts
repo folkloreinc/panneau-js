@@ -822,11 +822,6 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                 check.skip('No item was created.');
                 return;
             }
-            const name = Object.keys(writes.update)[0];
-            if (name === undefined) {
-                check.skip('The update of `writes` has no value.');
-                return;
-            }
             // As a list edits a field in place: the item's version, and the one field
             const current = await request(itemPath());
             const before = check.expectStatus(current, 200)
@@ -835,10 +830,20 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
             if (before === null) {
                 return;
             }
+            // A value of the update set back to the one it was created with: a real change.
+            const name = Object.keys(writes.update).find(
+                (key) => key in writes.create && !isEqual(writes.create[key], before.data[key]),
+            );
+            if (name === undefined) {
+                check.skip(
+                    'No value of the update of `writes` differs from its value in `create`, to set it back.',
+                );
+                return;
+            }
             const version = before.data.version;
             const reply = await request(itemPath(), {
                 method: 'PATCH',
-                body: JSON.stringify({ [name]: writes.update[name] }),
+                body: JSON.stringify({ [name]: writes.create[name] }),
                 headers: version !== null ? { 'If-Match': `"${version}"` } : {},
             });
             if (!check.expectStatus(reply, 200)) {
