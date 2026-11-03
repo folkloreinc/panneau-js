@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { PanneauProvider, createList, createMemoryRouter, definePlugin } from '@panneau/core';
 import { fr } from '@panneau/intl';
+import type { Field } from '@panneau/protocol';
 import { PanneauRoot } from '@panneau/ui';
 
 import { List } from './List';
@@ -22,7 +23,7 @@ import {
     statusField,
 } from './__fixtures__/pages';
 import { renderList } from './__fixtures__/render';
-import type { DisplayProps } from './types';
+import type { DisplayProps, ListColumn, ListInlineEditHandler, ListItem } from './types';
 
 function rowTitles() {
     return screen
@@ -638,19 +639,19 @@ describe('ListView layouts', () => {
 });
 
 describe('ListView inline editing', () => {
-    const nameField = {
+    const nameField: Field = {
         name: 'name',
         type: 'text',
         label: 'Name',
         rules: [{ rule: 'required' }],
-    } as const;
-    const activeField = { name: 'active', type: 'boolean', label: 'Active' } as const;
-    const editable = [
+    };
+    const activeField: Field = { name: 'active', type: 'boolean', label: 'Active' };
+    const editable: ListColumn[] = [
         { id: 'name', label: 'Name', field: nameField, display: 'text' },
         { id: 'status', label: 'Status', field: statusField, display: 'select' },
         { id: 'active', label: 'Active', field: activeField, display: 'boolean' },
     ];
-    const people = [
+    const people: ListItem[] = [
         {
             id: '1',
             version: '3',
@@ -661,20 +662,20 @@ describe('ListView inline editing', () => {
         },
         { id: '2', version: '1', name: 'Grace', status: 'draft', active: true, abilities: {} },
     ];
-    const renderEditable = (onInlineEdit: (event: { item: unknown; value: unknown }) => unknown) =>
+    const renderEditable = (onInlineEdit: ListInlineEditHandler) =>
         renderList(
             <ListView
                 list={createList()}
                 columns={editable}
                 items={people}
                 inlineEdit={['name', 'status', 'active']}
-                onInlineEdit={onInlineEdit as never}
+                onInlineEdit={onInlineEdit}
             />,
         );
 
     it('edits a text in place, and saves it with Enter', async () => {
         const user = userEvent.setup();
-        const onInlineEdit = vi.fn(({ item, value }: { item: object; value: unknown }) =>
+        const onInlineEdit = vi.fn<ListInlineEditHandler>(({ item, value }) =>
             Promise.resolve({ ...item, name: value, version: '4' }),
         );
         renderEditable(onInlineEdit);
@@ -698,7 +699,7 @@ describe('ListView inline editing', () => {
 
     it('cancels with Escape, and checks the rules before it saves', async () => {
         const user = userEvent.setup();
-        const onInlineEdit = vi.fn();
+        const onInlineEdit = vi.fn<ListInlineEditHandler>();
         renderEditable(onInlineEdit);
         await user.click(screen.getByRole('button', { name: 'Edit Name of Ada' }));
         await user.type(screen.getByRole('textbox', { name: 'Name' }), '!{Escape}');
@@ -714,7 +715,7 @@ describe('ListView inline editing', () => {
 
     it('shows the errors of the backend on the cell', async () => {
         const user = userEvent.setup();
-        const onInlineEdit = vi.fn(() =>
+        const onInlineEdit = vi.fn<ListInlineEditHandler>(() =>
             Promise.reject({
                 problem: {
                     type: 'urn:panneau:problem:validation',
@@ -735,7 +736,7 @@ describe('ListView inline editing', () => {
         const user = userEvent.setup();
         const current = { ...people[0], version: '4', active: false, name: 'Ada L.' };
         const onInlineEdit = vi
-            .fn()
+            .fn<ListInlineEditHandler>()
             .mockRejectedValueOnce({
                 problem: {
                     type: 'urn:panneau:problem:version-conflict',
@@ -744,7 +745,7 @@ describe('ListView inline editing', () => {
                     current,
                 },
             })
-            .mockImplementationOnce(({ item, value }: { item: object; value: unknown }) =>
+            .mockImplementationOnce(({ item, value }) =>
                 Promise.resolve({ ...item, active: value, version: '5' }),
             );
         renderEditable(onInlineEdit);
