@@ -839,4 +839,27 @@ describe('the app shell', () => {
         expect(await main.findByText('About us')).toBeInTheDocument();
         expect(window.location.search).toBe('');
     });
+
+    it('edits a field in place in the list, and saves it alone', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        const definition = createDefinition();
+        const pages = definition.resources[0];
+        const backend = renderApp({
+            resources: [
+                { ...pages, list: { inlineEdit: ['title'] } } as NonNullable<typeof pages>,
+                ...definition.resources.slice(1),
+            ],
+        });
+        await user.click(await screen.findByRole('button', { name: 'Edit title of About us' }));
+        const input = screen.getByRole('textbox', { name: 'title' });
+        await user.clear(input);
+        await user.type(input, 'About{Enter}');
+        await waitFor(() =>
+            expect(backend.items('pages').find((item) => item.id === '1')).toMatchObject({
+                title: 'About',
+            }),
+        );
+        expect(await screen.findByRole('link', { name: 'About' })).toBeInTheDocument();
+    });
 });

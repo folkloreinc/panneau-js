@@ -47,4 +47,5 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0039](0039-cursor-pagination.md)             | Lists paged with cursors                                               | Accepted                          |
 | [0040](0040-row-links-and-open-mode.md)       | Built-in item actions by abilities, and what opens an item             | Accepted                          |
 | [0041](0041-groups-in-item-details.md)        | The panel of an item shows the values of its groups                    | Accepted                          |
+| [0043](0043-inline-editing.md)                | Inline editing in lists, one field at a time                           | Accepted                          |
 | [0045](0045-current-context.md)               | A current context, picked in the app and sent with every request       | Proposed                          |

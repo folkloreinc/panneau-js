@@ -43,6 +43,9 @@ export const appFr: Record<string, string> = {
     'panneau.app.narrowPanel': 'Rétrécir les détails',
     'panneau.app.closePanel': 'Fermer les détails',
     'panneau.app.goTo': 'Aller à…',
+    'panneau.app.actionRuns': 'Actions',
+    'panneau.app.actionRunsLabel':
+        '{count, plural, =0 {Actions} one {Actions, # en cours} other {Actions, # en cours}}',
     'panneau.app.context': 'Contexte',
     'panneau.app.contextNone': 'Tous',
     'panneau.app.contextChange': 'Changer de contexte ({context})',
