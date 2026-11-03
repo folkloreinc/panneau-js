@@ -9,6 +9,8 @@ export interface ListViewState {
     layout?: string;
     /** The ids of the columns shown, in their order. */
     columns?: string[];
+    /** The month a calendar shows (`2026-11`), when it isn't the current one. Not remembered. */
+    month?: string;
 }
 
 /**

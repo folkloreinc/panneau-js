@@ -292,6 +292,33 @@ describe('lintDefinition', () => {
         ]);
     });
 
+    it('checks the field and the filter of a calendar', () => {
+        const definition = createDefinition();
+        const pages = definition.resources[0];
+        if (pages === undefined) {
+            throw new Error('Fixture has no resource.');
+        }
+        pages.list = {
+            ...pages.list,
+            filters: [{ id: 'published_at', type: 'date-range' }],
+            calendar: { field: 'published_at' },
+        };
+        expect(lintDefinition(definition)).toEqual([]);
+        pages.list.calendar = { field: 'title', filter: 'day' };
+        expect(lintDefinition(definition)).toEqual([
+            {
+                path: 'resources.0.list.calendar.field',
+                message: 'The field of a calendar must be a `date` or a `datetime`.',
+            },
+            {
+                path: 'resources.0.list.calendar',
+                message: 'The calendar needs a `date-range` filter `day` in the list.',
+            },
+        ]);
+        pages.list.calendar = { field: 'missing' };
+        expect(lintDefinition(definition)[0]?.message).toBe('No field named `missing`.');
+    });
+
     it('finds no issue in a consistent definition', () => {
         expect(lintDefinition(createDefinition())).toEqual([]);
     });

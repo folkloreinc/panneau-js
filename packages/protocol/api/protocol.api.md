@@ -884,6 +884,11 @@ export const Definition: z.ZodObject<{
             }>>;
             inlineEdit: z.ZodOptional<z.ZodArray<z.ZodString>>;
             selectable: z.ZodOptional<z.ZodBoolean>;
+            calendar: z.ZodOptional<z.ZodObject<{
+                field: z.ZodString;
+                filter: z.ZodOptional<z.ZodString>;
+                perPage: z.ZodOptional<z.ZodNumber>;
+            }, z.core.$loose>>;
         }, z.core.$loose>>;
         actions: z.ZodOptional<z.ZodArray<z.ZodObject<{
             id: z.ZodString;
@@ -1643,6 +1648,16 @@ export type LayoutNode = z.infer<typeof LayoutNode>;
 export function lintDefinition(definition: DefinitionInput): ValidationIssue[];
 
 // @public (undocumented)
+export const ListCalendar: z.ZodObject<{
+    field: z.ZodString;
+    filter: z.ZodOptional<z.ZodString>;
+    perPage: z.ZodOptional<z.ZodNumber>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type ListCalendar = z.infer<typeof ListCalendar>;
+
+// @public (undocumented)
 export const ListDefinition: z.ZodObject<{
     columns: z.ZodOptional<z.ZodArray<z.ZodObject<{
         field: z.ZodOptional<z.ZodString>;
@@ -1686,6 +1701,11 @@ export const ListDefinition: z.ZodObject<{
     }>>;
     inlineEdit: z.ZodOptional<z.ZodArray<z.ZodString>>;
     selectable: z.ZodOptional<z.ZodBoolean>;
+    calendar: z.ZodOptional<z.ZodObject<{
+        field: z.ZodString;
+        filter: z.ZodOptional<z.ZodString>;
+        perPage: z.ZodOptional<z.ZodNumber>;
+    }, z.core.$loose>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -2340,6 +2360,11 @@ export const namedSchemas: {
         multiple: z.ZodOptional<z.ZodBoolean>;
         default: z.ZodOptional<z.ZodUnknown>;
     }, z.core.$loose>;
+    ListCalendar: z.ZodObject<{
+        field: z.ZodString;
+        filter: z.ZodOptional<z.ZodString>;
+        perPage: z.ZodOptional<z.ZodNumber>;
+    }, z.core.$loose>;
     ListDefinition: z.ZodObject<{
         columns: z.ZodOptional<z.ZodArray<z.ZodObject<{
             field: z.ZodOptional<z.ZodString>;
@@ -2383,6 +2408,11 @@ export const namedSchemas: {
         }>>;
         inlineEdit: z.ZodOptional<z.ZodArray<z.ZodString>>;
         selectable: z.ZodOptional<z.ZodBoolean>;
+        calendar: z.ZodOptional<z.ZodObject<{
+            field: z.ZodString;
+            filter: z.ZodOptional<z.ZodString>;
+            perPage: z.ZodOptional<z.ZodNumber>;
+        }, z.core.$loose>>;
     }, z.core.$loose>;
     ActionScope: z.ZodEnum<{
         resource: "resource";
@@ -2831,6 +2861,11 @@ export const namedSchemas: {
             }>>;
             inlineEdit: z.ZodOptional<z.ZodArray<z.ZodString>>;
             selectable: z.ZodOptional<z.ZodBoolean>;
+            calendar: z.ZodOptional<z.ZodObject<{
+                field: z.ZodString;
+                filter: z.ZodOptional<z.ZodString>;
+                perPage: z.ZodOptional<z.ZodNumber>;
+            }, z.core.$loose>>;
         }, z.core.$loose>>;
         actions: z.ZodOptional<z.ZodArray<z.ZodObject<{
             id: z.ZodString;
@@ -3522,6 +3557,11 @@ export const namedSchemas: {
                 }>>;
                 inlineEdit: z.ZodOptional<z.ZodArray<z.ZodString>>;
                 selectable: z.ZodOptional<z.ZodBoolean>;
+                calendar: z.ZodOptional<z.ZodObject<{
+                    field: z.ZodString;
+                    filter: z.ZodOptional<z.ZodString>;
+                    perPage: z.ZodOptional<z.ZodNumber>;
+                }, z.core.$loose>>;
             }, z.core.$loose>>;
             actions: z.ZodOptional<z.ZodArray<z.ZodObject<{
                 id: z.ZodString;
@@ -4721,6 +4761,11 @@ export const Resource: z.ZodObject<{
         }>>;
         inlineEdit: z.ZodOptional<z.ZodArray<z.ZodString>>;
         selectable: z.ZodOptional<z.ZodBoolean>;
+        calendar: z.ZodOptional<z.ZodObject<{
+            field: z.ZodString;
+            filter: z.ZodOptional<z.ZodString>;
+            perPage: z.ZodOptional<z.ZodNumber>;
+        }, z.core.$loose>>;
     }, z.core.$loose>>;
     actions: z.ZodOptional<z.ZodArray<z.ZodObject<{
         id: z.ZodString;

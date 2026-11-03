@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { getResource } from '../__fixtures__/definition';
 import { resolveList } from '../definition/list';
+import { currentMonth } from './calendar';
 import { createList } from './list';
 import { createHistoryRouter, createMemoryRouter } from './router';
 import { type ListViewStore, type RememberedView, createStorageViewStore } from './viewStore';
@@ -294,6 +295,52 @@ describe('the view of a list', () => {
                 remember: { key: 'pages', store },
             }).getState().query.perPage,
         ).toBe(10);
+    });
+});
+
+describe('the calendar of a list', () => {
+    const calendarList = {
+        ...pages,
+        layouts: ['table', 'calendar'],
+        calendar: { field: 'published_at', filter: 'published', perPage: 200 },
+    };
+
+    it('asks for the days around its month, instead of a page', () => {
+        const router = createMemoryRouter('page=3&filter%5Bstatus%5D=draft');
+        const list = createList({ list: calendarList, router });
+        expect(list.getState().query).toMatchObject({ page: 3 });
+
+        list.setLayout('calendar');
+        list.setMonth('2027-03');
+        expect(router.getSearch()).toBe(
+            'page=3&filter%5Bstatus%5D=draft&layout=calendar&month=2027-03',
+        );
+        expect(list.getState().query).toEqual({
+            perPage: 200,
+            sort: ['-published_at', 'title'],
+            filter: { status: 'draft', published: { from: '2027-02-23', to: '2027-04-06' } },
+        });
+        // The current month is the default
+        list.setMonth(currentMonth());
+        expect(list.getState().view).toEqual({ layout: 'calendar' });
+
+        // Without a calendar, the layout pages as the others do
+        expect(
+            createList({ list: pages, query: {}, defaults: { layout: 'calendar' } }).getState()
+                .query,
+        ).toEqual({ page: 1, perPage: 10, sort: ['-published_at', 'title'] });
+    });
+
+    it('doesn’t remember its month', () => {
+        const views = new Map<string, RememberedView | null>();
+        const store: ListViewStore = {
+            get: () => null,
+            set: (key, view) => views.set(key, view),
+        };
+        const list = createList({ list: calendarList, remember: { key: 'pages', store } });
+        list.setLayout('calendar');
+        list.setMonth('2020-01');
+        expect(views.get('pages')).toEqual({ query: {}, view: { layout: 'calendar' } });
     });
 });
 

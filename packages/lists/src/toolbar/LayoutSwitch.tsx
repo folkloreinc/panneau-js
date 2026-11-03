@@ -1,4 +1,4 @@
-import { LayoutGrid, type LucideIcon, Rows3, Square } from 'lucide-react';
+import { CalendarDays, Images, LayoutGrid, type LucideIcon, Rows3, Square } from 'lucide-react';
 import { ToggleButton, ToggleButtonGroup } from 'react-aria-components';
 
 import { Icon, Tooltip, usePanneauIntl } from '@panneau/ui';
@@ -6,7 +6,12 @@ import { Icon, Tooltip, usePanneauIntl } from '@panneau/ui';
 import { messages } from '../messages';
 import styles from './Toolbar.module.css';
 
-const ICONS: Record<string, LucideIcon> = { table: Rows3, cards: LayoutGrid };
+const ICONS: Record<string, LucideIcon> = {
+    table: Rows3,
+    cards: LayoutGrid,
+    gallery: Images,
+    calendar: CalendarDays,
+};
 
 export interface LayoutSwitchProps {
     layouts: readonly string[];
@@ -20,6 +25,8 @@ export function LayoutSwitch({ layouts, value, onChange }: LayoutSwitchProps) {
     const labels: Record<string, string> = {
         table: intl.formatMessage(messages.layoutTable),
         cards: intl.formatMessage(messages.layoutCards),
+        gallery: intl.formatMessage(messages.layoutGallery),
+        calendar: intl.formatMessage(messages.layoutCalendar),
     };
     return (
         <ToggleButtonGroup

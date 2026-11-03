@@ -774,4 +774,44 @@ describe('the app shell', () => {
         expect(await screen.findByRole('table', { name: 'Pages' })).toBeInTheDocument();
         expect(window.location.search).toBe('?sort=-title');
     });
+
+    it('shows a calendar, which asks for the days around its month', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(
+            null,
+            '',
+            '/panneau/resources/pages?layout=calendar&month=2027-03',
+        );
+        renderApp(
+            {
+                resources: [
+                    {
+                        id: 'pages',
+                        label: { singular: 'page', plural: 'pages' },
+                        fields: [
+                            { name: 'title', type: 'text' },
+                            { name: 'published_on', type: 'date' },
+                        ],
+                        list: {
+                            layouts: ['table', 'calendar'],
+                            filters: [{ id: 'published_on', type: 'date-range' }],
+                            calendar: { field: 'published_on' },
+                        },
+                    },
+                ],
+            },
+            [],
+            (backend) => {
+                const [about, contact] = backend.items('pages');
+                Object.assign(about ?? {}, { published_on: '2027-03-10' });
+                Object.assign(contact ?? {}, { published_on: '2027-05-01' });
+            },
+        );
+        const grid = await screen.findByRole('table', { name: 'Pages, March 2027' });
+        expect(await within(grid).findByRole('link', { name: 'About us' })).toBeInTheDocument();
+        expect(grid).not.toHaveTextContent('Contact');
+        expect(screen.queryByRole('navigation', { name: 'Pagination' })).toBeNull();
+        await user.click(screen.getByRole('radio', { name: 'Table' }));
+        expect(await screen.findByRole('link', { name: 'Contact' })).toBeInTheDocument();
+    });
 });

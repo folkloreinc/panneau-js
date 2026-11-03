@@ -1,7 +1,7 @@
 import { type ReactNode, useRef, useState } from 'react';
 
-import type { List } from '@panneau/core';
-import { selectItemActions, usePlugins } from '@panneau/core';
+import type { List, ResolvedCalendar } from '@panneau/core';
+import { currentMonth, selectItemActions, usePlugins } from '@panneau/core';
 import { getActionLabel } from '@panneau/intl';
 import type { Action, Field, Filter } from '@panneau/protocol';
 import { Alert, Button, Checkbox, usePanneauIntl, useToast } from '@panneau/ui';
@@ -22,6 +22,7 @@ import type { ActionIcons } from './actions/icons';
 import { getShownColumns } from './columns';
 import { cx } from './cx';
 import { FilterChips, FilterControls, useFilterLabels } from './filters/Filters';
+import { getImageUrl } from './images';
 import { builtInLayouts } from './layouts/builtIn';
 import { messages } from './messages';
 import { countSelected, getPageSelection, isItemSelected } from './selection';
@@ -110,6 +111,16 @@ export interface ListViewProps {
     actionIcons?: ActionIcons;
     /** The field that titles items, for their label (`itemTitle` of the resource). */
     itemTitle?: string;
+    /**
+     * The field shown as the image of items (`itemImage` of the resource): a media reference, a
+     * file or a URL. The `gallery` layout needs it (decision 0044).
+     */
+    itemImage?: string | undefined;
+    /**
+     * The calendar of the list (`calendar` of `resolveList()`), for its `calendar` layout. The list
+     * state asks for its month when it is given the same calendar.
+     */
+    calendar?: Pick<ResolvedCalendar, 'field' | 'filter'> | null | undefined;
     /** The label of an item, for checkboxes and actions. Defaults to its title, then its id. */
     getItemLabel?: (item: ListItem) => string;
     /** A link to an item, on its title. */
@@ -159,7 +170,7 @@ export function ListView({
     isLoading = false,
     error = null,
     onRetry,
-    filters = [],
+    filters: filtersProp = [],
     fields = [],
     search = false,
     layouts: layoutsProp = ['table'],
@@ -172,6 +183,8 @@ export function ListView({
     previewAction,
     actionIcons,
     itemTitle,
+    itemImage,
+    calendar = null,
     getItemLabel: getItemLabelProp,
     getItemHref,
     getLinkHref,
@@ -199,22 +212,37 @@ export function ListView({
     const pageItems = items ?? [];
     const count = total ?? pageItems.length;
     const sort = query.sort ?? [];
-    const filterValues = query.filter ?? {};
-    const hasQuery = Object.keys(filterValues).length > 0 || (query.q ?? '') !== '';
 
     const allLayouts: Record<string, ListLayoutEntry> = {
         ...builtInLayouts,
         ...(Object.fromEntries(plugins.listLayouts) as Record<string, ListLayoutEntry>),
         ...layoutComponents,
     };
-    // Layouts without a component (a plugin's that isn't installed) are left out.
-    const available = layoutsProp.filter((id) => allLayouts[id] !== undefined);
+    // Layouts without a component (a plugin's that isn't installed) are left out, and so are the
+    // gallery without images and the calendar without a calendar.
+    const available = layoutsProp.filter(
+        (id) =>
+            allLayouts[id] !== undefined &&
+            (id !== 'gallery' || itemImage !== undefined) &&
+            (id !== 'calendar' || calendar !== null),
+    );
     const layouts = available.length > 0 ? available : ['table'];
     const chosenLayout =
         view.layout !== undefined && layouts.includes(view.layout) ? view.layout : undefined;
     const layout = controlledLayout ?? chosenLayout ?? layouts[0] ?? 'table';
     const columns = getShownColumns(allColumns, view.columns);
     const Layout = allLayouts[layout] ?? builtInLayouts.table;
+    const inCalendar = layout === 'calendar' && calendar !== null;
+    // The calendar asks for its month through its filter, which it sets itself.
+    const filters = inCalendar
+        ? filtersProp.filter((filter) => filter.id !== calendar.filter)
+        : filtersProp;
+    const filterValues = Object.fromEntries(
+        Object.entries(query.filter ?? {}).filter(
+            ([id]) => !(inCalendar && id === calendar.filter),
+        ),
+    );
+    const hasQuery = Object.keys(filterValues).length > 0 || (query.q ?? '') !== '';
 
     const grouped = groupListActions(actionsProp);
     // Actions placed in the menu also apply to selections, from the toolbar (once each).
@@ -432,7 +460,8 @@ export function ListView({
                 />
             );
         }
-        if (pageItems.length === 0) {
+        // An empty month is still a calendar: it goes to the others.
+        if (pageItems.length === 0 && !inCalendar) {
             return (
                 <div className={styles.state}>
                     <p>
@@ -455,6 +484,24 @@ export function ListView({
                 renderValue={renderValue}
                 getItemLabel={getItemLabel}
                 getItemHref={getItemHref}
+                getItemImage={
+                    itemImage !== undefined ? (item) => getImageUrl(item[itemImage]) : undefined
+                }
+                calendar={
+                    inCalendar
+                        ? {
+                              field: calendar.field,
+                              month: view.month ?? currentMonth(),
+                              onMonthChange: (month) => list.setMonth(month),
+                              more:
+                                  total !== undefined && total > pageItems.length
+                                      ? { total }
+                                      : cursors !== undefined && cursors.next !== null
+                                        ? { total: null }
+                                        : null,
+                          }
+                        : undefined
+                }
                 isCurrent={(item) => item.id === currentItemId}
                 selectable={selectable}
                 isSelected={(item) => isItemSelected(selection, item.id)}
@@ -602,7 +649,7 @@ export function ListView({
             <div className={styles.body} aria-busy={isLoading && items !== undefined}>
                 {body}
             </div>
-            {cursors !== undefined && error === null ? (
+            {inCalendar ? null : cursors !== undefined && error === null ? (
                 <CursorPagination
                     perPage={query.perPage ?? pageItems.length}
                     hasPrevious={query.cursor !== undefined}

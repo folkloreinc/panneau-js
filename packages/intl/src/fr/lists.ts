@@ -21,6 +21,15 @@ export const listsFr: Record<string, string> = {
     'panneau.lists.layout': 'Affichage',
     'panneau.lists.layoutTable': 'Tableau',
     'panneau.lists.layoutCards': 'Cartes',
+    'panneau.lists.layoutGallery': 'Galerie',
+    'panneau.lists.layoutCalendar': 'Calendrier',
+    'panneau.lists.previousMonth': 'Mois précédent',
+    'panneau.lists.nextMonth': 'Mois suivant',
+    'panneau.lists.thisMonth': 'Aujourd’hui',
+    'panneau.lists.calendarMore':
+        'Le calendrier montre {shown, number} {total, plural, one {élément sur #} other {éléments sur #}}. Filtrez la liste pour voir les autres.',
+    'panneau.lists.calendarMoreUnknown':
+        'Le calendrier montre {shown, plural, one {le premier élément} other {les # premiers éléments}}. Filtrez la liste pour voir les autres.',
     'panneau.lists.columns': 'Colonnes',
     'panneau.lists.moveColumnUp': 'Monter {column}',
     'panneau.lists.moveColumnDown': 'Descendre {column}',

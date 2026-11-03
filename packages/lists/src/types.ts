@@ -115,6 +115,20 @@ export interface FilterControlProps {
 /** A filter control, by filter type (`select`, `date`). */
 export type FilterEntry = ComponentType<FilterControlProps>;
 
+/** What the `calendar` layout shows: the month of its items, and how to change it (decision 0044). */
+export interface ListCalendarProps {
+    /** The `date` or `datetime` field each item is shown on the day of. */
+    field: string;
+    /** The month shown (`2026-11`). */
+    month: string;
+    onMonthChange: (month: string) => void;
+    /**
+     * When the month has more items than the list got: how many match (`null` when the backend
+     * doesn't count them).
+     */
+    more: { total: number | null } | null;
+}
+
 /** Props of a list layout: renders the items of the current page. */
 export interface ListLayoutProps {
     items: readonly ListItem[];
@@ -140,6 +154,10 @@ export interface ListLayoutProps {
     label: string;
     /** The checkbox that selects the page, for layouts that show it in a header. */
     pageSelection: ReactNode;
+    /** The URL of the image of an item (`itemImage` of the resource), for the gallery. */
+    getItemImage?: ((item: ListItem) => string | null) | undefined;
+    /** The month of the calendar, in the `calendar` layout. */
+    calendar?: ListCalendarProps | undefined;
 }
 
 /** A list layout, by id (`table`, `cards`). */

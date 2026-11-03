@@ -446,6 +446,18 @@ export const listsMessages: {
     layout: PanneauMessage<Record<never, never>>;
     layoutTable: PanneauMessage<Record<never, never>>;
     layoutCards: PanneauMessage<Record<never, never>>;
+    layoutGallery: PanneauMessage<Record<never, never>>;
+    layoutCalendar: PanneauMessage<Record<never, never>>;
+    previousMonth: PanneauMessage<Record<never, never>>;
+    nextMonth: PanneauMessage<Record<never, never>>;
+    thisMonth: PanneauMessage<Record<never, never>>;
+    calendarMore: PanneauMessage<    {
+    shown: number;
+    total: number;
+    }>;
+    calendarMoreUnknown: PanneauMessage<    {
+    shown: number;
+    }>;
     columns: PanneauMessage<Record<never, never>>;
     moveColumnUp: PanneauMessage<    {
     column: string;

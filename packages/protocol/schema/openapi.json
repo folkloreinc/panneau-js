@@ -2674,6 +2674,31 @@
                 ],
                 "additionalProperties": {}
             },
+            "ListCalendar": {
+                "type": "object",
+                "properties": {
+                    "field": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The `date` or `datetime` field each item is shown on the day of."
+                    },
+                    "filter": {
+                        "description": "The id of the list's `date-range` filter on that field, through which the calendar asks for the days around a month. Defaults to the field's name.",
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "perPage": {
+                        "description": "How many items the calendar asks for a month, in one request. Defaults to 100.",
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                    }
+                },
+                "required": [
+                    "field"
+                ],
+                "additionalProperties": {}
+            },
             "ListDefinition": {
                 "type": "object",
                 "properties": {
@@ -2706,6 +2731,7 @@
                         "type": "boolean"
                     },
                     "layouts": {
+                        "description": "The layouts the list offers, the first being the default. Built in: `table`, `cards`, `gallery` (on the `itemImage` of the resource) and `calendar` (with `calendar`).",
                         "type": "array",
                         "items": {
                             "type": "string",
@@ -2743,6 +2769,10 @@
                     },
                     "selectable": {
                         "type": "boolean"
+                    },
+                    "calendar": {
+                        "description": "The calendar of the list: the items of a month on the days of a date field, asked for through a `date-range` filter instead of pages (decision 0044).",
+                        "$ref": "#/components/schemas/ListCalendar"
                     }
                 },
                 "additionalProperties": {}

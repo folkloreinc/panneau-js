@@ -128,7 +128,13 @@ export function ResourceListPage({
                     onRetry={() => void refetch()}
                     fields={resource.fields}
                     itemTitle={resource.itemTitle}
-                    layouts={['table', 'cards']}
+                    itemImage={resource.itemImage}
+                    // The layouts of the definition, or the table and the cards without any
+                    layouts={
+                        resource.list?.layouts !== undefined
+                            ? definitionList.layouts
+                            : ['table', 'cards']
+                    }
                     perPageOptions={[10, 20, 50, 100]}
                     // Titles open the panel, with the list's query, or the form (`open` of the resource)
                     getItemHref={(item) => getItemPath(resource, item, basePath, search)}

@@ -37,7 +37,9 @@ export {
     ToggleFilter,
     builtInFilters,
 } from './filters/controls';
+export { CalendarLayout } from './layouts/CalendarLayout';
 export { CardsLayout } from './layouts/CardsLayout';
+export { GalleryLayout } from './layouts/GalleryLayout';
 export { TableLayout } from './layouts/TableLayout';
 export { builtInLayouts } from './layouts/builtIn';
 export { ItemDetails, type ItemDetailsColumn, type ItemDetailsProps } from './ItemDetails';
@@ -64,9 +66,11 @@ export type {
     ListActionPreview,
     ListActionPreviewer,
     ListColumn,
+    ListCalendarProps,
     ListItem,
     ListLayoutEntry,
     ListLayoutProps,
 } from './types';
 export { useListState } from './useListState';
+export { getImageUrl } from './images';
 export { getLocalizedValue, toText } from './values';

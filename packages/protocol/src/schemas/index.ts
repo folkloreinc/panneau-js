@@ -48,7 +48,7 @@ import {
 import { BlockType, Field, RichTextSettings, RichTextStyle, Rule } from './field';
 import { actionJsonRules } from './jsonRules';
 import { LayoutNode } from './layout';
-import { Column, Filter, ListDefinition } from './list';
+import { Column, Filter, ListCalendar, ListDefinition } from './list';
 import { Resource, ResourceFeatures } from './resource';
 import {
     DefinitionTheme,
@@ -87,6 +87,7 @@ export const namedSchemas = {
     LayoutNode,
     Column,
     Filter,
+    ListCalendar,
     ListDefinition,
     ActionScope,
     ActionPlacement,
