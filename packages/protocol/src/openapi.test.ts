@@ -74,12 +74,28 @@ describe('OpenAPI document', () => {
         expect(Object.keys(list?.get?.responses ?? {})).toContain('422');
     });
 
-    it('only references schemas it defines', () => {
+    it('only references schemas and parameters it defines', () => {
         const missing = [...collectRefs(document)].filter((ref) => {
-            const name = ref.replace('#/components/schemas/', '');
-            return !(name in document.components.schemas);
+            const [, , kind = '', name = ''] = ref.split('/');
+            const components = document.components as Record<string, Record<string, unknown>>;
+            return !(name in (components[kind] ?? {}));
         });
         expect(missing).toEqual([]);
+    });
+
+    it('takes the Panneau-Context header on every path (decision 0045)', () => {
+        const paths = Object.values(document.paths as Record<string, { parameters?: unknown[] }>);
+        paths.forEach((item) =>
+            expect(item.parameters).toContainEqual({ $ref: '#/components/parameters/Context' }),
+        );
+        // A refused value of the context is a 403 on every operation
+        const search = (document.paths as Record<string, { get?: { responses?: object } }>)[
+            '/search'
+        ];
+        expect(Object.keys(search?.get?.responses ?? {})).toContain('403');
+        expect(
+            (document.paths as Record<string, object>)['/context/{param}/options'],
+        ).toBeDefined();
     });
 });
 

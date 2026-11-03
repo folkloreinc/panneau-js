@@ -58,6 +58,29 @@ describe('createRestAdapter', () => {
         expect((error as Error).name).toBe('AbortError');
     });
 
+    it('sends the values of the context with every request, keeping its headers', async () => {
+        const { fetch, requests } = createStubFetch(() =>
+            jsonResponse(200, { data: [{ value: '12', label: 'Summer' }] }),
+        );
+        const adapter = createRestAdapter({
+            baseUrl: BASE_URL,
+            fetch,
+            headers: { Authorization: 'Bearer token' },
+        });
+        const scoped = adapter.withContext?.({ client: '4', contest: '12' });
+        const choices = await scoped?.getContextOptions?.('round', { q: 'fin' });
+        expect(choices).toEqual([{ value: '12', label: 'Summer' }]);
+        const [request] = requests;
+        expect(new URL(request?.url ?? '').pathname).toBe('/panneau/api/context/round/options');
+        expect(new URL(request?.url ?? '').searchParams.get('q')).toBe('fin');
+        expect(request?.headers.get('Panneau-Context')).toBe('client=4&contest=12');
+        expect(request?.headers.get('Authorization')).toBe('Bearer token');
+
+        // Without values, no header: the adapter is as it was
+        await adapter.withContext?.({}).getContextOptions?.('client');
+        expect(requests[1]?.headers.has('Panneau-Context')).toBe(false);
+    });
+
     it('rejects an invalid definition', async () => {
         const { fetch } = createStubFetch(() => jsonResponse(200, { protocol: 2 }));
         const adapter = createRestAdapter({ baseUrl: BASE_URL, fetch });

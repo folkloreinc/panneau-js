@@ -142,6 +142,13 @@ export const appMessages: {
     actionRunsLabel: PanneauMessage<    {
     count: number;
     }>;
+    context: PanneauMessage<Record<never, never>>;
+    contextNone: PanneauMessage<Record<never, never>>;
+    contextChange: PanneauMessage<    {
+    context: string;
+    }>;
+    contextRequired: PanneauMessage<Record<never, never>>;
+    contextRequiredText: PanneauMessage<Record<never, never>>;
     profile: PanneauMessage<    {
     name: string;
     }>;

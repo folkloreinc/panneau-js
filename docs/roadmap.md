@@ -9,7 +9,7 @@ Each item becomes a sub-issue of #6 (or of laravel-panneau#35) when work on it s
 Updated on 2026-11-03. The latest pre-releases are `@panneau/*` 5.0.0-alpha.11 and `laravel-panneau` v5.0.0-alpha.8.
 
 - **Phases 0 and 1:** done.
-- **Phase 2:** in progress, still in alphas. Done: loading states, the first app shell and its show page, actions, rich text, the new field types and media. Started: the rest of the app shell, auth, permissions, lists and migration. To do: the Folklore plugin.
+- **Phase 2:** in progress, still in alphas. Done: loading states, the app shell, actions, rich text, the new field types and media. Started: auth, permissions, lists and migration. To do: the Folklore plugin.
 - **5.x:** image editing and the "Go to…" palette were done early, in phase 2.
 
 Each item below says where it is: **done**, **started** (with what is left) or **to do**.
@@ -70,12 +70,13 @@ Goal: a complete admin panel, ready for client projects.
 **The interface is worked on in parallel.** The look and the interactions of the app (shell, sidebar, pages) are designed on the playground (`npm run playground`), at the same time as the contests platform migrates, instead of waiting for each of its slices.
 
 - **Loading states (done):** skeletons of the content's shape instead of spinners, in lists, forms, the item panel, the preview, the media picker and the boot of the app ([#121](https://github.com/folkloreinc/panneau-js/issues/121), [decisions/0034](decisions/0034-skeletons-while-content-loads.md)).
-- **App shell (started):** routing, layout, menus, replaceable pages, error pages.
+- **App shell (done):** routing, layout, menus, replaceable pages, error pages, a current context.
     - First version (done): a sidebar from the `main` menu, collapsible to a rail of icons, with the page on a raised panel as in recent browsers, a drawer on small screens, and themable through the `shell` and `sidebar` component tokens. Home, list, create, edit, plugin and not found pages. Plugin pages use the header and layout of resource pages and take params ([#145](https://github.com/folkloreinc/panneau-js/issues/145), [#151](https://github.com/folkloreinc/panneau-js/issues/151), [decisions/0038](decisions/0038-pages-with-params.md)), and the home route renders `pages.home` ([#139](https://github.com/folkloreinc/panneau-js/issues/139)).
     - **Show page (done):** the show route opens the item's details in a panel next to its list: its values, a link to edit it, and its `link` actions, such as its page on the site ([decisions/0028](decisions/0028-item-panel.md)). It shows the item's preview when its resource has one: a plugin component, or its page on the site in an iframe.
     - **Notification area (done):** a button in the sidebar for the queued action runs, with the count of those in progress, that opens their progress in a popover ([#180](https://github.com/folkloreinc/panneau-js/issues/180)).
     - **Error pages (done):** not found, forbidden, server error, offline or server unreachable, and a page that failed while it rendered, in the look of the shell and at boot ([#181](https://github.com/folkloreinc/panneau-js/issues/181)).
-    - Left: pages and menus in `laravel-panneau`'s definition ([folkloreinc/laravel-panneau#33](https://github.com/folkloreinc/laravel-panneau/issues/33)); menus that depend on the role and on a current context (for the contests platform: the contest, then the client).
+    - **Pages and menus from `laravel-panneau` (done):** `config/panneau.php`, or `Panneau::pages()` and `Panneau::menu()` with builders, and closures that get the user, so menus can depend on the role ([folkloreinc/laravel-panneau#33](https://github.com/folkloreinc/laravel-panneau/issues/33)).
+    - **Current context (done):** the definition declares the params of a context that the user picks in the sidebar, or that the backend fixes from the request (for the contests platform: the client of the domain, then the contest). Their values are a prefix of the routes, every request sends them in `Panneau-Context`, the definition and its menus are built for them, and each resource applies them in its scope ([#182](https://github.com/folkloreinc/panneau-js/issues/182), [folkloreinc/laravel-panneau#147](https://github.com/folkloreinc/laravel-panneau/issues/147), [decisions/0045](decisions/0045-current-context.md)).
 - **Auth (started):**
     - password login, password reset, 2FA, passkeys, email verification. Done: the login page in `panneau` mode, a login with a token for backends without an email and a password, and a logout ([#136](https://github.com/folkloreinc/panneau-js/issues/136), [#137](https://github.com/folkloreinc/panneau-js/issues/137), [decisions/0037](decisions/0037-login-page-token-and-logout.md)). Left: password reset, 2FA, passkeys and email verification;
     - OAuth providers (continues [#5](https://github.com/folkloreinc/panneau-js/issues/5) and laravel-panneau#34): to do;

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { type AppRoute, matchRoute, routePath } from './routes';
+import { type AppRoute, contextPath, matchContext, matchRoute, routePath } from './routes';
 
 const routes: [string, Exclude<AppRoute, { name: 'not-found' }>][] = [
     ['/panneau', { name: 'home' }],
@@ -63,5 +63,45 @@ describe('routes', () => {
         '/panneau/resources/%E0%A4%A',
     ])('%s is not found', (path) => {
         expect(matchRoute(path, '/panneau')).toEqual({ name: 'not-found' });
+    });
+});
+
+describe('the context in the path (decision 0045)', () => {
+    const names = ['client', 'contest'];
+
+    it('is a prefix of the routes, in the order of the params', () => {
+        expect(contextPath({ contest: '12', client: 'a/b' }, names)).toBe(
+            '/client/a%2Fb/contest/12',
+        );
+        expect(contextPath({}, names)).toBe('');
+    });
+
+    it('is read after the base path, which then includes it', () => {
+        expect(
+            matchContext('/panneau/client/a%2Fb/contest/12/resources/pages', '/panneau', names),
+        ).toEqual({
+            values: { client: 'a/b', contest: '12' },
+            basePath: '/panneau/client/a%2Fb/contest/12',
+        });
+        const { basePath } = matchContext(
+            '/panneau/contest/12/resources/pages',
+            '/panneau/',
+            names,
+        );
+        expect(matchRoute('/panneau/contest/12/resources/pages', basePath)).toEqual({
+            name: 'resource.index',
+            resource: 'pages',
+        });
+        expect(matchContext('/', '/', names)).toEqual({ values: {}, basePath: '' });
+    });
+
+    it('stops at a segment that is not a param, or a param without a value', () => {
+        expect(matchContext('/panneau/resources/pages', '/panneau', names).values).toEqual({});
+        expect(matchContext('/panneau/contest', '/panneau', names).values).toEqual({});
+        expect(matchContext('/panneau/contest/1/contest/2', '/panneau', names)).toEqual({
+            values: { contest: '1' },
+            basePath: '/panneau/contest/1',
+        });
+        expect(matchContext('/elsewhere/contest/1', '/panneau', names).values).toEqual({});
     });
 });

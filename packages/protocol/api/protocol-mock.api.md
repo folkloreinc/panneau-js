@@ -23,6 +23,7 @@ export interface MockBackend {
 
 // @public (undocumented)
 export interface MockBackendOptions {
+    context?: MockContextOptions;
     definition: DefinitionInput;
     // Warning: (ae-forgotten-export) The symbol "EmbedValue" needs to be exported by the entry point index.d.ts
     embed?: (url: string) => EmbedValue | null;
@@ -32,6 +33,14 @@ export interface MockBackendOptions {
         resource: string;
         item: Item;
     }) => string;
+}
+
+// @public
+export interface MockContextOptions {
+    // Warning: (ae-forgotten-export) The symbol "ContextValues" needs to be exported by the entry point index.d.ts
+    // Warning: (ae-forgotten-export) The symbol "ContextOption" needs to be exported by the entry point index.d.ts
+    options?: (name: string, before: ContextValues) => ContextOption[];
+    scope?: (resource: string, item: Item, values: ContextValues) => boolean;
 }
 
 // (No @packageDocumentation comment for this package)

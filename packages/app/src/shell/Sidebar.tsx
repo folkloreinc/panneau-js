@@ -38,6 +38,7 @@ import {
 } from '../navigation';
 import { type AppRoute, routePath } from '../routes';
 import { ActionRunsButton } from './ActionRunsButton';
+import { ContextPicker, ContextPickerButton } from './ContextPicker';
 import styles from './Sidebar.module.css';
 
 /** The color schemes the user can pick, in the order of the button. */
@@ -85,10 +86,10 @@ export interface SidebarProps {
 }
 
 /**
- * The main navigation, as a column: the site, the links of the `main` menu of the definition, and
- * the notification area of queued action runs, and the user, with the buttons of the appearance
- * and of the logout. Collapsed, it is a rail of icons, as in the sidebars of recent browsers. It
- * renders inside an `ActionRunnerProvider`.
+ * The main navigation, as a column: the site, the current context (decision 0045), the links of
+ * the `main` menu of the definition, the notification area of queued action runs, and the user,
+ * with the buttons of the appearance and of the logout. Collapsed, it is a rail of icons, as in
+ * the sidebars of recent browsers. It renders inside an `ActionRunnerProvider`.
  */
 export function Sidebar({
     definition,
@@ -233,6 +234,7 @@ export function Sidebar({
                     />
                 ) : null}
             </div>
+            {collapsed ? <ContextPickerButton /> : <ContextPicker />}
             {onGoTo !== undefined ? (
                 collapsed ? (
                     <IconButton
