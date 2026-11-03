@@ -33,7 +33,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0025](0025-presigned-uploads.md)             | Direct uploads to storage, separate from media                         | Amended by 0026             |
 | [0026](0026-media-libraries.md)               | Media libraries are resources                                          | Amended by 0027             |
 | [0027](0027-media-picker.md)                  | A media picker on a source that products can implement                 | Accepted                    |
-| [0028](0028-item-panel.md)                    | The show route opens an item's details in a panel next to its list     | Amended by 0040             |
+| [0028](0028-item-panel.md)                    | The show route opens an item's details in a panel next to its list     | Amended by 0040, 0041       |
 | [0029](0029-go-to-palette.md)                 | A "Go to…" command palette that products can use without the app       | Accepted                    |
 | [0030](0030-search-parameters-and-scope.md)   | The parameters of the global search, its errors, a scope per resource  | Accepted                    |
 | [0031](0031-image-editor-and-image-field.md)  | An image editor with tools, and an `image` field                       | Accepted                    |
@@ -46,3 +46,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0038](0038-pages-with-params.md)             | Pages with params                                                      | Accepted                    |
 | [0039](0039-cursor-pagination.md)             | Lists paged with cursors                                               | Accepted                    |
 | [0040](0040-row-links-and-open-mode.md)       | Built-in item actions by abilities, and what opens an item             | Accepted                    |
+| [0041](0041-groups-in-item-details.md)        | The panel of an item shows the values of its groups                    | Accepted                    |

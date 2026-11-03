@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { createList } from '@panneau/core';
 
-import { ItemDetails } from './ItemDetails';
+import { ItemDetails, type ItemDetailsColumn } from './ItemDetails';
 import { ListView } from './ListView';
 import { columns, pages } from './__fixtures__/pages';
 import { renderList } from './__fixtures__/render';
@@ -16,6 +16,17 @@ function first(items: readonly ListItem[]): ListItem {
     }
     return item;
 }
+
+const groupColumns: ItemDetailsColumn[] = [
+    {
+        id: 'address',
+        label: 'Address',
+        columns: [
+            { id: 'city', label: 'City' },
+            { id: 'country', label: 'Country' },
+        ],
+    },
+];
 
 describe('ItemDetails', () => {
     it('lists the values of an item with their labels and displays', () => {
@@ -40,6 +51,39 @@ describe('ItemDetails', () => {
             ['Title', 'Status', 'Published on'],
         );
         expect(region?.querySelectorAll('dd .panneau-skeleton')).toHaveLength(3);
+    });
+
+    it('lists the values of a group under its label', () => {
+        renderList(
+            <ItemDetails
+                item={{ id: '1', address: { city: 'Montréal', country: 'Canada' } }}
+                columns={groupColumns}
+            />,
+        );
+        expect(screen.getAllByRole('term').map((term) => term.textContent)).toEqual([
+            'Address',
+            'City',
+            'Country',
+        ]);
+        const values = screen.getAllByRole('definition');
+        expect(values[1]).toHaveTextContent('Montréal');
+        expect(values[2]).toHaveTextContent('Canada');
+    });
+
+    it('draws a skeleton of each value of a group while the item loads', () => {
+        const { container } = renderList(<ItemDetails item={undefined} columns={groupColumns} />);
+        expect(
+            container.querySelectorAll('[aria-busy="true"] dl dl .panneau-skeleton'),
+        ).toHaveLength(2);
+    });
+
+    it('shows a group without a value with its labels', () => {
+        renderList(<ItemDetails item={{ id: '1', address: null }} columns={groupColumns} />);
+        expect(screen.getAllByRole('term').map((term) => term.textContent)).toEqual([
+            'Address',
+            'City',
+            'Country',
+        ]);
     });
 
     it('takes displays over the built-in ones', () => {

@@ -96,6 +96,54 @@ export const Loading: Story = {
     },
 };
 
+/** Groups: the values of their fields under their label, indented. */
+export const WithGroups: Story = {
+    args: {
+        'aria-label': 'Order 1042',
+        columns: [
+            { id: 'product', label: 'Product' },
+            {
+                id: 'contact',
+                label: 'Contact',
+                columns: [
+                    { id: 'name', label: 'Name' },
+                    { id: 'email', label: 'Email', display: 'email' },
+                ],
+            },
+            {
+                id: 'address',
+                label: 'Address',
+                columns: [
+                    { id: 'city', label: 'City' },
+                    { id: 'country', label: 'Country' },
+                ],
+            },
+        ],
+        item: {
+            id: '1042',
+            product: 'A case of six bottles',
+            contact: { name: 'Ada Lovelace', email: 'ada@example.com' },
+            address: { city: 'Montréal', country: 'Canada' },
+        },
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getAllByRole('term').map((term) => term.textContent)).toEqual([
+            'Product',
+            'Contact',
+            'Name',
+            'Email',
+            'Address',
+            'City',
+            'Country',
+        ]);
+        await expect(canvas.getByRole('link', { name: 'ada@example.com' })).toHaveAttribute(
+            'href',
+            'mailto:ada@example.com',
+        );
+    },
+};
+
 /** In a narrow column, such as a panel: each label above its value. */
 export const Narrow: Story = {
     decorators: [

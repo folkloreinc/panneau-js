@@ -5,8 +5,8 @@ import { type ResolvedResource, getItemActions } from '@panneau/core';
 import { NotFoundError } from '@panneau/data';
 import { useResourceItem } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
-import { ItemDetails, type ListColumn } from '@panneau/lists';
-import type { RouteReference } from '@panneau/protocol';
+import { ItemDetails, type ItemDetailsColumn } from '@panneau/lists';
+import type { Field, RouteReference } from '@panneau/protocol';
 import {
     Alert,
     Button,
@@ -31,8 +31,21 @@ import { useItemActionRunner } from './itemActionRunner';
 import { createLinkResolver } from './itemLinks';
 import { getItemTitle } from './itemTitle';
 
-/** Fields that hold other fields, shown in the form rather than in the details. */
-const NESTED_TYPES = new Set(['group', 'repeater']);
+/**
+ * The value of a field in the details: a group with the values of its fields, under its label.
+ * Repeaters hold lists of fields, which only the form shows.
+ */
+function toDetailsColumns(fields: readonly Field[]): ItemDetailsColumn[] {
+    return fields
+        .filter((field) => field.type !== 'repeater')
+        .map((field) => ({
+            id: field.name,
+            field,
+            label: field.label ?? field.name,
+            display: field.display ?? field.type,
+            ...(field.type === 'group' ? { columns: toDetailsColumns(field.fields ?? []) } : {}),
+        }));
+}
 
 const SIZES = ['normal', 'wide'] as const;
 const TABS = ['preview', 'details'] as const;
@@ -81,14 +94,7 @@ export function ItemPanel({
         panel.current?.focus();
     }, [id]);
 
-    const columns: ListColumn[] = resource.fields
-        .filter((field) => !NESTED_TYPES.has(field.type))
-        .map((field) => ({
-            id: field.name,
-            field,
-            label: field.label ?? field.name,
-            display: field.display ?? field.type,
-        }));
+    const columns = toDetailsColumns(resource.fields);
     // The actions of the item, as its row and its form show them, but `show`: this panel
     const { run, isSupported } = useItemActionRunner(resource, { basePath, locale });
     const itemActions =
