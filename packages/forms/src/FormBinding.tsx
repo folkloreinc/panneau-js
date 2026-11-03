@@ -24,7 +24,11 @@ export function FormBinding({ field, path, parentPath, render }: FieldBindingPro
     if (!selectVisible(state, field, parentPath)) {
         return null;
     }
-    const errors = selectErrors(state, path, { nested: !rendersNestedFields(field) });
+    const nested = rendersNestedFields(field);
+    const errors = selectErrors(state, path, { nested: !nested });
+    const invalidPaths = nested
+        ? Object.keys(state.errors).filter((key) => key.startsWith(`${path}.`))
+        : [];
     return (
         <div className={styles.field} data-panneau-path={path}>
             <FieldErrorBoundary
@@ -48,6 +52,7 @@ export function FormBinding({ field, path, parentPath, render }: FieldBindingPro
                     onChange: (value) => form.setValue(path, value),
                     onBlur: () => form.blur(path),
                     errors,
+                    ...(invalidPaths.length > 0 ? { invalidPaths } : {}),
                 })}
             </FieldErrorBoundary>
         </div>

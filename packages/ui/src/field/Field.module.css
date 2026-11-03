@@ -155,3 +155,20 @@
     margin: 0 0 var(--panneau-space-1);
     padding: 0;
 }
+
+/* A legend with controls at the end of its line. */
+.legendRow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--panneau-space-1) var(--panneau-space-3);
+    min-height: var(--panneau-control-height-sm);
+}
+
+.legendEnd {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    margin-inline-start: auto;
+}

@@ -57,7 +57,8 @@ export function Form({
             {...props}
             form={form}
             fields={resolved.fields}
-            layout={resolved.layout}
+            // The layout as given: fields it doesn't place flow in columns at the end
+            layout={layout}
             locales={formLocales}
         />
     );

@@ -211,6 +211,8 @@ try {
 
     // Submit.
     await french.fill('Bonjour');
+    // One locale at a time: English is behind its switch.
+    await page.getByRole('radio', { name: /^Anglais/ }).click();
     await page.getByRole('textbox', { name: 'Anglais' }).fill('Hello');
     await page.getByRole('button', { name: 'Enregistrer' }).click();
     await page.waitForFunction(() => document.body.dataset.submitted !== undefined, null, {

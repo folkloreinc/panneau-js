@@ -130,6 +130,8 @@ export const VersionConflict: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         const title = await canvas.findByRole('group', { name: /Titre/ });
+        // One locale at a time: the English title is behind its switch.
+        await userEvent.click(within(title).getByRole('radio', { name: /^(Anglais|English)/ }));
         const english = within(title).getByRole('textbox', { name: /Anglais|English/ });
         await userEvent.type(english, ' and our team');
         await userEvent.click(canvas.getByRole('button', { name: 'Simulate another editor' }));

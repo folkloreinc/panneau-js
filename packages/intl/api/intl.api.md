@@ -307,6 +307,16 @@ export const fieldsMessages: {
     retryUpload: PanneauMessage<    {
     name: string;
     }>;
+    locales: PanneauMessage<Record<never, never>>;
+    localeEmpty: PanneauMessage<    {
+    locale: string;
+    }>;
+    localeInvalid: PanneauMessage<    {
+    locale: string;
+    }>;
+    addLocale: PanneauMessage<    {
+    locale: string;
+    }>;
     missingPlugin: PanneauMessage<    {
     type: string;
     }>;

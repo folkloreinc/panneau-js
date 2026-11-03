@@ -59,5 +59,9 @@ export const fieldsFr: Record<string, string> = {
     'panneau.fields.resumeUpload': 'Reprendre {name}',
     'panneau.fields.cancelUpload': 'Annuler {name}',
     'panneau.fields.retryUpload': 'Réessayer {name}',
+    'panneau.fields.locales': 'Langues',
+    'panneau.fields.localeEmpty': '{locale}, vide',
+    'panneau.fields.localeInvalid': '{locale}, contient des erreurs',
+    'panneau.fields.addLocale': 'Ajouter une traduction : {locale}',
     'panneau.fields.missingPlugin': 'Ce champ a besoin d’un plugin pour le type « {type} ».',
 };

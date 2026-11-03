@@ -36,7 +36,15 @@ export { type EmbedAdapter, type EmbedSource, createEmbedSource } from './shared
 export type { GeocodingResult, GeocodingSource, MapTiles, MapsConfig } from './location/types';
 export { type NominatimSourceOptions, createNominatimSource } from './location/nominatim';
 export type { FieldEntry, FieldEntryProps, FieldProps } from './shared/types';
+export { isWideField } from './shared/flow';
 export { MissingFieldEntry } from './missing/MissingField';
+export {
+    type RevealRegistry,
+    type Revealer,
+    RevealContext,
+    createRevealRegistry,
+    useRevealer,
+} from './shared/reveal';
 export {
     type FileFieldBaseProps,
     FileField,

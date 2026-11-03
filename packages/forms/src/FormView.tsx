@@ -29,7 +29,7 @@ import { FormBinding } from './FormBinding';
 import { FormSkeleton } from './FormSkeleton';
 import { FormContext, RevealContext, createRevealRegistry, useFormState } from './context';
 import { cx } from './cx';
-import { LayoutNodes } from './layout/Layout';
+import { FieldFlow, LayoutNodes } from './layout/Layout';
 import { messages } from './messages';
 import { useBeforeUnloadGuard, useLeaveConfirmation } from './unsaved';
 
@@ -109,19 +109,32 @@ function findFieldElement(root: HTMLElement, path: string): HTMLElement | null {
 
 /**
  * Error paths in the order of their fields: the order of the layout for top-level fields, then
- * the order of the paths inside them (`blocks.2.body` before `blocks.10.body`).
+ * the order of the paths inside them: locales in their order (`title.fr` before `title.en`), and
+ * items by number (`blocks.2.body` before `blocks.10.body`).
  */
 function orderErrors(
     names: readonly string[],
     errors: Record<string, string[]>,
+    locales: readonly string[] = [],
 ): Record<string, string[]> {
     const rank = (path: string) => {
         const index = names.indexOf(path.split('.')[0] ?? '');
         return index === -1 ? names.length : index;
     };
+    const localeRank = (path: string) => {
+        const index = locales.indexOf(path.split('.')[1] ?? '');
+        return index === -1 ? locales.length : index;
+    };
     const compare = (a: string, b: string) =>
-        rank(a) - rank(b) || a.localeCompare(b, undefined, { numeric: true });
+        rank(a) - rank(b) ||
+        localeRank(a) - localeRank(b) ||
+        a.localeCompare(b, undefined, { numeric: true });
     return Object.fromEntries(Object.entries(errors).sort(([a], [b]) => compare(a, b)));
+}
+
+/** Whether a node is a field that the layout as given doesn't place. */
+function isUnplacedField(node: LayoutNode | undefined, placed: ReadonlySet<string>): boolean {
+    return node?.type === 'field' && node.name !== undefined && !placed.has(node.name);
 }
 
 /**
@@ -170,8 +183,17 @@ export function FormView({
 
     // In the mode of the form, as its rules are checked: the required mark of a password
     // required on create shows on create only
+    const formLocales = locales ?? definition?.locales ?? [];
     const resolved = resolveFields(fields, layout, { mode: form.mode });
     const main = resolved.layout.filter((node) => node.type !== 'sidebar');
+    // The fields that the layout doesn't place come last: they flow in columns
+    const placed = new Set(getLayoutFieldNames(layout));
+    let split = main.length;
+    while (split > 0 && isUnplacedField(main[split - 1], placed)) {
+        split -= 1;
+    }
+    const flow = main.slice(split);
+    const laidOut = main.slice(0, split);
     const sidebar = resolved.layout.filter(
         (node) => node.type === 'sidebar' && selectVisible(state, node),
     );
@@ -185,13 +207,17 @@ export function FormView({
         ...components,
     };
 
-    /** Opens the tab or section of a path, then scrolls to its field and focuses it. */
+    /** Opens the tab, section or locale of a path, then scrolls to its field and focuses it. */
     const goTo = (path: string) => {
         registry.reveal(path);
-        // Wait for the tab or section to open before scrolling.
-        requestAnimationFrame(() => {
+        // Wait for the tab, section or locale to open before scrolling: a few frames at most.
+        const show = (frames: number) => {
             const element = root.current !== null ? findFieldElement(root.current, path) : null;
             if (element === null) {
+                return;
+            }
+            if (element.closest('[hidden]') !== null && frames > 0) {
+                requestAnimationFrame(() => show(frames - 1));
                 return;
             }
             const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
@@ -200,7 +226,8 @@ export function FormView({
                 element.querySelector<HTMLElement>('[aria-invalid="true"]') ??
                 element.querySelector<HTMLElement>(FOCUSABLE);
             target?.focus({ preventScroll: true });
-        });
+        };
+        requestAnimationFrame(() => show(3));
     };
 
     const handle = (result: SubmitResult | null) => {
@@ -208,7 +235,7 @@ export function FormView({
             return;
         }
         if (result.status === 'invalid') {
-            const first = Object.keys(orderErrors(order, result.errors))[0];
+            const first = Object.keys(orderErrors(order, result.errors, formLocales))[0];
             if (first !== undefined) {
                 goTo(first);
             }
@@ -253,7 +280,8 @@ export function FormView({
     if (isLoading) {
         return (
             <FormSkeleton
-                main={main}
+                main={laidOut}
+                flow={flow}
                 sidebar={resolved.layout.filter((node) => node.type === 'sidebar')}
                 fields={resolved.fieldsByName}
                 footer={submitLabel !== null || actions !== undefined}
@@ -270,7 +298,7 @@ export function FormView({
             <RevealContext value={registry}>
                 <FieldsProvider
                     components={entries}
-                    locales={locales ?? definition?.locales ?? []}
+                    locales={formLocales}
                     {...(relationSource !== undefined ? { relationSource } : {})}
                     {...(uploadSource !== undefined ? { uploadSource } : {})}
                     {...(checkSource !== undefined ? { checkSource } : {})}
@@ -289,7 +317,7 @@ export function FormView({
                     >
                         {showSummary ? (
                             <ErrorSummary
-                                errors={orderErrors(order, state.errors)}
+                                errors={orderErrors(order, state.errors, formLocales)}
                                 fields={resolved.fields}
                                 onSelect={goTo}
                                 {...(summaryClassName !== undefined
@@ -319,7 +347,10 @@ export function FormView({
                             )}
                         >
                             <div className={styles.stack}>
-                                <LayoutNodes nodes={main} fields={resolved.fieldsByName} />
+                                <LayoutNodes nodes={laidOut} fields={resolved.fieldsByName} />
+                                {flow.length > 0 ? (
+                                    <FieldFlow nodes={flow} fields={resolved.fieldsByName} />
+                                ) : null}
                             </div>
                             {sidebar.length > 0 ? (
                                 <aside className={cx(styles.sidebar, sidebarClassName)}>

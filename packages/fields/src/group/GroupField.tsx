@@ -4,6 +4,7 @@ import { Fieldset } from '@panneau/ui';
 import { NestedField } from '../shared/DefinitionField';
 import { cx } from '../shared/cx';
 import { getFieldProps } from '../shared/entry';
+import { isWideField } from '../shared/flow';
 import type { FieldEntryProps, FieldProps } from '../shared/types';
 import styles from './GroupField.module.css';
 
@@ -18,8 +19,8 @@ export interface GroupFieldProps extends FieldProps<GroupValue> {
 }
 
 /**
- * A nested object: its fields under a legend. Each field renders with the entry of its type, at
- * the path `<group>.<field>`. Without a binding in the fields context, the group sets the whole
+ * A nested object: its fields under a legend, short ones side by side (`isWideField()`). Each
+ * field renders with the entry of its type, at the path `<group>.<field>`. Without a binding in the fields context, the group sets the whole
  * object through `onChange`.
  */
 export function GroupField({
@@ -55,19 +56,25 @@ export function GroupField({
             errorsClassName={errorsClassName}
         >
             <div className={cx(styles.fields, fieldsClassName)}>
-                {fields.map((field) => (
-                    <NestedField
-                        key={field.name}
-                        field={field}
-                        path={base !== '' ? `${base}.${field.name}` : field.name}
-                        value={object[field.name]}
-                        onChange={(next) => onChange?.({ ...object, [field.name]: next })}
-                        {...(onBlur !== undefined ? { onBlur } : {})}
-                        parentValue={object}
-                        {...(disabled !== undefined ? { disabled } : {})}
-                        {...(readOnly !== undefined ? { readOnly } : {})}
-                    />
-                ))}
+                <div className={styles.flow}>
+                    {fields.map((field) => (
+                        <div
+                            key={field.name}
+                            className={cx(styles.cell, isWideField(field) && styles.wide)}
+                        >
+                            <NestedField
+                                field={field}
+                                path={base !== '' ? `${base}.${field.name}` : field.name}
+                                value={object[field.name]}
+                                onChange={(next) => onChange?.({ ...object, [field.name]: next })}
+                                {...(onBlur !== undefined ? { onBlur } : {})}
+                                parentValue={object}
+                                {...(disabled !== undefined ? { disabled } : {})}
+                                {...(readOnly !== undefined ? { readOnly } : {})}
+                            />
+                        </div>
+                    ))}
+                </div>
             </div>
         </Fieldset>
     );

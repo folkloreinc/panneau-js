@@ -29,4 +29,15 @@ describe('Fieldset', () => {
         );
         expect(screen.getByRole('textbox')).toBeDisabled();
     });
+
+    it('names the group by its legend when controls share its line', () => {
+        render(
+            <Fieldset legend="Title" legendEnd={<button type="button">FR</button>} isRequired>
+                <input aria-label="Title in French" />
+            </Fieldset>,
+        );
+        const group = screen.getByRole('group', { name: 'Title' });
+        expect(group.querySelector('legend')).toBeNull();
+        expect(screen.getByRole('button', { name: 'FR' })).toBeInTheDocument();
+    });
 });

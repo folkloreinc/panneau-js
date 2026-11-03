@@ -39,17 +39,18 @@ export const isNumber = (value: unknown): value is number =>
 
 /**
  * The props that every field takes, from a registry entry's props: label (the field's name
- * without one), help, required mark, read-only, errors and handlers. Plugins use it to write their
- * own entries.
+ * without one, or `aria-label` with `hideLabel`), help, required mark, read-only, errors and
+ * handlers. Plugins use it to write their own entries.
  */
 export function getFieldProps(
     props: FieldEntryProps,
 ): Omit<FieldProps<never>, 'value' | 'onChange'> & { placeholder?: string } {
     const { field } = props;
+    // A field always has a label: its name when the definition gives none.
+    const label = field.label ?? field.name;
     return {
         name: props.path,
-        // A field always has a label: its name when the definition gives none.
-        label: field.label ?? field.name,
+        ...(props.hideLabel === true ? { 'aria-label': label } : { label }),
         description: field.help,
         ...(field.placeholder !== undefined ? { placeholder: field.placeholder } : {}),
         required: isRequired(field),

@@ -42,8 +42,18 @@ export interface FieldEntryProps {
     onChange: (value: unknown) => void;
     onBlur?: () => void;
     errors?: readonly string[];
+    /**
+     * Paths inside the field that have errors (`title.en`), given by the form's binding to fields
+     * that show their nested fields: a localized field marks its locales in error.
+     */
+    invalidPaths?: readonly string[];
     disabled?: boolean;
     readOnly?: boolean;
+    /**
+     * Renders the field without a visible label, named by its label for assistive technologies:
+     * the input of a locale, under the label of its localized field.
+     */
+    hideLabel?: boolean;
     /** The object the field belongs to: the form's values, or a group or a block. */
     parentValue?: unknown;
     /** The locale of the value: the input of a locale of a localized field. */

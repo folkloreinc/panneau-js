@@ -15,12 +15,13 @@ import {
     selectVisible,
     usePlugins,
 } from '@panneau/core';
-import { NestedField } from '@panneau/fields';
+import { NestedField, isWideField } from '@panneau/fields';
 import type { Field, LayoutNode } from '@panneau/protocol';
 import { Badge, Disclosure, Tab, TabList, TabPanel, Tabs, usePanneauIntl } from '@panneau/ui';
 
 import styles from '../Form.module.css';
 import { RevealContext, useFormContext, useFormState } from '../context';
+import { cx } from '../cx';
 import { messages } from '../messages';
 
 export interface LayoutProps {
@@ -213,4 +214,29 @@ function LayoutNodeView({
 /** Renders layout nodes in order. */
 export function LayoutNodes({ nodes, fields }: LayoutProps): ReactNode {
     return nodes.map((node, index) => <LayoutNodeView key={index} node={node} fields={fields} />);
+}
+
+/**
+ * Fields that the layout doesn't place, in columns: short fields side by side, wide ones
+ * (`isWideField()`) on their own row.
+ */
+export function FieldFlow({ nodes, fields }: LayoutProps): ReactNode {
+    return (
+        <div className={styles.flow}>
+            {nodes.map((node, index) => {
+                const field = node.name !== undefined ? fields.get(node.name) : undefined;
+                return (
+                    <div
+                        key={index}
+                        className={cx(
+                            styles.flowCell,
+                            (field === undefined || isWideField(field)) && styles.flowWide,
+                        )}
+                    >
+                        <LayoutNodeView node={node} fields={fields} />
+                    </div>
+                );
+            })}
+        </div>
+    );
 }

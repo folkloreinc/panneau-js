@@ -103,8 +103,12 @@ describe('SlugField', () => {
             />,
             { locales: ['fr', 'en'] },
         );
-        // Both inputs have a source in their locale: generating fills each
-        const buttons = screen.getAllByRole('button', { name: 'Generate from title' });
+        // Both inputs have a source in their locale: generating fills each. The second locale is
+        // behind its switch.
+        const buttons = screen.getAllByRole('button', {
+            name: 'Generate from title',
+            hidden: true,
+        });
         expect(buttons).toHaveLength(2);
     });
 

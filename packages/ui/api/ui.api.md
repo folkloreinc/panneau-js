@@ -513,6 +513,7 @@ export interface FieldsetProps {
     legend?: ReactNode;
     // (undocumented)
     legendClassName?: string;
+    legendEnd?: ReactNode;
 }
 
 // @public
