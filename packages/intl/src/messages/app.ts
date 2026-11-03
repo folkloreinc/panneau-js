@@ -123,6 +123,22 @@ export const appMessages = {
         defaultMessage: 'This link is incomplete. Open the link of the email again.',
     }),
     continue: defineMessage({ id: 'panneau.app.continue', defaultMessage: 'Continue' }),
+    providerFailed: defineMessage({
+        id: 'panneau.app.providerFailed',
+        defaultMessage: 'The login with your account didn’t work. Try again.',
+    }),
+    providerNoEmail: defineMessage({
+        id: 'panneau.app.providerNoEmail',
+        defaultMessage: 'Your account has no verified email address.',
+    }),
+    providerDomain: defineMessage({
+        id: 'panneau.app.providerDomain',
+        defaultMessage: 'Your email address isn’t allowed here.',
+    }),
+    providerAccess: defineMessage({
+        id: 'panneau.app.providerAccess',
+        defaultMessage: 'No account of this admin panel has your email address.',
+    }),
     logInWithPasskey: defineMessage({
         id: 'panneau.app.logInWithPasskey',
         defaultMessage: 'Log in with a passkey',

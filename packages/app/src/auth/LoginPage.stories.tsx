@@ -202,6 +202,28 @@ export const Passkey: Story = {
     },
 };
 
+/** A login with a provider that failed: why, from the `authError` of the backend. */
+export const ProviderError: Story = {
+    args: {
+        auth: {
+            mode: 'panneau',
+            providers: [{ id: 'google', label: 'Google', url: '/panneau/auth/google' }],
+        },
+        providerError: 'access',
+        next: '/panneau/resources/pages',
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByRole('alert')).toHaveTextContent(
+            'No account of this admin panel has your email address.',
+        );
+        await expect(canvas.getByRole('link', { name: 'Log in with Google' })).toHaveAttribute(
+            'href',
+            '/panneau/auth/google?next=%2Fpanneau%2Fresources%2Fpages',
+        );
+    },
+};
+
 /** The session ended while the user was in the app. */
 export const SessionEnded: Story = {
     args: { name: 'Northwind Journal', sessionEnded: true },

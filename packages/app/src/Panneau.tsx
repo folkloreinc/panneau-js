@@ -22,6 +22,7 @@ import { DataAdapterProvider, queryKeys } from '@panneau/data/query';
 import { FieldsProvider, type MapsConfig, createEmbedSource } from '@panneau/fields';
 import { appMessages } from '@panneau/intl';
 import {
+    AUTH_ERROR_PARAM,
     type Auth,
     type BootConfig,
     CONTEXT_PROBLEM_TYPE,
@@ -324,6 +325,16 @@ function Content({
         definitionQuery.error instanceof ForbiddenError &&
         definitionQuery.error.problem.type === EMAIL_UNVERIFIED_PROBLEM_TYPE;
     const search = new URLSearchParams(window.location.search);
+    // A login with a provider that failed comes back with its code (decision 0052): the login page
+    // says it once, and the address loses it, so that a reload doesn't
+    const [providerError] = useState(() => search.get(AUTH_ERROR_PARAM) ?? undefined);
+    useEffect(() => {
+        const url = new URL(window.location.href);
+        if (url.searchParams.has(AUTH_ERROR_PARAM)) {
+            url.searchParams.delete(AUTH_ERROR_PARAM);
+            navigate(`${url.pathname}${url.search}${url.hash}`, { replace: true });
+        }
+    }, []);
     // `panneau` mode: the API logs out, and the login page shows. `external` mode: the site's own
     // logout, when the definition has one.
     const logoutUrl = auth?.mode === 'external' ? (auth.logoutUrl ?? null) : null;
@@ -380,6 +391,8 @@ function Content({
                     sessionEnded={status === 'ended' && definition !== undefined}
                     {...(notice?.notice !== undefined ? { notice: notice.notice } : {})}
                     {...(notice?.email !== undefined ? { email: notice.email } : {})}
+                    {...(providerError !== undefined ? { providerError } : {})}
+                    next={`${window.location.pathname}${window.location.search}`}
                     onLogIn={logIn}
                     {...(adapter.passkeyLoginOptions !== undefined &&
                     adapter.passkeyLogin !== undefined

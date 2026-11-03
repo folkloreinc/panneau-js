@@ -788,6 +788,40 @@ describe('Panneau', () => {
             }
         });
 
+        it('says why a login with a provider failed, and comes back to the page with next', async () => {
+            const { renderAt } = renderWithBackend(
+                {
+                    mode: 'panneau',
+                    providers: [
+                        {
+                            id: 'google',
+                            label: 'Google',
+                            url: '/panneau/api/auth/providers/google/redirect',
+                        },
+                    ],
+                },
+                [ada],
+                { loggedIn: null },
+            );
+            renderAt('/panneau/resources/pages?authError=domain');
+            expect(await screen.findByRole('alert')).toHaveTextContent(
+                'Your email address isn’t allowed here.',
+            );
+            expect(window.location.search).toBe('');
+            expect(screen.getByRole('link', { name: 'Log in with Google' })).toHaveAttribute(
+                'href',
+                '/panneau/api/auth/providers/google/redirect?next=%2Fpanneau%2Fresources%2Fpages',
+            );
+        });
+
+        it('says what a provider failed with when the code is unknown', async () => {
+            const { renderAt } = renderWithBackend({ mode: 'panneau' }, [ada], { loggedIn: null });
+            renderAt('/panneau?authError=something');
+            expect(await screen.findByRole('alert')).toHaveTextContent(
+                'The login with your account didn’t work. Try again.',
+            );
+        });
+
         it('says when a verification link is wrong', async () => {
             const { renderAt } = renderWithBackend({ mode: 'panneau', emailVerification: true }, [
                 ada,

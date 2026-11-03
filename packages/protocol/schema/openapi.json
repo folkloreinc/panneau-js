@@ -1490,12 +1490,13 @@
             ],
             "get": {
                 "operationId": "redirectToProvider",
+                "summary": "Starts the login with an OAuth provider of `auth.providers`. The callback is the backend's: it goes to `next`, or to the base path of the app with `authError` when it fails.",
                 "parameters": [
                     {
                         "name": "next",
                         "in": "query",
                         "required": false,
-                        "description": "Local path to go to after login.",
+                        "description": "Where to go after the login: a local path under the base path of the app. Another one is ignored.",
                         "schema": {
                             "type": "string"
                         }
@@ -4470,7 +4471,7 @@
                         "type": "string"
                     },
                     "url": {
-                        "description": "Where the login with this provider starts.",
+                        "description": "Where the login with this provider starts, with a full navigation. The app adds `next`, the path to come back to.",
                         "type": "string"
                     },
                     "icon": {

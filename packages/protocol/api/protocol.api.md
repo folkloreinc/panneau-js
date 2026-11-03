@@ -455,10 +455,19 @@ export const Auth: z.ZodObject<{
 export type Auth = z.infer<typeof Auth>;
 
 // @public
+export const AUTH_ERROR_CODES: readonly ["provider", "email", "domain", "access"];
+
+// @public
+export const AUTH_ERROR_PARAM = "authError";
+
+// @public (undocumented)
 export const AUTH_PAGE_PATHS: {
     readonly resetPassword: "auth/reset-password";
     readonly verifyEmail: "auth/verify-email";
 };
+
+// @public
+export type AuthErrorCode = (typeof AUTH_ERROR_CODES)[number];
 
 // @public (undocumented)
 export const AuthProvider: z.ZodObject<{

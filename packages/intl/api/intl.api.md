@@ -113,6 +113,10 @@ export const appMessages: {
     verifyEmailError: PanneauMessage<Record<never, never>>;
     verifyLinkIncomplete: PanneauMessage<Record<never, never>>;
     continue: PanneauMessage<Record<never, never>>;
+    providerFailed: PanneauMessage<Record<never, never>>;
+    providerNoEmail: PanneauMessage<Record<never, never>>;
+    providerDomain: PanneauMessage<Record<never, never>>;
+    providerAccess: PanneauMessage<Record<never, never>>;
     logInWithPasskey: PanneauMessage<Record<never, never>>;
     passkeyLogInError: PanneauMessage<Record<never, never>>;
     passkeys: PanneauMessage<Record<never, never>>;

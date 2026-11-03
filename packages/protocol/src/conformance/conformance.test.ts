@@ -47,6 +47,9 @@ function createBackend() {
         twoFactor: true,
         account: true,
         passkeys: true,
+        providers: [
+            { id: 'google', label: 'Google', url: '/panneau/api/auth/providers/google/redirect' },
+        ],
     };
     return createMockBackend({
         definition,
@@ -264,6 +267,7 @@ describe('runConformance', () => {
             'account.two-factor': 'passed',
             account: 'passed',
             'auth.passkeys': 'passed',
+            'auth.providers': 'passed',
             'account.passkeys': 'passed',
             'auth.two-factor-challenge': 'passed',
         });
@@ -307,7 +311,7 @@ describe('runConformance', () => {
             plain.checks
                 .filter((check) => check.id.startsWith('auth.'))
                 .map((check) => check.status),
-        ).toEqual(['skipped', 'skipped', 'skipped', 'skipped', 'skipped']);
+        ).toEqual(['skipped', 'skipped', 'skipped', 'skipped', 'skipped', 'skipped']);
         expect(plain.checks.find((check) => check.id === 'account.two-factor')?.status).toBe(
             'skipped',
         );
@@ -365,6 +369,7 @@ describe('runConformance', () => {
             'auth.password-forgot',
             'auth.password-reset',
             'auth.email-verify',
+            'auth.providers',
             'auth.passkeys',
             'auth.two-factor-challenge',
             'uploads.sign',

@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { type LoginCredentials, type TwoFactorAnswer, ValidationError } from '@panneau/data';
 import { appMessages } from '@panneau/intl';
-import type { Auth } from '@panneau/protocol';
+import { AUTH_ERROR_CODES, type Auth, type AuthErrorCode } from '@panneau/protocol';
 import { Alert, Button, Checkbox, LinkButton, TextInput, usePanneauIntl } from '@panneau/ui';
 
 import { AuthForm, AuthLayout } from './AuthLayout';
@@ -24,6 +24,13 @@ export interface LoginPageProps {
     notice?: LoginNotice;
     /** The email the password form starts with, such as that of a password that was reset. */
     email?: string;
+    /**
+     * Why the login with an OAuth provider failed, from `authError` (decision 0052). A code the
+     * page doesn't know says that the provider failed.
+     */
+    providerError?: string;
+    /** The path to come back to after the login with a provider: its `next`. */
+    next?: string;
     /**
      * Logs in. Rejects with a `ValidationError` for credentials the backend refuses. Resolves with
      * `'two-factor'` when the login waits for a second factor: the page then asks for it.
@@ -231,6 +238,21 @@ function ForgotPassword({
     );
 }
 
+const PROVIDER_ERRORS: Record<AuthErrorCode, (typeof appMessages)['providerFailed']> = {
+    provider: appMessages.providerFailed,
+    email: appMessages.providerNoEmail,
+    domain: appMessages.providerDomain,
+    access: appMessages.providerAccess,
+};
+
+/** The URL of a provider, with the path to come back to. */
+function withNext(url: string, next: string | undefined): string {
+    if (next === undefined || next === '') {
+        return url;
+    }
+    return `${url}${url.includes('?') ? '&' : '?'}next=${encodeURIComponent(next)}`;
+}
+
 const NOTICES = {
     'password-reset': appMessages.passwordWasReset,
     'email-verified': appMessages.emailWasVerified,
@@ -248,6 +270,8 @@ export function LoginPage({
     sessionEnded = false,
     notice,
     email: initialEmail = '',
+    providerError,
+    next,
     onLogIn,
     onForgotPassword,
     onTwoFactorChallenge,
@@ -304,7 +328,11 @@ export function LoginPage({
         providers.length > 0 ? (
             <div key="providers" className={styles.providers}>
                 {providers.map((provider) => (
-                    <LinkButton key={provider.id} href={provider.url ?? ''} variant="primary">
+                    <LinkButton
+                        key={provider.id}
+                        href={withNext(provider.url ?? '', next)}
+                        variant="primary"
+                    >
                         {intl.formatMessage(appMessages.logInWith, { provider: provider.label })}
                     </LinkButton>
                 ))}
@@ -313,6 +341,17 @@ export function LoginPage({
     ].filter((section) => section !== null);
     return (
         <AuthLayout name={name} title={intl.formatMessage(appMessages.logIn)}>
+            {providerError !== undefined ? (
+                <Alert tone="danger" role="alert">
+                    {intl.formatMessage(
+                        PROVIDER_ERRORS[
+                            (AUTH_ERROR_CODES as readonly string[]).includes(providerError)
+                                ? (providerError as AuthErrorCode)
+                                : 'provider'
+                        ],
+                    )}
+                </Alert>
+            ) : null}
             {notice !== undefined ? (
                 <Alert tone="success" role="status">
                     {intl.formatMessage(NOTICES[notice])}

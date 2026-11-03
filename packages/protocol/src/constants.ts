@@ -185,6 +185,22 @@ export const PASSWORD_CONFIRMATION_PROBLEM_TYPE = 'urn:panneau:problem:password-
  * - `resetPassword`, with the `token` and the `email` of a password reset in the query;
  * - `verifyEmail`, with the `token` of an email verification in the query.
  */
+/**
+ * The query param of a login with an OAuth provider that failed (decision 0052): the backend comes
+ * back to the base path of the app with one of `AUTH_ERROR_CODES`, which the login page says.
+ */
+export const AUTH_ERROR_PARAM = 'authError';
+
+/**
+ * Why a login with an OAuth provider failed (decision 0052): the provider failed or the user
+ * cancelled, it gave no verified email address, the address isn't in an allowed domain, or no user
+ * with this address is allowed in.
+ */
+export const AUTH_ERROR_CODES = ['provider', 'email', 'domain', 'access'] as const;
+
+/** A code of `AUTH_ERROR_CODES`. */
+export type AuthErrorCode = (typeof AUTH_ERROR_CODES)[number];
+
 export const AUTH_PAGE_PATHS = {
     resetPassword: 'auth/reset-password',
     verifyEmail: 'auth/verify-email',

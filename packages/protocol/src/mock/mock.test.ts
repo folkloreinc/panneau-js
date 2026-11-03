@@ -1031,6 +1031,47 @@ describe('passkeys in the mock backend', () => {
     });
 });
 
+describe('OAuth providers in the mock backend', () => {
+    it('logs in at once, and goes to next', async () => {
+        const definition = createDefinition();
+        definition.auth = {
+            mode: 'panneau',
+            providers: [
+                {
+                    id: 'google',
+                    label: 'Google',
+                    url: '/panneau/api/auth/providers/google/redirect',
+                },
+                {
+                    id: 'github',
+                    label: 'GitHub',
+                    url: '/panneau/api/auth/providers/github/redirect',
+                },
+            ],
+        };
+        const backend = createMockBackend({
+            definition,
+            auth: {
+                users: [{ email: 'ada@example.com', password: 'secret' }],
+                loggedIn: null,
+                providerUsers: { google: 'ada@example.com' },
+            },
+        });
+        const redirect = (path: string) =>
+            backend.fetch(`/panneau/api/auth/providers/${path}`, { redirect: 'manual' });
+
+        const refused = await redirect('github/redirect');
+        expect(refused.status).toBe(302);
+        expect(refused.headers.get('Location')).toBe('/?authError=access');
+        expect((await backend.fetch('/panneau/api/definition')).status).toBe(401);
+
+        const google = await redirect('google/redirect?next=%2Fpanneau%2Fresources%2Fpages');
+        expect(google.headers.get('Location')).toBe('/panneau/resources/pages');
+        expect((await backend.fetch('/panneau/api/definition')).status).toBe(200);
+        expect((await redirect('unknown/redirect')).status).toBe(404);
+    });
+});
+
 describe('createExampleDefinition', () => {
     it('is a valid definition', async () => {
         const { validateDefinition } = await import('../validate');

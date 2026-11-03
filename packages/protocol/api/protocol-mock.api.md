@@ -18,6 +18,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend;
 export interface MockAuthOptions {
     loggedIn?: string | null;
     onMail?: (mail: MockMail) => void;
+    providerUsers?: Record<string, string>;
     twoFactorCode?: string;
     // (undocumented)
     users: MockUser[];

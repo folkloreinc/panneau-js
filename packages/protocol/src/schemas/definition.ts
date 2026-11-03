@@ -21,7 +21,10 @@ export const User = z.looseObject({
 export const AuthProvider = z.looseObject({
     id: z.string().min(1),
     label: z.string(),
-    url: z.string().optional().meta({ description: 'Where the login with this provider starts.' }),
+    url: z.string().optional().meta({
+        description:
+            'Where the login with this provider starts, with a full navigation. The app adds `next`, the path to come back to.',
+    }),
     icon: z.string().optional(),
 });
 

@@ -7,10 +7,19 @@
 import { z } from 'zod';
 
 // @public
+export const AUTH_ERROR_CODES: readonly ["provider", "email", "domain", "access"];
+
+// @public
+export const AUTH_ERROR_PARAM = "authError";
+
+// @public (undocumented)
 export const AUTH_PAGE_PATHS: {
     readonly resetPassword: "auth/reset-password";
     readonly verifyEmail: "auth/verify-email";
 };
+
+// @public
+export type AuthErrorCode = (typeof AUTH_ERROR_CODES)[number];
 
 // @public
 export const BOOT_CONFIG_ELEMENT_ID = "panneau-boot";

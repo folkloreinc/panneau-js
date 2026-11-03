@@ -1,4 +1,5 @@
 import {
+    AUTH_ERROR_PARAM,
     AUTH_PAGE_PATHS,
     EMAIL_UNVERIFIED_PROBLEM_TYPE,
     TWO_FACTOR_REQUIRED_PROBLEM_TYPE,
@@ -56,6 +57,11 @@ export interface MockAuthOptions {
     onMail?: (mail: MockMail) => void;
     /** The code of the authenticator app of every user, for `auth.twoFactor`. Defaults to `123456`. */
     twoFactorCode?: string;
+    /**
+     * The email of the user that each OAuth provider of `auth.providers` logs in, at once, when the
+     * app goes to its `redirect` (decision 0052). A provider without one fails with `access`.
+     */
+    providerUsers?: Record<string, string>;
 }
 
 type Values = Record<string, unknown>;
@@ -139,7 +145,12 @@ export interface MockAuth {
     /** The current user, as the definition and `/auth/session` give it. */
     user(): User | null;
     /** The answer of a route of `/auth/…`, without its first segment. */
-    answer(segments: string[], method: string, readBody: () => Promise<Values>): Promise<Response>;
+    answer(
+        segments: string[],
+        method: string,
+        readBody: () => Promise<Values>,
+        url?: URL,
+    ): Promise<Response>;
     /** The answer of a route of `/account/…`, without its first segment, or null for another. */
     account(
         segments: string[],
@@ -429,6 +440,23 @@ export function createMockAuth(options: MockAuthOptions, settings: Auth | undefi
             return json(204, null);
         },
     };
+    // A provider that logs in at once: it goes to `next`, or comes back with `authError`
+    const redirectToProvider = (id: string, url: URL | undefined) => {
+        if (!(settings?.providers ?? []).some((provider) => provider.id === id)) {
+            return problem(404, 'Not found.');
+        }
+        const next = url?.searchParams.get('next') ?? '/';
+        const local = next.startsWith('/') && !next.startsWith('//') ? next : '/';
+        const account = find(options.providerUsers?.[id]);
+        if (account === undefined) {
+            return new Response(null, {
+                status: 302,
+                headers: { Location: `/?${AUTH_ERROR_PARAM}=access` },
+            });
+        }
+        current = account;
+        return new Response(null, { status: 302, headers: { Location: local } });
+    };
     const passkeyOf = ({ id, name, createdAt, lastUsedAt }: StoredPasskey) => ({
         id,
         name,
@@ -527,7 +555,15 @@ export function createMockAuth(options: MockAuthOptions, settings: Auth | undefi
             }
             return Promise.resolve(route(current, readBody));
         },
-        answer: (segments, method, readBody) => {
+        answer: (segments, method, readBody, url) => {
+            if (
+                method === 'GET' &&
+                segments.length === 3 &&
+                segments[0] === 'providers' &&
+                segments[2] === 'redirect'
+            ) {
+                return Promise.resolve(redirectToProvider(segments[1] ?? '', url));
+            }
             const route = routes[`${method} ${segments.join('/')}`];
             return route !== undefined
                 ? route(readBody)
