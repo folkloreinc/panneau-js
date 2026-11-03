@@ -118,8 +118,8 @@ export const appMessages: {
     twoFactorRecoveryHelp: PanneauMessage<Record<never, never>>;
     authenticationCode: PanneauMessage<Record<never, never>>;
     recoveryCode: PanneauMessage<Record<never, never>>;
-    useRecoveryCode: PanneauMessage<Record<never, never>>;
-    useAuthenticationCode: PanneauMessage<Record<never, never>>;
+    withRecoveryCode: PanneauMessage<Record<never, never>>;
+    withAuthenticationCode: PanneauMessage<Record<never, never>>;
     verify: PanneauMessage<Record<never, never>>;
     twoFactorError: PanneauMessage<Record<never, never>>;
     setUpTwoFactor: PanneauMessage<Record<never, never>>;
