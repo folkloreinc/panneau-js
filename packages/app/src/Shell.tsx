@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { createElement, useEffect, useState } from 'react';
 import { RouterProvider } from 'react-aria-components';
 
-import { ActionRunnerProvider, ActionRuns } from '@panneau/actions';
+import { ActionRunnerProvider } from '@panneau/actions';
 import {
     LeaveGuardsProvider,
     canViewPage,
@@ -238,7 +238,6 @@ export function Shell({
                         onColorSchemeChange={onColorSchemeChange}
                         onLogOut={logOut}
                     >
-                        <ActionRuns />
                         <Page definition={definition} basePath={basePath} route={route} />
                     </AppLayout>
                 </ActionRunnerProvider>

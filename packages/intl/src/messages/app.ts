@@ -123,6 +123,12 @@ export const appMessages = {
         defaultMessage: 'Close the details',
     }),
     goTo: defineMessage({ id: 'panneau.app.goTo', defaultMessage: 'Go to…' }),
+    actionRuns: defineMessage({ id: 'panneau.app.actionRuns', defaultMessage: 'Actions' }),
+    actionRunsLabel: defineMessage<{ count: number }>({
+        id: 'panneau.app.actionRunsLabel',
+        defaultMessage:
+            '{count, plural, =0 {Actions} one {Actions, # in progress} other {Actions, # in progress}}',
+    }),
     profile: defineMessage<{ name: string }>({
         id: 'panneau.app.profile',
         defaultMessage: 'Your profile ({name})',

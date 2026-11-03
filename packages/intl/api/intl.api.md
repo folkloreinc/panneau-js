@@ -138,6 +138,10 @@ export const appMessages: {
     narrowPanel: PanneauMessage<Record<never, never>>;
     closePanel: PanneauMessage<Record<never, never>>;
     goTo: PanneauMessage<Record<never, never>>;
+    actionRuns: PanneauMessage<Record<never, never>>;
+    actionRunsLabel: PanneauMessage<    {
+    count: number;
+    }>;
     profile: PanneauMessage<    {
     name: string;
     }>;

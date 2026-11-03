@@ -1,0 +1,115 @@
+/* The notification area of the shell: a row of the sidebar, or an icon with a badge. */
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    width: 100%;
+    min-height: var(--panneau-control-height-sm);
+    padding: 0 var(--panneau-space-2);
+    border: var(--panneau-border-width) solid transparent;
+    border-radius: var(--panneau-sidebar-link-radius, var(--panneau-radius-md));
+    background: transparent;
+    color: var(--panneau-sidebar-link-color, var(--panneau-color-text-muted));
+    font: inherit;
+    font-size: var(--panneau-font-size-sm);
+    font-weight: var(--panneau-font-weight-medium);
+    text-align: start;
+    cursor: pointer;
+    outline: none;
+    transition:
+        background-color var(--panneau-duration),
+        color var(--panneau-duration);
+}
+
+.row[data-hovered],
+.row[data-pressed],
+.iconButton[data-hovered],
+.iconButton[data-pressed] {
+    background: var(--panneau-sidebar-link-hover-bg, var(--panneau-color-hover));
+    color: var(--panneau-sidebar-link-current-color, var(--panneau-color-text));
+}
+
+.row[data-focus-visible],
+.iconButton[data-focus-visible] {
+    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+}
+
+.iconButton {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: var(--panneau-control-height-sm);
+    height: var(--panneau-control-height-sm);
+    padding: 0;
+    border: 0;
+    border-radius: var(--panneau-sidebar-link-radius, var(--panneau-radius-md));
+    background: transparent;
+    color: var(--panneau-sidebar-link-color, var(--panneau-color-text-muted));
+    cursor: pointer;
+    outline: none;
+}
+
+.icon {
+    position: relative;
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+}
+
+.spinning {
+    animation: spin 1s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spinning {
+        animation-duration: 3s;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.label {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* The runs in progress: a pill at the end of the row, or a dot on the icon. */
+.count,
+.dot {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.125rem;
+    height: 1.125rem;
+    padding: 0 var(--panneau-space-1);
+    border-radius: var(--panneau-radius-full);
+    background: var(--panneau-color-accent);
+    color: var(--panneau-color-accent-text);
+    font-size: var(--panneau-font-size-xs);
+    font-variant-numeric: var(--panneau-font-numeric);
+    font-weight: var(--panneau-font-weight-bold);
+    line-height: 1;
+}
+
+.dot {
+    position: absolute;
+    top: -0.5rem;
+    inset-inline-end: -0.625rem;
+    min-width: 1rem;
+    height: 1rem;
+    box-shadow: 0 0 0 2px var(--panneau-shell-bg, var(--panneau-color-surface-sunken));
+}
+
+.popover {
+    width: min(22rem, calc(100vw - 2 * var(--panneau-space-4)));
+}
+
+.heading {
+    margin: 0 0 var(--panneau-space-3);
+}

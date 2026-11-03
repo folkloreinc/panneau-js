@@ -9,7 +9,7 @@ Each item becomes a sub-issue of #6 (or of laravel-panneau#35) when work on it s
 Updated on 2026-11-03. The latest pre-releases are `@panneau/*` 5.0.0-alpha.11 and `laravel-panneau` v5.0.0-alpha.8.
 
 - **Phases 0 and 1:** done.
-- **Phase 2:** in progress, still in alphas. Done: loading states, the first app shell and its show page, permissions, rich text, the new field types and media. Started: auth, lists, actions and migration. To do: the Folklore plugin.
+- **Phase 2:** in progress, still in alphas. Done: loading states, the first app shell and its show page, actions, permissions, rich text, the new field types and media. Started: the rest of the app shell, auth, lists and migration. To do: the Folklore plugin.
 - **5.x:** image editing and the "Go to…" palette were done early, in phase 2.
 
 Each item below says where it is: **done**, **started** (with what is left) or **to do**.
@@ -73,6 +73,7 @@ Goal: a complete admin panel, ready for client projects.
 - **App shell (started):** routing, layout, menus, replaceable pages, error pages.
     - First version (done): a sidebar from the `main` menu, collapsible to a rail of icons, with the page on a raised panel as in recent browsers, a drawer on small screens, and themable through the `shell` and `sidebar` component tokens. Home, list, create, edit, plugin and not found pages. Plugin pages use the header and layout of resource pages and take params ([#145](https://github.com/folkloreinc/panneau-js/issues/145), [#151](https://github.com/folkloreinc/panneau-js/issues/151), [decisions/0038](decisions/0038-pages-with-params.md)), and the home route renders `pages.home` ([#139](https://github.com/folkloreinc/panneau-js/issues/139)).
     - **Show page (done):** the show route opens the item's details in a panel next to its list: its values, a link to edit it, and its `link` actions, such as its page on the site ([decisions/0028](decisions/0028-item-panel.md)). It shows the item's preview when its resource has one: a plugin component, or its page on the site in an iframe.
+    - **Notification area (done):** a button in the sidebar for the queued action runs, with the count of those in progress, that opens their progress in a popover ([#180](https://github.com/folkloreinc/panneau-js/issues/180)).
     - Left: pages and menus in `laravel-panneau`'s definition ([folkloreinc/laravel-panneau#33](https://github.com/folkloreinc/laravel-panneau/issues/33)); menus that depend on the role and on a current context (for the contests platform: the contest, then the client); error pages other than not found.
 - **Auth (started):**
     - password login, password reset, 2FA, passkeys, email verification. Done: the login page in `panneau` mode, a login with a token for backends without an email and a password, and a logout ([#136](https://github.com/folkloreinc/panneau-js/issues/136), [#137](https://github.com/folkloreinc/panneau-js/issues/137), [decisions/0037](decisions/0037-login-page-token-and-logout.md)). Left: password reset, 2FA, passkeys and email verification;
@@ -88,11 +89,11 @@ Goal: a complete admin panel, ready for client projects.
     - inline editing: a column edits its field in place, for the simple types (text, number, select, boolean, date). Each change saves the one field (`PATCH` with a single field and `If-Match`), checked by its portable rules, and an error or a conflict shows on the cell. Started: the definition has `inlineEdit`, but lists don't edit in place yet;
     - layouts (table, cards, gallery, calendar), bulk actions. Done: table, cards and bulk actions. Left: gallery and calendar;
     - remembered view per user: to do.
-- **Actions (started):**
+- **Actions (done):**
     - built-in and custom actions, with parameters and confirmation: done ([#35](https://github.com/folkloreinc/panneau-js/issues/35));
     - selection by query (every matching item): done, with a dry run that counts the items an action will skip ([#44](https://github.com/folkloreinc/panneau-js/issues/44));
     - per-item results: done;
-    - queued runs with progress and a notification area. Done: queued runs and their progress (`ActionRuns`). Left: the notification area of the shell.
+    - queued runs with progress and a notification area: done. The shell's sidebar has a button for the runs it follows, with a badge, that opens their progress in a popover ([#180](https://github.com/folkloreinc/panneau-js/issues/180)).
 - **Rich text (done):** TipTap 3 field in `@panneau/editor` ([#128](https://github.com/folkloreinc/panneau-js/issues/128)): HTML storage, the toolbar, heading levels and block styles set from the definition, and TipTap extensions from plugins. HTML written by CKEditor 4 and 5 loads and saves unchanged until it is edited ([decisions/0035](decisions/0035-rich-text-kept-html.md)). ProseMirror JSON storage as an option comes later.
 - **More field types (done):** `tel`, `range`, `duration`, `json`, `tags`, `embed` (resolved by the backend with its provider's oEmbed) and `location` (a Leaflet map with a pluggable address search) ([#111](https://github.com/folkloreinc/panneau-js/issues/111), [decisions/0033](decisions/0033-more-field-types.md), [folkloreinc/laravel-panneau#100](https://github.com/folkloreinc/laravel-panneau/issues/100)). Choices as radios or checkboxes are `select` widgets. Also done: slugs and values checked by the backend ([#109](https://github.com/folkloreinc/panneau-js/issues/109), [decisions/0032](decisions/0032-field-checks-and-slugs.md)), and secret text fields ([#143](https://github.com/folkloreinc/panneau-js/issues/143)).
 - **Media (done):** media fields and a basic library on the protocol's media API; `laravel-mediatheque` adapter. Done with direct uploads to storage on Uppy 6 ([#79](https://github.com/folkloreinc/panneau-js/issues/79), [decisions/0025](decisions/0025-presigned-uploads.md)), media libraries as resources ([decisions/0026](decisions/0026-media-libraries.md)), the media picker ([#91](https://github.com/folkloreinc/panneau-js/issues/91), [decisions/0027](decisions/0027-media-picker.md)) and `MediathequeResource` in `laravel-panneau`.
