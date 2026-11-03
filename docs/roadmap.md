@@ -9,7 +9,7 @@ Each item becomes a sub-issue of #6 (or of laravel-panneau#35) when work on it s
 Updated on 2026-11-03. The latest pre-releases are `@panneau/*` 5.0.0-alpha.11 and `laravel-panneau` v5.0.0-alpha.8.
 
 - **Phases 0 and 1:** done.
-- **Phase 2:** in progress, still in alphas. Done: loading states, the first app shell and its show page, rich text, the new field types and media. Started: auth, permissions, lists, actions and migration. To do: the Folklore plugin.
+- **Phase 2:** in progress, still in alphas. Done: loading states, the first app shell and its show page, permissions, rich text, the new field types and media. Started: auth, lists, actions and migration. To do: the Folklore plugin.
 - **5.x:** image editing and the "Go to…" palette were done early, in phase 2.
 
 Each item below says where it is: **done**, **started** (with what is left) or **to do**.
@@ -79,7 +79,10 @@ Goal: a complete admin panel, ready for client projects.
     - OAuth providers (continues [#5](https://github.com/folkloreinc/panneau-js/issues/5) and laravel-panneau#34): to do;
     - the `external` mode for sites with their own auth: done, with a logout URL ([folkloreinc/laravel-panneau#132](https://github.com/folkloreinc/laravel-panneau/issues/132));
     - account page: to do. The shell links to the user's profile.
-- **Permissions (started):** abilities in the UI; an optional roles module on the Laravel side. Done: the built-in item actions (`show`, `edit`, `duplicate`, `delete`) follow the item's abilities ([decisions/0040](decisions/0040-row-links-and-open-mode.md)). Left: abilities in the rest of the UI, and the roles module.
+- **Permissions (done):** abilities in the UI; an optional roles module on the Laravel side.
+    - The built-in item actions (`show`, `edit`, `duplicate`, `delete`) follow the item's abilities ([decisions/0040](decisions/0040-row-links-and-open-mode.md)).
+    - The rest of the UI follows them too ([#183](https://github.com/folkloreinc/panneau-js/issues/183), [decisions/0042](decisions/0042-abilities-in-the-ui.md)): pages and fields have abilities, menus leave out what the user can't reach, a route reached without the ability shows a forbidden page, fields are hidden or read-only by ability, and a resource hides its bulk delete with `abilities.run: false`. The conformance kit checks that the API agrees.
+    - `laravel-panneau` sends the abilities of fields, hides the bulk delete by the policy's `deleteAny()`, answers every action through `runAction()` ([folkloreinc/laravel-panneau#148](https://github.com/folkloreinc/laravel-panneau/issues/148)), and has an optional roles module: roles in config, grants per user, a base policy and ownership on every route ([folkloreinc/laravel-panneau#149](https://github.com/folkloreinc/laravel-panneau/issues/149), its decision 0014). The abilities of pages come with its pages ([folkloreinc/laravel-panneau#33](https://github.com/folkloreinc/laravel-panneau/issues/33)).
 - **Lists (started):**
     - sorting, filters (with active filter chips), column choice. Done: sorting, filters and their chips ([#32](https://github.com/folkloreinc/panneau-js/issues/32)), and cursor pagination ([#150](https://github.com/folkloreinc/panneau-js/issues/150), [decisions/0039](decisions/0039-cursor-pagination.md)). Left: column choice;
     - inline editing: a column edits its field in place, for the simple types (text, number, select, boolean, date). Each change saves the one field (`PATCH` with a single field and `If-Match`), checked by its portable rules, and an error or a conflict shows on the cell. Started: the definition has `inlineEdit`, but lists don't edit in place yet;
