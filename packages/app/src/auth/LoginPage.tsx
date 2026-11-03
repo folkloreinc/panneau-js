@@ -99,7 +99,10 @@ function PasswordForm({
 function TokenForm({
     token: settings,
     onLogIn,
-}: Pick<LoginPageProps, 'onLogIn'> & { token: NonNullable<Auth['token']> }) {
+}: {
+    token: NonNullable<Auth['token']>;
+    onLogIn: (credentials: LoginCredentials) => Promise<unknown>;
+}) {
     const intl = usePanneauIntl();
     const [token, setToken] = useState('');
     return (
