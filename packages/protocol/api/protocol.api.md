@@ -563,6 +563,7 @@ export type BuiltInListLayout = (typeof BUILT_IN_LIST_LAYOUTS)[number];
 
 // @public (undocumented)
 export interface CheckOptions {
+    item?: Record<string, unknown>;
     locales?: string[];
     mode?: 'create' | 'update';
     partial?: boolean;

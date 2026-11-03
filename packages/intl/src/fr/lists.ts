@@ -54,4 +54,10 @@ export const listsFr: Record<string, string> = {
     'panneau.lists.previousPage': 'Page précédente',
     'panneau.lists.nextPage': 'Page suivante',
     'panneau.lists.perPage': 'Par page',
+    'panneau.lists.editValue': 'Modifier {field} de {item}',
+    'panneau.lists.savingValue': 'Enregistrement…',
+    'panneau.lists.saveValueFailed': 'La modification n’a pas pu être enregistrée.',
+    'panneau.lists.valueConflict': 'Quelqu’un d’autre l’a changé en :',
+    'panneau.lists.keepTheirs': 'Garder la sienne',
+    'panneau.lists.saveMine': 'Enregistrer la mienne',
 };

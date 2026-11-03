@@ -23,6 +23,12 @@ export interface CheckOptions {
     mode?: 'create' | 'update';
     /** Only check the fields present in the values (partial updates). */
     partial?: boolean;
+    /**
+     * The values of the item being updated. With `partial`, conditions (`visibleWhen`) and rules
+     * that read other fields read them for the fields that aren't in the values: a field shown
+     * when `status` is `published`, sent alone, is checked on a published item (decision 0043).
+     */
+    item?: Record<string, unknown>;
 }
 
 interface Context extends CheckOptions {
@@ -304,7 +310,10 @@ function checkFields(
         if (context.mode === 'update' && field.createOnly === true) {
             return;
         }
-        if (field.visibleWhen !== undefined && !evaluateCondition(field.visibleWhen, values)) {
+        if (
+            field.visibleWhen !== undefined &&
+            !evaluateCondition(field.visibleWhen, prefix === '' ? context.root : values)
+        ) {
             return;
         }
         if (context.partial === true && prefix === '' && !(field.name in values)) {
@@ -324,7 +333,11 @@ export function checkValues(
     values: Record<string, unknown>,
     options: CheckOptions = {},
 ): Record<string, RuleFailure[]> {
-    const context: Context = { ...options, root: values, failures: {} };
+    const root =
+        options.partial === true && options.item !== undefined
+            ? { ...options.item, ...values }
+            : values;
+    const context: Context = { ...options, root, failures: {} };
     checkFields(fields, values, '', context);
     return context.failures;
 }

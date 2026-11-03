@@ -52,10 +52,10 @@ export const ListDefinition = z.looseObject({
         description:
             "`pages` (the default): numbered pages, with a total. `cursor`: the list follows `nextCursor` of each page with the `cursor` parameter, without page numbers, for large lists that the backend can't count (decision 0039).",
     }),
-    inlineEdit: z
-        .array(z.string().min(1))
-        .optional()
-        .meta({ description: 'Fields editable in the list.' }),
+    inlineEdit: z.array(z.string().min(1)).optional().meta({
+        description:
+            'Fields that columns edit in place, on items that can be updated: `text`, `number`, `select`, `boolean` and `date`. Each change is a `PATCH` with the one field and `If-Match` (decision 0043).',
+    }),
     selectable: z.boolean().optional(),
 });
 

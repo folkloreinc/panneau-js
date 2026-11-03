@@ -1,4 +1,4 @@
-# 0042: Countries, regions and phone numbers
+# 0047: Countries, regions and phone numbers
 
 - Status: accepted
 - Date: 2026-11-03

@@ -141,7 +141,7 @@ import { createEmbedSource } from '@panneau/fields';
 
 A `tel` field shows the country of the number, its flag and calling code, in a menu at the start of its input, and formats the number as it is typed. Its value is in E.164 once the number is complete, and the text as typed until then, which the `tel` rule refuses. `country` (`settings.country`) is the country of a new number, the region of the user's locale without it. Formats come from `libphonenumber-js`, with its smallest metadata.
 
-A `country` field picks a country by its name in the user's locale, with its flag; `countries` limits the choices and `preferred` puts some first. A `region` field picks a state, a province or a territory of its `country` (a field's `from`, or `settings.country`): for Argentina, Australia, Brazil, Canada, China, India, Japan, Mexico and the United States, among their regions, named in English or French, and its value is the code without the country (`QC`); for other countries, it is a text ([decision 0042](../../docs/decisions/0042-countries-regions-and-phone-numbers.md)).
+A `country` field picks a country by its name in the user's locale, with its flag; `countries` limits the choices and `preferred` puts some first. A `region` field picks a state, a province or a territory of its `country` (a field's `from`, or `settings.country`): for Argentina, Australia, Brazil, Canada, China, India, Japan, Mexico and the United States, among their regions, named in English or French, and its value is the code without the country (`QC`); for other countries, it is a text ([decision 0047](../../docs/decisions/0047-countries-regions-and-phone-numbers.md)).
 
 ```tsx
 <CountryField label="Country" preferred={['CA', 'US']} value={country} onChange={setCountry} />

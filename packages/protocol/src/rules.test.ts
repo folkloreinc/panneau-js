@@ -222,6 +222,26 @@ describe('checkValues', () => {
         });
     });
 
+    it('reads the conditions of a partial update with the values of the item', () => {
+        const fields: Field[] = [
+            { name: 'status', type: 'select' },
+            {
+                name: 'url',
+                type: 'url',
+                rules: [{ rule: 'required' }],
+                visibleWhen: { field: 'status', equals: 'published' },
+            },
+        ];
+        const check = (item: Record<string, unknown>) =>
+            checkValues(fields, { url: '' }, { partial: true, item });
+        expect(Object.keys(check({ status: 'published', url: 'https://example.com' }))).toEqual([
+            'url',
+        ]);
+        expect(check({ status: 'draft' })).toEqual({});
+        // Without the item, the values sent alone
+        expect(checkValues(fields, { url: '' }, { partial: true })).toEqual({});
+    });
+
     it('skips read-only fields and fields of the other mode', () => {
         const fields: Field[] = [
             { name: 'password', type: 'text', createOnly: true, rules: [{ rule: 'required' }] },

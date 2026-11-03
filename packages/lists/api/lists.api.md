@@ -22,6 +22,7 @@ import type { ListSelection } from '@panneau/core';
 import type { ListState } from '@panneau/core';
 import type { Option as Option_2 } from '@panneau/protocol';
 import { ReactNode } from 'react';
+import type { RuleFailure } from '@panneau/protocol';
 import type { Selection as Selection_2 } from '@panneau/protocol';
 
 // @public
@@ -274,6 +275,7 @@ export interface ListLayoutProps {
     onToggle: (item: ListItem) => void;
     pageSelection: ReactNode;
     renderActions: (item: ListItem) => ReactNode;
+    renderCell?: ((item: ListItem, column: ListColumn, content: ReactNode) => ReactNode) | undefined;
     renderValue: (item: ListItem, column: ListColumn) => ReactNode;
     selectable: boolean;
     sort: readonly string[];
@@ -318,9 +320,11 @@ export interface ListViewProps {
     fields?: readonly Field[];
     filterControls?: Readonly<Record<string, FilterEntry>>;
     filters?: readonly Filter[];
+    formatError?: (failure: RuleFailure, path: string) => string;
     getItemHref?: (item: ListItem) => string | null;
     getItemLabel?: (item: ListItem) => string;
     getLinkHref?: (action: Action, item: ListItem) => string | null;
+    inlineEdit?: readonly string[];
     isLoading?: boolean;
     items: readonly ListItem[] | undefined;
     itemTitle?: string;
@@ -329,6 +333,8 @@ export interface ListViewProps {
     layouts?: readonly string[];
     list: List_2;
     onAction?: ListActionHandler;
+    // Warning: (ae-forgotten-export) The symbol "ListInlineEditHandler" needs to be exported by the entry point index.d.ts
+    onInlineEdit?: ListInlineEditHandler;
     // (undocumented)
     onLayoutChange?: (layout: string) => void;
     // (undocumented)
