@@ -9,8 +9,8 @@ import styles from './pages.module.css';
 
 export interface PageLayoutProps {
     /**
-     * The width of the page: `default` for lists and the home page, `narrow` for forms and
-     * details. The page is centered in the window either way.
+     * The width of the page: `default` for lists, the home page and forms with a sidebar,
+     * `narrow` for other forms and details. The page is centered in the window either way.
      */
     width?: 'default' | 'narrow';
     className?: string;

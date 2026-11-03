@@ -24,6 +24,8 @@ export interface NestedFieldProps {
     parentValue?: unknown;
     /** The locale of the value, in a localized field. */
     locale?: string;
+    /** Renders the field without a visible label, named by its label for assistive technologies. */
+    hideLabel?: boolean;
     disabled?: boolean;
     readOnly?: boolean;
     className?: string;
@@ -44,6 +46,7 @@ export function NestedField({
     errors,
     parentValue,
     locale,
+    hideLabel,
     disabled,
     readOnly,
     className,
@@ -54,6 +57,7 @@ export function NestedField({
         path,
         parentValue,
         ...(locale !== undefined ? { locale } : {}),
+        ...(hideLabel !== undefined ? { hideLabel } : {}),
         ...(disabled !== undefined ? { disabled } : {}),
         ...(readOnly !== undefined ? { readOnly } : {}),
         ...(className !== undefined ? { className } : {}),

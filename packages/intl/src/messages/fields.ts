@@ -153,6 +153,19 @@ export const fieldsMessages = {
         id: 'panneau.fields.retryUpload',
         defaultMessage: 'Retry {name}',
     }),
+    locales: defineMessage({ id: 'panneau.fields.locales', defaultMessage: 'Languages' }),
+    localeEmpty: defineMessage<{ locale: string }>({
+        id: 'panneau.fields.localeEmpty',
+        defaultMessage: '{locale}, empty',
+    }),
+    localeInvalid: defineMessage<{ locale: string }>({
+        id: 'panneau.fields.localeInvalid',
+        defaultMessage: '{locale}, has errors',
+    }),
+    addLocale: defineMessage<{ locale: string }>({
+        id: 'panneau.fields.addLocale',
+        defaultMessage: 'Add a translation: {locale}',
+    }),
     missingPlugin: defineMessage<{ type: string }>({
         id: 'panneau.fields.missingPlugin',
         defaultMessage: 'This field needs a plugin for the “{type}” type.',

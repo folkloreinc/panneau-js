@@ -6,7 +6,7 @@
 
 import type { Field } from '@panneau/protocol';
 import { JSX } from 'react';
-import type { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 // @public
 export function LocalizedField<V>(input: LocalizedFieldProps<V>): JSX.Element;
@@ -21,9 +21,13 @@ export function LocalizedFieldEntry(props: FieldEntryProps): JSX.Element;
 // @public (undocumented)
 export interface LocalizedFieldProps<V> extends FieldProps<LocalizedValue<V>> {
     children: (props: LocalizedInputProps<V>) => ReactNode;
+    invalidLocales?: readonly string[];
+    locale?: string;
     // (undocumented)
     localeClassName?: string;
     locales: readonly string[];
+    // (undocumented)
+    onLocaleChange?: (locale: string) => void;
 }
 
 // @public

@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 
+import { isWideField } from '@panneau/fields';
 import type { Field, LayoutNode } from '@panneau/protocol';
 import { LoadingRegion, Skeleton, usePanneauIntl } from '@panneau/ui';
 
@@ -127,8 +128,10 @@ function NodesSkeleton({
 }
 
 export interface FormSkeletonProps {
-    /** The main nodes of the layout, resolved: every field has a node. */
+    /** The main nodes of the layout. */
     main: readonly LayoutNode[];
+    /** The fields that the layout doesn't place, which flow in columns after it. */
+    flow?: readonly LayoutNode[];
     /** The sidebars of the layout. */
     sidebar: readonly LayoutNode[];
     fields: ReadonlyMap<string, Field>;
@@ -147,6 +150,7 @@ export interface FormSkeletonProps {
  */
 export function FormSkeleton({
     main,
+    flow = [],
     sidebar,
     fields,
     footer,
@@ -168,7 +172,29 @@ export function FormSkeleton({
                     layoutClassName,
                 )}
             >
-                <NodesSkeleton nodes={main} fields={fields} />
+                <div className={styles.stack}>
+                    <NodesSkeleton nodes={main} fields={fields} />
+                    {flow.length > 0 ? (
+                        <div className={styles.flow}>
+                            {flow.map((node, index) => {
+                                const field =
+                                    node.name !== undefined ? fields.get(node.name) : undefined;
+                                return (
+                                    <div
+                                        key={index}
+                                        className={cx(
+                                            styles.flowCell,
+                                            (field === undefined || isWideField(field)) &&
+                                                styles.flowWide,
+                                        )}
+                                    >
+                                        <NodeSkeleton node={node} fields={fields} />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : null}
+                </div>
                 {sidebar.length > 0 ? (
                     <div className={cx(styles.sidebar, sidebarClassName)}>
                         {sidebar.map((node, index) => (

@@ -15,6 +15,11 @@ export interface BoundFieldProps {
     onChange: (value: unknown) => void;
     onBlur?: () => void;
     errors?: readonly string[];
+    /**
+     * Paths inside the field that have errors (`title.en`), for fields that show their nested
+     * fields themselves: a localized field marks its locales in error.
+     */
+    invalidPaths?: readonly string[];
 }
 
 /** Props of a binding: it decides whether a field shows, and where its value comes from. */

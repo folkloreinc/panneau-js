@@ -38,6 +38,27 @@
     min-width: 0;
 }
 
+/* Fields that the layout doesn't place: short ones side by side, in columns of at least 16rem. */
+.flow {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+    gap: var(--panneau-space-5) var(--panneau-space-4);
+    min-width: 0;
+}
+
+.flowCell {
+    min-width: 0;
+}
+
+/* A field hidden by its condition renders nothing: its cell takes no column. */
+.flowCell:empty {
+    display: none;
+}
+
+.flowWide {
+    grid-column: 1 / -1;
+}
+
 /* Narrow containers (phones, side panels): every cell takes the full width. */
 @container panneau-form (max-width: 36rem) {
     .cell {

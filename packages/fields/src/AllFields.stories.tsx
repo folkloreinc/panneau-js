@@ -53,6 +53,8 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
+        // One locale at a time: the English title is behind its switch.
+        await userEvent.click(canvas.getAllByRole('radio', { name: /^English/ })[0] as Element);
         const english = canvas.getByRole('textbox', { name: /English/ });
         await userEvent.clear(english);
         await userEvent.type(english, 'Fall');

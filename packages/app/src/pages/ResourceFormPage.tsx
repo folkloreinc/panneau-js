@@ -162,8 +162,10 @@ export function ResourceFormPage({
         );
     }
 
+    // A form with a sidebar takes the width of a list: its main column stays wide enough
+    const hasSidebar = layout.some((node) => node.type === 'sidebar');
     return (
-        <PageLayout width="narrow">
+        <PageLayout width={hasSidebar ? 'default' : 'narrow'}>
             <PageHeader title={title} back={back} actions={itemActions} />
             {content}
         </PageLayout>

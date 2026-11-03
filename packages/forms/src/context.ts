@@ -18,27 +18,6 @@ export function useFormState(form: Form): FormState {
     return useSyncExternalStore(form.subscribe, form.getState, form.getState);
 }
 
-/** Opens the containers (tabs, sections) that hold a path, so that its field can be reached. */
-export type Revealer = (path: string) => void;
-
-export interface RevealRegistry {
-    add(revealer: Revealer): () => void;
-    reveal(path: string): void;
-}
-
-export function createRevealRegistry(): RevealRegistry {
-    const revealers = new Set<Revealer>();
-    return {
-        add(revealer) {
-            revealers.add(revealer);
-            return () => {
-                revealers.delete(revealer);
-            };
-        },
-        reveal(path) {
-            revealers.forEach((revealer) => revealer(path));
-        },
-    };
-}
-
-export const RevealContext = createContext<RevealRegistry>(createRevealRegistry());
+// The reveal registry is in `@panneau/fields`, for the fields that hide some of their own (the
+// locales of a localized field).
+export { RevealContext, createRevealRegistry } from '@panneau/fields';

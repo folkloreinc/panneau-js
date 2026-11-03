@@ -19,7 +19,11 @@ export const Text: Story = {
         return (
             <LocalizedField<string> {...args} value={value} onChange={setValue}>
                 {(input) => (
-                    <TextField label={input.label} value={input.value} onChange={input.onChange} />
+                    <TextField
+                        aria-label={input.label}
+                        value={input.value}
+                        onChange={input.onChange}
+                    />
                 )}
             </LocalizedField>
         );

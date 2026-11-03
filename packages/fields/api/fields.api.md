@@ -5,6 +5,7 @@
 ```ts
 
 import { ComponentType } from 'react';
+import { Context } from 'react';
 import type { Definition } from '@panneau/protocol';
 import type { EmbedValue } from '@panneau/protocol';
 import type { Field } from '@panneau/protocol';
@@ -21,6 +22,7 @@ import type { StoredFile } from '@panneau/protocol';
 export interface BoundFieldProps {
     // (undocumented)
     errors?: readonly string[];
+    invalidPaths?: readonly string[];
     // (undocumented)
     onBlur?: () => void;
     // (undocumented)
@@ -50,6 +52,9 @@ export function createNominatimSource(input?: NominatimSourceOptions): Geocoding
 
 // @public
 export function createRelationSource(adapter: RelationListAdapter, input?: RelationSourceOptions): RelationSource;
+
+// @public (undocumented)
+export function createRevealRegistry(): RevealRegistry;
 
 // @public
 export function DefinitionField(props: FieldEntryProps): JSX.Element;
@@ -114,6 +119,8 @@ export interface FieldEntryProps {
     // (undocumented)
     errors?: readonly string[];
     field: Field;
+    hideLabel?: boolean;
+    invalidPaths?: readonly string[];
     locale?: string;
     // (undocumented)
     onBlur?: () => void;
@@ -289,6 +296,9 @@ export function isFileValue(value: unknown): value is FileValue;
 export function isRequired(field: Field): boolean;
 
 // @public
+export function isWideField(field: Field): boolean;
+
+// @public
 export interface MapsConfig {
     // (undocumented)
     geocoding?: GeocodingSource;
@@ -331,6 +341,7 @@ export interface NestedFieldProps {
     errors?: readonly string[];
     // (undocumented)
     field: Field;
+    hideLabel?: boolean;
     locale?: string;
     // (undocumented)
     onBlur?: () => void;
@@ -390,6 +401,20 @@ export interface RelationSourceOptions {
     definition?: (Pick<Definition, 'resources'> & Partial<Pick<Definition, 'locales'>>) | null;
     getLabel?: (item: Item, resource: string) => string;
     perPage?: number;
+}
+
+// @public
+export const RevealContext: Context<RevealRegistry>;
+
+// @public
+export type Revealer = (path: string) => void;
+
+// @public
+export interface RevealRegistry {
+    // (undocumented)
+    add(revealer: Revealer): () => void;
+    // (undocumented)
+    reveal(path: string): void;
 }
 
 // @public (undocumented)
@@ -491,6 +516,9 @@ export function useRejectionMessage(maxSize: number | null | undefined): (file: 
 
 // @public
 export function useRelationReferences(source: RelationSource | null, resource: string, references: readonly RelationReference[]): RelationReference[];
+
+// @public
+export function useRevealer(revealer: Revealer): void;
 
 // @public
 export function useUploads(options: UseUploadsOptions): UseUploadsResult;

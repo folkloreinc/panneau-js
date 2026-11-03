@@ -6,6 +6,11 @@ import styles from './Field.module.css';
 export interface FieldsetProps {
     /** Title of the group of controls. */
     legend?: ReactNode;
+    /**
+     * Controls at the end of the legend's line, such as the locales of a value. The group is then
+     * named by the legend through `aria-labelledby`, since a `<legend>` can't share its line.
+     */
+    legendEnd?: ReactNode;
     description?: ReactNode;
     /** Errors of the group as a whole. */
     errors?: readonly string[];
@@ -25,6 +30,7 @@ export interface FieldsetProps {
  */
 export function Fieldset({
     legend,
+    legendEnd,
     description,
     errors = [],
     isRequired = false,
@@ -39,21 +45,38 @@ export function Fieldset({
     const descriptionId = description !== undefined ? `${id}-description` : null;
     const errorsId = errors.length > 0 ? `${id}-errors` : null;
     const describedBy = [descriptionId, errorsId].filter(Boolean).join(' ');
+    const hasLegend = legend !== undefined && legend !== null;
+    const hasLegendEnd = legendEnd !== undefined && legendEnd !== null;
+    const legendContent = (
+        <>
+            {legend}
+            {isRequired ? (
+                <span className={styles.required} aria-hidden="true">
+                    *
+                </span>
+            ) : null}
+        </>
+    );
     return (
         <fieldset
             className={cx('panneau-fieldset', styles.fieldset, className)}
+            aria-labelledby={hasLegend && hasLegendEnd ? `${id}-legend` : undefined}
             aria-describedby={describedBy !== '' ? describedBy : undefined}
             aria-invalid={errors.length > 0 ? true : undefined}
             disabled={isDisabled}
         >
-            {legend !== undefined && legend !== null ? (
-                <legend className={cx(styles.legend, styles.label, legendClassName)}>
-                    {legend}
-                    {isRequired ? (
-                        <span className={styles.required} aria-hidden="true">
-                            *
+            {hasLegendEnd ? (
+                <div className={styles.legendRow}>
+                    {hasLegend ? (
+                        <span id={`${id}-legend`} className={cx(styles.label, legendClassName)}>
+                            {legendContent}
                         </span>
                     ) : null}
+                    <div className={styles.legendEnd}>{legendEnd}</div>
+                </div>
+            ) : hasLegend ? (
+                <legend className={cx(styles.legend, styles.label, legendClassName)}>
+                    {legendContent}
                 </legend>
             ) : null}
             {descriptionId !== null ? (

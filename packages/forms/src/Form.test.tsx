@@ -70,6 +70,70 @@ describe('Form without a definition', () => {
         await waitFor(() => expect(screen.getByRole('textbox', { name: 'Bio' })).toHaveFocus());
     });
 
+    it('shows the locale of the first error, and marks the locales in error', async () => {
+        renderForm(
+            <Form
+                fields={[
+                    {
+                        name: 'title',
+                        type: 'text',
+                        label: 'Title',
+                        localized: true,
+                        rules: [{ rule: 'required' }],
+                    },
+                ]}
+                locales={['en', 'fr']}
+                values={{ title: { en: 'Summer' } }}
+                onSubmit={vi.fn()}
+            />,
+        );
+        const title = screen.getByRole('group', { name: 'Title' });
+        expect(within(title).queryByRole('textbox', { name: 'French' })).toBeNull();
+        await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+        const french = await within(title).findByRole('textbox', { name: 'French' });
+        await waitFor(() => expect(french).toHaveFocus());
+        expect(within(title).getByRole('radio', { name: 'French, has errors' })).toBeChecked();
+        expect(within(title).queryByRole('textbox', { name: 'English' })).toBeNull();
+    });
+
+    it('lists the errors of a localized field in the order of the locales', async () => {
+        renderForm(
+            <Form
+                fields={[
+                    {
+                        name: 'title',
+                        type: 'text',
+                        label: 'Title',
+                        localized: true,
+                        rules: [{ rule: 'required' }],
+                    },
+                ]}
+                locales={['fr', 'en']}
+                onSubmit={vi.fn()}
+            />,
+        );
+        await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+        const summary = await screen.findByRole('alert');
+        expect(
+            within(summary)
+                .getAllByRole('listitem')
+                .map((item) => item.textContent),
+        ).toEqual(['Title (fr): This field is required.', 'Title (en): This field is required.']);
+        await waitFor(() => expect(screen.getByRole('textbox', { name: 'French' })).toHaveFocus());
+    });
+
+    it('lays out short fields that no layout places side by side', () => {
+        renderForm(<Form fields={FIELDS} layout={[{ type: 'field', name: 'bio' }]} />);
+        // The layout places the bio; the others flow after it.
+        const bio = screen.getByRole('textbox', { name: 'Bio' });
+        const name = screen.getByRole('textbox', { name: /Name/ });
+        expect(bio.compareDocumentPosition(name) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+        expect(name.closest('[data-panneau-path]')?.parentElement?.parentElement).toBe(
+            screen.getByRole('textbox', { name: 'Email' }).closest('[data-panneau-path]')
+                ?.parentElement?.parentElement,
+        );
+    });
+
     it('saves a required file chosen without direct uploads', async () => {
         const onSubmit = vi.fn();
         const onSubmitted = vi.fn();
