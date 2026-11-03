@@ -202,6 +202,9 @@ export function parseRatio(ratio: string): number | null;
 export type PartialTheme = Partial<Theme>;
 
 // @public
+export const PASSWORD_CONFIRMATION_PROBLEM_TYPE = "urn:panneau:problem:password-confirmation";
+
+// @public
 export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "json", "tel", "in", "accept", "maxSize", "before", "after", "crop"];
 
 // @public (undocumented)
@@ -291,6 +294,9 @@ export function toSearchParams(query: ListQuery): URLSearchParams;
 
 // @public
 export function toSearchQueryParams(query: SearchQuery): URLSearchParams;
+
+// @public
+export const TWO_FACTOR_REQUIRED_PROBLEM_TYPE = "urn:panneau:problem:two-factor-required";
 
 // @public (undocumented)
 export interface ValidationIssue {

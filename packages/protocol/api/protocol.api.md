@@ -4559,6 +4559,25 @@ export const namedSchemas: {
             resource: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>;
     }, z.core.$loose>;
+    TwoFactorChallenge: z.ZodObject<{
+        twoFactor: z.ZodLiteral<true>;
+    }, z.core.$loose>;
+    TwoFactorStatus: z.ZodObject<{
+        status: z.ZodEnum<{
+            disabled: "disabled";
+            enabled: "enabled";
+            pending: "pending";
+        }>;
+        required: z.ZodBoolean;
+    }, z.core.$loose>;
+    TwoFactorSetup: z.ZodObject<{
+        secret: z.ZodString;
+        otpauthUrl: z.ZodString;
+        qrCode: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>;
+    RecoveryCodes: z.ZodObject<{
+        recoveryCodes: z.ZodArray<z.ZodString>;
+    }, z.core.$loose>;
     SearchResponse: z.ZodObject<{
         data: z.ZodArray<z.ZodObject<{
             resource: z.ZodString;
@@ -4669,6 +4688,9 @@ export function parseRatio(ratio: string): number | null;
 export type PartialTheme = Partial<Theme>;
 
 // @public
+export const PASSWORD_CONFIRMATION_PROBLEM_TYPE = "urn:panneau:problem:password-confirmation";
+
+// @public
 export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "json", "tel", "in", "accept", "maxSize", "before", "after", "crop"];
 
 // @public (undocumented)
@@ -4721,6 +4743,14 @@ export type ReadSearchQueryResult = {
     query?: undefined;
     errors: Record<string, string[]>;
 };
+
+// @public (undocumented)
+export const RecoveryCodes: z.ZodObject<{
+    recoveryCodes: z.ZodArray<z.ZodString>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type RecoveryCodes = z.infer<typeof RecoveryCodes>;
 
 // @public
 export function renderedCropSize(transform: Pick<MediaTransform, 'crop' | 'rotate'>): {
@@ -5623,6 +5653,40 @@ export function toSearchParams(query: ListQuery): URLSearchParams;
 
 // @public
 export function toSearchQueryParams(query: SearchQuery): URLSearchParams;
+
+// @public
+export const TWO_FACTOR_REQUIRED_PROBLEM_TYPE = "urn:panneau:problem:two-factor-required";
+
+// @public (undocumented)
+export const TwoFactorChallenge: z.ZodObject<{
+    twoFactor: z.ZodLiteral<true>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type TwoFactorChallenge = z.infer<typeof TwoFactorChallenge>;
+
+// @public (undocumented)
+export const TwoFactorSetup: z.ZodObject<{
+    secret: z.ZodString;
+    otpauthUrl: z.ZodString;
+    qrCode: z.ZodOptional<z.ZodString>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type TwoFactorSetup = z.infer<typeof TwoFactorSetup>;
+
+// @public (undocumented)
+export const TwoFactorStatus: z.ZodObject<{
+    status: z.ZodEnum<{
+        disabled: "disabled";
+        enabled: "enabled";
+        pending: "pending";
+    }>;
+    required: z.ZodBoolean;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type TwoFactorStatus = z.infer<typeof TwoFactorStatus>;
 
 // @public (undocumented)
 export const Upload: z.ZodObject<{

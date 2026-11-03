@@ -165,11 +165,13 @@ export const appMessages = {
     }),
     twoFactorRequiredHelp: defineMessage({
         id: 'panneau.app.twoFactorRequiredHelp',
-        defaultMessage: 'Your account needs two-factor authentication. Set it up with an authenticator app to continue.',
+        defaultMessage:
+            'Your account needs two-factor authentication. Set it up with an authenticator app to continue.',
     }),
     twoFactorScan: defineMessage({
         id: 'panneau.app.twoFactorScan',
-        defaultMessage: 'Scan the QR code with your authenticator app, or type the key, then enter the code it shows.',
+        defaultMessage:
+            'Scan the QR code with your authenticator app, or type the key, then enter the code it shows.',
     }),
     twoFactorQrCode: defineMessage({
         id: 'panneau.app.twoFactorQrCode',
@@ -201,7 +203,8 @@ export const appMessages = {
     }),
     recoveryCodesHelp: defineMessage({
         id: 'panneau.app.recoveryCodesHelp',
-        defaultMessage: 'Keep these recovery codes somewhere safe: each one logs you in once if you lose your authenticator app. They won’t be shown again.',
+        defaultMessage:
+            'Keep these recovery codes somewhere safe: each one logs you in once if you lose your authenticator app. They won’t be shown again.',
     }),
     copyCodes: defineMessage({
         id: 'panneau.app.copyCodes',
