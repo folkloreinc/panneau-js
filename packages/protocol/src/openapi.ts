@@ -720,7 +720,7 @@ export function createOpenApiDocument(): JsonObject {
                             required: ['data'],
                             properties: { data: ref('Passkey') },
                         }),
-                        ...problems(401, 403, 422, 423),
+                        ...problems(401, 403, 409, 422, 423),
                     },
                 },
             },
@@ -728,10 +728,10 @@ export function createOpenApiDocument(): JsonObject {
                 post: {
                     operationId: 'passkeyRegistrationOptions',
                     summary:
-                        'The options of `navigator.credentials.create()`, for the current user.',
+                        "The options of `navigator.credentials.create()`, for the current user. A `409` for a user who can't have passkeys.",
                     responses: {
                         200: ok('The options.', ref('WebAuthnOptions')),
-                        ...problems(401, 403, 423),
+                        ...problems(401, 403, 409, 423),
                     },
                 },
             },

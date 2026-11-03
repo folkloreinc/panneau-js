@@ -2465,6 +2465,16 @@
                             }
                         }
                     },
+                    "409": {
+                        "description": "Conflict with a business rule.",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        }
+                    },
                     "422": {
                         "description": "Invalid values: messages are in `errors`, keyed by dot path.",
                         "content": {
@@ -2496,7 +2506,7 @@
         "/account/passkeys/options": {
             "post": {
                 "operationId": "passkeyRegistrationOptions",
-                "summary": "The options of `navigator.credentials.create()`, for the current user.",
+                "summary": "The options of `navigator.credentials.create()`, for the current user. A `409` for a user who can't have passkeys.",
                 "responses": {
                     "200": {
                         "description": "The options.",
@@ -2520,6 +2530,16 @@
                     },
                     "403": {
                         "description": "Not allowed. A value of `Panneau-Context` that the user can't use is a problem of type `urn:panneau:problem:context`, with its `param`. With `auth.emailVerification`, a user whose email address isn't verified gets a problem of type `urn:panneau:problem:email-unverified` on every operation but those of the auth. A user who must have two-factor authentication and hasn't set it up gets a problem of type `urn:panneau:problem:two-factor-required` on every operation but those of the auth and of `/account/two-factor`.",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict with a business rule.",
                         "content": {
                             "application/problem+json": {
                                 "schema": {
