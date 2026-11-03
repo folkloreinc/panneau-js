@@ -10,7 +10,7 @@ export function can(abilities: Abilities | undefined, ability: string): boolean 
 }
 
 /**
- * Whether the current user can see a field (decision 0042): unless its `abilities.view` is
+ * Whether the current user can see a field (decision 0046): unless its `abilities.view` is
  * `false`. A hidden field is left out of forms, details and lists.
  */
 export function canViewField(field: Pick<Field, 'abilities'>): boolean {
@@ -18,7 +18,7 @@ export function canViewField(field: Pick<Field, 'abilities'>): boolean {
 }
 
 /**
- * Whether the current user can edit a field (decision 0042): they can see it, and its
+ * Whether the current user can edit a field (decision 0046): they can see it, and its
  * `abilities.update` isn't `false`. A field they can't edit is read-only.
  */
 export function canUpdateField(field: Pick<Field, 'abilities'>): boolean {
@@ -31,7 +31,7 @@ export function getVisibleFields<T extends Pick<Field, 'abilities'>>(fields: rea
 }
 
 /**
- * Whether the current user can open a page of the definition (decision 0042): unless its
+ * Whether the current user can open a page of the definition (decision 0046): unless its
  * `abilities.view` is `false`.
  */
 export function canViewPage(page: Pick<Page, 'abilities'>): boolean {

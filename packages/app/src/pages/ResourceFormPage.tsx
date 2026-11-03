@@ -109,7 +109,7 @@ export function ResourceFormPage({
         ) : undefined;
 
     // An item the user can't update opens in its panel, as its title does (decisions 0040 and
-    // 0042), or is forbidden when they can't view it either.
+    // 0046), or is forbidden when they can't view it either.
     const updatable = item === undefined || item.abilities.update === true;
     const viewable =
         item !== undefined && item.abilities.view === true && resolved.abilities.viewAny;

@@ -16,7 +16,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0008](0008-realtime-and-concurrency.md)      | Conflict detection in 5.0, collaboration in 5.x                        | Accepted                    |
 | [0009](0009-preview-drafts-revisions.md)      | Component and iframe previews, drafts and revisions per resource       | Accepted                    |
 | [0010](0010-media.md)                         | Media through the protocol, non-destructive image editing              | Amended by 0026, 0031       |
-| [0011](0011-permissions.md)                   | Backend policies, abilities in the UI, optional roles module           | Extended by 0042            |
+| [0011](0011-permissions.md)                   | Backend policies, abilities in the UI, optional roles module           | Extended by 0046            |
 | [0012](0012-authentication.md)                | Complete, optional auth that works next to a site's own auth           | Amended by 0037             |
 | [0013](0013-public-api-and-stability.md)      | Public API and stability rules                                         | Accepted                    |
 | [0014](0014-testing.md)                       | Testing strategy                                                       | Accepted                    |
@@ -47,4 +47,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0039](0039-cursor-pagination.md)             | Lists paged with cursors                                               | Accepted                    |
 | [0040](0040-row-links-and-open-mode.md)       | Built-in item actions by abilities, and what opens an item             | Accepted                    |
 | [0041](0041-groups-in-item-details.md)        | The panel of an item shows the values of its groups                    | Accepted                    |
-| [0042](0042-abilities-in-the-ui.md)           | Abilities of pages and fields, and a forbidden state                   | Accepted                    |
+| [0046](0046-abilities-in-the-ui.md)           | Abilities of pages and fields, and a forbidden state                   | Accepted                    |

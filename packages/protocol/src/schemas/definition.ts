@@ -92,7 +92,7 @@ export const Page = z.looseObject({
         }),
     abilities: Abilities.optional().meta({
         description:
-            'What the current user can do with the page (decision 0042). `view: false` leaves it out of menus, and its route shows a forbidden state; `pages.home` falls back to the built-in home. Without it, the page is allowed.',
+            'What the current user can do with the page (decision 0046). `view: false` leaves it out of menus, and its route shows a forbidden state; `pages.home` falls back to the built-in home. Without it, the page is allowed.',
     }),
 });
 

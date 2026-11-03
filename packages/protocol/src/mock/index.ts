@@ -270,7 +270,7 @@ function allows(item: Item, actionId: string): boolean {
     return item.abilities[ability] === true && item.abilities[actionId] !== false;
 }
 
-/** The names of the fields of a resource whose ability is `false` (decision 0042). */
+/** The names of the fields of a resource whose ability is `false` (decision 0046). */
 function fieldsWithout(resource: ResourceInput, ability: 'view' | 'update'): Set<string> {
     return new Set(
         resource.fields
@@ -292,7 +292,7 @@ function writableValues(resource: ResourceInput, body: Values): Values {
  * An in-memory backend that implements the protocol's resource routes: definition, list, show,
  * create, update (with `If-Match`), delete, duplicate and the built-in `delete` action. Its items
  * allow every built-in item action (`view`, `update`, `duplicate`, `delete`), unless an item of
- * `items` gives its own `abilities`. It reads abilities as clients do (decision 0042): a resource
+ * `items` gives its own `abilities`. It reads abilities as clients do (decision 0046): a resource
  * without `viewAny` answers `403` on its list, one without `create` on creates, an item without
  * `view`, `update` or `delete` on those requests; items leave out the values of fields with
  * `view: false`, and writes ignore those of fields with `update: false`. Values are checked with

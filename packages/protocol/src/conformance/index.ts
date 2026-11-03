@@ -576,7 +576,7 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
         check.expectProblem(await request(`${resourcePath()}/${UNKNOWN}`), 404);
     });
 
-    // The API agrees with the abilities of the definition and of the items (decision 0042).
+    // The API agrees with the abilities of the definition and of the items (decision 0046).
     const listItems = async (check: Check): Promise<Item[] | null> => {
         const cursors = (resource as Resource | null)?.list?.pagination === 'cursor';
         const reply = await request(`${resourcePath()}?${cursors ? '' : 'page=1&'}perPage=20`);

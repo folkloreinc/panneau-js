@@ -114,7 +114,7 @@ export function ItemPanel({
 
     let content;
     if (item === undefined && error instanceof ForbiddenError) {
-        // An item the user can't view: retrying won't help (decision 0042)
+        // An item the user can't view: retrying won't help (decision 0046)
         content = (
             <Alert tone="warning">
                 <p>{intl.formatMessage(appMessages.itemForbidden, { resource: singular })}</p>

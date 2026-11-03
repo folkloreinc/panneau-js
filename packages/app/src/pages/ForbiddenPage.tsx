@@ -9,7 +9,7 @@ export interface ForbiddenPageProps {
 }
 
 /**
- * The page of a route the user can't open (decision 0042): a resource they can't list, a create
+ * The page of a route the user can't open (decision 0046): a resource they can't list, a create
  * route without `create`, a page with `view: false`, or a request that answered `403`.
  */
 export function ForbiddenPage({ homeHref }: ForbiddenPageProps) {

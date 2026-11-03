@@ -132,7 +132,7 @@ export function getOpenMode(resource: Resource): 'panel' | 'edit' {
  * Resolves the list of a resource. Without columns, it shows the item title and the next fields
  * (up to four, skipping groups, repeaters and rich text). Fields the current user can't see
  * (`abilities.view: false`) have no column, sort or inline editing, and those they can't edit
- * aren't edited inline (decision 0042).
+ * aren't edited inline (decision 0046).
  */
 export function resolveList(resource: Resource): ResolvedList {
     const list = resource.list ?? {};

@@ -89,7 +89,7 @@ function resolveFieldRules(field: Field, mode: FormMode): Field {
 /**
  * Resolves fields and a layout into a form. Fields the current user can't see
  * (`abilities.view: false`) are left out, and those they can't edit (`abilities.update: false`)
- * are read-only (decision 0042).
+ * are read-only (decision 0046).
  */
 export function resolveFields(
     fields: readonly Field[],

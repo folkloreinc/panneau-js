@@ -84,7 +84,7 @@ function toLinks(item: MenuItem, definition: Definition, basePath: string, key: 
         case 'page': {
             const page = item.page !== undefined ? definition.pages?.[item.page] : undefined;
             // A page with `params` is about one thing: a menu can't link to it. Nor can a page the
-            // user can't open (decision 0042).
+            // user can't open (decision 0046).
             if (
                 item.page === undefined ||
                 page === undefined ||
@@ -144,7 +144,7 @@ function withoutExtraSeparators(entries: NavEntry[]): NavEntry[] {
  * The entries of the main navigation: the `main` menu of the definition, or every resource and
  * page without one. Resources the user can't list (`abilities.viewAny`), pages they can't open
  * (`abilities.view: false`) and entries of unknown types are left out, and so are the groups and
- * separators they leave empty (decision 0042). Groups keep one level: the links of nested groups
+ * separators they leave empty (decision 0046). Groups keep one level: the links of nested groups
  * join their parent.
  */
 export function getNavigation(definition: Definition, basePath: string): NavEntry[] {

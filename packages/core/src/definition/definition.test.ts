@@ -113,7 +113,7 @@ describe('resolveForm', () => {
 });
 
 describe('abilities of fields', () => {
-    // The user can't see `published_at`, nor edit `title` (decision 0042).
+    // The user can't see `published_at`, nor edit `title` (decision 0046).
     const restricted = (): Resource => {
         const pages = getResource('pages');
         return {
@@ -217,7 +217,7 @@ describe('resolveList', () => {
         expect(resolveList({ ...getResource('authors'), itemActions: ['edit'] }).selectable).toBe(
             false,
         );
-        // A user who can't delete any item (decision 0042): no checkboxes, no "Delete"
+        // A user who can't delete any item (decision 0046): no checkboxes, no "Delete"
         const undeletable = resolveList({
             ...getResource('authors'),
             actions: [

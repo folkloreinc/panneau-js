@@ -82,12 +82,12 @@ function DefinitionPage({
 function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) {
     const homeHref = routePath({ name: 'home' }, basePath);
     const notFound = <NotFoundPage homeHref={homeHref} />;
-    // A route the user can't open (decision 0042)
+    // A route the user can't open (decision 0046)
     const forbidden = <ForbiddenPage homeHref={homeHref} />;
     switch (route.name) {
         case 'home': {
             // `pages.home` of the definition, or the cards of the resources (decision 0019), also
-            // when the user can't open `pages.home` (decision 0042)
+            // when the user can't open `pages.home` (decision 0046)
             const page = definition.pages?.home;
             return page !== undefined && canViewPage(page) ? (
                 <DefinitionPage page={page} definition={definition} basePath={basePath} />

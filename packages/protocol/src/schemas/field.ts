@@ -118,7 +118,7 @@ export const Field = z
         }),
         abilities: Abilities.optional().meta({
             description:
-                "What the current user can do with the field (decision 0042). Only `false` restricts: `view: false` leaves the field out of forms, details and lists, and items don't carry its value; `update: false` makes it read-only, and the backend ignores its value. For the fields at the top of a resource and of its types.",
+                "What the current user can do with the field (decision 0046). Only `false` restricts: `view: false` leaves the field out of forms, details and lists, and items don't carry its value; `update: false` makes it read-only, and the backend ignores its value. For the fields at the top of a resource and of its types.",
         }),
         createOnly: z.boolean().optional(),
         updateOnly: z.boolean().optional(),

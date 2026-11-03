@@ -12,7 +12,7 @@ function createBackend() {
         type: 'text',
         rules: [{ rule: 'required', mode: 'create' }],
     });
-    // Abilities of the user (decision 0042): a field they can't see, a resource they can't reach.
+    // Abilities of the user (decision 0046): a field they can't see, a resource they can't reach.
     definition.resources[0]?.fields.push({
         name: 'notes',
         type: 'textarea',

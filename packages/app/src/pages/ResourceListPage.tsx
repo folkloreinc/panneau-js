@@ -87,7 +87,7 @@ export function ResourceListPage({
     ) {
         return null;
     }
-    // A list the backend refuses (decision 0042)
+    // A list the backend refuses (decision 0046)
     if (error instanceof ForbiddenError) {
         return <ForbiddenPage homeHref={routePath({ name: 'home' }, basePath)} />;
     }

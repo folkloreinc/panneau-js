@@ -556,7 +556,7 @@ describe('the app shell', () => {
                 },
             ],
         });
-        // Forbidden, without a redirect to the form (decision 0042)
+        // Forbidden, without a redirect to the form (decision 0046)
         expect(
             await screen.findByRole('heading', { name: 'You can’t open this page' }),
         ).toBeInTheDocument();
@@ -776,7 +776,7 @@ describe('the app shell', () => {
         expect(await main.findByText('About us')).toBeInTheDocument();
         expect(window.location.search).toBe('');
     });
-    describe('abilities (decision 0042)', () => {
+    describe('abilities (decision 0046)', () => {
         const forbidden = () => screen.findByRole('heading', { name: 'You can’t open this page' });
 
         it('shows the forbidden state on a resource the user can’t list, and its create route', async () => {

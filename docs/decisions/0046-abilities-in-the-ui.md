@@ -1,4 +1,4 @@
-# 0042: Abilities of pages and fields, and a forbidden state
+# 0046: Abilities of pages and fields, and a forbidden state
 
 - Status: accepted
 - Date: 2026-11-03

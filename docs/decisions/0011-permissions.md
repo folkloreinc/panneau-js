@@ -1,6 +1,6 @@
 # 0011: Backend policies, abilities in the UI, optional roles module
 
-- Status: accepted, extended by [0042](0042-abilities-in-the-ui.md)
+- Status: accepted, extended by [0046](0046-abilities-in-the-ui.md)
 - Date: 2026-10-14
 
 ## Context

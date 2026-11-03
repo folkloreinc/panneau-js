@@ -54,7 +54,7 @@ export function getFieldProps(
         description: field.help,
         ...(field.placeholder !== undefined ? { placeholder: field.placeholder } : {}),
         required: isRequired(field),
-        // A field the user can't edit is read-only (`abilities.update: false`, decision 0042)
+        // A field the user can't edit is read-only (`abilities.update: false`, decision 0046)
         readOnly:
             props.readOnly === true || field.readOnly === true || field.abilities?.update === false,
         disabled: props.disabled === true,

@@ -584,7 +584,7 @@ describe('createMockBackend', () => {
         expect((await embed('not a url')).status).toBe(422);
     });
 
-    it('reads the abilities of resources, items and fields (decision 0042)', async () => {
+    it('reads the abilities of resources, items and fields (decision 0046)', async () => {
         const definition = createDefinition();
         const [pages, authors] = definition.resources;
         if (pages === undefined || authors === undefined) {
