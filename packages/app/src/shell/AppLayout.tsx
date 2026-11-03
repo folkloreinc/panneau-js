@@ -9,6 +9,7 @@ import { IconButton, useCommandShortcut, usePanneauIntl, usePortalContainer } fr
 import { cx } from '../cx';
 import { usePreference } from '../preferences';
 import { type AppRoute, routePath } from '../routes';
+import { ActionRunsButton } from './ActionRunsButton';
 import styles from './AppLayout.module.css';
 import { GoTo } from './GoTo';
 import { type ColorSchemePreference, Sidebar } from './Sidebar';
@@ -76,7 +77,8 @@ function focusPage(main: HTMLElement, previous: AppRoute, route: AppRoute, baseP
  * window's background and the page on a raised panel, like the vertical tabs of recent browsers.
  * The sidebar collapses to a rail of icons (with its button, or Ctrl+\ / ⌘+\), and the browser
  * remembers it. On a smaller screen: a bar at the top, whose button opens the sidebar as a drawer.
- * When the route changes, focus moves to the title of the new page, and the page scrolls to the
+ * Queued action runs are in the notification area of the sidebar, and of the bar on a small
+ * screen. When the route changes, focus moves to the title of the new page, and the page scrolls to the
  * top.
  */
 export function AppLayout({
@@ -161,13 +163,15 @@ export function AppLayout({
                 <Link href={routePath({ name: 'home' }, basePath)} className={styles.topBarName}>
                     {definition.name}
                 </Link>
-                <IconButton
-                    icon={Search}
-                    label={intl.formatMessage(appMessages.goTo)}
-                    aria-haspopup="dialog"
-                    className={styles.topBarSearch}
-                    onPress={openGoTo}
-                />
+                <div className={styles.topBarEnd}>
+                    <ActionRunsButton appearance="icon" placement="bottom end" />
+                    <IconButton
+                        icon={Search}
+                        label={intl.formatMessage(appMessages.goTo)}
+                        aria-haspopup="dialog"
+                        onPress={openGoTo}
+                    />
+                </div>
             </header>
             <aside className={styles.sidebar}>
                 <Sidebar {...sidebarProps} collapsed={collapsed} onToggle={toggle} />

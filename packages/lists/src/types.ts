@@ -95,6 +95,22 @@ export type ListActionPreviewer = (event: ListActionEvent) => Promise<ListAction
  */
 export type ListActionHandler = (event: ListActionEvent) => unknown;
 
+/** A value changed in place, in a cell of the list (decision 0043). */
+export interface ListInlineEditEvent {
+    /** The item, with the version the value was edited from. */
+    item: ListItem;
+    /** The field the cell edits. */
+    field: Field;
+    value: unknown;
+}
+
+/**
+ * Saves one field of an item, changed in place, and resolves with the updated item. It rejects
+ * with a problem, or an error with a `problem` (as the errors of `@panneau/data`): a `422` shows
+ * its messages on the cell, and a `412` with the `current` item offers to keep it or save over it.
+ */
+export type ListInlineEditHandler = (event: ListInlineEditEvent) => Promise<ListItem>;
+
 /** Props of a filter control. */
 export interface FilterControlProps {
     filter: Filter;
@@ -140,6 +156,12 @@ export interface ListLayoutProps {
     label: string;
     /** The checkbox that selects the page, for layouts that show it in a header. */
     pageSelection: ReactNode;
+    /**
+     * Wraps the content of a cell (its value, or the title's link): a column that edits its
+     * field in place does it there (decision 0043). Without it, the content is the cell.
+     */
+    renderCell?:
+        ((item: ListItem, column: ListColumn, content: ReactNode) => ReactNode) | undefined;
 }
 
 /** A list layout, by id (`table`, `cards`). */

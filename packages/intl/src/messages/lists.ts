@@ -150,4 +150,19 @@ export const listsMessages = {
     }),
     nextPage: defineMessage({ id: 'panneau.lists.nextPage', defaultMessage: 'Next page' }),
     perPage: defineMessage({ id: 'panneau.lists.perPage', defaultMessage: 'Per page' }),
+    editValue: defineMessage<{ field: string; item: string }>({
+        id: 'panneau.lists.editValue',
+        defaultMessage: 'Edit {field} of {item}',
+    }),
+    savingValue: defineMessage({ id: 'panneau.lists.savingValue', defaultMessage: 'Saving…' }),
+    saveValueFailed: defineMessage({
+        id: 'panneau.lists.saveValueFailed',
+        defaultMessage: 'The change couldn’t be saved.',
+    }),
+    valueConflict: defineMessage({
+        id: 'panneau.lists.valueConflict',
+        defaultMessage: 'Someone else changed it to:',
+    }),
+    keepTheirs: defineMessage({ id: 'panneau.lists.keepTheirs', defaultMessage: 'Keep theirs' }),
+    saveMine: defineMessage({ id: 'panneau.lists.saveMine', defaultMessage: 'Save mine' }),
 };
