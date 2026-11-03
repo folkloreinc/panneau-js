@@ -104,17 +104,15 @@ export function usePasswordConfirmation(
     dialog: ReactNode;
 } {
     const [waiting, setWaiting] = useState<Waiting | null>(null);
-    const run = async <T,>(operation: () => Promise<T>): Promise<T> => {
-        try {
-            return await operation();
-        } catch (error) {
+    const run = <T,>(operation: () => Promise<T>): Promise<T> =>
+        operation().catch((error: unknown) => {
             if (!(error instanceof PasswordConfirmationError) || confirm === undefined) {
                 throw error;
             }
-            await new Promise<void>((resolve, reject) => setWaiting({ resolve, reject, error }));
-            return operation();
-        }
-    };
+            return new Promise<void>((resolve, reject) => {
+                setWaiting({ resolve, reject, error });
+            }).then(operation);
+        });
     const dialog =
         waiting !== null && confirm !== undefined ? (
             <ConfirmPasswordDialog

@@ -143,12 +143,12 @@ export const appMessages = {
         id: 'panneau.app.recoveryCode',
         defaultMessage: 'Recovery code',
     }),
-    useRecoveryCode: defineMessage({
-        id: 'panneau.app.useRecoveryCode',
+    withRecoveryCode: defineMessage({
+        id: 'panneau.app.withRecoveryCode',
         defaultMessage: 'Use a recovery code',
     }),
-    useAuthenticationCode: defineMessage({
-        id: 'panneau.app.useAuthenticationCode',
+    withAuthenticationCode: defineMessage({
+        id: 'panneau.app.withAuthenticationCode',
         defaultMessage: 'Use a code of the app',
     }),
     verify: defineMessage({

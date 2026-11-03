@@ -67,7 +67,9 @@ export function TwoFactorChallenge({ name, onAnswer, onBack }: TwoFactorChalleng
                     }}
                 >
                     {intl.formatMessage(
-                        recovery ? appMessages.useAuthenticationCode : appMessages.useRecoveryCode,
+                        recovery
+                            ? appMessages.withAuthenticationCode
+                            : appMessages.withRecoveryCode,
                     )}
                 </Button>
                 <Button appearance="ghost" size="sm" onPress={onBack}>
