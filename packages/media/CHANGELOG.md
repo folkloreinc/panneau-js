@@ -1,5 +1,18 @@
 # @panneau/media
 
+## 5.0.0-alpha.14
+
+### Patch Changes
+
+- Updated dependencies [4f141f9]
+- Updated dependencies [4f141f9]
+  - @panneau/ui@5.0.0-alpha.14
+  - @panneau/fields@5.0.0-alpha.14
+  - @panneau/core@5.0.0-alpha.14
+  - @panneau/data@5.0.0-alpha.14
+  - @panneau/intl@5.0.0-alpha.14
+  - @panneau/protocol@5.0.0-alpha.14
+
 ## 5.0.0-alpha.13
 
 ### Patch Changes

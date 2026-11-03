@@ -1,5 +1,17 @@
 # @panneau/editor
 
+## 5.0.0-alpha.14
+
+### Patch Changes
+
+- 4f141f9: The text style select of the rich text field works in a paragraph. It was disabled there, because it asked whether `setParagraph()` could run, which is false in a paragraph: it now asks whether the selection can take any of its styles.
+- Updated dependencies [4f141f9]
+- Updated dependencies [4f141f9]
+  - @panneau/ui@5.0.0-alpha.14
+  - @panneau/fields@5.0.0-alpha.14
+  - @panneau/intl@5.0.0-alpha.14
+  - @panneau/protocol@5.0.0-alpha.14
+
 ## 5.0.0-alpha.13
 
 ### Patch Changes
