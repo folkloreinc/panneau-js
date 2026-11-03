@@ -152,14 +152,33 @@ const contextHeader: JsonObject = {
     schema: { type: 'string' },
 };
 
-/** Adds the `Panneau-Context` header to the parameters of every path. */
+const METHODS = ['get', 'post', 'put', 'patch', 'delete'];
+
+/**
+ * Adds the `Panneau-Context` header to the parameters of every path, and its `403` problem to
+ * every operation that doesn't have one: a value the user can't use is refused everywhere.
+ */
 function withContextHeader(paths: Record<string, JsonObject>): Record<string, JsonObject> {
     const parameter = { $ref: '#/components/parameters/Context' };
     return Object.fromEntries(
         Object.entries(paths).map(([path, item]) => [
             path,
             {
-                ...item,
+                ...Object.fromEntries(
+                    Object.entries(item).map(([key, operation]) => {
+                        if (!METHODS.includes(key)) {
+                            return [key, operation];
+                        }
+                        const { responses = {}, ...rest } = operation as JsonObject;
+                        return [
+                            key,
+                            {
+                                ...rest,
+                                responses: { ...problems(403), ...(responses as JsonObject) },
+                            },
+                        ];
+                    }),
+                ),
                 parameters: [...((item.parameters as JsonObject[] | undefined) ?? []), parameter],
             },
         ]),

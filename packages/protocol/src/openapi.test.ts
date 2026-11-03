@@ -88,6 +88,11 @@ describe('OpenAPI document', () => {
         paths.forEach((item) =>
             expect(item.parameters).toContainEqual({ $ref: '#/components/parameters/Context' }),
         );
+        // A refused value of the context is a 403 on every operation
+        const search = (document.paths as Record<string, { get?: { responses?: object } }>)[
+            '/search'
+        ];
+        expect(Object.keys(search?.get?.responses ?? {})).toContain('403');
         expect(
             (document.paths as Record<string, object>)['/context/{param}/options'],
         ).toBeDefined();
