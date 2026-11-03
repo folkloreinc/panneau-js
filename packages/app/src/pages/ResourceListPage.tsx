@@ -15,6 +15,7 @@ import { useDocumentTitle } from '../documentTitle';
 import { navigate } from '../location';
 import { capitalize } from '../navigation';
 import { routePath } from '../routes';
+import { ErrorPage, getErrorPageKind } from './ErrorPage';
 import { ItemPanel } from './ItemPanel';
 import { PageHeader } from './PageHeader';
 import { filterActions, useItemActionRunner } from './itemActionRunner';
@@ -88,6 +89,17 @@ export function ResourceListPage({
             !selectedError)
     ) {
         return null;
+    }
+    // A list that never loaded: the error page, in place of the page. Once it has items, an error
+    // of a refetch shows in the list, which keeps them.
+    if (error !== null && data === undefined) {
+        return (
+            <ErrorPage
+                kind={getErrorPageKind(error)}
+                homeHref={routePath({ name: 'home' }, basePath)}
+                onRetry={() => void refetch()}
+            />
+        );
     }
     return (
         <div className={cx(styles.page, selectedId !== null && styles.withPanel)}>

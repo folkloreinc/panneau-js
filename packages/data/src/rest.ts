@@ -20,7 +20,7 @@ import type {
 } from '@panneau/protocol';
 
 import type { ActionResponse, DataAdapter } from './adapter';
-import { type ApiError, InvalidResponseError, createApiError } from './errors';
+import { type ApiError, InvalidResponseError, NetworkError, createApiError } from './errors';
 import { readProblem, readRetryAfter } from './problem';
 import { createPresignedUploads } from './uploads';
 
@@ -138,10 +138,19 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
         if (signal !== undefined) {
             init.signal = signal;
         }
-        const response = await fetcher(
-            `${baseUrl}${path}${search !== '' ? `?${search}` : ''}`,
-            init,
-        );
+        let response: Response;
+        try {
+            response = await fetcher(`${baseUrl}${path}${search !== '' ? `?${search}` : ''}`, init);
+        } catch (error) {
+            // An aborted request is not a failure of the network.
+            if (
+                signal?.aborted === true ||
+                (error instanceof Error && error.name === 'AbortError')
+            ) {
+                throw error;
+            }
+            throw new NetworkError(undefined, { cause: error });
+        }
         if (!response.ok) {
             const problem = await readProblem(response);
             throw (
