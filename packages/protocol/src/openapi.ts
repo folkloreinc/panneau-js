@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { CONTEXT_HEADER, CONTEXT_PROBLEM_TYPE } from './constants';
 import { createSchemaRegistry } from './schemas';
 import { BootConfig } from './schemas/boot';
 import { Definition } from './schemas/definition';
@@ -27,7 +28,7 @@ const ok = (description: string, schema?: JsonObject, headers?: JsonObject): Jso
 const PROBLEMS: Record<number, string> = {
     400: 'Bad request, such as a dry run of an action that does not declare `dryRun`.',
     401: 'Not authenticated.',
-    403: 'Not allowed.',
+    403: `Not allowed. A value of \`${CONTEXT_HEADER}\` that the user can't use is a problem of type \`${CONTEXT_PROBLEM_TYPE}\`, with its \`param\`.`,
     404: 'Not found.',
     409: 'Conflict with a business rule.',
     412: 'Version conflict: `If-Match` does not match the current version, which is in `current`.',
@@ -141,6 +142,49 @@ export function createBootConfigJsonSchema(): JsonObject {
     };
 }
 
+/** The `Panneau-Context` header, which every operation takes (decision 0045). */
+const contextHeader: JsonObject = {
+    name: CONTEXT_HEADER,
+    in: 'header',
+    required: false,
+    description:
+        'The values of the current context, when the definition has `context`: the format of a query string, in the order of its params (`client=4&contest=12`). Responses vary with it.',
+    schema: { type: 'string' },
+};
+
+const METHODS = ['get', 'post', 'put', 'patch', 'delete'];
+
+/**
+ * Adds the `Panneau-Context` header to the parameters of every path, and its `403` problem to
+ * every operation that doesn't have one: a value the user can't use is refused everywhere.
+ */
+function withContextHeader(paths: Record<string, JsonObject>): Record<string, JsonObject> {
+    const parameter = { $ref: '#/components/parameters/Context' };
+    return Object.fromEntries(
+        Object.entries(paths).map(([path, item]) => [
+            path,
+            {
+                ...Object.fromEntries(
+                    Object.entries(item).map(([key, operation]) => {
+                        if (!METHODS.includes(key)) {
+                            return [key, operation];
+                        }
+                        const { responses = {}, ...rest } = operation as JsonObject;
+                        return [
+                            key,
+                            {
+                                ...rest,
+                                responses: { ...problems(403), ...(responses as JsonObject) },
+                            },
+                        ];
+                    }),
+                ),
+                parameters: [...((item.parameters as JsonObject[] | undefined) ?? []), parameter],
+            },
+        ]),
+    );
+}
+
 /** The OpenAPI 3.1 document of the Panneau HTTP API. */
 export function createOpenApiDocument(): JsonObject {
     return {
@@ -151,14 +195,31 @@ export function createOpenApiDocument(): JsonObject {
             description:
                 'The HTTP API between a Panneau frontend and its backend. Paths are relative to `api.baseUrl` of the definition. Authentication is up to the backend (session cookie or bearer token). Errors use `application/problem+json`.',
         },
-        paths: {
+        paths: withContextHeader({
             '/definition': {
                 get: {
                     operationId: 'getDefinition',
-                    summary: 'The definition for the current user, in the current locale.',
+                    summary:
+                        'The definition for the current user, in the current locale, and for the values of `Panneau-Context`.',
                     responses: {
                         200: ok('The definition.', ref('Definition')),
                         ...problems(401, 403),
+                    },
+                },
+            },
+            '/context/{param}/options': {
+                parameters: [pathParameter('param', 'The name of a param of the context.')],
+                get: {
+                    operationId: 'getContextOptions',
+                    summary:
+                        'The choices of a param of the context without inline `options`, for the values of the params before it in `Panneau-Context`.',
+                    parameters: [queryParameter('q', 'Search terms.', { type: 'string' })],
+                    responses: {
+                        200: ok(
+                            'The first choices that match `q`, in the order to show them.',
+                            ref('ContextOptionsResponse'),
+                        ),
+                        ...problems(401, 403, 404),
                     },
                 },
             },
@@ -573,7 +634,10 @@ export function createOpenApiDocument(): JsonObject {
                     },
                 },
             },
+        }),
+        components: {
+            schemas: createComponentSchemas(),
+            parameters: { Context: contextHeader },
         },
-        components: { schemas: createComponentSchemas() },
     };
 }

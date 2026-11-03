@@ -46,6 +46,11 @@ export const appFr: Record<string, string> = {
     'panneau.app.actionRuns': 'Actions',
     'panneau.app.actionRunsLabel':
         '{count, plural, =0 {Actions} one {Actions, # en cours} other {Actions, # en cours}}',
+    'panneau.app.context': 'Contexte',
+    'panneau.app.contextNone': 'Tous',
+    'panneau.app.contextChange': 'Changer de contexte ({context})',
+    'panneau.app.contextRequired': 'Choisissez où travailler',
+    'panneau.app.contextRequiredText': 'Ce que montre l’administration en dépend.',
     'panneau.app.profile': 'Votre profil ({name})',
     'panneau.app.groupRecent': 'Récents',
     'panneau.app.groupNavigation': 'Navigation',

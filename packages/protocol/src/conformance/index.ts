@@ -1,9 +1,12 @@
 import type { z } from 'zod';
 
+import { CONTEXT_HEADER, CONTEXT_PROBLEM_TYPE } from '../constants';
+import { formatContextHeader } from '../context';
 import { type FilterRange, isCursorPage, toSearchParams } from '../query';
 import { Definition, type Resource } from '../schemas';
 import {
     ActionResult,
+    ContextOptionsResponse,
     FieldCheckResponse,
     type Item,
     ItemResponse,
@@ -31,6 +34,12 @@ export interface ConformanceOptions {
     init?: RequestInit;
     /** Resource to test. Defaults to the first resource of the definition. */
     resource?: string;
+    /**
+     * Values of the context (decision 0045), sent in `Panneau-Context` with every request: for a
+     * backend whose resources need a value of a required param. The checks of the context use
+     * them too, and the first choice of each param without one.
+     */
+    context?: Record<string, string>;
     /**
      * Enables the checks that write data, on the tested resource. Use a test database: these
      * checks create, update and delete an item.
@@ -153,6 +162,9 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
     const request = async (path: string, init: RequestInit = {}): Promise<Reply> => {
         const headers = new Headers(options.init?.headers);
         headers.set('Accept', 'application/json');
+        if (options.context !== undefined && Object.keys(options.context).length > 0) {
+            headers.set(CONTEXT_HEADER, formatContextHeader(options.context));
+        }
         new Headers(init.headers).forEach((value, key) => headers.set(key, value));
         if (init.body !== undefined) {
             headers.set('Content-Type', 'application/json');
@@ -232,6 +244,106 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                 : 'The definition has no resources.',
         );
     });
+
+    // The context (decision 0045): the choices of its params, a definition built for a value,
+    // and a value that doesn't exist refused with a 403.
+    const contextParams = () => (definition as Definition | null)?.context?.params ?? [];
+    let contextValue: { name: string; value: string } | null = null;
+
+    await run(
+        'context.options',
+        'GET /context/{param}/options gives the choices of the params of the context',
+        async (check) => {
+            const params = contextParams();
+            if (params.length === 0) {
+                check.skip('The definition has no context.');
+                return;
+            }
+            const values: Record<string, string> = {};
+            for (const param of params) {
+                // The backend sets it from the request: there is nothing to pick
+                if (param.fixed === true) {
+                    continue;
+                }
+                let first = param.options?.[0]?.value;
+                if (param.options === undefined) {
+                    const reply = await request(
+                        `/context/${encodeURIComponent(param.name)}/options`,
+                        { headers: { [CONTEXT_HEADER]: formatContextHeader(values) } },
+                    );
+                    if (!check.expectStatus(reply, 200)) {
+                        return;
+                    }
+                    const choices = check.expectSchema(
+                        ContextOptionsResponse,
+                        reply.body,
+                        `The choices of "${param.name}"`,
+                    );
+                    first = choices?.data[0]?.value;
+                }
+                const value = options.context?.[param.name] ?? first;
+                if (value === undefined) {
+                    return;
+                }
+                values[param.name] = value;
+                contextValue ??= { name: param.name, value };
+            }
+        },
+    );
+
+    await run(
+        'context.value',
+        'GET /definition is built for the values of Panneau-Context',
+        async (check) => {
+            const chosen = contextValue as { name: string; value: string } | null;
+            if (chosen === null) {
+                check.skip(
+                    contextParams().length === 0
+                        ? 'The definition has no context.'
+                        : 'No choice of the first param to send.',
+                );
+                return;
+            }
+            const reply = await request('/definition', {
+                headers: { [CONTEXT_HEADER]: formatContextHeader({ [chosen.name]: chosen.value }) },
+            });
+            if (!check.expectStatus(reply, 200)) {
+                return;
+            }
+            const built = check.expectSchema(Definition, reply.body, 'The definition');
+            const param = built?.context?.params.find(({ name }) => name === chosen.name);
+            check.expect(
+                param?.value === chosen.value,
+                `The definition was built for ${chosen.name}=${String(param?.value ?? null)}, expected ${chosen.value}.`,
+            );
+        },
+    );
+
+    await run(
+        'context.refused',
+        'A value of the context that does not exist is a 403 context problem',
+        async (check) => {
+            const param = contextParams()[0];
+            if (param === undefined) {
+                check.skip('The definition has no context.');
+                return;
+            }
+            const reply = await request('/definition', {
+                headers: { [CONTEXT_HEADER]: formatContextHeader({ [param.name]: UNKNOWN }) },
+            });
+            const problem = check.expectProblem(reply, 403);
+            if (problem !== null) {
+                check.expect(
+                    problem.type === CONTEXT_PROBLEM_TYPE,
+                    `Expected the type ${CONTEXT_PROBLEM_TYPE}, got ${problem.type}.`,
+                );
+                check.expect(
+                    problem.param === param.name,
+                    `Expected the param "${param.name}", got ${String(problem.param ?? 'none')}.`,
+                );
+            }
+        },
+    );
 
     const resourcePath = () =>
         `/resources/${encodeURIComponent((resource as Resource | null)?.id ?? '')}`;

@@ -28,6 +28,111 @@ const json = (body: unknown, init: RequestInit = {}): RequestInit => ({
     headers: { 'Content-Type': 'application/json', ...init.headers },
 });
 
+describe('the context of the mock backend', () => {
+    function createContextBackend() {
+        const definition = createDefinition();
+        definition.context = {
+            params: [
+                { name: 'site', label: 'Site', options: [{ value: 'main', label: 'Main' }] },
+                { name: 'section', label: 'Section' },
+            ],
+        };
+        return createMockBackend({
+            definition,
+            items: {
+                pages: [
+                    { title: { fr: 'Accueil' }, site: 'main' },
+                    { title: { fr: 'Ailleurs' }, site: 'other' },
+                ],
+            },
+            context: {
+                options: (name, before) =>
+                    name === 'section' && before.site === 'main'
+                        ? [
+                              { value: 'news', label: 'News' },
+                              { value: 'sports', label: 'Sports' },
+                          ]
+                        : [],
+                scope: (_resource, item, values) =>
+                    values.site === undefined || item.site === values.site,
+            },
+        });
+    }
+    const headers = (value: string) => ({ headers: { 'Panneau-Context': value } });
+
+    it('builds the definition for the values of the header, with their labels', async () => {
+        const response = await createContextBackend().fetch(
+            '/panneau/api/definition',
+            headers('site=main&section=news'),
+        );
+        expect(response.headers.get('Vary')).toBe('Panneau-Context');
+        const definition = (await response.json()) as {
+            context: { params: { value: string | null; valueLabel: string | null }[] };
+        };
+        expect(definition.context.params).toMatchObject([
+            { value: 'main', valueLabel: 'Main' },
+            { value: 'news', valueLabel: 'News' },
+        ]);
+    });
+
+    it('refuses a value that is not a choice with a 403 context problem', async () => {
+        const response = await createContextBackend().fetch(
+            '/panneau/api/resources/pages',
+            headers('site=main&section=weather'),
+        );
+        expect(response.status).toBe(403);
+        expect(await response.json()).toMatchObject({
+            type: 'urn:panneau:problem:context',
+            param: 'section',
+        });
+    });
+
+    it('searches the choices of a param, for the values before it', async () => {
+        const backend = createContextBackend();
+        const choices = await backend.fetch(
+            '/panneau/api/context/section/options?q=spo',
+            headers('site=main'),
+        );
+        expect(await choices.json()).toEqual({ data: [{ value: 'sports', label: 'Sports' }] });
+        const unknown = await backend.fetch('/panneau/api/context/season/options');
+        expect(unknown.status).toBe(404);
+    });
+
+    it('keeps a fixed param to its value, and refuses another one', async () => {
+        const definition = createDefinition();
+        definition.context = {
+            params: [
+                { name: 'client', label: 'Client', fixed: true, value: '4', valueLabel: 'Acme' },
+                { name: 'contest', label: 'Contest', options: [{ value: '12', label: 'Summer' }] },
+            ],
+        };
+        const backend = createMockBackend({ definition });
+        const built = await backend.fetch('/panneau/api/definition', headers('contest=12'));
+        expect(await built.json()).toMatchObject({
+            context: {
+                params: [
+                    { name: 'client', value: '4', valueLabel: 'Acme' },
+                    { name: 'contest', value: '12' },
+                ],
+            },
+        });
+        const same = await backend.fetch('/panneau/api/definition', headers('client=4'));
+        expect(same.status).toBe(200);
+        const other = await backend.fetch('/panneau/api/definition', headers('client=7'));
+        expect(other.status).toBe(403);
+        expect(await other.json()).toMatchObject({ param: 'client' });
+    });
+
+    it('keeps lists to the items of the context', async () => {
+        const response = await createContextBackend().fetch(
+            '/panneau/api/resources/pages',
+            headers('site=main'),
+        );
+        const list = ListResponse.parse(await response.json());
+        expect(list.data.map((item) => item.site)).toEqual(['main']);
+    });
+});
+
 describe('createMockBackend', () => {
     it('serves the definition', async () => {
         const response = await createBackend().fetch('/panneau/api/definition');

@@ -609,6 +609,59 @@ export const Condition: z.ZodObject<{
 // @public (undocumented)
 export type Condition = z.infer<typeof Condition>;
 
+// @public
+export const CONTEXT_HEADER = "Panneau-Context";
+
+// @public
+export const CONTEXT_PROBLEM_TYPE = "urn:panneau:problem:context";
+
+// @public
+export function contextBefore(values: ContextValues, names: readonly string[], name: string): ContextValues;
+
+// @public (undocumented)
+export const ContextOption: z.ZodObject<{
+    value: z.ZodString;
+    label: z.ZodString;
+    description: z.ZodOptional<z.ZodString>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type ContextOption = z.infer<typeof ContextOption>;
+
+// @public (undocumented)
+export const ContextOptionsResponse: z.ZodObject<{
+    data: z.ZodArray<z.ZodObject<{
+        value: z.ZodString;
+        label: z.ZodString;
+        description: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type ContextOptionsResponse = z.infer<typeof ContextOptionsResponse>;
+
+// @public (undocumented)
+export const ContextParam: z.ZodObject<{
+    name: z.ZodString;
+    label: z.ZodString;
+    required: z.ZodOptional<z.ZodBoolean>;
+    fixed: z.ZodOptional<z.ZodBoolean>;
+    allLabel: z.ZodOptional<z.ZodString>;
+    options: z.ZodOptional<z.ZodArray<z.ZodObject<{
+        value: z.ZodString;
+        label: z.ZodString;
+        description: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>>>;
+    value: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    valueLabel: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type ContextParam = z.infer<typeof ContextParam>;
+
+// @public
+export type ContextValues = Readonly<Record<string, string>>;
+
 // Warning: (ae-forgotten-export) The symbol "JsonObject" needs to be exported by the entry point index.d.ts
 //
 // @public
@@ -1168,6 +1221,22 @@ export const Definition: z.ZodObject<{
         endpoint: z.ZodOptional<z.ZodString>;
         maxSize: z.ZodOptional<z.ZodNumber>;
     }, z.core.$loose>>;
+    context: z.ZodOptional<z.ZodObject<{
+        params: z.ZodArray<z.ZodObject<{
+            name: z.ZodString;
+            label: z.ZodString;
+            required: z.ZodOptional<z.ZodBoolean>;
+            fixed: z.ZodOptional<z.ZodBoolean>;
+            allLabel: z.ZodOptional<z.ZodString>;
+            options: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                value: z.ZodString;
+                label: z.ZodString;
+                description: z.ZodOptional<z.ZodString>;
+            }, z.core.$loose>>>;
+            value: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            valueLabel: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        }, z.core.$loose>>;
+    }, z.core.$loose>>;
     theme: z.ZodOptional<z.ZodObject<{
         tokens: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
         colorScheme: z.ZodOptional<z.ZodEnum<{
@@ -1240,6 +1309,27 @@ export const Definition: z.ZodObject<{
 
 // @public (undocumented)
 export type Definition = z.infer<typeof Definition>;
+
+// @public (undocumented)
+export const DefinitionContext: z.ZodObject<{
+    params: z.ZodArray<z.ZodObject<{
+        name: z.ZodString;
+        label: z.ZodString;
+        required: z.ZodOptional<z.ZodBoolean>;
+        fixed: z.ZodOptional<z.ZodBoolean>;
+        allLabel: z.ZodOptional<z.ZodString>;
+        options: z.ZodOptional<z.ZodArray<z.ZodObject<{
+            value: z.ZodString;
+            label: z.ZodString;
+            description: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>>>;
+        value: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        valueLabel: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    }, z.core.$loose>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type DefinitionContext = z.infer<typeof DefinitionContext>;
 
 // @public
 export type DefinitionInput = z.input<typeof Definition>;
@@ -1554,6 +1644,9 @@ export interface FilterRange {
 
 // @public
 export type FilterValue = string | number | boolean | Array<string | number | boolean> | FilterRange;
+
+// @public
+export function formatContextHeader(values: Readonly<Record<string, string | null | undefined>>, names?: readonly string[]): string;
 
 // @public
 export function fromSearchParams(params: URLSearchParams): ListQuery;
@@ -3133,6 +3226,41 @@ export const namedSchemas: {
         endpoint: z.ZodOptional<z.ZodString>;
         maxSize: z.ZodOptional<z.ZodNumber>;
     }, z.core.$loose>;
+    ContextOption: z.ZodObject<{
+        value: z.ZodString;
+        label: z.ZodString;
+        description: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>;
+    ContextParam: z.ZodObject<{
+        name: z.ZodString;
+        label: z.ZodString;
+        required: z.ZodOptional<z.ZodBoolean>;
+        fixed: z.ZodOptional<z.ZodBoolean>;
+        allLabel: z.ZodOptional<z.ZodString>;
+        options: z.ZodOptional<z.ZodArray<z.ZodObject<{
+            value: z.ZodString;
+            label: z.ZodString;
+            description: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>>>;
+        value: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        valueLabel: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    }, z.core.$loose>;
+    DefinitionContext: z.ZodObject<{
+        params: z.ZodArray<z.ZodObject<{
+            name: z.ZodString;
+            label: z.ZodString;
+            required: z.ZodOptional<z.ZodBoolean>;
+            fixed: z.ZodOptional<z.ZodBoolean>;
+            allLabel: z.ZodOptional<z.ZodString>;
+            options: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                value: z.ZodString;
+                label: z.ZodString;
+                description: z.ZodOptional<z.ZodString>;
+            }, z.core.$loose>>>;
+            value: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            valueLabel: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        }, z.core.$loose>>;
+    }, z.core.$loose>;
     ThemeTokens: z.ZodRecord<z.ZodString, z.ZodString>;
     ToneValues: z.ZodObject<{
         text: z.ZodString;
@@ -3815,6 +3943,22 @@ export const namedSchemas: {
             endpoint: z.ZodOptional<z.ZodString>;
             maxSize: z.ZodOptional<z.ZodNumber>;
         }, z.core.$loose>>;
+        context: z.ZodOptional<z.ZodObject<{
+            params: z.ZodArray<z.ZodObject<{
+                name: z.ZodString;
+                label: z.ZodString;
+                required: z.ZodOptional<z.ZodBoolean>;
+                fixed: z.ZodOptional<z.ZodBoolean>;
+                allLabel: z.ZodOptional<z.ZodString>;
+                options: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                    value: z.ZodString;
+                    label: z.ZodString;
+                    description: z.ZodOptional<z.ZodString>;
+                }, z.core.$loose>>>;
+                value: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+                valueLabel: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            }, z.core.$loose>>;
+        }, z.core.$loose>>;
         theme: z.ZodOptional<z.ZodObject<{
             tokens: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
             colorScheme: z.ZodOptional<z.ZodEnum<{
@@ -3938,6 +4082,7 @@ export const namedSchemas: {
             version: z.ZodNullable<z.ZodString>;
             abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
         }, z.core.$loose>>;
+        param: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>;
     Selection: z.ZodUnion<readonly [z.ZodObject<{
         ids: z.ZodArray<z.ZodString>;
@@ -4365,6 +4510,13 @@ export const namedSchemas: {
             total: z.ZodOptional<z.ZodNumber>;
         }, z.core.$loose>>;
     }, z.core.$loose>;
+    ContextOptionsResponse: z.ZodObject<{
+        data: z.ZodArray<z.ZodObject<{
+            value: z.ZodString;
+            label: z.ZodString;
+            description: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>>;
+    }, z.core.$loose>;
     PreviewResponse: z.ZodObject<{
         url: z.ZodString;
         expiresAt: z.ZodOptional<z.ZodString>;
@@ -4448,6 +4600,9 @@ export const Pagination: z.ZodObject<{
 export type Pagination = z.infer<typeof Pagination>;
 
 // @public
+export function parseContextHeader(header: string | null | undefined): ContextValues;
+
+// @public
 export function parseRatio(ratio: string): number | null;
 
 // @public
@@ -4481,6 +4636,7 @@ export const Problem: z.ZodObject<{
         version: z.ZodNullable<z.ZodString>;
         abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
     }, z.core.$loose>>;
+    param: z.ZodOptional<z.ZodString>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -4511,6 +4667,9 @@ export function renderedCropSize(transform: Pick<MediaTransform, 'crop' | 'rotat
     width: number;
     height: number;
 } | null;
+
+// @public
+export const RESERVED_ROUTE_SEGMENTS: readonly ["resources", "pages", "media", "search", "account", "auth"];
 
 // @public (undocumented)
 export const Resource: z.ZodObject<{
