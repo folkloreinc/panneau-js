@@ -71,6 +71,9 @@ export type ConfirmPreview = {
 } & ListActionPreview);
 
 // @public
+export function CountryDisplay(input: DisplayProps): JSX.Element;
+
+// @public
 export function countSelected(selection: ListSelection, total: number): number;
 
 // @public
@@ -375,6 +378,9 @@ export interface PaginationProps {
     perPageOptions?: readonly number[] | undefined;
     total: number;
 }
+
+// @public
+export function RegionDisplay(input: DisplayProps): JSX.Element;
 
 // @public
 export function RelationDisplay(input: DisplayProps): JSX.Element;

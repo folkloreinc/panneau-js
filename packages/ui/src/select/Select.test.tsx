@@ -103,6 +103,32 @@ describe('Select', () => {
         expect(onChange).toHaveBeenLastCalledWith(['draft', 'published']);
     });
 
+    it('shows the selected option its own way, with its prefix hidden from assistive technologies', async () => {
+        const countries: SelectOption[] = [
+            { value: 'CA', label: 'Canada +1', prefix: '🇨🇦' },
+            { value: 'FR', label: 'France +33', prefix: '🇫🇷' },
+        ];
+        render(
+            <PanneauRoot>
+                <Select
+                    aria-label="Country"
+                    appearance="bare"
+                    options={countries}
+                    value="CA"
+                    renderValue={(option) => `+${option.label.split('+')[1] ?? ''}`}
+                    isRequired
+                />
+            </PanneauRoot>,
+        );
+        const trigger = screen.getByRole('button', { name: /Country/ });
+        expect(trigger).toHaveTextContent('🇨🇦+1');
+        expect(trigger).not.toHaveTextContent('Canada');
+        expect(within(trigger).getByText('🇨🇦')).toHaveAttribute('aria-hidden', 'true');
+        await userEvent.click(trigger);
+        const option = await screen.findByRole('option', { name: 'France +33' });
+        expect(option).toHaveTextContent('🇫🇷');
+    });
+
     it('shows its errors', () => {
         render(<Select label="Status" options={OPTIONS} errors={['Pick a status.']} />);
         expect(screen.getByText('Pick a status.')).toBeInTheDocument();

@@ -73,6 +73,8 @@ export const BUILT_IN_FIELD_TYPES = [
     'tags',
     'embed',
     'location',
+    'country',
+    'region',
 ] as const;
 export type BuiltInFieldType = (typeof BUILT_IN_FIELD_TYPES)[number];
 
@@ -85,6 +87,7 @@ export const PORTABLE_RULES = [
     'email',
     'url',
     'json',
+    'tel',
     'in',
     'accept',
     'maxSize',

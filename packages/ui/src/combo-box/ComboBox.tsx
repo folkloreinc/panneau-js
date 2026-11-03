@@ -1,4 +1,5 @@
 import { Check, ChevronDown } from 'lucide-react';
+import type { ReactNode } from 'react';
 import {
     ComboBox as AriaComboBox,
     type ComboBoxProps as AriaComboBoxProps,
@@ -32,6 +33,8 @@ export interface ComboBoxItem {
     label: string;
     description?: string;
     disabled?: boolean;
+    /** Decorative content before the label, such as a flag. Assistive technologies skip it. */
+    prefix?: ReactNode;
 }
 
 export interface ComboBoxProps
@@ -59,6 +62,8 @@ export interface ComboBoxProps
     value?: string | null;
     onChange?: (id: string | null) => void;
     placeholder?: string;
+    /** Decorative content before the text, inside the control: the flag of the chosen country. */
+    prefix?: ReactNode;
     /** Shows a spinner while items load. */
     isLoading?: boolean;
     /** Text shown without items. Defaults to "No results". */
@@ -80,6 +85,7 @@ export function ComboBox({
     description,
     errors = [],
     placeholder,
+    prefix,
     isLoading = false,
     emptyMessage,
     isRequired,
@@ -120,6 +126,11 @@ export function ComboBox({
                 className={cx(fieldStyles.control, styles.control, controlClassName)}
                 data-invalid={invalid || undefined}
             >
+                {prefix !== undefined && prefix !== null ? (
+                    <span className={cx(fieldStyles.adornment, styles.prefix)} aria-hidden="true">
+                        {prefix}
+                    </span>
+                ) : null}
                 <Input placeholder={placeholder} className={cx(fieldStyles.bare, inputClassName)} />
                 {isLoading ? (
                     <span className={styles.status}>
@@ -157,6 +168,11 @@ export function ComboBox({
                                     <span className={listStyles.check}>
                                         {isSelected ? <Icon icon={Check} size="sm" /> : null}
                                     </span>
+                                    {item.prefix !== undefined ? (
+                                        <span className={listStyles.prefix} aria-hidden="true">
+                                            {item.prefix}
+                                        </span>
+                                    ) : null}
                                     <span className={listStyles.itemText}>
                                         <Text slot="label" className={listStyles.itemLabel}>
                                             {item.label}

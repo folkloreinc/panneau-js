@@ -24,3 +24,8 @@
     align-items: center;
     padding-inline: var(--panneau-space-1);
 }
+
+.prefix {
+    line-height: 1;
+    color: var(--panneau-color-text);
+}

@@ -2,6 +2,7 @@ import { fr } from '@panneau/intl';
 
 import { BooleanFieldEntry } from '../boolean/BooleanField';
 import { ColorFieldEntry } from '../color/ColorField';
+import { CountryFieldEntry } from '../country/CountryField';
 import { DateFieldEntry } from '../date/DateField';
 import { DateTimeFieldEntry } from '../datetime/DateTimeField';
 import { DurationFieldEntry } from '../duration/DurationField';
@@ -13,6 +14,7 @@ import { JsonFieldEntry } from '../json/JsonField';
 import { LocationFieldEntry } from '../location/LocationField';
 import { NumberFieldEntry } from '../number/NumberField';
 import { RangeFieldEntry } from '../range/RangeField';
+import { RegionFieldEntry } from '../region/RegionField';
 import { RelationFieldEntry } from '../relation/RelationField';
 import { RepeaterFieldEntry } from '../repeater/RepeaterField';
 import { SelectFieldEntry } from '../select/SelectField';
@@ -55,6 +57,8 @@ export const builtInFields: Readonly<Record<string, FieldEntry>> = {
     tags: TagsFieldEntry,
     embed: EmbedFieldEntry,
     location: LocationFieldEntry,
+    country: CountryFieldEntry,
+    region: RegionFieldEntry,
 };
 
 /**

@@ -1,7 +1,10 @@
 import { Check, Minus } from 'lucide-react';
 
 import { toReferences } from '@panneau/fields';
+import { getCountryFlag, getCountryName, isCountryCode } from '@panneau/fields/country';
 import { formatDuration } from '@panneau/fields/duration';
+import { getRegionCountry, getRegionName } from '@panneau/fields/region';
+import { parsePhone } from '@panneau/fields/tel';
 import { Badge, Icon, type Tone, usePanneauIntl } from '@panneau/ui';
 
 import { messages } from '../messages';
@@ -196,15 +199,65 @@ export function EmailDisplay({ value }: DisplayProps) {
     );
 }
 
-/** A link that calls the phone number. */
+/**
+ * A link that calls the phone number: the flag of its country and the number in its international
+ * format (`+1 514 555 0199`). A value that isn't E.164 shows as it is.
+ */
 export function TelDisplay({ value }: DisplayProps) {
     if (typeof value !== 'string' || value.trim() === '') {
         return <EmptyValue />;
     }
+    const number = parsePhone(value);
+    if (number === null) {
+        return (
+            <a className={styles.link} href={`tel:${value.replace(/[^\d+]/g, '')}`}>
+                {value}
+            </a>
+        );
+    }
     return (
-        <a className={styles.link} href={`tel:${value.replace(/[^\d+]/g, '')}`}>
-            {value}
+        <a className={`${styles.link} ${styles.flagged}`} href={`tel:${number.number}`}>
+            {number.country !== null ? (
+                <span className={styles.flag} aria-hidden="true">
+                    {getCountryFlag(number.country)}
+                </span>
+            ) : null}
+            {number.international}
         </a>
+    );
+}
+
+/** A country: its flag and its name in the user's locale. */
+export function CountryDisplay({ value }: DisplayProps) {
+    const intl = usePanneauIntl();
+    if (typeof value !== 'string' || value === '') {
+        return <EmptyValue />;
+    }
+    if (!isCountryCode(value)) {
+        return <span className={styles.text}>{value}</span>;
+    }
+    return (
+        <span className={styles.flagged}>
+            <span className={styles.flag} aria-hidden="true">
+                {getCountryFlag(value)}
+            </span>
+            <span className={styles.text}>{getCountryName(value, intl.locale)}</span>
+        </span>
+    );
+}
+
+/**
+ * A region: its name in the user's locale, from its country in the item (the field's `from`) or
+ * the field's settings. A region that Panneau doesn't know shows as it is.
+ */
+export function RegionDisplay({ value, field, item }: DisplayProps) {
+    const intl = usePanneauIntl();
+    if (typeof value !== 'string' || value === '') {
+        return <EmptyValue />;
+    }
+    const country = field !== null ? getRegionCountry(field, item) : null;
+    return (
+        <span className={styles.text}>{getRegionName(country, value, intl.locale) ?? value}</span>
     );
 }
 
@@ -354,4 +407,6 @@ export const builtInDisplays: Readonly<Record<string, DisplayEntry>> = {
     tags: TagsDisplay,
     embed: EmbedDisplay,
     location: LocationDisplay,
+    country: CountryDisplay,
+    region: RegionDisplay,
 };

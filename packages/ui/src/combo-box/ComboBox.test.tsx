@@ -51,6 +51,24 @@ describe('ComboBox', () => {
         expect(await screen.findByText('No authors')).toBeInTheDocument();
     });
 
+    it('shows prefixes before the text and the labels, hidden from assistive technologies', async () => {
+        render(
+            <PanneauRoot>
+                <ComboBox
+                    label="Country"
+                    items={[{ id: 'CA', label: 'Canada', prefix: '🇨🇦' }]}
+                    value="CA"
+                    prefix="🇨🇦"
+                />
+            </PanneauRoot>,
+        );
+        const input = screen.getByRole('combobox', { name: 'Country' });
+        expect(input).toHaveValue('Canada');
+        expect(screen.getByText('🇨🇦')).toHaveAttribute('aria-hidden', 'true');
+        await userEvent.click(screen.getByRole('button', { name: /Show options/ }));
+        expect(await screen.findByRole('option', { name: 'Canada' })).toHaveTextContent('🇨🇦');
+    });
+
     it('shows a spinner while loading', () => {
         render(<ComboBox label="Author" items={[]} isLoading />);
         expect(screen.getByRole('progressbar')).toBeInTheDocument();

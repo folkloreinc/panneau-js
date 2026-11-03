@@ -63,5 +63,10 @@ export const fieldsFr: Record<string, string> = {
     'panneau.fields.localeEmpty': '{locale}, vide',
     'panneau.fields.localeInvalid': '{locale}, contient des erreurs',
     'panneau.fields.addLocale': 'Ajouter une traduction : {locale}',
+    'panneau.fields.countryPlaceholder': 'Choisir un pays',
+    'panneau.fields.noCountries': 'Aucun pays ne correspond',
+    'panneau.fields.regionPlaceholder': 'Choisir une région',
+    'panneau.fields.noRegions': 'Aucune région ne correspond',
+    'panneau.fields.telCountry': 'Pays du numéro',
     'panneau.fields.missingPlugin': 'Ce champ a besoin d’un plugin pour le type « {type} ».',
 };

@@ -81,3 +81,15 @@
     flex-wrap: wrap;
     gap: var(--panneau-space-1);
 }
+
+/* A value after a flag: a country, a phone number. */
+.flagged {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--panneau-space-2);
+    min-width: 0;
+}
+
+.flag {
+    flex: 0 0 auto;
+}

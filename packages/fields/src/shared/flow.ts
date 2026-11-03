@@ -8,6 +8,8 @@ const COMPACT_TYPES = new Set([
     'email',
     'url',
     'tel',
+    'country',
+    'region',
     'number',
     'date',
     'datetime',

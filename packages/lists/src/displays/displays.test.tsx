@@ -6,7 +6,7 @@ import type { Field } from '@panneau/protocol';
 
 import { renderList } from '../__fixtures__/render';
 import type { DisplayEntry } from '../types';
-import { builtInDisplays } from './displays';
+import { RegionDisplay, builtInDisplays } from './displays';
 
 function renderDisplay(display: string, value: unknown, field: Field | null = null): HTMLElement {
     const Display = builtInDisplays[display] as DisplayEntry;
@@ -102,6 +102,38 @@ describe('displays', () => {
         const cell = renderDisplay('media', { id: '1', thumbnailUrl: '/a.jpg', name: 'a.jpg' });
         expect(cell.querySelector('img')).toHaveAttribute('src', '/a.jpg');
         expect(cell).toHaveTextContent('a.jpg');
+    });
+
+    it('shows E.164 numbers with their flags in their international format', () => {
+        const cell = renderDisplay('tel', '+15145550199');
+        expect(cell.querySelector('a')).toHaveAttribute('href', 'tel:+15145550199');
+        expect(cell).toHaveTextContent('🇨🇦+1 514 555 0199');
+        expect(screen.getByText('🇨🇦')).toHaveAttribute('aria-hidden', 'true');
+    });
+
+    it('shows countries with their flags, and regions by their names', () => {
+        const country = renderDisplay('country', 'CA');
+        expect(country).toHaveTextContent('🇨🇦Canada');
+        expect(renderDisplay('country', 'Kanada')).toHaveTextContent('Kanada');
+        expect(
+            renderDisplay('region', 'QC', {
+                name: 'province',
+                type: 'region',
+                settings: { country: 'CA' },
+            }),
+        ).toHaveTextContent('Quebec');
+        renderList(
+            <div data-testid="cell">
+                <RegionDisplay
+                    value="CA"
+                    item={{ id: '1', country: 'US' }}
+                    column={{ id: 'state' }}
+                    field={{ name: 'state', type: 'region', from: 'country' }}
+                />
+            </div>,
+        );
+        expect(screen.getAllByTestId('cell').at(-1)).toHaveTextContent('California');
+        expect(renderDisplay('region', 'Bavaria')).toHaveTextContent('Bavaria');
     });
 
     it('shows phone numbers, durations, JSON and tags', () => {

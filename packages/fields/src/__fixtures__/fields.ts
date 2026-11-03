@@ -73,7 +73,14 @@ export const EXAMPLE_FIELDS: Field[] = [
     { name: 'contact', type: 'email', label: 'Contact email' },
     { name: 'website', type: 'url', label: 'Website' },
     { name: 'accent', type: 'color', label: 'Accent color' },
-    { name: 'phone', type: 'tel', label: 'Phone' },
+    { name: 'phone', type: 'tel', label: 'Phone', settings: { country: 'CA' } },
+    {
+        name: 'country',
+        type: 'country',
+        label: 'Country',
+        settings: { preferred: ['CA', 'US'] },
+    },
+    { name: 'province', type: 'region', label: 'Province', from: 'country' },
     {
         name: 'rating',
         type: 'range',
