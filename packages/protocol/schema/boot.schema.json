@@ -982,6 +982,12 @@
                         "center",
                         "end"
                     ]
+                },
+                "hidden": {
+                    "type": "boolean"
+                },
+                "hideable": {
+                    "type": "boolean"
                 }
             },
             "additionalProperties": {}

@@ -19,6 +19,7 @@ import {
     isAllowedOn,
 } from './actions/actions';
 import type { ActionIcons } from './actions/icons';
+import { getShownColumns } from './columns';
 import { cx } from './cx';
 import { FilterChips, FilterControls, useFilterLabels } from './filters/Filters';
 import { InlineCell } from './inline/InlineCell';
@@ -26,6 +27,7 @@ import { getInlineField } from './inline/editable';
 import { builtInLayouts } from './layouts/builtIn';
 import { messages } from './messages';
 import { countSelected, getPageSelection, isItemSelected } from './selection';
+import { ColumnMenu } from './toolbar/ColumnMenu';
 import { LayoutSwitch } from './toolbar/LayoutSwitch';
 import { CursorPagination, Pagination } from './toolbar/Pagination';
 import { SearchField } from './toolbar/SearchField';
@@ -53,7 +55,13 @@ export interface ListViewProps {
      * draws a skeleton of its rows, from its columns and its page size.
      */
     items: readonly ListItem[] | undefined;
+    /**
+     * Every column of the list. Those with `hidden` are shown when the user chooses them, from
+     * the "Columns" menu, and the view of the list state says which ones are shown (decision 0042).
+     */
     columns: readonly ListColumn[];
+    /** Offers the user to show, hide and order the columns. Defaults to `true`. */
+    columnChoice?: boolean;
     /**
      * How many items match the query, on every page (`meta.total`). With it, the list shows
      * pagination and offers to select every matching item. Without it, `items` is the whole list.
@@ -78,7 +86,7 @@ export interface ListViewProps {
     search?: boolean;
     /** Layouts to choose from, the first one being the default. Defaults to `['table']`. */
     layouts?: readonly string[];
-    /** The layout, controlled. */
+    /** The layout, controlled. Without it, the layout is the view of the list state. */
     layout?: string;
     onLayoutChange?: (layout: string) => void;
     /** Page sizes to choose from. */
@@ -160,7 +168,8 @@ function keyOf(action: Action, item?: ListItem): string {
 export function ListView({
     list,
     items,
-    columns,
+    columns: allColumns,
+    columnChoice = true,
     total,
     cursors,
     isLoading = false,
@@ -197,9 +206,8 @@ export function ListView({
     const intl = usePanneauIntl();
     const toasts = useToast();
     const plugins = usePlugins();
-    const { query, selection } = useListState(list);
+    const { query, view, selection } = useListState(list);
     const filterLabels = useFilterLabels();
-    const [uncontrolledLayout, setLayout] = useState<string | null>(null);
     const [confirming, setConfirming] = useState<ListActionEvent | null>(null);
     const [preview, setPreview] = useState<ConfirmPreview | null>(null);
     // The confirmation a dry run belongs to: a later one, or a cancel, discards its answer.
@@ -234,7 +242,10 @@ export function ListView({
     // Layouts without a component (a plugin's that isn't installed) are left out.
     const available = layoutsProp.filter((id) => allLayouts[id] !== undefined);
     const layouts = available.length > 0 ? available : ['table'];
-    const layout = controlledLayout ?? uncontrolledLayout ?? layouts[0] ?? 'table';
+    const chosenLayout =
+        view.layout !== undefined && layouts.includes(view.layout) ? view.layout : undefined;
+    const layout = controlledLayout ?? chosenLayout ?? layouts[0] ?? 'table';
+    const columns = getShownColumns(allColumns, view.columns);
     const Layout = allLayouts[layout] ?? builtInLayouts.table;
 
     const grouped = groupListActions(actionsProp);
@@ -257,7 +268,7 @@ export function ListView({
             return getItemLabelProp(item);
         }
         const titleColumn =
-            columns.find((column) => column.id === itemTitle) ??
+            allColumns.find((column) => column.id === itemTitle) ??
             (itemTitle === undefined ? columns[0] : undefined);
         const title =
             titleColumn !== undefined
@@ -427,11 +438,13 @@ export function ListView({
         />
     );
 
-    const sortable = columns.some((column) => column.sortable === true);
+    const sortable = allColumns.some((column) => column.sortable === true);
+    const choosesColumns = columnChoice && allColumns.length > 1;
     const showToolbar =
         search ||
         filters.length > 0 ||
         sortable ||
+        choosesColumns ||
         layouts.length > 1 ||
         resourceActions.length > 0 ||
         toolbar !== undefined;
@@ -527,7 +540,7 @@ export function ListView({
                                 onChange={(id, value) => list.setFilter(id, value)}
                                 onLabel={filterLabels.remember}
                                 controls={filterControls}
-                                columns={columns}
+                                columns={allColumns}
                                 fields={fields}
                                 labels={filterLabels.labels}
                             />
@@ -537,7 +550,7 @@ export function ListView({
                         {sortable ? (
                             <div className={layout === 'table' ? styles.tableSort : undefined}>
                                 <SortSelect
-                                    columns={columns}
+                                    columns={allColumns}
                                     sort={sort}
                                     onChange={(next) => list.setSort(next)}
                                 />
@@ -548,9 +561,21 @@ export function ListView({
                                 layouts={layouts}
                                 value={layout}
                                 onChange={(next) => {
-                                    setLayout(next);
+                                    if (controlledLayout === undefined) {
+                                        list.setLayout(next);
+                                    }
                                     onLayoutChange?.(next);
                                 }}
+                            />
+                        ) : null}
+                        {choosesColumns ? (
+                            <ColumnMenu
+                                columns={allColumns}
+                                shown={columns}
+                                onChange={(ids) => list.setColumns(ids)}
+                                onReset={
+                                    view.columns !== undefined ? () => list.resetColumns() : null
+                                }
                             />
                         ) : null}
                         {resourceActions
@@ -579,7 +604,7 @@ export function ListView({
                 onRemove={(id) => list.setFilter(id, undefined)}
                 onClearSearch={() => list.setSearch('')}
                 onClear={clearFilters}
-                columns={columns}
+                columns={allColumns}
                 fields={fields}
                 labels={filterLabels.labels}
             />

@@ -50,7 +50,11 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     "fields": [ /* Field */ ],
     "form": { "layout": [ /* LayoutNode */ ] },
     "list": {
-        "columns": [ { "field": "title", "sortable": true }, { "field": "published_at", "display": "date" } ],
+        "columns": [
+            { "field": "title", "sortable": true, "hideable": false },
+            { "field": "published_at", "display": "date" },
+            { "field": "author", "hidden": true }, // shown when the user chooses it
+        ],
         "filters": [ { "id": "status", "type": "select", "options": [...] } ],
         "sorts": [ "title", "-published_at" ],
         "defaultSort": "-published_at",
@@ -304,6 +308,8 @@ Built-in actions use reserved ids:
 - Other declared actions are for the resource's own operations, and keep their rules: a `link` is shown unless the item says `false`, other actions when the item lists their id.
 
 **What opens an item.** `open` on a resource says where an item's title goes, in its list and wherever the app links to the item: `panel` (the default), the show route with its details next to the list ([decisions/0028](decisions/0028-item-panel.md)); `edit`, its form. With `edit`, the show route redirects to the edit route, and `show` is left out. An item without `abilities.update: true` still opens in the panel. Clients treat a value they don't know as `panel`.
+
+**Columns users choose.** The user of a list shows, hides and orders its columns. A column with `"hidden": true` isn't shown until the user shows it; one with `"hideable": false` is always shown. The chosen columns and the layout are the view of the list: clients keep them in the URL with the query, and may remember them for the user. They are never sent to the backend ([decisions/0042](decisions/0042-list-view-columns-and-remembered-view.md)).
 
 ### Pages
 

@@ -126,6 +126,8 @@ describe('resolveList', () => {
                 display: 'link',
                 sortable: false,
                 align: 'end',
+                hidden: false,
+                hideable: true,
             },
         ]);
         expect(list).toMatchObject({

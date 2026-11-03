@@ -587,6 +587,8 @@ export const Column: z.ZodObject<{
         center: "center";
         end: "end";
     }>>;
+    hidden: z.ZodOptional<z.ZodBoolean>;
+    hideable: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -906,6 +908,8 @@ export const Definition: z.ZodObject<{
                     center: "center";
                     end: "end";
                 }>>;
+                hidden: z.ZodOptional<z.ZodBoolean>;
+                hideable: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>>>;
             filters: z.ZodOptional<z.ZodArray<z.ZodObject<{
                 id: z.ZodString;
@@ -1746,6 +1750,8 @@ export const ListDefinition: z.ZodObject<{
             center: "center";
             end: "end";
         }>>;
+        hidden: z.ZodOptional<z.ZodBoolean>;
+        hideable: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>>>;
     filters: z.ZodOptional<z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -2410,6 +2416,8 @@ export const namedSchemas: {
             center: "center";
             end: "end";
         }>>;
+        hidden: z.ZodOptional<z.ZodBoolean>;
+        hideable: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>;
     Filter: z.ZodObject<{
         id: z.ZodString;
@@ -2439,6 +2447,8 @@ export const namedSchemas: {
                 center: "center";
                 end: "end";
             }>>;
+            hidden: z.ZodOptional<z.ZodBoolean>;
+            hideable: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>>>;
         filters: z.ZodOptional<z.ZodArray<z.ZodObject<{
             id: z.ZodString;
@@ -2885,6 +2895,8 @@ export const namedSchemas: {
                     center: "center";
                     end: "end";
                 }>>;
+                hidden: z.ZodOptional<z.ZodBoolean>;
+                hideable: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>>>;
             filters: z.ZodOptional<z.ZodArray<z.ZodObject<{
                 id: z.ZodString;
@@ -3609,6 +3621,8 @@ export const namedSchemas: {
                         center: "center";
                         end: "end";
                     }>>;
+                    hidden: z.ZodOptional<z.ZodBoolean>;
+                    hideable: z.ZodOptional<z.ZodBoolean>;
                 }, z.core.$loose>>>;
                 filters: z.ZodOptional<z.ZodArray<z.ZodObject<{
                     id: z.ZodString;
@@ -4837,6 +4851,8 @@ export const Resource: z.ZodObject<{
                 center: "center";
                 end: "end";
             }>>;
+            hidden: z.ZodOptional<z.ZodBoolean>;
+            hideable: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>>>;
         filters: z.ZodOptional<z.ZodArray<z.ZodObject<{
             id: z.ZodString;
