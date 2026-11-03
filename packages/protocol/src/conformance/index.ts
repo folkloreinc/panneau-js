@@ -8,6 +8,7 @@ import {
     ActionResult,
     ContextOptionsResponse,
     FieldCheckResponse,
+    type Item,
     ItemResponse,
     ListResponse,
     Problem,
@@ -687,6 +688,111 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
         check.expectProblem(await request(`${resourcePath()}/${UNKNOWN}`), 404);
     });
 
+    // The API agrees with the abilities of the definition and of the items (decision 0046).
+    const listItems = async (check: Check): Promise<Item[] | null> => {
+        const cursors = (resource as Resource | null)?.list?.pagination === 'cursor';
+        const reply = await request(`${resourcePath()}?${cursors ? '' : 'page=1&'}perPage=20`);
+        if (!check.expectStatus(reply, 200)) {
+            return null;
+        }
+        return check.expectSchema(ListResponse, reply.body, 'The list')?.data ?? null;
+    };
+
+    await run(
+        'abilities.view-any',
+        'The resources the user can’t list answer 403 on their list',
+        async (check) => {
+            const current = definition as Definition | null;
+            const denied = (current?.resources ?? []).filter(
+                (candidate) => candidate.abilities?.viewAny === false,
+            );
+            if (denied.length === 0) {
+                check.skip('Every resource can be listed.');
+                return;
+            }
+            for (const candidate of denied) {
+                const reply = await request(`/resources/${encodeURIComponent(candidate.id)}`);
+                check.expect(
+                    reply.status === 403,
+                    `${candidate.id} has \`viewAny: false\`, but its list answered ${reply.status}.`,
+                );
+            }
+        },
+    );
+
+    await run(
+        'abilities.fields',
+        'Items leave out the values of the fields the user can’t see',
+        async (check) => {
+            const hidden = ((resource as Resource | null)?.fields ?? [])
+                .filter((field) => field.abilities?.view === false)
+                .map((field) => field.name);
+            if (hidden.length === 0) {
+                check.skip('The resource has no field with `view: false`.');
+                return;
+            }
+            const items = await listItems(check);
+            if (items === null) {
+                return;
+            }
+            if (items.length === 0) {
+                check.skip('The list has no items.');
+                return;
+            }
+            items.forEach((item) => {
+                const shown = hidden.filter((name) => name in item);
+                check.expect(
+                    shown.length === 0,
+                    `Item ${item.id} has values of fields with \`view: false\`: ${shown.join(', ')}.`,
+                );
+            });
+        },
+    );
+
+    await run(
+        'abilities.delete',
+        'An item that can’t be deleted is skipped by a dry run of `delete`',
+        async (check) => {
+            const current = resource as Resource | null;
+            if (current === null) {
+                check.skip('No resource to test.');
+                return;
+            }
+            if (current.itemActions !== undefined && !current.itemActions.includes('delete')) {
+                check.skip('The resource leaves out `delete` (`itemActions`).');
+                return;
+            }
+            const items = await listItems(check);
+            const denied = items?.find((item) => item.abilities.delete !== true);
+            if (items === null) {
+                return;
+            }
+            if (denied === undefined) {
+                check.skip('Every item of the first page can be deleted.');
+                return;
+            }
+            // With an item it can delete too: the only item of an action would be a 403 instead
+            const allowed = items.find((item) => item.abilities.delete === true);
+            const ids = allowed !== undefined ? [denied.id, allowed.id] : [denied.id];
+            const reply = await request(`${resourcePath()}/actions/delete`, {
+                method: 'POST',
+                body: JSON.stringify({ selection: { ids }, dryRun: true }),
+            });
+            if (allowed === undefined && reply.status === 403) {
+                return;
+            }
+            if (!check.expectStatus(reply, 200)) {
+                return;
+            }
+            const result = check.expectSchema(ActionResult, reply.body, 'The dry run of `delete`');
+            check.expect(
+                result === null ||
+                    (result.summary?.skipped === 1 && result.summary.succeeded === ids.length - 1),
+                `Item ${denied.id} can’t be deleted, but the dry run of \`delete\` doesn’t skip it.`,
+            );
+        },
+    );
+
     // The global search: a word of the title of an item of a searchable resource finds it.
     let searched: { resource: Resource; term: string } | null = null;
     const searchSkip = (): string | null => {
@@ -821,6 +927,66 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
     let createdId: string | null = null;
     let createdVersion: string | null = null;
     let updatedVersion: string | null = null;
+
+    await run(
+        'abilities.create',
+        'The resources the user can’t create items of answer 403 to a create',
+        async (check) => {
+            const current = definition as Definition | null;
+            if (writes === undefined || current === null) {
+                check.skip('Write checks are disabled.');
+                return;
+            }
+            const denied = current.resources.filter(
+                (candidate) => candidate.abilities?.create === false,
+            );
+            if (denied.length === 0) {
+                check.skip('The user can create items of every resource.');
+                return;
+            }
+            for (const candidate of denied) {
+                // Empty values: a backend that wrongly accepts them has nothing to save.
+                const reply = await request(`/resources/${encodeURIComponent(candidate.id)}`, {
+                    method: 'POST',
+                    body: '{}',
+                });
+                check.expect(
+                    reply.status === 403,
+                    `${candidate.id} has \`create: false\`, but a create answered ${reply.status}.`,
+                );
+            }
+        },
+    );
+
+    await run(
+        'abilities.update',
+        'An item the user can’t update answers 403 to an update',
+        async (check) => {
+            if (writes === undefined || resource === null) {
+                check.skip('Write checks are disabled.');
+                return;
+            }
+            const items = await listItems(check);
+            const denied = items?.find((item) => item.abilities.update !== true);
+            if (items === null) {
+                return;
+            }
+            if (denied === undefined) {
+                check.skip('Every item of the first page can be updated.');
+                return;
+            }
+            // An empty update: a backend that wrongly accepts it changes nothing.
+            const reply = await request(`${resourcePath()}/${encodeURIComponent(denied.id)}`, {
+                method: 'PATCH',
+                body: '{}',
+                headers: denied.version !== null ? { 'If-Match': `"${denied.version}"` } : {},
+            });
+            check.expect(
+                reply.status === 403,
+                `Item ${denied.id} can’t be updated, but an update answered ${reply.status}.`,
+            );
+        },
+    );
 
     await run('create.invalid', 'Invalid values are refused with a 422 problem', async (check) => {
         if (writes === undefined || resource === null) {

@@ -293,12 +293,34 @@ function allows(item: Item, actionId: string): boolean {
     return item.abilities[ability] === true && item.abilities[actionId] !== false;
 }
 
+/** The names of the fields of a resource whose ability is `false` (decision 0046). */
+function fieldsWithout(resource: ResourceInput, ability: 'view' | 'update'): Set<string> {
+    return new Set(
+        resource.fields
+            .filter((field) => field.abilities?.[ability] === false)
+            .map((field) => field.name),
+    );
+}
+
+/** A body without the values of the fields the user can't see or update, which are ignored. */
+function writableValues(resource: ResourceInput, body: Values): Values {
+    const ignored = new Set([
+        ...fieldsWithout(resource, 'view'),
+        ...fieldsWithout(resource, 'update'),
+    ]);
+    return Object.fromEntries(Object.entries(body).filter(([key]) => !ignored.has(key)));
+}
+
 /**
  * An in-memory backend that implements the protocol's resource routes: definition, list, show,
  * create, update (with `If-Match`), delete, duplicate and the built-in `delete` action. Its items
- * allow every built-in item action (`view`, `update`, `duplicate`, `delete`). Values are checked
- * with the portable rules. Used to test the conformance kit, and to develop frontends without a
- * real backend.
+ * allow every built-in item action (`view`, `update`, `duplicate`, `delete`), unless an item of
+ * `items` gives its own `abilities`. It reads abilities as clients do (decision 0046): a resource
+ * without `viewAny` answers `403` on its list, one without `create` on creates, an item without
+ * `view`, `update` or `delete` on those requests; items leave out the values of fields with
+ * `view: false`, and writes ignore those of fields with `update: false`. Values are checked with
+ * the portable rules. Used to test the conformance kit, and to develop frontends without a real
+ * backend.
  */
 export function createMockBackend(options: MockBackendOptions): MockBackend {
     const { definition, items = {} } = options;
@@ -322,7 +344,18 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
         const rest = Object.fromEntries(
             Object.entries(values).filter(([key]) => !RESERVED_KEYS.has(key)),
         );
-        return { ...rest, id, version: '1', abilities: abilitiesFor(resource) };
+        const own = isRecord(values.abilities) ? (values.abilities as Record<string, boolean>) : {};
+        return { ...rest, id, version: '1', abilities: { ...abilitiesFor(resource), ...own } };
+    };
+
+    // What the user gets of an item: without the values of the fields they can't see.
+    const present = (resource: ResourceInput, item: Item): Item => {
+        const hidden = fieldsWithout(resource, 'view');
+        return hidden.size === 0
+            ? item
+            : (Object.fromEntries(
+                  Object.entries(item).filter(([key]) => !hidden.has(key)),
+              ) as Item);
     };
 
     definition.resources.forEach((resource) => {
@@ -592,8 +625,14 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             if (left === 0) {
                 return [];
             }
+            const searched = definition.resources.find((candidate) => candidate.id === id);
+            if (searched === undefined || searched.abilities?.viewAny === false) {
+                return [];
+            }
             const found = applyQuery(inScope(id, store.get(id) ?? []), { q });
-            const items = found.slice(0, Math.min(limit, left));
+            const items = found
+                .slice(0, Math.min(limit, left))
+                .map((item) => present(searched, item));
             left -= items.length;
             return items.length > 0 ? [{ resource: id, items, total: found.length }] : [];
         });
@@ -752,6 +791,9 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
 
         if (segments.length === 2) {
             if (method === 'GET') {
+                if (resource.abilities?.viewAny === false) {
+                    return problem(403, 'This resource can’t be listed.');
+                }
                 const query = fromSearchParams(url.searchParams);
                 const perPage = query.perPage ?? resource.list?.perPage ?? 20;
                 const page = query.page ?? 1;
@@ -771,7 +813,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                     const offset = Number(cursor.slice(1));
                     const end = offset + perPage;
                     return json(200, {
-                        data: matching.slice(offset, end),
+                        data: matching.slice(offset, end).map((item) => present(resource, item)),
                         meta: {
                             perPage,
                             nextCursor: end < matching.length ? `o${String(end)}` : null,
@@ -781,7 +823,9 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                     });
                 }
                 return json(200, {
-                    data: matching.slice((page - 1) * perPage, page * perPage),
+                    data: matching
+                        .slice((page - 1) * perPage, page * perPage)
+                        .map((item) => present(resource, item)),
                     meta: {
                         page,
                         perPage,
@@ -791,7 +835,10 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                 });
             }
             if (method === 'POST') {
-                const body = await readBody();
+                if (resource.abilities?.create === false) {
+                    return problem(403, 'Items of this resource can’t be created.');
+                }
+                const body = writableValues(resource, await readBody());
                 const invalid = validationProblem(resource, body, 'create');
                 if (invalid !== null) {
                     return invalid;
@@ -805,7 +852,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                     makeItem(resource, { ...values, id: undefined }),
                 );
                 list.push(item);
-                return json(201, { data: item }, etag(item));
+                return json(201, { data: present(resource, item) }, etag(item));
             }
             return problem(405, 'Method not allowed.');
         }
@@ -937,7 +984,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             }
             const copy = makeItem(resource, { ...values, id: copyId });
             list.push(copy);
-            return json(201, { data: copy }, etag(copy));
+            return json(201, { data: present(resource, copy) }, etag(copy));
         }
 
         if (segments.length === 4 && segments[3] === 'preview' && segments[2] !== undefined) {
@@ -971,9 +1018,15 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
         }
 
         if (method === 'GET') {
-            return json(200, { data: current }, etag(current));
+            if (current.abilities.view !== true) {
+                return problem(403, 'This item can’t be viewed.');
+            }
+            return json(200, { data: present(resource, current) }, etag(current));
         }
         if (method === 'PATCH') {
+            if (current.abilities.update !== true) {
+                return problem(403, 'This item can’t be updated.');
+            }
             const ifMatch = request.headers.get('If-Match');
             if (
                 ifMatch !== null &&
@@ -982,10 +1035,10 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             ) {
                 return problem(412, 'The item was changed by someone else.', {
                     type: 'urn:panneau:problem:version-conflict',
-                    current,
+                    current: present(resource, current),
                 });
             }
-            const body = await readBody();
+            const body = writableValues(resource, await readBody());
             const invalid = validationProblem(resource, body, 'update', current);
             if (invalid !== null) {
                 return invalid;
@@ -1003,9 +1056,12 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                 version: current.version === null ? null : String(Number(current.version) + 1),
             });
             list[index] = updated;
-            return json(200, { data: updated }, etag(updated));
+            return json(200, { data: present(resource, updated) }, etag(updated));
         }
         if (method === 'DELETE') {
+            if (current.abilities.delete !== true) {
+                return problem(403, 'This item can’t be deleted.');
+            }
             list.splice(index, 1);
             return json(204, null);
         }

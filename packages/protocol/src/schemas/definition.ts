@@ -91,6 +91,10 @@ export const Page = z.looseObject({
             description:
                 'Names of the path segments after the page: `["id"]` makes `{basePath}/pages/{page}/{id}`. The component gets them as `params`, and route references (`{ "route": "<page>", "params": { "id": … } }`) can link to the page. A page with `params` is not in menus.',
         }),
+    abilities: Abilities.optional().meta({
+        description:
+            'What the current user can do with the page (decision 0046). `view: false` leaves it out of menus, and its route shows a forbidden state; `pages.home` falls back to the built-in home. Without it, the page is allowed.',
+    }),
 });
 
 export const ContextOption = z

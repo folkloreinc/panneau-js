@@ -67,6 +67,7 @@ export const appFr: Record<string, string> = {
     'panneau.app.searchError': 'La recherche a échoué. Les autres résultats restent là.',
     'panneau.app.notFound': 'Page introuvable',
     'panneau.app.notFoundText': 'Cette page n’existe pas, ou vous ne pouvez pas la voir.',
+    'panneau.app.itemForbidden': 'Vous ne pouvez pas voir cet élément ({resource}).',
     'panneau.app.backHome': 'Retour à l’accueil',
     'panneau.app.forbidden': 'Accès refusé',
     'panneau.app.forbiddenText':

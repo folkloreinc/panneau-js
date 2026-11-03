@@ -16,7 +16,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0008](0008-realtime-and-concurrency.md)              | Conflict detection in 5.0, collaboration in 5.x                        | Accepted                          |
 | [0009](0009-preview-drafts-revisions.md)              | Component and iframe previews, drafts and revisions per resource       | Accepted                          |
 | [0010](0010-media.md)                                 | Media through the protocol, non-destructive image editing              | Amended by 0026, 0031             |
-| [0011](0011-permissions.md)                           | Backend policies, abilities in the UI, optional roles module           | Accepted                          |
+| [0011](0011-permissions.md)                           | Backend policies, abilities in the UI, optional roles module           | Extended by 0046                  |
 | [0012](0012-authentication.md)                        | Complete, optional auth that works next to a site's own auth           | Amended by 0037                   |
 | [0013](0013-public-api-and-stability.md)              | Public API and stability rules                                         | Accepted                          |
 | [0014](0014-testing.md)                               | Testing strategy                                                       | Accepted                          |
@@ -51,4 +51,5 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0043](0043-inline-editing.md)                        | Inline editing in lists, one field at a time                           | Accepted                          |
 | [0044](0044-gallery-and-calendar.md)                  | Gallery and calendar layouts, and the query of a calendar              | Accepted                          |
 | [0045](0045-current-context.md)                       | A current context, picked in the app and sent with every request       | Proposed                          |
+| [0046](0046-abilities-in-the-ui.md)                   | Abilities of pages and fields, and a forbidden state                   | Accepted                          |
 | [0047](0047-countries-regions-and-phone-numbers.md)   | Countries, regions and phone numbers                                   | Accepted                          |

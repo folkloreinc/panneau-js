@@ -1,8 +1,8 @@
 import { Maximize2, Minimize2, X } from 'lucide-react';
 import { type KeyboardEvent, useEffect, useRef } from 'react';
 
-import { type ResolvedResource, getItemActions } from '@panneau/core';
-import { NotFoundError } from '@panneau/data';
+import { type ResolvedResource, getItemActions, getVisibleFields } from '@panneau/core';
+import { ForbiddenError, NotFoundError } from '@panneau/data';
 import { useResourceItem } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
 import { ItemDetails, type ItemDetailsColumn } from '@panneau/lists';
@@ -77,7 +77,7 @@ export function ItemPanel({
 }: ItemPanelProps) {
     const intl = usePanneauIntl();
     const { resource } = resolved;
-    const { data: item, isError, refetch } = useResourceItem(resource.id, id);
+    const { data: item, error, isError, refetch } = useResourceItem(resource.id, id);
     const panel = useRef<HTMLElement>(null);
     const [size, setSize] = usePreference('item-panel-size', SIZES);
     const [tab, setTab] = usePreference('item-panel-tab', TABS);
@@ -94,7 +94,7 @@ export function ItemPanel({
         panel.current?.focus();
     }, [id]);
 
-    const columns = toDetailsColumns(resource.fields);
+    const columns = toDetailsColumns(getVisibleFields(resource.fields));
     // The actions of the item, as its row and its form show them, but `show`: this panel
     const { run, isSupported } = useItemActionRunner(resource, { basePath, locale });
     const itemActions =
@@ -113,7 +113,14 @@ export function ItemPanel({
     };
 
     let content;
-    if (item === undefined && isError) {
+    if (item === undefined && error instanceof ForbiddenError) {
+        // An item the user can't view: retrying won't help (decision 0046)
+        content = (
+            <Alert tone="warning">
+                <p>{intl.formatMessage(appMessages.itemForbidden, { resource: singular })}</p>
+            </Alert>
+        );
+    } else if (item === undefined && isError) {
         content = (
             <Alert tone="danger">
                 <p>{intl.formatMessage(appMessages.itemLoadError, { resource: singular })}</p>

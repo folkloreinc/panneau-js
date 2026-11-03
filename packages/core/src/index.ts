@@ -1,7 +1,11 @@
 export {
     can,
     canRunAction,
+    canUpdateField,
+    canViewField,
+    canViewPage,
     getActionPlacements,
+    getVisibleFields,
     isActionAllowedOn,
     partitionByAction,
 } from './definition/abilities';

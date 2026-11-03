@@ -689,6 +689,58 @@ describe('createMockBackend', () => {
         expect((await embed('not a url')).status).toBe(422);
     });
 
+    it('reads the abilities of resources, items and fields (decision 0046)', async () => {
+        const definition = createDefinition();
+        const [pages, authors] = definition.resources;
+        if (pages === undefined || authors === undefined) {
+            throw new Error('No resources.');
+        }
+        pages.fields.push(
+            { name: 'notes', type: 'textarea', abilities: { view: false } },
+            { name: 'code', type: 'text', abilities: { update: false } },
+        );
+        authors.abilities = { viewAny: false, create: false };
+        const backend = createMockBackend({
+            definition,
+            items: {
+                pages: [
+                    { title: { fr: 'Accueil' }, notes: 'Internal', code: 'a' },
+                    {
+                        title: { fr: 'Contact' },
+                        abilities: { view: false, update: false, delete: false },
+                    },
+                ],
+                authors: [{ id: 'ada', name: 'Ada' }],
+            },
+        });
+        const api = (path: string, init?: RequestInit) =>
+            backend.fetch(`/panneau/api/resources/${path}`, init);
+
+        expect((await api('authors')).status).toBe(403);
+        expect((await api('authors', json({ name: 'Grace' }, { method: 'POST' }))).status).toBe(
+            403,
+        );
+        // Items leave out the values of hidden fields
+        const list = (await (await api('pages')).json()) as { data: Record<string, unknown>[] };
+        expect(list.data[0]).not.toHaveProperty('notes');
+        expect(list.data[0]).toMatchObject({ code: 'a' });
+        // Values of fields the user can't see or update are ignored
+        const updated = await api(
+            'pages/1',
+            json({ status: 'draft', notes: 'Changed', code: 'b' }, { method: 'PATCH' }),
+        );
+        expect(updated.status).toBe(200);
+        expect(backend.items('pages')[0]).toMatchObject({
+            status: 'draft',
+            notes: 'Internal',
+            code: 'a',
+        });
+        // An item without `view`, `update` or `delete`
+        expect((await api('pages/2')).status).toBe(403);
+        expect((await api('pages/2', json({}, { method: 'PATCH' }))).status).toBe(403);
+        expect((await api('pages/2', { method: 'DELETE' })).status).toBe(403);
+    });
+
     it('answers unknown routes with a 404 problem', async () => {
         const response = await createBackend().fetch('/panneau/api/resources/unknown');
         expect(response.status).toBe(404);

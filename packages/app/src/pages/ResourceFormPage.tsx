@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { type ResolvedResource, getItemActions, getItemValues, resolveForm } from '@panneau/core';
 import { NotFoundError } from '@panneau/data';
 import { useCreateItem, useDataAdapter, useResourceItem, useUpdateItem } from '@panneau/data/query';
@@ -106,6 +108,26 @@ export function ResourceFormPage({
             />
         ) : undefined;
 
+    // An item the user can't update opens in its panel, as its title does (decisions 0040 and
+    // 0046), or is forbidden when they can't view it either.
+    const updatable = item === undefined || item.abilities.update === true;
+    const viewable =
+        item !== undefined && item.abilities.view === true && resolved.abilities.viewAny;
+    const showHref =
+        id !== null && !updatable && viewable
+            ? `${routePath({ name: 'resource.show', resource: resource.id, id }, basePath)}${window.location.hash}`
+            : null;
+    useEffect(() => {
+        if (showHref !== null) {
+            navigate(showHref, { replace: true });
+        }
+    }, [showHref]);
+    if (showHref !== null) {
+        return null;
+    }
+    if (mode === 'update' && !updatable) {
+        return <ErrorPage kind="forbidden" homeHref={routePath({ name: 'home' }, basePath)} />;
+    }
     if (mode === 'update' && item === undefined && itemQuery.isError) {
         // In place of the page: the item is missing or forbidden, or the server failed
         return (

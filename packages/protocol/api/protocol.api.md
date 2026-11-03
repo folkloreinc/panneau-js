@@ -49,6 +49,7 @@ export const Action: z.ZodObject<{
         default: z.ZodOptional<z.ZodUnknown>;
         localized: z.ZodOptional<z.ZodBoolean>;
         readOnly: z.ZodOptional<z.ZodBoolean>;
+        abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
         createOnly: z.ZodOptional<z.ZodBoolean>;
         updateOnly: z.ZodOptional<z.ZodBoolean>;
         rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
@@ -742,6 +743,7 @@ export const Definition: z.ZodObject<{
             default: z.ZodOptional<z.ZodUnknown>;
             localized: z.ZodOptional<z.ZodBoolean>;
             readOnly: z.ZodOptional<z.ZodBoolean>;
+            abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
             createOnly: z.ZodOptional<z.ZodBoolean>;
             updateOnly: z.ZodOptional<z.ZodBoolean>;
             rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
@@ -982,6 +984,7 @@ export const Definition: z.ZodObject<{
                 default: z.ZodOptional<z.ZodUnknown>;
                 localized: z.ZodOptional<z.ZodBoolean>;
                 readOnly: z.ZodOptional<z.ZodBoolean>;
+                abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
                 createOnly: z.ZodOptional<z.ZodBoolean>;
                 updateOnly: z.ZodOptional<z.ZodBoolean>;
                 rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
@@ -1169,6 +1172,7 @@ export const Definition: z.ZodObject<{
         label: z.ZodOptional<z.ZodString>;
         props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         params: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
     }, z.core.$loose>>>;
     menus: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodArray<z.ZodObject<{
         type: z.ZodString;
@@ -1460,6 +1464,7 @@ export const Field: z.ZodObject<{
     default: z.ZodOptional<z.ZodUnknown>;
     localized: z.ZodOptional<z.ZodBoolean>;
     readOnly: z.ZodOptional<z.ZodBoolean>;
+    abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
     createOnly: z.ZodOptional<z.ZodBoolean>;
     updateOnly: z.ZodOptional<z.ZodBoolean>;
     rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
@@ -2232,6 +2237,7 @@ export const namedSchemas: {
         default: z.ZodOptional<z.ZodUnknown>;
         localized: z.ZodOptional<z.ZodBoolean>;
         readOnly: z.ZodOptional<z.ZodBoolean>;
+        abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
         createOnly: z.ZodOptional<z.ZodBoolean>;
         updateOnly: z.ZodOptional<z.ZodBoolean>;
         rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
@@ -2567,6 +2573,7 @@ export const namedSchemas: {
             default: z.ZodOptional<z.ZodUnknown>;
             localized: z.ZodOptional<z.ZodBoolean>;
             readOnly: z.ZodOptional<z.ZodBoolean>;
+            abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
             createOnly: z.ZodOptional<z.ZodBoolean>;
             updateOnly: z.ZodOptional<z.ZodBoolean>;
             rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
@@ -2765,6 +2772,7 @@ export const namedSchemas: {
             default: z.ZodOptional<z.ZodUnknown>;
             localized: z.ZodOptional<z.ZodBoolean>;
             readOnly: z.ZodOptional<z.ZodBoolean>;
+            abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
             createOnly: z.ZodOptional<z.ZodBoolean>;
             updateOnly: z.ZodOptional<z.ZodBoolean>;
             rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
@@ -3005,6 +3013,7 @@ export const namedSchemas: {
                 default: z.ZodOptional<z.ZodUnknown>;
                 localized: z.ZodOptional<z.ZodBoolean>;
                 readOnly: z.ZodOptional<z.ZodBoolean>;
+                abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
                 createOnly: z.ZodOptional<z.ZodBoolean>;
                 updateOnly: z.ZodOptional<z.ZodBoolean>;
                 rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
@@ -3243,6 +3252,7 @@ export const namedSchemas: {
         label: z.ZodOptional<z.ZodString>;
         props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         params: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
     }, z.core.$loose>;
     Widget: z.ZodObject<{
         id: z.ZodString;
@@ -3498,6 +3508,7 @@ export const namedSchemas: {
                 default: z.ZodOptional<z.ZodUnknown>;
                 localized: z.ZodOptional<z.ZodBoolean>;
                 readOnly: z.ZodOptional<z.ZodBoolean>;
+                abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
                 createOnly: z.ZodOptional<z.ZodBoolean>;
                 updateOnly: z.ZodOptional<z.ZodBoolean>;
                 rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
@@ -3738,6 +3749,7 @@ export const namedSchemas: {
                     default: z.ZodOptional<z.ZodUnknown>;
                     localized: z.ZodOptional<z.ZodBoolean>;
                     readOnly: z.ZodOptional<z.ZodBoolean>;
+                    abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
                     createOnly: z.ZodOptional<z.ZodBoolean>;
                     updateOnly: z.ZodOptional<z.ZodBoolean>;
                     rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
@@ -3925,6 +3937,7 @@ export const namedSchemas: {
             label: z.ZodOptional<z.ZodString>;
             props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
             params: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
         }, z.core.$loose>>>;
         menus: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodArray<z.ZodObject<{
             type: z.ZodString;
@@ -4620,6 +4633,7 @@ export const Page: z.ZodObject<{
     label: z.ZodOptional<z.ZodString>;
     props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     params: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -4735,6 +4749,7 @@ export const Resource: z.ZodObject<{
         default: z.ZodOptional<z.ZodUnknown>;
         localized: z.ZodOptional<z.ZodBoolean>;
         readOnly: z.ZodOptional<z.ZodBoolean>;
+        abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
         createOnly: z.ZodOptional<z.ZodBoolean>;
         updateOnly: z.ZodOptional<z.ZodBoolean>;
         rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
@@ -4975,6 +4990,7 @@ export const Resource: z.ZodObject<{
             default: z.ZodOptional<z.ZodUnknown>;
             localized: z.ZodOptional<z.ZodBoolean>;
             readOnly: z.ZodOptional<z.ZodBoolean>;
+            abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
             createOnly: z.ZodOptional<z.ZodBoolean>;
             updateOnly: z.ZodOptional<z.ZodBoolean>;
             rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{

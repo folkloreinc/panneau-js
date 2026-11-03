@@ -1,4 +1,4 @@
-import { can } from '@panneau/core';
+import { can, canViewPage } from '@panneau/core';
 import type { Definition, MenuItem } from '@panneau/protocol';
 
 import { type AppRoute, routePath } from './routes';
@@ -83,8 +83,14 @@ function toLinks(item: MenuItem, definition: Definition, basePath: string, key: 
                 : [];
         case 'page': {
             const page = item.page !== undefined ? definition.pages?.[item.page] : undefined;
-            // A page with `params` is about one thing: a menu can't link to it.
-            if (item.page === undefined || page === undefined || (page.params ?? []).length > 0) {
+            // A page with `params` is about one thing: a menu can't link to it. Nor can a page the
+            // user can't open (decision 0046).
+            if (
+                item.page === undefined ||
+                page === undefined ||
+                (page.params ?? []).length > 0 ||
+                !canViewPage(page)
+            ) {
                 return [];
             }
             return [
@@ -120,10 +126,26 @@ function toLinks(item: MenuItem, definition: Definition, basePath: string, key: 
     }
 }
 
+/** Without separators at the start, at the end, or next to another one. */
+function withoutExtraSeparators(entries: NavEntry[]): NavEntry[] {
+    const kept: NavEntry[] = [];
+    entries.forEach((entry) => {
+        if (entry.type !== 'separator' || (kept.length > 0 && kept.at(-1)?.type !== 'separator')) {
+            kept.push(entry);
+        }
+    });
+    if (kept.at(-1)?.type === 'separator') {
+        kept.pop();
+    }
+    return kept;
+}
+
 /**
  * The entries of the main navigation: the `main` menu of the definition, or every resource and
- * page without one. Resources the user can't list (`abilities.viewAny`) and entries of unknown
- * types are left out. Groups keep one level: the links of nested groups join their parent.
+ * page without one. Resources the user can't list (`abilities.viewAny`), pages they can't open
+ * (`abilities.view: false`) and entries of unknown types are left out, and so are the groups and
+ * separators they leave empty (decision 0046). Groups keep one level: the links of nested groups
+ * join their parent.
  */
 export function getNavigation(definition: Definition, basePath: string): NavEntry[] {
     const menu: MenuItem[] = definition.menus?.main ?? [
@@ -132,7 +154,7 @@ export function getNavigation(definition: Definition, basePath: string): NavEntr
             .filter(([, page]) => (page.params ?? []).length === 0)
             .map(([page]) => ({ type: 'page', page })),
     ];
-    return menu.flatMap((item, index): NavEntry[] => {
+    const entries = menu.flatMap((item, index): NavEntry[] => {
         const key = String(index);
         if (item.type === 'separator') {
             return [{ type: 'separator', key }];
@@ -143,6 +165,7 @@ export function getNavigation(definition: Definition, basePath: string): NavEntr
         }
         return toLinks(item, definition, basePath, key);
     });
+    return withoutExtraSeparators(entries);
 }
 
 /** Whether a link leads to the current route: a resource is current on all of its pages. */

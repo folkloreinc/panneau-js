@@ -5,6 +5,7 @@ import { RouterProvider } from 'react-aria-components';
 import { ActionRunnerProvider } from '@panneau/actions';
 import {
     LeaveGuardsProvider,
+    canViewPage,
     createLeaveGuards,
     findResource,
     resolveResource,
@@ -90,13 +91,15 @@ function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) 
     }
     const homeHref = routePath({ name: 'home' }, basePath);
     const notFound = <ErrorPage kind="not-found" homeHref={homeHref} />;
-    // The resource is in the definition: it exists, the user can't see it.
+    // A route the user can't open: a resource in the definition, a page, the create route
+    // (decision 0046)
     const forbidden = <ErrorPage kind="forbidden" homeHref={homeHref} />;
     switch (route.name) {
         case 'home': {
-            // `pages.home` of the definition, or the cards of the resources (decision 0019)
+            // `pages.home` of the definition, or the cards of the resources (decision 0019), also
+            // when the user can't open `pages.home` (decision 0046)
             const page = definition.pages?.home;
-            return page !== undefined ? (
+            return page !== undefined && canViewPage(page) ? (
                 <DefinitionPage page={page} definition={definition} basePath={basePath} />
             ) : (
                 <HomePage definition={definition} basePath={basePath} />
@@ -111,6 +114,9 @@ function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) 
             // A page takes exactly the segments of its `params`.
             if (page === undefined || segments.length !== names.length) {
                 return notFound;
+            }
+            if (!canViewPage(page)) {
+                return forbidden;
             }
             return (
                 <DefinitionPage
@@ -145,6 +151,9 @@ function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) 
                 ) : (
                     forbidden
                 );
+            }
+            if (route.name === 'resource.create' && !resolved.abilities.create) {
+                return forbidden;
             }
             return (
                 <ResourceFormPage

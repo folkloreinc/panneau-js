@@ -2,7 +2,13 @@ import { Plus } from 'lucide-react';
 import { useEffect } from 'react';
 
 import { useActionPreview } from '@panneau/actions';
-import { type ResolvedResource, getOpenMode, useList, usePanneau } from '@panneau/core';
+import {
+    type ResolvedResource,
+    getOpenMode,
+    getVisibleFields,
+    useList,
+    usePanneau,
+} from '@panneau/core';
 import { useResourceItem, useResourceList, useUpdateItem } from '@panneau/data/query';
 import { useFormatRuleFailure } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
@@ -142,7 +148,7 @@ export function ResourceListPage({
                     isLoading={isFetching}
                     error={error}
                     onRetry={() => void refetch()}
-                    fields={resource.fields}
+                    fields={getVisibleFields(resource.fields)}
                     itemTitle={resource.itemTitle}
                     itemImage={resource.itemImage}
                     // The layouts of the definition, or the table and the cards without any

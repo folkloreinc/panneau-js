@@ -5,7 +5,7 @@ import {
     isBuiltInItemAction,
 } from '@panneau/protocol/runtime';
 
-import { canRunAction, getActionPlacements } from './abilities';
+import { canRunAction, canUpdateField, canViewField, getActionPlacements } from './abilities';
 
 /** A column ready to render. */
 export interface ResolvedColumn {
@@ -72,7 +72,9 @@ export const DEFAULT_CALENDAR_PER_PAGE = 100;
 
 function columnsFromFields(resource: Resource): Column[] {
     const title = resource.itemTitle;
-    const fields = resource.fields.filter((field) => !NON_COLUMN_TYPES.has(field.type));
+    const fields = resource.fields.filter(
+        (field) => !NON_COLUMN_TYPES.has(field.type) && canViewField(field),
+    );
     const ordered =
         title !== undefined
             ? [
@@ -147,13 +149,21 @@ export function getOpenMode(resource: Resource): 'panel' | 'edit' {
 
 /**
  * Resolves the list of a resource. Without columns, it shows the item title and the next fields
- * (up to four, skipping groups, repeaters and rich text).
+ * (up to four, skipping groups, repeaters and rich text). Fields the current user can't see
+ * (`abilities.view: false`) have no column, sort or inline editing, and those they can't edit
+ * aren't edited inline (decision 0046).
  */
 export function resolveList(resource: Resource): ResolvedList {
     const list = resource.list ?? {};
     const fields = new Map(resource.fields.map((field) => [field.name, field]));
-    const sorts = list.sorts ?? [];
-    const columns = (list.columns ?? columnsFromFields(resource)).map((column): ResolvedColumn => {
+    const hidden = new Set(
+        resource.fields.filter((field) => !canViewField(field)).map((field) => field.name),
+    );
+    const sorts = (list.sorts ?? []).filter((sort) => !hidden.has(sort));
+    const declaredColumns = (list.columns ?? columnsFromFields(resource)).filter(
+        (column) => column.field === undefined || !hidden.has(column.field),
+    );
+    const columns = declaredColumns.map((column): ResolvedColumn => {
         const field = column.field !== undefined ? (fields.get(column.field) ?? null) : null;
         const id = column.id ?? column.field ?? '';
         const resolved: ResolvedColumn = {
@@ -188,7 +198,10 @@ export function resolveList(resource: Resource): ResolvedList {
         perPage: list.perPage ?? DEFAULT_PER_PAGE,
         perPageOptions: list.perPageOptions ?? [],
         pagination: list.pagination ?? 'pages',
-        inlineEdit: list.inlineEdit ?? [],
+        inlineEdit: (list.inlineEdit ?? []).filter((name) => {
+            const field = fields.get(name);
+            return field === undefined || canUpdateField(field);
+        }),
         selectable: (list.selectable ?? true) && hasSelectionAction,
         actions,
         calendar:

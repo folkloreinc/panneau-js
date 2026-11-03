@@ -82,9 +82,16 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     "rules": [{ "rule": "required" }, { "rule": "max", "value": 120 }],
     "visibleWhen": { "field": "type", "in": ["article"] },
     "readOnly": false,
+    "abilities": { "update": false }, // optional: what the current user can do with the field
     "settings": { "placeholder": "…" },
 }
 ```
+
+- **`abilities`** ([0046](decisions/0046-abilities-in-the-ui.md)) say what the current user can do with the field. Only `false` restricts:
+    - `view: false`: clients leave the field out of forms, details, list columns, sorts and inline editing. Layouts and columns that name it stay valid. Items don't carry its value.
+    - `update: false`: the field is read-only for this user, in forms and in lists. The backend ignores its value on create and update.
+
+    They apply to the fields at the top of a resource and of its types. `readOnly` is for a field that nobody edits.
 
 - **`type`** names a field type: built-in or provided by a plugin. Built-in types:
     - `text`, `textarea`, `richtext`, `number`, `boolean`;
@@ -307,6 +314,7 @@ Built-in actions use reserved ids:
 - A resource that can't duplicate sends `duplicate: false` (or no `duplicate`) on its items.
 - Placements: `show` and `edit` in `row` and `form`; `duplicate` and `delete` in `menu` and `form`, and `delete` in `toolbar` for selections. For item actions, `row` is the buttons of a row, `menu` its menu, and `form` the header of the item, in its panel and its form.
 - An item shows the same actions in its row, its panel and its form, but the one that leads there: no `show` in the panel, no `edit` in the form.
+- **`abilities.run: false`** on an action hides it for the user everywhere. A resource whose user can't delete any of its items declares `{ "id": "delete", "abilities": { "run": false } }`: lists then have no "Delete", and no checkboxes for it ([0046](decisions/0046-abilities-in-the-ui.md)). Lists have checkboxes when a selection action can run.
 - The ids `show` and `edit` are only for `link` actions. Every other action needs a `label`. The JSON Schema checks both.
 - Other declared actions are for the resource's own operations, and keep their rules: a `link` is shown unless the item says `false`, other actions when the item lists their id.
 
@@ -333,6 +341,12 @@ Built-in actions use reserved ids:
 
 - The component gets the page's `props`, the definition, and `params`: the values of the path segments that `params` names ([decisions/0038](decisions/0038-pages-with-params.md)). A page takes exactly its params.
 - A route reference can name a page: `{ "route": "job", "params": { "id": "4f2a" } }`, when `routes` has no route of that name. Menus don't link to pages with params.
+- **`abilities`** ([0046](decisions/0046-abilities-in-the-ui.md)): `{ "view": false }` leaves the page out of menus, and its route shows a forbidden state. `pages.home` with `view: false` falls back to the built-in home. Without it, a page is allowed. A backend can also leave out a page the user should not know about.
+
+### Menus and the forbidden state
+
+- **Menus** show an entry when the user can reach its target: a resource with `viewAny`, a page without `view: false`. Groups left empty and extra separators are left out. A `link` entry has no abilities: a backend leaves it out of the definition of a user who can't follow it.
+- **The forbidden state** ([0046](decisions/0046-abilities-in-the-ui.md)) is a page of the app, in the shell, with a link to the home page. It shows on the list and show routes of a resource without `viewAny`, the create route of a resource without `create`, the route of a page with `view: false`, and when the request of a page answers `403`. The edit route of an item without `update: true` goes to its show route, or shows the forbidden state when the item can't be viewed either. `401` still goes to the login.
 
 ### Context
 
@@ -491,6 +505,7 @@ A field with `"check": true`, at the top of a resource, checks its value with th
 **Items:**
 
 - Every item has `id`, `version` and `abilities`. `abilities` includes the ids of the actions allowed on that item (`"publish": true`). `view`, `update`, `duplicate` and `delete` show the built-in item actions ([decisions/0040](decisions/0040-row-links-and-open-mode.md)): without them, the client shows none.
+- **Abilities are enforced.** A resource without `viewAny` answers `403` on its list, one without `create` on creates, and an item without `view`, `update` or `delete` on those requests. Items leave out the values of fields with `view: false` ([0046](decisions/0046-abilities-in-the-ui.md)).
 - **Single items.** Show, create and update return `{ "data": Item }`. They also send `version` as a quoted `ETag` header (`"3"`).
 - **Partial updates.** An update only validates and saves the fields it sends: a list that edits a field in place sends that field alone, with `If-Match` ([decisions/0043](decisions/0043-inline-editing.md)). Whether a field applies (`visibleWhen`), and rules that read other fields, use the item's values for the fields that aren't sent: a field shown when `status` is `published`, sent alone, is saved on a published item.
 - **Version conflicts.** An update with a stale `If-Match` returns `412 Precondition Failed`. The current item is in `current`.
@@ -810,7 +825,7 @@ Global search ([decisions/0029](decisions/0029-go-to-palette.md)):
 - **a light entry point for browsers** (`@panneau/protocol/runtime`): the constants and the helpers above that don't need the schemas (`checkValues()`, `evaluateCondition()`, `lintDefinition()`, the list query helpers, `isProblem()`), without loading zod. UI packages import them from there, and only types from the main entry point.
 - **generated files**: `@panneau/protocol/definition.schema.json` and `@panneau/protocol/boot.schema.json` (JSON Schema 2020-12), and `@panneau/protocol/openapi.json` (OpenAPI 3.1).
 - **a mock backend** (`@panneau/protocol/mock`): an in-memory implementation of the resource routes.
-- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. For a list paged with cursors, it also follows `nextCursor`, and checks that an invalid cursor is a `422`. With `writes`, it also checks that rules limited to `create` don't apply to updates: an update with those fields set to `null` succeeds. It also checks that an update of a single field, with `If-Match`, changes that field alone. It also checks that the built-in `delete` answers a dry run without being declared and, with `writes`, that an item that allows `duplicate` is copied under a new id, with its `ETag`. It also checks that the backend reads the bounds of the resource's first `date-range` filter, if it has one, and that `GET /search` finds an item by a word of its title, reads `limit` and `resources`, and refuses invalid parameters with a `422`. With a `context` in the definition, it checks the choices of each param, a definition built for a value of the first param, and a value that doesn't exist refused with a `403` context problem. `context` sends values with every request, for a backend whose resources need one.
+- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. For a list paged with cursors, it also follows `nextCursor`, and checks that an invalid cursor is a `422`. With `writes`, it also checks that rules limited to `create` don't apply to updates: an update with those fields set to `null` succeeds. It also checks that an update of a single field, with `If-Match`, changes that field alone. It also checks that the built-in `delete` answers a dry run without being declared and, with `writes`, that an item that allows `duplicate` is copied under a new id, with its `ETag`. It also checks that the API agrees with the abilities it announces ([0046](decisions/0046-abilities-in-the-ui.md)): resources without `viewAny` answer `403` on their list, items leave out the values of fields with `view: false`, and a dry run of `delete` skips an item without `delete`; with `writes`, an empty create of a resource without `create`, and an empty update of an item without `update`, answer `403`. It also checks that the backend reads the bounds of the resource's first `date-range` filter, if it has one, and that `GET /search` finds an item by a word of its title, reads `limit` and `resources`, and refuses invalid parameters with a `422`. With a `context` in the definition, it checks the choices of each param, a definition built for a value of the first param, and a value that doesn't exist refused with a `403` context problem. `context` sends values with every request, for a backend whose resources need one.
 
 ```ts
 import { formatReport, runConformance } from '@panneau/protocol/conformance';

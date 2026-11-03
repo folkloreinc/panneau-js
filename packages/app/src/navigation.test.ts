@@ -94,6 +94,45 @@ describe('getNavigation', () => {
         );
         expect(labels).toEqual(['Pages']);
     });
+
+    it('leaves out the pages the user can’t open, and the separators and groups left empty', () => {
+        const input = createDefinition({
+            pages: {
+                stats: { component: 'stats', label: 'Statistics', abilities: { view: false } },
+                usage: { component: 'usage', label: 'Usage' },
+            },
+            menus: {
+                main: [
+                    { type: 'page', page: 'stats' },
+                    { type: 'separator' },
+                    { type: 'resource', resource: 'pages' },
+                    { type: 'separator' },
+                    {
+                        type: 'group',
+                        label: 'Reports',
+                        children: [{ type: 'page', page: 'stats' }],
+                    },
+                    { type: 'separator' },
+                    { type: 'resource', resource: 'authors' },
+                    { type: 'separator' },
+                ],
+            },
+        });
+        input.resources = input.resources.map((resource) =>
+            resource.id === 'authors' ? { ...resource, abilities: { viewAny: false } } : resource,
+        );
+        const entries = getNavigation(parse(input), '/panneau').map((entry) =>
+            entry.type === 'link' ? entry.label : entry.type,
+        );
+        expect(entries).toEqual(['Pages']);
+        // Without a main menu, the pages the user can open
+        const { menus: _menus, ...withoutMenu } = input;
+        expect(
+            getNavigation(parse(withoutMenu), '/panneau').map(
+                (entry) => entry.type === 'link' && entry.label,
+            ),
+        ).toEqual(['Pages', 'Usage']);
+    });
 });
 
 describe('isCurrent', () => {

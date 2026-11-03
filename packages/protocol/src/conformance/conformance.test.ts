@@ -12,6 +12,18 @@ function createBackend() {
         type: 'text',
         rules: [{ rule: 'required', mode: 'create' }],
     });
+    // Abilities of the user (decision 0046): a field they can't see, a resource they can't reach.
+    definition.resources[0]?.fields.push({
+        name: 'notes',
+        type: 'textarea',
+        abilities: { view: false },
+    });
+    definition.resources.push({
+        id: 'settings',
+        label: { singular: 'setting', plural: 'settings' },
+        fields: [{ name: 'name', type: 'text' }],
+        abilities: { viewAny: false, create: false },
+    });
     // A context of two params: inline choices, then choices that depend on them.
     definition.context = {
         params: [
@@ -41,8 +53,15 @@ function createBackend() {
                     title: { fr: 'Accueil', en: 'Home' },
                     status: 'published',
                     published_at: '2026-10-01T12:00:00Z',
+                    notes: 'Internal',
                 },
                 { title: { fr: 'Contact', en: 'Contact' }, status: 'draft', published_at: null },
+                {
+                    title: { fr: 'Archives', en: 'Archives' },
+                    status: 'published',
+                    published_at: null,
+                    abilities: { update: false, delete: false },
+                },
             ],
         },
     });
@@ -105,6 +124,74 @@ describe('runConformance', () => {
         expect(list?.issues.join('\n')).toMatch(/Expected status 422/);
     });
 
+    it('reports a backend that ignores the abilities it announces', async () => {
+        const backend = createBackend();
+        // A backend that answers as if every ability were allowed, and sends hidden values.
+        const ignoring = async (input: string, init?: RequestInit): Promise<Response> => {
+            const method = init?.method ?? 'GET';
+            if (input.endsWith('/resources/settings')) {
+                return new Response(
+                    JSON.stringify({
+                        data: [],
+                        meta: { page: 1, perPage: 20, total: 0, lastPage: 1 },
+                    }),
+                    {
+                        status: method === 'POST' ? 201 : 200,
+                        headers: { 'Content-Type': 'application/json' },
+                    },
+                );
+            }
+            if (method === 'PATCH') {
+                return new Response(null, { status: 200 });
+            }
+            const response = await backend.fetch(input, init);
+            if (method !== 'GET' || !/\/resources\/pages\?/.test(input)) {
+                return response;
+            }
+            const body = (await response.json()) as { data: Record<string, unknown>[] };
+            body.data.forEach((item) => (item.notes = 'Internal'));
+            return new Response(JSON.stringify(body), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' },
+            });
+        };
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: ignoring,
+            writes,
+        });
+        const failed = report.checks.filter((check) => check.status === 'failed');
+        expect(failed.map((check) => check.id)).toEqual(
+            expect.arrayContaining([
+                'abilities.view-any',
+                'abilities.fields',
+                'abilities.create',
+                'abilities.update',
+            ]),
+        );
+        expect(failed.find((check) => check.id === 'abilities.fields')?.issues[0]).toContain(
+            'notes',
+        );
+    });
+
+    it('reports a backend whose dry run of `delete` doesn’t skip what can’t be deleted', async () => {
+        const backend = createBackend();
+        const allowing = async (input: string, init?: RequestInit): Promise<Response> =>
+            input.endsWith('/actions/delete') && String(init?.body).includes('"dryRun":true')
+                ? new Response(
+                      JSON.stringify({ summary: { succeeded: 1, failed: 0, skipped: 0 } }),
+                      { status: 200, headers: { 'Content-Type': 'application/json' } },
+                  )
+                : backend.fetch(input, init);
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: allowing,
+        });
+        expect(report.checks.find((check) => check.id === 'abilities.delete')).toMatchObject({
+            status: 'failed',
+        });
+    });
+
     it('checks the context: its choices, the definition for a value, and a refused value', async () => {
         const backend = createBackend();
         const report = await runConformance({
@@ -163,6 +250,8 @@ describe('runConformance', () => {
         expect(
             report.checks.filter((check) => check.status === 'skipped').map((check) => check.id),
         ).toEqual([
+            'abilities.create',
+            'abilities.update',
             'create.invalid',
             'create',
             'update',
@@ -295,7 +384,7 @@ describe('runConformance', () => {
         const range = report.checks.find((check) => check.id === 'list.filter-range');
         expect(range?.status).toBe('failed');
         expect(range?.issues).toEqual([
-            'Filtered from 9999-12-31, the list has 2 items, expected 0.',
+            'Filtered from 9999-12-31, the list has 3 items, expected 0.',
         ]);
     });
 
