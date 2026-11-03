@@ -163,8 +163,6 @@ export const appMessages: {
     searchError: PanneauMessage<Record<never, never>>;
     notFound: PanneauMessage<Record<never, never>>;
     notFoundText: PanneauMessage<Record<never, never>>;
-    forbidden: PanneauMessage<Record<never, never>>;
-    forbiddenText: PanneauMessage<Record<never, never>>;
     itemForbidden: PanneauMessage<    {
     resource: string;
     }>;
