@@ -27,6 +27,12 @@ const DELETE: ActionInput = {
     confirm: true,
 };
 
+/** The publications of the context of the playground, each with its desks. */
+export const PUBLICATIONS = [
+    { id: 'journal', label: 'Northwind Journal', desks: ['City', 'Culture', 'Sports', 'Food'] },
+    { id: 'kids', label: 'Northwind Kids', desks: ['Stories', 'Games', 'Science'] },
+];
+
 /**
  * The admin of a small publication: the pages of the protocol's example definition, articles,
  * categories, authors and users, in a menu with groups and icons.
@@ -308,6 +314,19 @@ export function createPlaygroundDefinition(): DefinitionInput {
         },
         auth: { mode: 'external', loginUrl: null },
         user: { id: '1', name: 'Ada Lovelace', email: 'ada@example.com' },
+        // The current context (decision 0045): a publication, then one of its desks, searched
+        // through `GET /context/desk/options`. Articles are kept to the publication.
+        context: {
+            params: [
+                {
+                    name: 'publication',
+                    label: 'Publication',
+                    allLabel: 'All publications',
+                    options: PUBLICATIONS.map(({ id, label }) => ({ value: id, label })),
+                },
+                { name: 'desk', label: 'Desk', allLabel: 'All desks' },
+            ],
+        },
     };
 }
 
@@ -375,6 +394,7 @@ export function createPlaygroundItems(): Record<string, Values[]> {
         articles: TITLES.map((title, index) => ({
             id: String(index + 1),
             title,
+            publication: index % 4 === 3 ? 'kids' : 'journal',
             summary:
                 index % 2 === 0
                     ? 'The city turns out for a weekend of music, food and boats on the water.'

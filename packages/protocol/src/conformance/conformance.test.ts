@@ -12,8 +12,29 @@ function createBackend() {
         type: 'text',
         rules: [{ rule: 'required', mode: 'create' }],
     });
+    // A context of two params: inline choices, then choices that depend on them.
+    definition.context = {
+        params: [
+            {
+                name: 'site',
+                label: 'Site',
+                required: true,
+                options: [
+                    { value: 'main', label: 'Main site' },
+                    { value: 'kids', label: 'Kids' },
+                ],
+            },
+            { name: 'section', label: 'Section', allLabel: 'All sections' },
+        ],
+    };
     return createMockBackend({
         definition,
+        context: {
+            options: (name, before) =>
+                name === 'section' && before.site !== undefined
+                    ? [{ value: `${before.site}-news`, label: 'News' }]
+                    : [],
+        },
         items: {
             pages: [
                 {
@@ -84,6 +105,54 @@ describe('runConformance', () => {
         expect(list?.issues.join('\n')).toMatch(/Expected status 422/);
     });
 
+    it('checks the context: its choices, the definition for a value, and a refused value', async () => {
+        const backend = createBackend();
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: backend.fetch,
+        });
+        const statuses = Object.fromEntries(report.checks.map((check) => [check.id, check.status]));
+        expect(statuses).toMatchObject({
+            'context.options': 'passed',
+            'context.value': 'passed',
+            'context.refused': 'passed',
+        });
+
+        // A backend that ignores the header: its definition is for no value, and it refuses nothing.
+        const ignoring = (input: string, init?: RequestInit) => {
+            const headers = new Headers(init?.headers);
+            headers.delete('Panneau-Context');
+            return backend.fetch(input, { ...init, headers });
+        };
+        const broken = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: ignoring,
+        });
+        const failed = broken.checks.filter((check) => check.status === 'failed');
+        expect(failed.map((check) => check.id)).toEqual(['context.value', 'context.refused']);
+    });
+
+    it('checks a context whose first param is fixed by the backend', async () => {
+        const definition = createDefinition();
+        definition.context = {
+            params: [
+                { name: 'client', label: 'Client', fixed: true, value: '4', valueLabel: 'Acme' },
+                { name: 'contest', label: 'Contest', options: [{ value: '12', label: 'Summer' }] },
+            ],
+        };
+        const backend = createMockBackend({ definition, items: { pages: [{ title: 'A' }] } });
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: backend.fetch,
+        });
+        const statuses = Object.fromEntries(report.checks.map((check) => [check.id, check.status]));
+        expect(statuses).toMatchObject({
+            'context.options': 'passed',
+            'context.value': 'passed',
+            'context.refused': 'passed',
+        });
+    });
+
     it('skips the write checks unless asked', async () => {
         const backend = createBackend();
         const report = await runConformance({
@@ -130,6 +199,7 @@ describe('runConformance', () => {
             .map((check) => check.id);
         expect(report.passed).toBe(false);
         expect(failed).toEqual([
+            'context.refused',
             'uploads.sign',
             'fields.check',
             'list.unknown-resource',

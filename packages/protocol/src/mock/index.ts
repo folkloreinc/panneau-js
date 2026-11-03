@@ -1,8 +1,14 @@
-import { ITEM_ACTION_ABILITIES, isBuiltInItemAction } from '../constants';
+import {
+    CONTEXT_HEADER,
+    CONTEXT_PROBLEM_TYPE,
+    ITEM_ACTION_ABILITIES,
+    isBuiltInItemAction,
+} from '../constants';
+import { type ContextValues, contextBefore, parseContextHeader } from '../context';
 import { getMediaLibraries } from '../libraries';
 import { type ListQuery, fromSearchParams, isFilterRange, matchesFilterRange } from '../query';
 import { type RuleFailure, checkValues } from '../rules';
-import type { DefinitionInput, ResourceInput } from '../schemas';
+import type { ContextOption, DefinitionInput, ResourceInput } from '../schemas';
 import type {
     ActionResult,
     EmbedValue,
@@ -39,6 +45,23 @@ export interface MockBackendOptions {
      * a video for YouTube and Vimeo URLs, and a link for other web pages.
      */
     embed?: (url: string) => EmbedValue | null;
+    /**
+     * The current context, when the definition has `context` (decision 0045). The values of the
+     * `Panneau-Context` header are checked against the choices of each param: a value that isn't
+     * one is a `403` problem.
+     */
+    context?: MockContextOptions;
+}
+
+/** How the mock backend answers the context of its definition (decision 0045). */
+export interface MockContextOptions {
+    /**
+     * Every choice of a param without inline `options`, for the values of the params before it.
+     * `GET /context/{name}/options?q=` gives the first 20 whose label matches `q`.
+     */
+    options?: (name: string, before: ContextValues) => ContextOption[];
+    /** Whether an item of a resource is in the context, for lists, items, actions and search. */
+    scope?: (resource: string, item: Item, values: ContextValues) => boolean;
 }
 
 export interface MockBackend {
@@ -552,7 +575,10 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
 
     // The global search (decision 0029): the searchable resources asked for, `limit` items each
     // (5 by default), 20 in all, from 2 characters.
-    const search = (params: URLSearchParams): Response => {
+    const search = (
+        params: URLSearchParams,
+        inScope: (resource: string, list: Item[]) => Item[],
+    ): Response => {
         const read = readSearchQuery(params, definition);
         if (read.errors !== undefined) {
             return problem(422, 'The given data was invalid.', {
@@ -566,7 +592,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             if (left === 0) {
                 return [];
             }
-            const found = applyQuery(store.get(id) ?? [], { q });
+            const found = applyQuery(inScope(id, store.get(id) ?? []), { q });
             const items = found.slice(0, Math.min(limit, left));
             left -= items.length;
             return items.length > 0 ? [{ resource: id, items, total: found.length }] : [];
@@ -574,7 +600,83 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
         return json(200, { data } satisfies SearchResponse);
     };
 
+    const params = definition.context?.params ?? [];
+    const names = params.map(({ name }) => name);
+    const choicesOf = (name: string, values: ContextValues): ContextOption[] => {
+        const param = params.find((candidate) => candidate.name === name);
+        return (
+            param?.options ??
+            options.context?.options?.(name, contextBefore(values, names, name)) ??
+            []
+        );
+    };
+    const refused = (name: string) =>
+        problem(403, 'This value of the context can’t be used.', {
+            type: CONTEXT_PROBLEM_TYPE,
+            param: name,
+        });
+    /**
+     * The values of the header that the definition declares, each one checked against its
+     * choices, in order: a value that isn't one is a `403` problem with its `param`. A `fixed`
+     * param has the value of the definition, as a backend would take it from the request: another
+     * value in the header is refused.
+     */
+    const readContext = (header: string | null): ContextValues | Response => {
+        const sent = parseContextHeader(header);
+        const values: Record<string, string> = {};
+        for (const param of params) {
+            const { name } = param;
+            const value = sent[name];
+            if (param.fixed === true && typeof param.value === 'string') {
+                if (value !== undefined && value !== param.value) {
+                    return refused(name);
+                }
+                values[name] = param.value;
+                continue;
+            }
+            if (value === undefined) {
+                continue;
+            }
+            if (!choicesOf(name, values).some((choice) => choice.value === value)) {
+                return refused(name);
+            }
+            values[name] = value;
+        }
+        return values;
+    };
+    /** The definition for the values of the context: the `value` and `valueLabel` of each param. */
+    const definitionFor = (values: ContextValues): DefinitionInput =>
+        definition.context === undefined
+            ? definition
+            : {
+                  ...definition,
+                  context: {
+                      ...definition.context,
+                      params: params.map((param) => {
+                          if (param.fixed === true) {
+                              return param;
+                          }
+                          const value = values[param.name] ?? null;
+                          const label =
+                              value !== null
+                                  ? choicesOf(param.name, values).find(
+                                        (choice) => choice.value === value,
+                                    )?.label
+                                  : undefined;
+                          return { ...param, value, valueLabel: label ?? null };
+                      }),
+                  },
+              };
+
     const handle = async (request: Request): Promise<Response> => {
+        const response = await answer(request);
+        if (definition.context !== undefined) {
+            response.headers.set('Vary', CONTEXT_HEADER);
+        }
+        return response;
+    };
+
+    const answer = async (request: Request): Promise<Response> => {
         const url = new URL(request.url, 'http://panneau.test');
         if (!url.pathname.startsWith(basePath)) {
             return problem(404, 'Not found.');
@@ -590,8 +692,35 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             return isRecord(body) ? body : {};
         };
 
+        const context = readContext(request.headers.get(CONTEXT_HEADER));
+        if (context instanceof Response) {
+            return context;
+        }
+        const inScope = (resource: string, list: Item[]): Item[] => {
+            const scope = options.context?.scope;
+            return scope !== undefined
+                ? list.filter((item) => scope(resource, item, context))
+                : list;
+        };
+
         if (segments.length === 1 && segments[0] === 'definition' && method === 'GET') {
-            return json(200, definition);
+            return json(200, definitionFor(context));
+        }
+        if (
+            segments.length === 3 &&
+            segments[0] === 'context' &&
+            segments[2] === 'options' &&
+            method === 'GET'
+        ) {
+            const name = segments[1] ?? '';
+            if (!names.includes(name)) {
+                return problem(404, 'The context has no such param.');
+            }
+            const q = (url.searchParams.get('q') ?? '').trim().toLocaleLowerCase();
+            const data = choicesOf(name, context)
+                .filter((choice) => choice.label.toLocaleLowerCase().includes(q))
+                .slice(0, 20);
+            return json(200, { data });
         }
         if (segments.length === 1 && segments[0] === 'embeds' && method === 'GET') {
             const url = new URL(request.url, 'http://panneau.test').searchParams.get('url') ?? '';
@@ -604,7 +733,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                   });
         }
         if (segments.length === 1 && segments[0] === 'search' && method === 'GET') {
-            return search(url.searchParams);
+            return search(url.searchParams, inScope);
         }
         if (segments[0] === 'uploads') {
             return handleUploads(segments, method, readBody);
@@ -618,6 +747,8 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
         if (resource === undefined || list === undefined) {
             return problem(404, 'Resource not found.');
         }
+        // The items in the context: those that requests read and act on
+        const scoped = inScope(resource.id, list);
 
         if (segments.length === 2) {
             if (method === 'GET') {
@@ -625,7 +756,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                 const perPage = query.perPage ?? resource.list?.perPage ?? 20;
                 const page = query.page ?? 1;
                 const sort = query.sort ?? resource.list?.defaultSort?.split(',');
-                const matching = applyQuery(list, {
+                const matching = applyQuery(scoped, {
                     ...query,
                     ...(sort !== undefined ? { sort } : {}),
                 });
@@ -736,7 +867,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                 if (action?.dryRun !== true && actionId !== 'delete') {
                     return problem(400, 'This action does not support dry runs.');
                 }
-                const selected = selectItems(list, body.selection as Selection | undefined);
+                const selected = selectItems(scoped, body.selection as Selection | undefined);
                 const allowed = selected.filter((item) => allows(item, actionId));
                 const result: ActionResult = {
                     summary: {
@@ -755,7 +886,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                 return problem(404, 'Action not found.');
             }
             const selection = body.selection as Selection | undefined;
-            const selected = selectItems(list, selection);
+            const selected = selectItems(scoped, selection);
             const deleted = selected.filter((item) => allows(item, 'delete'));
             const skipped = selected.filter((item) => !deleted.includes(item));
             // The only item of an item action is an error, not a skipped result
@@ -788,7 +919,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
         }
 
         if (segments.length === 4 && segments[3] === 'duplicate' && segments[2] !== undefined) {
-            const current = list.find((item) => item.id === segments[2]);
+            const current = scoped.find((item) => item.id === segments[2]);
             if (current === undefined) {
                 return problem(404, 'Item not found.');
             }
@@ -810,7 +941,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
         }
 
         if (segments.length === 4 && segments[3] === 'preview' && segments[2] !== undefined) {
-            const current = list.find((item) => item.id === segments[2]);
+            const current = scoped.find((item) => item.id === segments[2]);
             if (current === undefined) {
                 return problem(404, 'Item not found.');
             }
@@ -831,7 +962,9 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             return problem(404, 'Not found.');
         }
         const id = segments[2];
-        const index = list.findIndex((item) => item.id === id);
+        const index = scoped.some((item) => item.id === id)
+            ? list.findIndex((item) => item.id === id)
+            : -1;
         const current = list[index];
         if (current === undefined) {
             return problem(404, 'Item not found.');
