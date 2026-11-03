@@ -87,6 +87,19 @@ export class InvalidResponseError extends Error {
     }
 }
 
+/**
+ * A request that got no answer: the browser is offline, or the server can't be reached (down,
+ * restarting, or a network in between that failed). The error of `fetch` is its `cause`. A
+ * request that was aborted rejects with the `AbortError` of its signal instead.
+ */
+export class NetworkError extends Error {
+    override readonly name: string = 'NetworkError';
+
+    constructor(message = 'The server could not be reached.', options?: ErrorOptions) {
+        super(message, options);
+    }
+}
+
 /** Creates the error that matches the status of a problem. */
 export function createApiError(problem: Problem, options?: ApiErrorOptions): ApiError {
     switch (problem.status) {

@@ -163,6 +163,40 @@ export const appMessages = {
         defaultMessage: 'This page doesn’t exist, or you can’t see it.',
     }),
     backHome: defineMessage({ id: 'panneau.app.backHome', defaultMessage: 'Back to home' }),
+    forbidden: defineMessage({ id: 'panneau.app.forbidden', defaultMessage: 'Access denied' }),
+    forbiddenText: defineMessage({
+        id: 'panneau.app.forbiddenText',
+        defaultMessage: 'You don’t have access to this page. Ask an administrator if you need it.',
+    }),
+    serverError: defineMessage({
+        id: 'panneau.app.serverError',
+        defaultMessage: 'Something went wrong',
+    }),
+    serverErrorText: defineMessage({
+        id: 'panneau.app.serverErrorText',
+        defaultMessage: 'The server ran into a problem. Try again in a moment.',
+    }),
+    pageError: defineMessage({
+        id: 'panneau.app.pageError',
+        defaultMessage: 'Something went wrong',
+    }),
+    pageErrorText: defineMessage({
+        id: 'panneau.app.pageErrorText',
+        defaultMessage: 'This page ran into a problem. Try again, or go back to the home page.',
+    }),
+    offline: defineMessage({ id: 'panneau.app.offline', defaultMessage: 'You’re offline' }),
+    offlineText: defineMessage({
+        id: 'panneau.app.offlineText',
+        defaultMessage: 'Check your connection. The page loads again once you’re back online.',
+    }),
+    unreachable: defineMessage({
+        id: 'panneau.app.unreachable',
+        defaultMessage: 'The server can’t be reached',
+    }),
+    unreachableText: defineMessage({
+        id: 'panneau.app.unreachableText',
+        defaultMessage: 'It may be down or restarting. Try again in a moment.',
+    }),
     missingPage: defineMessage<{ component: string }>({
         id: 'panneau.app.missingPage',
         defaultMessage: 'No plugin provides the page “{component}”.',

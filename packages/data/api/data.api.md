@@ -106,6 +106,13 @@ export function isApiError(error: unknown): error is ApiError;
 export type LoginCredentials = PasswordCredentials | TokenCredentials;
 
 // @public
+export class NetworkError extends Error {
+    constructor(message?: string, options?: ErrorOptions);
+    // (undocumented)
+    readonly name: string;
+}
+
+// @public
 export class NotFoundError extends ApiError {
     // (undocumented)
     readonly name: string;
