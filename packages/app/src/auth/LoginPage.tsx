@@ -1,12 +1,13 @@
 import { useState } from 'react';
 
-import type { LoginCredentials } from '@panneau/data';
+import type { LoginCredentials, TwoFactorAnswer } from '@panneau/data';
 import { appMessages } from '@panneau/intl';
 import type { Auth } from '@panneau/protocol';
 import { Alert, Button, Checkbox, LinkButton, TextInput, usePanneauIntl } from '@panneau/ui';
 
 import { AuthForm, AuthLayout } from './AuthLayout';
 import styles from './LoginPage.module.css';
+import { TwoFactorChallenge } from './TwoFactorChallenge';
 
 /** What the login page says above its forms, after another auth page sent the user to it. */
 export type LoginNotice = 'password-reset' | 'email-verified';
@@ -22,8 +23,13 @@ export interface LoginPageProps {
     notice?: LoginNotice;
     /** The email the password form starts with, such as that of a password that was reset. */
     email?: string;
-    /** Logs in. Rejects with a `ValidationError` for credentials the backend refuses. */
-    onLogIn: (credentials: LoginCredentials) => Promise<void>;
+    /**
+     * Logs in. Rejects with a `ValidationError` for credentials the backend refuses. Resolves with
+     * `'two-factor'` when the login waits for a second factor: the page then asks for it.
+     */
+    onLogIn: (credentials: LoginCredentials) => Promise<'two-factor' | void>;
+    /** Ends a login that waits for its second factor (decision 0049). */
+    onTwoFactorChallenge?: (answer: TwoFactorAnswer) => Promise<void>;
     /**
      * Asks for a link that resets the password of an address (decision 0048). With it, and
      * `auth.passwordReset`, the password form has a "Forgot your password?" link.
@@ -36,10 +42,11 @@ function PasswordForm({
     onEmailChange,
     onLogIn,
     onForgotPassword,
-}: Pick<LoginPageProps, 'onLogIn'> & {
+}: {
     email: string;
     onEmailChange: (email: string) => void;
     onForgotPassword: (() => void) | null;
+    onLogIn: (credentials: LoginCredentials) => Promise<unknown>;
 }) {
     const intl = usePanneauIntl();
     const [password, setPassword] = useState('');
@@ -49,7 +56,7 @@ function PasswordForm({
             fields={['email', 'password']}
             submitLabel={intl.formatMessage(appMessages.logIn)}
             errorMessage={intl.formatMessage(appMessages.logInError)}
-            onSubmit={() => onLogIn({ email, password, remember })}
+            onSubmit={() => onLogIn({ email, password, remember }).then(() => undefined)}
         >
             {(errors) => (
                 <>
@@ -100,7 +107,7 @@ function TokenForm({
             fields={['token']}
             submitLabel={intl.formatMessage(appMessages.logIn)}
             errorMessage={intl.formatMessage(appMessages.logInError)}
-            onSubmit={() => onLogIn({ token })}
+            onSubmit={() => onLogIn({ token }).then(() => undefined)}
         >
             {(errors) => (
                 <TextInput
@@ -200,10 +207,26 @@ export function LoginPage({
     email: initialEmail = '',
     onLogIn,
     onForgotPassword,
+    onTwoFactorChallenge,
 }: LoginPageProps) {
     const intl = usePanneauIntl();
     const [email, setEmail] = useState(initialEmail);
     const [forgot, setForgot] = useState(false);
+    const [challenge, setChallenge] = useState(false);
+    const logIn = async (credentials: LoginCredentials) => {
+        if ((await onLogIn(credentials)) === 'two-factor') {
+            setChallenge(true);
+        }
+    };
+    if (challenge && onTwoFactorChallenge !== undefined) {
+        return (
+            <TwoFactorChallenge
+                name={name}
+                onAnswer={onTwoFactorChallenge}
+                onBack={() => setChallenge(false)}
+            />
+        );
+    }
     const password = auth.password ?? auth.token === undefined;
     const canReset = password && auth.passwordReset === true && onForgotPassword !== undefined;
     if (forgot && canReset) {
@@ -224,12 +247,12 @@ export function LoginPage({
                 key="password"
                 email={email}
                 onEmailChange={setEmail}
-                onLogIn={onLogIn}
+                onLogIn={logIn}
                 onForgotPassword={canReset ? () => setForgot(true) : null}
             />
         ) : null,
         auth.token !== undefined ? (
-            <TokenForm key="token" token={auth.token} onLogIn={onLogIn} />
+            <TokenForm key="token" token={auth.token} onLogIn={logIn} />
         ) : null,
         providers.length > 0 ? (
             <div key="providers" className={styles.providers}>

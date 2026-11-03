@@ -40,7 +40,12 @@ function createBackend() {
         ],
     };
     // Password reset and email verification (decision 0048).
-    definition.auth = { mode: 'panneau', passwordReset: true, emailVerification: true };
+    definition.auth = {
+        mode: 'panneau',
+        passwordReset: true,
+        emailVerification: true,
+        twoFactor: true,
+    };
     return createMockBackend({
         definition,
         auth: { users: [{ email: 'ada@example.com', password: 'secret' }] },
@@ -254,6 +259,8 @@ describe('runConformance', () => {
             'auth.password-forgot': 'passed',
             'auth.password-reset': 'passed',
             'auth.email-verify': 'passed',
+            'account.two-factor': 'passed',
+            'auth.two-factor-challenge': 'passed',
         });
 
         // A backend that tells which addresses have an account, and accepts any token.
@@ -295,7 +302,10 @@ describe('runConformance', () => {
             plain.checks
                 .filter((check) => check.id.startsWith('auth.'))
                 .map((check) => check.status),
-        ).toEqual(['skipped', 'skipped', 'skipped']);
+        ).toEqual(['skipped', 'skipped', 'skipped', 'skipped']);
+        expect(plain.checks.find((check) => check.id === 'account.two-factor')?.status).toBe(
+            'skipped',
+        );
     });
 
     it('skips the write checks unless asked', async () => {
@@ -350,6 +360,7 @@ describe('runConformance', () => {
             'auth.password-forgot',
             'auth.password-reset',
             'auth.email-verify',
+            'auth.two-factor-challenge',
             'uploads.sign',
             'fields.check',
             'list.unknown-resource',

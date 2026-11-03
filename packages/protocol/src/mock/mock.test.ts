@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
 import { createDefinition } from '../__fixtures__/definition';
-import { EMAIL_UNVERIFIED_PROBLEM_TYPE } from '../constants';
+import { EMAIL_UNVERIFIED_PROBLEM_TYPE, TWO_FACTOR_REQUIRED_PROBLEM_TYPE } from '../constants';
 import { ListResponse } from '../schemas';
-import { type MockMail, createExampleDefinition, createMockBackend } from './index';
+import { type MockMail, type MockUser, createExampleDefinition, createMockBackend } from './index';
 
 function createBackend() {
     return createMockBackend({
@@ -847,6 +847,95 @@ describe('the auth of the mock backend', () => {
         expect((await post('auth/email/verify', { token: 'wrong' })).status).toBe(422);
         expect((await post('auth/email/verify', { token: mail?.token })).status).toBe(204);
         expect((await backend.fetch('/panneau/api/definition')).status).toBe(200);
+    });
+});
+
+describe('two-factor authentication in the mock backend', () => {
+    function createTwoFactorBackend(users: MockUser[]) {
+        const definition = createDefinition();
+        definition.auth = { mode: 'panneau', twoFactor: true };
+        return createMockBackend({ definition, auth: { users, loggedIn: null } });
+    }
+    const post = (backend: ReturnType<typeof createMockBackend>, path: string, body?: unknown) =>
+        backend.fetch(`/panneau/api/${path}`, json(body ?? {}, { method: 'POST' }));
+
+    it('asks for a code or a recovery code after the password', async () => {
+        const backend = createTwoFactorBackend([
+            {
+                email: 'ada@example.com',
+                password: 'secret',
+                twoFactor: true,
+                recoveryCodes: ['r1'],
+            },
+        ]);
+        const credentials = { email: 'ada@example.com', password: 'secret' };
+
+        expect((await post(backend, 'auth/two-factor/challenge', { code: '123456' })).status).toBe(
+            422,
+        );
+        const login = await post(backend, 'auth/login', credentials);
+        expect(login.status).toBe(202);
+        expect(await login.json()).toEqual({ twoFactor: true });
+        expect((await backend.fetch('/panneau/api/definition')).status).toBe(401);
+        expect((await post(backend, 'auth/two-factor/challenge', { code: '000000' })).status).toBe(
+            422,
+        );
+        expect((await post(backend, 'auth/two-factor/challenge', { code: '123456' })).status).toBe(
+            200,
+        );
+        expect((await backend.fetch('/panneau/api/definition')).status).toBe(200);
+
+        await post(backend, 'auth/logout');
+        await post(backend, 'auth/login', credentials);
+        const recovery = { recoveryCode: 'r1' };
+        expect((await post(backend, 'auth/two-factor/challenge', recovery)).status).toBe(200);
+        await post(backend, 'auth/logout');
+        await post(backend, 'auth/login', credentials);
+        // A recovery code logs in once
+        expect((await post(backend, 'auth/two-factor/challenge', recovery)).status).toBe(422);
+    });
+
+    it('sets it up, and refuses a user who must have it until then', async () => {
+        const backend = createTwoFactorBackend([
+            { email: 'ada@example.com', password: 'secret', twoFactorRequired: true },
+        ]);
+        const account = (init?: RequestInit, path = '') =>
+            backend.fetch(`/panneau/api/account/two-factor${path}`, init);
+
+        expect((await account()).status).toBe(401);
+        await post(backend, 'auth/login', { email: 'ada@example.com', password: 'secret' });
+        const refused = await backend.fetch('/panneau/api/definition');
+        expect(refused.status).toBe(403);
+        expect(await refused.json()).toMatchObject({ type: TWO_FACTOR_REQUIRED_PROBLEM_TYPE });
+        expect(await (await account()).json()).toEqual({ status: 'disabled', required: true });
+
+        expect((await account(undefined, '/recovery-codes')).status).toBe(404);
+        expect((await post(backend, 'account/two-factor/recovery-codes')).status).toBe(409);
+        const setup = await post(backend, 'account/two-factor');
+        expect(await setup.json()).toMatchObject({ secret: expect.any(String) });
+        expect(await (await account()).json()).toMatchObject({ status: 'pending' });
+        expect((await post(backend, 'account/two-factor/confirm', { code: '1' })).status).toBe(422);
+        const confirmed = await post(backend, 'account/two-factor/confirm', { code: '123456' });
+        const { recoveryCodes } = (await confirmed.json()) as { recoveryCodes: string[] };
+        expect(recoveryCodes).toHaveLength(8);
+        expect((await backend.fetch('/panneau/api/definition')).status).toBe(200);
+        // Required: it can't be turned off
+        expect((await account({ method: 'DELETE' })).status).toBe(409);
+    });
+
+    it('confirms the password of the user', async () => {
+        const backend = createTwoFactorBackend([{ email: 'ada@example.com', password: 'secret' }]);
+
+        expect((await post(backend, 'auth/password/confirm', { password: 'secret' })).status).toBe(
+            401,
+        );
+        await post(backend, 'auth/login', { email: 'ada@example.com', password: 'secret' });
+        expect((await post(backend, 'auth/password/confirm', { password: 'wrong' })).status).toBe(
+            422,
+        );
+        expect((await post(backend, 'auth/password/confirm', { password: 'secret' })).status).toBe(
+            204,
+        );
     });
 });
 

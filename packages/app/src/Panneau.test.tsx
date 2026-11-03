@@ -511,7 +511,7 @@ describe('Panneau', () => {
         });
     });
 
-    describe('password reset and email verification', () => {
+    describe('the auth pages: password reset, email verification, two-factor', () => {
         /** The app on the mock backend, with its users and the emails it "sends". */
         function renderWithBackend(
             auth: Auth,
@@ -639,6 +639,55 @@ describe('Panneau', () => {
             await user.click(screen.getByRole('button', { name: 'Continue' }));
             expect(await screen.findByRole('heading', { name: 'Test site' })).toBeInTheDocument();
             expect(window.location.pathname).toBe('/panneau');
+        });
+
+        it('asks for the second factor of a password login', async () => {
+            const user = userEvent.setup();
+            const { renderAt } = renderWithBackend(
+                { mode: 'panneau', twoFactor: true },
+                [{ ...ada, twoFactor: true, recoveryCodes: ['abcde-12345'] }],
+                { loggedIn: null },
+            );
+            renderAt('/panneau');
+            await user.type(await screen.findByLabelText(/^Email/), 'ada@example.com');
+            await user.type(screen.getByLabelText(/^Password/), 'secret');
+            await user.click(screen.getByRole('button', { name: 'Log in' }));
+
+            expect(
+                await screen.findByRole('heading', { name: 'Two-factor authentication' }),
+            ).toBeInTheDocument();
+            await user.type(screen.getByLabelText(/^Code/), '000000');
+            await user.click(screen.getByRole('button', { name: 'Verify' }));
+            expect(await screen.findByLabelText(/^Code/)).toHaveAccessibleDescription(
+                'This code is invalid.',
+            );
+            // A recovery code instead
+            await user.click(screen.getByRole('button', { name: 'Use a recovery code' }));
+            await user.type(screen.getByLabelText(/^Recovery code/), 'abcde-12345');
+            await user.click(screen.getByRole('button', { name: 'Verify' }));
+            expect(await screen.findByRole('heading', { name: 'Test site' })).toBeInTheDocument();
+        });
+
+        it('sets up the two-factor authentication that a user must have, then loads', async () => {
+            const user = userEvent.setup();
+            const { renderAt } = renderWithBackend({ mode: 'panneau', twoFactor: true }, [
+                { ...ada, twoFactorRequired: true },
+            ]);
+            renderAt('/panneau');
+            await user.click(
+                await screen.findByRole('button', { name: 'Set up two-factor authentication' }),
+            );
+            expect(await screen.findByText('JBSWY3DPEHPK3PXP')).toBeInTheDocument();
+            expect(
+                screen.getByRole('link', { name: 'Open in an authenticator app' }),
+            ).toHaveAttribute('href', expect.stringMatching(/^otpauth:\/\/totp\//));
+            await user.type(screen.getByLabelText(/^Code/), '123456');
+            await user.click(screen.getByRole('button', { name: 'Confirm' }));
+
+            const codes = await screen.findByRole('list', { name: 'Recovery codes' });
+            expect(within(codes).getAllByRole('listitem')).toHaveLength(8);
+            await user.click(screen.getByRole('button', { name: 'Done' }));
+            expect(await screen.findByRole('heading', { name: 'Test site' })).toBeInTheDocument();
         });
 
         it('says when a verification link is wrong', async () => {

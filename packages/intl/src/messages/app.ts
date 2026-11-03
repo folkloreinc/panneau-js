@@ -123,6 +123,110 @@ export const appMessages = {
         defaultMessage: 'This link is incomplete. Open the link of the email again.',
     }),
     continue: defineMessage({ id: 'panneau.app.continue', defaultMessage: 'Continue' }),
+    twoFactorTitle: defineMessage({
+        id: 'panneau.app.twoFactorTitle',
+        defaultMessage: 'Two-factor authentication',
+    }),
+    twoFactorCodeHelp: defineMessage({
+        id: 'panneau.app.twoFactorCodeHelp',
+        defaultMessage: 'Enter the code that your authenticator app shows.',
+    }),
+    twoFactorRecoveryHelp: defineMessage({
+        id: 'panneau.app.twoFactorRecoveryHelp',
+        defaultMessage: 'Enter one of your recovery codes. Each one works once.',
+    }),
+    authenticationCode: defineMessage({
+        id: 'panneau.app.authenticationCode',
+        defaultMessage: 'Code',
+    }),
+    recoveryCode: defineMessage({
+        id: 'panneau.app.recoveryCode',
+        defaultMessage: 'Recovery code',
+    }),
+    useRecoveryCode: defineMessage({
+        id: 'panneau.app.useRecoveryCode',
+        defaultMessage: 'Use a recovery code',
+    }),
+    useAuthenticationCode: defineMessage({
+        id: 'panneau.app.useAuthenticationCode',
+        defaultMessage: 'Use a code of the app',
+    }),
+    verify: defineMessage({
+        id: 'panneau.app.verify',
+        defaultMessage: 'Verify',
+    }),
+    twoFactorError: defineMessage({
+        id: 'panneau.app.twoFactorError',
+        defaultMessage: 'The code could not be checked. Try again.',
+    }),
+    setUpTwoFactor: defineMessage({
+        id: 'panneau.app.setUpTwoFactor',
+        defaultMessage: 'Set up two-factor authentication',
+    }),
+    twoFactorRequiredHelp: defineMessage({
+        id: 'panneau.app.twoFactorRequiredHelp',
+        defaultMessage: 'Your account needs two-factor authentication. Set it up with an authenticator app to continue.',
+    }),
+    twoFactorScan: defineMessage({
+        id: 'panneau.app.twoFactorScan',
+        defaultMessage: 'Scan the QR code with your authenticator app, or type the key, then enter the code it shows.',
+    }),
+    twoFactorQrCode: defineMessage({
+        id: 'panneau.app.twoFactorQrCode',
+        defaultMessage: 'QR code of the key',
+    }),
+    twoFactorKey: defineMessage({
+        id: 'panneau.app.twoFactorKey',
+        defaultMessage: 'Key',
+    }),
+    openInApp: defineMessage({
+        id: 'panneau.app.openInApp',
+        defaultMessage: 'Open in an authenticator app',
+    }),
+    confirm: defineMessage({
+        id: 'panneau.app.confirm',
+        defaultMessage: 'Confirm',
+    }),
+    cancel: defineMessage({
+        id: 'panneau.app.cancel',
+        defaultMessage: 'Cancel',
+    }),
+    done: defineMessage({
+        id: 'panneau.app.done',
+        defaultMessage: 'Done',
+    }),
+    recoveryCodes: defineMessage({
+        id: 'panneau.app.recoveryCodes',
+        defaultMessage: 'Recovery codes',
+    }),
+    recoveryCodesHelp: defineMessage({
+        id: 'panneau.app.recoveryCodesHelp',
+        defaultMessage: 'Keep these recovery codes somewhere safe: each one logs you in once if you lose your authenticator app. They won’t be shown again.',
+    }),
+    copyCodes: defineMessage({
+        id: 'panneau.app.copyCodes',
+        defaultMessage: 'Copy the codes',
+    }),
+    codesCopied: defineMessage({
+        id: 'panneau.app.codesCopied',
+        defaultMessage: 'Codes copied',
+    }),
+    twoFactorSetupError: defineMessage({
+        id: 'panneau.app.twoFactorSetupError',
+        defaultMessage: 'Two-factor authentication could not be set up. Try again.',
+    }),
+    passwordConfirmationTitle: defineMessage({
+        id: 'panneau.app.passwordConfirmationTitle',
+        defaultMessage: 'Confirm your password',
+    }),
+    passwordConfirmationHelp: defineMessage({
+        id: 'panneau.app.passwordConfirmationHelp',
+        defaultMessage: 'For your security, enter your password to continue.',
+    }),
+    passwordConfirmationError: defineMessage({
+        id: 'panneau.app.passwordConfirmationError',
+        defaultMessage: 'The password could not be confirmed. Try again.',
+    }),
     logOut: defineMessage({ id: 'panneau.app.logOut', defaultMessage: 'Log out' }),
     logOutError: defineMessage({
         id: 'panneau.app.logOutError',

@@ -26,8 +26,14 @@ if (theme !== null) {
 
 const definition = {
     ...createPlaygroundDefinition(),
-    // Panneau's own login, with its password reset and email verification (decision 0048)
-    auth: { mode: 'panneau' as const, passwordReset: true, emailVerification: true },
+    // Panneau's own login, with its password reset, email verification (decision 0048) and
+    // two-factor authentication (decision 0049)
+    auth: {
+        mode: 'panneau' as const,
+        passwordReset: true,
+        emailVerification: true,
+        twoFactor: true,
+    },
     ...(theme === 'flat' ? { theme: { extends: 'flat' } } : {}),
 };
 
@@ -45,12 +51,26 @@ function openMail({ kind, to, path }: MockMail) {
 
 const backend = createMockBackend({
     definition,
-    // Logged in as Ada. Log out to see the login page: Ada's password is "panneau", and Sam
-    // hasn't verified their address yet.
+    // Logged in as Ada. Log out to see the login page: every password is "panneau". Sam hasn't
+    // verified their address yet, Grace logs in with two-factor authentication (code 123456,
+    // or the recovery code grace-recovery), and Alan must set it up.
     auth: {
         users: [
             { email: 'ada@example.com', password: 'panneau', name: 'Ada Lovelace' },
             { email: 'sam@example.com', password: 'panneau', name: 'Sam', emailVerified: false },
+            {
+                email: 'grace@example.com',
+                password: 'panneau',
+                name: 'Grace Hopper',
+                twoFactor: true,
+                recoveryCodes: ['grace-recovery'],
+            },
+            {
+                email: 'alan@example.com',
+                password: 'panneau',
+                name: 'Alan Turing',
+                twoFactorRequired: true,
+            },
         ],
         onMail: openMail,
     },

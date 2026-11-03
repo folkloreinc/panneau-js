@@ -13,6 +13,7 @@ import {
     type DataAdapter,
     ForbiddenError,
     type LoginCredentials,
+    type TwoFactorAnswer,
     UnauthorizedError,
     isApiError,
 } from '@panneau/data';
@@ -26,6 +27,7 @@ import {
     CONTEXT_PROBLEM_TYPE,
     type Definition,
     EMAIL_UNVERIFIED_PROBLEM_TYPE,
+    TWO_FACTOR_REQUIRED_PROBLEM_TYPE,
     contextBefore,
     formatContextHeader,
     parseContextHeader,
@@ -36,6 +38,7 @@ import styles from './Panneau.module.css';
 import { Shell } from './Shell';
 import { type LoginNotice, LoginPage } from './auth/LoginPage';
 import { ResetPasswordPage } from './auth/ResetPasswordPage';
+import { TwoFactorRequiredPage } from './auth/TwoFactorRequiredPage';
 import { EmailVerificationLinkPage, VerifyEmailPage } from './auth/VerifyEmailPage';
 import {
     CurrentContextProvider,
@@ -291,11 +294,19 @@ function Content({
         setInlined(undefined);
         queryClient.removeQueries({ queryKey: queryKeys.all });
     };
-    const logIn = async (credentials: LoginCredentials) => {
-        await adapter.login(credentials);
+    const loggedIn = () => {
         forgetUser();
         setNotice(null);
         session.logIn();
+    };
+    const logIn = async (credentials: LoginCredentials) => {
+        const result = await adapter.login(credentials);
+        // The login waits for its second factor (decision 0049)
+        if ('twoFactor' in result && result.twoFactor === true) {
+            return 'two-factor' as const;
+        }
+        loggedIn();
+        return undefined;
     };
     // What the login page says after an auth page, and the email it starts with
     const [notice, setNotice] = useState<{ notice: LoginNotice; email?: string } | null>(null);
@@ -306,6 +317,8 @@ function Content({
         setNotice(next);
         navigate(home, { replace: true });
     };
+    const refusedType =
+        definitionQuery.error instanceof ForbiddenError ? definitionQuery.error.problem.type : null;
     const emailUnverified =
         definitionQuery.error instanceof ForbiddenError &&
         definitionQuery.error.problem.type === EMAIL_UNVERIFIED_PROBLEM_TYPE;
@@ -367,11 +380,39 @@ function Content({
                     {...(notice?.notice !== undefined ? { notice: notice.notice } : {})}
                     {...(notice?.email !== undefined ? { email: notice.email } : {})}
                     onLogIn={logIn}
+                    {...(adapter.twoFactorChallenge !== undefined
+                        ? {
+                              onTwoFactorChallenge: async (answer: TwoFactorAnswer) => {
+                                  await adapter.twoFactorChallenge?.(answer);
+                                  loggedIn();
+                              },
+                          }
+                        : {})}
                     {...(adapter.forgotPassword !== undefined
                         ? {
                               onForgotPassword: (email: string) =>
                                   adapter.forgotPassword?.(email) ?? Promise.resolve(),
                           }
+                        : {})}
+                />
+            ) : refusedType === TWO_FACTOR_REQUIRED_PROBLEM_TYPE &&
+              adapter.enableTwoFactor !== undefined &&
+              adapter.confirmTwoFactor !== undefined ? (
+                <TwoFactorRequiredPage
+                    onEnable={() =>
+                        adapter.enableTwoFactor?.() ?? Promise.reject(new Error('No setup.'))
+                    }
+                    onConfirm={(code) =>
+                        adapter.confirmTwoFactor?.(code) ?? Promise.reject(new Error('No setup.'))
+                    }
+                    onConfirmPassword={
+                        adapter.confirmPassword !== undefined
+                            ? (password) => adapter.confirmPassword?.(password) ?? Promise.resolve()
+                            : undefined
+                    }
+                    onDone={() => void definitionQuery.refetch()}
+                    {...(logOut !== undefined
+                        ? { onLogOut: () => void Promise.resolve(logOut()).catch(() => undefined) }
                         : {})}
                 />
             ) : emailUnverified ? (

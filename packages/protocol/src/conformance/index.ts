@@ -13,6 +13,7 @@ import {
     ListResponse,
     Problem,
     SearchResponse,
+    TwoFactorStatus,
     UploadSignResponse,
 } from '../schemas/api';
 import {
@@ -421,6 +422,41 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                     'Expected a message in `errors.token`.',
                 );
             }
+        },
+    );
+
+    // Two-factor authentication (decision 0049): the status of the user, and a challenge without a
+    // login that waits for it. Nothing about the user changes.
+    await run(
+        'account.two-factor',
+        'GET /account/two-factor gives the two-factor authentication of the user',
+        async (check) => {
+            if (auth()?.twoFactor !== true) {
+                check.skip('The definition has no `auth.twoFactor`.');
+                return;
+            }
+            const reply = await request('/account/two-factor');
+            if (check.expectStatus(reply, 200)) {
+                check.expectSchema(TwoFactorStatus, reply.body, 'The status');
+            }
+        },
+    );
+
+    await run(
+        'auth.two-factor-challenge',
+        'POST /auth/two-factor/challenge refuses a code without a login that waits for it',
+        async (check) => {
+            if (auth()?.twoFactor !== true) {
+                check.skip('The definition has no `auth.twoFactor`.');
+                return;
+            }
+            check.expectProblem(
+                await request('/auth/two-factor/challenge', {
+                    method: 'POST',
+                    body: JSON.stringify({ code: '000000' }),
+                }),
+                422,
+            );
         },
     );
 

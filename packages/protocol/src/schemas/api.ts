@@ -377,6 +377,37 @@ export const FieldCheckResponse = z
 
 export const Session = z.looseObject({ user: User });
 
+export const TwoFactorChallenge = z.looseObject({ twoFactor: z.literal(true) }).meta({
+    description:
+        'The answer of `POST /auth/login` when a second factor is needed: the login waits for `POST /auth/two-factor/challenge`.',
+});
+
+export const TwoFactorStatus = z
+    .looseObject({
+        status: z.enum(['disabled', 'pending', 'enabled']).meta({
+            description: '`pending`: set up, not confirmed with a code yet.',
+        }),
+        required: z.boolean().meta({
+            description: "The backend requires it for this user: it can't be turned off.",
+        }),
+    })
+    .meta({ description: 'The two-factor authentication of the current user.' });
+
+export const TwoFactorSetup = z
+    .looseObject({
+        secret: z.string().meta({ description: 'The secret, to type in an authenticator app.' }),
+        otpauthUrl: z.string().meta({ description: 'The `otpauth://totp/…` URL of the secret.' }),
+        qrCode: z.string().optional().meta({
+            description:
+                'An SVG document of the QR code of `otpauthUrl`. Clients show it as an image, never as markup.',
+        }),
+    })
+    .meta({ description: 'A two-factor authentication to confirm with a code.' });
+
+export const RecoveryCodes = z.looseObject({ recoveryCodes: z.array(z.string()) }).meta({
+    description: 'Codes that each log in once in place of a code of the authenticator app.',
+});
+
 export const ContextOptionsResponse = z
     .looseObject({ data: z.array(ContextOption) })
     .meta({ description: 'The first choices of a param of the context that match `q`.' });
@@ -456,6 +487,10 @@ export type MediaInfo = z.infer<typeof MediaInfo>;
 export type MediaItem = z.infer<typeof MediaItem>;
 export type MediaReference = z.infer<typeof MediaReference>;
 export type Session = z.infer<typeof Session>;
+export type TwoFactorChallenge = z.infer<typeof TwoFactorChallenge>;
+export type TwoFactorStatus = z.infer<typeof TwoFactorStatus>;
+export type TwoFactorSetup = z.infer<typeof TwoFactorSetup>;
+export type RecoveryCodes = z.infer<typeof RecoveryCodes>;
 export type SearchResponse = z.infer<typeof SearchResponse>;
 export type PreviewResponse = z.infer<typeof PreviewResponse>;
 export type EmbedValue = z.infer<typeof EmbedValue>;

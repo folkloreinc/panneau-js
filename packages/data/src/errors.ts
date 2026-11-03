@@ -75,6 +75,14 @@ export class RateLimitedError extends ApiError {
     }
 }
 
+/**
+ * `423`: the operation needs the password, which wasn't confirmed recently (decision 0049). Confirm
+ * it with `DataAdapter.confirmPassword()`, then run the operation again.
+ */
+export class PasswordConfirmationError extends ApiError {
+    override readonly name: string = 'PasswordConfirmationError';
+}
+
 /** A successful response whose body doesn't match the protocol. */
 export class InvalidResponseError extends Error {
     override readonly name: string = 'InvalidResponseError';
@@ -113,6 +121,8 @@ export function createApiError(problem: Problem, options?: ApiErrorOptions): Api
             return new ConflictError(problem, options);
         case 422:
             return new ValidationError(problem, options);
+        case 423:
+            return new PasswordConfirmationError(problem, options);
         case 429:
             return new RateLimitedError(problem, options);
         default:
