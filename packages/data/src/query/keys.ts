@@ -28,6 +28,7 @@ export const queryKeys = {
     /** The current user's account, and under it their two-factor authentication. */
     account: () => ['panneau', 'account'] as const,
     twoFactor: () => ['panneau', 'account', 'two-factor'] as const,
+    passkeys: () => ['panneau', 'account', 'passkeys'] as const,
     actionRuns: () => ['panneau', 'actions', 'runs'] as const,
     actionRun: (id: string) => ['panneau', 'actions', 'runs', id] as const,
 };

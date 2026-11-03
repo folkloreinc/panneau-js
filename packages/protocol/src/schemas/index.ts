@@ -22,6 +22,7 @@ import {
     MediaReference,
     MediaTransform,
     Pagination,
+    Passkey,
     PreviewResponse,
     Problem,
     RecoveryCodes,
@@ -37,6 +38,7 @@ import {
     UploadResponse,
     UploadSignRequest,
     UploadSignResponse,
+    WebAuthnOptions,
 } from './api';
 import { Abilities, Condition, Id, Option, RouteReference } from './common';
 import {
@@ -152,6 +154,8 @@ export const namedSchemas = {
     TwoFactorStatus,
     TwoFactorSetup,
     RecoveryCodes,
+    WebAuthnOptions,
+    Passkey,
     SearchResponse,
     ContextOptionsResponse,
     PreviewResponse,

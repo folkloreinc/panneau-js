@@ -34,6 +34,7 @@ const definition = {
         emailVerification: true,
         twoFactor: true,
         account: true,
+        passkeys: true,
     },
     ...(theme === 'flat' ? { theme: { extends: 'flat' } } : {}),
 };

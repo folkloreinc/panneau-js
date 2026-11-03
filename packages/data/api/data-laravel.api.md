@@ -16,6 +16,7 @@ import type { FieldCheckResponse } from '@panneau/protocol';
 import type { Item } from '@panneau/protocol';
 import type { ListQuery } from '@panneau/protocol';
 import type { ListResponse } from '@panneau/protocol';
+import type { Passkey } from '@panneau/protocol';
 import type { PreviewResponse } from '@panneau/protocol';
 import { Problem } from '@panneau/protocol';
 import type { RecoveryCodes } from '@panneau/protocol';
@@ -27,6 +28,7 @@ import type { TwoFactorStatus } from '@panneau/protocol';
 import type { Upload } from '@panneau/protocol';
 import type { UploadSignRequest } from '@panneau/protocol';
 import type { User } from '@panneau/protocol';
+import type { WebAuthnOptions } from '@panneau/protocol';
 
 // Warning: (ae-forgotten-export) The symbol "DataAdapter" needs to be exported by the entry point index.d.ts
 //

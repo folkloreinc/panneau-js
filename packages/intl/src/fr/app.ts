@@ -44,6 +44,21 @@ export const appFr: Record<string, string> = {
     'panneau.app.verifyLinkIncomplete':
         'Ce lien est incomplet. Ouvrez de nouveau le lien du courriel.',
     'panneau.app.continue': 'Continuer',
+    'panneau.app.logInWithPasskey': 'Se connecter avec une clé d’accès',
+    'panneau.app.passkeyLogInError':
+        'La connexion avec cette clé d’accès n’a pas pu se faire. Réessayez.',
+    'panneau.app.passkeys': 'Clés d’accès',
+    'panneau.app.passkeysHelp':
+        'Une clé d’accès vous connecte avec le verrouillage de votre appareil (une empreinte, votre visage, un NIP), sans mot de passe.',
+    'panneau.app.noPasskeys': 'Vous n’avez pas encore de clé d’accès.',
+    'panneau.app.passkeyNeverUsed': 'jamais utilisée',
+    'panneau.app.removePasskey': 'Retirer',
+    'panneau.app.addPasskey': 'Ajouter une clé d’accès',
+    'panneau.app.passkeyName': 'Nom de la clé d’accès',
+    'panneau.app.passkeyError': 'La clé d’accès n’a pas pu être enregistrée. Réessayez.',
+    'panneau.app.passkeyAdded': 'ajoutée le {date}',
+    'panneau.app.passkeyUsed': 'utilisée le {date}',
+    'panneau.app.removePasskeyNamed': 'Retirer la clé d’accès {name}',
     'panneau.app.account': 'Votre compte',
     'panneau.app.accountProfile': 'Profil',
     'panneau.app.name': 'Nom',

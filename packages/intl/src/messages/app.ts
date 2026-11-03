@@ -123,6 +123,50 @@ export const appMessages = {
         defaultMessage: 'This link is incomplete. Open the link of the email again.',
     }),
     continue: defineMessage({ id: 'panneau.app.continue', defaultMessage: 'Continue' }),
+    logInWithPasskey: defineMessage({
+        id: 'panneau.app.logInWithPasskey',
+        defaultMessage: 'Log in with a passkey',
+    }),
+    passkeyLogInError: defineMessage({
+        id: 'panneau.app.passkeyLogInError',
+        defaultMessage: 'You could not be logged in with this passkey. Try again.',
+    }),
+    passkeys: defineMessage({ id: 'panneau.app.passkeys', defaultMessage: 'Passkeys' }),
+    passkeysHelp: defineMessage({
+        id: 'panneau.app.passkeysHelp',
+        defaultMessage:
+            'A passkey logs you in with the lock of your device (a fingerprint, your face, a PIN), without a password.',
+    }),
+    noPasskeys: defineMessage({
+        id: 'panneau.app.noPasskeys',
+        defaultMessage: 'You have no passkeys yet.',
+    }),
+    passkeyNeverUsed: defineMessage({
+        id: 'panneau.app.passkeyNeverUsed',
+        defaultMessage: 'never used',
+    }),
+    removePasskey: defineMessage({ id: 'panneau.app.removePasskey', defaultMessage: 'Remove' }),
+    addPasskey: defineMessage({ id: 'panneau.app.addPasskey', defaultMessage: 'Add a passkey' }),
+    passkeyName: defineMessage({
+        id: 'panneau.app.passkeyName',
+        defaultMessage: 'Name of the passkey',
+    }),
+    passkeyError: defineMessage({
+        id: 'panneau.app.passkeyError',
+        defaultMessage: 'The passkey could not be saved. Try again.',
+    }),
+    passkeyAdded: defineMessage<{ date: string }>({
+        id: 'panneau.app.passkeyAdded',
+        defaultMessage: 'added on {date}',
+    }),
+    passkeyUsed: defineMessage<{ date: string }>({
+        id: 'panneau.app.passkeyUsed',
+        defaultMessage: 'last used on {date}',
+    }),
+    removePasskeyNamed: defineMessage<{ name: string }>({
+        id: 'panneau.app.removePasskeyNamed',
+        defaultMessage: 'Remove the passkey {name}',
+    }),
     account: defineMessage({ id: 'panneau.app.account', defaultMessage: 'Your account' }),
     accountProfile: defineMessage({ id: 'panneau.app.accountProfile', defaultMessage: 'Profile' }),
     name: defineMessage({ id: 'panneau.app.name', defaultMessage: 'Name' }),

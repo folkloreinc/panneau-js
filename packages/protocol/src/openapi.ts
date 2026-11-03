@@ -656,23 +656,93 @@ export function createOpenApiDocument(): JsonObject {
             },
             '/auth/passkeys/options': {
                 post: {
-                    operationId: 'passkeyOptions',
+                    operationId: 'passkeyLoginOptions',
+                    summary:
+                        'With `auth.passkeys`: the options of `navigator.credentials.get()`, for any passkey of the site.',
                     responses: {
-                        200: ok('WebAuthn request options.', {
-                            type: 'object',
-                            additionalProperties: true,
-                        }),
+                        200: ok('The options.', ref('WebAuthnOptions')),
+                        ...problems(429),
                     },
                 },
             },
             '/auth/passkeys/login': {
                 post: {
                     operationId: 'passkeyLogin',
+                    summary:
+                        'Logs in with the credential of a passkey, in the JSON form of the WebAuthn spec. It does not ask for a second factor.',
                     requestBody: {
                         required: true,
-                        content: json({ type: 'object', additionalProperties: true }),
+                        content: json({
+                            type: 'object',
+                            required: ['credential'],
+                            properties: {
+                                credential: { type: 'object', additionalProperties: true },
+                                remember: { type: 'boolean' },
+                            },
+                        }),
                     },
-                    responses: { 200: ok('Logged in.', ref('Session')), ...problems(422) },
+                    responses: {
+                        200: ok('Logged in.', ref('Session')),
+                        ...problems(422, 429),
+                    },
+                },
+            },
+            '/account/passkeys': {
+                get: {
+                    operationId: 'listPasskeys',
+                    responses: {
+                        200: ok('The passkeys of the current user.', {
+                            type: 'object',
+                            required: ['data'],
+                            properties: { data: { type: 'array', items: ref('Passkey') } },
+                        }),
+                        ...problems(401, 403),
+                    },
+                },
+                post: {
+                    operationId: 'addPasskey',
+                    summary:
+                        'Adds a passkey, with the credential of `navigator.credentials.create()` for the options of `POST /account/passkeys/options`.',
+                    requestBody: {
+                        required: true,
+                        content: json({
+                            type: 'object',
+                            required: ['name', 'credential'],
+                            properties: {
+                                name: { type: 'string' },
+                                credential: { type: 'object', additionalProperties: true },
+                            },
+                        }),
+                    },
+                    responses: {
+                        201: ok('The passkey.', {
+                            type: 'object',
+                            required: ['data'],
+                            properties: { data: ref('Passkey') },
+                        }),
+                        ...problems(401, 403, 422, 423),
+                    },
+                },
+            },
+            '/account/passkeys/options': {
+                post: {
+                    operationId: 'passkeyRegistrationOptions',
+                    summary:
+                        'The options of `navigator.credentials.create()`, for the current user.',
+                    responses: {
+                        200: ok('The options.', ref('WebAuthnOptions')),
+                        ...problems(401, 403, 423),
+                    },
+                },
+            },
+            '/account/passkeys/{passkey}': {
+                parameters: [pathParameter('passkey', 'The id of the passkey.')],
+                delete: {
+                    operationId: 'deletePasskey',
+                    responses: {
+                        204: ok('Removed.'),
+                        ...problems(401, 403, 404, 423),
+                    },
                 },
             },
             '/account': {

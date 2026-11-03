@@ -71,6 +71,10 @@ export interface MockUser {
     emailVerified?: boolean;
     id?: string;
     name?: string;
+    passkeys?: {
+        id: string;
+        name: string;
+    }[];
     // (undocumented)
     password: string;
     recoveryCodes?: string[];

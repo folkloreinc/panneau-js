@@ -64,7 +64,10 @@ export const Auth = z.looseObject({
         description:
             '`panneau`: two-factor authentication, which users set up through `/account/two-factor`, and which a password login asks for with a `202`.',
     }),
-    passkeys: z.boolean().optional(),
+    passkeys: z.boolean().optional().meta({
+        description:
+            '`panneau`: logins with a passkey (WebAuthn), which users add on the account page.',
+    }),
     emailVerification: z.boolean().optional().meta({
         description:
             "`panneau`: the backend refuses users whose email address isn't verified with a `403` problem of type `urn:panneau:problem:email-unverified`, and verifies it through `POST /auth/email/verification` and `POST /auth/email/verify`.",

@@ -4583,6 +4583,16 @@ export const namedSchemas: {
     RecoveryCodes: z.ZodObject<{
         recoveryCodes: z.ZodArray<z.ZodString>;
     }, z.core.$loose>;
+    WebAuthnOptions: z.ZodObject<{
+        options: z.ZodRecord<z.ZodString, z.ZodUnknown>;
+    }, z.core.$loose>;
+    Passkey: z.ZodObject<{
+        id: z.ZodString;
+        name: z.ZodString;
+        authenticator: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        createdAt: z.ZodString;
+        lastUsedAt: z.ZodNullable<z.ZodString>;
+    }, z.core.$loose>;
     SearchResponse: z.ZodObject<{
         data: z.ZodArray<z.ZodObject<{
             resource: z.ZodString;
@@ -4691,6 +4701,18 @@ export function parseRatio(ratio: string): number | null;
 
 // @public
 export type PartialTheme = Partial<Theme>;
+
+// @public (undocumented)
+export const Passkey: z.ZodObject<{
+    id: z.ZodString;
+    name: z.ZodString;
+    authenticator: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    createdAt: z.ZodString;
+    lastUsedAt: z.ZodNullable<z.ZodString>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type Passkey = z.infer<typeof Passkey>;
 
 // @public
 export const PASSWORD_CONFIRMATION_PROBLEM_TYPE = "urn:panneau:problem:password-confirmation";
@@ -5807,6 +5829,14 @@ export type ValidationResult<T> = {
     success: false;
     issues: ValidationIssue[];
 };
+
+// @public (undocumented)
+export const WebAuthnOptions: z.ZodObject<{
+    options: z.ZodRecord<z.ZodString, z.ZodUnknown>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type WebAuthnOptions = z.infer<typeof WebAuthnOptions>;
 
 // @public (undocumented)
 export const Widget: z.ZodObject<{

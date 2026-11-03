@@ -16,6 +16,7 @@ import type { FieldCheckResponse } from '@panneau/protocol';
 import type { Item } from '@panneau/protocol';
 import type { ListQuery } from '@panneau/protocol';
 import type { ListResponse } from '@panneau/protocol';
+import type { Passkey } from '@panneau/protocol';
 import type { PreviewResponse } from '@panneau/protocol';
 import { Problem } from '@panneau/protocol';
 import type { RecoveryCodes } from '@panneau/protocol';
@@ -28,6 +29,7 @@ import type { Upload } from '@panneau/protocol';
 import type { UploadSignRequest } from '@panneau/protocol';
 import type { User } from '@panneau/protocol';
 import type { ValidationIssue } from '@panneau/protocol';
+import type { WebAuthnOptions } from '@panneau/protocol';
 
 // @public
 export interface AccountValues {
@@ -76,12 +78,14 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter;
 
 // @public
 export interface DataAdapter {
+    addPasskey?(passkey: NewPasskey, options?: RequestOptions): Promise<Passkey>;
     cancelActionRun(id: string, options?: RequestOptions): Promise<void>;
     checkField?(resource: string, field: string, request: FieldCheckRequest, options?: RequestOptions): Promise<FieldCheckResponse>;
     confirmPassword?(password: string, options?: RequestOptions): Promise<void>;
     confirmTwoFactor?(code: string, options?: RequestOptions): Promise<RecoveryCodes>;
     create(resource: string, values: Values, options?: RequestOptions): Promise<Item>;
     delete(resource: string, id: string, options?: RequestOptions): Promise<void>;
+    deletePasskey?(id: string, options?: RequestOptions): Promise<void>;
     disableTwoFactor?(options?: RequestOptions): Promise<void>;
     duplicate?(resource: string, id: string, options?: RequestOptions): Promise<Item>;
     enableTwoFactor?(options?: RequestOptions): Promise<TwoFactorSetup>;
@@ -98,8 +102,12 @@ export interface DataAdapter {
     getWidgetData(widget: string, options?: RequestOptions): Promise<unknown>;
     list(resource: string, query?: ListQuery, options?: RequestOptions): Promise<ListResponse>;
     listActionRuns(options?: RequestOptions): Promise<ActionRun[]>;
+    listPasskeys?(options?: RequestOptions): Promise<Passkey[]>;
     login(credentials: LoginCredentials, options?: RequestOptions): Promise<LoginResult>;
     logout(options?: RequestOptions): Promise<void>;
+    passkeyLogin?(login: PasskeyLogin, options?: RequestOptions): Promise<Session>;
+    passkeyLoginOptions?(options?: RequestOptions): Promise<WebAuthnOptions>;
+    passkeyRegistrationOptions?(options?: RequestOptions): Promise<WebAuthnOptions>;
     presignedUploads?(options?: {
         endpoint?: string;
     }): PresignedUploads;
@@ -149,9 +157,25 @@ export class NetworkError extends Error {
 }
 
 // @public
+export interface NewPasskey {
+    // (undocumented)
+    credential: WebAuthnCredential;
+    // (undocumented)
+    name: string;
+}
+
+// @public
 export class NotFoundError extends ApiError {
     // (undocumented)
     readonly name: string;
+}
+
+// @public
+export interface PasskeyLogin {
+    // (undocumented)
+    credential: WebAuthnCredential;
+    // (undocumented)
+    remember?: boolean;
 }
 
 // @public
@@ -277,6 +301,9 @@ export class ValidationError extends ApiError {
 
 // @public
 export type Values = Record<string, unknown>;
+
+// @public
+export type WebAuthnCredential = Record<string, unknown>;
 
 // (No @packageDocumentation comment for this package)
 

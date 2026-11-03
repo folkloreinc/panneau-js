@@ -26,6 +26,11 @@ export interface MockUser {
     recoveryCodes?: string[];
     /** Whether the backend requires two-factor authentication for the user. Defaults to false. */
     twoFactorRequired?: boolean;
+    /**
+     * The passkeys of the user, for `auth.passkeys`: the `id` of their credential, and a name. The
+     * mock doesn't check signatures: a credential with one of these ids logs in.
+     */
+    passkeys?: { id: string; name: string }[];
 }
 
 /** An email that the mock backend "sends", with the path of its link under the app's base path. */
@@ -64,6 +69,15 @@ interface Account {
     twoFactor: TwoFactorStatus['status'];
     recoveryCodes: string[];
     twoFactorRequired: boolean;
+    passkeys: StoredPasskey[];
+}
+
+interface StoredPasskey {
+    id: string;
+    credentialId: string;
+    name: string;
+    createdAt: string;
+    lastUsedAt: string | null;
 }
 
 /** The secret that the mock backend gives every two-factor setup. */
@@ -99,6 +113,21 @@ function randomToken(): string {
     ).join('');
 }
 
+/** Text in base64url, without padding, as WebAuthn's JSON form has binary values. */
+function base64Url(text: string): string {
+    return btoa(text).replace(/=+$/, '').replace(/\+/g, '-').replace(/\//g, '_');
+}
+
+/** A credential in the JSON form of the WebAuthn spec: the mock only reads its id. */
+function isCredential(value: unknown): value is { id: string } {
+    return (
+        value !== null &&
+        typeof value === 'object' &&
+        typeof (value as Record<string, unknown>).id === 'string' &&
+        (value as Record<string, unknown>).id !== ''
+    );
+}
+
 function recoveryCodes(): string[] {
     return Array.from(
         { length: 8 },
@@ -122,6 +151,7 @@ export interface MockAuth {
 }
 
 export function createMockAuth(options: MockAuthOptions, settings: Auth | undefined): MockAuth {
+    let nextPasskey = 1;
     const accounts: Account[] = options.users.map((user, index) => ({
         id: user.id ?? String(index + 1),
         name: user.name ?? user.email,
@@ -131,6 +161,13 @@ export function createMockAuth(options: MockAuthOptions, settings: Auth | undefi
         twoFactor: user.twoFactor === true ? 'enabled' : 'disabled',
         recoveryCodes: [...(user.recoveryCodes ?? [])],
         twoFactorRequired: user.twoFactorRequired ?? false,
+        passkeys: (user.passkeys ?? []).map((passkey) => ({
+            id: String(nextPasskey++),
+            credentialId: passkey.id,
+            name: passkey.name,
+            createdAt: new Date(0).toISOString(),
+            lastUsedAt: null,
+        })),
     }));
     const code = options.twoFactorCode ?? '123456';
     // A password login that waits for its second factor
@@ -223,6 +260,36 @@ export function createMockAuth(options: MockAuthOptions, settings: Auth | undefi
             return password === current.password
                 ? json(204, null)
                 : invalid({ password: ['The password is incorrect.'] });
+        };
+    }
+    if (settings?.passkeys === true) {
+        routes['POST passkeys/options'] = () =>
+            Promise.resolve(
+                json(200, {
+                    options: {
+                        challenge: randomToken(),
+                        timeout: 60000,
+                        userVerification: 'preferred',
+                        allowCredentials: [],
+                    },
+                }),
+            );
+        routes['POST passkeys/login'] = async (body) => {
+            const { credential } = await body();
+            const id = isCredential(credential) ? credential.id : null;
+            const account = accounts.find((candidate) =>
+                candidate.passkeys.some((passkey) => passkey.credentialId === id),
+            );
+            const passkey = account?.passkeys.find((candidate) => candidate.credentialId === id);
+            if (account === undefined || passkey === undefined) {
+                return invalid({
+                    credential: ['This passkey isn’t known. It may have been removed.'],
+                });
+            }
+            passkey.lastUsedAt = new Date().toISOString();
+            pending = null;
+            current = account;
+            return json(200, { user: userOf(account) });
         };
     }
     if (settings?.passwordReset === true) {
@@ -362,6 +429,71 @@ export function createMockAuth(options: MockAuthOptions, settings: Auth | undefi
             return json(204, null);
         },
     };
+    const passkeyOf = ({ id, name, createdAt, lastUsedAt }: StoredPasskey) => ({
+        id,
+        name,
+        authenticator: null,
+        createdAt,
+        lastUsedAt,
+    });
+    const passkeyRoutes = async (
+        account: Account,
+        method: string,
+        segments: string[],
+        body: () => Promise<Values>,
+    ): Promise<Response> => {
+        const [, second] = segments;
+        if (method === 'GET' && second === undefined) {
+            return json(200, { data: account.passkeys.map(passkeyOf) });
+        }
+        if (method === 'POST' && second === 'options') {
+            return json(200, {
+                options: {
+                    challenge: randomToken(),
+                    rp: { name: 'Panneau' },
+                    user: {
+                        id: base64Url(account.id),
+                        name: account.email,
+                        displayName: account.name,
+                    },
+                    pubKeyCredParams: [
+                        { type: 'public-key', alg: -7 },
+                        { type: 'public-key', alg: -257 },
+                    ],
+                    authenticatorSelection: {
+                        residentKey: 'required',
+                        userVerification: 'preferred',
+                    },
+                    excludeCredentials: account.passkeys.map((passkey) => ({
+                        type: 'public-key',
+                        id: passkey.credentialId,
+                    })),
+                    timeout: 60000,
+                },
+            });
+        }
+        if (method === 'POST' && second === undefined) {
+            const { name, credential } = await body();
+            if (!isCredential(credential)) {
+                return invalid({ credential: ['This passkey could not be added. Try again.'] });
+            }
+            const passkey: StoredPasskey = {
+                id: String(nextPasskey++),
+                credentialId: credential.id,
+                name: typeof name === 'string' && name.trim() !== '' ? name : 'Passkey',
+                createdAt: new Date().toISOString(),
+                lastUsedAt: null,
+            };
+            account.passkeys.push(passkey);
+            return json(201, { data: passkeyOf(passkey) });
+        }
+        const index = account.passkeys.findIndex((passkey) => passkey.id === second);
+        if (method === 'DELETE' && segments.length === 2 && index !== -1) {
+            account.passkeys.splice(index, 1);
+            return json(204, null);
+        }
+        return problem(404, 'Not found.');
+    };
     const refuseUnverified = (account: Account) =>
         settings?.emailVerification === true && !account.emailVerified
             ? problem(403, 'Your email address is not verified.', {
@@ -373,11 +505,18 @@ export function createMockAuth(options: MockAuthOptions, settings: Auth | undefi
         user: () => (current !== null ? userOf(current) : null),
         account: (segments, method, readBody) => {
             const twoFactor = segments[0] === 'two-factor' && settings?.twoFactor === true;
-            if (!twoFactor && settings?.account !== true) {
+            const passkeys = segments[0] === 'passkeys' && settings?.passkeys === true;
+            if (!twoFactor && !passkeys && settings?.account !== true) {
                 return null;
             }
             if (current === null) {
                 return Promise.resolve(problem(401, 'Unauthenticated.'));
+            }
+            if (passkeys) {
+                const refusedPasskeys = refuse();
+                return refusedPasskeys !== null
+                    ? Promise.resolve(refusedPasskeys)
+                    : passkeyRoutes(current, method, segments, readBody);
             }
             const refused = twoFactor ? refuseUnverified(current) : refuse();
             const route = twoFactor

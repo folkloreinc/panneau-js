@@ -18,6 +18,7 @@ import type { Item } from '@panneau/protocol';
 import { JSX } from 'react';
 import type { ListQuery } from '@panneau/protocol';
 import type { ListResponse } from '@panneau/protocol';
+import type { Passkey } from '@panneau/protocol';
 import type { PreviewResponse } from '@panneau/protocol';
 import type { QueryClient } from '@tanstack/react-query';
 import { QueryKey } from '@tanstack/react-query';
@@ -35,6 +36,7 @@ import { UseMutationResult } from '@tanstack/react-query';
 import { UseQueryOptions } from '@tanstack/react-query';
 import { UseQueryResult } from '@tanstack/react-query';
 import type { User } from '@panneau/protocol';
+import type { WebAuthnOptions } from '@panneau/protocol';
 
 // @public
 export function DataAdapterProvider(input: DataAdapterProviderProps): JSX.Element;
@@ -82,6 +84,7 @@ export const queryKeys: {
     search: (q: string, options?: SearchKeyOptions) => readonly ["panneau", "search", string, SearchKeyOptions];
     account: () => readonly ["panneau", "account"];
     twoFactor: () => readonly ["panneau", "account", "two-factor"];
+    passkeys: () => readonly ["panneau", "account", "passkeys"];
     actionRuns: () => readonly ["panneau", "actions", "runs"];
     actionRun: (id: string) => readonly ["panneau", "actions", "runs", string];
 };
