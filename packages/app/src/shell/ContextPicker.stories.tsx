@@ -1,5 +1,5 @@
 /**
- * The current context (decision 0043): a field per param, at the top of the sidebar, with inline
+ * The current context (decision 0045): a field per param, at the top of the sidebar, with inline
  * choices or choices searched through the adapter. Picking a value loads the app for it.
  */
 import type { Meta, StoryObj } from '@storybook/react-vite';

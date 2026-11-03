@@ -139,7 +139,7 @@ export type RichTextStyleElement = (typeof RICH_TEXT_STYLE_ELEMENTS)[number];
 /**
  * The first segments of the client routes under `basePath` that Panneau keeps for itself
  * (decision 0019). A param of the context can't be named like one: the context is a prefix of
- * the routes, `{basePath}/{name}/{value}/…` (decision 0043).
+ * the routes, `{basePath}/{name}/{value}/…` (decision 0045).
  */
 export const RESERVED_ROUTE_SEGMENTS = [
     'resources',
@@ -150,7 +150,7 @@ export const RESERVED_ROUTE_SEGMENTS = [
     'auth',
 ] as const;
 
-/** The request header that carries the values of the current context (decision 0043). */
+/** The request header that carries the values of the current context (decision 0045). */
 export const CONTEXT_HEADER = 'Panneau-Context';
 
 /** The type of the `403` problem of a value of the context that the user can't use. */

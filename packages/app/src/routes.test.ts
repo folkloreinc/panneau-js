@@ -66,7 +66,7 @@ describe('routes', () => {
     });
 });
 
-describe('the context in the path (decision 0043)', () => {
+describe('the context in the path (decision 0045)', () => {
     const names = ['client', 'contest'];
 
     it('is a prefix of the routes, in the order of the params', () => {

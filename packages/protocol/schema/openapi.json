@@ -3645,7 +3645,7 @@
                     "label"
                 ],
                 "additionalProperties": {},
-                "description": "A param of the current context (decision 0043)."
+                "description": "A param of the current context (decision 0045)."
             },
             "DefinitionContext": {
                 "type": "object",
@@ -3663,7 +3663,7 @@
                     "params"
                 ],
                 "additionalProperties": {},
-                "description": "The current context the user picks in the app, sent with every request in the `Panneau-Context` header (decision 0043)."
+                "description": "The current context the user picks in the app, sent with every request in the `Panneau-Context` header (decision 0045)."
             },
             "ThemeTokens": {
                 "type": "object",

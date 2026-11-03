@@ -73,7 +73,7 @@ function renderApp(
 
 const navigation = () => within(screen.getByRole('navigation', { name: 'Main navigation' }));
 
-describe('the current context (decision 0043)', () => {
+describe('the current context (decision 0045)', () => {
     beforeEach(() => {
         window.history.replaceState(null, '', '/panneau');
         window.localStorage.clear();

@@ -134,7 +134,7 @@ export const ContextParam = z
             .optional()
             .meta({ description: 'The label of `value`, for the picker.' }),
     })
-    .meta({ description: 'A param of the current context (decision 0043).' });
+    .meta({ description: 'A param of the current context (decision 0045).' });
 
 export const DefinitionContext = z
     .looseObject({
@@ -145,7 +145,7 @@ export const DefinitionContext = z
     })
     .meta({
         description:
-            'The current context the user picks in the app, sent with every request in the `Panneau-Context` header (decision 0043).',
+            'The current context the user picks in the app, sent with every request in the `Panneau-Context` header (decision 0045).',
     });
 
 export const Widget = z.looseObject({

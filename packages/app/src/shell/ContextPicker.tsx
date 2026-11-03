@@ -101,7 +101,7 @@ export interface ContextPickerProps {
 }
 
 /**
- * The fields of the params of the current context (decision 0043), each one with its choices,
+ * The fields of the params of the current context (decision 0045), each one with its choices,
  * inline or searched. Picking a value loads the app for it. Renders nothing without a context.
  */
 export function ContextPicker({ missing = false, className }: ContextPickerProps) {

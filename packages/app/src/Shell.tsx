@@ -80,7 +80,7 @@ function DefinitionPage({
 }
 
 function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) {
-    // A required param of the context without a value: every route asks for it (decision 0043)
+    // A required param of the context without a value: every route asks for it (decision 0045)
     if (
         definition.context?.params.some(
             ({ required, value }) => required === true && (value ?? null) === null,

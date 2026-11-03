@@ -9,7 +9,7 @@ import styles from './ContextPage.module.css';
 
 /**
  * The page in place of every route while a required param of the context has no value
- * (decision 0043): the fields to pick it, and the params before it.
+ * (decision 0045): the fields to pick it, and the params before it.
  */
 export function ContextPage() {
     const intl = usePanneauIntl();

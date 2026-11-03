@@ -110,7 +110,7 @@ export function navigate(path: string, { replace = false }: { replace?: boolean 
 
 /**
  * Loads a page with a navigation of the browser, rather than in place: for another context of the
- * app (decision 0043), whose state starts over.
+ * app (decision 0045), whose state starts over.
  */
 export function loadPage(url: string, { replace = false }: { replace?: boolean } = {}) {
     if (replace) {

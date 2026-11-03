@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useEffectEvent, useMemo, useState, useSyncExternalStore } from 'react';
+import { useEffect, useEffectEvent, useState, useSyncExternalStore } from 'react';
 
 import {
     type PanneauPlugin,
@@ -27,6 +27,7 @@ import {
     type Definition,
     contextBefore,
     formatContextHeader,
+    parseContextHeader,
 } from '@panneau/protocol';
 import { type NamedIconLoader, PanneauRoot, usePanneauIntl } from '@panneau/ui';
 
@@ -153,18 +154,24 @@ function Content({
     // logout in the app, the definition is fetched.
     const [inlined, setInlined] = useState(config.definition);
 
-    // The current context (decision 0043): its values are a prefix of the path, and every request
+    // The current context (decision 0045): its values are a prefix of the path, and every request
     // sends them. The names of its params don't depend on the values: those of the last definition.
     const pathname = usePathname();
     const [names, setNames] = useState(() => getContextNames(config.definition));
     const url = matchContext(pathname, config.basePath, names);
     const contextKey = formatContextHeader(url.values, names);
     // One adapter per context, kept from render to render: hooks and sources depend on it.
-    const scoped = useMemo(
-        () => (contextKey === '' ? adapter : withContext(adapter, url.values)),
-        // eslint-disable-next-line react-hooks/exhaustive-deps -- the key stands for the values
-        [adapter, contextKey],
-    );
+    const [bound, setBound] = useState(() => ({
+        key: contextKey,
+        adapter: withContext(adapter, url.values),
+    }));
+    if (bound.key !== contextKey) {
+        setBound({
+            key: contextKey,
+            adapter: withContext(adapter, parseContextHeader(contextKey)),
+        });
+    }
+    const scoped = bound.key === contextKey ? bound.adapter : adapter;
     const definitionQuery = useQuery({
         // `definitionQueryOptions()`, with the values of the context in the key
         queryKey: [...queryKeys.definition(), contextKey],
@@ -213,20 +220,19 @@ function Content({
             loadPage(refusedPath, { replace: true });
         }
     }, [switched, refusedPath]);
+    // The backend chose values the path hasn't: the path gets them, in place.
+    const putChosenValues = useEffectEvent(() => {
+        queryClient.setQueryData([...queryKeys.definition(), appliedKey], definition);
+        const rest = window.location.pathname.slice(url.basePath.length);
+        navigate(
+            `${normalizeBase(config.basePath)}${contextPath(applied, names)}${rest}${window.location.search}${window.location.hash}`,
+            { replace: true },
+        );
+    });
     useEffect(() => {
-        if (!shownDefinition || status !== 'active') {
-            return;
+        if (shownDefinition && status === 'active' && appliedKey !== contextKey) {
+            putChosenValues();
         }
-        if (appliedKey !== contextKey) {
-            // The backend chose values the path hasn't: the path gets them, in place.
-            queryClient.setQueryData([...queryKeys.definition(), appliedKey], definition);
-            const rest = window.location.pathname.slice(url.basePath.length);
-            navigate(
-                `${normalizeBase(config.basePath)}${contextPath(applied, names)}${rest}${window.location.search}${window.location.hash}`,
-                { replace: true },
-            );
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps -- once per definition shown
     }, [shownDefinition, appliedKey, contextKey, status]);
 
     const currentContext: CurrentContextValue | null =

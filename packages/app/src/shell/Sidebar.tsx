@@ -85,7 +85,7 @@ export interface SidebarProps {
 }
 
 /**
- * The main navigation, as a column: the site, the current context (decision 0043), the links of
+ * The main navigation, as a column: the site, the current context (decision 0045), the links of
  * the `main` menu of the definition, and the user, with the buttons of the appearance and of the
  * logout. Collapsed, it is a rail of icons, as in the sidebars of recent browsers.
  */

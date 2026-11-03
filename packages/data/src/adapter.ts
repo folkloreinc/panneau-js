@@ -158,7 +158,7 @@ export interface DataAdapter {
 
     /**
      * The same adapter, sending the values of the current context in the `Panneau-Context` header
-     * with every request (decision 0043). Optional: the app needs it when the definition has
+     * with every request (decision 0045). Optional: the app needs it when the definition has
      * `context`.
      */
     withContext?(values: ContextValues): DataAdapter;

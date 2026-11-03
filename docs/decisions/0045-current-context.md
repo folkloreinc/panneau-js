@@ -1,4 +1,4 @@
-# 0043: A current context, picked in the app and sent with every request
+# 0045: A current context, picked in the app and sent with every request
 
 - Status: proposed
 - Date: 2026-11-03

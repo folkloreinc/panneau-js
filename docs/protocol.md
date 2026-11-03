@@ -322,7 +322,7 @@ Built-in actions use reserved ids:
 
 ### Context
 
-`context` declares a current context that the user picks in the app, such as a client and a contest ([decisions/0043](decisions/0043-current-context.md)). The client sends its values with every request, and the definition is built for them:
+`context` declares a current context that the user picks in the app, such as a client and a contest ([decisions/0045](decisions/0045-current-context.md)). The client sends its values with every request, and the definition is built for them:
 
 ```jsonc
 "context": {
@@ -568,7 +568,7 @@ A field with `"check": true`, at the top of a resource, checks its value with th
 
 ### Context header
 
-When the definition has `context`, the client sends the values of its params in a `Panneau-Context` header, on every request, in the format of a query string, in order: `Panneau-Context: client=4&contest=12` ([decisions/0043](decisions/0043-current-context.md)).
+When the definition has `context`, the client sends the values of its params in a `Panneau-Context` header, on every request, in the format of a query string, in order: `Panneau-Context: client=4&contest=12` ([decisions/0045](decisions/0045-current-context.md)).
 
 - The backend checks each value for the user. A value the user can't use is a `403` problem of type `urn:panneau:problem:context`, with the refused `param`. Names it doesn't know are ignored.
 - `GET /definition` is built for the values. Without a value for a required param, the backend may choose one and say it in `value`.

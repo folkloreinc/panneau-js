@@ -142,7 +142,7 @@ export function createBootConfigJsonSchema(): JsonObject {
     };
 }
 
-/** The `Panneau-Context` header, which every operation takes (decision 0043). */
+/** The `Panneau-Context` header, which every operation takes (decision 0045). */
 const contextHeader: JsonObject = {
     name: CONTEXT_HEADER,
     in: 'header',

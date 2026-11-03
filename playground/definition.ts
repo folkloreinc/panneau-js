@@ -303,7 +303,7 @@ export function createPlaygroundDefinition(): DefinitionInput {
         },
         auth: { mode: 'external', loginUrl: null },
         user: { id: '1', name: 'Ada Lovelace', email: 'ada@example.com' },
-        // The current context (decision 0043): a publication, then one of its desks, searched
+        // The current context (decision 0045): a publication, then one of its desks, searched
         // through `GET /context/desk/options`. Articles are kept to the publication.
         context: {
             params: [

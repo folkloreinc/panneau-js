@@ -3,7 +3,7 @@ import { createContext, use } from 'react';
 import type { ContextOption, ContextParam, Definition } from '@panneau/protocol';
 
 /**
- * The current context of the app (decision 0043): the params of the definition, with the values
+ * The current context of the app (decision 0045): the params of the definition, with the values
  * it was built for, how to search the choices of a param, and how to go to other values.
  */
 export interface CurrentContextValue {

@@ -92,7 +92,7 @@ export function routePath(
 
 /**
  * The prefix of the routes for the values of the context, in the order of `names`:
- * `/client/4/contest/12`, or `` without values (decision 0043).
+ * `/client/4/contest/12`, or `` without values (decision 0045).
  */
 export function contextPath(values: Readonly<Record<string, string>>, names: readonly string[]) {
     return names

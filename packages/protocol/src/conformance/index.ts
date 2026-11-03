@@ -34,7 +34,7 @@ export interface ConformanceOptions {
     /** Resource to test. Defaults to the first resource of the definition. */
     resource?: string;
     /**
-     * Values of the context (decision 0043), sent in `Panneau-Context` with every request: for a
+     * Values of the context (decision 0045), sent in `Panneau-Context` with every request: for a
      * backend whose resources need a value of a required param. The checks of the context use
      * them too, and the first choice of each param without one.
      */
@@ -244,7 +244,7 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
         );
     });
 
-    // The context (decision 0043): the choices of its params, a definition built for a value,
+    // The context (decision 0045): the choices of its params, a definition built for a value,
     // and a value that doesn't exist refused with a 403.
     const contextParams = () => (definition as Definition | null)?.context?.params ?? [];
     let contextValue: { name: string; value: string } | null = null;

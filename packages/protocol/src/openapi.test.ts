@@ -83,7 +83,7 @@ describe('OpenAPI document', () => {
         expect(missing).toEqual([]);
     });
 
-    it('takes the Panneau-Context header on every path (decision 0043)', () => {
+    it('takes the Panneau-Context header on every path (decision 0045)', () => {
         const paths = Object.values(document.paths as Record<string, { parameters?: unknown[] }>);
         paths.forEach((item) =>
             expect(item.parameters).toContainEqual({ $ref: '#/components/parameters/Context' }),

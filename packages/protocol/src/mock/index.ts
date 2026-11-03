@@ -46,14 +46,14 @@ export interface MockBackendOptions {
      */
     embed?: (url: string) => EmbedValue | null;
     /**
-     * The current context, when the definition has `context` (decision 0043). The values of the
+     * The current context, when the definition has `context` (decision 0045). The values of the
      * `Panneau-Context` header are checked against the choices of each param: a value that isn't
      * one is a `403` problem.
      */
     context?: MockContextOptions;
 }
 
-/** How the mock backend answers the context of its definition (decision 0043). */
+/** How the mock backend answers the context of its definition (decision 0045). */
 export interface MockContextOptions {
     /**
      * Every choice of a param without inline `options`, for the values of the params before it.

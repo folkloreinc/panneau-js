@@ -24,7 +24,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0016](0016-migration-strategy.md)            | Clean break, maintained old lines, Niche as pilot                      | Accepted                          |
 | [0017](0017-actions.md)                       | Actions on items, selections and resources                             | Amended by 0040                   |
 | [0018](0018-new-packages-next-to-v4.md)       | New packages next to the v4 code, which moves to `legacy/`             | Accepted                          |
-| [0019](0019-app-entry.md)                     | The app entry: boot config, mount function and client routes           | Amended by 0036, 0037, 0038, 0043 |
+| [0019](0019-app-entry.md)                     | The app entry: boot config, mount function and client routes           | Amended by 0036, 0037, 0038, 0045 |
 | [0020](0020-default-theme-and-icons.md)       | A sober default theme, and Lucide as the only icon set                 | Amended by 0036                   |
 | [0021](0021-forms-render-core-state.md)       | Forms render the form state of the engine                              | Accepted                          |
 | [0022](0022-lists-render-core-state.md)       | Lists render the list state of the engine                              | Accepted                          |
@@ -47,4 +47,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0039](0039-cursor-pagination.md)             | Lists paged with cursors                                               | Accepted                          |
 | [0040](0040-row-links-and-open-mode.md)       | Built-in item actions by abilities, and what opens an item             | Accepted                          |
 | [0041](0041-groups-in-item-details.md)        | The panel of an item shows the values of its groups                    | Accepted                          |
-| [0043](0043-current-context.md)               | A current context, picked in the app and sent with every request       | Proposed                          |
+| [0045](0045-current-context.md)               | A current context, picked in the app and sent with every request       | Proposed                          |
