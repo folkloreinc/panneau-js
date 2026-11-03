@@ -128,8 +128,14 @@ export function TelField({
             }}
             onBlur={() => {
                 setDraft(null);
-                // A value as typed becomes E.164 when it reads as a number of the country.
-                if (isString(value) && parsePhone(value) === null) {
+                // A value as typed becomes E.164 when it reads as a number of the country, unless
+                // the field can't be changed.
+                if (
+                    readOnly !== true &&
+                    disabled !== true &&
+                    isString(value) &&
+                    parsePhone(value) === null
+                ) {
                     emit(readPhone(value, country).value);
                 }
                 onBlur?.();

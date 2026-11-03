@@ -93,6 +93,24 @@ describe('TelField', () => {
         expect(input).toHaveValue('(514) 555-0199');
     });
 
+    it('keeps a value as typed when it is read-only', async () => {
+        const onChange = vi.fn();
+        renderField(
+            <TelField
+                label="Phone"
+                country="CA"
+                value="514 555-0199"
+                onChange={onChange}
+                readOnly
+            />,
+        );
+        const input = screen.getByRole('textbox', { name: 'Phone' });
+        await userEvent.click(input);
+        await userEvent.tab();
+        expect(onChange).not.toHaveBeenCalled();
+        expect(input).toHaveValue('514 555-0199');
+    });
+
     it('reads the same digits in the country picked', async () => {
         const { input, onChange, picker } = renderTel(null, 'FR');
         await userEvent.type(input, '2025550123');
