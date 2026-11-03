@@ -89,6 +89,7 @@ export function ComboBox({
     isLoading = false,
     emptyMessage,
     isRequired,
+    isReadOnly,
     menuTrigger = 'focus',
     className,
     labelClassName,
@@ -115,6 +116,7 @@ export function ComboBox({
             menuTrigger={menuTrigger}
             allowsEmptyCollection
             isRequired={isRequired}
+            isReadOnly={isReadOnly}
             isInvalid={invalid}
             validationBehavior="aria"
             className={cx('panneau-combo-box', fieldStyles.field, className)}
@@ -125,6 +127,7 @@ export function ComboBox({
             <Group
                 className={cx(fieldStyles.control, styles.control, controlClassName)}
                 data-invalid={invalid || undefined}
+                isReadOnly={isReadOnly}
             >
                 {prefix !== undefined && prefix !== null ? (
                     <span className={cx(fieldStyles.adornment, styles.prefix)} aria-hidden="true">
@@ -137,12 +140,14 @@ export function ComboBox({
                         <Spinner size="sm" />
                     </span>
                 ) : null}
-                <Button
-                    className={styles.button}
-                    aria-label={intl.formatMessage(messages.showOptions)}
-                >
-                    <Icon icon={ChevronDown} />
-                </Button>
+                {isReadOnly === true ? null : (
+                    <Button
+                        className={styles.button}
+                        aria-label={intl.formatMessage(messages.showOptions)}
+                    >
+                        <Icon icon={ChevronDown} />
+                    </Button>
+                )}
             </Group>
             <FieldDescription className={descriptionClassName}>{description}</FieldDescription>
             <FieldErrors errors={errors} className={errorsClassName} />

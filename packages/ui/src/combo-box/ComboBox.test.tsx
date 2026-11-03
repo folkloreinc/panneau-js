@@ -69,6 +69,12 @@ describe('ComboBox', () => {
         expect(await screen.findByRole('option', { name: 'Canada' })).toHaveTextContent('🇨🇦');
     });
 
+    it('draws a read-only control as read-only, without its button', () => {
+        render(<ComboBox label="Country" items={[]} isReadOnly />);
+        expect(screen.getByRole('combobox').parentElement).toHaveAttribute('data-readonly', 'true');
+        expect(screen.queryByRole('button', { name: /Show options/ })).toBeNull();
+    });
+
     it('shows a spinner while loading', () => {
         render(<ComboBox label="Author" items={[]} isLoading />);
         expect(screen.getByRole('progressbar')).toBeInTheDocument();

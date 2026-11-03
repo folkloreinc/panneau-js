@@ -2,6 +2,11 @@
     padding-inline-end: 0;
 }
 
+/* Without its button, a read-only control keeps the padding of a text input. */
+.control.control[data-readonly] {
+    padding-inline-end: var(--panneau-input-padding-x, var(--panneau-control-padding-x));
+}
+
 .button {
     display: flex;
     align-items: center;

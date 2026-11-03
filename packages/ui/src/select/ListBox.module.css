@@ -155,7 +155,12 @@
 }
 
 .bareTrigger[data-disabled] {
-    cursor: not-allowed;
+    cursor: default;
+}
+
+/* A select that can't be changed, inside a control that can't either: its value alone. */
+.bareTrigger[data-disabled] .chevron {
+    display: none;
 }
 
 .value[data-placeholder] {
