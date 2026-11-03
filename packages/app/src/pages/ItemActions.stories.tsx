@@ -72,9 +72,13 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        await expect(canvas.getByRole('link', { name: 'Jobs' })).toHaveAttribute(
-            'href',
-            '/admin/pages/jobs?project=prj_1',
+        const jobs = canvas.getByRole('link', { name: 'Jobs' });
+        await expect(jobs).toHaveAttribute('href', '/admin/pages/jobs?project=prj_1');
+        // A link looks like the buttons beside it
+        const disable = canvas.getByRole('button', { name: 'Disable' });
+        await expect(jobs.className).toBe(disable.className);
+        await expect(jobs.getBoundingClientRect().height).toBe(
+            disable.getBoundingClientRect().height,
         );
         // The item doesn't allow it
         await expect(canvas.queryByRole('button', { name: 'Enable' })).not.toBeInTheDocument();

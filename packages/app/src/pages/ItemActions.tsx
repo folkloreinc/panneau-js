@@ -1,15 +1,12 @@
 import { ExternalLink } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-aria-components';
 
 import { type ActionOutcome, type ActionTarget, useActionRunner } from '@panneau/actions';
 import type { ItemAction } from '@panneau/core';
 import { getActionLabel, listsMessages } from '@panneau/intl';
 import { ConfirmDialog, type ListActionEvent, getActionIcon } from '@panneau/lists';
 import type { Action, Item } from '@panneau/protocol';
-import { Button, Icon, usePanneauIntl, useToast } from '@panneau/ui';
-
-import styles from './pages.module.css';
+import { Button, LinkButton, usePanneauIntl, useToast } from '@panneau/ui';
 
 export interface ItemActionsProps {
     /** The id of the resource. */
@@ -93,16 +90,15 @@ export function ItemActions({
                 const external = href !== null && isExternal(href);
                 const icon = external ? ExternalLink : getActionIcon(action);
                 return href !== null ? (
-                    <Link
+                    <LinkButton
                         key={action.id}
                         href={href}
-                        target={external ? '_blank' : undefined}
-                        rel={external ? 'noopener noreferrer' : undefined}
-                        className={styles.actionLink}
+                        variant={action.destructive === true ? 'danger' : 'secondary'}
+                        {...(icon !== undefined ? { icon } : {})}
+                        external={external}
                     >
-                        {icon !== undefined ? <Icon icon={icon} size="sm" /> : null}
                         {label}
-                    </Link>
+                    </LinkButton>
                 ) : (
                     <Button
                         key={action.id}

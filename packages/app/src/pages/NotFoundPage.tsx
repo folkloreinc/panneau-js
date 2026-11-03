@@ -1,8 +1,7 @@
 import { appMessages } from '@panneau/intl';
-import { Heading, usePanneauIntl } from '@panneau/ui';
+import { Heading, LinkButton, usePanneauIntl } from '@panneau/ui';
 
 import { useDocumentTitle } from '../documentTitle';
-import { LinkButton } from './PageHeader';
 import styles from './pages.module.css';
 
 export interface NotFoundPageProps {
@@ -17,7 +16,9 @@ export function NotFoundPage({ homeHref }: NotFoundPageProps) {
         <div className={styles.center}>
             <Heading level={1}>{intl.formatMessage(appMessages.notFound)}</Heading>
             <p className={styles.intro}>{intl.formatMessage(appMessages.notFoundText)}</p>
-            <LinkButton href={homeHref}>{intl.formatMessage(appMessages.backHome)}</LinkButton>
+            <LinkButton href={homeHref} variant="primary">
+                {intl.formatMessage(appMessages.backHome)}
+            </LinkButton>
         </div>
     );
 }

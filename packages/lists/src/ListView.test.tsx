@@ -454,6 +454,27 @@ describe('ListView', () => {
         expect(screen.getByRole('link', { name: 'View: Blog' })).toBeInTheDocument();
     });
 
+    it('opens the row links that leave the admin in a new tab', () => {
+        renderList(
+            <ListView
+                list={createList()}
+                columns={columns}
+                items={pages}
+                actions={[showLink, editLink]}
+                getLinkHref={(action, item) =>
+                    action.id === 'show'
+                        ? `https://example.com/pages/${item.id}`
+                        : `/edit/${item.id}`
+                }
+                selectable={false}
+            />,
+        );
+        const view = screen.getByRole('link', { name: 'View: About us' });
+        expect(view).toHaveAttribute('target', '_blank');
+        expect(view).toHaveAttribute('rel', 'noopener noreferrer');
+        expect(screen.getByRole('link', { name: 'Edit: About us' })).not.toHaveAttribute('target');
+    });
+
     it('leaves out the built-in links that nothing resolves', () => {
         renderList(
             <ListView

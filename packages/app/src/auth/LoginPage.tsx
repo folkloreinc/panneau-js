@@ -3,10 +3,17 @@ import { type FormEvent, type ReactNode, useState } from 'react';
 import { type LoginCredentials, ValidationError } from '@panneau/data';
 import { appMessages } from '@panneau/intl';
 import type { Auth } from '@panneau/protocol';
-import { Alert, Button, Checkbox, Heading, TextInput, usePanneauIntl } from '@panneau/ui';
+import {
+    Alert,
+    Button,
+    Checkbox,
+    Heading,
+    LinkButton,
+    TextInput,
+    usePanneauIntl,
+} from '@panneau/ui';
 
 import { useDocumentTitle } from '../documentTitle';
-import { LinkButton } from '../pages/PageHeader';
 import styles from './LoginPage.module.css';
 
 export interface LoginPageProps {
@@ -161,7 +168,7 @@ export function LoginPage({ auth, name, sessionEnded = false, onLogIn }: LoginPa
         providers.length > 0 ? (
             <div key="providers" className={styles.providers}>
                 {providers.map((provider) => (
-                    <LinkButton key={provider.id} href={provider.url ?? ''}>
+                    <LinkButton key={provider.id} href={provider.url ?? ''} variant="primary">
                         {intl.formatMessage(appMessages.logInWith, { provider: provider.label })}
                     </LinkButton>
                 ))}

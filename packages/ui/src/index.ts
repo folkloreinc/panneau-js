@@ -16,9 +16,11 @@ export {
     Button,
     type ButtonAppearance,
     type ButtonProps,
+    type ButtonStyleProps,
     type ButtonVariant,
     type ButtonVariants,
 } from './button/Button';
+export { LinkButton, type LinkButtonProps } from './button/LinkButton';
 export { Card, type CardProps } from './card/Card';
 export { CommandPalette, type CommandPaletteProps } from './command-palette/CommandPalette';
 export {

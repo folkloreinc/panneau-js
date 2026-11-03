@@ -7,7 +7,7 @@ import { useResourceItem, useResourceList } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
 import { ListView, getPagingProps } from '@panneau/lists';
 import type { RouteReference } from '@panneau/protocol';
-import { Icon, usePanneauIntl } from '@panneau/ui';
+import { LinkButton, usePanneauIntl } from '@panneau/ui';
 
 import { cx } from '../cx';
 import { useDocumentTitle } from '../documentTitle';
@@ -15,7 +15,7 @@ import { navigate } from '../location';
 import { capitalize } from '../navigation';
 import { routePath } from '../routes';
 import { ItemPanel } from './ItemPanel';
-import { LinkButton, PageHeader } from './PageHeader';
+import { PageHeader } from './PageHeader';
 import { filterActions, useItemActionRunner } from './itemActionRunner';
 import { createLinkResolver, getItemPath, opensInForm } from './itemLinks';
 import { getItemTitle } from './itemTitle';
@@ -96,7 +96,8 @@ export function ResourceListPage({
                                 { name: 'resource.create', resource: resource.id },
                                 basePath,
                             )}
-                            icon={<Icon icon={Plus} size="md" />}
+                            variant="primary"
+                            icon={Plus}
                         >
                             {intl.formatMessage(appMessages.create, {
                                 resource: resource.label.singular,

@@ -1,11 +1,7 @@
-import { Link } from 'react-aria-components';
-
 import { getActionLabel } from '@panneau/intl';
 import type { Action } from '@panneau/protocol';
-import { Button, Icon, usePanneauIntl } from '@panneau/ui';
+import { Button, LinkButton, usePanneauIntl } from '@panneau/ui';
 
-import { cx } from '../cx';
-import styles from './Actions.module.css';
 import { type ActionIcons, getActionIcon } from './icons';
 
 export interface ActionButtonProps {
@@ -22,6 +18,11 @@ export interface ActionButtonProps {
     'aria-label'?: string;
 }
 
+/** Whether a link leaves the admin: it opens in a new tab. */
+function isExternal(href: string): boolean {
+    return /^https?:\/\//.test(href);
+}
+
 /** An action as a button, or as a link for a `link` action with a URL. */
 export function ActionButton({
     action,
@@ -36,22 +37,26 @@ export function ActionButton({
     const intl = usePanneauIntl();
     const icon = getActionIcon(action, icons);
     const label = getActionLabel(action, intl);
+    // Small actions sit in rows, as ghost buttons; others beside the buttons of a toolbar.
+    const variant = action.destructive === true ? 'danger' : size === 'sm' ? 'ghost' : 'secondary';
     if (href !== null) {
         return (
-            <Link
+            <LinkButton
                 href={href}
+                size={size}
+                variant={variant}
+                {...(icon !== undefined ? { icon } : {})}
+                external={isExternal(href)}
                 aria-label={ariaLabel}
-                className={cx(styles.link, size === 'md' && styles.linkMd)}
             >
-                {icon !== undefined ? <Icon icon={icon} size="sm" /> : null}
                 {label}
-            </Link>
+            </LinkButton>
         );
     }
     return (
         <Button
             size={size}
-            variant={action.destructive === true ? 'danger' : size === 'sm' ? 'ghost' : 'secondary'}
+            variant={variant}
             {...(icon !== undefined ? { icon } : {})}
             isPending={isPending}
             isDisabled={isDisabled}
