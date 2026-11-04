@@ -165,13 +165,10 @@ export const Field = z
             description: 'Display used in lists, when it differs from the default one of the type.',
         }),
         get fields(): z.ZodOptional<z.ZodArray<typeof Field>> {
-            return z
-                .array(Field)
-                .optional()
-                .meta({
-                    description:
-                        '`group` and `repeater`: the nested fields. `credits`: the fields of each credit.',
-                });
+            return z.array(Field).optional().meta({
+                description:
+                    '`group` and `repeater`: the nested fields. `credits`: the fields of each credit.',
+            });
         },
         get types(): z.ZodOptional<z.ZodArray<typeof BlockType>> {
             return z
