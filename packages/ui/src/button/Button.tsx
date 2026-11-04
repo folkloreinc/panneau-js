@@ -64,6 +64,8 @@ export interface ButtonStyleProps {
 
 export interface ButtonProps
     extends ButtonStyleProps, Omit<AriaButtonProps, 'className' | 'style' | 'children'> {
+    /** The keys that do what the button does, such as `Control+Enter`. */
+    'aria-keyshortcuts'?: string;
     children?: ReactNode;
     className?: string;
     style?: CSSProperties;

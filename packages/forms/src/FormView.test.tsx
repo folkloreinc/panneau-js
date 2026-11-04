@@ -145,7 +145,8 @@ function Editor({
     values,
     onSubmit,
     ...props
-}: Omit<FormViewProps, 'form'> & {
+}: Omit<FormViewProps, 'form' | 'fields'> & {
+    fields: Field[];
     values?: Record<string, unknown>;
     onSubmit: (values: Record<string, unknown>) => Promise<unknown>;
 }) {
@@ -167,7 +168,7 @@ describe('FormView keyboard shortcut', () => {
     });
 
     it('saves with Ctrl Enter from a text area, and says so on the submit button', async () => {
-        const onSubmit = vi.fn(async () => undefined);
+        const onSubmit = vi.fn(async (_values: Record<string, unknown>) => undefined);
         renderForm(<Editor fields={fields} components={components} onSubmit={onSubmit} />);
         expect(screen.getByRole('button', { name: 'Save' })).toHaveAttribute(
             'aria-keyshortcuts',
@@ -185,7 +186,7 @@ describe('FormView keyboard shortcut', () => {
 
     it('saves with ⌘ Enter on Apple platforms, and not with Ctrl Enter', async () => {
         vi.spyOn(navigator, 'platform', 'get').mockReturnValue('MacIntel');
-        const onSubmit = vi.fn(async () => undefined);
+        const onSubmit = vi.fn(async (_values: Record<string, unknown>) => undefined);
         renderForm(<Editor fields={fields} components={components} onSubmit={onSubmit} />);
         expect(screen.getByRole('button', { name: 'Save' })).toHaveAttribute(
             'aria-keyshortcuts',
@@ -198,7 +199,7 @@ describe('FormView keyboard shortcut', () => {
     });
 
     it('saves from the rich text editor, without adding a line break', async () => {
-        const onSubmit = vi.fn(async () => undefined);
+        const onSubmit = vi.fn(async (_values: Record<string, unknown>) => undefined);
         renderForm(<Editor fields={fields} components={components} onSubmit={onSubmit} />);
         const body = await screen.findByRole('textbox', { name: 'Body' });
         await userEvent.click(body);
@@ -210,7 +211,7 @@ describe('FormView keyboard shortcut', () => {
     });
 
     it('leaves the keys of a dialog opened by a field to that dialog', async () => {
-        const onSubmit = vi.fn(async () => undefined);
+        const onSubmit = vi.fn(async (_values: Record<string, unknown>) => undefined);
         renderForm(<Editor fields={fields} components={components} onSubmit={onSubmit} />);
         await userEvent.click(screen.getByRole('button', { name: 'Edit notes' }));
         const dialog = await screen.findByRole('dialog', { name: 'Notes' });
