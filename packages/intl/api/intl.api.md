@@ -113,6 +113,25 @@ export const appMessages: {
     verifyEmailError: PanneauMessage<Record<never, never>>;
     verifyLinkIncomplete: PanneauMessage<Record<never, never>>;
     continue: PanneauMessage<Record<never, never>>;
+    logInWithPasskey: PanneauMessage<Record<never, never>>;
+    passkeyLogInError: PanneauMessage<Record<never, never>>;
+    passkeys: PanneauMessage<Record<never, never>>;
+    passkeysHelp: PanneauMessage<Record<never, never>>;
+    noPasskeys: PanneauMessage<Record<never, never>>;
+    passkeyNeverUsed: PanneauMessage<Record<never, never>>;
+    removePasskey: PanneauMessage<Record<never, never>>;
+    addPasskey: PanneauMessage<Record<never, never>>;
+    passkeyName: PanneauMessage<Record<never, never>>;
+    passkeyError: PanneauMessage<Record<never, never>>;
+    passkeyAdded: PanneauMessage<    {
+    date: string;
+    }>;
+    passkeyUsed: PanneauMessage<    {
+    date: string;
+    }>;
+    removePasskeyNamed: PanneauMessage<    {
+    name: string;
+    }>;
     account: PanneauMessage<Record<never, never>>;
     accountProfile: PanneauMessage<Record<never, never>>;
     name: PanneauMessage<Record<never, never>>;

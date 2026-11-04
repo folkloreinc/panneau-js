@@ -988,6 +988,49 @@ describe('the account in the mock backend', () => {
     });
 });
 
+describe('passkeys in the mock backend', () => {
+    it('adds a passkey, logs in with it, and removes it', async () => {
+        const definition = createDefinition();
+        definition.auth = { mode: 'panneau', account: true, passkeys: true };
+        const backend = createMockBackend({
+            definition,
+            auth: { users: [{ email: 'ada@example.com', password: 'secret' }] },
+        });
+        const api = (path: string, init?: RequestInit) =>
+            backend.fetch(`/panneau/api/${path}`, init);
+        const post = (path: string, body?: unknown) =>
+            api(path, json(body ?? {}, { method: 'POST' }));
+
+        const creation = (await (await post('account/passkeys/options')).json()) as {
+            options: { challenge: string; user: { id: string } };
+        };
+        expect(creation.options.user.id).toBe('MQ');
+        expect((await post('account/passkeys', { name: 'Laptop' })).status).toBe(422);
+        const added = await post('account/passkeys', {
+            name: 'Laptop',
+            credential: { id: 'cred-1', type: 'public-key', response: {} },
+        });
+        expect(added.status).toBe(201);
+        expect(await (await api('account/passkeys')).json()).toMatchObject({
+            data: [{ id: '1', name: 'Laptop', lastUsedAt: null }],
+        });
+
+        await post('auth/logout');
+        const request = (await (await post('auth/passkeys/options')).json()) as {
+            options: { challenge: string };
+        };
+        expect(request.options.challenge).toEqual(expect.any(String));
+        expect((await post('auth/passkeys/login', { credential: { id: 'other' } })).status).toBe(
+            422,
+        );
+        expect((await post('auth/passkeys/login', { credential: { id: 'cred-1' } })).status).toBe(
+            200,
+        );
+        expect((await api('account/passkeys/1', { method: 'DELETE' })).status).toBe(204);
+        expect(await (await api('account/passkeys')).json()).toEqual({ data: [] });
+    });
+});
+
 describe('createExampleDefinition', () => {
     it('is a valid definition', async () => {
         const { validateDefinition } = await import('../validate');

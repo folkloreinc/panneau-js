@@ -404,6 +404,30 @@ export const TwoFactorSetup = z
     })
     .meta({ description: 'A two-factor authentication to confirm with a code.' });
 
+export const WebAuthnOptions = z
+    .looseObject({
+        options: z.record(z.string(), z.unknown()).meta({
+            description:
+                'The options of `navigator.credentials.get()` or `create()`, in the JSON form of the WebAuthn spec.',
+        }),
+    })
+    .meta({ description: 'The options of a WebAuthn ceremony.' });
+
+export const Passkey = z
+    .looseObject({
+        id: Id,
+        name: z.string(),
+        authenticator: z.string().nullable().optional().meta({
+            description: 'What keeps it, when the backend knows: "iCloud Keychain", "1Password"…',
+        }),
+        createdAt: z.string().meta({ description: 'ISO 8601.' }),
+        lastUsedAt: z
+            .string()
+            .nullable()
+            .meta({ description: 'ISO 8601, or null before its first login.' }),
+    })
+    .meta({ description: 'A passkey of the current user.' });
+
 export const RecoveryCodes = z.looseObject({ recoveryCodes: z.array(z.string()) }).meta({
     description: 'Codes that each log in once in place of a code of the authenticator app.',
 });
@@ -491,6 +515,8 @@ export type TwoFactorChallenge = z.infer<typeof TwoFactorChallenge>;
 export type TwoFactorStatus = z.infer<typeof TwoFactorStatus>;
 export type TwoFactorSetup = z.infer<typeof TwoFactorSetup>;
 export type RecoveryCodes = z.infer<typeof RecoveryCodes>;
+export type WebAuthnOptions = z.infer<typeof WebAuthnOptions>;
+export type Passkey = z.infer<typeof Passkey>;
 export type SearchResponse = z.infer<typeof SearchResponse>;
 export type PreviewResponse = z.infer<typeof PreviewResponse>;
 export type EmbedValue = z.infer<typeof EmbedValue>;

@@ -99,6 +99,24 @@ export const ProfileOnly: Story = {
     },
 };
 
+/** Passkeys: their names, what keeps them, when they were added and used. */
+export const Passkeys: Story = {
+    args: {
+        auth: { mode: 'panneau', account: true, passkeys: true },
+        users: [{ ...ada, passkeys: [{ id: 'cred-1', name: 'MacBook' }] }],
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const list = await canvas.findByRole('list', { name: 'Passkeys' });
+        await expect(within(list).getByText('MacBook')).toBeVisible();
+        await expect(within(list).getByText(/never used/)).toBeVisible();
+        await expect(
+            canvas.getByRole('button', { name: 'Remove the passkey MacBook' }),
+        ).toBeVisible();
+        await expect(canvas.getByLabelText(/^Name of the passkey/)).toBeVisible();
+    },
+};
+
 /** While the account loads: the skeleton of its forms. */
 export const Loading: Story = {
     args: {

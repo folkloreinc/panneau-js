@@ -40,6 +40,7 @@ import { type LoginNotice, LoginPage } from './auth/LoginPage';
 import { ResetPasswordPage } from './auth/ResetPasswordPage';
 import { TwoFactorRequiredPage } from './auth/TwoFactorRequiredPage';
 import { EmailVerificationLinkPage, VerifyEmailPage } from './auth/VerifyEmailPage';
+import { getPasskey } from './auth/webauthn';
 import {
     CurrentContextProvider,
     type CurrentContextValue,
@@ -380,6 +381,20 @@ function Content({
                     {...(notice?.notice !== undefined ? { notice: notice.notice } : {})}
                     {...(notice?.email !== undefined ? { email: notice.email } : {})}
                     onLogIn={logIn}
+                    {...(adapter.passkeyLoginOptions !== undefined &&
+                    adapter.passkeyLogin !== undefined
+                        ? {
+                              onPasskeyLogIn: async () => {
+                                  const request = await adapter.passkeyLoginOptions?.();
+                                  if (request === undefined) {
+                                      return;
+                                  }
+                                  const credential = await getPasskey(request.options);
+                                  await adapter.passkeyLogin?.({ credential });
+                                  loggedIn();
+                              },
+                          }
+                        : {})}
                     {...(adapter.twoFactorChallenge !== undefined
                         ? {
                               onTwoFactorChallenge: async (answer: TwoFactorAnswer) => {

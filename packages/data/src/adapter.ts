@@ -11,6 +11,7 @@ import type {
     Item,
     ListQuery,
     ListResponse,
+    Passkey,
     PreviewResponse,
     RecoveryCodes,
     SearchResponse,
@@ -19,6 +20,7 @@ import type {
     TwoFactorSetup,
     TwoFactorStatus,
     User,
+    WebAuthnOptions,
 } from '@panneau/protocol';
 
 import type { PresignedUploads } from './uploads';
@@ -86,6 +88,24 @@ export interface AccountValues {
 export interface PasswordChange {
     currentPassword: string;
     password: string;
+}
+
+/**
+ * A credential of `navigator.credentials.get()` or `create()`, in the JSON form of the WebAuthn
+ * spec (`credential.toJSON()`), which the backend checks (decision 0051).
+ */
+export type WebAuthnCredential = Record<string, unknown>;
+
+/** What `passkeyLogin()` sends. */
+export interface PasskeyLogin {
+    credential: WebAuthnCredential;
+    remember?: boolean;
+}
+
+/** What `addPasskey()` sends. */
+export interface NewPasskey {
+    name: string;
+    credential: WebAuthnCredential;
 }
 
 /** What `resetPassword()` sends: the token and the email of the link, and the new password. */
@@ -180,6 +200,21 @@ export interface DataAdapter {
      * `ValidationError` for a wrong current password, or a new one the backend refuses. Optional.
      */
     updatePassword?(change: PasswordChange, options?: RequestOptions): Promise<void>;
+    /**
+     * The options of a login with a passkey (`POST /auth/passkeys/options`, decision 0051), for
+     * `navigator.credentials.get()`. Optional: without it, the login page has no passkey button.
+     */
+    passkeyLoginOptions?(options?: RequestOptions): Promise<WebAuthnOptions>;
+    /** Logs in with the credential of a passkey. Rejects with a `ValidationError` for one the backend refuses. */
+    passkeyLogin?(login: PasskeyLogin, options?: RequestOptions): Promise<Session>;
+    /** The passkeys of the current user (`GET /account/passkeys`). Optional. */
+    listPasskeys?(options?: RequestOptions): Promise<Passkey[]>;
+    /** The options of `navigator.credentials.create()` for a new passkey. Optional. */
+    passkeyRegistrationOptions?(options?: RequestOptions): Promise<WebAuthnOptions>;
+    /** Adds a passkey with its credential, and gives it. Optional. */
+    addPasskey?(passkey: NewPasskey, options?: RequestOptions): Promise<Passkey>;
+    /** Removes a passkey of the current user. Optional. */
+    deletePasskey?(id: string, options?: RequestOptions): Promise<void>;
     /** The two-factor authentication of the current user (`GET /account/two-factor`). Optional. */
     getTwoFactor?(options?: RequestOptions): Promise<TwoFactorStatus>;
     /** Starts setting it up: a new secret, to confirm with `confirmTwoFactor()`. Optional. */

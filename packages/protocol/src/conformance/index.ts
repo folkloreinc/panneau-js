@@ -11,10 +11,12 @@ import {
     type Item,
     ItemResponse,
     ListResponse,
+    Passkey,
     Problem,
     SearchResponse,
     TwoFactorStatus,
     UploadSignResponse,
+    WebAuthnOptions,
 } from '../schemas/api';
 import {
     SEARCH_DEFAULT_LIMIT,
@@ -80,6 +82,7 @@ interface Reply {
 const UNKNOWN = '__panneau_conformance_unknown__';
 
 const AccountResponse = z.looseObject({ data: User });
+const PasskeysResponse = z.looseObject({ data: z.array(Passkey) });
 
 function describeIssues(error: z.ZodError): string[] {
     return error.issues.slice(0, 10).map((issue) => {
@@ -438,6 +441,56 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
             check.expectSchema(AccountResponse, reply.body, 'The account');
         }
     });
+
+    // Passkeys (decision 0051): the options of a login, a credential that doesn't exist, and the
+    // list of the account, without adding one.
+    await run(
+        'auth.passkeys',
+        'POST /auth/passkeys/options gives options, and a login refuses an unknown passkey',
+        async (check) => {
+            if (auth()?.passkeys !== true) {
+                check.skip('The definition has no `auth.passkeys`.');
+                return;
+            }
+            const reply = await request('/auth/passkeys/options', { method: 'POST' });
+            if (check.expectStatus(reply, 200)) {
+                const options = check.expectSchema(WebAuthnOptions, reply.body, 'The options');
+                check.expect(
+                    typeof options?.options.challenge === 'string',
+                    'Expected a `challenge` in the options.',
+                );
+            }
+            check.expectProblem(
+                await request('/auth/passkeys/login', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        credential: {
+                            id: UNKNOWN,
+                            rawId: UNKNOWN,
+                            type: 'public-key',
+                            response: {},
+                        },
+                    }),
+                }),
+                422,
+            );
+        },
+    );
+
+    await run(
+        'account.passkeys',
+        'GET /account/passkeys lists the passkeys of the user',
+        async (check) => {
+            if (auth()?.passkeys !== true) {
+                check.skip('The definition has no `auth.passkeys`.');
+                return;
+            }
+            const reply = await request('/account/passkeys');
+            if (check.expectStatus(reply, 200)) {
+                check.expectSchema(PasskeysResponse, reply.body, 'The passkeys');
+            }
+        },
+    );
 
     // Two-factor authentication (decision 0049): the status of the user, and a challenge without a
     // login that waits for it. Nothing about the user changes.

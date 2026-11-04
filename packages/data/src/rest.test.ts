@@ -508,6 +508,51 @@ describe('createRestAdapter', () => {
         expect(await requests[2]?.json()).toEqual({ currentPassword: 'old', password: 'new' });
     });
 
+    it('logs in with a passkey, and manages the passkeys of the account', async () => {
+        const passkey = {
+            id: 'pk/1',
+            name: 'Laptop',
+            createdAt: '2026-11-03T00:00:00Z',
+            lastUsedAt: null,
+        };
+        const { fetch, requests } = createStubFetch((request) => {
+            const { pathname } = new URL(request.url);
+            if (request.method === 'DELETE') {
+                return new Response(null, { status: 204 });
+            }
+            if (pathname.endsWith('/options')) {
+                return jsonResponse(200, { options: { challenge: 'abc' } });
+            }
+            if (pathname.endsWith('/login')) {
+                return jsonResponse(200, { user: { id: 'u1', name: 'Ada' } });
+            }
+            return jsonResponse(request.method === 'POST' ? 201 : 200, {
+                data: request.method === 'POST' ? passkey : [passkey],
+            });
+        });
+        const adapter = createRestAdapter({ baseUrl: BASE_URL, fetch });
+
+        expect(await adapter.passkeyLoginOptions?.()).toEqual({ options: { challenge: 'abc' } });
+        await adapter.passkeyLogin?.({ credential: { id: 'c1' }, remember: true });
+        expect(await adapter.listPasskeys?.()).toEqual([passkey]);
+        await adapter.passkeyRegistrationOptions?.();
+        expect(await adapter.addPasskey?.({ name: 'Laptop', credential: { id: 'c2' } })).toEqual(
+            passkey,
+        );
+        await adapter.deletePasskey?.('pk/1');
+        expect(
+            requests.map((request) => `${request.method} ${new URL(request.url).pathname}`),
+        ).toEqual([
+            'POST /panneau/api/auth/passkeys/options',
+            'POST /panneau/api/auth/passkeys/login',
+            'GET /panneau/api/account/passkeys',
+            'POST /panneau/api/account/passkeys/options',
+            'POST /panneau/api/account/passkeys',
+            'DELETE /panneau/api/account/passkeys/pk%2F1',
+        ]);
+        expect(await requests[1]?.json()).toEqual({ credential: { id: 'c1' }, remember: true });
+    });
+
     it('rejects with a PasswordConfirmationError on a 423', async () => {
         const { fetch } = createStubFetch(
             () =>

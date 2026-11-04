@@ -17,6 +17,7 @@ import type {
     FieldCheckResponse,
     Item,
     ListResponse,
+    Passkey,
     PreviewResponse,
     RecoveryCodes,
     SearchResponse,
@@ -24,6 +25,7 @@ import type {
     TwoFactorSetup,
     TwoFactorStatus,
     User,
+    WebAuthnOptions,
 } from '@panneau/protocol';
 
 import type { ActionResponse, DataAdapter, LoginResult } from './adapter';
@@ -319,6 +321,44 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
         },
         async updatePassword(change, { signal } = {}) {
             await send({ method: 'PUT', path: '/account/password', body: change, signal });
+        },
+        passkeyLoginOptions({ signal } = {}) {
+            return json<WebAuthnOptions>({
+                method: 'POST',
+                path: '/auth/passkeys/options',
+                signal,
+            });
+        },
+        passkeyLogin(login, { signal } = {}) {
+            return json<Session>({
+                method: 'POST',
+                path: '/auth/passkeys/login',
+                body: login,
+                signal,
+            });
+        },
+        async listPasskeys({ signal } = {}) {
+            return (await json<{ data: Passkey[] }>({ path: '/account/passkeys', signal })).data;
+        },
+        passkeyRegistrationOptions({ signal } = {}) {
+            return json<WebAuthnOptions>({
+                method: 'POST',
+                path: '/account/passkeys/options',
+                signal,
+            });
+        },
+        async addPasskey(passkey, { signal } = {}) {
+            return (
+                await json<{ data: Passkey }>({
+                    method: 'POST',
+                    path: '/account/passkeys',
+                    body: passkey,
+                    signal,
+                })
+            ).data;
+        },
+        async deletePasskey(id, { signal } = {}) {
+            await send({ method: 'DELETE', path: `/account/passkeys/${encode(id)}`, signal });
         },
         getTwoFactor({ signal } = {}) {
             return json<TwoFactorStatus>({ path: '/account/two-factor', signal });

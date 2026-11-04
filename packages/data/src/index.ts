@@ -4,6 +4,8 @@ export type {
     DataAdapter,
     LoginCredentials,
     LoginResult,
+    NewPasskey,
+    PasskeyLogin,
     PasswordChange,
     PasswordCredentials,
     PasswordReset,
@@ -12,6 +14,7 @@ export type {
     TokenCredentials,
     TwoFactorAnswer,
     UpdateOptions,
+    WebAuthnCredential,
     Values,
 } from './adapter';
 export {

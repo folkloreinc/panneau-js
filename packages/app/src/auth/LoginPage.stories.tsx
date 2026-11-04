@@ -166,6 +166,42 @@ export const TwoFactor: Story = {
     },
 };
 
+let passkeyTries = 0;
+
+/** `auth.passkeys`: a passkey button. Cancelling the prompt of the browser says nothing. */
+export const Passkey: Story = {
+    args: {
+        auth: { mode: 'panneau', passkeys: true },
+        onPasskeyLogIn: fn(() => {
+            passkeyTries += 1;
+            return Promise.reject(
+                passkeyTries === 1
+                    ? new DOMException('Cancelled.', 'NotAllowedError')
+                    : new ValidationError({
+                          type: 'urn:panneau:problem:validation',
+                          title: 'The given data was invalid.',
+                          status: 422,
+                          errors: {
+                              credential: ['This passkey isn’t known. It may have been removed.'],
+                          },
+                      }),
+            );
+        }),
+    },
+    play: async ({ args, canvasElement }) => {
+        passkeyTries = 0;
+        const canvas = within(canvasElement);
+        const button = canvas.getByRole('button', { name: 'Log in with a passkey' });
+        await userEvent.click(button);
+        await expect(args.onPasskeyLogIn).toHaveBeenCalledTimes(1);
+        await expect(canvas.queryByRole('alert')).not.toBeInTheDocument();
+        await userEvent.click(button);
+        await expect(await canvas.findByRole('alert')).toHaveTextContent(
+            'This passkey isn’t known. It may have been removed.',
+        );
+    },
+};
+
 /** The session ended while the user was in the app. */
 export const SessionEnded: Story = {
     args: { name: 'Northwind Journal', sessionEnded: true },

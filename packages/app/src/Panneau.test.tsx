@@ -741,6 +741,53 @@ describe('Panneau', () => {
             ).toBeInTheDocument();
         });
 
+        it('adds a passkey on the account page, then logs in with it', async () => {
+            // The browser's WebAuthn, with a credential that has `toJSON()`
+            class FakeCredential {
+                constructor(readonly id: string) {}
+                toJSON() {
+                    return { id: this.id, rawId: this.id, type: 'public-key', response: {} };
+                }
+            }
+            const credentials = {
+                create: vi.fn(() => Promise.resolve(new FakeCredential('cred-1'))),
+                get: vi.fn(() => Promise.resolve(new FakeCredential('cred-1'))),
+            };
+            vi.stubGlobal('PublicKeyCredential', FakeCredential);
+            Object.defineProperty(navigator, 'credentials', {
+                value: credentials,
+                configurable: true,
+            });
+            try {
+                const user = userEvent.setup();
+                const { renderAt } = renderWithBackend(
+                    { mode: 'panneau', account: true, passkeys: true },
+                    [ada],
+                );
+                renderAt('/panneau/account');
+                expect(await screen.findByText('You have no passkeys yet.')).toBeInTheDocument();
+                const name = screen.getByLabelText(/^Name of the passkey/);
+                await user.clear(name);
+                await user.type(name, 'Laptop');
+                await user.click(screen.getByRole('button', { name: 'Add a passkey' }));
+                const list = await screen.findByRole('list', { name: 'Passkeys' });
+                expect(within(list).getByText('Laptop')).toBeInTheDocument();
+                expect(credentials.create).toHaveBeenCalledTimes(1);
+
+                await user.click(screen.getByRole('button', { name: 'Log out' }));
+                await user.click(
+                    await screen.findByRole('button', { name: 'Log in with a passkey' }),
+                );
+                expect(
+                    await screen.findByRole('heading', { level: 1, name: 'Your account' }),
+                ).toBeInTheDocument();
+                expect(credentials.get).toHaveBeenCalledTimes(1);
+            } finally {
+                vi.unstubAllGlobals();
+                Reflect.deleteProperty(navigator, 'credentials');
+            }
+        });
+
         it('says when a verification link is wrong', async () => {
             const { renderAt } = renderWithBackend({ mode: 'panneau', emailVerification: true }, [
                 ada,

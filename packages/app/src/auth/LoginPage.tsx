@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import type { LoginCredentials, TwoFactorAnswer } from '@panneau/data';
+import { type LoginCredentials, type TwoFactorAnswer, ValidationError } from '@panneau/data';
 import { appMessages } from '@panneau/intl';
 import type { Auth } from '@panneau/protocol';
 import { Alert, Button, Checkbox, LinkButton, TextInput, usePanneauIntl } from '@panneau/ui';
@@ -8,6 +8,7 @@ import { Alert, Button, Checkbox, LinkButton, TextInput, usePanneauIntl } from '
 import { AuthForm, AuthLayout } from './AuthLayout';
 import styles from './LoginPage.module.css';
 import { TwoFactorChallenge } from './TwoFactorChallenge';
+import { isPasskeyCancelled, supportsPasskeys } from './webauthn';
 
 /** What the login page says above its forms, after another auth page sent the user to it. */
 export type LoginNotice = 'password-reset' | 'email-verified';
@@ -28,6 +29,11 @@ export interface LoginPageProps {
      * `'two-factor'` when the login waits for a second factor: the page then asks for it.
      */
     onLogIn: (credentials: LoginCredentials) => Promise<'two-factor' | undefined>;
+    /**
+     * Logs in with a passkey (decision 0051): the options, the prompt of the browser, the login.
+     * With it, `auth.passkeys` and a browser that has WebAuthn, the page has a passkey button.
+     */
+    onPasskeyLogIn?: () => Promise<void>;
     /** Ends a login that waits for its second factor (decision 0049). */
     onTwoFactorChallenge?: (answer: TwoFactorAnswer) => Promise<void>;
     /**
@@ -129,6 +135,40 @@ function TokenForm({
     );
 }
 
+/** Logs in with a passkey: cancelling the prompt of the browser says nothing. */
+function PasskeyLogIn({ onLogIn }: { onLogIn: () => Promise<void> }) {
+    const intl = usePanneauIntl();
+    const [pending, setPending] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const logIn = () => {
+        setPending(true);
+        setError(null);
+        onLogIn().catch((caught: unknown) => {
+            setPending(false);
+            if (isPasskeyCancelled(caught)) {
+                return;
+            }
+            setError(
+                caught instanceof ValidationError
+                    ? (Object.values(caught.errors)[0]?.[0] ?? caught.message)
+                    : intl.formatMessage(appMessages.passkeyLogInError),
+            );
+        });
+    };
+    return (
+        <div className={styles.section}>
+            {error !== null ? (
+                <Alert tone="danger" role="alert">
+                    {error}
+                </Alert>
+            ) : null}
+            <Button isPending={pending} onPress={logIn} fullWidth>
+                {intl.formatMessage(appMessages.logInWithPasskey)}
+            </Button>
+        </div>
+    );
+}
+
 /**
  * The form that asks for a link to reset the password of an address, in place of the login
  * forms. Once sent, it says that the link is on its way, whether or not the address has an
@@ -211,6 +251,7 @@ export function LoginPage({
     onLogIn,
     onForgotPassword,
     onTwoFactorChallenge,
+    onPasskeyLogIn,
 }: LoginPageProps) {
     const intl = usePanneauIntl();
     const [email, setEmail] = useState(initialEmail);
@@ -256,6 +297,9 @@ export function LoginPage({
         ) : null,
         auth.token !== undefined ? (
             <TokenForm key="token" token={auth.token} onLogIn={logIn} />
+        ) : null,
+        auth.passkeys === true && onPasskeyLogIn !== undefined && supportsPasskeys() ? (
+            <PasskeyLogIn key="passkey" onLogIn={onPasskeyLogIn} />
         ) : null,
         providers.length > 0 ? (
             <div key="providers" className={styles.providers}>
