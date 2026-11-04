@@ -4,6 +4,7 @@
 
 ```ts
 
+import { DurationUnit } from '@panneau/protocol/runtime';
 import type { Field } from '@panneau/protocol';
 import { JSX } from 'react';
 import type { ReactNode } from 'react';
@@ -18,15 +19,38 @@ export function DurationFieldEntry(props: FieldEntryProps): JSX.Element;
 
 // Warning: (ae-forgotten-export) The symbol "FieldProps" needs to be exported by the entry point index.d.ts
 //
-// @public (undocumented)
-export interface DurationFieldProps extends FieldProps<number> {
-    precision?: 'seconds' | 'minutes';
+// @public
+export interface DurationFieldProps extends FieldProps<number>, DurationUnits {
 }
 
 // @public
-export function formatDuration(seconds: number, input?: {
-    precision?: 'seconds' | 'minutes';
-}): string;
+export type DurationParts = Partial<Record<DurationUnit, number>>;
+
+export { DurationUnit }
+
+// @public
+export interface DurationUnits {
+    largestUnit?: DurationUnit;
+    precision?: DurationUnit;
+    unit?: DurationUnit;
+}
+
+// @public
+export function formatDuration(value: number, options?: FormatDurationOptions): string;
+
+// @public
+export interface FormatDurationOptions extends DurationUnits {
+    labels?: Partial<Record<DurationUnit, string>>;
+}
+
+// @public
+export function getDurationUnits(field: Field): DurationUnits;
+
+// @public
+export function isDurationUnit(value: unknown): value is DurationUnit;
+
+// @public
+export function resolveDurationUnits(input?: DurationUnits): Required<DurationUnits>;
 
 // @public
 export function splitDuration(seconds: number): {
@@ -34,6 +58,9 @@ export function splitDuration(seconds: number): {
     minutes: number;
     seconds: number;
 };
+
+// @public
+export function splitDuration(value: number, units: DurationUnits): DurationParts;
 
 // (No @packageDocumentation comment for this package)
 

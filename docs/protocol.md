@@ -171,7 +171,24 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 
 - **`tel` values** are international numbers in E.164, `+15145550199` ([0047](decisions/0047-countries-regions-and-phone-numbers.md)). The type implies the `tel` rule: a client keeps a number that isn't complete as the text typed, which the rule refuses. `settings.country` is the country of a new number.
 - **`range` values** are numbers, picked on a slider between the `min` and `max` rules (0 and 100 without them), or `null` until it is moved. Settings `step`, `decimals` and `suffix` are those of `number`.
-- **`duration` values** are whole numbers of seconds, typed in hours, minutes and seconds. `settings.precision` is `seconds` (the default) or `minutes`. `min` and `max` are in seconds.
+- **`duration` values** are whole numbers, zero or more, in the unit of the field ([0056](decisions/0056-duration-units.md)). Its settings (`DurationSettings`) take `seconds`, `minutes`, `hours` or `days`, and a day is 24 hours:
+
+    ```jsonc
+    {
+        "name": "window",
+        "type": "duration",
+        "settings": {
+            "unit": "hours", // the unit of the value: seconds by default; min and max are in it too
+            "precision": "hours", // the smallest part the input shows: the unit by default
+            "largestUnit": "days", // the largest part the input shows: hours or the precision by default
+        },
+    }
+    ```
+
+    - A precision finer than `unit` is raised to it, and a `largestUnit` smaller than the precision to the precision. Without settings, a value is in seconds, typed in hours, minutes and seconds.
+    - The largest part has no upper bound (`100` hours); the others stop where the next unit starts (hours at 23 below days). Lists show the parts with a value, rounded to the precision: `2 d 4 h`.
+    - `validateDefinition()` refuses another unit. A backend checks a whole number, zero or more, whatever the unit.
+
 - **`json` values** are objects or arrays, edited as JSON text. The type implies the `json` rule: a client keeps text that doesn't parse as a string, which the rule refuses, and a backend refuses anything but an object, an array or `null`.
 - **`tags` values** are lists of strings. `options` suggest tags; with `"settings": { "allowCustom": false }`, only their values are allowed, and `in` applies to each tag. `min` and `max` count the tags.
 - **`embed` values** are what a URL embeds: `{ "url", "type", "title", "provider", "thumbnailUrl", "html", "width", "height" }` (`EmbedValue`), where everything but `url` comes from the provider's oEmbed. `type` is `video`, `audio`, `photo`, `rich` or `link`. Clients get it from `GET /embeds`, and send `{ "url" }` alone without it.

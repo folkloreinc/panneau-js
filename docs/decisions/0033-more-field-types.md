@@ -1,6 +1,6 @@
 # 0033: More field types: tel, range, duration, json, tags, embed and location
 
-- Status: accepted
+- Status: accepted, amended by [0047](0047-countries-regions-and-phone-numbers.md): `tel` values are in E.164; and by [0056](0056-duration-units.md): `duration` values are in the unit of their field, and the input can show days
 - Date: 2026-10-23
 - Issue: [#111](https://github.com/folkloreinc/panneau-js/issues/111)
 
