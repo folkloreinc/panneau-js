@@ -98,7 +98,9 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     - `date`, `datetime`, `time`;
     - `select`, `email`, `url`, `color`;
     - `media`, `image`, `file`, `relation`, `group`, `repeater`, `slug`;
-    - `tel`, `range`, `duration`, `json`, `tags`, `embed`, `location` ([0033](decisions/0033-more-field-types.md)).
+    - `tel`, `range`, `duration`, `json`, `tags`, `embed`, `location` ([0033](decisions/0033-more-field-types.md));
+    - `country`, `region` ([0047](decisions/0047-countries-regions-and-phone-numbers.md));
+    - `daterange`, `money` ([0053](decisions/0053-date-ranges-and-money.md)).
 - **`text` settings:** `prefix` and `suffix` show in the control, around the value. With `"secret": true`, the value is a secret, such as an access key: clients type it in a password input that a button reveals, never let the browser fill it in, and show it as dots in lists and details. The backend still decides whether it sends the value back at all.
 - **`select` options** are `{ "value", "label", "description", "disabled", "tone" }`. `tone` colors the option where it shows as a badge, in lists and details: `neutral` (the default), `accent`, `success`, `warning`, `danger`, `info`, or a tone of the theme (`{ "value": "failed", "label": "Failed", "tone": "danger" }`).
 - **`localized`** makes the value an object keyed by locale (`{ "fr": "…", "en": "…" }`). It replaces the separate `localized` field and the `*Localized` PHP classes of v1.
@@ -192,6 +194,33 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 - **`location` values** are a point and its address: `{ "lat", "lng", "address" }` (`LocationValue`), with `lat` from -90 to 90, `lng` from -180 to 180, and `address` optional. Settings `zoom` and `center` (`{ "lat", "lng" }`) frame the map before a point is placed, and `tiles` (`{ "url", "attribution", "maxZoom" }`) replaces the app's tiles.
 - **`country` values** are ISO 3166-1 alpha-2 codes in capitals, `CA` (`XK` too). `settings.countries` lists the codes the field allows, `settings.preferred` the ones it shows first. A backend refuses other codes.
 - **`region` values** are states, provinces or territories. Their country is the value of the field that `from` names, in the same object, or `settings.country`. For the countries Panneau knows the regions of, a value is the code of the region without its country, `QC` for `CA-QC`; for the others, the text as typed ([0047](decisions/0047-countries-regions-and-phone-numbers.md)).
+- **`datetime` values** are ISO 8601 date-times. A value with an offset is an instant: clients write it in UTC (`2026-11-04T23:30:00Z`), and show it in `settings.timeZone`, an IANA zone (`America/Toronto`), or in the browser's zone without it. A value without an offset is kept as it is.
+- **`daterange` values** are a start and an end, `{ "start", "end" }` (`DateRangeValue`), or `null` ([0053](decisions/0053-date-ranges-and-money.md)). Its `settings` are `DateRangeSettings`, which `validateDefinition()` checks:
+
+    ```jsonc
+    {
+        "name": "dates",
+        "type": "daterange",
+        "settings": {
+            "time": true, // date-times; days (`2026-11-04`) without it
+            "allDay": true, // an "All day" switch: the value has days as bounds, and "allDay": true
+            "open": "end", // start, end or both: that bound can be null
+            "timeZone": "America/Toronto", // the zone the date-times are shown and typed in
+            "chooseTimeZone": true, // a menu of zones, kept in the value as "timeZone"
+        },
+    }
+    ```
+
+    - Days are inclusive: `{ "start": "2026-11-04", "end": "2026-11-06" }` is three days. Date-times have an offset; clients write them in UTC.
+    - The zone of date-times is the value's `timeZone`, then `settings.timeZone`, then the browser's.
+    - The type implies the `daterange` rule, with the field's `open`: a client keeps a range typed halfway, which the rule refuses.
+    - The `date-range` filter on a `daterange` field keeps the items whose range overlaps its days. Lists sort a range by its start.
+    - A list of sessions (a range and a venue, repeated) is a `repeater` of a `daterange` and a `relation`.
+
+- **`money` values** are an amount and its currency, `{ "amount": 1250, "currency": "CAD" }` (`MoneyValue`), or `null` ([0053](decisions/0053-date-ranges-and-money.md)).
+    - `amount` is an integer in the minor unit of the currency, its ISO 4217 exponent (`getCurrencyDigits()`): `1250` is 12.50 CAD, or 1,250 JPY.
+    - `settings.currency` fixes the currency; `settings.currencies` lists those the user picks from, the first one for a new amount; without either, any ISO 4217 currency (`CURRENCY_CODES`). They are `MoneySettings`, which `validateDefinition()` checks.
+    - The type implies the `money` rule, with the field's currencies. `min` and `max` apply to the amount, in minor units.
 - **`rules`** use the portable rules below. A backend can also enforce rules that it doesn't expose.
 
 ### Portable validation rules
@@ -199,11 +228,13 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 | Rule                | Applies to                              |
 | ------------------- | --------------------------------------- |
 | `required`          | all                                     |
-| `min`, `max`        | number value; length of text and arrays |
+| `min`, `max`        | numbers, amounts; length of text, lists |
 | `pattern`           | text                                    |
 | `email`, `url`      | text                                    |
 | `json`              | `json` values: an object or an array    |
 | `tel`               | `tel` values: E.164 (`+15145550199`)    |
+| `daterange`         | `daterange` values: bounds, end ≥ start |
+| `money`             | `money` values: an integer, a currency  |
 | `in`                | select values                           |
 | `accept`, `maxSize` | files (MIME types, bytes)               |
 | `before`, `after`   | dates (value or other field)            |
@@ -340,7 +371,7 @@ Built-in actions use reserved ids:
 **Layouts.** `layouts` lists those a list offers, the first being the default. Clients build in `table`, `cards`, `gallery` and `calendar`, and leave out those they can't show ([decisions/0044](decisions/0044-gallery-and-calendar.md)):
 
 - `gallery` shows the image of each item, its `itemImage` field (a media reference, a file or a URL), and is offered when the resource has one.
-- `calendar` shows the items of a month on the days of a `date` or `datetime` field, set by `calendar`: `{ "field": "starts_at", "filter": "starts_at", "perPage": 100 }`. `filter` is the list's `date-range` filter on that field (the field's name by default), and `perPage` how many items it asks for a month (100 by default). Instead of a page, the calendar asks for the list's query with that filter set to the days around the month, from 6 days before its first day to 6 days after its last, without `page` or `cursor`: `filter[starts_at][from]=2026-10-26&filter[starts_at][to]=2026-12-06&perPage=100`. When the answer has more items than it gives, the calendar says so. A backend needs nothing else.
+- `calendar` shows the items of a month on the days of a `date`, `datetime` or `daterange` field (a range on each day it covers, [0053](decisions/0053-date-ranges-and-money.md)), set by `calendar`: `{ "field": "starts_at", "filter": "starts_at", "perPage": 100 }`. `filter` is the list's `date-range` filter on that field (the field's name by default), and `perPage` how many items it asks for a month (100 by default). Instead of a page, the calendar asks for the list's query with that filter set to the days around the month, from 6 days before its first day to 6 days after its last, without `page` or `cursor`: `filter[starts_at][from]=2026-10-26&filter[starts_at][to]=2026-12-06&perPage=100`. When the answer has more items than it gives, the calendar says so. A backend needs nothing else.
 
 **Columns users choose.** The user of a list shows, hides and orders its columns. A column with `"hidden": true` isn't shown until the user shows it; one with `"hideable": false` is always shown. The chosen columns and the layout are the view of the list: clients keep them in the URL with the query, and may remember them for the user. They are never sent to the backend ([decisions/0042](decisions/0042-list-view-columns-and-remembered-view.md)).
 

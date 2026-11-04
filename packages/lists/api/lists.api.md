@@ -106,6 +106,9 @@ export function DateDisplay(input: DisplayProps): JSX.Element;
 export function DateFilter(input: FilterControlProps): JSX.Element;
 
 // @public
+export function DateRangeDisplay(input: DisplayProps): JSX.Element;
+
+// @public
 export function DateRangeFilter(input: FilterControlProps): JSX.Element;
 
 // @public
@@ -248,6 +251,7 @@ export interface ListCalendarProps {
     } | null;
     // (undocumented)
     onMonthChange: (month: string) => void;
+    timeZone?: string | null | undefined;
 }
 
 // @public
@@ -391,6 +395,9 @@ export function LocationDisplay(input: DisplayProps): JSX.Element;
 
 // @public
 export function MediaDisplay(input: DisplayProps): JSX.Element;
+
+// @public
+export function MoneyDisplay(input: DisplayProps): JSX.Element;
 
 // @public
 export function NumberDisplay(input: DisplayProps): JSX.Element;

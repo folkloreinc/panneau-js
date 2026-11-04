@@ -3,7 +3,13 @@ import type { z } from 'zod';
 import { lintDefinition } from './lint';
 import { BootConfig } from './schemas/boot';
 import { Definition } from './schemas/definition';
-import { DurationSettings, type Field, RichTextSettings } from './schemas/field';
+import {
+    DateRangeSettings,
+    DurationSettings,
+    type Field,
+    MoneySettings,
+    RichTextSettings,
+} from './schemas/field';
 
 export interface ValidationIssue {
     /** Dot path of the invalid value (`resources.0.fields.2.type`), empty for the root. */
@@ -32,20 +38,22 @@ export function validate<T extends z.ZodType>(
     };
 }
 
-/** The schemas of the settings of the field types that the protocol describes. */
-const SETTINGS_SCHEMAS: ReadonlyMap<string, z.ZodType> = new Map<string, z.ZodType>([
-    ['richtext', RichTextSettings],
-    ['duration', DurationSettings],
-]);
+/** The schemas of the settings of the types that the protocol describes. */
+const SETTINGS: Readonly<Record<string, z.ZodType>> = {
+    richtext: RichTextSettings,
+    duration: DurationSettings,
+    daterange: DateRangeSettings,
+    money: MoneySettings,
+};
 
 /**
- * Checks the settings of the `richtext` and `duration` fields of a list of fields, nested ones
- * included.
+ * Checks the settings of the fields whose type the protocol describes the settings of (`richtext`,
+ * `duration`, `daterange`, `money`), nested ones included.
  */
 function checkFieldSettings(fields: readonly Field[], path: string): ValidationIssue[] {
     return fields.flatMap((field, index) => {
         const fieldPath = `${path}.${String(index)}`;
-        const schema = SETTINGS_SCHEMAS.get(field.type);
+        const schema = SETTINGS[field.type];
         const own =
             schema !== undefined && field.settings !== undefined
                 ? (schema.safeParse(field.settings).error?.issues ?? []).map((issue) => ({
@@ -66,7 +74,8 @@ function checkFieldSettings(fields: readonly Field[], path: string): ValidationI
 /**
  * Validates a definition, as returned by `GET /definition`: against the schema, then the
  * references between its parts (see `lintDefinition()`), and the settings of field types that
- * the protocol describes (`RichTextSettings`, `DurationSettings`).
+ * the protocol describes (`RichTextSettings`, `DurationSettings`, `DateRangeSettings`,
+ * `MoneySettings`).
  */
 export function validateDefinition(input: unknown): ValidationResult<Definition> {
     const result = validate(Definition, input);

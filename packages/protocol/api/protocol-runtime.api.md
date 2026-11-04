@@ -28,7 +28,7 @@ export const BOOT_CONFIG_ELEMENT_ID = "panneau-boot";
 export const BUILT_IN_ACTIONS: readonly ["show", "edit", "duplicate", "delete", "restore", "export", "import"];
 
 // @public
-export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "image", "relation", "group", "repeater", "slug", "tel", "range", "duration", "json", "tags", "embed", "location", "country", "region"];
+export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "image", "relation", "group", "repeater", "slug", "tel", "range", "duration", "json", "tags", "embed", "location", "country", "region", "daterange", "money"];
 
 // @public
 export const BUILT_IN_ITEM_ACTIONS: readonly ["show", "edit", "duplicate", "delete"];
@@ -91,6 +91,12 @@ export function contextBefore(values: ContextValues, names: readonly string[], n
 export type ContextValues = Readonly<Record<string, string>>;
 
 // @public
+export const CURRENCY_CODES: readonly ["AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN", "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BRL", "BSD", "BTN", "BWP", "BYN", "BZD", "CAD", "CDF", "CHF", "CLP", "CNY", "COP", "CRC", "CUC", "CUP", "CVE", "CZK", "DJF", "DKK", "DOP", "DZD", "EGP", "ERN", "ETB", "EUR", "FJD", "FKP", "GBP", "GEL", "GHS", "GIP", "GMD", "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG", "HUF", "IDR", "ILS", "INR", "IQD", "IRR", "ISK", "JMD", "JOD", "JPY", "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD", "KYD", "KZT", "LAK", "LBP", "LKR", "LRD", "LSL", "LYD", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT", "MOP", "MRU", "MUR", "MVR", "MWK", "MXN", "MYR", "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD", "OMR", "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR", "RON", "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG", "SEK", "SGD", "SHP", "SLE", "SLL", "SOS", "SRD", "SSP", "STN", "SVC", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS", "UAH", "UGX", "USD", "UYU", "UZS", "VED", "VES", "VND", "VUV", "WST", "XAF", "XCD", "XCG", "XOF", "XPF", "YER", "ZAR", "ZMW", "ZWG", "ZWL"];
+
+// @public (undocumented)
+export type CurrencyCode = (typeof CURRENCY_CODES)[number];
+
+// @public
 export interface CursorPageMeta {
     // (undocumented)
     nextCursor: string | null;
@@ -101,6 +107,12 @@ export interface CursorPageMeta {
     // (undocumented)
     total?: number | null;
 }
+
+// @public
+export const DATE_RANGE_OPEN_BOUNDS: readonly ["start", "end", "both"];
+
+// @public (undocumented)
+export type DateRangeOpenBound = (typeof DATE_RANGE_OPEN_BOUNDS)[number];
 
 // @public
 export const DURATION_UNITS: readonly ["seconds", "minutes", "hours", "days"];
@@ -131,7 +143,13 @@ export type FilterValue = string | number | boolean | Array<string | number | bo
 export function formatContextHeader(values: Readonly<Record<string, string | null | undefined>>, names?: readonly string[]): string;
 
 // @public
+export function fromMinorUnits(amount: number, currency: string): number;
+
+// @public
 export function fromSearchParams(params: URLSearchParams): ListQuery;
+
+// @public
+export function getCurrencyDigits(code: string): number;
 
 // @public
 export function getMediaLibraries(definition: MediaLibrariesDefinition | null, field: {
@@ -146,6 +164,9 @@ export function isBuiltInItemAction(id: string): id is BuiltInItemAction;
 
 // @public
 export function isBuiltInLink(id: string): id is BuiltInLinkAction;
+
+// @public
+export function isCurrencyCode(code: unknown): code is CurrencyCode;
 
 // @public
 export function isCursorPage(meta: object): meta is CursorPageMeta;
@@ -220,7 +241,7 @@ export type PartialTheme = Partial<Theme>;
 export const PASSWORD_CONFIRMATION_PROBLEM_TYPE = "urn:panneau:problem:password-confirmation";
 
 // @public
-export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "json", "tel", "in", "accept", "maxSize", "before", "after", "crop"];
+export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "json", "tel", "daterange", "money", "in", "accept", "maxSize", "before", "after", "crop"];
 
 // @public (undocumented)
 export type PortableRule = (typeof PORTABLE_RULES)[number];
@@ -303,6 +324,9 @@ export interface SearchQuery {
     q: string;
     resources?: readonly string[];
 }
+
+// @public
+export function toMinorUnits(amount: number, currency: string): number;
 
 // @public
 export function toSearchParams(query: ListQuery): URLSearchParams;

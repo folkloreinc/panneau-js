@@ -92,6 +92,26 @@ export const Action: z.ZodObject<{
                 create: "create";
             }>>;
         }, z.core.$loose>, z.ZodObject<{
+            rule: z.ZodLiteral<"daterange">;
+            open: z.ZodOptional<z.ZodEnum<{
+                start: "start";
+                end: "end";
+                both: "both";
+            }>>;
+            message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                update: "update";
+                create: "create";
+            }>>;
+        }, z.core.$loose>, z.ZodObject<{
+            rule: z.ZodLiteral<"money">;
+            currencies: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                update: "update";
+                create: "create";
+            }>>;
+        }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodLiteral<"in">;
             value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
             message: z.ZodOptional<z.ZodString>;
@@ -547,7 +567,7 @@ export type BootConfigInput = z.input<typeof BootConfig>;
 export const BUILT_IN_ACTIONS: readonly ["show", "edit", "duplicate", "delete", "restore", "export", "import"];
 
 // @public
-export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "image", "relation", "group", "repeater", "slug", "tel", "range", "duration", "json", "tags", "embed", "location", "country", "region"];
+export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "image", "relation", "group", "repeater", "slug", "tel", "range", "duration", "json", "tags", "embed", "location", "country", "region", "daterange", "money"];
 
 // @public
 export const BUILT_IN_ITEM_ACTIONS: readonly ["show", "edit", "duplicate", "delete"];
@@ -603,8 +623,8 @@ export const Column: z.ZodObject<{
     width: z.ZodOptional<z.ZodUnion<readonly [z.ZodNumber, z.ZodString]>>;
     align: z.ZodOptional<z.ZodEnum<{
         start: "start";
-        center: "center";
         end: "end";
+        center: "center";
     }>>;
     hidden: z.ZodOptional<z.ZodBoolean>;
     hideable: z.ZodOptional<z.ZodBoolean>;
@@ -703,6 +723,12 @@ export function createSchemaRegistry(): z.core.$ZodRegistry<{
 export function createThemeJsonSchema(): JsonObject;
 
 // @public
+export const CURRENCY_CODES: readonly ["AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN", "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BRL", "BSD", "BTN", "BWP", "BYN", "BZD", "CAD", "CDF", "CHF", "CLP", "CNY", "COP", "CRC", "CUC", "CUP", "CVE", "CZK", "DJF", "DKK", "DOP", "DZD", "EGP", "ERN", "ETB", "EUR", "FJD", "FKP", "GBP", "GEL", "GHS", "GIP", "GMD", "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG", "HUF", "IDR", "ILS", "INR", "IQD", "IRR", "ISK", "JMD", "JOD", "JPY", "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD", "KYD", "KZT", "LAK", "LBP", "LKR", "LRD", "LSL", "LYD", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT", "MOP", "MRU", "MUR", "MVR", "MWK", "MXN", "MYR", "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD", "OMR", "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR", "RON", "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG", "SEK", "SGD", "SHP", "SLE", "SLL", "SOS", "SRD", "SSP", "STN", "SVC", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS", "UAH", "UGX", "USD", "UYU", "UZS", "VED", "VES", "VND", "VUV", "WST", "XAF", "XCD", "XCG", "XOF", "XPF", "YER", "ZAR", "ZMW", "ZWG", "ZWL"];
+
+// @public (undocumented)
+export type CurrencyCode = (typeof CURRENCY_CODES)[number];
+
+// @public
 export interface CursorPageMeta {
     // (undocumented)
     nextCursor: string | null;
@@ -724,6 +750,39 @@ export const CursorPagination: z.ZodObject<{
 
 // @public (undocumented)
 export type CursorPagination = z.infer<typeof CursorPagination>;
+
+// @public
+export const DATE_RANGE_OPEN_BOUNDS: readonly ["start", "end", "both"];
+
+// @public (undocumented)
+export type DateRangeOpenBound = (typeof DATE_RANGE_OPEN_BOUNDS)[number];
+
+// @public
+export const DateRangeSettings: z.ZodObject<{
+    time: z.ZodOptional<z.ZodBoolean>;
+    allDay: z.ZodOptional<z.ZodBoolean>;
+    open: z.ZodOptional<z.ZodEnum<{
+        start: "start";
+        end: "end";
+        both: "both";
+    }>>;
+    timeZone: z.ZodOptional<z.ZodString>;
+    chooseTimeZone: z.ZodOptional<z.ZodBoolean>;
+}, z.core.$loose>;
+
+// @public
+export type DateRangeSettings = z.infer<typeof DateRangeSettings>;
+
+// @public (undocumented)
+export const DateRangeValue: z.ZodObject<{
+    start: z.ZodNullable<z.ZodString>;
+    end: z.ZodNullable<z.ZodString>;
+    allDay: z.ZodOptional<z.ZodBoolean>;
+    timeZone: z.ZodOptional<z.ZodString>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type DateRangeValue = z.infer<typeof DateRangeValue>;
 
 // @public (undocumented)
 export const Definition: z.ZodObject<{
@@ -797,6 +856,26 @@ export const Definition: z.ZodObject<{
                     tel: "tel";
                     json: "json";
                 }>;
+                message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>>;
+            }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"daterange">;
+                open: z.ZodOptional<z.ZodEnum<{
+                    start: "start";
+                    end: "end";
+                    both: "both";
+                }>>;
+                message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>>;
+            }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"money">;
+                currencies: z.ZodOptional<z.ZodArray<z.ZodString>>;
                 message: z.ZodOptional<z.ZodString>;
                 mode: z.ZodOptional<z.ZodEnum<{
                     update: "update";
@@ -926,8 +1005,8 @@ export const Definition: z.ZodObject<{
                 width: z.ZodOptional<z.ZodUnion<readonly [z.ZodNumber, z.ZodString]>>;
                 align: z.ZodOptional<z.ZodEnum<{
                     start: "start";
-                    center: "center";
                     end: "end";
+                    center: "center";
                 }>>;
                 hidden: z.ZodOptional<z.ZodBoolean>;
                 hideable: z.ZodOptional<z.ZodBoolean>;
@@ -1038,6 +1117,26 @@ export const Definition: z.ZodObject<{
                         tel: "tel";
                         json: "json";
                     }>;
+                    message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        update: "update";
+                        create: "create";
+                    }>>;
+                }, z.core.$loose>, z.ZodObject<{
+                    rule: z.ZodLiteral<"daterange">;
+                    open: z.ZodOptional<z.ZodEnum<{
+                        start: "start";
+                        end: "end";
+                        both: "both";
+                    }>>;
+                    message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        update: "update";
+                        create: "create";
+                    }>>;
+                }, z.core.$loose>, z.ZodObject<{
+                    rule: z.ZodLiteral<"money">;
+                    currencies: z.ZodOptional<z.ZodArray<z.ZodString>>;
                     message: z.ZodOptional<z.ZodString>;
                     mode: z.ZodOptional<z.ZodEnum<{
                         update: "update";
@@ -1559,6 +1658,26 @@ export const Field: z.ZodObject<{
             create: "create";
         }>>;
     }, z.core.$loose>, z.ZodObject<{
+        rule: z.ZodLiteral<"daterange">;
+        open: z.ZodOptional<z.ZodEnum<{
+            start: "start";
+            end: "end";
+            both: "both";
+        }>>;
+        message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            update: "update";
+            create: "create";
+        }>>;
+    }, z.core.$loose>, z.ZodObject<{
+        rule: z.ZodLiteral<"money">;
+        currencies: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            update: "update";
+            create: "create";
+        }>>;
+    }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodLiteral<"in">;
         value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
         message: z.ZodOptional<z.ZodString>;
@@ -1710,7 +1829,13 @@ export type FilterValue = string | number | boolean | Array<string | number | bo
 export function formatContextHeader(values: Readonly<Record<string, string | null | undefined>>, names?: readonly string[]): string;
 
 // @public
+export function fromMinorUnits(amount: number, currency: string): number;
+
+// @public
 export function fromSearchParams(params: URLSearchParams): ListQuery;
+
+// @public
+export function getCurrencyDigits(code: string): number;
 
 // @public
 export function getMediaLibraries(definition: MediaLibrariesDefinition | null, field: {
@@ -1731,6 +1856,9 @@ export function isBuiltInItemAction(id: string): id is BuiltInItemAction;
 
 // @public
 export function isBuiltInLink(id: string): id is BuiltInLinkAction;
+
+// @public
+export function isCurrencyCode(code: unknown): code is CurrencyCode;
 
 // @public
 export function isCursorPage(meta: object): meta is CursorPageMeta;
@@ -1823,8 +1951,8 @@ export const ListDefinition: z.ZodObject<{
         width: z.ZodOptional<z.ZodUnion<readonly [z.ZodNumber, z.ZodString]>>;
         align: z.ZodOptional<z.ZodEnum<{
             start: "start";
-            center: "center";
             end: "end";
+            center: "center";
         }>>;
         hidden: z.ZodOptional<z.ZodBoolean>;
         hideable: z.ZodOptional<z.ZodBoolean>;
@@ -2156,6 +2284,24 @@ export type MenuItem = z.infer<typeof MenuItem>;
 export function mergeThemes(...themes: readonly PartialTheme[]): Theme;
 
 // @public
+export const MoneySettings: z.ZodObject<{
+    currency: z.ZodOptional<z.ZodString>;
+    currencies: z.ZodOptional<z.ZodArray<z.ZodString>>;
+}, z.core.$loose>;
+
+// @public
+export type MoneySettings = z.infer<typeof MoneySettings>;
+
+// @public (undocumented)
+export const MoneyValue: z.ZodObject<{
+    amount: z.ZodNumber;
+    currency: z.ZodString;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type MoneyValue = z.infer<typeof MoneyValue>;
+
+// @public
 export const namedSchemas: {
     Id: z.ZodString;
     Abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
@@ -2213,6 +2359,26 @@ export const namedSchemas: {
             tel: "tel";
             json: "json";
         }>;
+        message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            update: "update";
+            create: "create";
+        }>>;
+    }, z.core.$loose>, z.ZodObject<{
+        rule: z.ZodLiteral<"daterange">;
+        open: z.ZodOptional<z.ZodEnum<{
+            start: "start";
+            end: "end";
+            both: "both";
+        }>>;
+        message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            update: "update";
+            create: "create";
+        }>>;
+    }, z.core.$loose>, z.ZodObject<{
+        rule: z.ZodLiteral<"money">;
+        currencies: z.ZodOptional<z.ZodArray<z.ZodString>>;
         message: z.ZodOptional<z.ZodString>;
         mode: z.ZodOptional<z.ZodEnum<{
             update: "update";
@@ -2326,6 +2492,26 @@ export const namedSchemas: {
                 tel: "tel";
                 json: "json";
             }>;
+            message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                update: "update";
+                create: "create";
+            }>>;
+        }, z.core.$loose>, z.ZodObject<{
+            rule: z.ZodLiteral<"daterange">;
+            open: z.ZodOptional<z.ZodEnum<{
+                start: "start";
+                end: "end";
+                both: "both";
+            }>>;
+            message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                update: "update";
+                create: "create";
+            }>>;
+        }, z.core.$loose>, z.ZodObject<{
+            rule: z.ZodLiteral<"money">;
+            currencies: z.ZodOptional<z.ZodArray<z.ZodString>>;
             message: z.ZodOptional<z.ZodString>;
             mode: z.ZodOptional<z.ZodEnum<{
                 update: "update";
@@ -2466,6 +2652,21 @@ export const namedSchemas: {
             }>>;
         }, z.core.$loose>>;
     }, z.core.$loose>;
+    DateRangeSettings: z.ZodObject<{
+        time: z.ZodOptional<z.ZodBoolean>;
+        allDay: z.ZodOptional<z.ZodBoolean>;
+        open: z.ZodOptional<z.ZodEnum<{
+            start: "start";
+            end: "end";
+            both: "both";
+        }>>;
+        timeZone: z.ZodOptional<z.ZodString>;
+        chooseTimeZone: z.ZodOptional<z.ZodBoolean>;
+    }, z.core.$loose>;
+    MoneySettings: z.ZodObject<{
+        currency: z.ZodOptional<z.ZodString>;
+        currencies: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    }, z.core.$loose>;
     DurationSettings: z.ZodObject<{
         unit: z.ZodOptional<z.ZodEnum<{
             seconds: "seconds";
@@ -2517,8 +2718,8 @@ export const namedSchemas: {
         width: z.ZodOptional<z.ZodUnion<readonly [z.ZodNumber, z.ZodString]>>;
         align: z.ZodOptional<z.ZodEnum<{
             start: "start";
-            center: "center";
             end: "end";
+            center: "center";
         }>>;
         hidden: z.ZodOptional<z.ZodBoolean>;
         hideable: z.ZodOptional<z.ZodBoolean>;
@@ -2553,8 +2754,8 @@ export const namedSchemas: {
             width: z.ZodOptional<z.ZodUnion<readonly [z.ZodNumber, z.ZodString]>>;
             align: z.ZodOptional<z.ZodEnum<{
                 start: "start";
-                center: "center";
                 end: "end";
+                center: "center";
             }>>;
             hidden: z.ZodOptional<z.ZodBoolean>;
             hideable: z.ZodOptional<z.ZodBoolean>;
@@ -2682,6 +2883,26 @@ export const namedSchemas: {
                     tel: "tel";
                     json: "json";
                 }>;
+                message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>>;
+            }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"daterange">;
+                open: z.ZodOptional<z.ZodEnum<{
+                    start: "start";
+                    end: "end";
+                    both: "both";
+                }>>;
+                message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>>;
+            }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"money">;
+                currencies: z.ZodOptional<z.ZodArray<z.ZodString>>;
                 message: z.ZodOptional<z.ZodString>;
                 mode: z.ZodOptional<z.ZodEnum<{
                     update: "update";
@@ -2887,6 +3108,26 @@ export const namedSchemas: {
                     create: "create";
                 }>>;
             }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"daterange">;
+                open: z.ZodOptional<z.ZodEnum<{
+                    start: "start";
+                    end: "end";
+                    both: "both";
+                }>>;
+                message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>>;
+            }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"money">;
+                currencies: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>>;
+            }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"in">;
                 value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
                 message: z.ZodOptional<z.ZodString>;
@@ -3010,8 +3251,8 @@ export const namedSchemas: {
                 width: z.ZodOptional<z.ZodUnion<readonly [z.ZodNumber, z.ZodString]>>;
                 align: z.ZodOptional<z.ZodEnum<{
                     start: "start";
-                    center: "center";
                     end: "end";
+                    center: "center";
                 }>>;
                 hidden: z.ZodOptional<z.ZodBoolean>;
                 hideable: z.ZodOptional<z.ZodBoolean>;
@@ -3122,6 +3363,26 @@ export const namedSchemas: {
                         tel: "tel";
                         json: "json";
                     }>;
+                    message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        update: "update";
+                        create: "create";
+                    }>>;
+                }, z.core.$loose>, z.ZodObject<{
+                    rule: z.ZodLiteral<"daterange">;
+                    open: z.ZodOptional<z.ZodEnum<{
+                        start: "start";
+                        end: "end";
+                        both: "both";
+                    }>>;
+                    message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        update: "update";
+                        create: "create";
+                    }>>;
+                }, z.core.$loose>, z.ZodObject<{
+                    rule: z.ZodLiteral<"money">;
+                    currencies: z.ZodOptional<z.ZodArray<z.ZodString>>;
                     message: z.ZodOptional<z.ZodString>;
                     mode: z.ZodOptional<z.ZodEnum<{
                         update: "update";
@@ -3624,6 +3885,26 @@ export const namedSchemas: {
                         create: "create";
                     }>>;
                 }, z.core.$loose>, z.ZodObject<{
+                    rule: z.ZodLiteral<"daterange">;
+                    open: z.ZodOptional<z.ZodEnum<{
+                        start: "start";
+                        end: "end";
+                        both: "both";
+                    }>>;
+                    message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        update: "update";
+                        create: "create";
+                    }>>;
+                }, z.core.$loose>, z.ZodObject<{
+                    rule: z.ZodLiteral<"money">;
+                    currencies: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                    message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        update: "update";
+                        create: "create";
+                    }>>;
+                }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodLiteral<"in">;
                     value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
                     message: z.ZodOptional<z.ZodString>;
@@ -3747,8 +4028,8 @@ export const namedSchemas: {
                     width: z.ZodOptional<z.ZodUnion<readonly [z.ZodNumber, z.ZodString]>>;
                     align: z.ZodOptional<z.ZodEnum<{
                         start: "start";
-                        center: "center";
                         end: "end";
+                        center: "center";
                     }>>;
                     hidden: z.ZodOptional<z.ZodBoolean>;
                     hideable: z.ZodOptional<z.ZodBoolean>;
@@ -3859,6 +4140,26 @@ export const namedSchemas: {
                             tel: "tel";
                             json: "json";
                         }>;
+                        message: z.ZodOptional<z.ZodString>;
+                        mode: z.ZodOptional<z.ZodEnum<{
+                            update: "update";
+                            create: "create";
+                        }>>;
+                    }, z.core.$loose>, z.ZodObject<{
+                        rule: z.ZodLiteral<"daterange">;
+                        open: z.ZodOptional<z.ZodEnum<{
+                            start: "start";
+                            end: "end";
+                            both: "both";
+                        }>>;
+                        message: z.ZodOptional<z.ZodString>;
+                        mode: z.ZodOptional<z.ZodEnum<{
+                            update: "update";
+                            create: "create";
+                        }>>;
+                    }, z.core.$loose>, z.ZodObject<{
+                        rule: z.ZodLiteral<"money">;
+                        currencies: z.ZodOptional<z.ZodArray<z.ZodString>>;
                         message: z.ZodOptional<z.ZodString>;
                         mode: z.ZodOptional<z.ZodEnum<{
                             update: "update";
@@ -4714,6 +5015,16 @@ export const namedSchemas: {
         lng: z.ZodNumber;
         address: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>;
+    DateRangeValue: z.ZodObject<{
+        start: z.ZodNullable<z.ZodString>;
+        end: z.ZodNullable<z.ZodString>;
+        allDay: z.ZodOptional<z.ZodBoolean>;
+        timeZone: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>;
+    MoneyValue: z.ZodObject<{
+        amount: z.ZodNumber;
+        currency: z.ZodString;
+    }, z.core.$loose>;
 };
 
 // @public (undocumented)
@@ -4778,7 +5089,7 @@ export type Passkey = z.infer<typeof Passkey>;
 export const PASSWORD_CONFIRMATION_PROBLEM_TYPE = "urn:panneau:problem:password-confirmation";
 
 // @public
-export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "json", "tel", "in", "accept", "maxSize", "before", "after", "crop"];
+export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "json", "tel", "daterange", "money", "in", "accept", "maxSize", "before", "after", "crop"];
 
 // @public (undocumented)
 export type PortableRule = (typeof PORTABLE_RULES)[number];
@@ -4918,6 +5229,26 @@ export const Resource: z.ZodObject<{
                 create: "create";
             }>>;
         }, z.core.$loose>, z.ZodObject<{
+            rule: z.ZodLiteral<"daterange">;
+            open: z.ZodOptional<z.ZodEnum<{
+                start: "start";
+                end: "end";
+                both: "both";
+            }>>;
+            message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                update: "update";
+                create: "create";
+            }>>;
+        }, z.core.$loose>, z.ZodObject<{
+            rule: z.ZodLiteral<"money">;
+            currencies: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                update: "update";
+                create: "create";
+            }>>;
+        }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodLiteral<"in">;
             value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
             message: z.ZodOptional<z.ZodString>;
@@ -5041,8 +5372,8 @@ export const Resource: z.ZodObject<{
             width: z.ZodOptional<z.ZodUnion<readonly [z.ZodNumber, z.ZodString]>>;
             align: z.ZodOptional<z.ZodEnum<{
                 start: "start";
-                center: "center";
                 end: "end";
+                center: "center";
             }>>;
             hidden: z.ZodOptional<z.ZodBoolean>;
             hideable: z.ZodOptional<z.ZodBoolean>;
@@ -5153,6 +5484,26 @@ export const Resource: z.ZodObject<{
                     tel: "tel";
                     json: "json";
                 }>;
+                message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>>;
+            }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"daterange">;
+                open: z.ZodOptional<z.ZodEnum<{
+                    start: "start";
+                    end: "end";
+                    both: "both";
+                }>>;
+                message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>>;
+            }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"money">;
+                currencies: z.ZodOptional<z.ZodArray<z.ZodString>>;
                 message: z.ZodOptional<z.ZodString>;
                 mode: z.ZodOptional<z.ZodEnum<{
                     update: "update";
@@ -5433,6 +5784,26 @@ export const Rule: z.ZodUnion<readonly [z.ZodObject<{
         create: "create";
     }>>;
 }, z.core.$loose>, z.ZodObject<{
+    rule: z.ZodLiteral<"daterange">;
+    open: z.ZodOptional<z.ZodEnum<{
+        start: "start";
+        end: "end";
+        both: "both";
+    }>>;
+    message: z.ZodOptional<z.ZodString>;
+    mode: z.ZodOptional<z.ZodEnum<{
+        update: "update";
+        create: "create";
+    }>>;
+}, z.core.$loose>, z.ZodObject<{
+    rule: z.ZodLiteral<"money">;
+    currencies: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    message: z.ZodOptional<z.ZodString>;
+    mode: z.ZodOptional<z.ZodEnum<{
+        update: "update";
+        create: "create";
+    }>>;
+}, z.core.$loose>, z.ZodObject<{
     rule: z.ZodLiteral<"in">;
     value: z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>;
     message: z.ZodOptional<z.ZodString>;
@@ -5697,6 +6068,9 @@ export const ThemeTokens: z.ZodRecord<z.ZodString, z.ZodString>;
 
 // @public (undocumented)
 export type ThemeTokens = z.infer<typeof ThemeTokens>;
+
+// @public
+export function toMinorUnits(amount: number, currency: string): number;
 
 // @public (undocumented)
 export const ToneInput: z.ZodUnion<readonly [z.ZodString, z.ZodObject<{

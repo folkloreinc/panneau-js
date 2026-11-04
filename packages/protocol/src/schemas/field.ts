@@ -1,6 +1,11 @@
 import { z } from 'zod';
 
-import { DURATION_UNITS, PORTABLE_RULES, RICH_TEXT_STYLE_ELEMENTS } from '../constants';
+import {
+    DATE_RANGE_OPEN_BOUNDS,
+    DURATION_UNITS,
+    PORTABLE_RULES,
+    RICH_TEXT_STYLE_ELEMENTS,
+} from '../constants';
 import { Abilities, Condition, Option } from './common';
 
 const message = z
@@ -17,6 +22,15 @@ const Ratio = z
     .string()
     .regex(/^[1-9][0-9]*:[1-9][0-9]*$/)
     .meta({ description: 'An aspect ratio, as `width:height`: `16:9`.' });
+
+const CurrencyCode = z
+    .string()
+    .regex(/^[A-Z]{3}$/)
+    .meta({ description: 'An ISO 4217 currency code, in capitals: `CAD`.' });
+
+const DateRangeOpen = z.enum(DATE_RANGE_OPEN_BOUNDS).meta({
+    description: 'Which bounds of the range can be `null`: `start`, `end` or `both`.',
+});
 
 const DateBound = z.union([
     z.string().meta({ description: 'An ISO 8601 date or date-time.' }),
@@ -35,6 +49,20 @@ export const Rule = z
             mode,
         }),
         z.looseObject({ rule: z.enum(['email', 'url', 'json', 'tel']), message, mode }),
+        z.looseObject({
+            rule: z.literal('daterange'),
+            open: DateRangeOpen.optional(),
+            message,
+            mode,
+        }),
+        z.looseObject({
+            rule: z.literal('money'),
+            currencies: z.array(CurrencyCode).optional().meta({
+                description: 'The currencies allowed. Without them, any ISO 4217 currency.',
+            }),
+            message,
+            mode,
+        }),
         z.looseObject({
             rule: z.literal('in'),
             value: z.array(z.union([z.string(), z.number(), z.boolean()])),
@@ -84,7 +112,7 @@ export const Rule = z
     ])
     .meta({
         description:
-            'A portable validation rule. `min` and `max` apply to numbers, and to the length of text and arrays. `accept` lists MIME types (`image/*`). `maxSize` is in bytes. `crop` checks the transform of each image of an `image` or `media` value (decision 0031).',
+            'A portable validation rule. `min` and `max` apply to numbers, to the amount of `money` values (in minor units), and to the length of text and arrays. `daterange` and `money` are implied by their types, with the `open` bounds and the `currencies` of the field (decision 0053). `accept` lists MIME types (`image/*`). `maxSize` is in bytes. `crop` checks the transform of each image of an `image` or `media` value (decision 0031).',
     });
 
 export const BlockType = z.looseObject({
@@ -250,6 +278,48 @@ export const DurationSettings = z
             'The `settings` of a `duration` field. Its value is a whole number of `unit`, zero or more. A day is 24 hours.',
     });
 
+/** The `settings` of a `daterange` field (decision 0053). `validateDefinition()` checks them. */
+export const DateRangeSettings = z
+    .looseObject({
+        time: z.boolean().optional().meta({
+            description:
+                'The bounds are date-times, with an offset (`2026-11-04T23:30:00Z`). Without it, they are days (`2026-11-04`), both inclusive.',
+        }),
+        allDay: z.boolean().optional().meta({
+            description:
+                'With `time`: an "All day" switch. An all-day value has days as bounds, and `"allDay": true`.',
+        }),
+        open: DateRangeOpen.optional(),
+        timeZone: z.string().min(1).optional().meta({
+            description:
+                "The IANA time zone the date-times are shown and typed in (`America/Toronto`), when the value has none. Without it, the browser's.",
+        }),
+        chooseTimeZone: z.boolean().optional().meta({
+            description:
+                'With `time`: the field has a menu of time zones, and keeps the choice in the value (`timeZone`).',
+        }),
+    })
+    .meta({
+        description:
+            'The `settings` of a `daterange` field: days or date-times, an "All day" switch, open bounds and the time zone of its date-times.',
+    });
+
+/** The `settings` of a `money` field (decision 0053). `validateDefinition()` checks them. */
+export const MoneySettings = z
+    .looseObject({
+        currency: CurrencyCode.optional().meta({
+            description: 'The currency of every amount: the field shows it and cannot change it.',
+        }),
+        currencies: z.array(CurrencyCode).min(1).optional().meta({
+            description:
+                'The currencies the user picks from, the first one for a new amount. Without `currency` or `currencies`, every currency.',
+        }),
+    })
+    .meta({
+        description:
+            'The `settings` of a `money` field: its currency, or the currencies to pick from. `min` and `max` rules apply to the amount, in minor units.',
+    });
+
 export type Rule = z.infer<typeof Rule>;
 export type BlockType = z.infer<typeof BlockType>;
 export type Field = z.infer<typeof Field>;
@@ -257,5 +327,9 @@ export type Field = z.infer<typeof Field>;
 export type RichTextStyle = z.infer<typeof RichTextStyle>;
 /** The `settings` of a `richtext` field. */
 export type RichTextSettings = z.infer<typeof RichTextSettings>;
+/** The `settings` of a `daterange` field. */
+export type DateRangeSettings = z.infer<typeof DateRangeSettings>;
+/** The `settings` of a `money` field. */
+export type MoneySettings = z.infer<typeof MoneySettings>;
 /** The `settings` of a `duration` field. */
 export type DurationSettings = z.infer<typeof DurationSettings>;

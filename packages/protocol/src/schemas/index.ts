@@ -9,6 +9,7 @@ import {
     ActionRunResponse,
     ContextOptionsResponse,
     CursorPagination,
+    DateRangeValue,
     EmbedResponse,
     EmbedValue,
     FieldCheckRequest,
@@ -21,6 +22,7 @@ import {
     MediaItem,
     MediaReference,
     MediaTransform,
+    MoneyValue,
     Pagination,
     Passkey,
     PreviewResponse,
@@ -55,7 +57,16 @@ import {
     User,
     Widget,
 } from './definition';
-import { BlockType, DurationSettings, Field, RichTextSettings, RichTextStyle, Rule } from './field';
+import {
+    BlockType,
+    DateRangeSettings,
+    DurationSettings,
+    Field,
+    MoneySettings,
+    RichTextSettings,
+    RichTextStyle,
+    Rule,
+} from './field';
 import { actionJsonRules } from './jsonRules';
 import { LayoutNode } from './layout';
 import { Column, Filter, ListCalendar, ListDefinition } from './list';
@@ -94,6 +105,8 @@ export const namedSchemas = {
     Field,
     RichTextStyle,
     RichTextSettings,
+    DateRangeSettings,
+    MoneySettings,
     DurationSettings,
     LayoutNode,
     Column,
@@ -163,6 +176,8 @@ export const namedSchemas = {
     EmbedValue,
     EmbedResponse,
     LocationValue,
+    DateRangeValue,
+    MoneyValue,
 } satisfies Record<string, z.ZodType>;
 
 /** A registry of the named schemas, used to reference them by name in generated files. */

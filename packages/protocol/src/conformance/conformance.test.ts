@@ -18,6 +18,11 @@ function createBackend() {
         type: 'textarea',
         abilities: { view: false },
     });
+    // Types whose rules are implied (decision 0053).
+    definition.resources[0]?.fields.push(
+        { name: 'dates', type: 'daterange', settings: { open: 'end' } },
+        { name: 'price', type: 'money', settings: { currency: 'CAD' } },
+    );
     definition.resources.push({
         id: 'settings',
         label: { singular: 'setting', plural: 'settings' },
@@ -330,6 +335,7 @@ describe('runConformance', () => {
             'abilities.create',
             'abilities.update',
             'create.invalid',
+            'create.implied-rules',
             'create',
             'update',
             'update.create-rules',
@@ -379,6 +385,7 @@ describe('runConformance', () => {
             'item.missing',
             'search.invalid',
             'create.invalid',
+            'create.implied-rules',
             'update.conflict',
             'duplicate',
             'delete',
