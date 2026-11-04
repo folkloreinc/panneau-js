@@ -149,6 +149,16 @@ export const Action: z.ZodObject<{
                 create: "create";
             }>>;
         }, z.core.$loose>, z.ZodObject<{
+            rule: z.ZodLiteral<"postalCode">;
+            value: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+                field: z.ZodString;
+            }, z.core.$loose>]>>;
+            message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                update: "update";
+                create: "create";
+            }>>;
+        }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodLiteral<"crop">;
             value: z.ZodObject<{
                 ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
@@ -309,8 +319,8 @@ export const ActionResult: z.ZodObject<{
         reason: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>>>;
     refresh: z.ZodOptional<z.ZodEnum<{
-        list: "list";
         none: "none";
+        list: "list";
         items: "items";
     }>>;
     redirect: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
@@ -359,8 +369,8 @@ export const ActionRun: z.ZodObject<{
             reason: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>>>;
         refresh: z.ZodOptional<z.ZodEnum<{
-            list: "list";
             none: "none";
+            list: "list";
             items: "items";
         }>>;
         redirect: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
@@ -413,8 +423,8 @@ export const ActionRunResponse: z.ZodObject<{
                 reason: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>>>;
             refresh: z.ZodOptional<z.ZodEnum<{
-                list: "list";
                 none: "none";
+                list: "list";
                 items: "items";
             }>>;
             redirect: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
@@ -444,6 +454,48 @@ export const ActionScope: z.ZodEnum<{
 
 // @public (undocumented)
 export type ActionScope = z.infer<typeof ActionScope>;
+
+// @public
+export const ADDRESS_PARTS: readonly ["country", "street", "unit", "city", "region", "postalCode"];
+
+// @public
+export type AddressPart = (typeof ADDRESS_PARTS)[number];
+
+// @public
+export const AddressSettings: z.ZodObject<{
+    country: z.ZodOptional<z.ZodString>;
+    countries: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    preferred: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    required: z.ZodOptional<z.ZodArray<z.ZodEnum<{
+        country: "country";
+        region: "region";
+        postalCode: "postalCode";
+        street: "street";
+        unit: "unit";
+        city: "city";
+    }>>>;
+    point: z.ZodOptional<z.ZodBoolean>;
+}, z.core.$loose>;
+
+// @public
+export type AddressSettings = z.infer<typeof AddressSettings>;
+
+// @public (undocumented)
+export const AddressValue: z.ZodObject<{
+    street: z.ZodOptional<z.ZodString>;
+    unit: z.ZodOptional<z.ZodString>;
+    city: z.ZodOptional<z.ZodString>;
+    region: z.ZodOptional<z.ZodString>;
+    postalCode: z.ZodOptional<z.ZodString>;
+    country: z.ZodOptional<z.ZodString>;
+    point: z.ZodOptional<z.ZodObject<{
+        lat: z.ZodNumber;
+        lng: z.ZodNumber;
+    }, z.core.$loose>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type AddressValue = z.infer<typeof AddressValue>;
 
 // @public (undocumented)
 export const Auth: z.ZodObject<{
@@ -567,7 +619,7 @@ export type BootConfigInput = z.input<typeof BootConfig>;
 export const BUILT_IN_ACTIONS: readonly ["show", "edit", "duplicate", "delete", "restore", "export", "import"];
 
 // @public
-export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "image", "relation", "group", "repeater", "slug", "tel", "range", "duration", "json", "tags", "embed", "location", "country", "region", "daterange", "money"];
+export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "image", "relation", "group", "repeater", "slug", "tel", "range", "duration", "json", "tags", "embed", "location", "country", "region", "address", "link", "daterange", "money"];
 
 // @public
 export const BUILT_IN_ITEM_ACTIONS: readonly ["show", "edit", "duplicate", "delete"];
@@ -577,6 +629,9 @@ export const BUILT_IN_LAYOUT_NODE_TYPES: readonly ["row", "column", "section", "
 
 // @public
 export const BUILT_IN_LINK_ACTIONS: readonly ["show", "edit"];
+
+// @public
+export const BUILT_IN_LINK_TYPES: readonly ["url", "page", "email", "tel", "file"];
 
 // @public
 export const BUILT_IN_LIST_LAYOUTS: readonly ["table", "cards", "gallery", "calendar"];
@@ -595,6 +650,9 @@ export type BuiltInLayoutNodeType = (typeof BUILT_IN_LAYOUT_NODE_TYPES)[number];
 
 // @public (undocumented)
 export type BuiltInLinkAction = (typeof BUILT_IN_LINK_ACTIONS)[number];
+
+// @public
+export type BuiltInLinkType = (typeof BUILT_IN_LINK_TYPES)[number];
 
 // @public (undocumented)
 export type BuiltInListLayout = (typeof BUILT_IN_LIST_LAYOUTS)[number];
@@ -784,6 +842,9 @@ export const DateRangeValue: z.ZodObject<{
 // @public (undocumented)
 export type DateRangeValue = z.infer<typeof DateRangeValue>;
 
+// @public
+export const DEFAULT_ADDRESS_REQUIRED_PARTS: readonly AddressPart[];
+
 // @public (undocumented)
 export const Definition: z.ZodObject<{
     protocol: z.ZodLiteral<1>;
@@ -913,6 +974,16 @@ export const Definition: z.ZodObject<{
                 value: z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
                     field: z.ZodString;
                 }, z.core.$loose>]>;
+                message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>>;
+            }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"postalCode">;
+                value: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+                    field: z.ZodString;
+                }, z.core.$loose>]>>;
                 message: z.ZodOptional<z.ZodString>;
                 mode: z.ZodOptional<z.ZodEnum<{
                     update: "update";
@@ -1174,6 +1245,16 @@ export const Definition: z.ZodObject<{
                     value: z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
                         field: z.ZodString;
                     }, z.core.$loose>]>;
+                    message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        update: "update";
+                        create: "create";
+                    }>>;
+                }, z.core.$loose>, z.ZodObject<{
+                    rule: z.ZodLiteral<"postalCode">;
+                    value: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+                        field: z.ZodString;
+                    }, z.core.$loose>]>>;
                     message: z.ZodOptional<z.ZodString>;
                     mode: z.ZodOptional<z.ZodEnum<{
                         update: "update";
@@ -1715,6 +1796,16 @@ export const Field: z.ZodObject<{
             create: "create";
         }>>;
     }, z.core.$loose>, z.ZodObject<{
+        rule: z.ZodLiteral<"postalCode">;
+        value: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+            field: z.ZodString;
+        }, z.core.$loose>]>>;
+        message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            update: "update";
+            create: "create";
+        }>>;
+    }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodLiteral<"crop">;
         value: z.ZodObject<{
             ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
@@ -1835,7 +1926,16 @@ export function fromMinorUnits(amount: number, currency: string): number;
 export function fromSearchParams(params: URLSearchParams): ListQuery;
 
 // @public
+export function getAddressRequiredParts(field: Pick<Field, 'settings'>): AddressPart[];
+
+// @public
 export function getCurrencyDigits(code: string): number;
+
+// @public
+export function getLinkNewTab(field: Pick<Field, 'settings'>): LinkNewTab;
+
+// @public
+export function getLinkTypes(field: Pick<Field, 'resource' | 'settings'>): LinkType[];
 
 // @public
 export function getMediaLibraries(definition: MediaLibrariesDefinition | null, field: {
@@ -1852,10 +1952,16 @@ export const Id: z.ZodString;
 export type Id = z.infer<typeof Id>;
 
 // @public
+export function isAddressPart(value: unknown): value is AddressPart;
+
+// @public
 export function isBuiltInItemAction(id: string): id is BuiltInItemAction;
 
 // @public
 export function isBuiltInLink(id: string): id is BuiltInLinkAction;
+
+// @public
+export function isBuiltInLinkType(type: string): type is BuiltInLinkType;
 
 // @public
 export function isCurrencyCode(code: unknown): code is CurrencyCode;
@@ -1864,10 +1970,16 @@ export function isCurrencyCode(code: unknown): code is CurrencyCode;
 export function isCursorPage(meta: object): meta is CursorPageMeta;
 
 // @public
+export function isExternalUrl(url: string): boolean;
+
+// @public
 export function isFilled(value: unknown): boolean;
 
 // @public
 export function isFilterRange(value: unknown): value is FilterRange;
+
+// @public
+export function isPostalCode(code: string, country?: string | null): boolean;
 
 // @public
 export function isProblem(value: unknown): value is Problem;
@@ -1926,6 +2038,77 @@ export const LayoutNode: z.ZodObject<{
 
 // @public (undocumented)
 export type LayoutNode = z.infer<typeof LayoutNode>;
+
+// @public
+export type LinkNewTab = 'choose' | 'external' | 'never';
+
+// @public
+export const LinkSettings: z.ZodObject<{
+    types: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodEnum<{
+        email: "email";
+        url: "url";
+        tel: "tel";
+        page: "page";
+        file: "file";
+    }>, z.ZodObject<{
+        id: z.ZodString;
+        label: z.ZodString;
+        pattern: z.ZodOptional<z.ZodString>;
+        placeholder: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>]>>>;
+    newTab: z.ZodOptional<z.ZodEnum<{
+        never: "never";
+        choose: "choose";
+        external: "external";
+    }>>;
+    label: z.ZodOptional<z.ZodEnum<{
+        required: "required";
+        optional: "optional";
+        none: "none";
+    }>>;
+    libraries: z.ZodOptional<z.ZodArray<z.ZodString>>;
+}, z.core.$loose>;
+
+// @public
+export type LinkSettings = z.infer<typeof LinkSettings>;
+
+// @public
+export interface LinkType {
+    id: string;
+    label?: string;
+    pattern?: string;
+    placeholder?: string;
+}
+
+// @public
+export const LinkTypeSetting: z.ZodObject<{
+    id: z.ZodString;
+    label: z.ZodString;
+    pattern: z.ZodOptional<z.ZodString>;
+    placeholder: z.ZodOptional<z.ZodString>;
+}, z.core.$loose>;
+
+// @public
+export type LinkTypeSetting = z.infer<typeof LinkTypeSetting>;
+
+// @public (undocumented)
+export const LinkValue: z.ZodObject<{
+    type: z.ZodString;
+    url: z.ZodOptional<z.ZodString>;
+    page: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+        id: z.ZodString;
+        resource: z.ZodOptional<z.ZodString>;
+        label: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>]>>;
+    file: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+        id: z.ZodString;
+    }, z.core.$loose>]>>;
+    label: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodString, z.ZodRecord<z.ZodString, z.ZodNullable<z.ZodString>>]>>>;
+    newTab: z.ZodOptional<z.ZodBoolean>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type LinkValue = z.infer<typeof LinkValue>;
 
 // @public
 export function lintDefinition(definition: DefinitionInput): ValidationIssue[];
@@ -2422,6 +2605,16 @@ export const namedSchemas: {
             create: "create";
         }>>;
     }, z.core.$loose>, z.ZodObject<{
+        rule: z.ZodLiteral<"postalCode">;
+        value: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+            field: z.ZodString;
+        }, z.core.$loose>]>>;
+        message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            update: "update";
+            create: "create";
+        }>>;
+    }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodLiteral<"crop">;
         value: z.ZodObject<{
             ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
@@ -2555,6 +2748,16 @@ export const namedSchemas: {
                 create: "create";
             }>>;
         }, z.core.$loose>, z.ZodObject<{
+            rule: z.ZodLiteral<"postalCode">;
+            value: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+                field: z.ZodString;
+            }, z.core.$loose>]>>;
+            message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                update: "update";
+                create: "create";
+            }>>;
+        }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodLiteral<"crop">;
             value: z.ZodObject<{
                 ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
@@ -2651,6 +2854,51 @@ export const namedSchemas: {
                 external: "external";
             }>>;
         }, z.core.$loose>>;
+    }, z.core.$loose>;
+    LinkTypeSetting: z.ZodObject<{
+        id: z.ZodString;
+        label: z.ZodString;
+        pattern: z.ZodOptional<z.ZodString>;
+        placeholder: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>;
+    LinkSettings: z.ZodObject<{
+        types: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodEnum<{
+            email: "email";
+            url: "url";
+            tel: "tel";
+            page: "page";
+            file: "file";
+        }>, z.ZodObject<{
+            id: z.ZodString;
+            label: z.ZodString;
+            pattern: z.ZodOptional<z.ZodString>;
+            placeholder: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>]>>>;
+        newTab: z.ZodOptional<z.ZodEnum<{
+            never: "never";
+            choose: "choose";
+            external: "external";
+        }>>;
+        label: z.ZodOptional<z.ZodEnum<{
+            required: "required";
+            optional: "optional";
+            none: "none";
+        }>>;
+        libraries: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    }, z.core.$loose>;
+    AddressSettings: z.ZodObject<{
+        country: z.ZodOptional<z.ZodString>;
+        countries: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        preferred: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        required: z.ZodOptional<z.ZodArray<z.ZodEnum<{
+            country: "country";
+            region: "region";
+            postalCode: "postalCode";
+            street: "street";
+            unit: "unit";
+            city: "city";
+        }>>>;
+        point: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>;
     DateRangeSettings: z.ZodObject<{
         time: z.ZodOptional<z.ZodBoolean>;
@@ -2946,6 +3194,16 @@ export const namedSchemas: {
                     create: "create";
                 }>>;
             }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"postalCode">;
+                value: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+                    field: z.ZodString;
+                }, z.core.$loose>]>>;
+                message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>>;
+            }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodLiteral<"crop">;
                 value: z.ZodObject<{
                     ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
@@ -3159,6 +3417,16 @@ export const namedSchemas: {
                 value: z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
                     field: z.ZodString;
                 }, z.core.$loose>]>;
+                message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>>;
+            }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"postalCode">;
+                value: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+                    field: z.ZodString;
+                }, z.core.$loose>]>>;
                 message: z.ZodOptional<z.ZodString>;
                 mode: z.ZodOptional<z.ZodEnum<{
                     update: "update";
@@ -3420,6 +3688,16 @@ export const namedSchemas: {
                     value: z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
                         field: z.ZodString;
                     }, z.core.$loose>]>;
+                    message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        update: "update";
+                        create: "create";
+                    }>>;
+                }, z.core.$loose>, z.ZodObject<{
+                    rule: z.ZodLiteral<"postalCode">;
+                    value: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+                        field: z.ZodString;
+                    }, z.core.$loose>]>>;
                     message: z.ZodOptional<z.ZodString>;
                     mode: z.ZodOptional<z.ZodEnum<{
                         update: "update";
@@ -3942,6 +4220,16 @@ export const namedSchemas: {
                         create: "create";
                     }>>;
                 }, z.core.$loose>, z.ZodObject<{
+                    rule: z.ZodLiteral<"postalCode">;
+                    value: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+                        field: z.ZodString;
+                    }, z.core.$loose>]>>;
+                    message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        update: "update";
+                        create: "create";
+                    }>>;
+                }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodLiteral<"crop">;
                     value: z.ZodObject<{
                         ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
@@ -4197,6 +4485,16 @@ export const namedSchemas: {
                         value: z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
                             field: z.ZodString;
                         }, z.core.$loose>]>;
+                        message: z.ZodOptional<z.ZodString>;
+                        mode: z.ZodOptional<z.ZodEnum<{
+                            update: "update";
+                            create: "create";
+                        }>>;
+                    }, z.core.$loose>, z.ZodObject<{
+                        rule: z.ZodLiteral<"postalCode">;
+                        value: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+                            field: z.ZodString;
+                        }, z.core.$loose>]>>;
                         message: z.ZodOptional<z.ZodString>;
                         mode: z.ZodOptional<z.ZodEnum<{
                             update: "update";
@@ -4558,8 +4856,8 @@ export const namedSchemas: {
             reason: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>>>;
         refresh: z.ZodOptional<z.ZodEnum<{
-            list: "list";
             none: "none";
+            list: "list";
             items: "items";
         }>>;
         redirect: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
@@ -4603,8 +4901,8 @@ export const namedSchemas: {
                 reason: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>>>;
             refresh: z.ZodOptional<z.ZodEnum<{
-                list: "list";
                 none: "none";
+                list: "list";
                 items: "items";
             }>>;
             redirect: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
@@ -4652,8 +4950,8 @@ export const namedSchemas: {
                     reason: z.ZodOptional<z.ZodString>;
                 }, z.core.$loose>>>;
                 refresh: z.ZodOptional<z.ZodEnum<{
-                    list: "list";
                     none: "none";
+                    list: "list";
                     items: "items";
                 }>>;
                 redirect: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
@@ -5015,6 +5313,32 @@ export const namedSchemas: {
         lng: z.ZodNumber;
         address: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>;
+    AddressValue: z.ZodObject<{
+        street: z.ZodOptional<z.ZodString>;
+        unit: z.ZodOptional<z.ZodString>;
+        city: z.ZodOptional<z.ZodString>;
+        region: z.ZodOptional<z.ZodString>;
+        postalCode: z.ZodOptional<z.ZodString>;
+        country: z.ZodOptional<z.ZodString>;
+        point: z.ZodOptional<z.ZodObject<{
+            lat: z.ZodNumber;
+            lng: z.ZodNumber;
+        }, z.core.$loose>>;
+    }, z.core.$loose>;
+    LinkValue: z.ZodObject<{
+        type: z.ZodString;
+        url: z.ZodOptional<z.ZodString>;
+        page: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+            id: z.ZodString;
+            resource: z.ZodOptional<z.ZodString>;
+            label: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>]>>;
+        file: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+            id: z.ZodString;
+        }, z.core.$loose>]>>;
+        label: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodString, z.ZodRecord<z.ZodString, z.ZodNullable<z.ZodString>>]>>>;
+        newTab: z.ZodOptional<z.ZodBoolean>;
+    }, z.core.$loose>;
     DateRangeValue: z.ZodObject<{
         start: z.ZodNullable<z.ZodString>;
         end: z.ZodNullable<z.ZodString>;
@@ -5026,6 +5350,9 @@ export const namedSchemas: {
         currency: z.ZodString;
     }, z.core.$loose>;
 };
+
+// @public
+export function normalizePostalCode(code: string, country?: string | null): string;
 
 // @public (undocumented)
 const Option_2: z.ZodObject<{
@@ -5089,10 +5416,13 @@ export type Passkey = z.infer<typeof Passkey>;
 export const PASSWORD_CONFIRMATION_PROBLEM_TYPE = "urn:panneau:problem:password-confirmation";
 
 // @public
-export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "json", "tel", "daterange", "money", "in", "accept", "maxSize", "before", "after", "crop"];
+export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "json", "tel", "postalCode", "daterange", "money", "in", "accept", "maxSize", "before", "after", "crop"];
 
 // @public (undocumented)
 export type PortableRule = (typeof PORTABLE_RULES)[number];
+
+// @public
+export const POSTAL_CODE_COUNTRIES: readonly string[];
 
 // @public (undocumented)
 export const PreviewResponse: z.ZodObject<{
@@ -5158,6 +5488,13 @@ export function renderedCropSize(transform: Pick<MediaTransform, 'crop' | 'rotat
 
 // @public
 export const RESERVED_ROUTE_SEGMENTS: readonly ["resources", "pages", "media", "search", "account", "auth"];
+
+// @public
+export function resolveLinkNewTab(newTab: LinkNewTab, link: {
+    type?: unknown;
+    url?: unknown;
+    newTab?: unknown;
+}): boolean;
 
 // @public (undocumented)
 export const Resource: z.ZodObject<{
@@ -5280,6 +5617,16 @@ export const Resource: z.ZodObject<{
             value: z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
                 field: z.ZodString;
             }, z.core.$loose>]>;
+            message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                update: "update";
+                create: "create";
+            }>>;
+        }, z.core.$loose>, z.ZodObject<{
+            rule: z.ZodLiteral<"postalCode">;
+            value: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+                field: z.ZodString;
+            }, z.core.$loose>]>>;
             message: z.ZodOptional<z.ZodString>;
             mode: z.ZodOptional<z.ZodEnum<{
                 update: "update";
@@ -5541,6 +5888,16 @@ export const Resource: z.ZodObject<{
                 value: z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
                     field: z.ZodString;
                 }, z.core.$loose>]>;
+                message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>>;
+            }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"postalCode">;
+                value: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+                    field: z.ZodString;
+                }, z.core.$loose>]>>;
                 message: z.ZodOptional<z.ZodString>;
                 mode: z.ZodOptional<z.ZodEnum<{
                     update: "update";
@@ -5835,6 +6192,16 @@ export const Rule: z.ZodUnion<readonly [z.ZodObject<{
     value: z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
         field: z.ZodString;
     }, z.core.$loose>]>;
+    message: z.ZodOptional<z.ZodString>;
+    mode: z.ZodOptional<z.ZodEnum<{
+        update: "update";
+        create: "create";
+    }>>;
+}, z.core.$loose>, z.ZodObject<{
+    rule: z.ZodLiteral<"postalCode">;
+    value: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+        field: z.ZodString;
+    }, z.core.$loose>]>>;
     message: z.ZodOptional<z.ZodString>;
     mode: z.ZodOptional<z.ZodEnum<{
         update: "update";

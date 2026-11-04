@@ -1,0 +1,44 @@
+/* The search, the parts, then the map. */
+.address {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-3);
+}
+
+/* The parts on a grid of six columns: the street and its unit, then the city, the region and the
+   postal code in the order of the country. */
+.parts {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--panneau-space-3);
+}
+
+.part {
+    grid-column: span 2;
+    min-width: 0;
+}
+
+.country {
+    grid-column: 1 / -1;
+}
+
+.street {
+    grid-column: span 4;
+}
+
+.map {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-2);
+}
+
+.remove {
+    align-self: flex-start;
+}
+
+@media (max-width: 40rem) {
+    .part,
+    .street {
+        grid-column: 1 / -1;
+    }
+}

@@ -1,0 +1,12 @@
+/* The type, its input, the label, then the new tab. */
+.link {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--panneau-space-3);
+}
+
+.link > :first-child {
+    align-self: flex-start;
+    max-width: 100%;
+}

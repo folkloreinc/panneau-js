@@ -22,6 +22,8 @@ export {
     MoneyDisplay,
     NumberDisplay,
     RegionDisplay,
+    AddressDisplay,
+    LinkDisplay,
     RelationDisplay,
     RichTextDisplay,
     SelectDisplay,

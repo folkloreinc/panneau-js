@@ -4,9 +4,11 @@ import { lintDefinition } from './lint';
 import { BootConfig } from './schemas/boot';
 import { Definition } from './schemas/definition';
 import {
+    AddressSettings,
     DateRangeSettings,
     DurationSettings,
     type Field,
+    LinkSettings,
     MoneySettings,
     RichTextSettings,
 } from './schemas/field';
@@ -44,11 +46,13 @@ const SETTINGS: Readonly<Record<string, z.ZodType>> = {
     duration: DurationSettings,
     daterange: DateRangeSettings,
     money: MoneySettings,
+    link: LinkSettings,
+    address: AddressSettings,
 };
 
 /**
  * Checks the settings of the fields whose type the protocol describes the settings of (`richtext`,
- * `duration`, `daterange`, `money`), nested ones included.
+ * `duration`, `daterange`, `money`, `link`, `address`), nested ones included.
  */
 function checkFieldSettings(fields: readonly Field[], path: string): ValidationIssue[] {
     return fields.flatMap((field, index) => {
@@ -75,7 +79,7 @@ function checkFieldSettings(fields: readonly Field[], path: string): ValidationI
  * Validates a definition, as returned by `GET /definition`: against the schema, then the
  * references between its parts (see `lintDefinition()`), and the settings of field types that
  * the protocol describes (`RichTextSettings`, `DurationSettings`, `DateRangeSettings`,
- * `MoneySettings`).
+ * `MoneySettings`, `LinkSettings`, `AddressSettings`).
  */
 export function validateDefinition(input: unknown): ValidationResult<Definition> {
     const result = validate(Definition, input);

@@ -1,6 +1,8 @@
 import { z } from 'zod';
 
 import {
+    ADDRESS_PARTS,
+    BUILT_IN_LINK_TYPES,
     DATE_RANGE_OPEN_BOUNDS,
     DURATION_UNITS,
     PORTABLE_RULES,
@@ -23,6 +25,10 @@ const Ratio = z
     .regex(/^[1-9][0-9]*:[1-9][0-9]*$/)
     .meta({ description: 'An aspect ratio, as `width:height`: `16:9`.' });
 
+const CountryCode = z
+    .string()
+    .regex(/^[A-Z]{2}$/)
+    .meta({ description: 'An ISO 3166-1 alpha-2 code, in capitals: `CA`.' });
 const CurrencyCode = z
     .string()
     .regex(/^[A-Z]{3}$/)
@@ -83,6 +89,23 @@ export const Rule = z
         }),
         z.looseObject({ rule: z.enum(['before', 'after']), value: DateBound, message, mode }),
         z.looseObject({
+            rule: z.literal('postalCode'),
+            value: z
+                .union([
+                    CountryCode,
+                    z.looseObject({ field: z.string().min(1) }).meta({
+                        description: 'Another field of the form, which holds the country.',
+                    }),
+                ])
+                .optional()
+                .meta({
+                    description:
+                        'The country of the postal code. Without it, or without a country, any postal code passes. An `address` value has its own country.',
+                }),
+            message,
+            mode,
+        }),
+        z.looseObject({
             rule: z.literal('crop'),
             value: z.looseObject({
                 ratios: z.array(Ratio).optional().meta({
@@ -112,7 +135,7 @@ export const Rule = z
     ])
     .meta({
         description:
-            'A portable validation rule. `min` and `max` apply to numbers, to the amount of `money` values (in minor units), and to the length of text and arrays. `daterange` and `money` are implied by their types, with the `open` bounds and the `currencies` of the field (decision 0053). `accept` lists MIME types (`image/*`). `maxSize` is in bytes. `crop` checks the transform of each image of an `image` or `media` value (decision 0031).',
+            'A portable validation rule. `min` and `max` apply to numbers, to the amount of `money` values (in minor units), and to the length of text and arrays. `daterange` and `money` are implied by their types, with the `open` bounds and the `currencies` of the field (decision 0053). `accept` lists MIME types (`image/*`). `maxSize` is in bytes. `crop` checks the transform of each image of an `image` or `media` value (decision 0031). `postalCode` checks a postal code against the format of its country, for the countries whose format Panneau knows: Canada and the United States (decision 0054).',
     });
 
 export const BlockType = z.looseObject({
@@ -161,7 +184,7 @@ export const Field = z
             .optional()
             .meta({
                 description:
-                    '`relation`: id of the related resource. `media`, `image`: id of a resource of kind `media`, or a list of them; without it, every library of the definition (decision 0027).',
+                    '`relation`: id of the related resource. `media`, `image`: id of a resource of kind `media`, or a list of them; without it, every library of the definition (decision 0027). `link`: the resources of its `page` links (decision 0055).',
             }),
         accept: z.array(z.string()).optional().meta({
             description:
@@ -278,6 +301,82 @@ export const DurationSettings = z
             'The `settings` of a `duration` field. Its value is a whole number of `unit`, zero or more. A day is 24 hours.',
     });
 
+/** A type of link that a site adds to a `link` field, in its `settings.types`. */
+export const LinkTypeSetting = z
+    .looseObject({
+        id: z
+            .string()
+            .min(1)
+            .refine((id) => !(BUILT_IN_LINK_TYPES as readonly string[]).includes(id), {
+                message: "A type of a site can't have the id of a built-in type.",
+            })
+            .meta({ description: 'The id of the type, in the `type` of values: `anchor`.' }),
+        label: z.string().meta({ description: 'The name of the type, in the field.' }),
+        pattern: z.string().optional().meta({
+            description: 'The pattern that the `url` of its links matches: `^#[\\w-]+$`.',
+        }),
+        placeholder: z.string().optional(),
+    })
+    .meta({
+        description:
+            'A type of link that a site adds: its `url` is the text typed, checked against its `pattern`.',
+    });
+
+/** The `settings` of a `link` field (decision 0055). `validateDefinition()` checks them. */
+export const LinkSettings = z
+    .looseObject({
+        types: z
+            .array(z.union([z.enum(BUILT_IN_LINK_TYPES), LinkTypeSetting]))
+            .min(1)
+            .optional()
+            .meta({
+                description:
+                    'The types the field offers, in order: `url`, `page`, `email`, `tel`, `file`, and the types of the site. Defaults to `url`, `email` and `tel`, after `page` when the field has a `resource`.',
+            }),
+        newTab: z.enum(['choose', 'external', 'never']).optional().meta({
+            description:
+                'Which links open in a new tab: as the user chooses (the default), by their type (`url` and `file` links), or none.',
+        }),
+        label: z.enum(['optional', 'required', 'none']).optional().meta({
+            description: 'Whether links have a label: optional (the default), required, or none.',
+        }),
+        libraries: z.array(z.string().min(1)).optional().meta({
+            description:
+                'The media libraries of `file` links. Defaults to every library of the definition.',
+        }),
+    })
+    .meta({
+        description:
+            'The `settings` of a `link` field. Its value is `{ "type", "url", "page", "file", "label", "newTab" }` (`LinkValue`).',
+    });
+
+/** The `settings` of an `address` field (decision 0054). `validateDefinition()` checks them. */
+export const AddressSettings = z
+    .looseObject({
+        country: CountryCode.optional().meta({
+            description: 'The country of a new address. The field sets it once a part is typed.',
+        }),
+        countries: z.array(CountryCode).optional().meta({
+            description:
+                "The countries the field allows. With one, the field doesn't show the country, and sets it.",
+        }),
+        preferred: z
+            .array(CountryCode)
+            .optional()
+            .meta({ description: 'The countries shown first.' }),
+        required: z.array(z.enum(ADDRESS_PARTS)).optional().meta({
+            description:
+                'The parts a filled address must have. Defaults to `street`, `city` and `country`.',
+        }),
+        point: z.boolean().optional().meta({
+            description: 'Adds a map, and the point of the address to the value.',
+        }),
+    })
+    .meta({
+        description:
+            'The `settings` of an `address` field. Its value is `{ "street", "unit", "city", "region", "postalCode", "country", "point" }` (`AddressValue`).',
+    });
+
 /** The `settings` of a `daterange` field (decision 0053). `validateDefinition()` checks them. */
 export const DateRangeSettings = z
     .looseObject({
@@ -327,6 +426,12 @@ export type Field = z.infer<typeof Field>;
 export type RichTextStyle = z.infer<typeof RichTextStyle>;
 /** The `settings` of a `richtext` field. */
 export type RichTextSettings = z.infer<typeof RichTextSettings>;
+/** A type of link that a site adds to a `link` field. */
+export type LinkTypeSetting = z.infer<typeof LinkTypeSetting>;
+/** The `settings` of a `link` field. */
+export type LinkSettings = z.infer<typeof LinkSettings>;
+/** The `settings` of an `address` field. */
+export type AddressSettings = z.infer<typeof AddressSettings>;
 /** The `settings` of a `daterange` field. */
 export type DateRangeSettings = z.infer<typeof DateRangeSettings>;
 /** The `settings` of a `money` field. */

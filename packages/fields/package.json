@@ -118,6 +118,16 @@
             "types": "./dist/region/index.d.ts",
             "default": "./dist/region/index.js"
         },
+        "./address": {
+            "@panneau/source": "./src/address/index.ts",
+            "types": "./dist/address/index.d.ts",
+            "default": "./dist/address/index.js"
+        },
+        "./link": {
+            "@panneau/source": "./src/link/index.ts",
+            "types": "./dist/link/index.d.ts",
+            "default": "./dist/link/index.js"
+        },
         "./daterange": {
             "@panneau/source": "./src/daterange/index.ts",
             "types": "./dist/daterange/index.d.ts",

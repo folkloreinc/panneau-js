@@ -45,6 +45,7 @@ export const formsFr: Record<string, string> = {
     'panneau.forms.rule.url': 'Cette valeur doit être une URL.',
     'panneau.forms.rule.json': 'Cette valeur doit être du JSON valide : un objet ou une liste.',
     'panneau.forms.rule.tel': 'Cette valeur doit être un numéro de téléphone complet.',
+    'panneau.forms.rule.postalCode': 'Cette valeur doit être un code postal de son pays.',
     'panneau.forms.rule.daterangeStart': 'Indiquez le début de cette période.',
     'panneau.forms.rule.daterangeEnd': 'Indiquez la fin de cette période.',
     'panneau.forms.rule.daterangeOrder': 'La fin ne peut pas précéder le début.',

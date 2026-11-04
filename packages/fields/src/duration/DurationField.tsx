@@ -10,7 +10,7 @@ import styles from './DurationField.module.css';
 export type { DurationUnit };
 
 /**
- * The unit of a duration's value and the parts that show it (decision 0057). Every unit is
+ * The unit of a duration's value and the parts that show it (decision 0056). Every unit is
  * `seconds`, `minutes`, `hours` or `days`, and a day is 24 hours.
  */
 export interface DurationUnits {

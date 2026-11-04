@@ -38,7 +38,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0030](0030-search-parameters-and-scope.md)           | The parameters of the global search, its errors, a scope per resource         | Accepted                          |
 | [0031](0031-image-editor-and-image-field.md)          | An image editor with tools, and an `image` field                              | Accepted                          |
 | [0032](0032-field-checks-and-slugs.md)                | Fields check their value with the backend, and a generic slug                 | Accepted                          |
-| [0033](0033-more-field-types.md)                      | More field types: tel, range, duration, json, tags, embed and location        | Amended by 0047, 0057             |
+| [0033](0033-more-field-types.md)                      | More field types: tel, range, duration, json, tags, embed and location        | Amended by 0047, 0056             |
 | [0034](0034-skeletons-while-content-loads.md)         | Skeletons while content loads                                                 | Accepted                          |
 | [0035](0035-rich-text-kept-html.md)                   | Rich text keeps HTML it doesn't edit, inert in the admin                      | Accepted                          |
 | [0036](0036-default-icon-loader.md)                   | Lucide's icon loader is the default of `createPanneauApp()` only              | Accepted                          |
@@ -59,4 +59,6 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0051](0051-passkeys.md)                              | Passkeys                                                                      | Proposed                          |
 | [0052](0052-oauth-providers.md)                       | OAuth providers on the login page                                             | Proposed                          |
 | [0053](0053-date-ranges-and-money.md)                 | Date ranges and money                                                         | Proposed                          |
-| [0057](0057-duration-units.md)                        | Durations in a declared unit, with days                                       | Proposed                          |
+| [0054](0054-addresses.md)                             | Postal addresses                                                              | Proposed                          |
+| [0055](0055-links.md)                                 | Links                                                                         | Proposed                          |
+| [0056](0056-duration-units.md)                        | Durations in a declared unit, with days                                       | Proposed                          |

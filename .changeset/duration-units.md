@@ -5,7 +5,7 @@
 '@panneau/intl': minor
 ---
 
-`duration` values in a declared unit, with days ([decision 0057](https://github.com/folkloreinc/panneau-js/blob/v5.x/docs/decisions/0057-duration-units.md)).
+`duration` values in a declared unit, with days ([decision 0056](https://github.com/folkloreinc/panneau-js/blob/v5.x/docs/decisions/0056-duration-units.md)).
 
 - **`settings.unit`** is the unit of a `duration` value: `seconds` (the default, as before), `minutes`, `hours` or `days`. The value stays a whole number in that unit, and so do the `min` and `max` rules. A day is 24 hours.
 - **`settings.precision`** takes the four units, as the smallest part the input shows. It defaults to the unit, and a precision finer than the unit is raised to it.

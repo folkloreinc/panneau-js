@@ -1,4 +1,4 @@
-# 0057: Durations in a declared unit, with days
+# 0056: Durations in a declared unit, with days
 
 - Status: proposed
 - Date: 2026-11-04

@@ -75,6 +75,8 @@ export const BUILT_IN_FIELD_TYPES = [
     'location',
     'country',
     'region',
+    'address',
+    'link',
     'daterange',
     'money',
 ] as const;
@@ -90,6 +92,7 @@ export const PORTABLE_RULES = [
     'url',
     'json',
     'tel',
+    'postalCode',
     'daterange',
     'money',
     'in',
@@ -100,6 +103,19 @@ export const PORTABLE_RULES = [
     'crop',
 ] as const;
 export type PortableRule = (typeof PORTABLE_RULES)[number];
+
+/** The parts of an `address` value, in the order of the field (decision 0054). */
+export const ADDRESS_PARTS = ['country', 'street', 'unit', 'city', 'region', 'postalCode'] as const;
+/** A part of an `address` value. */
+export type AddressPart = (typeof ADDRESS_PARTS)[number];
+
+/** The parts a filled address must have, without `settings.required` (decision 0054). */
+export const DEFAULT_ADDRESS_REQUIRED_PARTS: readonly AddressPart[] = ['street', 'city', 'country'];
+
+/** The built-in types of `link` values (decision 0055). Sites add others in `settings.types`. */
+export const BUILT_IN_LINK_TYPES = ['url', 'page', 'email', 'tel', 'file'] as const;
+/** A built-in type of `link` values. */
+export type BuiltInLinkType = (typeof BUILT_IN_LINK_TYPES)[number];
 
 /** Which bounds of a `daterange` value can be `null` (decision 0053). */
 export const DATE_RANGE_OPEN_BOUNDS = ['start', 'end', 'both'] as const;

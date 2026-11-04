@@ -5,10 +5,14 @@ import { lintDefinition } from '../lint';
 import { validate, validateDefinition } from '../validate';
 import {
     Action,
+    AddressSettings,
+    AddressValue,
     Definition,
     DurationSettings,
     Field,
     Item,
+    LinkSettings,
+    LinkValue,
     ListResponse,
     MediaTransform,
     Problem,
@@ -123,6 +127,55 @@ describe('Field', () => {
         expect(DurationSettings.safeParse({ largestUnit: 'months' }).success).toBe(false);
     });
 
+    it('describes the settings of link and address fields', () => {
+        expect(
+            LinkSettings.safeParse({
+                types: ['page', 'url', { id: 'anchor', label: 'Anchor', pattern: '^#' }],
+                newTab: 'external',
+                label: 'required',
+            }).success,
+        ).toBe(true);
+        expect(LinkSettings.safeParse({ types: ['ftp'] }).success).toBe(false);
+        expect(LinkSettings.safeParse({ types: [{ id: 'url', label: 'URL' }] }).success).toBe(
+            false,
+        );
+        expect(LinkSettings.safeParse({ label: 'yes' }).success).toBe(false);
+        expect(
+            AddressSettings.safeParse({
+                country: 'CA',
+                countries: ['CA', 'US'],
+                required: ['street', 'postalCode'],
+                point: true,
+            }).success,
+        ).toBe(true);
+        expect(AddressSettings.safeParse({ country: 'ca' }).success).toBe(false);
+        expect(AddressSettings.safeParse({ required: ['zip'] }).success).toBe(false);
+    });
+
+    it('describes address and link values', () => {
+        expect(
+            AddressValue.safeParse({
+                street: '1234 Rue Saint-Denis',
+                city: 'Montréal',
+                region: 'QC',
+                postalCode: 'H2X 1Y4',
+                country: 'CA',
+                point: { lat: 45.5, lng: -73.6 },
+            }).success,
+        ).toBe(true);
+        expect(AddressValue.safeParse({ country: 'Canada' }).success).toBe(false);
+        expect(
+            LinkValue.safeParse({
+                type: 'page',
+                page: { id: '12', resource: 'pages', label: 'About' },
+                url: 'https://example.com/about',
+                label: { fr: 'À propos', en: 'About' },
+                newTab: false,
+            }).success,
+        ).toBe(true);
+        expect(LinkValue.safeParse({ url: 'https://example.com' }).success).toBe(false);
+    });
+
     it('checks the parameters of known rules', () => {
         expect(
             Field.safeParse({ name: 'title', type: 'text', rules: [{ rule: 'max', value: '12' }] })
@@ -132,6 +185,13 @@ describe('Field', () => {
             Field.safeParse({ name: 'title', type: 'text', rules: [{ rule: 'max', value: 12 }] })
                 .success,
         ).toBe(true);
+        const postal = (value: unknown) =>
+            Field.safeParse({ name: 'zip', type: 'text', rules: [{ rule: 'postalCode', value }] })
+                .success;
+        expect(postal('CA')).toBe(true);
+        expect(postal({ field: 'country' })).toBe(true);
+        expect(postal(undefined)).toBe(true);
+        expect(postal('Canada')).toBe(false);
     });
 
     it('accepts rules added by later versions', () => {
@@ -277,6 +337,26 @@ describe('validateDefinition', () => {
         const result = validateDefinition(definition);
         expect(result.success ? [] : result.issues.map((issue) => issue.path)).toEqual([
             `resources.0.fields.${String(count + 1)}.settings.largestUnit`,
+        ]);
+    });
+});
+
+describe('validateDefinition of links and addresses', () => {
+    it('checks the settings of link and address fields', () => {
+        const definition = createDefinition();
+        const resource = definition.resources[0];
+        if (resource === undefined) {
+            throw new Error('Fixture has no resource.');
+        }
+        const count = resource.fields.length;
+        resource.fields.push(
+            { name: 'cta', type: 'link', settings: { types: ['url', 'ftp'] } },
+            { name: 'address', type: 'address', settings: { country: 'Canada' } },
+        );
+        const result = validateDefinition(definition);
+        expect(result.success ? [] : result.issues.map((issue) => issue.path)).toEqual([
+            `resources.0.fields.${String(count)}.settings.types.1`,
+            `resources.0.fields.${String(count + 1)}.settings.country`,
         ]);
     });
 });

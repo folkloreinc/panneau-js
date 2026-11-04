@@ -68,7 +68,9 @@ export function UrlField({
                     >
                         <Icon icon={ExternalLink} label={intl.formatMessage(messages.openLink)} />
                     </a>
-                ) : undefined
+                ) : // `null` keeps the control of the input as the link comes and goes: the input
+                // keeps its focus
+                null
             }
         />
     );
