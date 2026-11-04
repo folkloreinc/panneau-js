@@ -17,4 +17,7 @@ export const uiFr: Record<string, string> = {
     'panneau.ui.commandHintMove': 'Choisir',
     'panneau.ui.commandHintOpen': 'Ouvrir',
     'panneau.ui.commandHintClose': 'Fermer',
+    'panneau.ui.rangeStart': 'Début',
+    'panneau.ui.rangeEnd': 'Fin',
+    'panneau.ui.calendar': 'Calendrier',
 };

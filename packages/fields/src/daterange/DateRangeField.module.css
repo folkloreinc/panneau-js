@@ -1,0 +1,9 @@
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-2);
+}
+
+.timeZone {
+    max-width: 20rem;
+}

@@ -118,6 +118,16 @@
             "types": "./dist/region/index.d.ts",
             "default": "./dist/region/index.js"
         },
+        "./daterange": {
+            "@panneau/source": "./src/daterange/index.ts",
+            "types": "./dist/daterange/index.d.ts",
+            "default": "./dist/daterange/index.js"
+        },
+        "./money": {
+            "@panneau/source": "./src/money/index.ts",
+            "types": "./dist/money/index.d.ts",
+            "default": "./dist/money/index.js"
+        },
         "./location": {
             "@panneau/source": "./src/location/index.ts",
             "types": "./dist/location/index.d.ts",

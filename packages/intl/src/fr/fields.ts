@@ -68,5 +68,9 @@ export const fieldsFr: Record<string, string> = {
     'panneau.fields.regionPlaceholder': 'Choisir une région',
     'panneau.fields.noRegions': 'Aucune région ne correspond',
     'panneau.fields.telCountry': 'Pays du numéro',
+    'panneau.fields.allDay': 'Toute la journée',
+    'panneau.fields.timeZone': 'Fuseau horaire',
+    'panneau.fields.noTimeZones': 'Aucun fuseau horaire ne correspond',
+    'panneau.fields.moneyCurrency': 'Devise',
     'panneau.fields.missingPlugin': 'Ce champ a besoin d’un plugin pour le type « {type} ».',
 };
