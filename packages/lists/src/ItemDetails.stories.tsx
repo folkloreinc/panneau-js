@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import type { Field } from '@panneau/protocol';
 
@@ -141,6 +141,64 @@ export const WithGroups: Story = {
             'href',
             'mailto:ada@example.com',
         );
+    },
+};
+
+/**
+ * Places: a country with its flag, and regions with theirs when they have one, in the country of
+ * the item or of their field.
+ */
+export const WithPlaces: Story = {
+    args: {
+        'aria-label': 'Offices',
+        columns: [
+            { id: 'country', label: 'Country', display: 'country' },
+            {
+                id: 'province',
+                label: 'Province',
+                display: 'region',
+                field: { name: 'province', type: 'region', label: 'Province', from: 'country' },
+            },
+            {
+                id: 'state',
+                label: 'State',
+                display: 'region',
+                field: {
+                    name: 'state',
+                    type: 'region',
+                    label: 'State',
+                    settings: { country: 'US' },
+                },
+            },
+            {
+                id: 'mexican_state',
+                label: 'Mexican state',
+                display: 'region',
+                field: {
+                    name: 'mexican_state',
+                    type: 'region',
+                    label: 'Mexican state',
+                    settings: { country: 'MX' },
+                },
+            },
+        ],
+        item: {
+            id: '1',
+            country: 'CA',
+            province: 'QC',
+            state: 'NY',
+            mexican_state: 'JAL',
+        },
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByText('Quebec')).toBeInTheDocument();
+        await expect(canvas.getByText('Jalisco')).toBeInTheDocument();
+        // A flag for Quebec and New York, none for Jalisco: decorative, the names describe them
+        await waitFor(() => expect(canvasElement.querySelectorAll('img')).toHaveLength(2));
+        for (const image of canvasElement.querySelectorAll('img')) {
+            await expect(image).toHaveAttribute('alt', '');
+        }
     },
 };
 

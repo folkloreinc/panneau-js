@@ -64,3 +64,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0056](0056-duration-units.md)                                    | Durations in a declared unit, with days                                       | Proposed                          |
 | [0057](0057-phone-extensions.md)                                  | Phone extensions                                                              | Proposed                          |
 | [0058](0058-multiple-countries-embed-providers-color-palettes.md) | Several countries, the providers of an embed, and color palettes              | Proposed                          |
+| [0059](0059-flags-of-regions.md)                                  | Flags of regions                                                              | Proposed                          |
