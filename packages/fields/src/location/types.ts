@@ -7,13 +7,13 @@ export interface GeocodingResult {
     lng: number;
     /**
      * The parts of its address, when the source knows them: `address` fields fill theirs with them
-     * (decision 0053), and leave out the results without them.
+     * (decision 0054), and leave out the results without them.
      */
     address?: Omit<AddressValue, 'point'>;
 }
 
 /**
- * Where `location` and `address` fields search addresses (decisions 0033 and 0053). Projects bring their own: a service
+ * Where `location` and `address` fields search addresses (decisions 0033 and 0054). Projects bring their own: a service
  * with a key, their backend, or `createNominatimSource()` for small volumes.
  */
 export interface GeocodingSource {

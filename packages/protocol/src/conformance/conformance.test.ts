@@ -12,7 +12,7 @@ function createBackend() {
         type: 'text',
         rules: [{ rule: 'required', mode: 'create' }],
     });
-    // An address and a link, whose parts are checked (decisions 0053 and 0054).
+    // An address and a link, whose parts are checked (decisions 0054 and 0055).
     definition.resources[0]?.fields.push(
         { name: 'venue', type: 'address' },
         { name: 'cta', type: 'link', resource: 'pages' },

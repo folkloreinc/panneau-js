@@ -509,7 +509,7 @@ export const AddressValue = z
     })
     .meta({
         description:
-            'The value of an `address` field (decision 0053): the parts of a postal address, the empty ones left out.',
+            'The value of an `address` field (decision 0054): the parts of a postal address, the empty ones left out.',
     });
 
 export const LinkValue = z
@@ -550,7 +550,7 @@ export const LinkValue = z
             }),
         newTab: z.boolean().optional().meta({ description: 'The link opens in a new tab.' }),
     })
-    .meta({ description: 'The value of a `link` field (decision 0054).' });
+    .meta({ description: 'The value of a `link` field (decision 0055).' });
 
 export type Item = z.infer<typeof Item>;
 export type Pagination = z.infer<typeof Pagination>;

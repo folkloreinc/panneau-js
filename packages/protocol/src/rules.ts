@@ -178,7 +178,7 @@ export function checkRules(
                 valid = typeof value !== 'string' || TEL.test(value);
                 break;
             case 'postalCode': {
-                // The country is a code, or another field of the form (decision 0053)
+                // The country is a code, or another field of the form (decision 0054)
                 const country = isRecord(rule.value)
                     ? getValue(root, String(rule.value.field))
                     : rule.value;
@@ -257,7 +257,7 @@ function rulesOf(field: Field, mode: CheckOptions['mode']): Rule[] {
 const ADDRESS_TEXT_PARTS = ['street', 'unit', 'city', 'region', 'postalCode'] as const;
 
 /**
- * The checks of the parts of an `address` (decision 0053): a filled address, with a part other
+ * The checks of the parts of an `address` (decision 0054): a filled address, with a part other
  * than its country, has its required parts, and a postal code of its country.
  */
 function checkAddress(field: Field, value: unknown, path: string, context: Context) {
@@ -300,7 +300,7 @@ function checkLinkUrl(type: string, url: string, pattern: string | undefined): s
 }
 
 /**
- * The checks of the parts of a `link` (decision 0054): a type of the field, the URL of its type,
+ * The checks of the parts of a `link` (decision 0055): a type of the field, the URL of its type,
  * its page or its file, and its label when the field requires one.
  */
 function checkLink(field: Field, value: unknown, path: string, context: Context) {

@@ -1,4 +1,4 @@
-# 0054: Links
+# 0055: Links
 
 - Status: proposed
 - Date: 2026-11-04

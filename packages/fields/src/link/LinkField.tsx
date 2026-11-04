@@ -75,7 +75,7 @@ function withoutScheme(url: string | undefined, scheme: string): string | null {
 }
 
 /**
- * A link (decision 0054): its type, in a segmented control, then the input of the type (a URL, a
+ * A link (decision 0055): its type, in a segmented control, then the input of the type (a URL, a
  * page searched in the resources of `pages`, an email address, a phone number, a media, or the
  * text of a type of the site), its label per locale, and whether it opens in a new tab. Each part
  * shows the errors of its own path (`link.url`) in a form.

@@ -1,4 +1,4 @@
-// The types of `link` values and their new tabs (decision 0054). This module doesn't import zod.
+// The types of `link` values and their new tabs (decision 0055). This module doesn't import zod.
 import { BUILT_IN_LINK_TYPES, type BuiltInLinkType } from './constants';
 import type { Field } from './schemas/field';
 import { isRecord } from './values';

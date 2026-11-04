@@ -111,7 +111,7 @@ export const Rule = z
     ])
     .meta({
         description:
-            'A portable validation rule. `min` and `max` apply to numbers, and to the length of text and arrays. `accept` lists MIME types (`image/*`). `maxSize` is in bytes. `crop` checks the transform of each image of an `image` or `media` value (decision 0031). `postalCode` checks a postal code against the format of its country, for the countries whose format Panneau knows: Canada and the United States (decision 0053).',
+            'A portable validation rule. `min` and `max` apply to numbers, and to the length of text and arrays. `accept` lists MIME types (`image/*`). `maxSize` is in bytes. `crop` checks the transform of each image of an `image` or `media` value (decision 0031). `postalCode` checks a postal code against the format of its country, for the countries whose format Panneau knows: Canada and the United States (decision 0054).',
     });
 
 export const BlockType = z.looseObject({
@@ -160,7 +160,7 @@ export const Field = z
             .optional()
             .meta({
                 description:
-                    '`relation`: id of the related resource. `media`, `image`: id of a resource of kind `media`, or a list of them; without it, every library of the definition (decision 0027). `link`: the resources of its `page` links (decision 0054).',
+                    '`relation`: id of the related resource. `media`, `image`: id of a resource of kind `media`, or a list of them; without it, every library of the definition (decision 0027). `link`: the resources of its `page` links (decision 0055).',
             }),
         accept: z.array(z.string()).optional().meta({
             description:
@@ -274,7 +274,7 @@ export const LinkTypeSetting = z
             'A type of link that a site adds: its `url` is the text typed, checked against its `pattern`.',
     });
 
-/** The `settings` of a `link` field (decision 0054). `validateDefinition()` checks them. */
+/** The `settings` of a `link` field (decision 0055). `validateDefinition()` checks them. */
 export const LinkSettings = z
     .looseObject({
         types: z
@@ -302,7 +302,7 @@ export const LinkSettings = z
             'The `settings` of a `link` field. Its value is `{ "type", "url", "page", "file", "label", "newTab" }` (`LinkValue`).',
     });
 
-/** The `settings` of an `address` field (decision 0053). `validateDefinition()` checks them. */
+/** The `settings` of an `address` field (decision 0054). `validateDefinition()` checks them. */
 export const AddressSettings = z
     .looseObject({
         country: CountryCode.optional().meta({

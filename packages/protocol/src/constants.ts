@@ -100,15 +100,15 @@ export const PORTABLE_RULES = [
 ] as const;
 export type PortableRule = (typeof PORTABLE_RULES)[number];
 
-/** The parts of an `address` value, in the order of the field (decision 0053). */
+/** The parts of an `address` value, in the order of the field (decision 0054). */
 export const ADDRESS_PARTS = ['country', 'street', 'unit', 'city', 'region', 'postalCode'] as const;
 /** A part of an `address` value. */
 export type AddressPart = (typeof ADDRESS_PARTS)[number];
 
-/** The parts a filled address must have, without `settings.required` (decision 0053). */
+/** The parts a filled address must have, without `settings.required` (decision 0054). */
 export const DEFAULT_ADDRESS_REQUIRED_PARTS: readonly AddressPart[] = ['street', 'city', 'country'];
 
-/** The built-in types of `link` values (decision 0054). Sites add others in `settings.types`. */
+/** The built-in types of `link` values (decision 0055). Sites add others in `settings.types`. */
 export const BUILT_IN_LINK_TYPES = ['url', 'page', 'email', 'tel', 'file'] as const;
 /** A built-in type of `link` values. */
 export type BuiltInLinkType = (typeof BUILT_IN_LINK_TYPES)[number];

@@ -58,5 +58,5 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0050](0050-account-page.md)                          | The account page                                                              | Proposed                          |
 | [0051](0051-passkeys.md)                              | Passkeys                                                                      | Proposed                          |
 | [0052](0052-oauth-providers.md)                       | OAuth providers on the login page                                             | Proposed                          |
-| [0053](0053-addresses.md)                             | Postal addresses                                                              | Proposed                          |
-| [0054](0054-links.md)                                 | Links                                                                         | Proposed                          |
+| [0054](0054-addresses.md)                             | Postal addresses                                                              | Proposed                          |
+| [0055](0055-links.md)                                 | Links                                                                         | Proposed                          |

@@ -59,7 +59,7 @@ const PART_TYPES: Readonly<Record<AddressPart, string>> = {
 };
 
 /**
- * A postal address (decision 0053): the country first, which sets the labels, the order and the
+ * A postal address (decision 0054): the country first, which sets the labels, the order and the
  * regions of the other parts, then the street, the unit, the city, the region and the postal
  * code, which is normalized for the country when it loses focus. With an address search, a place
  * found fills every part; with `point`, a map places the address. Each part shows the errors of

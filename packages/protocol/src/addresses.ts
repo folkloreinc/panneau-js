@@ -1,4 +1,4 @@
-// Addresses (decision 0053): their required parts, and postal codes by country, which clients and
+// Addresses (decision 0054): their required parts, and postal codes by country, which clients and
 // backends normalize, and whose formats the `postalCode` rule checks. This module doesn't import
 // zod.
 import { ADDRESS_PARTS, type AddressPart, DEFAULT_ADDRESS_REQUIRED_PARTS } from './constants';
