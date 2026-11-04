@@ -1,5 +1,20 @@
 # @panneau/lists
 
+## 5.0.0-alpha.15
+
+### Patch Changes
+
+- Updated dependencies [658b3d3]
+- Updated dependencies [97456b6]
+- Updated dependencies [d85d11a]
+- Updated dependencies [b05ef33]
+- Updated dependencies [acdc6e2]
+  - @panneau/protocol@5.0.0-alpha.15
+  - @panneau/intl@5.0.0-alpha.15
+  - @panneau/core@5.0.0-alpha.15
+  - @panneau/fields@5.0.0-alpha.15
+  - @panneau/ui@5.0.0-alpha.15
+
 ## 5.0.0-alpha.14
 
 ### Patch Changes
