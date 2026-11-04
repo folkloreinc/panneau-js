@@ -75,7 +75,8 @@ export const PeopleAndNames: Story = {
     ),
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        await expect(canvas.getAllByRole('listitem')).toHaveLength(2);
+        await expect(canvas.getByRole('listitem', { name: '1Ada Lovelace' })).toBeVisible();
+        await expect(canvas.getByRole('listitem', { name: '2Jane Doe' })).toBeVisible();
         await expect(canvas.getByText('Name only')).toBeVisible();
         await userEvent.click(canvas.getByRole('button', { name: 'Add a credit' }));
         const people = canvas.getAllByRole('combobox', { name: 'Person' });
@@ -87,9 +88,13 @@ export const PeopleAndNames: Story = {
         await userEvent.click(
             await canvas.findByRole('option', { name: 'Add “Hedy Lamarr” as a name' }),
         );
+        // Leave the picker, which searches the name it shows.
+        await userEvent.tab();
         await expect(person).toHaveValue('Hedy Lamarr');
+        await expect(canvas.getAllByText('Name only')).toHaveLength(2);
         await userEvent.click(canvas.getByRole('radio', { name: 'English' }));
-        await expect(canvas.getByRole('textbox', { name: 'Role 1 (English)' })).toHaveValue(
+        const first = canvas.getByRole('listitem', { name: '1Ada Lovelace' });
+        await expect(within(first).getByRole('textbox', { name: 'Role 1 (English)' })).toHaveValue(
             'Director',
         );
     },
