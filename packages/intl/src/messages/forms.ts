@@ -127,6 +127,30 @@ export const formsMessages = {
             id: 'panneau.forms.rule.postalCode',
             defaultMessage: 'This value must be a postal code of its country.',
         }),
+        daterangeStart: defineMessage({
+            id: 'panneau.forms.rule.daterangeStart',
+            defaultMessage: 'Give the start of this range.',
+        }),
+        daterangeEnd: defineMessage({
+            id: 'panneau.forms.rule.daterangeEnd',
+            defaultMessage: 'Give the end of this range.',
+        }),
+        daterangeOrder: defineMessage({
+            id: 'panneau.forms.rule.daterangeOrder',
+            defaultMessage: 'The end can’t be before the start.',
+        }),
+        money: defineMessage({
+            id: 'panneau.forms.rule.money',
+            defaultMessage: 'This value must be an amount in one of the allowed currencies.',
+        }),
+        minAmount: defineMessage<{ value: string }>({
+            id: 'panneau.forms.rule.minAmount',
+            defaultMessage: 'This amount must be at least {value}.',
+        }),
+        maxAmount: defineMessage<{ value: string }>({
+            id: 'panneau.forms.rule.maxAmount',
+            defaultMessage: 'This amount must be at most {value}.',
+        }),
         in: defineMessage({
             id: 'panneau.forms.rule.in',
             defaultMessage: 'This value is not one of the choices.',

@@ -10,6 +10,13 @@ const MESSAGES: Record<string, (failure: RuleFailure) => string> = {
     json: () => 'This value must be valid JSON: an object or an array.',
     tel: () => 'This value must be a complete phone number.',
     postalCode: () => 'This value must be a postal code of its country.',
+    daterange: (failure) =>
+        failure.value === 'start'
+            ? 'Give the start of this range.'
+            : failure.value === 'end'
+              ? 'Give the end of this range.'
+              : 'The end can’t be before the start.',
+    money: () => 'This value must be an amount in one of the allowed currencies.',
     in: () => 'This value is not one of the choices.',
     accept: () => 'This file type is not accepted.',
     maxSize: () => 'This file is too large.',

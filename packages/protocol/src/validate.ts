@@ -3,7 +3,14 @@ import type { z } from 'zod';
 import { lintDefinition } from './lint';
 import { BootConfig } from './schemas/boot';
 import { Definition } from './schemas/definition';
-import { AddressSettings, type Field, LinkSettings, RichTextSettings } from './schemas/field';
+import {
+    AddressSettings,
+    DateRangeSettings,
+    type Field,
+    LinkSettings,
+    MoneySettings,
+    RichTextSettings,
+} from './schemas/field';
 
 export interface ValidationIssue {
     /** Dot path of the invalid value (`resources.0.fields.2.type`), empty for the root. */
@@ -32,16 +39,18 @@ export function validate<T extends z.ZodType>(
     };
 }
 
-/** The schemas of the settings of the field types that the protocol describes. */
+/** The schemas of the settings of the types that the protocol describes. */
 const SETTINGS: Readonly<Record<string, z.ZodType>> = {
     richtext: RichTextSettings,
+    daterange: DateRangeSettings,
+    money: MoneySettings,
     link: LinkSettings,
     address: AddressSettings,
 };
 
 /**
- * Checks the settings of the `richtext`, `link` and `address` fields of a list of fields, nested
- * ones included.
+ * Checks the settings of the fields whose type the protocol describes the settings of (`richtext`,
+ * `daterange`, `money`, `link`, `address`), nested ones included.
  */
 function checkFieldSettings(fields: readonly Field[], path: string): ValidationIssue[] {
     return fields.flatMap((field, index) => {
@@ -67,7 +76,8 @@ function checkFieldSettings(fields: readonly Field[], path: string): ValidationI
 /**
  * Validates a definition, as returned by `GET /definition`: against the schema, then the
  * references between its parts (see `lintDefinition()`), and the settings of field types that
- * the protocol describes (`RichTextSettings`, `LinkSettings` and `AddressSettings`).
+ * the protocol describes (`RichTextSettings`, `DateRangeSettings`, `MoneySettings`, `LinkSettings`,
+ * `AddressSettings`).
  */
 export function validateDefinition(input: unknown): ValidationResult<Definition> {
     const result = validate(Definition, input);

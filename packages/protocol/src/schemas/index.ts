@@ -10,6 +10,7 @@ import {
     AddressValue,
     ContextOptionsResponse,
     CursorPagination,
+    DateRangeValue,
     EmbedResponse,
     EmbedValue,
     FieldCheckRequest,
@@ -23,6 +24,7 @@ import {
     MediaItem,
     MediaReference,
     MediaTransform,
+    MoneyValue,
     Pagination,
     Passkey,
     PreviewResponse,
@@ -60,9 +62,11 @@ import {
 import {
     AddressSettings,
     BlockType,
+    DateRangeSettings,
     Field,
     LinkSettings,
     LinkTypeSetting,
+    MoneySettings,
     RichTextSettings,
     RichTextStyle,
     Rule,
@@ -108,6 +112,8 @@ export const namedSchemas = {
     LinkTypeSetting,
     LinkSettings,
     AddressSettings,
+    DateRangeSettings,
+    MoneySettings,
     LayoutNode,
     Column,
     Filter,
@@ -178,6 +184,8 @@ export const namedSchemas = {
     LocationValue,
     AddressValue,
     LinkValue,
+    DateRangeValue,
+    MoneyValue,
 } satisfies Record<string, z.ZodType>;
 
 /** A registry of the named schemas, used to reference them by name in generated files. */

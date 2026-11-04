@@ -93,6 +93,8 @@ describe('fieldsPlugin', () => {
                 'region',
                 'address',
                 'link',
+                'daterange',
+                'money',
             ].sort(),
         );
         expect(fieldsPlugin.fields).toBe(builtInFields);

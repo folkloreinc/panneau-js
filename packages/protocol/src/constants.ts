@@ -77,6 +77,8 @@ export const BUILT_IN_FIELD_TYPES = [
     'region',
     'address',
     'link',
+    'daterange',
+    'money',
 ] as const;
 export type BuiltInFieldType = (typeof BUILT_IN_FIELD_TYPES)[number];
 
@@ -91,6 +93,8 @@ export const PORTABLE_RULES = [
     'json',
     'tel',
     'postalCode',
+    'daterange',
+    'money',
     'in',
     'accept',
     'maxSize',
@@ -112,6 +116,10 @@ export const DEFAULT_ADDRESS_REQUIRED_PARTS: readonly AddressPart[] = ['street',
 export const BUILT_IN_LINK_TYPES = ['url', 'page', 'email', 'tel', 'file'] as const;
 /** A built-in type of `link` values. */
 export type BuiltInLinkType = (typeof BUILT_IN_LINK_TYPES)[number];
+
+/** Which bounds of a `daterange` value can be `null` (decision 0053). */
+export const DATE_RANGE_OPEN_BOUNDS = ['start', 'end', 'both'] as const;
+export type DateRangeOpenBound = (typeof DATE_RANGE_OPEN_BOUNDS)[number];
 
 /** Layout node types every Panneau frontend renders. */
 export const BUILT_IN_LAYOUT_NODE_TYPES = [

@@ -133,8 +133,16 @@ export type FilterEntry = ComponentType<FilterControlProps>;
 
 /** What the `calendar` layout shows: the month of its items, and how to change it (decision 0044). */
 export interface ListCalendarProps {
-    /** The `date` or `datetime` field each item is shown on the day of. */
+    /**
+     * The `date`, `datetime` or `daterange` field each item is shown on the day of, or on each day
+     * of its range (decision 0053).
+     */
     field: string;
+    /**
+     * The time zone of the field's date-times (`settings.timeZone`), whose days the calendar
+     * shows. Without it, the browser's.
+     */
+    timeZone?: string | null | undefined;
     /** The month shown (`2026-11`). */
     month: string;
     onMonthChange: (month: string) => void;

@@ -90,5 +90,9 @@ export const fieldsFr: Record<string, string> = {
     'panneau.fields.linkFile': 'Fichier',
     'panneau.fields.linkLabel': 'Libellé',
     'panneau.fields.linkNewTab': 'Ouvrir dans un nouvel onglet',
+    'panneau.fields.allDay': 'Toute la journée',
+    'panneau.fields.timeZone': 'Fuseau horaire',
+    'panneau.fields.noTimeZones': 'Aucun fuseau horaire ne correspond',
+    'panneau.fields.moneyCurrency': 'Devise',
     'panneau.fields.missingPlugin': 'Ce champ a besoin d’un plugin pour le type « {type} ».',
 };

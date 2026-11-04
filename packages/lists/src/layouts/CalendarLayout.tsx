@@ -1,14 +1,14 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { currentMonth, isMonth, shiftMonth } from '@panneau/core';
+import { isDateRangeValue } from '@panneau/fields/daterange';
 import { Button, IconButton, usePanneauIntl } from '@panneau/ui';
 
 import { messages } from '../messages';
 import type { ListItem, ListLayoutProps } from '../types';
 import styles from './CalendarLayout.module.css';
 import { ItemTitle } from './ItemTitle';
-
-const DAY = /^\d{4}-\d{2}-\d{2}$/;
+import { getItemDays } from './calendarDays';
 
 function pad(value: number, length = 2): string {
     return String(value).padStart(length, '0');
@@ -18,19 +18,12 @@ function dayOf(date: Date): string {
     return `${pad(date.getUTCFullYear(), 4)}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())}`;
 }
 
-/** The day of a `date` (as it is) or a `datetime` (in the time zone of the browser). */
-function getItemDay(value: unknown): string | null {
-    if (typeof value !== 'string' || value === '') {
-        return null;
+/** What orders the items of a day: a date-time, or the start of a range. */
+function sortKey(value: unknown): string {
+    if (isDateRangeValue(value)) {
+        return value.start ?? value.end ?? '';
     }
-    if (DAY.test(value)) {
-        return value;
-    }
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) {
-        return null;
-    }
-    return `${pad(date.getFullYear(), 4)}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+    return typeof value === 'string' ? value : '';
 }
 
 /** The first day of the week in a locale: 1 for Monday to 7 for Sunday. */
@@ -62,10 +55,10 @@ function getWeeks(month: string, firstDay: number): string[][] {
 }
 
 /**
- * Items on the days of a month (decision 0044): the weeks of the month, from the first day of the
- * week of the locale, with the title of each item as its link, in the order of their dates, and
- * buttons to the previous, the next and the current month. On narrow lists, the days that have
- * items, one under the other.
+ * Items on the days of a month (decision 0044), and a range on each day it covers (decision 0053):
+ * the weeks of the month, from the first day of the week of the locale, with the title of each item
+ * as its link, in the order of their dates, and buttons to the previous, the next and the current
+ * month. On narrow lists, the days that have items, one under the other.
  */
 export function CalendarLayout({
     items,
@@ -101,12 +94,12 @@ export function CalendarLayout({
 
     const byDay = new Map<string, { item: ListItem; value: string }[]>();
     if (calendar !== undefined) {
+        const shown = { first: weeks[0]?.[0] ?? '', last: weeks.at(-1)?.at(-1) ?? '' };
         items.forEach((item) => {
             const value = item[calendar.field];
-            const day = getItemDay(value);
-            if (day !== null) {
-                byDay.set(day, [...(byDay.get(day) ?? []), { item, value: String(value) }]);
-            }
+            getItemDays(value, shown, calendar.timeZone).forEach((day) => {
+                byDay.set(day, [...(byDay.get(day) ?? []), { item, value: sortKey(value) }]);
+            });
         });
     }
     const more = calendar?.more ?? null;

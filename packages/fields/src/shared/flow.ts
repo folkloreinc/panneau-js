@@ -10,6 +10,7 @@ const COMPACT_TYPES = new Set([
     'tel',
     'country',
     'region',
+    'money',
     'number',
     'date',
     'datetime',

@@ -5,6 +5,7 @@ import { BooleanFieldEntry } from '../boolean/BooleanField';
 import { ColorFieldEntry } from '../color/ColorField';
 import { CountryFieldEntry } from '../country/CountryField';
 import { DateFieldEntry } from '../date/DateField';
+import { DateRangeFieldEntry } from '../daterange/DateRangeField';
 import { DateTimeFieldEntry } from '../datetime/DateTimeField';
 import { DurationFieldEntry } from '../duration/DurationField';
 import { EmailFieldEntry } from '../email/EmailField';
@@ -14,6 +15,7 @@ import { GroupFieldEntry } from '../group/GroupField';
 import { JsonFieldEntry } from '../json/JsonField';
 import { LinkFieldEntry } from '../link/LinkField';
 import { LocationFieldEntry } from '../location/LocationField';
+import { MoneyFieldEntry } from '../money/MoneyField';
 import { NumberFieldEntry } from '../number/NumberField';
 import { RangeFieldEntry } from '../range/RangeField';
 import { RegionFieldEntry } from '../region/RegionField';
@@ -65,6 +67,8 @@ export const builtInFields: Readonly<Record<string, FieldEntry>> = {
     region: RegionFieldEntry,
     address: AddressFieldEntry,
     link: LinkFieldEntry,
+    daterange: DateRangeFieldEntry,
+    money: MoneyFieldEntry,
 };
 
 /**

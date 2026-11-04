@@ -60,3 +60,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0052](0052-oauth-providers.md)                       | OAuth providers on the login page                                             | Proposed                          |
 | [0054](0054-addresses.md)                             | Postal addresses                                                              | Proposed                          |
 | [0055](0055-links.md)                                 | Links                                                                         | Proposed                          |
+| [0053](0053-date-ranges-and-money.md)                 | Date ranges and money                                                         | Proposed                          |

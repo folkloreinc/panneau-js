@@ -226,6 +226,16 @@ export const fieldsMessages = {
         id: 'panneau.fields.linkNewTab',
         defaultMessage: 'Open in a new tab',
     }),
+    allDay: defineMessage({ id: 'panneau.fields.allDay', defaultMessage: 'All day' }),
+    timeZone: defineMessage({ id: 'panneau.fields.timeZone', defaultMessage: 'Time zone' }),
+    noTimeZones: defineMessage({
+        id: 'panneau.fields.noTimeZones',
+        defaultMessage: 'No time zones match',
+    }),
+    moneyCurrency: defineMessage({
+        id: 'panneau.fields.moneyCurrency',
+        defaultMessage: 'Currency',
+    }),
     missingPlugin: defineMessage<{ type: string }>({
         id: 'panneau.fields.missingPlugin',
         defaultMessage: 'This field needs a plugin for the “{type}” type.',

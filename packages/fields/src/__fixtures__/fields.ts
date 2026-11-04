@@ -94,6 +94,19 @@ export const EXAMPLE_FIELDS: Field[] = [
         settings: { newTab: 'external', label: 'required' },
     },
     {
+        name: 'dates',
+        type: 'daterange',
+        label: 'Dates',
+        settings: { time: true, allDay: true, timeZone: 'America/Toronto' },
+    },
+    {
+        name: 'price',
+        type: 'money',
+        label: 'Price',
+        settings: { currency: 'CAD' },
+        rules: [{ rule: 'min', value: 0 }],
+    },
+    {
         name: 'rating',
         type: 'range',
         label: 'Rating',
@@ -163,6 +176,8 @@ export const EXAMPLE_VALUES: Record<string, unknown> = {
     title: { fr: 'Été à Montréal', en: 'Summer in Montreal' },
     slug: 'ete-a-montreal',
     duration: 3930,
+    dates: { start: '2026-07-01T23:00:00Z', end: '2026-07-02T02:00:00Z' },
+    price: { amount: 2500, currency: 'CAD' },
     season: 2,
     topics: ['culture', 'montréal'],
     metadata: { source: 'archive', episode: 12 },
