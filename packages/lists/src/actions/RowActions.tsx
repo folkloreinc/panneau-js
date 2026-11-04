@@ -53,8 +53,8 @@ export function orderRowActions(
 
 /**
  * The actions of a row (decision 0060): their icons, in their colors, with their labels as names
- * and tooltips, but the main action, which keeps its label; and when the icons don't fit, the last
- * ones in an overflow menu, which never holds a single action. How they fit is the same for every row of the list (`RowActionsFit`), and a
+ * and tooltips, but the main action, which keeps its label while the row has room; and when the
+ * icons don't fit, the last ones in an overflow menu, which never holds a single action. How they fit is the same for every row of the list (`RowActionsFit`), and a
  * row keeps the place of the actions of other rows that it doesn't have, so they line up.
  */
 export function RowActions({
@@ -89,7 +89,7 @@ export function RowActions({
             action={entry.action}
             icons={icons}
             href={entry.href}
-            iconOnly={entry.action.id !== primary}
+            iconOnly={level >= 1 || entry.action.id !== primary}
             isPending={pending === entry.action.id}
             isDisabled={pending !== null && pending !== entry.action.id}
             aria-label={name(entry.action)}

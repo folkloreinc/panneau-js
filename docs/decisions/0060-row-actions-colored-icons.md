@@ -13,11 +13,11 @@ Panneau 4 showed the actions of rows as a group of icons, each in its color (`sh
 ## Decision
 
 - **Icons in their colors.** Every action of a row is a button that shows its icon, in its tone, on a tinted background (the `subtle` appearance): `show` `info`, `edit` `accent`, `restore` `success`, `delete` and every action that destroys `danger`, the others `neutral`. The label is the accessible name (`Delete: Contact`) and the tooltip. An action without an icon shows its label.
-- **The main action keeps its label**: the one the title of an item opens, `edit` for a resource that opens its items in their form, `show` otherwise (`primaryAction` of `ListView`, set by the app from `open`).
+- **The main action keeps its label**: the one the title of an item opens, `edit` for a resource that opens its items in their form, `show` otherwise (`primaryAction` of `ListView`, set by the app from `open`). When room runs short, it is the first to drop its label, before any action goes to the menu.
 - **The same in every list.** The rows of every resource of an admin show their actions the same way, whatever their content: no list switches to labels or to another style.
 - **Order.** Those placed in `row`, then those placed in `menu`, and those that destroy last.
 - **A menu, last.** Only when the icons don't fit (many actions, a narrow list, a phone), the last actions of the row go in the `•••` menu: those that destroy first, then those placed in `menu`. The menu never holds a single action: one left alone stays a button, in the menu's place.
-    - The list measures itself, not the window. It draws each number of actions in the menu in turn, before the browser paints, and keeps the one where the actions crowd least: the table overflows, the actions of a row wrap, or take more than 40% of its width.
+    - The list measures itself, not the window. It draws each step in turn (the main action as an icon, then two actions in the menu, three…), before the browser paints, and keeps the one where the actions crowd least: the table overflows, the actions of a row wrap, or take more than 40% of its width. Ties go to the fewest changes.
     - On rows of five actions or more, the menu also gives the content room (shorter rows, less text cut by a display that clamps it), as long as four actions stay out of it.
     - The list measures again when its width or its items change. CSS alone can't tell whether the actions of a table crowd its rows.
 - **Lined up.** The number of actions in the menu is chosen for the list, not for each row, and a row keeps the place of the actions that other rows of the page have and it doesn't (an item that can't be deleted), so the actions line up in columns.

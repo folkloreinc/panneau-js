@@ -85,6 +85,12 @@ describe('RowActions', () => {
         expect(screen.getByRole('link', { name: 'View: Contact' })).toHaveTextContent('');
     });
 
+    it('drops the label of the main action first, when room runs short', () => {
+        renderActions(1);
+        expect(screen.getByRole('link', { name: 'View: Contact' })).toHaveTextContent('');
+        expect(screen.queryByRole('button', { name: 'Actions for Contact' })).toBeNull();
+    });
+
     it('then moves the last actions to a menu, at least two', async () => {
         const user = userEvent.setup();
         const onRun = renderActions(2);

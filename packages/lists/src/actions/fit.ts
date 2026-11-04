@@ -2,7 +2,8 @@ import { createContext, useEffect, useLayoutEffect, useState, useSyncExternalSto
 
 /**
  * How the actions of rows fit (decision 0060), the same for every row of a list: `0`, every
- * action as an icon; `n` from 2, the last `n` actions of each row in its menu.
+ * action as an icon but the main one, with its label; `1`, every action as an icon; `n` from 2,
+ * the last `n` actions of each row in its menu.
  */
 export const RowActionsFit = createContext(0);
 
@@ -75,6 +76,9 @@ function forContent(level: number, count: number): boolean {
 
 /** Whether the next level is worth a try, after `current`. */
 function worthTrying(next: number, current: Measure): boolean {
+    if (next === 1) {
+        return current.crowding > 0.5 || forContent(next, current.count);
+    }
     return (
         next <= Math.min(current.count, MAX_LEVEL) &&
         current.count >= 2 &&
@@ -159,8 +163,7 @@ class FitStore {
         }
         const current = measure(element);
         this.#measures.set(drawn, current);
-        // A menu holds two actions or more: no level 1
-        const next = drawn === 0 ? 2 : drawn + 1;
+        const next = drawn + 1;
         if (worthTrying(next, current)) {
             this.#set(next);
         } else {
@@ -172,7 +175,8 @@ class FitStore {
 
 /**
  * Fits the actions of the rows of a list in the room they have (decision 0060). It draws each
- * level in turn, from every action as an icon, while the next one may help, and keeps the best:
+ * level in turn, from every action as an icon but the main one, labelled, then the main one as an
+ * icon too, then a menu of two actions, three…, while the next one may help, and keeps the best:
  * where the actions crowd least (the list overflows, the actions of a row wrap or take more than
  * 40% of it), then, on rows of five actions or more, where the rows are shortest (their content
  * wraps or is cut less), then the fewest actions in the menu.
