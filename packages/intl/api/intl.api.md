@@ -476,6 +476,9 @@ export const fieldsMessages: {
 // @public
 export const formsMessages: {
     save: PanneauMessage<Record<never, never>>;
+    saveShortcut: PanneauMessage<    {
+    modifier: string;
+    }>;
     saved: PanneauMessage<Record<never, never>>;
     loading: PanneauMessage<Record<never, never>>;
     unsaved: PanneauMessage<Record<never, never>>;

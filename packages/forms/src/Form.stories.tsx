@@ -2,8 +2,9 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
+import { editorPlugin } from '@panneau/editor';
 import type { Field, LayoutNode } from '@panneau/protocol';
-import { Button } from '@panneau/ui';
+import { Button, isApplePlatform } from '@panneau/ui';
 
 import { Form } from './Form';
 import { useLeaveConfirmation } from './unsaved';
@@ -130,6 +131,134 @@ export const Layout: Story = {
         await expect(await canvas.findByRole('tab', { name: /SEO/ })).toHaveAccessibleName(
             'SEO 1 error',
         );
+    },
+};
+
+/** ⌘ Enter on Apple platforms, Ctrl Enter elsewhere, as `userEvent.keyboard()` writes it. */
+function saveShortcut(): string {
+    return isApplePlatform() ? '{Meta>}{Enter}{/Meta}' : '{Control>}{Enter}{/Control}';
+}
+
+/** ⌘ Enter (Ctrl Enter elsewhere) saves from any field: a text area, the rich text editor. */
+export const SaveShortcut: Story = {
+    args: {
+        fields: [
+            { name: 'title', type: 'text', label: 'Title' },
+            { name: 'summary', type: 'textarea', label: 'Summary' },
+            { name: 'body', type: 'richtext', label: 'Body' },
+        ],
+        components: editorPlugin.fields,
+    },
+    play: async ({ args, canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByRole('button', { name: 'Save' })).toHaveAttribute(
+            'aria-keyshortcuts',
+            isApplePlatform() ? 'Meta+Enter' : 'Control+Enter',
+        );
+        await userEvent.type(canvas.getByRole('textbox', { name: 'Summary' }), 'Short');
+        await userEvent.keyboard(saveShortcut());
+        await waitFor(() => expect(args.onSubmit).toHaveBeenCalledTimes(1));
+        await userEvent.click(await canvas.findByRole('textbox', { name: 'Body' }));
+        await userEvent.keyboard('Hello');
+        await userEvent.keyboard(saveShortcut());
+        await waitFor(() => expect(args.onSubmit).toHaveBeenCalledTimes(2));
+        await expect(args.onSubmit).toHaveBeenLastCalledWith(
+            expect.objectContaining({ summary: 'Short', body: '<p>Hello</p>' }),
+            expect.anything(),
+        );
+    },
+};
+
+const collapsed = (label: string, name: string): LayoutNode => ({
+    type: 'section',
+    label,
+    collapsible: true,
+    collapsed: true,
+    children: [{ type: 'field', name }],
+});
+
+/**
+ * A failed save opens every collapsed section that holds an error, around a group and a
+ * repeater too, and focuses the first error. The tab of the first error shows; the others keep
+ * their error counts.
+ */
+export const ErrorsInCollapsedSections: Story = {
+    args: {
+        fields: [
+            { name: 'title', type: 'text', label: 'Title' },
+            {
+                name: 'summary',
+                type: 'textarea',
+                label: 'Summary',
+                rules: [{ rule: 'required' }],
+            },
+            {
+                name: 'address',
+                type: 'group',
+                label: 'Address',
+                fields: [
+                    { name: 'city', type: 'text', label: 'City', rules: [{ rule: 'required' }] },
+                ],
+            },
+            {
+                name: 'links',
+                type: 'repeater',
+                label: 'Links',
+                fields: [{ name: 'url', type: 'url', label: 'URL', rules: [{ rule: 'url' }] }],
+            },
+            { name: 'notes', type: 'textarea', label: 'Notes' },
+            {
+                name: 'share_text',
+                type: 'text',
+                label: 'Share text',
+                rules: [{ rule: 'required' }],
+            },
+        ],
+        layout: [
+            {
+                type: 'tabs',
+                children: [
+                    {
+                        type: 'tab',
+                        label: 'Content',
+                        children: [
+                            { type: 'field', name: 'title' },
+                            collapsed('Abstract', 'summary'),
+                            collapsed('Place', 'address'),
+                            collapsed('References', 'links'),
+                            collapsed('Internal', 'notes'),
+                        ],
+                    },
+                    {
+                        type: 'tab',
+                        label: 'SEO',
+                        children: [collapsed('Sharing', 'share_text')],
+                    },
+                ],
+            },
+        ],
+        values: { title: 'An episode', address: { city: '' }, links: [{ url: 'not a link' }] },
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const sections = ['Abstract', 'Place', 'References', 'Internal', 'Sharing'];
+        const toggles = Object.fromEntries(
+            // Sharing is in the hidden panel of the SEO tab
+            sections.map((name) => [name, canvas.getByRole('button', { name, hidden: true })]),
+        );
+        await userEvent.click(canvas.getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(canvas.getByRole('textbox', { name: /Summary/ })).toHaveFocus());
+        for (const name of ['Abstract', 'Place', 'References', 'Sharing']) {
+            await expect(toggles[name]).toHaveAttribute('aria-expanded', 'true');
+        }
+        await expect(toggles.Internal).toHaveAttribute('aria-expanded', 'false');
+        await expect(canvas.getByRole('textbox', { name: /City/ })).toBeVisible();
+        await expect(canvas.getByRole('textbox', { name: /URL/ })).toBeVisible();
+        await expect(canvas.getByRole('tab', { name: /Content/ })).toHaveAttribute(
+            'aria-selected',
+            'true',
+        );
+        await expect(canvas.getByRole('tab', { name: /SEO/ })).toHaveAccessibleName('SEO 1 error');
     },
 };
 

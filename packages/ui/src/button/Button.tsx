@@ -116,7 +116,8 @@ export function ButtonContent({
 
 /**
  * A button. With `isPending`, it shows a spinner, keeps its size and focus, and ignores presses
- * while assistive technologies announce the pending state.
+ * while assistive technologies announce the pending state. `aria-keyshortcuts` gives the keys
+ * that do what it does.
  */
 export function Button({
     tone,
@@ -129,11 +130,26 @@ export function Button({
     isPending = false,
     children,
     className,
+    'aria-keyshortcuts': keyShortcuts,
+    render,
     ...props
 }: ButtonProps) {
     return (
         <AriaButton
             {...props}
+            // React Aria leaves `aria-keyshortcuts` out of the button's attributes
+            render={
+                keyShortcuts === undefined
+                    ? render
+                    : (domProps, values) => {
+                          const withShortcuts = { ...domProps, 'aria-keyshortcuts': keyShortcuts };
+                          return render !== undefined ? (
+                              render(withShortcuts, values)
+                          ) : (
+                              <button {...withShortcuts} />
+                          );
+                      }
+            }
             isPending={isPending}
             className={getButtonClassName({
                 tone,
