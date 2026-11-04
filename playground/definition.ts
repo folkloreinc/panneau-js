@@ -116,7 +116,7 @@ export function createPlaygroundDefinition(): DefinitionInput {
                         name: 'reading_time',
                         type: 'duration',
                         label: 'Reading time',
-                        settings: { precision: 'minutes' },
+                        settings: { unit: 'minutes' },
                     },
                     {
                         name: 'rating',
@@ -471,7 +471,7 @@ export function createPlaygroundItems(): Record<string, Values[]> {
             published_at: `2026-${String(10 - Math.floor(index / 9)).padStart(2, '0')}-${String(28 - (index % 9) * 3).padStart(2, '0')}`,
             featured: index % 5 === 0,
             tags: index % 3 === 0 ? ['festival', 'family'] : index % 3 === 1 ? ['free'] : [],
-            reading_time: (3 + (index % 7)) * 60,
+            reading_time: 3 + (index % 7),
             rating: (index % 11) / 2,
             metadata: index === 0 ? { source: 'archive', revisions: 3 } : null,
             place:

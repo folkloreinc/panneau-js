@@ -4,6 +4,7 @@ import {
     ADDRESS_PARTS,
     BUILT_IN_LINK_TYPES,
     DATE_RANGE_OPEN_BOUNDS,
+    DURATION_UNITS,
     PORTABLE_RULES,
     RICH_TEXT_STYLE_ELEMENTS,
 } from '../constants';
@@ -288,6 +289,30 @@ export const RichTextSettings = z
             'The `settings` of a `richtext` field. Its value is HTML. The toolbar only limits what users add: content that the field stores keeps its elements and attributes.',
     });
 
+/**
+ * The `settings` of a `duration` field: the unit of its value, and the parts its input shows.
+ * `validateDefinition()` checks them.
+ */
+export const DurationSettings = z
+    .looseObject({
+        unit: z.enum(DURATION_UNITS).optional().meta({
+            description:
+                'The unit of the value, a whole number: `seconds` (the default), `minutes`, `hours` or `days`. The `min` and `max` rules are in it too.',
+        }),
+        precision: z.enum(DURATION_UNITS).optional().meta({
+            description:
+                'The smallest part the input shows. Defaults to `unit`; a precision finer than `unit` is raised to it.',
+        }),
+        largestUnit: z.enum(DURATION_UNITS).optional().meta({
+            description:
+                'The largest part the input shows, which has no upper bound: `days` shows days, and hours from 0 to 23. Defaults to the larger of `hours` and `precision`; a largest unit smaller than `precision` is raised to it.',
+        }),
+    })
+    .meta({
+        description:
+            'The `settings` of a `duration` field. Its value is a whole number of `unit`, zero or more. A day is 24 hours.',
+    });
+
 /** A type of link that a site adds to a `link` field, in its `settings.types`. */
 export const LinkTypeSetting = z
     .looseObject({
@@ -423,3 +448,5 @@ export type AddressSettings = z.infer<typeof AddressSettings>;
 export type DateRangeSettings = z.infer<typeof DateRangeSettings>;
 /** The `settings` of a `money` field. */
 export type MoneySettings = z.infer<typeof MoneySettings>;
+/** The `settings` of a `duration` field. */
+export type DurationSettings = z.infer<typeof DurationSettings>;
