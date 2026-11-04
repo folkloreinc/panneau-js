@@ -483,54 +483,6 @@ export const SelectionAndActions: Story = {
 };
 
 /**
- * A table wider than its list, scrolled sideways, as when a link at the end of a row takes the
- * focus: the checkboxes stay in view, and the one of the page stays in the header, indeterminate
- * while some rows are selected.
- */
-export const SelectionInAWideTable: Story = {
-    ...SelectionAndActions,
-    args: {
-        ...SelectionAndActions.args,
-        // A long action on each row, on one line
-        actions: actions.map((action) =>
-            action.id === 'resend' ? { ...action, placement: ['row', 'toolbar'] } : action,
-        ),
-    },
-    decorators: [
-        (Story) => (
-            <div style={{ width: 680 }}>
-                <Story />
-            </div>
-        ),
-    ],
-    play: async ({ canvasElement }) => {
-        const canvas = within(canvasElement);
-        const table = canvas.getByRole('table', { name: 'Members' });
-        const scroller = table.parentElement as HTMLElement;
-        await expect(scroller.scrollWidth).toBeGreaterThan(scroller.clientWidth);
-
-        await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Grace Hopper' }));
-        scroller.scrollLeft = scroller.scrollWidth;
-        await waitFor(() => expect(scroller.scrollLeft).toBeGreaterThan(0));
-
-        const page = canvas.getByRole('checkbox', { name: 'Select every item of the page' });
-        const box = (page.closest('label') as HTMLElement).getBoundingClientRect();
-        const hit = canvasElement.ownerDocument.elementFromPoint(
-            box.left + box.width / 2,
-            box.top + box.height / 2,
-        );
-        await expect(hit !== null && page.closest('th')?.contains(hit)).toBe(true);
-        await expect(page).toHaveProperty('indeterminate', true);
-
-        await userEvent.click(page);
-        await expect(canvas.getByText('10 items selected')).toBeVisible();
-        await expect(page).toBeChecked();
-        await userEvent.click(page);
-        await waitFor(() => expect(canvas.queryByText(/selected/)).not.toBeInTheDocument());
-    },
-};
-
-/**
  * The built-in links `show` and `edit` as a backend declares them, without a URL or a label: the
  * caller resolves them to its routes (`getLinkHref`), and the list labels them in its locale.
  * Owners can't be updated: they have no "Edit".

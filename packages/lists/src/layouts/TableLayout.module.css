@@ -37,13 +37,8 @@
     border-bottom: 0;
 }
 
-.table tbody tr {
-    --row-tint: transparent;
-}
-
 .table tbody tr[data-selected] {
-    --row-tint: var(--panneau-color-accent-subtle);
-    background-color: var(--row-tint);
+    background-color: var(--panneau-color-accent-subtle);
 }
 
 /* The item shown next to the list: a bar on its first cell. */
@@ -52,8 +47,7 @@
 }
 
 .table tbody tr[data-current] {
-    --row-tint: var(--panneau-color-hover);
-    background-color: var(--row-tint);
+    background-color: var(--panneau-color-hover);
 }
 
 .center {
@@ -66,19 +60,6 @@
 
 .check {
     width: 1px;
-}
-
-/* The checkboxes stay in view when a wide table scrolls sideways (after a link at the end of a
- * row takes the focus, for one), the one of the page in the header first. Their cells are opaque,
- * with the tint of their row. */
-.table .check {
-    position: sticky;
-    inset-inline-start: 0;
-    z-index: 1;
-}
-
-.table td.check {
-    background: linear-gradient(var(--row-tint), var(--row-tint)), var(--panneau-color-surface);
 }
 
 .actionsCell {
@@ -191,7 +172,6 @@
 
     .table td.check {
         position: absolute;
-        background: none;
         top: var(--panneau-space-2);
         inset-inline-end: var(--panneau-space-2);
         padding: 0;
