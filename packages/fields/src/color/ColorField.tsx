@@ -10,7 +10,7 @@ import { type ColorPaletteEntry, getColorPalette, getSwatchColor } from './palet
 
 export interface ColorFieldProps extends Omit<TextFieldProps, 'type' | 'prefix' | 'maxLength'> {
     /**
-     * The colors to pick from (decision 0059). With a palette, the field only offers its colors,
+     * The colors to pick from (decision 0058). With a palette, the field only offers its colors,
      * and the value is the `value` of one of them.
      */
     palette?: readonly ColorPaletteEntry[] | null;

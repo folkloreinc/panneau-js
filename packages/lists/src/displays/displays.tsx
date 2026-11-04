@@ -1,10 +1,12 @@
-import { Check, Minus } from 'lucide-react';
+import { Check, File, FileText, Globe, Hash, Mail, Minus, Phone } from 'lucide-react';
 
 import { toReferences } from '@panneau/fields';
+import { formatAddress, isAddress } from '@panneau/fields/address';
 import { getColorPalette, getSwatchColor } from '@panneau/fields/color';
 import { getCountryFlag, getCountryName, isCountryCode } from '@panneau/fields/country';
 import { formatDateRange, getDateRangeSettings } from '@panneau/fields/daterange';
 import { formatDuration } from '@panneau/fields/duration';
+import { getLinkText, isLink } from '@panneau/fields/link';
 import { formatMoney } from '@panneau/fields/money';
 import { getRegionCountry, getRegionName } from '@panneau/fields/region';
 import { parsePhone } from '@panneau/fields/tel';
@@ -402,6 +404,70 @@ export function LocationDisplay({ value }: DisplayProps) {
     );
 }
 
+/** An address on one line, in the order of its country, after the flag of its country. */
+export function AddressDisplay({ value }: DisplayProps) {
+    const intl = usePanneauIntl();
+    if (!isAddress(value)) {
+        return <EmptyValue />;
+    }
+    const text = formatAddress(value, intl.locale);
+    const country = typeof value.country === 'string' ? value.country : '';
+    if (text === '' && !isCountryCode(country)) {
+        return <EmptyValue />;
+    }
+    return (
+        <span className={styles.flagged}>
+            {isCountryCode(country) ? (
+                <span className={styles.flag} title={getCountryName(country, intl.locale)}>
+                    {getCountryFlag(country)}
+                </span>
+            ) : null}
+            <span className={styles.text}>
+                {text !== '' ? text : getCountryName(country, intl.locale)}
+            </span>
+        </span>
+    );
+}
+
+const LINK_ICONS = { url: Globe, page: FileText, email: Mail, tel: Phone, file: File };
+
+/**
+ * A link: the icon of its type, and its label in the user's locale, or its page or its URL. It
+ * opens its URL when it has one, in a new tab when the link does.
+ */
+export function LinkDisplay({ value }: DisplayProps) {
+    const intl = usePanneauIntl();
+    if (!isLink(value)) {
+        return <EmptyValue />;
+    }
+    const text = getLinkText(value, intl.locale);
+    if (text === null) {
+        return <EmptyValue />;
+    }
+    const icon = (
+        <Icon icon={LINK_ICONS[value.type as keyof typeof LINK_ICONS] ?? Hash} size="sm" />
+    );
+    const url = typeof value.url === 'string' && value.url !== '' ? value.url : null;
+    if (url === null) {
+        return (
+            <span className={styles.flagged}>
+                {icon}
+                <span className={styles.text}>{text}</span>
+            </span>
+        );
+    }
+    return (
+        <a
+            className={`${styles.link} ${styles.flagged}`}
+            href={url}
+            {...(value.newTab === true ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        >
+            {icon}
+            {text}
+        </a>
+    );
+}
+
 /**
  * A swatch, with the color's code. A color of the field's palette (`settings.palette`) shows its
  * swatch and its label.
@@ -480,6 +546,8 @@ export const builtInDisplays: Readonly<Record<string, DisplayEntry>> = {
     location: LocationDisplay,
     country: CountryDisplay,
     region: RegionDisplay,
+    address: AddressDisplay,
+    link: LinkDisplay,
     daterange: DateRangeDisplay,
     money: MoneyDisplay,
 };

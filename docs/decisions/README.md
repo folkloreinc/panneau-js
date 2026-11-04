@@ -59,4 +59,6 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0051](0051-passkeys.md)                                          | Passkeys                                                                      | Proposed                          |
 | [0052](0052-oauth-providers.md)                                   | OAuth providers on the login page                                             | Proposed                          |
 | [0053](0053-date-ranges-and-money.md)                             | Date ranges and money                                                         | Proposed                          |
-| [0059](0059-multiple-countries-embed-providers-color-palettes.md) | Several countries, the providers of an embed, and color palettes              | Proposed                          |
+| [0054](0054-addresses.md)                                         | Postal addresses                                                              | Proposed                          |
+| [0055](0055-links.md)                                             | Links                                                                         | Proposed                          |
+| [0058](0058-multiple-countries-embed-providers-color-palettes.md) | Several countries, the providers of an embed, and color palettes              | Proposed                          |

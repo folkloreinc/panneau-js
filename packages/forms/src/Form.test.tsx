@@ -207,6 +207,39 @@ describe('Form without a definition', () => {
         expect(name).toHaveAttribute('aria-invalid', 'true');
     });
 
+    it('shows the errors of the parts of an address and a link under their inputs', async () => {
+        const onSubmit = vi.fn();
+        renderForm(
+            <Form
+                fields={[
+                    { name: 'venue', type: 'address', label: 'Venue' },
+                    { name: 'cta', type: 'link', label: 'Button', settings: { types: ['email'] } },
+                ]}
+                values={{
+                    venue: { city: 'Montréal', postalCode: '12345', country: 'CA' },
+                    cta: { type: 'email', url: 'mailto:nope' },
+                }}
+                onSubmit={onSubmit}
+            />,
+        );
+        await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+        expect(onSubmit).not.toHaveBeenCalled();
+        const summary = await screen.findByRole('alert');
+        expect(summary).toHaveTextContent('3 errors prevent saving');
+        await waitFor(() =>
+            expect(
+                screen.getByRole('textbox', { name: /Postal code/ }),
+            ).toHaveAccessibleDescription('This value must be a postal code of its country.'),
+        );
+        expect(screen.getByRole('textbox', { name: /^Address/ })).toHaveAccessibleDescription(
+            'This field is required.',
+        );
+        expect(screen.getByRole('textbox', { name: /Email address/ })).toHaveAccessibleDescription(
+            'This value must be an email address.',
+        );
+        expect(screen.getByRole('group', { name: 'Venue' })).not.toHaveAccessibleDescription();
+    });
+
     it('shows the errors of the server, by path', async () => {
         const onSubmit = vi.fn(async () => {
             throw problemError({

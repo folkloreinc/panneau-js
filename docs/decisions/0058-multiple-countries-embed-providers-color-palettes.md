@@ -1,4 +1,4 @@
-# 0059: Several countries, the providers of an embed, and color palettes
+# 0058: Several countries, the providers of an embed, and color palettes
 
 - Status: proposed
 - Date: 2026-11-04

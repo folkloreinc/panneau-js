@@ -100,7 +100,8 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     - `media`, `image`, `file`, `relation`, `group`, `repeater`, `slug`;
     - `tel`, `range`, `duration`, `json`, `tags`, `embed`, `location` ([0033](decisions/0033-more-field-types.md));
     - `country`, `region` ([0047](decisions/0047-countries-regions-and-phone-numbers.md));
-    - `daterange`, `money` ([0053](decisions/0053-date-ranges-and-money.md)).
+    - `daterange`, `money` ([0053](decisions/0053-date-ranges-and-money.md));
+    - `address` ([0054](decisions/0054-addresses.md)) and `link` ([0055](decisions/0055-links.md)).
 - **`text` settings:** `prefix` and `suffix` show in the control, around the value. With `"secret": true`, the value is a secret, such as an access key: clients type it in a password input that a button reveals, never let the browser fill it in, and show it as dots in lists and details. The backend still decides whether it sends the value back at all.
 - **`select` options** are `{ "value", "label", "description", "disabled", "tone" }`. `tone` colors the option where it shows as a badge, in lists and details: `neutral` (the default), `accent`, `success`, `warning`, `danger`, `info`, or a tone of the theme (`{ "value": "failed", "label": "Failed", "tone": "danger" }`).
 - **`localized`** makes the value an object keyed by locale (`{ "fr": "…", "en": "…" }`). It replaces the separate `localized` field and the `*Localized` PHP classes of v1.
@@ -168,16 +169,41 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     - A style in `styles` puts its `class` on an element: `p` (the default), `h1` to `h6`, `blockquote`, `ul`, `ol` or `li`.
     - `links.newTab` sets which links open in a new tab, with `target="_blank" rel="noopener noreferrer"`: as the user chooses, every link to another site, or none.
 
-- **`color` values** are hexadecimal colors, `#1d4ed8`. With `settings.palette`, `[{ "value": "purple", "label": "Purple", "color": "#6b21a8" }]`, a value is the `value` of one of its colors, and a backend refuses others. `color` (hexadecimal) draws the swatch of a color, and `label` names it; without `color`, `value` is a hexadecimal color ([0059](decisions/0059-multiple-countries-embed-providers-color-palettes.md)).
+- **`color` values** are hexadecimal colors, `#1d4ed8`. With `settings.palette`, `[{ "value": "purple", "label": "Purple", "color": "#6b21a8" }]`, a value is the `value` of one of its colors, and a backend refuses others. `color` (hexadecimal) draws the swatch of a color, and `label` names it; without `color`, `value` is a hexadecimal color ([0058](decisions/0058-multiple-countries-embed-providers-color-palettes.md)).
 - **`tel` values** are international numbers in E.164, `+15145550199` ([0047](decisions/0047-countries-regions-and-phone-numbers.md)). The type implies the `tel` rule: a client keeps a number that isn't complete as the text typed, which the rule refuses. `settings.country` is the country of a new number.
 - **`range` values** are numbers, picked on a slider between the `min` and `max` rules (0 and 100 without them), or `null` until it is moved. Settings `step`, `decimals` and `suffix` are those of `number`.
 - **`duration` values** are whole numbers of seconds, typed in hours, minutes and seconds. `settings.precision` is `seconds` (the default) or `minutes`. `min` and `max` are in seconds.
 - **`json` values** are objects or arrays, edited as JSON text. The type implies the `json` rule: a client keeps text that doesn't parse as a string, which the rule refuses, and a backend refuses anything but an object, an array or `null`.
 - **`tags` values** are lists of strings. `options` suggest tags; with `"settings": { "allowCustom": false }`, only their values are allowed, and `in` applies to each tag. `min` and `max` count the tags.
-- **`embed` values** are what a URL embeds: `{ "url", "type", "title", "provider", "thumbnailUrl", "html", "width", "height" }` (`EmbedValue`), where everything but `url` comes from the provider's oEmbed. `type` is `video`, `audio`, `photo`, `rich` or `link`. Clients get it from `GET /embeds`, and send `{ "url" }` alone without it. The `providers` rule limits the providers: `{ "rule": "providers", "value": ["YouTube", "Vimeo"] }` ([0059](decisions/0059-multiple-countries-embed-providers-color-palettes.md)).
+- **`embed` values** are what a URL embeds: `{ "url", "type", "title", "provider", "thumbnailUrl", "html", "width", "height" }` (`EmbedValue`), where everything but `url` comes from the provider's oEmbed. `type` is `video`, `audio`, `photo`, `rich` or `link`. Clients get it from `GET /embeds`, and send `{ "url" }` alone without it. The `providers` rule limits the providers: `{ "rule": "providers", "value": ["YouTube", "Vimeo"] }` ([0058](decisions/0058-multiple-countries-embed-providers-color-palettes.md)).
 - **`location` values** are a point and its address: `{ "lat", "lng", "address" }` (`LocationValue`), with `lat` from -90 to 90, `lng` from -180 to 180, and `address` optional. Settings `zoom` and `center` (`{ "lat", "lng" }`) frame the map before a point is placed, and `tiles` (`{ "url", "attribution", "maxZoom" }`) replaces the app's tiles.
-- **`country` values** are ISO 3166-1 alpha-2 codes in capitals, `CA` (`XK` too). `settings.countries` lists the codes the field allows, `settings.preferred` the ones it shows first. A backend refuses other codes. With `multiple`, a value is an array of distinct codes in the order they were chosen, `["CA", "FR"]`: `min` and `max` count them ([0059](decisions/0059-multiple-countries-embed-providers-color-palettes.md)).
+- **`country` values** are ISO 3166-1 alpha-2 codes in capitals, `CA` (`XK` too). `settings.countries` lists the codes the field allows, `settings.preferred` the ones it shows first. A backend refuses other codes. With `multiple`, a value is an array of distinct codes in the order they were chosen, `["CA", "FR"]`: `min` and `max` count them ([0058](decisions/0058-multiple-countries-embed-providers-color-palettes.md)).
 - **`region` values** are states, provinces or territories. Their country is the value of the field that `from` names, in the same object, or `settings.country`. For the countries Panneau knows the regions of, a value is the code of the region without its country, `QC` for `CA-QC`; for the others, the text as typed ([0047](decisions/0047-countries-regions-and-phone-numbers.md)).
+- **`address` values** are the parts of a postal address, `{ "street", "unit", "city", "region", "postalCode", "country", "point" }` (`AddressValue`), the empty ones left out ([0054](decisions/0054-addresses.md)). `region` is a value of the `region` type for the address's country, `country` an ISO code, and `point` (`{ "lat", "lng" }`) is there with `settings.point` only. `postalCode` is normalized for its country (`H2X 1Y4`, `12345-6789`). Settings (`AddressSettings`, which `validateDefinition()` checks): `country` (of a new address), `countries`, `preferred`, `required` (the parts a filled address must have, `street`, `city` and `country` by default) and `point`.
+    - The type implies the checks of its parts, keyed by their path: `required` on `address.street` for a required part missing from a filled address, `postalCode` on `address.postalCode` for a postal code that isn't one of the address's country.
+- **`link` values** are `{ "type", "url", "page", "file", "label", "newTab" }` (`LinkValue`, [0055](decisions/0055-links.md)). `type` is one of the field's types: `url`, `page`, `email`, `tel`, `file`, or a type of the site. `url` is the `href`: `https://…`, `mailto:…`, `tel:+…`, or the text of a type of the site; for `page` and `file` links, the URL the backend resolved, in items only. `page` is a reference to an item of one of the field's `resource` (`{ "id", "resource", "label" }` in items; its id, or `{ "id", "resource" }`, in requests), `file` a media value. `label` is a string per locale, or a string in a `localized` link field. Settings (`LinkSettings`): `types` (built-in names, or `{ "id", "label", "pattern", "placeholder" }` for a type of the site), `newTab` (`choose`, `external` or `never`), `label` (`optional`, `required` or `none`) and `libraries` (of `file` links).
+
+    ```jsonc
+    {
+        "name": "cta",
+        "type": "link",
+        "resource": ["pages", "events"], // the resources of page links
+        "settings": {
+            "types": [
+                "page",
+                "url",
+                "email",
+                { "id": "anchor", "label": "Anchor", "pattern": "^#[\\w-]+$" },
+            ],
+            "newTab": "external", // url and file links open in a new tab
+            "label": "required",
+        },
+    }
+    ```
+
+    - The type implies the checks of its parts: `in` on `link.type`; on `link.url`, `url` (an `http` or `https` URL), `email` (`mailto:` and an address), `tel` (`tel:` and E.164), the `pattern` of a type of the site, or `required`; `required` on `link.page`, `link.file`, and `link.label` with `"label": "required"`.
+    - A backend sets `newTab` with `external`, and resolves the `url` of `page` and `file` links again: it ignores the one a client sends.
+
 - **`datetime` values** are ISO 8601 date-times. A value with an offset is an instant: clients write it in UTC (`2026-11-04T23:30:00Z`), and show it in `settings.timeZone`, an IANA zone (`America/Toronto`), or in the browser's zone without it. A value without an offset is kept as it is.
 - **`daterange` values** are a start and an end, `{ "start", "end" }` (`DateRangeValue`), or `null` ([0053](decisions/0053-date-ranges-and-money.md)). Its `settings` are `DateRangeSettings`, which `validateDefinition()` checks:
 
@@ -217,6 +243,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 | `email`, `url`      | text                                    |
 | `json`              | `json` values: an object or an array    |
 | `tel`               | `tel` values: E.164 (`+15145550199`)    |
+| `postalCode`        | postal codes of Canada and the US       |
 | `daterange`         | `daterange` values: bounds, end ≥ start |
 | `money`             | `money` values: an integer, a currency  |
 | `in`                | select values                           |
@@ -226,6 +253,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 | `providers`         | `embed` values: their `provider`        |
 
 - **`required`** fails on `null`, an empty or blank string, and an empty array or object. A file chosen in the browser (`File`), to send in `multipart/form-data`, is filled; `accept` and `maxSize` read its type and size.
+- **`postalCode`** refuses a postal code that doesn't normalize to the format of its country: Canada (`H2X 1Y4`) and the United States (`12345`, `12345-6789`) for now; others pass ([0054](decisions/0054-addresses.md)). Its `value` is the country, a code (`"CA"`) or another field of the form (`{ "field": "country" }`). The `address` type implies it on its postal code, with its own country.
 - **`mode`** limits a rule to one mode of the form: `create` (the item is created) or `update` (it is updated). Without it, a rule applies in both.
 
     ```jsonc

@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { CONTEXT_HEADER, CONTEXT_PROBLEM_TYPE } from '../constants';
 import { formatContextHeader } from '../context';
+import { getLinkTypes } from '../links';
 import { type FilterRange, isCursorPage, toSearchParams } from '../query';
 import { Definition, type Resource, User } from '../schemas';
 import {
@@ -1358,6 +1359,88 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                 reply.status === 200,
                 `An update with ${names.join(', ')} set to null got status ${reply.status}, expected 200.`,
             );
+        },
+    );
+
+    await run(
+        'update.parts',
+        'Addresses and links are refused at the path of their invalid part',
+        async (check) => {
+            if (createdId === null || writes === undefined || resource === null) {
+                check.skip('No item was created.');
+                return;
+            }
+            const editable = resource.fields.filter(
+                (field) =>
+                    field.readOnly !== true &&
+                    field.createOnly !== true &&
+                    field.localized !== true &&
+                    field.abilities?.update !== false &&
+                    field.visibleWhen === undefined,
+            );
+            // A Canadian or an American address with a postal code of the other country
+            const address = editable.find((field) => {
+                const countries = field.settings?.countries;
+                return (
+                    field.type === 'address' &&
+                    (!Array.isArray(countries) ||
+                        countries.includes('CA') ||
+                        countries.includes('US'))
+                );
+            });
+            // A link to an email address without `mailto:`, or to a URL that isn't one
+            const link = editable.find(
+                (field) =>
+                    field.type === 'link' &&
+                    getLinkTypes(field).some((type) => type.id === 'email' || type.id === 'url'),
+            );
+            if (address === undefined && link === undefined) {
+                check.skip('The resource has no address nor link field.');
+                return;
+            }
+            const values: Record<string, unknown> = {};
+            const paths: string[] = [];
+            if (address !== undefined) {
+                const countries = address.settings?.countries;
+                const canada = !Array.isArray(countries) || countries.includes('CA');
+                values[address.name] = {
+                    street: '1234 Main Street',
+                    city: canada ? 'Montreal' : 'Springfield',
+                    region: canada ? 'QC' : 'IL',
+                    postalCode: canada ? '12345' : 'H2X 1Y4',
+                    country: canada ? 'CA' : 'US',
+                };
+                paths.push(`${address.name}.postalCode`);
+            }
+            if (link !== undefined) {
+                const email = getLinkTypes(link).some((type) => type.id === 'email');
+                values[link.name] = email
+                    ? { type: 'email', url: 'info@example.com', newTab: false }
+                    : { type: 'url', url: 'example', newTab: false };
+                paths.push(`${link.name}.url`);
+            }
+            // The current version: earlier checks may have updated the item
+            const current = await request(itemPath());
+            const item = check.expectStatus(current, 200)
+                ? check.expectSchema(ItemResponse, current.body, 'The item')
+                : null;
+            if (item === null) {
+                return;
+            }
+            const version = item.data.version;
+            const reply = await request(itemPath(), {
+                method: 'PATCH',
+                body: JSON.stringify(values),
+                headers: version !== null ? { 'If-Match': `"${version}"` } : {},
+            });
+            const failure = check.expectProblem(reply, 422);
+            if (failure !== null) {
+                const missing = paths.filter((path) => failure.errors?.[path] === undefined);
+                check.expect(
+                    missing.length === 0,
+                    `The 422 problem has no errors at ${missing.join(', ')}: ${Object.keys(failure.errors ?? {}).join(', ') || 'none'}.`,
+                );
+            }
         },
     );
 

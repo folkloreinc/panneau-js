@@ -26,7 +26,7 @@ export interface SingleCountryFieldProps extends CountryFieldBaseProps {
 }
 
 export interface MultipleCountryFieldProps extends CountryFieldBaseProps {
-    /** Several countries, in the order they were chosen (decision 0059). */
+    /** Several countries, in the order they were chosen (decision 0058). */
     multiple: true;
     value?: readonly string[] | null;
     /** Called with the codes. An empty list is `null`. */

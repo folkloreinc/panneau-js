@@ -123,6 +123,10 @@ export const formsMessages = {
             id: 'panneau.forms.rule.tel',
             defaultMessage: 'This value must be a complete phone number.',
         }),
+        postalCode: defineMessage({
+            id: 'panneau.forms.rule.postalCode',
+            defaultMessage: 'This value must be a postal code of its country.',
+        }),
         daterangeStart: defineMessage({
             id: 'panneau.forms.rule.daterangeStart',
             defaultMessage: 'Give the start of this range.',

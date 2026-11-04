@@ -21,7 +21,7 @@ export interface EmbedFieldProps extends FieldProps<EmbedValue> {
     embedSource?: EmbedSource | null;
     /**
      * The providers an embed may come from (`YouTube`), compared without case: the `providers`
-     * rule (decision 0059). The field names them under its help, and refuses an embed of another
+     * rule (decision 0058). The field names them under its help, and refuses an embed of another
      * provider as soon as its preview comes back. The form's errors, once shown, replace that one.
      */
     providers?: readonly string[];

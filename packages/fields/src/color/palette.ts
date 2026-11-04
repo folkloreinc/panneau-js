@@ -1,7 +1,7 @@
 import type { Field } from '@panneau/protocol';
 
 /**
- * A color of a palette (`settings.palette` of a `color` field, decision 0059): `value` is what the
+ * A color of a palette (`settings.palette` of a `color` field, decision 0058): `value` is what the
  * field stores, `color` (hexadecimal) draws its swatch, and `label` names it. Without `color`,
  * `value` is a hexadecimal color, which draws itself.
  */

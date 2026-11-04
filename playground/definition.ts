@@ -168,6 +168,19 @@ export function createPlaygroundDefinition(): DefinitionInput {
                         label: 'Place',
                         settings: { center: { lat: 45.5017, lng: -73.5673 }, zoom: 14 },
                     },
+                    {
+                        name: 'venue',
+                        type: 'address',
+                        label: 'Venue',
+                        settings: { country: 'CA', preferred: ['CA', 'US'] },
+                    },
+                    {
+                        name: 'cta',
+                        type: 'link',
+                        label: 'Button',
+                        resource: ['articles', 'categories'],
+                        settings: { newTab: 'external' },
+                    },
                     { name: 'metadata', type: 'json', label: 'Metadata', settings: { rows: 4 } },
                 ],
                 form: {
@@ -186,6 +199,8 @@ export function createPlaygroundDefinition(): DefinitionInput {
                         { type: 'field', name: 'event' },
                         { type: 'field', name: 'video' },
                         { type: 'field', name: 'place' },
+                        { type: 'field', name: 'venue' },
+                        { type: 'field', name: 'cta' },
                         { type: 'field', name: 'metadata' },
                         {
                             type: 'sidebar',
