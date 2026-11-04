@@ -194,4 +194,8 @@ export const listsMessages = {
     }),
     keepTheirs: defineMessage({ id: 'panneau.lists.keepTheirs', defaultMessage: 'Keep theirs' }),
     saveMine: defineMessage({ id: 'panneau.lists.saveMine', defaultMessage: 'Save mine' }),
+    phoneExtension: defineMessage<{ number: string; extension: string }>({
+        id: 'panneau.lists.phoneExtension',
+        defaultMessage: '{number}, ext. {extension}',
+    }),
 };

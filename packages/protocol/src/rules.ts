@@ -46,6 +46,8 @@ interface Context extends CheckOptions {
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 /** An international phone number in E.164: `+`, then 7 to 15 digits, without a leading zero. */
 const TEL = /^\+[1-9]\d{6,14}$/;
+/** The same number, with an optional extension after `;ext=` (RFC 3966): `+15145550199;ext=123`. */
+const TEL_EXTENSION = /^\+[1-9]\d{6,14}(?:;ext=\d{1,10})?$/;
 
 function isKnownRule(rule: Rule): boolean {
     return (PORTABLE_RULES as readonly string[]).includes(rule.rule);
@@ -238,7 +240,12 @@ export function checkRules(
                 valid = isRecord(value) || Array.isArray(value);
                 break;
             case 'tel':
-                valid = typeof value !== 'string' || TEL.test(value);
+                valid =
+                    typeof value !== 'string' ||
+                    ((rule as { extension?: boolean }).extension === true
+                        ? TEL_EXTENSION
+                        : TEL
+                    ).test(value);
                 break;
             case 'postalCode': {
                 // The country is a code, or another field of the form (decision 0054)
@@ -312,12 +319,14 @@ function stringSetting(field: Field, key: string): string | undefined {
 }
 
 /**
- * The rule each type implies: its values are checked whatever rules the field lists. `daterange`
- * and `money` carry settings of their field: the open bounds, the allowed currencies.
+ * The rule each type implies: its values are checked whatever rules the field lists. `tel`,
+ * `daterange` and `money` carry settings of their field: the extension, the open bounds, the
+ * allowed currencies.
  */
 const IMPLIED_RULES: Readonly<Record<string, (field: Field) => Rule>> = {
     json: () => ({ rule: 'json' }),
-    tel: () => ({ rule: 'tel' }),
+    tel: (field) =>
+        field.settings?.extension === true ? { rule: 'tel', extension: true } : { rule: 'tel' },
     daterange: (field) => {
         const open = stringSetting(field, 'open');
         return { rule: 'daterange', ...(open !== undefined ? { open } : {}) } as Rule;
@@ -337,7 +346,8 @@ const IMPLIED_RULES: Readonly<Record<string, (field: Field) => Rule>> = {
 
 /**
  * The rules of a field that apply in the mode, with the one its type implies: `json` for the
- * `json` type, `tel` for `tel`, `daterange` for `daterange` and `money` for `money`.
+ * `json` type, `tel` for `tel`, `daterange` for `daterange` and `money` for `money`. A rule of
+ * the same name on the field wins.
  */
 function rulesOf(field: Field, mode: CheckOptions['mode']): Rule[] {
     const rules = (field.rules ?? []).filter((rule) => appliesIn(rule, mode));

@@ -54,7 +54,16 @@ export const Rule = z
             message,
             mode,
         }),
-        z.looseObject({ rule: z.enum(['email', 'url', 'json', 'tel']), message, mode }),
+        z.looseObject({ rule: z.enum(['email', 'url', 'json']), message, mode }),
+        z.looseObject({
+            rule: z.literal('tel'),
+            extension: z.boolean().optional().meta({
+                description:
+                    'The number can have an extension, after `;ext=` as in a `tel:` URI (RFC 3966): `+15145550199;ext=123`, 1 to 10 digits. Without it, a value with an extension fails.',
+            }),
+            message,
+            mode,
+        }),
         z.looseObject({
             rule: z.literal('daterange'),
             open: DateRangeOpen.optional(),
@@ -135,7 +144,7 @@ export const Rule = z
     ])
     .meta({
         description:
-            'A portable validation rule. `min` and `max` apply to numbers, to the amount of `money` values (in minor units), and to the length of text and arrays. `daterange` and `money` are implied by their types, with the `open` bounds and the `currencies` of the field (decision 0053). `accept` lists MIME types (`image/*`). `maxSize` is in bytes. `crop` checks the transform of each image of an `image` or `media` value (decision 0031). `postalCode` checks a postal code against the format of its country, for the countries whose format Panneau knows: Canada and the United States (decision 0054).',
+            'A portable validation rule. `min` and `max` apply to numbers, to the amount of `money` values (in minor units), and to the length of text and arrays. `daterange` and `money` are implied by their types, with the `open` bounds and the `currencies` of the field (decision 0053). `accept` lists MIME types (`image/*`). `maxSize` is in bytes. `tel` checks an E.164 number, with an extension when `extension` is `true`. `crop` checks the transform of each image of an `image` or `media` value (decision 0031). `postalCode` checks a postal code against the format of its country, for the countries whose format Panneau knows: Canada and the United States (decision 0054).',
     });
 
 export const BlockType = z.looseObject({

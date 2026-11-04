@@ -83,9 +83,16 @@ export const Action: z.ZodObject<{
             rule: z.ZodEnum<{
                 email: "email";
                 url: "url";
-                tel: "tel";
                 json: "json";
             }>;
+            message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                update: "update";
+                create: "create";
+            }>>;
+        }, z.core.$loose>, z.ZodObject<{
+            rule: z.ZodLiteral<"tel">;
+            extension: z.ZodOptional<z.ZodBoolean>;
             message: z.ZodOptional<z.ZodString>;
             mode: z.ZodOptional<z.ZodEnum<{
                 update: "update";
@@ -914,9 +921,16 @@ export const Definition: z.ZodObject<{
                 rule: z.ZodEnum<{
                     email: "email";
                     url: "url";
-                    tel: "tel";
                     json: "json";
                 }>;
+                message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>>;
+            }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"tel">;
+                extension: z.ZodOptional<z.ZodBoolean>;
                 message: z.ZodOptional<z.ZodString>;
                 mode: z.ZodOptional<z.ZodEnum<{
                     update: "update";
@@ -1185,9 +1199,16 @@ export const Definition: z.ZodObject<{
                     rule: z.ZodEnum<{
                         email: "email";
                         url: "url";
-                        tel: "tel";
                         json: "json";
                     }>;
+                    message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        update: "update";
+                        create: "create";
+                    }>>;
+                }, z.core.$loose>, z.ZodObject<{
+                    rule: z.ZodLiteral<"tel">;
+                    extension: z.ZodOptional<z.ZodBoolean>;
                     message: z.ZodOptional<z.ZodString>;
                     mode: z.ZodOptional<z.ZodEnum<{
                         update: "update";
@@ -1730,9 +1751,16 @@ export const Field: z.ZodObject<{
         rule: z.ZodEnum<{
             email: "email";
             url: "url";
-            tel: "tel";
             json: "json";
         }>;
+        message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            update: "update";
+            create: "create";
+        }>>;
+    }, z.core.$loose>, z.ZodObject<{
+        rule: z.ZodLiteral<"tel">;
+        extension: z.ZodOptional<z.ZodBoolean>;
         message: z.ZodOptional<z.ZodString>;
         mode: z.ZodOptional<z.ZodEnum<{
             update: "update";
@@ -2539,9 +2567,16 @@ export const namedSchemas: {
         rule: z.ZodEnum<{
             email: "email";
             url: "url";
-            tel: "tel";
             json: "json";
         }>;
+        message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            update: "update";
+            create: "create";
+        }>>;
+    }, z.core.$loose>, z.ZodObject<{
+        rule: z.ZodLiteral<"tel">;
+        extension: z.ZodOptional<z.ZodBoolean>;
         message: z.ZodOptional<z.ZodString>;
         mode: z.ZodOptional<z.ZodEnum<{
             update: "update";
@@ -2682,9 +2717,16 @@ export const namedSchemas: {
             rule: z.ZodEnum<{
                 email: "email";
                 url: "url";
-                tel: "tel";
                 json: "json";
             }>;
+            message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                update: "update";
+                create: "create";
+            }>>;
+        }, z.core.$loose>, z.ZodObject<{
+            rule: z.ZodLiteral<"tel">;
+            extension: z.ZodOptional<z.ZodBoolean>;
             message: z.ZodOptional<z.ZodString>;
             mode: z.ZodOptional<z.ZodEnum<{
                 update: "update";
@@ -3128,9 +3170,16 @@ export const namedSchemas: {
                 rule: z.ZodEnum<{
                     email: "email";
                     url: "url";
-                    tel: "tel";
                     json: "json";
                 }>;
+                message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>>;
+            }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"tel">;
+                extension: z.ZodOptional<z.ZodBoolean>;
                 message: z.ZodOptional<z.ZodString>;
                 mode: z.ZodOptional<z.ZodEnum<{
                     update: "update";
@@ -3357,9 +3406,16 @@ export const namedSchemas: {
                 rule: z.ZodEnum<{
                     email: "email";
                     url: "url";
-                    tel: "tel";
                     json: "json";
                 }>;
+                message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>>;
+            }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"tel">;
+                extension: z.ZodOptional<z.ZodBoolean>;
                 message: z.ZodOptional<z.ZodString>;
                 mode: z.ZodOptional<z.ZodEnum<{
                     update: "update";
@@ -3628,9 +3684,16 @@ export const namedSchemas: {
                     rule: z.ZodEnum<{
                         email: "email";
                         url: "url";
-                        tel: "tel";
                         json: "json";
                     }>;
+                    message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        update: "update";
+                        create: "create";
+                    }>>;
+                }, z.core.$loose>, z.ZodObject<{
+                    rule: z.ZodLiteral<"tel">;
+                    extension: z.ZodOptional<z.ZodBoolean>;
                     message: z.ZodOptional<z.ZodString>;
                     mode: z.ZodOptional<z.ZodEnum<{
                         update: "update";
@@ -4154,9 +4217,16 @@ export const namedSchemas: {
                     rule: z.ZodEnum<{
                         email: "email";
                         url: "url";
-                        tel: "tel";
                         json: "json";
                     }>;
+                    message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        update: "update";
+                        create: "create";
+                    }>>;
+                }, z.core.$loose>, z.ZodObject<{
+                    rule: z.ZodLiteral<"tel">;
+                    extension: z.ZodOptional<z.ZodBoolean>;
                     message: z.ZodOptional<z.ZodString>;
                     mode: z.ZodOptional<z.ZodEnum<{
                         update: "update";
@@ -4425,9 +4495,16 @@ export const namedSchemas: {
                         rule: z.ZodEnum<{
                             email: "email";
                             url: "url";
-                            tel: "tel";
                             json: "json";
                         }>;
+                        message: z.ZodOptional<z.ZodString>;
+                        mode: z.ZodOptional<z.ZodEnum<{
+                            update: "update";
+                            create: "create";
+                        }>>;
+                    }, z.core.$loose>, z.ZodObject<{
+                        rule: z.ZodLiteral<"tel">;
+                        extension: z.ZodOptional<z.ZodBoolean>;
                         message: z.ZodOptional<z.ZodString>;
                         mode: z.ZodOptional<z.ZodEnum<{
                             update: "update";
@@ -5557,9 +5634,16 @@ export const Resource: z.ZodObject<{
             rule: z.ZodEnum<{
                 email: "email";
                 url: "url";
-                tel: "tel";
                 json: "json";
             }>;
+            message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                update: "update";
+                create: "create";
+            }>>;
+        }, z.core.$loose>, z.ZodObject<{
+            rule: z.ZodLiteral<"tel">;
+            extension: z.ZodOptional<z.ZodBoolean>;
             message: z.ZodOptional<z.ZodString>;
             mode: z.ZodOptional<z.ZodEnum<{
                 update: "update";
@@ -5828,9 +5912,16 @@ export const Resource: z.ZodObject<{
                 rule: z.ZodEnum<{
                     email: "email";
                     url: "url";
-                    tel: "tel";
                     json: "json";
                 }>;
+                message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>>;
+            }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"tel">;
+                extension: z.ZodOptional<z.ZodBoolean>;
                 message: z.ZodOptional<z.ZodString>;
                 mode: z.ZodOptional<z.ZodEnum<{
                     update: "update";
@@ -6132,9 +6223,16 @@ export const Rule: z.ZodUnion<readonly [z.ZodObject<{
     rule: z.ZodEnum<{
         email: "email";
         url: "url";
-        tel: "tel";
         json: "json";
     }>;
+    message: z.ZodOptional<z.ZodString>;
+    mode: z.ZodOptional<z.ZodEnum<{
+        update: "update";
+        create: "create";
+    }>>;
+}, z.core.$loose>, z.ZodObject<{
+    rule: z.ZodLiteral<"tel">;
+    extension: z.ZodOptional<z.ZodBoolean>;
     message: z.ZodOptional<z.ZodString>;
     mode: z.ZodOptional<z.ZodEnum<{
         update: "update";

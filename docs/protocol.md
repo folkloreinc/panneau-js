@@ -169,7 +169,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     - A style in `styles` puts its `class` on an element: `p` (the default), `h1` to `h6`, `blockquote`, `ul`, `ol` or `li`.
     - `links.newTab` sets which links open in a new tab, with `target="_blank" rel="noopener noreferrer"`: as the user chooses, every link to another site, or none.
 
-- **`tel` values** are international numbers in E.164, `+15145550199` ([0047](decisions/0047-countries-regions-and-phone-numbers.md)). The type implies the `tel` rule: a client keeps a number that isn't complete as the text typed, which the rule refuses. `settings.country` is the country of a new number.
+- **`tel` values** are international numbers in E.164, `+15145550199` ([0047](decisions/0047-countries-regions-and-phone-numbers.md)). The type implies the `tel` rule: a client keeps a number that isn't complete as the text typed, which the rule refuses. `settings.country` is the country of a new number. With `settings.extension: true`, a number can have an extension, after `;ext=` as in a `tel:` URI: `+15145550199;ext=123`, 1 to 10 digits, and the type implies `{ "rule": "tel", "extension": true }`, which accepts it ([0057](decisions/0057-phone-extensions.md)).
 - **`range` values** are numbers, picked on a slider between the `min` and `max` rules (0 and 100 without them), or `null` until it is moved. Settings `step`, `decimals` and `suffix` are those of `number`.
 - **`duration` values** are whole numbers, zero or more, in the unit of the field ([0056](decisions/0056-duration-units.md)). Its settings (`DurationSettings`) take `seconds`, `minutes`, `hours` or `days`, and a day is 24 hours:
 

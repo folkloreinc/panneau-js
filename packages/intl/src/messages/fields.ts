@@ -188,6 +188,14 @@ export const fieldsMessages = {
         id: 'panneau.fields.telCountry',
         defaultMessage: 'Country of the number',
     }),
+    telExtension: defineMessage({
+        id: 'panneau.fields.telExtension',
+        defaultMessage: 'Extension',
+    }),
+    telExtensionShort: defineMessage({
+        id: 'panneau.fields.telExtensionShort',
+        defaultMessage: 'ext.',
+    }),
     addressStreet: defineMessage({ id: 'panneau.fields.addressStreet', defaultMessage: 'Address' }),
     addressUnit: defineMessage({
         id: 'panneau.fields.addressUnit',

@@ -52,7 +52,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0044](0044-gallery-and-calendar.md)                  | Gallery and calendar layouts, and the query of a calendar                     | Accepted                          |
 | [0045](0045-current-context.md)                       | A current context, picked in the app and sent with every request              | Proposed                          |
 | [0046](0046-abilities-in-the-ui.md)                   | Abilities of pages and fields, and a forbidden state                          | Accepted                          |
-| [0047](0047-countries-regions-and-phone-numbers.md)   | Countries, regions and phone numbers                                          | Accepted                          |
+| [0047](0047-countries-regions-and-phone-numbers.md)   | Countries, regions and phone numbers                                          | Amended by 0057                   |
 | [0048](0048-password-reset-and-email-verification.md) | Password reset and email verification                                         | Proposed                          |
 | [0049](0049-two-factor-authentication.md)             | Two-factor authentication, required for some users, and password confirmation | Proposed                          |
 | [0050](0050-account-page.md)                          | The account page                                                              | Proposed                          |
@@ -62,3 +62,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0054](0054-addresses.md)                             | Postal addresses                                                              | Proposed                          |
 | [0055](0055-links.md)                                 | Links                                                                         | Proposed                          |
 | [0056](0056-duration-units.md)                        | Durations in a declared unit, with days                                       | Proposed                          |
+| [0057](0057-phone-extensions.md)                      | Phone extensions                                                              | Proposed                          |

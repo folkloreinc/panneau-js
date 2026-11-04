@@ -88,3 +88,67 @@ export function getCallingCode(country: string | null | undefined): string | nul
 export function getPhoneCountries(): string[] {
     return getCountries();
 }
+
+/** The longest extension a value can have, in digits. */
+export const MAX_EXTENSION_LENGTH = 10;
+
+/** A value with an extension after `;ext=`, as in a `tel:` URI (RFC 3966). */
+const STORED_EXTENSION = /^(.*);ext=(\d{1,10})$/s;
+
+/**
+ * An extension typed after a number: `514 555-0199 ext. 123`, `x123`, `poste 123`, `;ext=123`. The
+ * number ends with a digit or a parenthesis.
+ */
+const TYPED_EXTENSION = /^(.*?[\d)])[\s,;]*(?:extension|ext|poste|x)\s*[.:=#]?\s*(\d{1,10})$/is;
+
+/** A value split into its number and its extension. */
+export interface PhoneParts {
+    /** The number: E.164, or the text as typed. `null` when empty. */
+    number: string | null;
+    /** The digits of the extension, or `null` without one. */
+    extension: string | null;
+}
+
+/**
+ * The number and the extension of a value: `+15145550199;ext=123` gives `+15145550199` and `123`.
+ * A value without `;ext=` is a number without an extension. To send a value to a service that
+ * doesn't take extensions (SMS), keep its `number`.
+ */
+export function splitExtension(value: string | null | undefined): PhoneParts {
+    const match = STORED_EXTENSION.exec(value ?? '');
+    if (match === null) {
+        return {
+            number: value === undefined || value === '' ? null : (value ?? null),
+            extension: null,
+        };
+    }
+    const [, number = '', extension = null] = match;
+    return { number: number === '' ? null : number, extension };
+}
+
+/**
+ * A number with its extension, after `;ext=`: `+15145550199;ext=123`. Without an extension, the
+ * number as it is.
+ */
+export function joinExtension(
+    number: string | null | undefined,
+    extension: string | null | undefined,
+): string | null {
+    if (extension === null || extension === undefined || extension === '') {
+        return number === undefined || number === '' ? null : (number ?? null);
+    }
+    return `${number ?? ''};ext=${extension}`;
+}
+
+/**
+ * The extension typed after a number, as people write it: `514 555-0199 ext. 123`, `x123`,
+ * `poste 123`, or `;ext=123`. `null` when the text has none.
+ */
+export function readExtension(text: string): { number: string; extension: string } | null {
+    const match = TYPED_EXTENSION.exec(text.trim());
+    if (match === null) {
+        return null;
+    }
+    const [, number = '', extension = ''] = match;
+    return { number: number.trim(), extension };
+}
