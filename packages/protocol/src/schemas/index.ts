@@ -57,7 +57,6 @@ import {
     Page,
     Uploads,
     User,
-    Widget,
 } from './definition';
 import {
     AddressSettings,
@@ -86,6 +85,16 @@ import {
     ToneInput,
     ToneValues,
 } from './theme';
+import {
+    ListWidgetData,
+    ListWidgetItem,
+    SeriesPoint,
+    SeriesWidgetData,
+    StatWidgetData,
+    Widget,
+    WidgetBadge,
+    WidgetSettings,
+} from './widget';
 
 export * from './common';
 export * from './field';
@@ -94,6 +103,7 @@ export * from './list';
 export * from './action';
 export * from './resource';
 export * from './theme';
+export * from './widget';
 export * from './definition';
 export * from './api';
 export * from './boot';
@@ -133,6 +143,7 @@ export const namedSchemas = {
     Auth,
     MenuItem,
     Page,
+    WidgetSettings,
     Widget,
     Uploads,
     ContextOption,
@@ -188,6 +199,12 @@ export const namedSchemas = {
     LinkValue,
     DateRangeValue,
     MoneyValue,
+    WidgetBadge,
+    StatWidgetData,
+    SeriesPoint,
+    SeriesWidgetData,
+    ListWidgetItem,
+    ListWidgetData,
 } satisfies Record<string, z.ZodType>;
 
 /** A registry of the named schemas, used to reference them by name in generated files. */

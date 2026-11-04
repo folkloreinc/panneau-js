@@ -5,6 +5,7 @@ import { PROTOCOL_VERSION } from '../version';
 import { Abilities, Id } from './common';
 import { Resource } from './resource';
 import { DefinitionTheme } from './theme';
+import { Widget } from './widget';
 
 export const User = z.looseObject({
     id: Id,
@@ -175,16 +176,6 @@ export const DefinitionContext = z
             'The current context the user picks in the app, sent with every request in the `Panneau-Context` header (decision 0045).',
     });
 
-export const Widget = z.looseObject({
-    id: z.string().min(1),
-    type: z.string().min(1).meta({
-        description: 'Built-in: `stat`, `chart`, `recent-items`, `shortcuts`, `welcome`.',
-    }),
-    label: z.string().optional(),
-    width: z.number().int().min(1).max(12).optional(),
-    settings: z.record(z.string(), z.unknown()).optional(),
-});
-
 export const Uploads = z.looseObject({
     mode: z.enum(['multipart', 'tus', 'presigned']).meta({
         description:
@@ -217,7 +208,13 @@ export const Definition = z
             description: 'Named paths of the frontend, for `link` actions and redirects.',
         }),
         auth: Auth.optional(),
-        dashboard: z.looseObject({ widgets: z.array(Widget) }).optional(),
+        dashboard: z
+            .looseObject({ widgets: z.array(Widget) })
+            .optional()
+            .meta({
+                description:
+                    'The widgets of the home page for the user, in order, when `pages.home` is the `dashboard` (decision 0064).',
+            }),
         search: z.looseObject({ enabled: z.boolean() }).optional(),
         uploads: Uploads.optional(),
         context: DefinitionContext.optional(),
@@ -266,7 +263,6 @@ export type Page = z.infer<typeof Page>;
 export type ContextOption = z.infer<typeof ContextOption>;
 export type ContextParam = z.infer<typeof ContextParam>;
 export type DefinitionContext = z.infer<typeof DefinitionContext>;
-export type Widget = z.infer<typeof Widget>;
 export type Uploads = z.infer<typeof Uploads>;
 export type Definition = z.infer<typeof Definition>;
 /** A definition as a backend writes it, before defaults are applied. */

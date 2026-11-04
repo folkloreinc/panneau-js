@@ -44,6 +44,7 @@ export interface MockBackendOptions {
         resource: string;
         item: Item;
     }) => string;
+    widgets?: Record<string, MockWidget>;
 }
 
 // @public
@@ -81,6 +82,15 @@ export interface MockUser {
     recoveryCodes?: string[];
     twoFactor?: boolean;
     twoFactorRequired?: boolean;
+}
+
+// @public
+export type MockWidget = Response | Record<string, unknown> | ((context: MockWidgetContext) => Response | Record<string, unknown> | Promise<Response | Record<string, unknown>>);
+
+// @public
+export interface MockWidgetContext {
+    context: ContextValues;
+    items: (resource: string) => Item[];
 }
 
 // (No @packageDocumentation comment for this package)

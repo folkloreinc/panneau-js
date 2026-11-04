@@ -275,6 +275,19 @@ export const appMessages: {
     missingPage: PanneauMessage<    {
     component: string;
     }>;
+    missingWidget: PanneauMessage<    {
+    type: string;
+    }>;
+    widgetLoading: PanneauMessage<    {
+    label: string;
+    }>;
+    widgetError: PanneauMessage<Record<never, never>>;
+    widgetEmpty: PanneauMessage<Record<never, never>>;
+    widgetSeeAll: PanneauMessage<Record<never, never>>;
+    widgetTotal: PanneauMessage<Record<never, never>>;
+    widgetUntitled: PanneauMessage<    {
+    id: string;
+    }>;
 };
 
 // @public

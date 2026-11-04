@@ -35,7 +35,10 @@ export interface PanneauPlugin {
     actions?: Record<string, PluginComponent>;
     /** Pages, by component name (`dashboard`). */
     pages?: Record<string, PluginComponent>;
-    /** Dashboard widgets, by widget type (`stat`). */
+    /**
+     * Dashboard widgets, by widget type (`map`). They get `WidgetProps`. The built-in types
+     * (`stat`, `series`, `list`) stay built in: the `dashboard` page is what a plugin replaces.
+     */
     widgets?: Record<string, PluginComponent>;
     /** Layout node components, for `component` nodes of form layouts. */
     components?: Record<string, PluginComponent>;

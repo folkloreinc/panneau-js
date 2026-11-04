@@ -42,6 +42,7 @@ const PROBLEMS: Record<number, string> = {
     422: 'Invalid values: messages are in `errors`, keyed by dot path.',
     423: `The password must be confirmed first (\`POST /auth/password/confirm\`): a problem of type \`${PASSWORD_CONFIRMATION_PROBLEM_TYPE}\`.`,
     429: 'Too many requests: `Retry-After` gives the seconds to wait.',
+    500: 'Server error, such as a widget whose data does not have the shape of its type.',
 };
 
 function problems(...statuses: number[]): JsonObject {
@@ -876,12 +877,21 @@ export function createOpenApiDocument(): JsonObject {
                 parameters: [pathParameter('widget', 'Widget id.')],
                 get: {
                     operationId: 'getWidgetData',
+                    description:
+                        'The data of a widget of the dashboard of the user, read as the user (decision 0064). The built-in `stat` and `list` on a resource (`settings.resource`) have none: clients read the list of the resource. A widget that is not in the dashboard of the user is a `404`; a `403` hides the widget.',
                     responses: {
-                        200: ok("The widget's data. Its shape depends on the widget type.", {
-                            type: 'object',
-                            additionalProperties: true,
-                        }),
-                        ...problems(401, 403, 404),
+                        200: ok(
+                            "The widget's data, in the shape of its type: `StatWidgetData`, `SeriesWidgetData` and `ListWidgetData` for the built-in types, the plugin's own object for others.",
+                            {
+                                anyOf: [
+                                    ref('StatWidgetData'),
+                                    ref('SeriesWidgetData'),
+                                    ref('ListWidgetData'),
+                                    { type: 'object', additionalProperties: true },
+                                ],
+                            },
+                        ),
+                        ...problems(401, 403, 404, 500),
                     },
                 },
             },

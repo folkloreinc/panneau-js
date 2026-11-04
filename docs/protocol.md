@@ -422,6 +422,38 @@ Built-in actions use reserved ids:
 - A route reference can name a page: `{ "route": "job", "params": { "id": "4f2a" } }`, when `routes` has no route of that name. Menus don't link to pages with params.
 - **`abilities`** ([0046](decisions/0046-abilities-in-the-ui.md)): `{ "view": false }` leaves the page out of menus, and its route shows a forbidden state. `pages.home` with `view: false` falls back to the built-in home. Without it, a page is allowed. A backend can also leave out a page the user should not know about.
 
+### Dashboard
+
+With `pages.home` set to the built-in `dashboard`, the home page is the widgets of `dashboard.widgets`, the user's, in order ([decisions/0064](decisions/0064-dashboard-widgets.md)):
+
+```jsonc
+"dashboard": {
+    "widgets": [
+        // On a resource: the client reads its list, with this query
+        { "id": "to-judge", "type": "stat", "label": "Entries to judge",
+          "settings": { "resource": "entries", "query": { "filter[status]": "to-judge" } } },
+        { "id": "latest", "type": "list", "label": "Latest entries", "width": 4,
+          "settings": { "resource": "entries", "query": { "sort": "-created_at" } } },
+        // Data of its own, from GET /dashboard/widgets/{widget}
+        { "id": "per-day", "type": "series", "label": "Entries per day", "width": 8 },
+        { "id": "weather", "type": "weather", "settings": { "city": "Montréal" } } // a plugin's
+    ]
+}
+```
+
+- **Types.** `stat`, `series` and `list` are built in. Any other type is a widget of a plugin, drawn by its component from the data of the endpoint, with its own `settings`.
+- **`width`**: the columns of a grid of 12, 3 for a `stat` and 6 for the others by default. One column on a phone.
+- **On a resource.** A `stat` or a `list` with `settings.resource` reads the list of that resource, with `settings.query` written as its query parameters: a `stat` reads `perPage=1` and shows `meta.total`, a `list` reads `perPage=5` and shows the title of each item (`itemTitle`) and the badge of its value of the first `select` column. Both link to the list with that query. The resource must exist, the filters of `query` must be filters of its list, and `query` leaves out `page`, `perPage` and `cursor`. A list paged with cursors has no total: it can't feed a `stat`. A `series` has data of its own.
+- **Data.** The other widgets get theirs from `GET /dashboard/widgets/{widget}`, in the shape of their type, as is. Texts are translated by the backend:
+
+| Type     | Data                                                                                                                                                                                                        |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `stat`   | `{ "value": 12, "help": "3 more than last week", "tone": "warning", "url": "…" }`: `value` only is required. `tone` only when the number calls for attention                                                |
+| `series` | `{ "period": "day", "points": [{ "date": "2026-10-05", "value": 4 }], "total": 12 }`: `period` is `day`, `week` or `month`, each `date` the first day of its period, going up                               |
+| `list`   | `{ "items": [{ "title": "…", "description": null, "meta": "12 answers", "url": "…", "badge": { "label": "Open", "tone": "success" } }], "empty": "…", "url": "…" }`: at most 5 items, the most useful first |
+
+- **Errors.** A widget that isn't in the user's dashboard, or a widget on a resource, is a `404`. A `403` hides the widget. Data that doesn't have the shape of its type is a `500` problem: clients show the widget's error, with a retry, and the other widgets stay. `checkWidgetData()` of `@panneau/protocol/runtime` checks a shape and names the wrong keys.
+
 ### Menus and the forbidden state
 
 - **Menus** show an entry when the user can reach its target: a resource with `viewAny`, a page without `view: false`. Groups left empty and extra separators are left out. A `link` entry has no abilities: a backend leaves it out of the definition of a user who can't follow it.
@@ -884,7 +916,7 @@ With `auth.mode = "external"`, the frontend only calls `GET /auth/session` and s
 | ----------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | `GET /search?q=&limit=&resources=`        | results grouped by resource: `{ "data": [ { "resource": "pages", "items": [...], "total": 34 } ] }` |
 | `GET /embeds?url=`                        | what a URL embeds, for `embed` fields: `{ "data": EmbedValue }`, or a `422` when it can't embed it  |
-| `GET /dashboard/widgets/{widget}`         | data for one widget, with the widget's own shape declared in the definition                         |
+| `GET /dashboard/widgets/{widget}`         | the data of a widget of the user's [dashboard](#dashboard), in the shape of its type                |
 | `POST /resources/{resource}/{id}/preview` | sends the unsaved values; returns `{ "url": "…", "expiresAt": "…" }` for iframe previews            |
 
 Global search ([decisions/0029](decisions/0029-go-to-palette.md)):
@@ -907,14 +939,14 @@ Global search ([decisions/0029](decisions/0029-go-to-palette.md)):
 - **schemas and TypeScript types**. `Definition` is a definition after parsing, with defaults applied; `DefinitionInput` is a definition as a backend writes it.
 - **validation helpers**:
     - `validateDefinition()` checks the schema, then the references between parts;
-    - `lintDefinition()` checks those references alone: layout nodes and columns that name a field, relations that name a resource, unique names;
+    - `lintDefinition()` checks those references alone: layout nodes and columns that name a field, relations that name a resource, unique names, and the widgets of the dashboard on a resource;
     - `validateBootConfig()` checks a [boot config](#boot-config).
 - **the portable rules**: `checkValues()` is the reference implementation.
 - **range filters**: `matchesFilterRange()` is the reference of how a backend reads the bounds of a range.
 - **a light entry point for browsers** (`@panneau/protocol/runtime`): the constants and the helpers above that don't need the schemas (`checkValues()`, `evaluateCondition()`, `lintDefinition()`, the list query helpers, `isProblem()`), without loading zod. UI packages import them from there, and only types from the main entry point.
 - **generated files**: `@panneau/protocol/definition.schema.json` and `@panneau/protocol/boot.schema.json` (JSON Schema 2020-12), and `@panneau/protocol/openapi.json` (OpenAPI 3.1).
-- **a mock backend** (`@panneau/protocol/mock`): an in-memory implementation of the resource routes.
-- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. For a list paged with cursors, it also follows `nextCursor`, and checks that an invalid cursor is a `422`. With `writes`, it also checks that rules limited to `create` don't apply to updates: an update with those fields set to `null` succeeds. It also checks that an update of a single field, with `If-Match`, changes that field alone. It also checks that the built-in `delete` answers a dry run without being declared and, with `writes`, that an item that allows `duplicate` is copied under a new id, with its `ETag`. It also checks that the API agrees with the abilities it announces ([0046](decisions/0046-abilities-in-the-ui.md)): resources without `viewAny` answer `403` on their list, items leave out the values of fields with `view: false`, and a dry run of `delete` skips an item without `delete`; with `writes`, an empty create of a resource without `create`, and an empty update of an item without `update`, answer `403`. It also checks that the backend reads the bounds of the resource's first `date-range` filter, if it has one, and that `GET /search` finds an item by a word of its title, reads `limit` and `resources`, and refuses invalid parameters with a `422`. With a `context` in the definition, it checks the choices of each param, a definition built for a value of the first param, and a value that doesn't exist refused with a `403` context problem. `context` sends values with every request, for a backend whose resources need one.
+- **a mock backend** (`@panneau/protocol/mock`): an in-memory implementation of the resource routes, and of the widgets of the dashboard with the data of its `widgets` option.
+- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. For a list paged with cursors, it also follows `nextCursor`, and checks that an invalid cursor is a `422`. With `writes`, it also checks that rules limited to `create` don't apply to updates: an update with those fields set to `null` succeeds. It also checks that an update of a single field, with `If-Match`, changes that field alone. It also checks that the built-in `delete` answers a dry run without being declared and, with `writes`, that an item that allows `duplicate` is copied under a new id, with its `ETag`. It also checks that the API agrees with the abilities it announces ([0046](decisions/0046-abilities-in-the-ui.md)): resources without `viewAny` answer `403` on their list, items leave out the values of fields with `view: false`, and a dry run of `delete` skips an item without `delete`; with `writes`, an empty create of a resource without `create`, and an empty update of an item without `update`, answer `403`. It also checks that the backend reads the bounds of the resource's first `date-range` filter, if it has one, and that `GET /search` finds an item by a word of its title, reads `limit` and `resources`, and refuses invalid parameters with a `422`. With a `dashboard`, it checks that each widget with data of its own answers in the shape of its type (or a `403`), that the lists of the widgets on a resource answer their query, with a total for a `stat`, and that a widget that isn't in the dashboard is a `404`. With a `context` in the definition, it checks the choices of each param, a definition built for a value of the first param, and a value that doesn't exist refused with a `403` context problem. `context` sends values with every request, for a backend whose resources need one.
 
 ```ts
 import { formatReport, runConformance } from '@panneau/protocol/conformance';

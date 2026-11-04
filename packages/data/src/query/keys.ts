@@ -29,6 +29,8 @@ export const queryKeys = {
     account: () => ['panneau', 'account'] as const,
     twoFactor: () => ['panneau', 'account', 'two-factor'] as const,
     passkeys: () => ['panneau', 'account', 'passkeys'] as const,
+    /** Under `['panneau', 'dashboard']`: invalidating it refreshes every widget. */
+    widget: (widget: string) => ['panneau', 'dashboard', 'widgets', widget] as const,
     actionRuns: () => ['panneau', 'actions', 'runs'] as const,
     actionRun: (id: string) => ['panneau', 'actions', 'runs', id] as const,
 };

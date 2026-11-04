@@ -7,7 +7,7 @@ import type { ActionRun } from '@panneau/protocol';
 
 import { BASE_URL, createBackend } from '../__fixtures__/backend';
 import type { DataAdapter } from '../adapter';
-import { ConflictError, ValidationError } from '../errors';
+import { ConflictError, ForbiddenError, ValidationError } from '../errors';
 import { createRestAdapter } from '../rest';
 import { DataAdapterProvider, useDataAdapter, useOptionalDataAdapter } from './context';
 import {
@@ -21,6 +21,7 @@ import {
     useRunAction,
     useSearch,
     useUpdateItem,
+    useWidgetData,
 } from './hooks';
 import { queryKeys } from './keys';
 
@@ -111,6 +112,37 @@ describe('query hooks', () => {
         expect(new URL(backend.requests[0]?.url ?? '').search).toBe(
             '?q=abo&limit=20&resources=pages',
         );
+    });
+
+    it('get the data of a widget, and fail a 403 with a ForbiddenError', async () => {
+        const urls: string[] = [];
+        const adapter = createRestAdapter({
+            baseUrl: BASE_URL,
+            fetch: (input) => {
+                const url = String(input);
+                urls.push(url);
+                return Promise.resolve(
+                    url.endsWith('/secret')
+                        ? new Response(JSON.stringify({ status: 403, title: 'Forbidden' }), {
+                              status: 403,
+                              headers: { 'Content-Type': 'application/problem+json' },
+                          })
+                        : new Response(JSON.stringify({ value: 12 }), {
+                              headers: { 'Content-Type': 'application/json' },
+                          }),
+                );
+            },
+        });
+        const { wrapper, client } = setup(adapter);
+        const { result } = renderHook(() => useWidgetData('to judge'), { wrapper });
+        await waitFor(() => expect(result.current.isSuccess).toBe(true));
+        expect(result.current.data).toEqual({ value: 12 });
+        expect(urls[0]).toBe(`${BASE_URL}/dashboard/widgets/to%20judge`);
+        expect(client.getQueryData(queryKeys.widget('to judge'))).toEqual({ value: 12 });
+
+        const secret = renderHook(() => useWidgetData('secret'), { wrapper });
+        await waitFor(() => expect(secret.result.current.isError).toBe(true));
+        expect(secret.result.current.error).toBeInstanceOf(ForbiddenError);
     });
 
     it('get an item, and wait for an id', async () => {
