@@ -53,7 +53,11 @@ export function TextDisplay({ value, field }: DisplayProps) {
             </span>
         );
     }
-    return <span className={styles.text}>{text}</span>;
+    return (
+        <span className={styles.text} data-clamp="">
+            {text}
+        </span>
+    );
 }
 
 /** HTML as plain text. */
@@ -65,7 +69,13 @@ export function RichTextDisplay({ value }: DisplayProps) {
                   .replace(/\s+/g, ' ')
                   .trim()
             : '';
-    return text === '' ? <EmptyValue /> : <span className={styles.text}>{text}</span>;
+    return text === '' ? (
+        <EmptyValue />
+    ) : (
+        <span className={styles.text} data-clamp="">
+            {text}
+        </span>
+    );
 }
 
 /** A number, in the format of the locale. */
@@ -157,7 +167,11 @@ export function DateRangeDisplay({ value, field }: DisplayProps) {
             : range.kind === 'until'
               ? intl.formatMessage(messages.rangeUntil, { end: range.text })
               : range.text;
-    return <span className={styles.text}>{text}</span>;
+    return (
+        <span className={styles.text} data-clamp="">
+            {text}
+        </span>
+    );
 }
 
 /** An amount of money (decision 0053), in the currency format of the locale: `1 250,00 $`. */
@@ -209,7 +223,7 @@ export function RelationDisplay({ value }: DisplayProps) {
         return <EmptyValue />;
     }
     return (
-        <span className={styles.text}>
+        <span className={styles.text} data-clamp="">
             {references.map((reference) => reference.label).join(', ')}
         </span>
     );
@@ -285,14 +299,20 @@ export function TelDisplay({ value, field }: DisplayProps) {
 function Country({ code }: { code: string }) {
     const intl = usePanneauIntl();
     if (!isCountryCode(code)) {
-        return <span className={styles.text}>{code}</span>;
+        return (
+            <span className={styles.text} data-clamp="">
+                {code}
+            </span>
+        );
     }
     return (
         <span className={styles.flagged}>
             <span className={styles.flag} aria-hidden="true">
                 {getCountryFlag(code)}
             </span>
-            <span className={styles.text}>{getCountryName(code, intl.locale)}</span>
+            <span className={styles.text} data-clamp="">
+                {getCountryName(code, intl.locale)}
+            </span>
         </span>
     );
 }
@@ -330,12 +350,18 @@ export function RegionDisplay({ value, field, item }: DisplayProps) {
     const country = field !== null ? getRegionCountry(field, item) : null;
     const name = getRegionName(country, value, intl.locale);
     if (name === null) {
-        return <span className={styles.text}>{value}</span>;
+        return (
+            <span className={styles.text} data-clamp="">
+                {value}
+            </span>
+        );
     }
     return (
         <span className={styles.flagged}>
             <RegionFlag country={country} code={value} className={styles.regionFlag} />
-            <span className={styles.text}>{name}</span>
+            <span className={styles.text} data-clamp="">
+                {name}
+            </span>
         </span>
     );
 }
@@ -409,7 +435,7 @@ export function EmbedDisplay({ value }: DisplayProps) {
             {typeof thumbnailUrl === 'string' ? (
                 <img className={styles.thumbnail} src={thumbnailUrl} alt="" />
             ) : null}
-            <span className={styles.text}>
+            <span className={styles.text} data-clamp="">
                 {typeof title === 'string' ? title : url.replace(/^https?:\/\//, '')}
             </span>
         </a>
@@ -424,7 +450,11 @@ export function LocationDisplay({ value }: DisplayProps) {
     }
     const { lat, lng, address } = value as { lat?: unknown; lng?: unknown; address?: unknown };
     if (typeof address === 'string' && address !== '') {
-        return <span className={styles.text}>{address}</span>;
+        return (
+            <span className={styles.text} data-clamp="">
+                {address}
+            </span>
+        );
     }
     if (typeof lat !== 'number' || typeof lng !== 'number') {
         return <EmptyValue />;
@@ -455,7 +485,7 @@ export function AddressDisplay({ value }: DisplayProps) {
                     {getCountryFlag(country)}
                 </span>
             ) : null}
-            <span className={styles.text}>
+            <span className={styles.text} data-clamp="">
                 {text !== '' ? text : getCountryName(country, intl.locale)}
             </span>
         </span>
@@ -485,7 +515,9 @@ export function LinkDisplay({ value }: DisplayProps) {
         return (
             <span className={styles.flagged}>
                 {icon}
-                <span className={styles.text}>{text}</span>
+                <span className={styles.text} data-clamp="">
+                    {text}
+                </span>
             </span>
         );
     }
@@ -519,7 +551,9 @@ export function ColorDisplay({ value, field }: DisplayProps) {
                     style={swatch !== null ? { backgroundColor: swatch } : undefined}
                     aria-hidden="true"
                 />
-                <span className={styles.text}>{entry.label ?? entry.value}</span>
+                <span className={styles.text} data-clamp="">
+                    {entry.label ?? entry.value}
+                </span>
             </span>
         );
     }
@@ -544,7 +578,11 @@ export function MediaDisplay({ value }: DisplayProps) {
     return (
         <span className={styles.media}>
             {source !== null ? <img className={styles.thumbnail} src={source} alt="" /> : null}
-            {label !== '' ? <span className={styles.text}>{label}</span> : null}
+            {label !== '' ? (
+                <span className={styles.text} data-clamp="">
+                    {label}
+                </span>
+            ) : null}
         </span>
     );
 }

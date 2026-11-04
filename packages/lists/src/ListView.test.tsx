@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { PanneauProvider, createList, createMemoryRouter, definePlugin } from '@panneau/core';
 import { fr } from '@panneau/intl';
-import type { Action, Field } from '@panneau/protocol';
+import type { Field } from '@panneau/protocol';
 import { PanneauRoot } from '@panneau/ui';
 
 import { List } from './List';
@@ -423,7 +423,7 @@ describe('ListView', () => {
         expect(screen.queryByRole('button', { name: 'Actions for Blog' })).not.toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Delete: Blog' })).not.toBeInTheDocument();
 
-        // `delete` alone: a button, not a menu of one item (decision 0060)
+        // Actions placed in the menu are buttons too while they fit (decision 0060)
         expect(screen.queryByRole('button', { name: 'Actions for Contact' })).toBeNull();
         await user.click(screen.getByRole('button', { name: 'Delete: Contact' }));
         expect(onAction).toHaveBeenCalledWith(
@@ -431,43 +431,7 @@ describe('ListView', () => {
         );
     });
 
-    it('keeps `delete` in the menu of a row with other menu actions', async () => {
-        const user = userEvent.setup();
-        const onAction = vi.fn(() => Promise.resolve());
-        const archive: Action = {
-            id: 'archive',
-            label: 'Archive',
-            kind: 'server',
-            scope: ['item'],
-            placement: ['menu'],
-        };
-        const items = pages.map((item) => ({
-            ...item,
-            abilities: { ...item.abilities, archive: true },
-        }));
-        renderList(
-            <ListView
-                list={createList()}
-                columns={columns}
-                items={items}
-                actions={[archive, remove]}
-                onAction={onAction}
-                selectable={false}
-            />,
-        );
-        expect(screen.queryByRole('button', { name: 'Delete: Contact' })).toBeNull();
-        await user.click(screen.getByRole('button', { name: 'Actions for Contact' }));
-        await user.click(await screen.findByRole('menuitem', { name: 'Delete' }));
-        expect(onAction).toHaveBeenCalledWith(
-            expect.objectContaining({ action: remove, scope: 'item', item: items[1] }),
-        );
-        // Blog can't be deleted: its menu only archives.
-        await user.click(screen.getByRole('button', { name: 'Actions for Blog' }));
-        expect(await screen.findByRole('menuitem', { name: 'Archive' })).toBeInTheDocument();
-        expect(screen.queryByRole('menuitem', { name: 'Delete' })).toBeNull();
-    });
-
-    it('confirms a lone `delete` as it does in a menu', async () => {
+    it('confirms `delete` from the button of its row', async () => {
         const user = userEvent.setup();
         const onAction = vi.fn(() => Promise.resolve());
         renderList(

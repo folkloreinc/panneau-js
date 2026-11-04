@@ -10,7 +10,7 @@ import { ListSkeleton } from './ListSkeleton';
 import styles from './ListView.module.css';
 import { ActionButton } from './actions/ActionButton';
 import { ConfirmDialog, type ConfirmPreview, needsConfirmation } from './actions/ConfirmDialog';
-import { RowActions } from './actions/RowActions';
+import { RowActions, orderRowActions } from './actions/RowActions';
 import {
     type ListActions,
     getActionHref,
@@ -429,6 +429,16 @@ export function ListView({
     const runOnResource = (action: Action) =>
         run({ action, scope: 'resource', count: count, skipped: [] });
 
+    // The actions of the rows of the page, in order: each row keeps the place of those it doesn't
+    // have, so they line up (decision 0060).
+    const pageActions = pageItems.map((item) => [
+        ...selectItemActions(grouped.row, item, 'row', { getLinkHref }),
+        ...selectItemActions(grouped.menu, item, 'menu', { getLinkHref }),
+    ]);
+    const firstOf = (action: Action) =>
+        pageActions.flat().find((entry) => entry.action.id === action.id) ?? [];
+    const slots = orderRowActions(grouped.row.flatMap(firstOf), grouped.menu.flatMap(firstOf));
+
     // The actions of a row and of its menu, as everywhere else an item shows its actions
     const renderActions = (item: ListItem): ReactNode => {
         const allowed = selectItemActions(grouped.row, item, 'row', { getLinkHref });
@@ -446,6 +456,7 @@ export function ListView({
                 pending={running ?? null}
                 onRun={(action) => runOnItem(action, item)}
                 icons={actionIcons}
+                slots={slots}
             />
         );
     };

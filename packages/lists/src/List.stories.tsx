@@ -428,6 +428,26 @@ export const OnAPhone: Story = {
     },
 };
 
+/** The action of a row: its button, or the item of its menu, which it opens. */
+async function findRowAction(
+    canvasElement: HTMLElement,
+    label: string,
+    item: string,
+): Promise<HTMLElement> {
+    const canvas = within(canvasElement);
+    const body = within(canvasElement.ownerDocument.body);
+    const button = canvas.queryByRole('button', { name: `${label}: ${item}` });
+    if (button !== null) {
+        return button;
+    }
+    const entry = body.queryByRole('menuitem', { name: label });
+    if (entry !== null) {
+        return entry;
+    }
+    await userEvent.click(canvas.getByRole('button', { name: `Actions for ${item}` }));
+    return body.findByRole('menuitem', { name: label });
+}
+
 export const SelectionAndActions: Story = {
     args: {
         actions,
@@ -466,14 +486,14 @@ export const SelectionAndActions: Story = {
         );
         await waitFor(() => expect(canvas.queryByText(/selected/)).not.toBeInTheDocument());
 
-        await userEvent.click(canvas.getByRole('button', { name: 'Actions for Grace Hopper' }));
-        const resend = await body.findByRole('menuitem', { name: 'Resend the invitation' });
+        // A button of the row, or an item of its menu when they don't fit (decision 0060)
+        const resend = await findRowAction(canvasElement, 'Resend the invitation', 'Grace Hopper');
         // A named icon loads on demand: give it time on a busy machine.
         await waitFor(() => expect(resend.querySelector('svg')).toHaveClass('lucide-mail'), {
             timeout: 5000,
         });
         await expect(
-            body.getByRole('menuitem', { name: 'Remove' }).querySelector('svg'),
+            (await findRowAction(canvasElement, 'Remove', 'Grace Hopper')).querySelector('svg'),
         ).toHaveClass('lucide-user-minus');
         await userEvent.click(resend);
         await expect(args.onAction).toHaveBeenLastCalledWith(
@@ -516,49 +536,97 @@ export const BuiltInLinks: Story = {
     },
 };
 
-/** The built-in links, and `duplicate` and `delete` in the menu of rows. */
+/** Members whose built-in actions are allowed, but `delete` on owners. */
+const builtInMembers: ListItem[] = members.map((member) => ({
+    ...member,
+    abilities: {
+        ...member.abilities,
+        view: true,
+        update: true,
+        duplicate: true,
+        delete: member.role !== 'owner',
+    },
+}));
+
+/** The built-in item actions as a backend declares them: `duplicate` and `delete` in `menu`. */
 const builtInActions: Action[] = [
     { id: 'show', kind: 'link', scope: ['item'] },
     { id: 'edit', kind: 'link', scope: ['item'] },
     { id: 'duplicate', kind: 'server', scope: ['item'], placement: ['menu'] },
-    { id: 'delete', kind: 'server', scope: ['item'], placement: ['menu'], destructive: true },
+    {
+        id: 'delete',
+        kind: 'server',
+        scope: ['item'],
+        placement: ['menu'],
+        destructive: true,
+        confirm: true,
+    },
 ];
 
-/**
- * The built-in links beside the overflow menu of each row, as most resources show them: one
- * button style for both, whose hover background covers the whole button, with room between them.
- */
-export const BuiltInLinksAndMenu: Story = {
-    args: {
-        items: members.map((member) => ({
-            ...member,
-            abilities: {
-                ...member.abilities,
-                view: true,
-                update: true,
-                duplicate: true,
-                delete: true,
-            },
-        })),
-        actions: builtInActions,
-        getLinkHref: (action: Action, item: ListItem) =>
-            action.id === 'edit' ? `#/members/${item.id}/edit` : `#/members/${item.id}`,
-    },
-    play: async ({ canvasElement }) => {
-        const canvas = within(canvasElement);
-        const edit = canvas.getByRole('link', { name: 'Edit: Grace Hopper' });
-        const menu = canvas.getByRole('button', { name: 'Actions for Grace Hopper' });
-        const idle = await settledBackground(edit);
+const getLinkHref = (action: Action, item: ListItem) =>
+    action.id === 'edit' ? `#/members/${item.id}/edit` : `#/members/${item.id}`;
 
-        // The link and the menu button hover alike, with the same background once it has faded in
+/** The buttons and links of the actions of a row, and its menu button. */
+function rowActions(canvasElement: HTMLElement, item: string): HTMLElement[] {
+    const row = within(canvasElement).getByText(item, { selector: 'td *' }).closest('tr');
+    const actions = row?.querySelector('[data-row-actions]');
+    return actions !== null && actions !== undefined
+        ? [...actions.querySelectorAll<HTMLElement>('a, button')]
+        : [];
+}
+
+/** Checks the rule of decision 0060 on a row: a menu holds two actions or more. */
+async function expectMenuOfTwoOrMore(canvasElement: HTMLElement, item: string) {
+    const canvas = within(canvasElement);
+    const body = within(canvasElement.ownerDocument.body);
+    const menu = canvas.queryByRole('button', { name: `Actions for ${item}` });
+    if (menu === null) {
+        return 0;
+    }
+    await userEvent.click(menu);
+    const entries = await body.findAllByRole('menuitem');
+    await expect(entries.length).toBeGreaterThanOrEqual(2);
+    await userEvent.keyboard('{Escape}');
+    await waitFor(() => expect(body.queryByRole('menu')).toBeNull());
+    return entries.length;
+}
+
+/**
+ * The built-in actions of rows with room for them (decision 0060): buttons with their labels, the
+ * links and the buttons alike, `delete` last and red, and no menu. Owners can't be deleted.
+ */
+export const RowActions: Story = {
+    args: {
+        columns: columns.filter((column) => column.id === 'name' || column.id === 'role'),
+        items: builtInMembers,
+        actions: builtInActions,
+        getLinkHref,
+        onAction: fn(),
+    },
+    play: async ({ args, canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        await expect(canvas.queryByRole('button', { name: /^Actions for/ })).toBeNull();
+        const edit = canvas.getByRole('link', { name: 'Edit: Grace Hopper' });
+        await expect(edit).toHaveTextContent('Edit');
+        const duplicate = canvas.getByRole('button', { name: 'Duplicate: Grace Hopper' });
+        await expect(duplicate).toHaveTextContent('Duplicate');
+        const remove = canvas.getByRole('button', { name: 'Delete: Grace Hopper' });
+        await expect(remove).toHaveTextContent('Delete');
+        await expect(rowActions(canvasElement, 'Grace Hopper').at(-1)).toBe(remove);
+        // Ada Lovelace is an owner
+        await expect(canvas.queryByRole('button', { name: 'Delete: Ada Lovelace' })).toBeNull();
+
+        // The link and the button hover alike, with the same background once it has faded in
+        const idle = await settledBackground(edit);
         await userEvent.hover(edit);
         await waitFor(() => expect(edit).toHaveAttribute('data-hovered'));
         const hovered = await settledBackground(edit);
         await expect(hovered).not.toBe(idle);
-        await userEvent.hover(menu);
-        await waitFor(() => expect(menu).toHaveAttribute('data-hovered'));
-        await expect(await settledBackground(menu)).toBe(hovered);
-        await userEvent.unhover(menu);
+        await userEvent.hover(duplicate);
+        await waitFor(() => expect(duplicate).toHaveAttribute('data-hovered'));
+        await expect(await settledBackground(duplicate)).toBe(hovered);
+        await userEvent.unhover(duplicate);
 
         // The background is the link's own, so it paints its whole box, and that box is the area
         // that takes the pointer: nothing inside paints another background, and points just
@@ -580,34 +648,193 @@ export const BuiltInLinksAndMenu: Story = {
 
         // The same height and corners, aligned, with room between them
         const link = edit.getBoundingClientRect();
+        const next = duplicate.getBoundingClientRect();
+        await expect(link.height).toBe(next.height);
+        await expect(link.top).toBe(next.top);
+        await expect(getComputedStyle(edit).borderRadius).toBe(
+            getComputedStyle(duplicate).borderRadius,
+        );
+        // `--panneau-space-2`
+        await expect(next.left - link.right).toBeGreaterThanOrEqual(8);
+
+        // `delete` asks first, as it did from the menu
+        await userEvent.click(remove);
+        const dialog = await body.findByRole('alertdialog');
+        await expect(args.onAction).not.toHaveBeenCalled();
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Delete' }));
+        await waitFor(() =>
+            expect(args.onAction).toHaveBeenCalledWith(
+                expect.objectContaining({ scope: 'item', count: 1 }),
+            ),
+        );
+    },
+};
+
+const BIOS = [
+    'Wrote the first program for a machine that had not been built yet, and saw that it could do more than arithmetic.',
+    'Built one of the first compilers, and spent years convincing people that programs could be written in words.',
+    'Asked whether machines can think, and broke codes during the war with machines of his own design.',
+];
+
+/**
+ * Rows whose content needs the room: the actions drop their labels, so the text wraps less, and
+ * keep their icons, with their labels as names and tooltips. No menu: the icons fit.
+ */
+export const RowActionsWithLongContent: Story = {
+    args: {
+        ...RowActions.args,
+        columns: [
+            { id: 'name', label: 'Name' },
+            { id: 'bio', label: 'Biography' },
+            { id: 'role', label: 'Role', field: roleField, display: 'select' },
+        ],
+        items: builtInMembers.map((member, index) => ({
+            ...member,
+            bio: BIOS[index % BIOS.length],
+        })),
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const edit = canvas.getByRole('link', { name: 'Edit: Grace Hopper' });
+        await waitFor(() => expect(edit).toHaveTextContent(''));
+        await expect(edit.querySelector('svg')).toHaveClass('lucide-pencil');
+        const remove = canvas.getByRole('button', { name: 'Delete: Grace Hopper' });
+        await expect(remove).toHaveTextContent('');
+        await expect(remove.querySelector('svg')).toHaveClass('lucide-trash-2');
+        await expect(canvas.queryByRole('button', { name: /^Actions for/ })).toBeNull();
+        // Square, as high as they are wide
+        const { width, height } = remove.getBoundingClientRect();
+        await expect(width).toBe(height);
+    },
+};
+
+/** Actions a product declares on its rows, after the built-in ones. */
+const declaredActions: Action[] = [
+    {
+        id: 'resend',
+        label: 'Resend the invitation',
+        icon: 'mail',
+        kind: 'server',
+        scope: ['item'],
+    },
+    {
+        id: 'invoices',
+        label: 'Invoices',
+        icon: 'receipt',
+        kind: 'link',
+        url: '#/members/{id}/invoices',
+        scope: ['item'],
+    },
+    {
+        id: 'impersonate',
+        label: 'Sign in as',
+        icon: 'log-in',
+        kind: 'server',
+        scope: ['item'],
+        placement: ['menu'],
+    },
+    {
+        id: 'export',
+        label: 'Export the data',
+        icon: 'download',
+        kind: 'server',
+        scope: ['item'],
+        placement: ['menu'],
+    },
+    {
+        id: 'suspend',
+        label: 'Suspend',
+        icon: 'ban',
+        kind: 'server',
+        scope: ['item'],
+        placement: ['menu'],
+        destructive: true,
+    },
+];
+
+/**
+ * Many actions on each row: the icons alone would crowd it, so the last ones go to a menu, the
+ * same on every row so the columns line up. The menu never holds a single action.
+ */
+export const ManyRowActions: Story = {
+    args: {
+        ...RowActions.args,
+        columns,
+        items: builtInMembers.map((member) => ({
+            ...member,
+            abilities: {
+                ...member.abilities,
+                resend: true,
+                invoices: true,
+                impersonate: true,
+                export: true,
+                suspend: true,
+            },
+        })),
+        actions: [...builtInActions, ...declaredActions],
+    },
+    decorators: [
+        (Story) => (
+            <div style={{ width: 900 }}>
+                <Story />
+            </div>
+        ),
+    ],
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const menu = await canvas.findByRole('button', { name: 'Actions for Grace Hopper' });
+        const edit = canvas.getByRole('link', { name: 'Edit: Grace Hopper' });
+        await expect(edit).toHaveTextContent('');
+        // The same actions out of the menu on rows that allow the same ones
+        const shown = (item: string) =>
+            rowActions(canvasElement, item).map((action) => action.getAttribute('aria-label'));
+        await expect(shown('Grace Hopper').length).toBe(shown('Alan Turing').length);
+        await expect(await expectMenuOfTwoOrMore(canvasElement, 'Grace Hopper')).toBeGreaterThan(1);
+
+        // The icon link and the menu button: the same height and corners, aligned
+        const link = edit.getBoundingClientRect();
         const button = menu.getBoundingClientRect();
         await expect(link.height).toBe(button.height);
+        await expect(link.width).toBe(button.width);
         await expect(link.top).toBe(button.top);
         await expect(getComputedStyle(edit).borderRadius).toBe(getComputedStyle(menu).borderRadius);
-        // `--panneau-space-2`
-        await expect(button.left - link.right).toBeGreaterThanOrEqual(8);
+    },
+};
+
+/** A list narrower than its table needs: the actions give up their room before it scrolls. */
+export const RowActionsInANarrowList: Story = {
+    args: {
+        ...ManyRowActions.args,
+        actions: [...builtInActions, ...declaredActions.slice(0, 2)],
+    },
+    decorators: [
+        (Story) => (
+            <div style={{ width: 680 }}>
+                <Story />
+            </div>
+        ),
+    ],
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const table = canvas.getByRole('table', { name: 'Members' });
+        const scroller = table.parentElement as HTMLElement;
+        await waitFor(() =>
+            expect(canvas.getByRole('link', { name: 'Edit: Grace Hopper' })).toHaveTextContent(''),
+        );
+        await expect(scroller.scrollWidth).toBeLessThanOrEqual(scroller.clientWidth);
+        await expectMenuOfTwoOrMore(canvasElement, 'Grace Hopper');
     },
 };
 
 /**
- * The actions of rows on a phone, with a long one: they wrap below each other rather than
- * overflow the item.
+ * The actions of rows on a phone: icons on one line in each item, and a menu for those that don't
+ * fit beside them.
  */
 export const RowActionsOnAPhone: Story = {
-    ...BuiltInLinksAndMenu,
     args: {
-        ...BuiltInLinksAndMenu.args,
-        actions: [
-            ...builtInActions,
-            {
-                id: 'invoices',
-                label: 'Invoices and payment history',
-                kind: 'link',
-                url: '#/members/{id}/invoices',
-                scope: ['item'],
-                placement: ['row'],
-            },
-        ],
+        ...RowActions.args,
+        actions: [...builtInActions, ...declaredActions.slice(0, 2)],
+        items: ManyRowActions.args?.items ?? builtInMembers,
     },
     decorators: [
         (Story) => (
@@ -619,81 +846,15 @@ export const RowActionsOnAPhone: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         const table = canvas.getByRole('table', { name: 'Members' });
-        const edit = canvas.getByRole('link', { name: 'Edit: Grace Hopper' });
-        const invoices = canvas.getByRole('link', {
-            name: 'Invoices and payment history: Grace Hopper',
-        });
-        const menu = canvas.getByRole('button', { name: 'Actions for Grace Hopper' });
         const right = table.getBoundingClientRect().right;
-        for (const action of [edit, invoices, menu]) {
+        const actions = rowActions(canvasElement, 'Grace Hopper');
+        const top = actions[0]?.getBoundingClientRect().top;
+        for (const action of actions) {
+            await expect(action).toHaveTextContent('');
             await expect(action.getBoundingClientRect().right).toBeLessThanOrEqual(right);
+            await expect(action.getBoundingClientRect().top).toBe(top);
         }
-        // On two lines at least
-        await expect(menu.getBoundingClientRect().top).toBeGreaterThan(
-            edit.getBoundingClientRect().top,
-        );
-    },
-};
-
-/**
- * `delete` alone in the menu of rows: a button at the end of the row rather than a menu of one
- * item (decision 0060), with the same confirmation. Owners can't be deleted: they have no button.
- */
-export const DeleteAlone: Story = {
-    args: {
-        items: members.map((member) => ({
-            ...member,
-            abilities: {
-                ...member.abilities,
-                view: true,
-                update: true,
-                delete: member.role !== 'owner',
-            },
-        })),
-        actions: [
-            { id: 'show', kind: 'link', scope: ['item'] },
-            { id: 'edit', kind: 'link', scope: ['item'] },
-            {
-                id: 'delete',
-                kind: 'server',
-                scope: ['item'],
-                placement: ['menu'],
-                destructive: true,
-                confirm: true,
-            },
-        ],
-        getLinkHref: (action: Action, item: ListItem) =>
-            action.id === 'edit' ? `#/members/${item.id}/edit` : `#/members/${item.id}`,
-        onAction: fn(),
-    },
-    play: async ({ args, canvasElement }) => {
-        const canvas = within(canvasElement);
-        const body = within(canvasElement.ownerDocument.body);
-        await expect(canvas.queryByRole('button', { name: /^Actions for/ })).toBeNull();
-        // Ada Lovelace is an owner
-        await expect(canvas.queryByRole('button', { name: 'Delete: Ada Lovelace' })).toBeNull();
-
-        const remove = canvas.getByRole('button', { name: 'Delete: Grace Hopper' });
-        await expect(remove).toHaveTextContent('');
-        await expect(remove.querySelector('svg')).toHaveClass('lucide-trash-2');
-        // At the end of the row, after the links, with their height
-        const edit = canvas.getByRole('link', { name: 'Edit: Grace Hopper' });
-        await expect(remove.getBoundingClientRect().left).toBeGreaterThan(
-            edit.getBoundingClientRect().right,
-        );
-        await expect(remove.getBoundingClientRect().height).toBe(
-            edit.getBoundingClientRect().height,
-        );
-
-        await userEvent.click(remove);
-        const dialog = await body.findByRole('alertdialog');
-        await expect(args.onAction).not.toHaveBeenCalled();
-        await userEvent.click(within(dialog).getByRole('button', { name: 'Delete' }));
-        await waitFor(() =>
-            expect(args.onAction).toHaveBeenCalledWith(
-                expect.objectContaining({ scope: 'item', count: 1 }),
-            ),
-        );
+        await expect(await expectMenuOfTwoOrMore(canvasElement, 'Grace Hopper')).toBeGreaterThan(1);
     },
 };
 
