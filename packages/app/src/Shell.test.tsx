@@ -709,6 +709,11 @@ describe('the app shell', () => {
             within(scope)
                 .queryAllByRole(role)
                 .map((element) => element.textContent);
+        // The actions of rows show their icons, with their labels as names (decision 0060)
+        const rowNames = (row: HTMLElement, role: 'link' | 'button') =>
+            within(row)
+                .queryAllByRole(role)
+                .map((element) => element.getAttribute('aria-label') ?? element.textContent);
 
         const table = await screen.findByRole('table', { name: 'Pages' });
         const row = within(table).getByRole('link', { name: 'About us' }).closest('tr');
@@ -716,9 +721,14 @@ describe('the app shell', () => {
             throw new Error('No row.');
         }
         await waitFor(() =>
-            expect(names(row, 'link')).toEqual(['About us', 'View', 'Edit', 'On the site']),
+            expect(rowNames(row, 'link')).toEqual([
+                'About us',
+                'View: About us',
+                'Edit: About us',
+                'On the site: About us',
+            ]),
         );
-        expect(names(row, 'button')).toEqual(['Duplicate']);
+        expect(rowNames(row, 'button')).toEqual(['Duplicate: About us']);
 
         await user.click(within(row).getByRole('link', { name: 'About us' }));
         const panel = await screen.findByRole('region', { name: 'Details of the page' });

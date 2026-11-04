@@ -1,9 +1,8 @@
 import { createContext, useEffect, useLayoutEffect, useState, useSyncExternalStore } from 'react';
 
 /**
- * How the actions of rows fit (decision 0060), the same for every row of a list: `0`, buttons
- * with their labels; `1`, icons only; `n` from 2, icons only, with the last `n` actions of each
- * row in its menu.
+ * How the actions of rows fit (decision 0060), the same for every row of a list: `0`, every
+ * action as an icon; `n` from 2, the last `n` actions of each row in its menu.
  */
 export const RowActionsFit = createContext(0);
 
@@ -67,18 +66,15 @@ function measure(element: HTMLElement): Measure {
 }
 
 /**
- * Whether rows of `count` actions can give the content room with `level`: always with the labels
- * or the icons alone, and with a menu when the rows have many actions, `SHOWN` of which stay out.
+ * Whether rows of `count` actions can give the content room with `level`: only when they have many
+ * actions, `SHOWN` of which stay out of the menu.
  */
 function forContent(level: number, count: number): boolean {
-    return level <= 1 || (count >= MANY && count - level >= SHOWN);
+    return count >= MANY && count - level >= SHOWN;
 }
 
 /** Whether the next level is worth a try, after `current`. */
 function worthTrying(next: number, current: Measure): boolean {
-    if (next === 1) {
-        return true;
-    }
     return (
         next <= Math.min(current.count, MAX_LEVEL) &&
         current.count >= 2 &&
@@ -163,8 +159,10 @@ class FitStore {
         }
         const current = measure(element);
         this.#measures.set(drawn, current);
-        if (worthTrying(drawn + 1, current)) {
-            this.#set(drawn + 1);
+        // A menu holds two actions or more: no level 1
+        const next = drawn === 0 ? 2 : drawn + 1;
+        if (worthTrying(next, current)) {
+            this.#set(next);
         } else {
             this.#settled = true;
             this.#set(best(this.#measures));
@@ -174,11 +172,10 @@ class FitStore {
 
 /**
  * Fits the actions of the rows of a list in the room they have (decision 0060). It draws each
- * level in turn, from buttons with labels, while the next one may help, and keeps the best: where
- * the actions crowd least (they overflow, wrap, or take more than 40% of their row), then where
- * the rows are shortest (their content wraps less), then the fewest changes. Moving actions to the
- * menu gives the content room only on rows of five actions or more, four of which stay out. It starts over when the list changes width, or `content` (the ids of the items and the
- * columns) changes. Every try is drawn before the browser paints.
+ * level in turn, from every action as an icon, while the next one may help, and keeps the best:
+ * where the actions crowd least (the list overflows, the actions of a row wrap or take more than
+ * 40% of it), then, on rows of five actions or more, where the rows are shortest (their content
+ * wraps or is cut less), then the fewest actions in the menu.
  *
  * @returns the level, and a callback ref for the element to measure: the list, which holds the
  * actions.

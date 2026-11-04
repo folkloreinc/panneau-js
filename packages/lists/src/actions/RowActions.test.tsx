@@ -33,7 +33,11 @@ const remove: ItemAction = {
     href: null,
 };
 
-function renderActions(level: number, menu: readonly ItemAction[] = [duplicate, remove]) {
+function renderActions(
+    level: number,
+    menu: readonly ItemAction[] = [duplicate, remove],
+    primary: string | null = 'show',
+) {
     const onRun = vi.fn();
     renderList(
         <RowActionsFit value={level}>
@@ -43,6 +47,7 @@ function renderActions(level: number, menu: readonly ItemAction[] = [duplicate, 
                 menu={menu}
                 pending={null}
                 onRun={onRun}
+                primary={primary}
             />
         </RowActionsFit>,
     );
@@ -56,27 +61,28 @@ describe('RowActions', () => {
         ).toEqual(['show', 'duplicate', 'delete']);
     });
 
-    it('shows every action as a button with its label while they fit', async () => {
+    it('shows every action as an icon in its color, but the main one, which keeps its label', async () => {
         const user = userEvent.setup();
         const onRun = renderActions(0);
-        expect(screen.getByRole('link', { name: 'View: Contact' })).toHaveTextContent('View');
-        expect(screen.getByRole('button', { name: 'Duplicate: Contact' })).toHaveTextContent(
-            'Duplicate',
-        );
-        expect(screen.queryByRole('button', { name: 'Actions for Contact' })).toBeNull();
-        await user.click(screen.getByRole('button', { name: 'Delete: Contact' }));
-        expect(onRun).toHaveBeenCalledWith(remove.action);
-    });
-
-    it('drops the labels first, and keeps them as names', () => {
-        renderActions(1);
+        const show = screen.getByRole('link', { name: 'View: Contact' });
+        expect(show).toHaveTextContent('View');
+        expect(show.className).toMatch(/tone-info/);
         const link = screen.getByRole('link', { name: 'Edit: Contact' });
         expect(link).toHaveTextContent('');
         expect(link.querySelector('svg')).toHaveClass('lucide-pencil');
+        expect(screen.getByRole('button', { name: 'Duplicate: Contact' })).toHaveTextContent('');
         const button = screen.getByRole('button', { name: 'Delete: Contact' });
         expect(button).toHaveTextContent('');
         expect(button.querySelector('svg')).toHaveClass('lucide-trash-2');
+        expect(button.className).toMatch(/tone-danger/);
         expect(screen.queryByRole('button', { name: 'Actions for Contact' })).toBeNull();
+        await user.click(button);
+        expect(onRun).toHaveBeenCalledWith(remove.action);
+    });
+
+    it('shows every action as an icon without a main one', () => {
+        renderActions(0, [duplicate, remove], null);
+        expect(screen.getByRole('link', { name: 'View: Contact' })).toHaveTextContent('');
     });
 
     it('then moves the last actions to a menu, at least two', async () => {
@@ -162,17 +168,17 @@ function withSizes(sizes: readonly { height: number; overflow?: number }[], run:
 }
 
 describe('useRowActionsFit', () => {
-    it('keeps the labels when dropping them gives the content no room', () => {
+    it('keeps every action out of the menu while the icons fit', () => {
         withSizes([{ height: 300 }, { height: 300 }], () => {
             render(<Fitted content="a" />);
             expect(screen.getByTestId('list')).toHaveAttribute('data-level', '0');
         });
     });
 
-    it('drops the labels when it gives the content room, but opens no menu for it', () => {
-        withSizes([{ height: 300 }, { height: 240 }, { height: 200 }, { height: 200 }], () => {
+    it('opens no menu for the room of the content on rows of four actions', () => {
+        withSizes([{ height: 300 }, { height: 300 }, { height: 200 }], () => {
             render(<Fitted content="a" />);
-            expect(screen.getByTestId('list')).toHaveAttribute('data-level', '1');
+            expect(screen.getByTestId('list')).toHaveAttribute('data-level', '0');
         });
     });
 
@@ -180,7 +186,7 @@ describe('useRowActionsFit', () => {
         withSizes(
             [
                 { height: 100, overflow: 120 },
-                { height: 100, overflow: 40 },
+                { height: 100, overflow: 120 },
                 { height: 100, overflow: 10 },
                 { height: 100, overflow: 10 },
             ],
@@ -205,12 +211,19 @@ describe('useRowActionsFit', () => {
 
     it('starts over when the content changes', () => {
         let rerender: ((ui: ReactElement) => void) | undefined;
-        withSizes([{ height: 300 }, { height: 240 }, { height: 240 }], () => {
-            rerender = render(<Fitted content="a" />).rerender;
-        });
-        expect(screen.getByTestId('list')).toHaveAttribute('data-level', '1');
-        // Other items, whose labels fit
-        withSizes([{ height: 300 }, { height: 300 }], () => {
+        withSizes(
+            [
+                { height: 100, overflow: 120 },
+                { height: 100, overflow: 120 },
+                { height: 100, overflow: 0 },
+            ],
+            () => {
+                rerender = render(<Fitted content="a" />).rerender;
+            },
+        );
+        expect(screen.getByTestId('list')).toHaveAttribute('data-level', '2');
+        // Other items, whose actions fit
+        withSizes([{ height: 100 }], () => {
             act(() => rerender?.(<Fitted content="b" />));
         });
         expect(screen.getByTestId('list')).toHaveAttribute('data-level', '0');

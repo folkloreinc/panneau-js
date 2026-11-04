@@ -470,7 +470,9 @@ describe('ListView', () => {
         );
         const link = screen.getByRole('link', { name: 'Edit: About us' });
         expect(link).toHaveAttribute('href', '/edit/1');
-        expect(link).toHaveTextContent('Edit');
+        // An icon: `show` is the main action, with its label (decision 0060)
+        expect(link).toHaveTextContent('');
+        expect(screen.getByRole('link', { name: 'View: About us' })).toHaveTextContent('View');
         expect(screen.getByRole('link', { name: 'View: Contact' })).toHaveAttribute(
             'href',
             '/show/2',

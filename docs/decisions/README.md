@@ -65,4 +65,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0057](0057-phone-extensions.md)                                  | Phone extensions                                                              | Proposed                          |
 | [0058](0058-multiple-countries-embed-providers-color-palettes.md) | Several countries, the providers of an embed, and color palettes              | Proposed                          |
 | [0059](0059-flags-of-regions.md)                                  | Flags of regions                                                              | Proposed                          |
-| [0060](0060-row-actions-buttons-icons-menu.md)                    | Row actions are buttons, then icons, then a menu                              | Proposed                          |
+| [0060](0060-row-actions-colored-icons.md)                         | Row actions are colored icons, and a menu last                                | Proposed                          |

@@ -524,8 +524,12 @@ export const BuiltInLinks: Story = {
         const canvas = within(canvasElement);
         const edit = canvas.getByRole('link', { name: 'Edit: Grace Hopper' });
         await expect(edit).toHaveAttribute('href', '#/members/2/edit');
-        await expect(edit).toHaveTextContent('Edit');
+        // An icon, and `show`, the main action, with its label (decision 0060)
+        await expect(edit).toHaveTextContent('');
         await expect(edit.querySelector('svg')).toHaveClass('lucide-pencil');
+        await expect(canvas.getByRole('link', { name: 'View: Grace Hopper' })).toHaveTextContent(
+            'View',
+        );
         await expect(canvas.getByRole('link', { name: 'View: Grace Hopper' })).toHaveAttribute(
             'href',
             '#/members/2',
@@ -592,8 +596,9 @@ async function expectMenuOfTwoOrMore(canvasElement: HTMLElement, item: string) {
 }
 
 /**
- * The built-in actions of rows with room for them (decision 0060): buttons with their labels, the
- * links and the buttons alike, `delete` last and red, and no menu. Owners can't be deleted.
+ * The built-in actions of rows (decision 0060): their icons, in their colors, with their labels as
+ * names and tooltips, and the main action, `show`, with its label. `delete` is last, red, and asks
+ * first. No menu: the icons fit. Owners can't be deleted: their rows keep the place.
  */
 export const RowActions: Story = {
     args: {
@@ -607,26 +612,31 @@ export const RowActions: Story = {
         const canvas = within(canvasElement);
         const body = within(canvasElement.ownerDocument.body);
         await expect(canvas.queryByRole('button', { name: /^Actions for/ })).toBeNull();
+        const view = canvas.getByRole('link', { name: 'View: Grace Hopper' });
+        await expect(view).toHaveTextContent('View');
         const edit = canvas.getByRole('link', { name: 'Edit: Grace Hopper' });
-        await expect(edit).toHaveTextContent('Edit');
+        await expect(edit).toHaveTextContent('');
         const duplicate = canvas.getByRole('button', { name: 'Duplicate: Grace Hopper' });
-        await expect(duplicate).toHaveTextContent('Duplicate');
+        await expect(duplicate).toHaveTextContent('');
         const remove = canvas.getByRole('button', { name: 'Delete: Grace Hopper' });
-        await expect(remove).toHaveTextContent('Delete');
+        await expect(remove).toHaveTextContent('');
+        // Each in its color
+        await expect(getComputedStyle(remove).color).not.toBe(getComputedStyle(duplicate).color);
+        await expect(getComputedStyle(view).color).not.toBe(getComputedStyle(duplicate).color);
+        // The same place on every row
+        await expect(
+            canvas.getByRole('link', { name: 'Edit: Ada Lovelace' }).getBoundingClientRect().left,
+        ).toBe(edit.getBoundingClientRect().left);
         await expect(rowActions(canvasElement, 'Grace Hopper').at(-1)).toBe(remove);
         // Ada Lovelace is an owner
         await expect(canvas.queryByRole('button', { name: 'Delete: Ada Lovelace' })).toBeNull();
 
-        // The link and the button hover alike, with the same background once it has faded in
+        // The link shows its hover
         const idle = await settledBackground(edit);
         await userEvent.hover(edit);
         await waitFor(() => expect(edit).toHaveAttribute('data-hovered'));
-        const hovered = await settledBackground(edit);
-        await expect(hovered).not.toBe(idle);
-        await userEvent.hover(duplicate);
-        await waitFor(() => expect(duplicate).toHaveAttribute('data-hovered'));
-        await expect(await settledBackground(duplicate)).toBe(hovered);
-        await userEvent.unhover(duplicate);
+        await expect(await settledBackground(edit)).not.toBe(idle);
+        await userEvent.unhover(edit);
 
         // The background is the link's own, so it paints its whole box, and that box is the area
         // that takes the pointer: nothing inside paints another background, and points just
@@ -677,8 +687,8 @@ const BIOS = [
 ];
 
 /**
- * Rows whose content needs the room: the actions drop their labels, so the text wraps less, and
- * keep their icons, with their labels as names and tooltips. No menu: the icons fit.
+ * Rows whose content needs the room: the same actions as in any list of the admin, icons and the
+ * labelled main action, and no menu, which only takes actions when the icons don't fit.
  */
 export const RowActionsWithLongContent: Story = {
     args: {
@@ -696,8 +706,11 @@ export const RowActionsWithLongContent: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         const edit = canvas.getByRole('link', { name: 'Edit: Grace Hopper' });
-        await waitFor(() => expect(edit).toHaveTextContent(''));
+        await expect(edit).toHaveTextContent('');
         await expect(edit.querySelector('svg')).toHaveClass('lucide-pencil');
+        await expect(canvas.getByRole('link', { name: 'View: Grace Hopper' })).toHaveTextContent(
+            'View',
+        );
         const remove = canvas.getByRole('button', { name: 'Delete: Grace Hopper' });
         await expect(remove).toHaveTextContent('');
         await expect(remove.querySelector('svg')).toHaveClass('lucide-trash-2');
@@ -827,8 +840,8 @@ export const RowActionsInANarrowList: Story = {
 };
 
 /**
- * The actions of rows on a phone: icons on one line in each item, and a menu for those that don't
- * fit beside them.
+ * The actions of rows on a phone: on one line in each item, and a menu for those that don't fit
+ * beside them.
  */
 export const RowActionsOnAPhone: Story = {
     args: {
@@ -850,7 +863,6 @@ export const RowActionsOnAPhone: Story = {
         const actions = rowActions(canvasElement, 'Grace Hopper');
         const top = actions[0]?.getBoundingClientRect().top;
         for (const action of actions) {
-            await expect(action).toHaveTextContent('');
             await expect(action.getBoundingClientRect().right).toBeLessThanOrEqual(right);
             await expect(action.getBoundingClientRect().top).toBe(top);
         }

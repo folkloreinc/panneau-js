@@ -125,6 +125,12 @@ export interface ListViewProps {
      * state asks for its month when it is given the same calendar.
      */
     calendar?: Pick<ResolvedCalendar, 'field' | 'filter'> | null | undefined;
+    /**
+     * The id of the main action of rows, which keeps its label while the others show their icons
+     * (decision 0060): the one the title of an item opens, `edit` for a resource that opens its
+     * items in their form. Defaults to `show` when rows have it, else `edit`.
+     */
+    primaryAction?: string | null;
     /** The label of an item, for checkboxes and actions. Defaults to its title, then its id. */
     getItemLabel?: (item: ListItem) => string;
     /** A link to an item, on its title. */
@@ -202,6 +208,7 @@ export function ListView({
     itemTitle,
     itemImage,
     calendar = null,
+    primaryAction: primaryActionProp,
     getItemLabel: getItemLabelProp,
     getItemHref,
     getLinkHref,
@@ -438,6 +445,10 @@ export function ListView({
     const firstOf = (action: Action) =>
         pageActions.flat().find((entry) => entry.action.id === action.id) ?? [];
     const slots = orderRowActions(grouped.row.flatMap(firstOf), grouped.menu.flatMap(firstOf));
+    const primaryAction =
+        primaryActionProp !== undefined
+            ? primaryActionProp
+            : (['show', 'edit'].find((id) => slots.some((slot) => slot.action.id === id)) ?? null);
 
     // The actions of a row and of its menu, as everywhere else an item shows its actions
     const renderActions = (item: ListItem): ReactNode => {
@@ -457,6 +468,7 @@ export function ListView({
                 onRun={(action) => runOnItem(action, item)}
                 icons={actionIcons}
                 slots={slots}
+                primary={primaryAction}
             />
         );
     };

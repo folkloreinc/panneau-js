@@ -17,7 +17,7 @@ export interface RowActionsProps {
     itemLabel: string;
     /** Actions placed in `row`, with their links (`selectItemActions()` of `@panneau/core`). */
     actions: readonly ItemAction[];
-    /** Actions placed in `menu`: buttons too while they fit, the first to go in the menu. */
+    /** Actions placed in `menu`: icons too while they fit, the first to go in the menu. */
     menu: readonly ItemAction[];
     /** Id of the action that is running on this item, if any. */
     pending: string | null;
@@ -29,6 +29,8 @@ export interface RowActionsProps {
      * of those it doesn't have, so the actions of the rows line up. Without it, its own.
      */
     slots?: readonly ItemAction[] | undefined;
+    /** The id of the main action of rows, which keeps its label (`show` or `edit`). */
+    primary?: string | null | undefined;
 }
 
 /**
@@ -50,9 +52,9 @@ export function orderRowActions(
 }
 
 /**
- * The actions of a row (decision 0060): buttons with their labels; their icons alone when the row
- * lacks room; and when even those don't fit, the last ones in an overflow menu, which never holds
- * a single action. How they fit is the same for every row of the list (`RowActionsFit`), and a
+ * The actions of a row (decision 0060): their icons, in their colors, with their labels as names
+ * and tooltips, but the main action, which keeps its label; and when the icons don't fit, the last
+ * ones in an overflow menu, which never holds a single action. How they fit is the same for every row of the list (`RowActionsFit`), and a
  * row keeps the place of the actions of other rows that it doesn't have, so they line up.
  */
 export function RowActions({
@@ -63,6 +65,7 @@ export function RowActions({
     onRun,
     icons,
     slots,
+    primary = null,
 }: RowActionsProps) {
     const intl = usePanneauIntl();
     const level = use(RowActionsFit);
@@ -86,7 +89,7 @@ export function RowActions({
             action={entry.action}
             icons={icons}
             href={entry.href}
-            iconOnly={level >= 1}
+            iconOnly={entry.action.id !== primary}
             isPending={pending === entry.action.id}
             isDisabled={pending !== null && pending !== entry.action.id}
             aria-label={name(entry.action)}
@@ -103,6 +106,7 @@ export function RowActions({
         <IconButton
             icon={Ellipsis}
             size="sm"
+            appearance="subtle"
             label={intl.formatMessage(messages.itemActions, { item: itemLabel })}
             showTooltip={overflow.length >= 2}
             isPending={pending !== null && overflow.some(({ action }) => action.id === pending)}

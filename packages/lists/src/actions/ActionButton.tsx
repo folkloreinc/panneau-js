@@ -3,7 +3,7 @@ import type { Action } from '@panneau/protocol';
 import { Button, LinkButton, Tooltip, usePanneauIntl } from '@panneau/ui';
 
 import styles from './Actions.module.css';
-import { type ActionIcons, getActionIcon } from './icons';
+import { type ActionIcons, getActionIcon, getActionTone } from './icons';
 
 export interface ActionButtonProps {
     action: Action;
@@ -16,8 +16,9 @@ export interface ActionButtonProps {
     isDisabled?: boolean;
     size?: 'sm' | 'md';
     /**
-     * Only the icon, with the label as its accessible name and tooltip, as rows show their actions
-     * when room runs short (decision 0060). An action without an icon keeps its label.
+     * Only the icon, in the color of the action, with the label as its accessible name and
+     * tooltip, as rows show their actions (decision 0060). An action without an icon keeps its
+     * label.
      */
     iconOnly?: boolean;
     /** Accessible label, when the label alone isn't enough (`Edit Ada Lovelace`). */
@@ -45,10 +46,11 @@ export function ActionButton({
     const icon = getActionIcon(action, icons);
     const label = getActionLabel(action, intl);
     const destructive = action.destructive === true;
-    // Small actions sit in rows, as ghost buttons (red when they destroy); others beside the
-    // buttons of a toolbar.
-    const tone = destructive ? 'danger' : 'neutral';
-    const appearance = size === 'sm' ? 'ghost' : destructive ? 'solid' : 'outline';
+    // In rows, the color of the action, tinted (decision 0060); beside the buttons of a toolbar,
+    // outlined (solid when it destroys).
+    const inRow = size === 'sm';
+    const tone = inRow ? getActionTone(action) : destructive ? 'danger' : 'neutral';
+    const appearance = inRow ? 'subtle' : destructive ? 'solid' : 'outline';
     const onlyIcon = iconOnly && icon !== undefined;
     const name = ariaLabel ?? (onlyIcon ? label : undefined);
     const button =
