@@ -179,6 +179,26 @@ describe('the tel rule', () => {
     });
 });
 
+describe('the providers rule', () => {
+    const rules = [{ rule: 'providers' as const, value: ['YouTube', 'Vimeo'] }];
+
+    it('accepts an embed of a listed provider, without case', () => {
+        expect(checkRules(rules, { url: 'https://youtu.be/1', provider: 'YouTube' })).toEqual([]);
+        expect(checkRules(rules, { url: 'https://vimeo.com/1', provider: 'vimeo' })).toEqual([]);
+    });
+
+    it('refuses an embed of another provider, with the providers', () => {
+        expect(
+            checkRules(rules, { url: 'https://open.spotify.com/1', provider: 'Spotify' }),
+        ).toEqual([{ rule: 'providers', value: ['YouTube', 'Vimeo'] }]);
+    });
+
+    it('leaves a value without a provider to the backend', () => {
+        expect(checkRules(rules, { url: 'https://example.com/post' })).toEqual([]);
+        expect(checkRules(rules, null)).toEqual([]);
+    });
+});
+
 describe('checkValues', () => {
     it('keys failures by dot path, with locales and repeater indexes', () => {
         const failures = checkValues(

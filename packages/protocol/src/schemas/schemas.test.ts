@@ -122,6 +122,15 @@ describe('Field', () => {
         ).toBe(true);
     });
 
+    it('checks the providers of a providers rule', () => {
+        const embed = (value: unknown) =>
+            Field.safeParse({ name: 'video', type: 'embed', rules: [{ rule: 'providers', value }] })
+                .success;
+        expect(embed(['YouTube', 'Vimeo'])).toBe(true);
+        expect(embed([])).toBe(false);
+        expect(embed('YouTube')).toBe(false);
+    });
+
     it('accepts rules added by later versions', () => {
         expect(
             Field.safeParse({ name: 'code', type: 'text', rules: [{ rule: 'luhn' }] }).success,

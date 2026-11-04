@@ -166,14 +166,15 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     - A style in `styles` puts its `class` on an element: `p` (the default), `h1` to `h6`, `blockquote`, `ul`, `ol` or `li`.
     - `links.newTab` sets which links open in a new tab, with `target="_blank" rel="noopener noreferrer"`: as the user chooses, every link to another site, or none.
 
+- **`color` values** are hexadecimal colors, `#1d4ed8`. With `settings.palette`, `[{ "value": "purple", "label": "Purple", "color": "#6b21a8" }]`, a value is the `value` of one of its colors, and a backend refuses others. `color` (hexadecimal) draws the swatch of a color, and `label` names it; without `color`, `value` is a hexadecimal color ([0059](decisions/0059-multiple-countries-embed-providers-color-palettes.md)).
 - **`tel` values** are international numbers in E.164, `+15145550199` ([0047](decisions/0047-countries-regions-and-phone-numbers.md)). The type implies the `tel` rule: a client keeps a number that isn't complete as the text typed, which the rule refuses. `settings.country` is the country of a new number.
 - **`range` values** are numbers, picked on a slider between the `min` and `max` rules (0 and 100 without them), or `null` until it is moved. Settings `step`, `decimals` and `suffix` are those of `number`.
 - **`duration` values** are whole numbers of seconds, typed in hours, minutes and seconds. `settings.precision` is `seconds` (the default) or `minutes`. `min` and `max` are in seconds.
 - **`json` values** are objects or arrays, edited as JSON text. The type implies the `json` rule: a client keeps text that doesn't parse as a string, which the rule refuses, and a backend refuses anything but an object, an array or `null`.
 - **`tags` values** are lists of strings. `options` suggest tags; with `"settings": { "allowCustom": false }`, only their values are allowed, and `in` applies to each tag. `min` and `max` count the tags.
-- **`embed` values** are what a URL embeds: `{ "url", "type", "title", "provider", "thumbnailUrl", "html", "width", "height" }` (`EmbedValue`), where everything but `url` comes from the provider's oEmbed. `type` is `video`, `audio`, `photo`, `rich` or `link`. Clients get it from `GET /embeds`, and send `{ "url" }` alone without it.
+- **`embed` values** are what a URL embeds: `{ "url", "type", "title", "provider", "thumbnailUrl", "html", "width", "height" }` (`EmbedValue`), where everything but `url` comes from the provider's oEmbed. `type` is `video`, `audio`, `photo`, `rich` or `link`. Clients get it from `GET /embeds`, and send `{ "url" }` alone without it. The `providers` rule limits the providers: `{ "rule": "providers", "value": ["YouTube", "Vimeo"] }` ([0059](decisions/0059-multiple-countries-embed-providers-color-palettes.md)).
 - **`location` values** are a point and its address: `{ "lat", "lng", "address" }` (`LocationValue`), with `lat` from -90 to 90, `lng` from -180 to 180, and `address` optional. Settings `zoom` and `center` (`{ "lat", "lng" }`) frame the map before a point is placed, and `tiles` (`{ "url", "attribution", "maxZoom" }`) replaces the app's tiles.
-- **`country` values** are ISO 3166-1 alpha-2 codes in capitals, `CA` (`XK` too). `settings.countries` lists the codes the field allows, `settings.preferred` the ones it shows first. A backend refuses other codes.
+- **`country` values** are ISO 3166-1 alpha-2 codes in capitals, `CA` (`XK` too). `settings.countries` lists the codes the field allows, `settings.preferred` the ones it shows first. A backend refuses other codes. With `multiple`, a value is an array of distinct codes in the order they were chosen, `["CA", "FR"]`: `min` and `max` count them ([0059](decisions/0059-multiple-countries-embed-providers-color-palettes.md)).
 - **`region` values** are states, provinces or territories. Their country is the value of the field that `from` names, in the same object, or `settings.country`. For the countries Panneau knows the regions of, a value is the code of the region without its country, `QC` for `CA-QC`; for the others, the text as typed ([0047](decisions/0047-countries-regions-and-phone-numbers.md)).
 - **`rules`** use the portable rules below. A backend can also enforce rules that it doesn't expose.
 
@@ -191,6 +192,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 | `accept`, `maxSize` | files (MIME types, bytes)               |
 | `before`, `after`   | dates (value or other field)            |
 | `crop`              | `image` and `media` values              |
+| `providers`         | `embed` values: their `provider`        |
 
 - **`required`** fails on `null`, an empty or blank string, and an empty array or object. A file chosen in the browser (`File`), to send in `multipart/form-data`, is filled; `accept` and `maxSize` read its type and size.
 - **`mode`** limits a rule to one mode of the form: `create` (the item is created) or `update` (it is updated). Without it, a rule applies in both.
@@ -213,6 +215,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     - A backend applies the rule in that mode only. On an update, a field whose `required` is limited to `create` accepts `null`, or no value at all.
     - Rules with a `mode` that a client checks without knowing the mode (`checkRules()` without one) are skipped: the backend still checks them.
 
+- **`providers`** lists the providers an `embed` value may come from, by the `provider_name` of their oEmbed: `{ "rule": "providers", "value": ["YouTube", "Vimeo"] }`. Names are compared without case. A client checks the `provider` of the value that `GET /embeds` gave, and leaves a value without one to the backend. A backend resolves the URL, as when it saves it, and refuses a URL that it can't resolve or whose provider isn't listed.
 - **`crop`** checks the transform of each image of a value: `{ "rule": "crop", "value": { "ratios": ["16:9", "1:1"], "required": true } }`.
     - With `required`, each image needs a crop for this use. An id alone has none.
     - With `ratios`, a crop must have one of them once rendered (a quarter turn swaps its width and height). A crop has a ratio when its height is within one pixel of its width divided by the ratio, since crops are in whole pixels.

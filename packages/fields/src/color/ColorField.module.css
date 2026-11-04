@@ -31,3 +31,12 @@
 .input {
     font-family: var(--panneau-font-family-mono);
 }
+
+.paletteSwatch {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    vertical-align: middle;
+    border: var(--panneau-border-width) solid var(--panneau-color-border-control);
+    border-radius: var(--panneau-radius-sm);
+}

@@ -155,6 +155,8 @@ const DEFAULT_MESSAGES: Record<string, (failure: RuleFailure) => string> = {
     maxSize: () => 'This file is too large.',
     before: () => 'This date is too late.',
     after: () => 'This date is too early.',
+    providers: (failure) =>
+        `This embed must come from ${Array.isArray(failure.value) ? failure.value.join(' or ') : 'another provider'}.`,
     crop: (failure) => {
         const ratios = isRecord(failure.value) ? failure.value.ratios : undefined;
         return Array.isArray(ratios) && ratios.length > 0

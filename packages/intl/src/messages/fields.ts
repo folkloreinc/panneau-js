@@ -67,6 +67,10 @@ export const fieldsMessages = {
         id: 'panneau.fields.embedLoading',
         defaultMessage: 'Getting the preview…',
     }),
+    embedProviders: defineMessage<{ providers: string }>({
+        id: 'panneau.fields.embedProviders',
+        defaultMessage: 'Accepted providers: {providers}.',
+    }),
     embedFailed: defineMessage({
         id: 'panneau.fields.embedFailed',
         defaultMessage: 'This URL can’t be embedded.',
@@ -169,6 +173,10 @@ export const fieldsMessages = {
     countryPlaceholder: defineMessage({
         id: 'panneau.fields.countryPlaceholder',
         defaultMessage: 'Choose a country',
+    }),
+    addCountry: defineMessage({
+        id: 'panneau.fields.addCountry',
+        defaultMessage: 'Add a country',
     }),
     noCountries: defineMessage({
         id: 'panneau.fields.noCountries',

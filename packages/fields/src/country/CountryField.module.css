@@ -1,0 +1,42 @@
+.multiple {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-2);
+}
+
+.countries {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--panneau-space-1) var(--panneau-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.country,
+.fixedCountry {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--panneau-space-1);
+    min-height: var(--panneau-control-height-sm);
+    max-width: 100%;
+    padding-inline: var(--panneau-space-3) var(--panneau-space-1);
+    font-size: var(--panneau-font-size-sm);
+    background-color: var(--panneau-color-surface-sunken);
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-radius-full);
+}
+
+.fixedCountry {
+    padding-inline-end: var(--panneau-space-3);
+}
+
+.flag {
+    flex: none;
+}
+
+.name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

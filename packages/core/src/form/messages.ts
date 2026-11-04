@@ -1,5 +1,12 @@
 import type { RuleFailure } from '@panneau/protocol';
 
+/** `YouTube, Vimeo or Spotify`. */
+function orList(items: readonly string[]): string {
+    return items.length > 1
+        ? `${items.slice(0, -1).join(', ')} or ${String(items.at(-1))}`
+        : (items[0] ?? '');
+}
+
 const MESSAGES: Record<string, (failure: RuleFailure) => string> = {
     required: () => 'This field is required.',
     min: (failure) => `This value must be at least ${String(failure.value)}.`,
@@ -14,6 +21,8 @@ const MESSAGES: Record<string, (failure: RuleFailure) => string> = {
     maxSize: () => 'This file is too large.',
     before: () => 'This date is too late.',
     after: () => 'This date is too early.',
+    providers: (failure) =>
+        `This embed must come from ${orList(Array.isArray(failure.value) ? failure.value.map(String) : [])}.`,
 };
 
 /**

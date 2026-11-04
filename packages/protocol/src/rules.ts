@@ -115,6 +115,20 @@ function hasCrop(value: unknown, rule: { ratios?: string[]; required?: boolean }
     });
 }
 
+/**
+ * Whether an `embed` value comes from one of the providers, compared without case (decision 0059).
+ * A value without a `provider` (an app without `GET /embeds`) is left to the backend.
+ */
+function hasProvider(value: unknown, providers: readonly string[]): boolean {
+    if (!isRecord(value) || typeof value.provider !== 'string') {
+        return true;
+    }
+    const provider = value.provider.toLowerCase();
+    return providers.some(
+        (allowed) => typeof allowed === 'string' && allowed.toLowerCase() === provider,
+    );
+}
+
 function toTime(value: unknown): number | null {
     if (typeof value !== 'string' && typeof value !== 'number') {
         return null;
@@ -196,6 +210,9 @@ export function checkRules(
                 break;
             case 'crop':
                 valid = !isRecord(rule.value) || hasCrop(value, rule.value);
+                break;
+            case 'providers':
+                valid = hasProvider(value, rule.value as string[]);
                 break;
             case 'before':
             case 'after': {

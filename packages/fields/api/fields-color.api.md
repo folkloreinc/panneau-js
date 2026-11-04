@@ -19,10 +19,34 @@ export function ColorFieldEntry(props: FieldEntryProps): JSX.Element;
 // Warning: (ae-forgotten-export) The symbol "TextFieldProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export type ColorFieldProps = Omit<TextFieldProps, 'type' | 'prefix' | 'maxLength'>;
+export interface ColorFieldProps extends Omit<TextFieldProps, 'type' | 'prefix' | 'maxLength'> {
+    palette?: readonly ColorPaletteEntry[] | null;
+}
+
+// @public
+export interface ColorPaletteEntry {
+    // (undocumented)
+    color?: string;
+    // (undocumented)
+    label?: string;
+    // (undocumented)
+    value: string;
+}
+
+// @public
+export function getColorPalette(field: Field | null | undefined): ColorPaletteEntry[] | null;
+
+// @public
+export function getSwatchColor(entry: ColorPaletteEntry): string | null;
+
+// @public
+export function isHexColor(value: unknown): value is string;
 
 // @public
 export function normalizeColor(value: string): string;
+
+// @public
+export function toColorPalette(value: unknown): ColorPaletteEntry[] | null;
 
 // (No @packageDocumentation comment for this package)
 

@@ -151,6 +151,10 @@ export const formsMessages = {
             id: 'panneau.forms.rule.cropRatios',
             defaultMessage: 'Crop the image to {ratios}.',
         }),
+        providers: defineMessage<{ providers: string }>({
+            id: 'panneau.forms.rule.providers',
+            defaultMessage: 'This embed must come from {providers}.',
+        }),
         invalid: defineMessage({
             id: 'panneau.forms.rule.invalid',
             defaultMessage: 'This value is invalid.',

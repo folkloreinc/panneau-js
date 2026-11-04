@@ -1,11 +1,12 @@
-import { useEffect, useEffectEvent, useState } from 'react';
+import { type ReactNode, useEffect, useEffectEvent, useState } from 'react';
 
+import { formsMessages } from '@panneau/intl';
 import type { EmbedValue } from '@panneau/protocol';
 import { Spinner, TextInput, usePanneauIntl } from '@panneau/ui';
 
 import { useFieldsContext } from '../shared/context';
 import type { EmbedSource } from '../shared/embed';
-import { getFieldProps, isString } from '../shared/entry';
+import { findRule, getFieldProps, isString } from '../shared/entry';
 import { messages } from '../shared/messages';
 import type { FieldEntryProps, FieldProps } from '../shared/types';
 import styles from './EmbedField.module.css';
@@ -18,6 +19,12 @@ export interface EmbedFieldProps extends FieldProps<EmbedValue> {
     placeholder?: string;
     /** Where the preview comes from. Defaults to that of the `FieldsProvider`. */
     embedSource?: EmbedSource | null;
+    /**
+     * The providers an embed may come from (`YouTube`), compared without case: the `providers`
+     * rule (decision 0059). The field names them under its help, and refuses an embed of another
+     * provider as soon as its preview comes back. The form's errors, once shown, replace that one.
+     */
+    providers?: readonly string[];
 }
 
 /** Whether a value is an embed: an object with a `url`. */
@@ -27,6 +34,15 @@ export function isEmbed(value: unknown): value is EmbedValue {
         typeof value === 'object' &&
         isString((value as Record<string, unknown>).url)
     );
+}
+
+/** Whether an embed comes from one of the providers. One without a provider is left to the backend. */
+function isAllowed(value: EmbedValue, providers: readonly string[] | undefined): boolean {
+    if (providers === undefined || providers.length === 0 || value.provider === undefined) {
+        return true;
+    }
+    const provider = value.provider.toLowerCase();
+    return providers.some((allowed) => allowed.toLowerCase() === provider);
 }
 
 /** Whether a value has been resolved: it has more than its URL. */
@@ -44,10 +60,12 @@ export function EmbedField({
     onChange,
     onBlur,
     embedSource: embedSourceProp,
+    providers,
     errors = [],
     disabled,
     readOnly,
     required,
+    description,
     ...props
 }: EmbedFieldProps) {
     const intl = usePanneauIntl();
@@ -86,10 +104,31 @@ export function EmbedField({
     }, [embedSource, pending]);
 
     const current = status !== null && status.url === url ? status.state : null;
-    const shownErrors =
-        current === 'failed' && errors.length === 0
-            ? [intl.formatMessage(messages.embedFailed)]
-            : errors;
+    const providerList =
+        providers !== undefined && providers.length > 0
+            ? intl.formatList(providers, { type: 'disjunction' })
+            : null;
+    const ownError =
+        current === 'failed'
+            ? intl.formatMessage(messages.embedFailed)
+            : value !== null &&
+                value !== undefined &&
+                providerList !== null &&
+                !isAllowed(value, providers)
+              ? intl.formatMessage(formsMessages.rule.providers, { providers: providerList })
+              : null;
+    const shownErrors = ownError !== null && errors.length === 0 ? [ownError] : errors;
+    const help: ReactNode =
+        providerList !== null ? (
+            <>
+                {description !== undefined && description !== null ? <>{description} </> : null}
+                {intl.formatMessage(messages.embedProviders, {
+                    providers: intl.formatList(providers ?? [], { type: 'conjunction' }),
+                })}
+            </>
+        ) : (
+            description
+        );
     return (
         <div className={styles.embed}>
             <TextInput
@@ -101,6 +140,7 @@ export function EmbedField({
                 onChange={(next) => onChange?.(next.trim() === '' ? null : { url: next.trim() })}
                 onBlur={() => onBlur?.()}
                 errors={shownErrors}
+                description={help}
                 isDisabled={disabled}
                 isReadOnly={readOnly}
                 isRequired={required}
@@ -128,13 +168,26 @@ export function EmbedField({
     );
 }
 
-/** The `embed` type: its preview comes from the embed source of the `FieldsProvider`. */
+/** The providers of a `providers` rule, if the field has one. */
+function getProviders(field: FieldEntryProps['field']): string[] | undefined {
+    const rule = findRule(field, 'providers');
+    return rule !== undefined && 'value' in rule && Array.isArray(rule.value)
+        ? rule.value.filter(isString)
+        : undefined;
+}
+
+/**
+ * The `embed` type: its preview comes from the embed source of the `FieldsProvider`, and its
+ * `providers` rule names the providers it allows.
+ */
 export function EmbedFieldEntry(props: FieldEntryProps) {
+    const providers = getProviders(props.field);
     return (
         <EmbedField
             {...getFieldProps(props)}
             value={isEmbed(props.value) ? props.value : null}
             onChange={props.onChange}
+            {...(providers !== undefined ? { providers } : {})}
         />
     );
 }

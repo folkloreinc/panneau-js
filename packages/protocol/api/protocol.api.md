@@ -140,6 +140,14 @@ export const Action: z.ZodObject<{
                 create: "create";
             }>>;
         }, z.core.$loose>, z.ZodObject<{
+            rule: z.ZodLiteral<"providers">;
+            value: z.ZodArray<z.ZodString>;
+            message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                update: "update";
+                create: "create";
+            }>>;
+        }, z.core.$loose>, z.ZodObject<{
             rule: z.ZodString;
             message: z.ZodOptional<z.ZodString>;
             mode: z.ZodOptional<z.ZodEnum<{
@@ -851,6 +859,14 @@ export const Definition: z.ZodObject<{
                     create: "create";
                 }>>;
             }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"providers">;
+                value: z.ZodArray<z.ZodString>;
+                message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>>;
+            }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodString;
                 message: z.ZodOptional<z.ZodString>;
                 mode: z.ZodOptional<z.ZodEnum<{
@@ -1086,6 +1102,14 @@ export const Definition: z.ZodObject<{
                         ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
                         required: z.ZodOptional<z.ZodBoolean>;
                     }, z.core.$loose>;
+                    message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        update: "update";
+                        create: "create";
+                    }>>;
+                }, z.core.$loose>, z.ZodObject<{
+                    rule: z.ZodLiteral<"providers">;
+                    value: z.ZodArray<z.ZodString>;
                     message: z.ZodOptional<z.ZodString>;
                     mode: z.ZodOptional<z.ZodEnum<{
                         update: "update";
@@ -1570,6 +1594,14 @@ export const Field: z.ZodObject<{
             ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
             required: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>;
+        message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            update: "update";
+            create: "create";
+        }>>;
+    }, z.core.$loose>, z.ZodObject<{
+        rule: z.ZodLiteral<"providers">;
+        value: z.ZodArray<z.ZodString>;
         message: z.ZodOptional<z.ZodString>;
         mode: z.ZodOptional<z.ZodEnum<{
             update: "update";
@@ -2236,6 +2268,14 @@ export const namedSchemas: {
             create: "create";
         }>>;
     }, z.core.$loose>, z.ZodObject<{
+        rule: z.ZodLiteral<"providers">;
+        value: z.ZodArray<z.ZodString>;
+        message: z.ZodOptional<z.ZodString>;
+        mode: z.ZodOptional<z.ZodEnum<{
+            update: "update";
+            create: "create";
+        }>>;
+    }, z.core.$loose>, z.ZodObject<{
         rule: z.ZodString;
         message: z.ZodOptional<z.ZodString>;
         mode: z.ZodOptional<z.ZodEnum<{
@@ -2343,6 +2383,14 @@ export const namedSchemas: {
                 ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
                 required: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>;
+            message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                update: "update";
+                create: "create";
+            }>>;
+        }, z.core.$loose>, z.ZodObject<{
+            rule: z.ZodLiteral<"providers">;
+            value: z.ZodArray<z.ZodString>;
             message: z.ZodOptional<z.ZodString>;
             mode: z.ZodOptional<z.ZodEnum<{
                 update: "update";
@@ -2685,6 +2733,14 @@ export const namedSchemas: {
                     create: "create";
                 }>>;
             }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"providers">;
+                value: z.ZodArray<z.ZodString>;
+                message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>>;
+            }, z.core.$loose>, z.ZodObject<{
                 rule: z.ZodString;
                 message: z.ZodOptional<z.ZodString>;
                 mode: z.ZodOptional<z.ZodEnum<{
@@ -2878,6 +2934,14 @@ export const namedSchemas: {
                     ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
                     required: z.ZodOptional<z.ZodBoolean>;
                 }, z.core.$loose>;
+                message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>>;
+            }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"providers">;
+                value: z.ZodArray<z.ZodString>;
                 message: z.ZodOptional<z.ZodString>;
                 mode: z.ZodOptional<z.ZodEnum<{
                     update: "update";
@@ -3119,6 +3183,14 @@ export const namedSchemas: {
                         ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
                         required: z.ZodOptional<z.ZodBoolean>;
                     }, z.core.$loose>;
+                    message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        update: "update";
+                        create: "create";
+                    }>>;
+                }, z.core.$loose>, z.ZodObject<{
+                    rule: z.ZodLiteral<"providers">;
+                    value: z.ZodArray<z.ZodString>;
                     message: z.ZodOptional<z.ZodString>;
                     mode: z.ZodOptional<z.ZodEnum<{
                         update: "update";
@@ -3621,6 +3693,14 @@ export const namedSchemas: {
                         create: "create";
                     }>>;
                 }, z.core.$loose>, z.ZodObject<{
+                    rule: z.ZodLiteral<"providers">;
+                    value: z.ZodArray<z.ZodString>;
+                    message: z.ZodOptional<z.ZodString>;
+                    mode: z.ZodOptional<z.ZodEnum<{
+                        update: "update";
+                        create: "create";
+                    }>>;
+                }, z.core.$loose>, z.ZodObject<{
                     rule: z.ZodString;
                     message: z.ZodOptional<z.ZodString>;
                     mode: z.ZodOptional<z.ZodEnum<{
@@ -3856,6 +3936,14 @@ export const namedSchemas: {
                             ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
                             required: z.ZodOptional<z.ZodBoolean>;
                         }, z.core.$loose>;
+                        message: z.ZodOptional<z.ZodString>;
+                        mode: z.ZodOptional<z.ZodEnum<{
+                            update: "update";
+                            create: "create";
+                        }>>;
+                    }, z.core.$loose>, z.ZodObject<{
+                        rule: z.ZodLiteral<"providers">;
+                        value: z.ZodArray<z.ZodString>;
                         message: z.ZodOptional<z.ZodString>;
                         mode: z.ZodOptional<z.ZodEnum<{
                             update: "update";
@@ -4727,7 +4815,7 @@ export type Passkey = z.infer<typeof Passkey>;
 export const PASSWORD_CONFIRMATION_PROBLEM_TYPE = "urn:panneau:problem:password-confirmation";
 
 // @public
-export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "json", "tel", "in", "accept", "maxSize", "before", "after", "crop"];
+export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "json", "tel", "in", "accept", "maxSize", "before", "after", "crop", "providers"];
 
 // @public (undocumented)
 export type PortableRule = (typeof PORTABLE_RULES)[number];
@@ -4909,6 +4997,14 @@ export const Resource: z.ZodObject<{
                 ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
                 required: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>;
+            message: z.ZodOptional<z.ZodString>;
+            mode: z.ZodOptional<z.ZodEnum<{
+                update: "update";
+                create: "create";
+            }>>;
+        }, z.core.$loose>, z.ZodObject<{
+            rule: z.ZodLiteral<"providers">;
+            value: z.ZodArray<z.ZodString>;
             message: z.ZodOptional<z.ZodString>;
             mode: z.ZodOptional<z.ZodEnum<{
                 update: "update";
@@ -5150,6 +5246,14 @@ export const Resource: z.ZodObject<{
                     ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
                     required: z.ZodOptional<z.ZodBoolean>;
                 }, z.core.$loose>;
+                message: z.ZodOptional<z.ZodString>;
+                mode: z.ZodOptional<z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>>;
+            }, z.core.$loose>, z.ZodObject<{
+                rule: z.ZodLiteral<"providers">;
+                value: z.ZodArray<z.ZodString>;
                 message: z.ZodOptional<z.ZodString>;
                 mode: z.ZodOptional<z.ZodEnum<{
                     update: "update";
@@ -5424,6 +5528,14 @@ export const Rule: z.ZodUnion<readonly [z.ZodObject<{
         ratios: z.ZodOptional<z.ZodArray<z.ZodString>>;
         required: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>;
+    message: z.ZodOptional<z.ZodString>;
+    mode: z.ZodOptional<z.ZodEnum<{
+        update: "update";
+        create: "create";
+    }>>;
+}, z.core.$loose>, z.ZodObject<{
+    rule: z.ZodLiteral<"providers">;
+    value: z.ZodArray<z.ZodString>;
     message: z.ZodOptional<z.ZodString>;
     mode: z.ZodOptional<z.ZodEnum<{
         update: "update";

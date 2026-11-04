@@ -94,6 +94,7 @@ export const PORTABLE_RULES = [
     'before',
     'after',
     'crop',
+    'providers',
 ] as const;
 export type PortableRule = (typeof PORTABLE_RULES)[number];
 
