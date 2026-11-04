@@ -1,5 +1,25 @@
 # @panneau/app
 
+## 5.0.0-alpha.17
+
+### Minor Changes
+
+- 0cf20b0: Row actions are icons in their colors, as in Panneau 4, the same in every list (decision 0060): `show` blue (`info`), `edit` in the main color, `delete` red, with their labels as names and tooltips. The main action, the one the title opens, keeps its label while the row has room (`primaryAction` of `ListView`; the app sets it from `open`). `duplicate`, `delete` and the actions placed in `menu` are icons too: the `•••` menu only takes the last actions when the icons don't fit (many actions, a narrow list, a phone), and never a single one. The list measures the room it has, chooses the same layout for every row, and keeps the place of the actions a row doesn't have, so they line up. `delete` keeps its confirmation.
+
+### Patch Changes
+
+- Updated dependencies [2a1f32d]
+- Updated dependencies [0cf20b0]
+  - @panneau/fields@5.0.0-alpha.17
+  - @panneau/lists@5.0.0-alpha.17
+  - @panneau/forms@5.0.0-alpha.17
+  - @panneau/actions@5.0.0-alpha.17
+  - @panneau/core@5.0.0-alpha.17
+  - @panneau/data@5.0.0-alpha.17
+  - @panneau/intl@5.0.0-alpha.17
+  - @panneau/protocol@5.0.0-alpha.17
+  - @panneau/ui@5.0.0-alpha.17
+
 ## 5.0.0-alpha.16
 
 ### Patch Changes
