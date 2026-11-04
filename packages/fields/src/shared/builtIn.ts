@@ -1,5 +1,6 @@
 import { fr } from '@panneau/intl';
 
+import { AddressFieldEntry } from '../address/AddressField';
 import { BooleanFieldEntry } from '../boolean/BooleanField';
 import { ColorFieldEntry } from '../color/ColorField';
 import { CountryFieldEntry } from '../country/CountryField';
@@ -11,6 +12,7 @@ import { EmbedFieldEntry } from '../embed/EmbedField';
 import { FileFieldEntry } from '../file/FileField';
 import { GroupFieldEntry } from '../group/GroupField';
 import { JsonFieldEntry } from '../json/JsonField';
+import { LinkFieldEntry } from '../link/LinkField';
 import { LocationFieldEntry } from '../location/LocationField';
 import { NumberFieldEntry } from '../number/NumberField';
 import { RangeFieldEntry } from '../range/RangeField';
@@ -31,7 +33,9 @@ import type { FieldEntry } from './types';
  * The entries of the built-in field types. `richtext` and `media` come with their plugins
  * (`@panneau/editor` and `@panneau/media`): without them, `DefinitionField` renders a placeholder.
  * `file` uploads through the upload source of the fields context, or gives the files themselves.
- * `embed` and `location` use its embed source and its maps; `location` loads Leaflet when shown.
+ * `embed`, `location` and `address` use its embed source and its maps; `location` loads Leaflet
+ * when shown. `link` searches its pages with the relation source, and picks its files with the
+ * `media` entry.
  */
 export const builtInFields: Readonly<Record<string, FieldEntry>> = {
     text: TextFieldEntry,
@@ -59,6 +63,8 @@ export const builtInFields: Readonly<Record<string, FieldEntry>> = {
     location: LocationFieldEntry,
     country: CountryFieldEntry,
     region: RegionFieldEntry,
+    address: AddressFieldEntry,
+    link: LinkFieldEntry,
 };
 
 /**

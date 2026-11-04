@@ -25,6 +25,8 @@ export default definePackageConfig({
         'location/index': 'src/location/index.ts',
         'country/index': 'src/country/index.ts',
         'region/index': 'src/region/index.ts',
+        'address/index': 'src/address/index.ts',
+        'link/index': 'src/link/index.ts',
         'localized/index': 'src/localized/index.ts',
         'group/index': 'src/group/index.ts',
         'repeater/index': 'src/repeater/index.ts',

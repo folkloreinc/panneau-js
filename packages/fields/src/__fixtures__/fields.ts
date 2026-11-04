@@ -82,6 +82,18 @@ export const EXAMPLE_FIELDS: Field[] = [
     },
     { name: 'province', type: 'region', label: 'Province', from: 'country' },
     {
+        name: 'venue',
+        type: 'address',
+        label: 'Venue',
+        settings: { country: 'CA', preferred: ['CA', 'US'] },
+    },
+    {
+        name: 'cta',
+        type: 'link',
+        label: 'Button',
+        settings: { newTab: 'external', label: 'required' },
+    },
+    {
         name: 'rating',
         type: 'range',
         label: 'Rating',
@@ -164,6 +176,19 @@ export const EXAMPLE_VALUES: Record<string, unknown> = {
         size: 52000,
     },
     blocks: [{ type: 'quote', text: 'Hello.', author: 'Ada' }],
+    venue: {
+        street: '1234 Rue Saint-Denis',
+        city: 'Montréal',
+        region: 'QC',
+        postalCode: 'H2X 3J8',
+        country: 'CA',
+    },
+    cta: {
+        type: 'url',
+        url: 'https://example.com/tickets',
+        label: { fr: 'Billets', en: 'Tickets' },
+        newTab: true,
+    },
 };
 
 const AUTHORS: RelationReference[] = [

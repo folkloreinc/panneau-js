@@ -98,7 +98,8 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     - `date`, `datetime`, `time`;
     - `select`, `email`, `url`, `color`;
     - `media`, `image`, `file`, `relation`, `group`, `repeater`, `slug`;
-    - `tel`, `range`, `duration`, `json`, `tags`, `embed`, `location` ([0033](decisions/0033-more-field-types.md)).
+    - `tel`, `range`, `duration`, `json`, `tags`, `embed`, `location` ([0033](decisions/0033-more-field-types.md));
+    - `country`, `region` ([0047](decisions/0047-countries-regions-and-phone-numbers.md)), `address` ([0053](decisions/0053-addresses.md)) and `link` ([0054](decisions/0054-links.md)).
 - **`text` settings:** `prefix` and `suffix` show in the control, around the value. With `"secret": true`, the value is a secret, such as an access key: clients type it in a password input that a button reveals, never let the browser fill it in, and show it as dots in lists and details. The backend still decides whether it sends the value back at all.
 - **`select` options** are `{ "value", "label", "description", "disabled", "tone" }`. `tone` colors the option where it shows as a badge, in lists and details: `neutral` (the default), `accent`, `success`, `warning`, `danger`, `info`, or a tone of the theme (`{ "value": "failed", "label": "Failed", "tone": "danger" }`).
 - **`localized`** makes the value an object keyed by locale (`{ "fr": "…", "en": "…" }`). It replaces the separate `localized` field and the `*Localized` PHP classes of v1.
@@ -175,6 +176,31 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 - **`location` values** are a point and its address: `{ "lat", "lng", "address" }` (`LocationValue`), with `lat` from -90 to 90, `lng` from -180 to 180, and `address` optional. Settings `zoom` and `center` (`{ "lat", "lng" }`) frame the map before a point is placed, and `tiles` (`{ "url", "attribution", "maxZoom" }`) replaces the app's tiles.
 - **`country` values** are ISO 3166-1 alpha-2 codes in capitals, `CA` (`XK` too). `settings.countries` lists the codes the field allows, `settings.preferred` the ones it shows first. A backend refuses other codes.
 - **`region` values** are states, provinces or territories. Their country is the value of the field that `from` names, in the same object, or `settings.country`. For the countries Panneau knows the regions of, a value is the code of the region without its country, `QC` for `CA-QC`; for the others, the text as typed ([0047](decisions/0047-countries-regions-and-phone-numbers.md)).
+- **`address` values** are the parts of a postal address, `{ "street", "unit", "city", "region", "postalCode", "country", "point" }` (`AddressValue`), the empty ones left out ([0053](decisions/0053-addresses.md)). `region` is a value of the `region` type for the address's country, `country` an ISO code, and `point` (`{ "lat", "lng" }`) is there with `settings.point` only. `postalCode` is normalized for its country (`H2X 1Y4`, `12345-6789`). Settings (`AddressSettings`, which `validateDefinition()` checks): `country` (of a new address), `countries`, `preferred`, `required` (the parts a filled address must have, `street`, `city` and `country` by default) and `point`.
+    - The type implies the checks of its parts, keyed by their path: `required` on `address.street` for a required part missing from a filled address, `postalCode` on `address.postalCode` for a postal code that isn't one of the address's country.
+- **`link` values** are `{ "type", "url", "page", "file", "label", "newTab" }` (`LinkValue`, [0054](decisions/0054-links.md)). `type` is one of the field's types: `url`, `page`, `email`, `tel`, `file`, or a type of the site. `url` is the `href`: `https://…`, `mailto:…`, `tel:+…`, or the text of a type of the site; for `page` and `file` links, the URL the backend resolved, in items only. `page` is a reference to an item of one of the field's `resource` (`{ "id", "resource", "label" }` in items; its id, or `{ "id", "resource" }`, in requests), `file` a media value. `label` is a string per locale, or a string in a `localized` link field. Settings (`LinkSettings`): `types` (built-in names, or `{ "id", "label", "pattern", "placeholder" }` for a type of the site), `newTab` (`choose`, `external` or `never`), `label` (`optional`, `required` or `none`) and `libraries` (of `file` links).
+
+    ```jsonc
+    {
+        "name": "cta",
+        "type": "link",
+        "resource": ["pages", "events"], // the resources of page links
+        "settings": {
+            "types": [
+                "page",
+                "url",
+                "email",
+                { "id": "anchor", "label": "Anchor", "pattern": "^#[\\w-]+$" },
+            ],
+            "newTab": "external", // url and file links open in a new tab
+            "label": "required",
+        },
+    }
+    ```
+
+    - The type implies the checks of its parts: `in` on `link.type`; on `link.url`, `url` (an `http` or `https` URL), `email` (`mailto:` and an address), `tel` (`tel:` and E.164), the `pattern` of a type of the site, or `required`; `required` on `link.page`, `link.file`, and `link.label` with `"label": "required"`.
+    - A backend sets `newTab` with `external`, and resolves the `url` of `page` and `file` links again: it ignores the one a client sends.
+
 - **`rules`** use the portable rules below. A backend can also enforce rules that it doesn't expose.
 
 ### Portable validation rules
@@ -187,12 +213,14 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 | `email`, `url`      | text                                    |
 | `json`              | `json` values: an object or an array    |
 | `tel`               | `tel` values: E.164 (`+15145550199`)    |
+| `postalCode`        | postal codes of Canada and the US       |
 | `in`                | select values                           |
 | `accept`, `maxSize` | files (MIME types, bytes)               |
 | `before`, `after`   | dates (value or other field)            |
 | `crop`              | `image` and `media` values              |
 
 - **`required`** fails on `null`, an empty or blank string, and an empty array or object. A file chosen in the browser (`File`), to send in `multipart/form-data`, is filled; `accept` and `maxSize` read its type and size.
+- **`postalCode`** refuses a postal code that doesn't normalize to the format of its country: Canada (`H2X 1Y4`) and the United States (`12345`, `12345-6789`) for now; others pass ([0053](decisions/0053-addresses.md)). Its `value` is the country, a code (`"CA"`) or another field of the form (`{ "field": "country" }`). The `address` type implies it on its postal code, with its own country.
 - **`mode`** limits a rule to one mode of the form: `create` (the item is created) or `update` (it is updated). Without it, a rule applies in both.
 
     ```jsonc

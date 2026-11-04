@@ -136,6 +136,41 @@ describe('displays', () => {
         expect(renderDisplay('region', 'Bavaria')).toHaveTextContent('Bavaria');
     });
 
+    it('shows addresses on one line, after the flag of their country', () => {
+        const cell = renderDisplay('address', {
+            street: '1234 Rue Saint-Denis',
+            city: 'Montréal',
+            region: 'QC',
+            postalCode: 'H2X 3J8',
+            country: 'CA',
+        });
+        expect(cell.textContent).toBe('🇨🇦1234 Rue Saint-Denis, Montréal, QC H2X 3J8');
+        expect(renderDisplay('address', { country: 'FR' }).textContent).toBe('🇫🇷France');
+        expect(renderDisplay('address', {}).textContent).toBe('—');
+    });
+
+    it('shows links by their label, page or URL, linked when they have a URL', () => {
+        const cell = renderDisplay('link', {
+            type: 'url',
+            url: 'https://example.com/tickets',
+            label: { en: 'Tickets', fr: 'Billets' },
+            newTab: true,
+        });
+        const link = cell.querySelector('a');
+        expect(link).toHaveTextContent('Tickets');
+        expect(link).toHaveAttribute('href', 'https://example.com/tickets');
+        expect(link).toHaveAttribute('target', '_blank');
+        expect(
+            renderDisplay('link', { type: 'email', url: 'mailto:info@example.com' }).querySelector(
+                'a',
+            ),
+        ).toHaveTextContent('info@example.com');
+        const page = renderDisplay('link', { type: 'page', page: { id: '2', label: 'About' } });
+        expect(page.querySelector('a')).toBeNull();
+        expect(page).toHaveTextContent('About');
+        expect(renderDisplay('link', { url: 'https://x.test' }).textContent).toBe('—');
+    });
+
     it('shows phone numbers, durations, JSON and tags', () => {
         expect(renderDisplay('tel', '514 555-0199').querySelector('a')).toHaveAttribute(
             'href',

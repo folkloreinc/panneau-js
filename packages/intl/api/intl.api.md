@@ -434,6 +434,28 @@ export const fieldsMessages: {
     regionPlaceholder: PanneauMessage<Record<never, never>>;
     noRegions: PanneauMessage<Record<never, never>>;
     telCountry: PanneauMessage<Record<never, never>>;
+    addressStreet: PanneauMessage<Record<never, never>>;
+    addressUnit: PanneauMessage<Record<never, never>>;
+    addressCity: PanneauMessage<Record<never, never>>;
+    addressRegion: PanneauMessage<Record<never, never>>;
+    addressProvince: PanneauMessage<Record<never, never>>;
+    addressState: PanneauMessage<Record<never, never>>;
+    addressPostalCode: PanneauMessage<Record<never, never>>;
+    addressZipCode: PanneauMessage<Record<never, never>>;
+    addressCountry: PanneauMessage<Record<never, never>>;
+    linkType: PanneauMessage<Record<never, never>>;
+    linkTypeUrl: PanneauMessage<Record<never, never>>;
+    linkTypePage: PanneauMessage<Record<never, never>>;
+    linkTypeEmail: PanneauMessage<Record<never, never>>;
+    linkTypeTel: PanneauMessage<Record<never, never>>;
+    linkTypeFile: PanneauMessage<Record<never, never>>;
+    linkUrl: PanneauMessage<Record<never, never>>;
+    linkPage: PanneauMessage<Record<never, never>>;
+    linkEmail: PanneauMessage<Record<never, never>>;
+    linkTel: PanneauMessage<Record<never, never>>;
+    linkFile: PanneauMessage<Record<never, never>>;
+    linkLabel: PanneauMessage<Record<never, never>>;
+    linkNewTab: PanneauMessage<Record<never, never>>;
     missingPlugin: PanneauMessage<    {
     type: string;
     }>;
@@ -502,6 +524,7 @@ export const formsMessages: {
         url: PanneauMessage<Record<never, never>>;
         json: PanneauMessage<Record<never, never>>;
         tel: PanneauMessage<Record<never, never>>;
+        postalCode: PanneauMessage<Record<never, never>>;
         in: PanneauMessage<Record<never, never>>;
         accept: PanneauMessage<Record<never, never>>;
         maxSize: PanneauMessage<Record<never, never>>;

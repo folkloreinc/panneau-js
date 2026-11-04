@@ -20,6 +20,8 @@ export {
     MediaDisplay,
     NumberDisplay,
     RegionDisplay,
+    AddressDisplay,
+    LinkDisplay,
     RelationDisplay,
     RichTextDisplay,
     SelectDisplay,

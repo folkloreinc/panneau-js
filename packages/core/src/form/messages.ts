@@ -9,6 +9,7 @@ const MESSAGES: Record<string, (failure: RuleFailure) => string> = {
     url: () => 'This value must be a URL.',
     json: () => 'This value must be valid JSON: an object or an array.',
     tel: () => 'This value must be a complete phone number.',
+    postalCode: () => 'This value must be a postal code of its country.',
     in: () => 'This value is not one of the choices.',
     accept: () => 'This file type is not accepted.',
     maxSize: () => 'This file is too large.',

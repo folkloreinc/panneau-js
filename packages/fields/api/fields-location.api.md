@@ -4,6 +4,7 @@
 
 ```ts
 
+import type { AddressValue } from '@panneau/protocol';
 import type { Field } from '@panneau/protocol';
 import { JSX } from 'react';
 import type { LocationValue } from '@panneau/protocol';
@@ -14,6 +15,7 @@ export function createNominatimSource(input?: NominatimSourceOptions): Geocoding
 
 // @public
 export interface GeocodingResult {
+    address?: Omit<AddressValue, 'point'>;
     // (undocumented)
     label: string;
     // (undocumented)

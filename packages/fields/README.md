@@ -37,6 +37,8 @@ Every field takes `value`, `onChange`, `onBlur`, `errors`, `disabled`, `readOnly
 | `@panneau/fields/tel`       | `TelField`, `parsePhone()`                   | E.164, `'+15145550199'`; the text until the number is complete      |
 | `@panneau/fields/country`   | `CountryField`, `getCountryName()`           | `'CA'`, ISO 3166-1 alpha-2                                          |
 | `@panneau/fields/region`    | `RegionField`, `getRegions()`                | `'QC'`, the region of its country; the text for other countries     |
+| `@panneau/fields/address`   | `AddressField`, `formatAddress()`            | `{ street, unit, city, region, postalCode, country, point }`        |
+| `@panneau/fields/link`      | `LinkField`, `getLinkText()`                 | `{ type, url, page, file, label, newTab }`                          |
 | `@panneau/fields/range`     | `RangeField` (a slider)                      | `number`, `null` until moved                                        |
 | `@panneau/fields/duration`  | `DurationField`, `formatDuration()`          | seconds, typed in hours, minutes and seconds                        |
 | `@panneau/fields/json`      | `JsonField`, `parseJson()`                   | an object or an array; the text while it doesn't parse              |
@@ -147,6 +149,22 @@ A `country` field picks a country by its name in the user's locale, with its fla
 <CountryField label="Country" preferred={['CA', 'US']} value={country} onChange={setCountry} />
 <RegionField label="Province" country={country} value={province} onChange={setProvince} />
 <TelField label="Phone" country="CA" value={phone} onChange={setPhone} />
+```
+
+An `address` field edits the parts of a postal address: the country first, which sets the labels (_Province_, _State_), the order (the postal code last in Canada and the United States, first elsewhere) and the regions of the others, then the street, the unit, the city, the region and the postal code, normalized for its country when it loses focus (`H2X 1Y4`). `country` is the country of a new address; with one country in `countries`, the field doesn't show it. With the address search of the `FieldsProvider`'s maps, a place found fills every part, when the source gives them (`createNominatimSource()` does); with `point`, a map places the address ([decision 0053](../../docs/decisions/0053-addresses.md)).
+
+A `link` field picks the type of a link, then its URL (`https://…`), its page (searched in the resources of `pages` with the relation source), its email address (`mailto:…`), its phone number (`tel:+…`), its file (with the `media` entry of the fields context), or the text of a type of the site, with a label per locale and whether it opens in a new tab ([decision 0054](../../docs/decisions/0054-links.md)). In a form, the parts of both fields show the errors of their own paths (`address.postalCode`, `link.url`).
+
+```tsx
+<AddressField label="Address" country="CA" preferred={['CA', 'US']} value={address} onChange={setAddress} />
+<LinkField
+    label="Button"
+    types={[{ id: 'page' }, { id: 'url' }, { id: 'email' }]}
+    pages={['pages', 'events']}
+    newTab="external"
+    value={link}
+    onChange={setLink}
+/>
 ```
 
 A `location` field places a point on a Leaflet map, loaded when the field is first shown. The tiles are OpenStreetMap's by default. `maps` sets other tiles and an address search, a `GeocodingSource`: `createNominatimSource()` searches OpenStreetMap's Nominatim, whose [usage policy](https://operations.osmfoundation.org/policies/nominatim/) suits small volumes; a product with more uses its own service. Without a geocoding source, the field has no address search, and the latitude and longitude are typed or picked on the map.

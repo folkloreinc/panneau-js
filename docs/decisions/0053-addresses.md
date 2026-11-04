@@ -64,6 +64,8 @@ Many admins keep postal addresses: of organisations, venues, users, participants
 ## Consequences
 
 - `address` is a built-in type, and `postalCode` a portable rule.
-- `@panneau/fields` gets the `address` field, with `normalizePostalCode()` and `formatAddress()`; `GeocodingResult` gets `address`, and `createNominatimSource()` fills it.
+- `@panneau/protocol` gets `normalizePostalCode()` and `isPostalCode()`, which clients use to normalize and check postal codes.
+- `@panneau/fields` gets the `address` field, with `formatAddress()`; `GeocodingResult` gets `address`, and `createNominatimSource()` fills it.
+- `@panneau/forms` shows the errors of the parts of an `address` and a `link` under their inputs, as for a group.
 - `@panneau/lists` gets the display of addresses.
 - `laravel-panneau` gets the `Address` field, a `PostalCode` rule, and `panneau:convert-addresses`, which turns the parts of addresses kept in separate text columns into an address value, as `panneau:convert-phones` does for phone numbers. The upgrade from 1.x points to it.
