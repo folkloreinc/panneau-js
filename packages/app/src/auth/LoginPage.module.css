@@ -69,3 +69,61 @@
     margin: 0;
     color: var(--panneau-color-text-muted);
 }
+
+/* Links under a form: another kind of code, back to the login. */
+.links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--panneau-space-2);
+}
+
+/* Buttons at the end of a dialog's form. */
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--panneau-space-2);
+}
+
+/* The QR code of a two-factor setup, on a white ground that scanners read in dark mode too. */
+.qrCode {
+    align-self: center;
+    width: 12rem;
+    height: 12rem;
+    padding: var(--panneau-space-2);
+    border-radius: var(--panneau-radius-md);
+    background: #fff;
+}
+
+.key {
+    margin: 0;
+}
+
+.key dt {
+    color: var(--panneau-color-text-muted);
+    font-size: var(--panneau-font-size-sm);
+}
+
+.key dd {
+    margin: 0;
+    font-family: var(--panneau-font-family-mono);
+    overflow-wrap: anywhere;
+}
+
+.link {
+    color: var(--panneau-color-accent);
+    font-size: var(--panneau-font-size-sm);
+}
+
+/* Recovery codes, two to a line. */
+.codes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--panneau-space-1) var(--panneau-space-4);
+    margin: 0;
+    padding: var(--panneau-space-3);
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-radius-md);
+    font-family: var(--panneau-font-family-mono);
+    list-style: none;
+}

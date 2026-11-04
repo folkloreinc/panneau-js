@@ -166,6 +166,19 @@ export const CONTEXT_PROBLEM_TYPE = 'urn:panneau:problem:context';
 export const EMAIL_UNVERIFIED_PROBLEM_TYPE = 'urn:panneau:problem:email-unverified';
 
 /**
+ * The type of the `403` problem of a user who must have two-factor authentication and hasn't set
+ * it up (decision 0049). The app shows its setup.
+ */
+export const TWO_FACTOR_REQUIRED_PROBLEM_TYPE = 'urn:panneau:problem:two-factor-required';
+
+/**
+ * The type of the `423` problem of an operation that needs the password, when it wasn't confirmed
+ * recently (decision 0049): the app confirms it with `POST /auth/password/confirm`, then runs the
+ * operation again.
+ */
+export const PASSWORD_CONFIRMATION_PROBLEM_TYPE = 'urn:panneau:problem:password-confirmation';
+
+/**
  * The paths of the auth pages of the app, under `basePath` (decision 0048), that the links of the
  * backend's emails open:
  *

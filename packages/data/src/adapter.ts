@@ -12,8 +12,12 @@ import type {
     ListQuery,
     ListResponse,
     PreviewResponse,
+    RecoveryCodes,
     SearchResponse,
     Session,
+    TwoFactorChallenge,
+    TwoFactorSetup,
+    TwoFactorStatus,
 } from '@panneau/protocol';
 
 import type { PresignedUploads } from './uploads';
@@ -61,6 +65,15 @@ export interface TokenCredentials {
 
 /** What `login()` sends: an email and a password, or a token. */
 export type LoginCredentials = PasswordCredentials | TokenCredentials;
+
+/**
+ * What `login()` resolves with: the session, or `{ twoFactor: true }` when the login waits for a
+ * second factor (`twoFactorChallenge()`, decision 0049).
+ */
+export type LoginResult = Session | TwoFactorChallenge;
+
+/** The second factor of a login: a code of the authenticator app, or a recovery code. */
+export type TwoFactorAnswer = { code: string } | { recoveryCode: string };
 
 /** What `resetPassword()` sends: the token and the email of the link, and the new password. */
 export interface PasswordReset {
@@ -125,8 +138,33 @@ export interface DataAdapter {
 
     /** The current session. Rejects with an `UnauthorizedError` without one. */
     getSession(options?: RequestOptions): Promise<Session>;
-    /** Logs in with an email and a password, or with a token (`auth.token`). */
-    login(credentials: LoginCredentials, options?: RequestOptions): Promise<Session>;
+    /**
+     * Logs in with an email and a password, or with a token (`auth.token`). Resolves with
+     * `{ twoFactor: true }` when the user has two-factor authentication: the login then waits for
+     * `twoFactorChallenge()`.
+     */
+    login(credentials: LoginCredentials, options?: RequestOptions): Promise<LoginResult>;
+    /**
+     * Ends a login that waits for its second factor (`POST /auth/two-factor/challenge`). Rejects
+     * with a `ValidationError` for a wrong code, or a login that no longer waits. Optional:
+     * without it, the app can't log in users with two-factor authentication.
+     */
+    twoFactorChallenge?(answer: TwoFactorAnswer, options?: RequestOptions): Promise<Session>;
+    /**
+     * Confirms the password of the current user (`POST /auth/password/confirm`), for the
+     * operations that reject with a `PasswordConfirmationError`. Optional.
+     */
+    confirmPassword?(password: string, options?: RequestOptions): Promise<void>;
+    /** The two-factor authentication of the current user (`GET /account/two-factor`). Optional. */
+    getTwoFactor?(options?: RequestOptions): Promise<TwoFactorStatus>;
+    /** Starts setting it up: a new secret, to confirm with `confirmTwoFactor()`. Optional. */
+    enableTwoFactor?(options?: RequestOptions): Promise<TwoFactorSetup>;
+    /** Turns it on with a code of the authenticator app, and gives the recovery codes. Optional. */
+    confirmTwoFactor?(code: string, options?: RequestOptions): Promise<RecoveryCodes>;
+    /** Turns it off. Optional. */
+    disableTwoFactor?(options?: RequestOptions): Promise<void>;
+    /** New recovery codes, in place of the old ones. Optional. */
+    regenerateRecoveryCodes?(options?: RequestOptions): Promise<RecoveryCodes>;
     /** Logs out. */
     logout(options?: RequestOptions): Promise<void>;
     /**

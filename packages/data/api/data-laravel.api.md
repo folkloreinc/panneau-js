@@ -18,8 +18,12 @@ import type { ListQuery } from '@panneau/protocol';
 import type { ListResponse } from '@panneau/protocol';
 import type { PreviewResponse } from '@panneau/protocol';
 import { Problem } from '@panneau/protocol';
+import type { RecoveryCodes } from '@panneau/protocol';
 import type { SearchResponse } from '@panneau/protocol';
 import type { Session } from '@panneau/protocol';
+import type { TwoFactorChallenge } from '@panneau/protocol';
+import type { TwoFactorSetup } from '@panneau/protocol';
+import type { TwoFactorStatus } from '@panneau/protocol';
 import type { Upload } from '@panneau/protocol';
 import type { UploadSignRequest } from '@panneau/protocol';
 

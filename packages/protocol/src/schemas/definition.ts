@@ -56,7 +56,10 @@ export const Auth = z.looseObject({
         description:
             '`panneau`: a "Forgot your password?" link on the login page, through `POST /auth/password/forgot` and `POST /auth/password/reset`.',
     }),
-    twoFactor: z.boolean().optional(),
+    twoFactor: z.boolean().optional().meta({
+        description:
+            '`panneau`: two-factor authentication, which users set up through `/account/two-factor`, and which a password login asks for with a `202`.',
+    }),
     passkeys: z.boolean().optional(),
     emailVerification: z.boolean().optional().meta({
         description:

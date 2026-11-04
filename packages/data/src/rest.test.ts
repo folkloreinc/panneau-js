@@ -9,6 +9,7 @@ import {
     InvalidResponseError,
     NetworkError,
     NotFoundError,
+    PasswordConfirmationError,
     RateLimitedError,
     UnauthorizedError,
     ValidationError,
@@ -430,6 +431,73 @@ describe('createRestAdapter', () => {
             password: 'new',
         });
         expect(await requests[3]?.json()).toEqual({ token: 't2' });
+    });
+
+    it('logs in with a second factor, and sets one up', async () => {
+        const { fetch, requests } = createStubFetch((request) => {
+            const { pathname } = new URL(request.url);
+            if (pathname.endsWith('/auth/login')) {
+                return jsonResponse(202, { twoFactor: true });
+            }
+            if (pathname.endsWith('/auth/password/confirm') || request.method === 'DELETE') {
+                return new Response(null, { status: 204 });
+            }
+            if (pathname.endsWith('/confirm') || pathname.endsWith('/recovery-codes')) {
+                return jsonResponse(200, { recoveryCodes: ['a-b'] });
+            }
+            if (pathname.endsWith('/account/two-factor') && request.method === 'POST') {
+                return jsonResponse(200, { secret: 'S', otpauthUrl: 'otpauth://totp/x' });
+            }
+            if (pathname.endsWith('/account/two-factor')) {
+                return jsonResponse(200, { status: 'disabled', required: false });
+            }
+            return jsonResponse(200, { user: { id: 'u1', name: 'Ada' } });
+        });
+        const adapter = createRestAdapter({ baseUrl: BASE_URL, fetch });
+
+        expect(await adapter.login({ email: 'ada@example.com', password: 'secret' })).toEqual({
+            twoFactor: true,
+        });
+        expect(await adapter.twoFactorChallenge?.({ code: '123456' })).toMatchObject({
+            user: { id: 'u1' },
+        });
+        await adapter.confirmPassword?.('secret');
+        expect(await adapter.getTwoFactor?.()).toEqual({ status: 'disabled', required: false });
+        expect(await adapter.enableTwoFactor?.()).toMatchObject({ secret: 'S' });
+        expect(await adapter.confirmTwoFactor?.('123456')).toEqual({ recoveryCodes: ['a-b'] });
+        expect(await adapter.regenerateRecoveryCodes?.()).toEqual({ recoveryCodes: ['a-b'] });
+        await adapter.disableTwoFactor?.();
+
+        expect(
+            requests.map((request) => `${request.method} ${new URL(request.url).pathname}`),
+        ).toEqual([
+            'POST /panneau/api/auth/login',
+            'POST /panneau/api/auth/two-factor/challenge',
+            'POST /panneau/api/auth/password/confirm',
+            'GET /panneau/api/account/two-factor',
+            'POST /panneau/api/account/two-factor',
+            'POST /panneau/api/account/two-factor/confirm',
+            'POST /panneau/api/account/two-factor/recovery-codes',
+            'DELETE /panneau/api/account/two-factor',
+        ]);
+        expect(await requests[1]?.json()).toEqual({ code: '123456' });
+        expect(await requests[5]?.json()).toEqual({ code: '123456' });
+    });
+
+    it('rejects with a PasswordConfirmationError on a 423', async () => {
+        const { fetch } = createStubFetch(
+            () =>
+                new Response(
+                    JSON.stringify({
+                        type: 'urn:panneau:problem:password-confirmation',
+                        title: 'Password confirmation required.',
+                        status: 423,
+                    }),
+                    { status: 423, headers: { 'Content-Type': 'application/problem+json' } },
+                ),
+        );
+        const adapter = createRestAdapter({ baseUrl: BASE_URL, fetch });
+        await expect(adapter.enableTwoFactor?.()).rejects.toBeInstanceOf(PasswordConfirmationError);
     });
 
     it('checks a value of a field', async () => {

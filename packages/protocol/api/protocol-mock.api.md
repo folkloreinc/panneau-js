@@ -18,6 +18,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend;
 export interface MockAuthOptions {
     loggedIn?: string | null;
     onMail?: (mail: MockMail) => void;
+    twoFactorCode?: string;
     // (undocumented)
     users: MockUser[];
 }
@@ -72,6 +73,9 @@ export interface MockUser {
     name?: string;
     // (undocumented)
     password: string;
+    recoveryCodes?: string[];
+    twoFactor?: boolean;
+    twoFactorRequired?: boolean;
 }
 
 // (No @packageDocumentation comment for this package)

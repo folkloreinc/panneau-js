@@ -5,6 +5,8 @@ import {
     CONTEXT_HEADER,
     CONTEXT_PROBLEM_TYPE,
     EMAIL_UNVERIFIED_PROBLEM_TYPE,
+    PASSWORD_CONFIRMATION_PROBLEM_TYPE,
+    TWO_FACTOR_REQUIRED_PROBLEM_TYPE,
 } from './constants';
 import { createSchemaRegistry } from './schemas';
 import { BootConfig } from './schemas/boot';
@@ -33,11 +35,12 @@ const ok = (description: string, schema?: JsonObject, headers?: JsonObject): Jso
 const PROBLEMS: Record<number, string> = {
     400: 'Bad request, such as a dry run of an action that does not declare `dryRun`.',
     401: 'Not authenticated.',
-    403: `Not allowed. A value of \`${CONTEXT_HEADER}\` that the user can't use is a problem of type \`${CONTEXT_PROBLEM_TYPE}\`, with its \`param\`. With \`auth.emailVerification\`, a user whose email address isn't verified gets a problem of type \`${EMAIL_UNVERIFIED_PROBLEM_TYPE}\` on every operation but those of the auth.`,
+    403: `Not allowed. A value of \`${CONTEXT_HEADER}\` that the user can't use is a problem of type \`${CONTEXT_PROBLEM_TYPE}\`, with its \`param\`. With \`auth.emailVerification\`, a user whose email address isn't verified gets a problem of type \`${EMAIL_UNVERIFIED_PROBLEM_TYPE}\` on every operation but those of the auth. A user who must have two-factor authentication and hasn't set it up gets a problem of type \`${TWO_FACTOR_REQUIRED_PROBLEM_TYPE}\` on every operation but those of the auth and of \`/account/two-factor\`.`,
     404: 'Not found.',
     409: 'Conflict with a business rule.',
     412: 'Version conflict: `If-Match` does not match the current version, which is in `current`.',
     422: 'Invalid values: messages are in `errors`, keyed by dot path.',
+    423: `The password must be confirmed first (\`POST /auth/password/confirm\`): a problem of type \`${PASSWORD_CONFIRMATION_PROBLEM_TYPE}\`.`,
     429: 'Too many requests: `Retry-After` gives the seconds to wait.',
 };
 
@@ -446,12 +449,9 @@ export function createOpenApiDocument(): JsonObject {
                         200: ok('Logged in.', ref('Session')),
                         202: ok(
                             'A second factor is required: answer `/auth/two-factor/challenge`.',
-                            {
-                                type: 'object',
-                                properties: { twoFactor: { type: 'boolean', const: true } },
-                            },
+                            ref('TwoFactorChallenge'),
                         ),
-                        ...problems(422),
+                        ...problems(422, 429),
                     },
                 },
             },
@@ -553,17 +553,105 @@ export function createOpenApiDocument(): JsonObject {
             '/auth/two-factor/challenge': {
                 post: {
                     operationId: 'twoFactorChallenge',
+                    summary:
+                        'Ends a login that answered `202`, with a code of the authenticator app or a recovery code. A login that is no longer pending is a `422`.',
+                    requestBody: {
+                        required: true,
+                        content: json({
+                            oneOf: [
+                                {
+                                    type: 'object',
+                                    required: ['code'],
+                                    properties: { code: { type: 'string' } },
+                                },
+                                {
+                                    type: 'object',
+                                    required: ['recoveryCode'],
+                                    properties: { recoveryCode: { type: 'string' } },
+                                },
+                            ],
+                        }),
+                    },
+                    responses: {
+                        200: ok('Logged in.', ref('Session')),
+                        ...problems(422, 429),
+                    },
+                },
+            },
+            '/auth/password/confirm': {
+                post: {
+                    operationId: 'confirmPassword',
+                    summary:
+                        'Confirms the password of the current user, for the operations that answer `423`.',
                     requestBody: {
                         required: true,
                         content: json({
                             type: 'object',
-                            properties: {
-                                code: { type: 'string' },
-                                recoveryCode: { type: 'string' },
-                            },
+                            required: ['password'],
+                            properties: { password: { type: 'string' } },
                         }),
                     },
-                    responses: { 200: ok('Logged in.', ref('Session')), ...problems(422) },
+                    responses: {
+                        204: ok('The password is confirmed.'),
+                        ...problems(401, 422, 429),
+                    },
+                },
+            },
+            '/account/two-factor': {
+                get: {
+                    operationId: 'getTwoFactor',
+                    summary: 'With `auth.twoFactor`: the two-factor authentication of the user.',
+                    responses: {
+                        200: ok('Its status.', ref('TwoFactorStatus')),
+                        ...problems(401, 403),
+                    },
+                },
+                post: {
+                    operationId: 'enableTwoFactor',
+                    summary:
+                        'Starts setting it up: a new secret, `pending` until `POST /account/two-factor/confirm`.',
+                    responses: {
+                        200: ok(
+                            'The secret to add to an authenticator app.',
+                            ref('TwoFactorSetup'),
+                        ),
+                        ...problems(401, 403, 409, 423),
+                    },
+                },
+                delete: {
+                    operationId: 'disableTwoFactor',
+                    summary: 'Turns it off. A `409` when the backend requires it for the user.',
+                    responses: {
+                        204: ok('Turned off.'),
+                        ...problems(401, 403, 409, 423),
+                    },
+                },
+            },
+            '/account/two-factor/confirm': {
+                post: {
+                    operationId: 'confirmTwoFactor',
+                    requestBody: {
+                        required: true,
+                        content: json({
+                            type: 'object',
+                            required: ['code'],
+                            properties: { code: { type: 'string' } },
+                        }),
+                    },
+                    responses: {
+                        200: ok('Turned on, with its recovery codes.', ref('RecoveryCodes')),
+                        ...problems(401, 403, 409, 422, 423),
+                    },
+                },
+            },
+            '/account/two-factor/recovery-codes': {
+                post: {
+                    operationId: 'regenerateRecoveryCodes',
+                    summary: 'New recovery codes, in place of the old ones.',
+                    responses: {
+                        200: ok('The new codes.', ref('RecoveryCodes')),
+                        ...problems(401, 403, 409, 423),
+                    },
                 },
             },
             '/auth/passkeys/options': {

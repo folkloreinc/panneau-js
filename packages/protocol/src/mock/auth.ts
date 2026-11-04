@@ -1,6 +1,10 @@
-import { AUTH_PAGE_PATHS, EMAIL_UNVERIFIED_PROBLEM_TYPE } from '../constants';
+import {
+    AUTH_PAGE_PATHS,
+    EMAIL_UNVERIFIED_PROBLEM_TYPE,
+    TWO_FACTOR_REQUIRED_PROBLEM_TYPE,
+} from '../constants';
 import type { Auth, User } from '../schemas';
-import type { Problem } from '../schemas/api';
+import type { Problem, TwoFactorStatus } from '../schemas/api';
 import { PROBLEM_CONTENT_TYPE } from '../version';
 
 /** A user of the mock backend. */
@@ -13,6 +17,15 @@ export interface MockUser {
     password: string;
     /** Whether the email address is verified, for `auth.emailVerification`. Defaults to true. */
     emailVerified?: boolean;
+    /**
+     * Whether the user has two-factor authentication, for `auth.twoFactor`: their password login
+     * then asks for `twoFactorCode` or a recovery code. Defaults to false.
+     */
+    twoFactor?: boolean;
+    /** Recovery codes of a user with `twoFactor`. Defaults to none. */
+    recoveryCodes?: string[];
+    /** Whether the backend requires two-factor authentication for the user. Defaults to false. */
+    twoFactorRequired?: boolean;
 }
 
 /** An email that the mock backend "sends", with the path of its link under the app's base path. */
@@ -36,6 +49,8 @@ export interface MockAuthOptions {
     loggedIn?: string | null;
     /** Called with each email the backend sends: there is no mailbox. */
     onMail?: (mail: MockMail) => void;
+    /** The code of the authenticator app of every user, for `auth.twoFactor`. Defaults to `123456`. */
+    twoFactorCode?: string;
 }
 
 type Values = Record<string, unknown>;
@@ -46,7 +61,13 @@ interface Account {
     email: string;
     password: string;
     emailVerified: boolean;
+    twoFactor: TwoFactorStatus['status'];
+    recoveryCodes: string[];
+    twoFactorRequired: boolean;
 }
+
+/** The secret that the mock backend gives every two-factor setup. */
+const SECRET = 'JBSWY3DPEHPK3PXP';
 
 const EMAIL = /^[^\s@]+@[^\s@]+$/;
 
@@ -78,11 +99,24 @@ function randomToken(): string {
     ).join('');
 }
 
+function recoveryCodes(): string[] {
+    return Array.from(
+        { length: 8 },
+        () => `${randomToken().slice(0, 5)}-${randomToken().slice(0, 5)}`,
+    );
+}
+
 export interface MockAuth {
     /** The current user, as the definition and `/auth/session` give it. */
     user(): User | null;
     /** The answer of a route of `/auth/…`, without its first segment. */
     answer(segments: string[], method: string, readBody: () => Promise<Values>): Promise<Response>;
+    /** The answer of a route of `/account/…`, without its first segment, or null for another. */
+    account(
+        segments: string[],
+        method: string,
+        readBody: () => Promise<Values>,
+    ): Promise<Response> | null;
     /** The answer to a request of another route by the current user, when it is refused. */
     refuse(): Response | null;
 }
@@ -94,7 +128,13 @@ export function createMockAuth(options: MockAuthOptions, settings: Auth | undefi
         email: user.email,
         password: user.password,
         emailVerified: user.emailVerified ?? true,
+        twoFactor: user.twoFactor === true ? 'enabled' : 'disabled',
+        recoveryCodes: [...(user.recoveryCodes ?? [])],
+        twoFactorRequired: user.twoFactorRequired ?? false,
     }));
+    const code = options.twoFactorCode ?? '123456';
+    // A password login that waits for its second factor
+    let pending: { account: Account } | null = null;
     let current: Account | null =
         options.loggedIn === null
             ? null
@@ -142,14 +182,49 @@ export function createMockAuth(options: MockAuthOptions, settings: Auth | undefi
             if (account === undefined || account.password !== password) {
                 return invalid({ email: ['These credentials do not match our records.'] });
             }
+            if (settings?.twoFactor === true && account.twoFactor === 'enabled') {
+                pending = { account };
+                return json(202, { twoFactor: true });
+            }
             current = account;
             return json(200, { user: userOf(account) });
         },
         'POST logout': () => {
             current = null;
+            pending = null;
             return Promise.resolve(json(204, null));
         },
     };
+    if (settings?.twoFactor === true) {
+        routes['POST two-factor/challenge'] = async (body) => {
+            const answer = await body();
+            if (pending === null) {
+                return invalid({ code: ['The login has expired. Log in again.'] });
+            }
+            const { account } = pending;
+            if (typeof answer.recoveryCode === 'string') {
+                const index = account.recoveryCodes.indexOf(answer.recoveryCode);
+                if (index === -1) {
+                    return invalid({ recoveryCode: ['This recovery code is invalid.'] });
+                }
+                account.recoveryCodes.splice(index, 1);
+            } else if (answer.code !== code) {
+                return invalid({ code: ['This code is invalid.'] });
+            }
+            pending = null;
+            current = account;
+            return json(200, { user: userOf(account) });
+        };
+        routes['POST password/confirm'] = async (body) => {
+            const { password } = await body();
+            if (current === null) {
+                return problem(401, 'Unauthenticated.');
+            }
+            return password === current.password
+                ? json(204, null)
+                : invalid({ password: ['The password is incorrect.'] });
+        };
+    }
     if (settings?.passwordReset === true) {
         routes['POST password/forgot'] = async (body) => {
             const { email } = await body();
@@ -198,8 +273,74 @@ export function createMockAuth(options: MockAuthOptions, settings: Auth | undefi
         };
     }
 
+    const conflict = (title: string) => problem(409, title);
+    const twoFactorRoutes: Record<
+        string,
+        (account: Account, body: () => Promise<Values>) => Promise<Response> | Response
+    > = {
+        GET: (account) =>
+            json(200, { status: account.twoFactor, required: account.twoFactorRequired }),
+        POST: (account) => {
+            if (account.twoFactor === 'enabled') {
+                return conflict('Two-factor authentication is already on.');
+            }
+            account.twoFactor = 'pending';
+            const label = encodeURIComponent(`Panneau:${account.email}`);
+            return json(200, {
+                secret: SECRET,
+                otpauthUrl: `otpauth://totp/${label}?secret=${SECRET}&issuer=Panneau`,
+            });
+        },
+        DELETE: (account) => {
+            if (account.twoFactorRequired) {
+                return conflict('Two-factor authentication is required for this account.');
+            }
+            account.twoFactor = 'disabled';
+            account.recoveryCodes = [];
+            return json(204, null);
+        },
+        'POST confirm': async (account, body) => {
+            if (account.twoFactor !== 'pending') {
+                return conflict('Two-factor authentication isn’t being set up.');
+            }
+            if ((await body()).code !== code) {
+                return invalid({ code: ['This code is invalid.'] });
+            }
+            account.twoFactor = 'enabled';
+            account.recoveryCodes = recoveryCodes();
+            return json(200, { recoveryCodes: account.recoveryCodes });
+        },
+        'POST recovery-codes': (account) => {
+            if (account.twoFactor !== 'enabled') {
+                return conflict('Two-factor authentication is off.');
+            }
+            account.recoveryCodes = recoveryCodes();
+            return json(200, { recoveryCodes: account.recoveryCodes });
+        },
+    };
+    const refuseUnverified = (account: Account) =>
+        settings?.emailVerification === true && !account.emailVerified
+            ? problem(403, 'Your email address is not verified.', {
+                  type: EMAIL_UNVERIFIED_PROBLEM_TYPE,
+              })
+            : null;
+
     return {
         user: () => (current !== null ? userOf(current) : null),
+        account: (segments, method, readBody) => {
+            if (segments[0] !== 'two-factor' || settings?.twoFactor !== true) {
+                return null;
+            }
+            if (current === null) {
+                return Promise.resolve(problem(401, 'Unauthenticated.'));
+            }
+            const refused = refuseUnverified(current);
+            const route = twoFactorRoutes[[method, ...segments.slice(1)].join(' ')];
+            if (refused !== null || route === undefined) {
+                return Promise.resolve(refused ?? problem(404, 'Not found.'));
+            }
+            return Promise.resolve(route(current, readBody));
+        },
         answer: (segments, method, readBody) => {
             const route = routes[`${method} ${segments.join('/')}`];
             return route !== undefined
@@ -210,9 +351,17 @@ export function createMockAuth(options: MockAuthOptions, settings: Auth | undefi
             if (current === null) {
                 return problem(401, 'Unauthenticated.');
             }
-            if (settings?.emailVerification === true && !current.emailVerified) {
-                return problem(403, 'Your email address is not verified.', {
-                    type: EMAIL_UNVERIFIED_PROBLEM_TYPE,
+            const unverified = refuseUnverified(current);
+            if (unverified !== null) {
+                return unverified;
+            }
+            if (
+                settings?.twoFactor === true &&
+                current.twoFactorRequired &&
+                current.twoFactor !== 'enabled'
+            ) {
+                return problem(403, 'Two-factor authentication is required for this account.', {
+                    type: TWO_FACTOR_REQUIRED_PROBLEM_TYPE,
                 });
             }
             return null;

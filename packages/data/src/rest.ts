@@ -18,11 +18,14 @@ import type {
     Item,
     ListResponse,
     PreviewResponse,
+    RecoveryCodes,
     SearchResponse,
     Session,
+    TwoFactorSetup,
+    TwoFactorStatus,
 } from '@panneau/protocol';
 
-import type { ActionResponse, DataAdapter } from './adapter';
+import type { ActionResponse, DataAdapter, LoginResult } from './adapter';
 import { type ApiError, InvalidResponseError, NetworkError, createApiError } from './errors';
 import { readProblem, readRetryAfter } from './problem';
 import { createPresignedUploads } from './uploads';
@@ -274,7 +277,7 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
             return json<Session>({ path: '/auth/session', signal });
         },
         login(credentials, { signal } = {}) {
-            return json<Session>({
+            return json<LoginResult>({
                 method: 'POST',
                 path: '/auth/login',
                 body: credentials,
@@ -283,6 +286,46 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
         },
         async logout({ signal } = {}) {
             await send({ method: 'POST', path: '/auth/logout', signal });
+        },
+        twoFactorChallenge(answer, { signal } = {}) {
+            return json<Session>({
+                method: 'POST',
+                path: '/auth/two-factor/challenge',
+                body: answer,
+                signal,
+            });
+        },
+        async confirmPassword(password, { signal } = {}) {
+            await send({
+                method: 'POST',
+                path: '/auth/password/confirm',
+                body: { password },
+                signal,
+            });
+        },
+        getTwoFactor({ signal } = {}) {
+            return json<TwoFactorStatus>({ path: '/account/two-factor', signal });
+        },
+        enableTwoFactor({ signal } = {}) {
+            return json<TwoFactorSetup>({ method: 'POST', path: '/account/two-factor', signal });
+        },
+        confirmTwoFactor(code, { signal } = {}) {
+            return json<RecoveryCodes>({
+                method: 'POST',
+                path: '/account/two-factor/confirm',
+                body: { code },
+                signal,
+            });
+        },
+        async disableTwoFactor({ signal } = {}) {
+            await send({ method: 'DELETE', path: '/account/two-factor', signal });
+        },
+        regenerateRecoveryCodes({ signal } = {}) {
+            return json<RecoveryCodes>({
+                method: 'POST',
+                path: '/account/two-factor/recovery-codes',
+                signal,
+            });
         },
         async forgotPassword(email, { signal } = {}) {
             await send({ method: 'POST', path: '/auth/password/forgot', body: { email }, signal });

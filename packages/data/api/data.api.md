@@ -18,8 +18,12 @@ import type { ListQuery } from '@panneau/protocol';
 import type { ListResponse } from '@panneau/protocol';
 import type { PreviewResponse } from '@panneau/protocol';
 import { Problem } from '@panneau/protocol';
+import type { RecoveryCodes } from '@panneau/protocol';
 import type { SearchResponse } from '@panneau/protocol';
 import type { Session } from '@panneau/protocol';
+import type { TwoFactorChallenge } from '@panneau/protocol';
+import type { TwoFactorSetup } from '@panneau/protocol';
+import type { TwoFactorStatus } from '@panneau/protocol';
 import type { Upload } from '@panneau/protocol';
 import type { UploadSignRequest } from '@panneau/protocol';
 import type { ValidationIssue } from '@panneau/protocol';
@@ -65,9 +69,13 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter;
 export interface DataAdapter {
     cancelActionRun(id: string, options?: RequestOptions): Promise<void>;
     checkField?(resource: string, field: string, request: FieldCheckRequest, options?: RequestOptions): Promise<FieldCheckResponse>;
+    confirmPassword?(password: string, options?: RequestOptions): Promise<void>;
+    confirmTwoFactor?(code: string, options?: RequestOptions): Promise<RecoveryCodes>;
     create(resource: string, values: Values, options?: RequestOptions): Promise<Item>;
     delete(resource: string, id: string, options?: RequestOptions): Promise<void>;
+    disableTwoFactor?(options?: RequestOptions): Promise<void>;
     duplicate?(resource: string, id: string, options?: RequestOptions): Promise<Item>;
+    enableTwoFactor?(options?: RequestOptions): Promise<TwoFactorSetup>;
     forgotPassword?(email: string, options?: RequestOptions): Promise<void>;
     get(resource: string, id: string, options?: RequestOptions): Promise<Item>;
     getActionRun(id: string, options?: RequestOptions): Promise<ActionRun>;
@@ -76,20 +84,23 @@ export interface DataAdapter {
     }): Promise<ContextOption[]>;
     getDefinition(options?: RequestOptions): Promise<Definition>;
     getSession(options?: RequestOptions): Promise<Session>;
+    getTwoFactor?(options?: RequestOptions): Promise<TwoFactorStatus>;
     getWidgetData(widget: string, options?: RequestOptions): Promise<unknown>;
     list(resource: string, query?: ListQuery, options?: RequestOptions): Promise<ListResponse>;
     listActionRuns(options?: RequestOptions): Promise<ActionRun[]>;
-    login(credentials: LoginCredentials, options?: RequestOptions): Promise<Session>;
+    login(credentials: LoginCredentials, options?: RequestOptions): Promise<LoginResult>;
     logout(options?: RequestOptions): Promise<void>;
     presignedUploads?(options?: {
         endpoint?: string;
     }): PresignedUploads;
     previewItem?(resource: string, id: string, values: Values, options?: RequestOptions): Promise<PreviewResponse>;
+    regenerateRecoveryCodes?(options?: RequestOptions): Promise<RecoveryCodes>;
     resetPassword?(reset: PasswordReset, options?: RequestOptions): Promise<void>;
     resolveEmbed?(url: string, options?: RequestOptions): Promise<EmbedValue>;
     runAction(resource: string, action: string, request: ActionRequest, options?: RequestOptions): Promise<ActionResponse>;
     search(q: string, options?: SearchOptions): Promise<SearchResponse>;
     sendEmailVerification?(options?: RequestOptions): Promise<void>;
+    twoFactorChallenge?(answer: TwoFactorAnswer, options?: RequestOptions): Promise<Session>;
     update(resource: string, id: string, values: Values, options?: UpdateOptions): Promise<Item>;
     verifyEmail?(token: string, options?: RequestOptions): Promise<void>;
     withContext?(values: ContextValues): DataAdapter;
@@ -116,6 +127,9 @@ export function isApiError(error: unknown): error is ApiError;
 export type LoginCredentials = PasswordCredentials | TokenCredentials;
 
 // @public
+export type LoginResult = Session | TwoFactorChallenge;
+
+// @public
 export class NetworkError extends Error {
     constructor(message?: string, options?: ErrorOptions);
     // (undocumented)
@@ -124,6 +138,12 @@ export class NetworkError extends Error {
 
 // @public
 export class NotFoundError extends ApiError {
+    // (undocumented)
+    readonly name: string;
+}
+
+// @public
+export class PasswordConfirmationError extends ApiError {
     // (undocumented)
     readonly name: string;
 }
@@ -208,6 +228,13 @@ export interface TokenCredentials {
     // (undocumented)
     token: string;
 }
+
+// @public
+export type TwoFactorAnswer = {
+    code: string;
+} | {
+    recoveryCode: string;
+};
 
 // @public
 export class UnauthorizedError extends ApiError {

@@ -15,7 +15,7 @@ const meta = {
     parameters: { layout: 'fullscreen' },
     args: {
         auth: { mode: 'panneau' },
-        onLogIn: fn(() => Promise.resolve()),
+        onLogIn: fn((): Promise<'two-factor' | undefined> => Promise.resolve(undefined)),
     },
 } satisfies Meta<typeof LoginPage>;
 
@@ -138,6 +138,31 @@ export const AfterPasswordReset: Story = {
             'Your password was changed. Log in with your new password.',
         );
         await expect(canvas.getByLabelText(/^Email/)).toHaveValue('ada@example.com');
+    },
+};
+
+/** A login that waits for its second factor: a code of the app, or a recovery code. */
+export const TwoFactor: Story = {
+    args: {
+        onLogIn: fn((): Promise<'two-factor' | undefined> => Promise.resolve('two-factor')),
+        onTwoFactorChallenge: fn(() => Promise.resolve()),
+    },
+    play: async ({ args, canvasElement }) => {
+        const canvas = within(canvasElement);
+        await userEvent.type(canvas.getByLabelText(/^Email/), 'ada@example.com');
+        await userEvent.type(canvas.getByLabelText(/^Password/), 'secret');
+        await userEvent.click(canvas.getByRole('button', { name: 'Log in' }));
+        await expect(
+            await canvas.findByRole('heading', { name: 'Two-factor authentication' }),
+        ).toBeVisible();
+        await userEvent.type(canvas.getByLabelText(/^Code/), '123456');
+        await userEvent.click(canvas.getByRole('button', { name: 'Verify' }));
+        await expect(args.onTwoFactorChallenge).toHaveBeenCalledWith({ code: '123456' });
+
+        await userEvent.click(canvas.getByRole('button', { name: 'Use a recovery code' }));
+        await expect(canvas.getByLabelText(/^Recovery code/)).toHaveValue('');
+        await userEvent.click(canvas.getByRole('button', { name: 'Back to login' }));
+        await expect(canvas.getByRole('heading', { name: 'Log in' })).toBeVisible();
     },
 };
 
