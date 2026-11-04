@@ -18,7 +18,7 @@ function createBackend() {
         type: 'textarea',
         abilities: { view: false },
     });
-    // Credits (decision 0053): people of a resource or names, and roles as names.
+    // Credits (decision 0056): people of a resource or names, and roles as names.
     definition.resources[0]?.fields.push({ name: 'credits', type: 'credits', resource: 'authors' });
     definition.resources.push({
         id: 'settings',

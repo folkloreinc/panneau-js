@@ -178,7 +178,7 @@ export function RelationDisplay({ value }: DisplayProps) {
 
 /**
  * Credits: the people in order, each with their roles, where consecutive credits with the same
- * roles share them (decision 0053). Roles named in each locale show in the user's.
+ * roles share them (decision 0056). Roles named in each locale show in the user's.
  */
 export function CreditsDisplay({ value }: DisplayProps) {
     const intl = usePanneauIntl();

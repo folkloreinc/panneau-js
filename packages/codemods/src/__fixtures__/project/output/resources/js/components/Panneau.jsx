@@ -8,7 +8,7 @@ import '../../styles/panneau.scss';
 
 // The plugin of the project for Panneau 5, made by @panneau/codemods from the container of
 // v4. The entry passes it to `createPanneauApp({ element, plugins })`.
-// TODO(panneau-5): `credit`: the built-in `credits` type replaces a field of credits (decision 0053): declare a `Credits` field in PHP, convert its values with `php artisan panneau:convert-credits`, and remove this component
+// TODO(panneau-5): `credit`: the built-in `credits` type replaces a field of credits (decision 0056): declare a `Credits` field in PHP, convert its values with `php artisan panneau:convert-credits`, and remove this component
 // TODO(panneau-5): the keys of `fields` are the types of the definition, in kebab case: check each one against the `type()` of its PHP field (v4 also found `video_or_embed` under `VideoOrEmbed`)
 // TODO(panneau-5): `displays`: displays of Panneau 5 get `value`, `item`, `field` and `column` (`DisplayProps` of `@panneau/lists`)
 // TODO(panneau-5): the keys of `displays` are in kebab case: check each one against the name the definition uses

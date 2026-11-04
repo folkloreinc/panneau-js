@@ -17,7 +17,7 @@ export type CreditPerson = RelationReference | CreditName;
 export type CreditRole = RelationReference | CreditRoleName;
 
 /**
- * A credit (decision 0053): a person and their roles, `featured` for the credits to put forward,
+ * A credit (decision 0056): a person and their roles, `featured` for the credits to put forward,
  * and the values of the fields of the credit. `person` is `null` while a new credit has none.
  */
 export interface Credit {

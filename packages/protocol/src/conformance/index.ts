@@ -641,7 +641,7 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                     const parsed = CreditsValue.safeParse(value);
                     check.expect(
                         parsed.success,
-                        `The \`${field.name}\` of item ${item.id} isn’t a list of credits (decision 0053).`,
+                        `The \`${field.name}\` of item ${item.id} isn’t a list of credits (decision 0056).`,
                     );
                     if (!parsed.success) {
                         return;

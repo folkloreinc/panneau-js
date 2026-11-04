@@ -257,9 +257,9 @@ export const FIELDS_WITHOUT_TARGET: Readonly<Record<string, string>> = {
  * built-in type of Panneau 5 replaces.
  */
 export const PROJECT_FIELDS_WITH_BUILT_IN: Readonly<Record<string, string>> = {
-    credit: 'the built-in `credits` type replaces a field of credits (decision 0053): declare a `Credits` field in PHP, convert its values with `php artisan panneau:convert-credits`, and remove this component',
+    credit: 'the built-in `credits` type replaces a field of credits (decision 0056): declare a `Credits` field in PHP, convert its values with `php artisan panneau:convert-credits`, and remove this component',
     credits:
-        'the built-in `credits` type replaces it (decision 0053): declare a `Credits` field in PHP, convert its values with `php artisan panneau:convert-credits`, and remove this component',
+        'the built-in `credits` type replaces it (decision 0056): declare a `Credits` field in PHP, convert its values with `php artisan panneau:convert-credits`, and remove this component',
 };
 
 /** The v5 component of a v4 field id (`date_time`, `DateTime`, `date-time`). */

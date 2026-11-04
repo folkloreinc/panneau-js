@@ -150,7 +150,7 @@ A `country` field picks a country by its name in the user's locale, with its fla
 <TelField label="Phone" country="CA" value={phone} onChange={setPhone} />
 ```
 
-A `credits` field lists people and their roles, in order ([decision 0053](../../docs/decisions/0053-credits.md)). A person is picked in the resource of people (`resource`) through the relation source, created from the picker when the source can create items, or kept as a name, `{ name: 'Jane Doe' }`, unless `names` is `false`; without a resource, every person is a name. Roles are picked in the resource of roles (`roles`, `settings.roles` in the definition), or typed as names in each locale, `{ name: { fr: 'Musique', en: 'Music' } }`. `featured` lets users mark the credits to put forward, and `fields` are the fields of each credit.
+A `credits` field lists people and their roles, in order ([decision 0056](../../docs/decisions/0056-credits.md)). A person is picked in the resource of people (`resource`) through the relation source, created from the picker when the source can create items, or kept as a name, `{ name: 'Jane Doe' }`, unless `names` is `false`; without a resource, every person is a name. Roles are picked in the resource of roles (`roles`, `settings.roles` in the definition), or typed as names in each locale, `{ name: { fr: 'Musique', en: 'Music' } }`. `featured` lets users mark the credits to put forward, and `fields` are the fields of each credit.
 
 ```tsx
 <CreditsField

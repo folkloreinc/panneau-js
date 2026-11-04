@@ -524,7 +524,7 @@ export const Credit = z
     })
     .meta({
         description:
-            'A credit: a person and their roles (decision 0053). The values of the fields of the credit (`fields`) sit next to them.',
+            'A credit: a person and their roles (decision 0056). The values of the fields of the credit (`fields`) sit next to them.',
     });
 
 export const CreditsValue = z.array(Credit).meta({

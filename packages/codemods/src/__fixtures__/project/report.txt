@@ -1,7 +1,7 @@
 resources/js/components/Panneau.jsx
     16  entry            `../../styles/panneau.scss` was written for v4 and Bootstrap: check what it still styles
     17  entry            `import 'ckeditor5/ckeditor5.css'` is dropped with the container: import it where it is still needed
-    55  entry            `credit`: the built-in `credits` type replaces a field of credits (decision 0053): declare a `Credits` field in PHP, convert its values with `php artisan panneau:convert-credits`, and remove this component
+    55  entry            `credit`: the built-in `credits` type replaces a field of credits (decision 0056): declare a `Credits` field in PHP, convert its values with `php artisan panneau:convert-credits`, and remove this component
     55  entry            the keys of `fields` are the types of the definition, in kebab case: check each one against the `type()` of its PHP field (v4 also found `video_or_embed` under `VideoOrEmbed`)
     55  entry            `displays`: displays of Panneau 5 get `value`, `item`, `field` and `column` (`DisplayProps` of `@panneau/lists`)
     55  entry            the keys of `displays` are in kebab case: check each one against the name the definition uses

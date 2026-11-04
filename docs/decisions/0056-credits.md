@@ -1,4 +1,4 @@
-# 0053: Credits
+# 0056: Credits
 
 - Status: proposed
 - Date: 2026-11-04

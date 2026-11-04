@@ -133,7 +133,7 @@ function checkResource(resource: ResourceInput, path: string, issues: Validation
     });
 }
 
-/** The keys of every credit, which the fields of a credit can't use (decision 0053). */
+/** The keys of every credit, which the fields of a credit can't use (decision 0056). */
 const CREDIT_KEYS: readonly string[] = ['person', 'roles', 'featured'];
 
 /**

@@ -365,7 +365,7 @@ export interface CreditsFieldProps extends FieldProps<Credit[]> {
 }
 
 /**
- * Credits (decision 0053): a list of people, each with their roles. A person is picked in the
+ * Credits (decision 0056): a list of people, each with their roles. A person is picked in the
  * resource of people, created from the picker when the source can, or kept as a name. Roles are
  * picked in the resource of roles, or typed as names in each locale. Credits can be added, moved
  * and removed. An empty list is `null`.
