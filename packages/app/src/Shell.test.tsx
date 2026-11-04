@@ -647,7 +647,6 @@ describe('the app shell', () => {
     });
 
     it('shows the built-in item actions on each row by its abilities, without declaring them', async () => {
-        const user = userEvent.setup();
         window.history.replaceState(null, '', '/panneau/resources/pages');
         renderApp({}, [], (backend) => {
             const contact = backend.items('pages')[1];
