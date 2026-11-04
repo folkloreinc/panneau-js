@@ -1,5 +1,16 @@
 # @panneau/actions
 
+## 5.0.0-alpha.17
+
+### Patch Changes
+
+- @panneau/forms@5.0.0-alpha.17
+  - @panneau/core@5.0.0-alpha.17
+  - @panneau/data@5.0.0-alpha.17
+  - @panneau/intl@5.0.0-alpha.17
+  - @panneau/protocol@5.0.0-alpha.17
+  - @panneau/ui@5.0.0-alpha.17
+
 ## 5.0.0-alpha.16
 
 ### Patch Changes
