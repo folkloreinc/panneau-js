@@ -318,6 +318,50 @@ export function createMockAuth(options: MockAuthOptions, settings: Auth | undefi
             return json(200, { recoveryCodes: account.recoveryCodes });
         },
     };
+    const accountRoutes: Record<
+        string,
+        (account: Account, body: () => Promise<Values>) => Promise<Response> | Response
+    > = {
+        GET: (account) => json(200, { data: userOf(account) }),
+        PATCH: async (account, body) => {
+            const { name, email } = await body();
+            const errors: Record<string, string[]> = {};
+            if (typeof name !== 'string' || name.trim() === '') {
+                errors.name = ['The name field is required.'];
+            }
+            if (typeof email !== 'string' || !EMAIL.test(email)) {
+                errors.email = ['The email field must be a valid email address.'];
+            } else if (find(email) !== undefined && find(email) !== account) {
+                errors.email = ['The email has already been taken.'];
+            }
+            if (Object.keys(errors).length > 0) {
+                return invalid(errors);
+            }
+            const changed = (email as string).toLowerCase() !== account.email.toLowerCase();
+            account.name = name as string;
+            account.email = email as string;
+            if (changed && settings?.emailVerification === true) {
+                account.emailVerified = false;
+                send('email-verification', account);
+            }
+            return json(200, { data: userOf(account) });
+        },
+        'PUT password': async (account, body) => {
+            const { currentPassword, password } = await body();
+            if (currentPassword !== account.password) {
+                return invalid({
+                    currentPassword: [
+                        'The provided password does not match your current password.',
+                    ],
+                });
+            }
+            if (typeof password !== 'string' || password.length < 8) {
+                return invalid({ password: ['The password field must be at least 8 characters.'] });
+            }
+            account.password = password;
+            return json(204, null);
+        },
+    };
     const refuseUnverified = (account: Account) =>
         settings?.emailVerification === true && !account.emailVerified
             ? problem(403, 'Your email address is not verified.', {
@@ -328,14 +372,17 @@ export function createMockAuth(options: MockAuthOptions, settings: Auth | undefi
     return {
         user: () => (current !== null ? userOf(current) : null),
         account: (segments, method, readBody) => {
-            if (segments[0] !== 'two-factor' || settings?.twoFactor !== true) {
+            const twoFactor = segments[0] === 'two-factor' && settings?.twoFactor === true;
+            if (!twoFactor && settings?.account !== true) {
                 return null;
             }
             if (current === null) {
                 return Promise.resolve(problem(401, 'Unauthenticated.'));
             }
-            const refused = refuseUnverified(current);
-            const route = twoFactorRoutes[[method, ...segments.slice(1)].join(' ')];
+            const refused = twoFactor ? refuseUnverified(current) : refuse();
+            const route = twoFactor
+                ? twoFactorRoutes[[method, ...segments.slice(1)].join(' ')]
+                : accountRoutes[[method, ...segments].join(' ')];
             if (refused !== null || route === undefined) {
                 return Promise.resolve(refused ?? problem(404, 'Not found.'));
             }
@@ -347,24 +394,26 @@ export function createMockAuth(options: MockAuthOptions, settings: Auth | undefi
                 ? route(readBody)
                 : Promise.resolve(problem(404, 'Not found.'));
         },
-        refuse: () => {
-            if (current === null) {
-                return problem(401, 'Unauthenticated.');
-            }
-            const unverified = refuseUnverified(current);
-            if (unverified !== null) {
-                return unverified;
-            }
-            if (
-                settings?.twoFactor === true &&
-                current.twoFactorRequired &&
-                current.twoFactor !== 'enabled'
-            ) {
-                return problem(403, 'Two-factor authentication is required for this account.', {
-                    type: TWO_FACTOR_REQUIRED_PROBLEM_TYPE,
-                });
-            }
-            return null;
-        },
+        refuse,
     };
+
+    function refuse(): Response | null {
+        if (current === null) {
+            return problem(401, 'Unauthenticated.');
+        }
+        const unverified = refuseUnverified(current);
+        if (unverified !== null) {
+            return unverified;
+        }
+        if (
+            settings?.twoFactor === true &&
+            current.twoFactorRequired &&
+            current.twoFactor !== 'enabled'
+        ) {
+            return problem(403, 'Two-factor authentication is required for this account.', {
+                type: TWO_FACTOR_REQUIRED_PROBLEM_TYPE,
+            });
+        }
+        return null;
+    }
 }

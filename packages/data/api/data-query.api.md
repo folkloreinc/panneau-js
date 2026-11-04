@@ -34,6 +34,7 @@ import type { UploadSignRequest } from '@panneau/protocol';
 import { UseMutationResult } from '@tanstack/react-query';
 import { UseQueryOptions } from '@tanstack/react-query';
 import { UseQueryResult } from '@tanstack/react-query';
+import type { User } from '@panneau/protocol';
 
 // @public
 export function DataAdapterProvider(input: DataAdapterProviderProps): JSX.Element;
@@ -79,6 +80,8 @@ export const queryKeys: {
     item: (resource: string, id: string) => readonly ["panneau", "resources", string, "item", string];
     itemPreview: (resource: string, id: string, values?: Record<string, unknown>) => readonly ["panneau", "resources", string, "item", string, "preview", Record<string, unknown>];
     search: (q: string, options?: SearchKeyOptions) => readonly ["panneau", "search", string, SearchKeyOptions];
+    account: () => readonly ["panneau", "account"];
+    twoFactor: () => readonly ["panneau", "account", "two-factor"];
     actionRuns: () => readonly ["panneau", "actions", "runs"];
     actionRun: (id: string) => readonly ["panneau", "actions", "runs", string];
 };

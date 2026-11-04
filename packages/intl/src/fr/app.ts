@@ -44,6 +44,22 @@ export const appFr: Record<string, string> = {
     'panneau.app.verifyLinkIncomplete':
         'Ce lien est incomplet. Ouvrez de nouveau le lien du courriel.',
     'panneau.app.continue': 'Continuer',
+    'panneau.app.account': 'Votre compte',
+    'panneau.app.accountProfile': 'Profil',
+    'panneau.app.name': 'Nom',
+    'panneau.app.saveAccount': 'Enregistrer',
+    'panneau.app.accountSaved': 'Votre compte a été enregistré.',
+    'panneau.app.accountSaveError': 'Votre compte n’a pas pu être enregistré. Réessayez.',
+    'panneau.app.accountLoadError': 'Votre compte n’a pas pu être chargé.',
+    'panneau.app.currentPassword': 'Mot de passe actuel',
+    'panneau.app.changePassword': 'Changer le mot de passe',
+    'panneau.app.passwordChanged': 'Votre mot de passe a été changé.',
+    'panneau.app.twoFactorOn': 'L’authentification à deux facteurs est activée.',
+    'panneau.app.twoFactorOffHelp':
+        'Ajoutez une deuxième étape à votre connexion : un code d’une application d’authentification sur votre téléphone.',
+    'panneau.app.newRecoveryCodes': 'Nouveaux codes de récupération',
+    'panneau.app.turnOffTwoFactor': 'La désactiver',
+    'panneau.app.twoFactorRequired': 'Votre compte l’exige : elle ne peut pas être désactivée.',
     'panneau.app.twoFactorTitle': 'Authentification à deux facteurs',
     'panneau.app.twoFactorCodeHelp':
         'Entrez le code qu’affiche votre application d’authentification.',

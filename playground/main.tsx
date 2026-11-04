@@ -33,6 +33,7 @@ const definition = {
         passwordReset: true,
         emailVerification: true,
         twoFactor: true,
+        account: true,
     },
     ...(theme === 'flat' ? { theme: { extends: 'flat' } } : {}),
 };

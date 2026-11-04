@@ -9,6 +9,14 @@ import {
     routePath,
 } from './routes';
 
+describe('the account route', () => {
+    it('is the account page', () => {
+        expect(matchRoute('/panneau/account', '/panneau')).toEqual({ name: 'account' });
+        expect(matchRoute('/panneau/account/more', '/panneau')).toEqual({ name: 'not-found' });
+        expect(routePath({ name: 'account' }, '/panneau')).toBe('/panneau/account');
+    });
+});
+
 describe('matchAuthPage', () => {
     it('matches the auth pages under the base path', () => {
         expect(matchAuthPage('/panneau/auth/reset-password', '/panneau')).toBe('resetPassword');

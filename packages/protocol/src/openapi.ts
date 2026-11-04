@@ -678,25 +678,55 @@ export function createOpenApiDocument(): JsonObject {
             '/account': {
                 get: {
                     operationId: 'getAccount',
+                    summary: 'With `auth.account`: the current user.',
                     responses: {
                         200: ok('The current user.', {
                             type: 'object',
                             required: ['data'],
                             properties: { data: ref('User') },
                         }),
-                        ...problems(401),
+                        ...problems(401, 403),
                     },
                 },
                 patch: {
                     operationId: 'updateAccount',
-                    requestBody: { required: true, content: json(values) },
+                    summary:
+                        'Saves the name and the email of the current user. With `auth.emailVerification`, a new email is unverified, and gets a link.',
+                    requestBody: {
+                        required: true,
+                        content: json({
+                            type: 'object',
+                            properties: { name: { type: 'string' }, email: { type: 'string' } },
+                        }),
+                    },
                     responses: {
                         200: ok('The updated user.', {
                             type: 'object',
                             required: ['data'],
                             properties: { data: ref('User') },
                         }),
-                        ...problems(401, 422),
+                        ...problems(401, 403, 422),
+                    },
+                },
+            },
+            '/account/password': {
+                put: {
+                    operationId: 'updatePassword',
+                    summary: 'Changes the password of the current user, with the current one.',
+                    requestBody: {
+                        required: true,
+                        content: json({
+                            type: 'object',
+                            required: ['currentPassword', 'password'],
+                            properties: {
+                                currentPassword: { type: 'string' },
+                                password: { type: 'string' },
+                            },
+                        }),
+                    },
+                    responses: {
+                        204: ok('The password was changed.'),
+                        ...problems(401, 403, 422, 429),
                     },
                 },
             },

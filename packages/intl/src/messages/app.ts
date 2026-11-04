@@ -123,6 +123,55 @@ export const appMessages = {
         defaultMessage: 'This link is incomplete. Open the link of the email again.',
     }),
     continue: defineMessage({ id: 'panneau.app.continue', defaultMessage: 'Continue' }),
+    account: defineMessage({ id: 'panneau.app.account', defaultMessage: 'Your account' }),
+    accountProfile: defineMessage({ id: 'panneau.app.accountProfile', defaultMessage: 'Profile' }),
+    name: defineMessage({ id: 'panneau.app.name', defaultMessage: 'Name' }),
+    saveAccount: defineMessage({ id: 'panneau.app.saveAccount', defaultMessage: 'Save' }),
+    accountSaved: defineMessage({
+        id: 'panneau.app.accountSaved',
+        defaultMessage: 'Your account was saved.',
+    }),
+    accountSaveError: defineMessage({
+        id: 'panneau.app.accountSaveError',
+        defaultMessage: 'Your account could not be saved. Try again.',
+    }),
+    accountLoadError: defineMessage({
+        id: 'panneau.app.accountLoadError',
+        defaultMessage: 'Your account could not be loaded.',
+    }),
+    currentPassword: defineMessage({
+        id: 'panneau.app.currentPassword',
+        defaultMessage: 'Current password',
+    }),
+    changePassword: defineMessage({
+        id: 'panneau.app.changePassword',
+        defaultMessage: 'Change the password',
+    }),
+    passwordChanged: defineMessage({
+        id: 'panneau.app.passwordChanged',
+        defaultMessage: 'Your password was changed.',
+    }),
+    twoFactorOn: defineMessage({
+        id: 'panneau.app.twoFactorOn',
+        defaultMessage: 'Two-factor authentication is on.',
+    }),
+    twoFactorOffHelp: defineMessage({
+        id: 'panneau.app.twoFactorOffHelp',
+        defaultMessage:
+            'Add a second step to your login: a code of an authenticator app on your phone.',
+    }),
+    newRecoveryCodes: defineMessage({
+        id: 'panneau.app.newRecoveryCodes',
+        defaultMessage: 'New recovery codes',
+    }),
+    turnOffTwoFactor: defineMessage({
+        id: 'panneau.app.turnOffTwoFactor',
+        defaultMessage: 'Turn it off',
+    }),
+    twoFactorRequired: defineMessage({
+        id: 'panneau.app.twoFactorRequired',
+        defaultMessage: 'Your account requires it: it can’t be turned off.',
+    }),
     twoFactorTitle: defineMessage({
         id: 'panneau.app.twoFactorTitle',
         defaultMessage: 'Two-factor authentication',

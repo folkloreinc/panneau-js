@@ -45,6 +45,7 @@ function createBackend() {
         passwordReset: true,
         emailVerification: true,
         twoFactor: true,
+        account: true,
     };
     return createMockBackend({
         definition,
@@ -260,6 +261,7 @@ describe('runConformance', () => {
             'auth.password-reset': 'passed',
             'auth.email-verify': 'passed',
             'account.two-factor': 'passed',
+            account: 'passed',
             'auth.two-factor-challenge': 'passed',
         });
 

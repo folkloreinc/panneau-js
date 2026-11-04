@@ -444,6 +444,7 @@ export const Auth: z.ZodObject<{
         url: z.ZodOptional<z.ZodString>;
         icon: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>>>;
+    account: z.ZodOptional<z.ZodBoolean>;
     passwordReset: z.ZodOptional<z.ZodBoolean>;
     twoFactor: z.ZodOptional<z.ZodBoolean>;
     passkeys: z.ZodOptional<z.ZodBoolean>;
@@ -518,6 +519,7 @@ export const BootConfig: z.ZodObject<{
             url: z.ZodOptional<z.ZodString>;
             icon: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>>>;
+        account: z.ZodOptional<z.ZodBoolean>;
         passwordReset: z.ZodOptional<z.ZodBoolean>;
         twoFactor: z.ZodOptional<z.ZodBoolean>;
         passkeys: z.ZodOptional<z.ZodBoolean>;
@@ -1209,6 +1211,7 @@ export const Definition: z.ZodObject<{
             url: z.ZodOptional<z.ZodString>;
             icon: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>>>;
+        account: z.ZodOptional<z.ZodBoolean>;
         passwordReset: z.ZodOptional<z.ZodBoolean>;
         twoFactor: z.ZodOptional<z.ZodBoolean>;
         passkeys: z.ZodOptional<z.ZodBoolean>;
@@ -3240,6 +3243,7 @@ export const namedSchemas: {
             url: z.ZodOptional<z.ZodString>;
             icon: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>>>;
+        account: z.ZodOptional<z.ZodBoolean>;
         passwordReset: z.ZodOptional<z.ZodBoolean>;
         twoFactor: z.ZodOptional<z.ZodBoolean>;
         passkeys: z.ZodOptional<z.ZodBoolean>;
@@ -3977,6 +3981,7 @@ export const namedSchemas: {
                 url: z.ZodOptional<z.ZodString>;
                 icon: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>>>;
+            account: z.ZodOptional<z.ZodBoolean>;
             passwordReset: z.ZodOptional<z.ZodBoolean>;
             twoFactor: z.ZodOptional<z.ZodBoolean>;
             passkeys: z.ZodOptional<z.ZodBoolean>;

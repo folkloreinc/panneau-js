@@ -26,6 +26,7 @@ import type { TwoFactorSetup } from '@panneau/protocol';
 import type { TwoFactorStatus } from '@panneau/protocol';
 import type { Upload } from '@panneau/protocol';
 import type { UploadSignRequest } from '@panneau/protocol';
+import type { User } from '@panneau/protocol';
 
 // Warning: (ae-forgotten-export) The symbol "DataAdapter" needs to be exported by the entry point index.d.ts
 //
