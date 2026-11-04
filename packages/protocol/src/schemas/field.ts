@@ -69,11 +69,9 @@ export const Rule = z
             value: z
                 .union([
                     CountryCode,
-                    z
-                        .looseObject({ field: z.string().min(1) })
-                        .meta({
-                            description: 'Another field of the form, which holds the country.',
-                        }),
+                    z.looseObject({ field: z.string().min(1) }).meta({
+                        description: 'Another field of the form, which holds the country.',
+                    }),
                 ])
                 .optional()
                 .meta({
