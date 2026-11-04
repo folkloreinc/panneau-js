@@ -343,9 +343,11 @@ export const fieldsMessages: {
     }>;
     openLink: PanneauMessage<Record<never, never>>;
     pickColor: PanneauMessage<Record<never, never>>;
+    days: PanneauMessage<Record<never, never>>;
     hours: PanneauMessage<Record<never, never>>;
     minutes: PanneauMessage<Record<never, never>>;
     seconds: PanneauMessage<Record<never, never>>;
+    daysUnit: PanneauMessage<Record<never, never>>;
     hoursUnit: PanneauMessage<Record<never, never>>;
     minutesUnit: PanneauMessage<Record<never, never>>;
     secondsUnit: PanneauMessage<Record<never, never>>;

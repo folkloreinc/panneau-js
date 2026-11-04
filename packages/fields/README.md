@@ -42,7 +42,7 @@ Every field takes `value`, `onChange`, `onBlur`, `errors`, `disabled`, `readOnly
 | `@panneau/fields/daterange` | `DateRangeField`, `formatDateRange()`        | `{ start, end }`, days or date-times, either `null` when open       |
 | `@panneau/fields/money`     | `MoneyField`, `formatMoney()`                | `{ amount, currency }`, the amount in minor units (`1250`)          |
 | `@panneau/fields/range`     | `RangeField` (a slider)                      | `number`, `null` until moved                                        |
-| `@panneau/fields/duration`  | `DurationField`, `formatDuration()`          | seconds, typed in hours, minutes and seconds                        |
+| `@panneau/fields/duration`  | `DurationField`, `formatDuration()`          | a whole number of its `unit`, seconds by default                    |
 | `@panneau/fields/json`      | `JsonField`, `parseJson()`                   | an object or an array; the text while it doesn't parse              |
 | `@panneau/fields/tags`      | `TagsField`                                  | a list of strings, free or among suggestions                        |
 | `@panneau/fields/embed`     | `EmbedField`                                 | `{ url, title, thumbnailUrl, … }`, from the backend (below)         |
@@ -146,6 +146,8 @@ import { createEmbedSource } from '@panneau/fields';
 A `tel` field shows the country of the number, its flag and calling code, in a menu at the start of its input, and formats the number as it is typed. Its value is in E.164 once the number is complete, and the text as typed until then, which the `tel` rule refuses. `country` (`settings.country`) is the country of a new number, the region of the user's locale without it. Formats come from `libphonenumber-js`, with its smallest metadata.
 
 With `extension` (`settings.extension`), an input after the number takes the digits of an extension, kept with the number after `;ext=`: `+15145550199;ext=123`. An extension typed or pasted after the number (`ext. 123`, `x123`, `poste 123`) moves to that input when the field is left. To send a number to a service that has no extensions, such as SMS, take the `number` of `splitExtension(value)` ([decision 0057](../../docs/decisions/0057-phone-extensions.md)).
+
+A `duration` field keeps a whole number of its `unit` (`settings.unit`: `seconds` by default, `minutes`, `hours` or `days`), typed in parts from `largestUnit` (hours by default, or `days`) down to `precision` (the unit by default). The largest part has no upper bound; hours stop at 23 below days. `formatDuration(value, { unit, precision, largestUnit })` writes it as lists show it, `2 d 4 h` ([decision 0056](../../docs/decisions/0056-duration-units.md)).
 
 A `country` field picks a country by its name in the user's locale, with its flag; `countries` limits the choices and `preferred` puts some first. A `region` field picks a state, a province or a territory of its `country` (a field's `from`, or `settings.country`): for Argentina, Australia, Brazil, Canada, China, India, Japan, Mexico and the United States, among their regions, named in English or French, and its value is the code without the country (`QC`); for other countries, it is a text ([decision 0047](../../docs/decisions/0047-countries-regions-and-phone-numbers.md)).
 

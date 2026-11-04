@@ -93,6 +93,7 @@ describe('@panneau/protocol/runtime', () => {
             'CURRENCY_CODES',
             'DATE_RANGE_OPEN_BOUNDS',
             'DEFAULT_ADDRESS_REQUIRED_PARTS',
+            'DURATION_UNITS',
             'EMAIL_UNVERIFIED_PROBLEM_TYPE',
             'ITEM_ACTION_ABILITIES',
             'PASSWORD_CONFIRMATION_PROBLEM_TYPE',
