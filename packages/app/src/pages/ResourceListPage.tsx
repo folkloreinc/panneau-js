@@ -162,6 +162,8 @@ export function ResourceListPage({
                     getItemHref={(item) => getItemPath(resource, item, basePath, search)}
                     getLinkHref={createLinkResolver(resource, basePath, { search, resolveRoute })}
                     currentItemId={selectedId}
+                    // The main action of rows keeps its label: what the title opens
+                    primaryAction={getOpenMode(resource) === 'edit' ? 'edit' : 'show'}
                     onAction={runAction}
                     previewAction={previewAction}
                     onInlineEdit={({ item, field, value }) =>

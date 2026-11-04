@@ -647,7 +647,6 @@ describe('the app shell', () => {
     });
 
     it('shows the built-in item actions on each row by its abilities, without declaring them', async () => {
-        const user = userEvent.setup();
         window.history.replaceState(null, '', '/panneau/resources/pages');
         renderApp({}, [], (backend) => {
             const contact = backend.items('pages')[1];
@@ -664,14 +663,17 @@ describe('the app shell', () => {
         expect(within(table).getByRole('link', { name: 'View: About us' })).toBeInTheDocument();
         expect(within(table).getByRole('link', { name: 'View: Contact' })).toBeInTheDocument();
         expect(within(table).queryByRole('link', { name: 'Edit: Contact' })).toBeNull();
-        expect(within(table).queryByRole('button', { name: 'Actions for Contact' })).toBeNull();
+        expect(within(table).queryByRole('button', { name: 'Duplicate: Contact' })).toBeNull();
+        expect(within(table).queryByRole('button', { name: 'Delete: Contact' })).toBeNull();
 
-        await user.click(within(table).getByRole('button', { name: 'Actions for About us' }));
-        expect(await screen.findByRole('menuitem', { name: 'Duplicate' })).toBeInTheDocument();
-        expect(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument();
+        // Buttons in the row while they fit (decision 0060)
+        expect(
+            within(table).getByRole('button', { name: 'Duplicate: About us' }),
+        ).toBeInTheDocument();
+        expect(within(table).getByRole('button', { name: 'Delete: About us' })).toBeInTheDocument();
     });
 
-    it('shows the same actions of an item in its row, its menu, its panel and its form', async () => {
+    it('shows the same actions of an item in its row, its panel and its form', async () => {
         const user = userEvent.setup();
         window.history.replaceState(null, '', '/panneau/resources/pages');
         renderApp(
@@ -707,6 +709,11 @@ describe('the app shell', () => {
             within(scope)
                 .queryAllByRole(role)
                 .map((element) => element.textContent);
+        // The actions of rows show their icons, with their labels as names (decision 0060)
+        const rowNames = (row: HTMLElement, role: 'link' | 'button') =>
+            within(row)
+                .queryAllByRole(role)
+                .map((element) => element.getAttribute('aria-label') ?? element.textContent);
 
         const table = await screen.findByRole('table', { name: 'Pages' });
         const row = within(table).getByRole('link', { name: 'About us' }).closest('tr');
@@ -714,13 +721,14 @@ describe('the app shell', () => {
             throw new Error('No row.');
         }
         await waitFor(() =>
-            expect(names(row, 'link')).toEqual(['About us', 'View', 'Edit', 'On the site']),
+            expect(rowNames(row, 'link')).toEqual([
+                'About us',
+                'View: About us',
+                'Edit: About us',
+                'On the site: About us',
+            ]),
         );
-        await user.click(within(row).getByRole('button', { name: 'Actions for About us' }));
-        expect((await screen.findAllByRole('menuitem')).map((item) => item.textContent)).toEqual([
-            'Duplicate',
-        ]);
-        await user.keyboard('{Escape}');
+        expect(rowNames(row, 'button')).toEqual(['Duplicate: About us']);
 
         await user.click(within(row).getByRole('link', { name: 'About us' }));
         const panel = await screen.findByRole('region', { name: 'Details of the page' });
@@ -780,8 +788,7 @@ describe('the app shell', () => {
             ],
         });
         const table = await screen.findByRole('table', { name: 'Pages' });
-        await user.click(await within(table).findByRole('button', { name: 'Actions for Contact' }));
-        await user.click(await screen.findByRole('menuitem', { name: 'Duplicate' }));
+        await user.click(await within(table).findByRole('button', { name: 'Duplicate: Contact' }));
         await waitFor(() =>
             expect(window.location.pathname).toBe('/panneau/resources/pages/3/edit'),
         );
@@ -810,8 +817,7 @@ describe('the app shell', () => {
         window.history.replaceState(null, '', '/panneau/resources/pages');
         const backend = renderApp();
         const table = await screen.findByRole('table', { name: 'Pages' });
-        await user.click(await within(table).findByRole('button', { name: 'Actions for Contact' }));
-        await user.click(await screen.findByRole('menuitem', { name: 'Delete' }));
+        await user.click(await within(table).findByRole('button', { name: 'Delete: Contact' }));
         const dialog = await screen.findByRole('alertdialog');
         await user.click(within(dialog).getByRole('button', { name: 'Delete' }));
         await waitFor(() => expect(backend.items('pages').map((page) => page.id)).toEqual(['1']));

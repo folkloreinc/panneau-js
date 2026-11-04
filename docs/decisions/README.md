@@ -45,7 +45,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0037](0037-login-page-token-and-logout.md)                       | The login page of the app, a login with a token, and the logout               | Accepted                          |
 | [0038](0038-pages-with-params.md)                                 | Pages with params                                                             | Accepted                          |
 | [0039](0039-cursor-pagination.md)                                 | Lists paged with cursors                                                      | Accepted                          |
-| [0040](0040-row-links-and-open-mode.md)                           | Built-in item actions by abilities, and what opens an item                    | Accepted                          |
+| [0040](0040-row-links-and-open-mode.md)                           | Built-in item actions by abilities, and what opens an item                    | Amended by 0060                   |
 | [0041](0041-groups-in-item-details.md)                            | The panel of an item shows the values of its groups                           | Accepted                          |
 | [0042](0042-list-view-columns-and-remembered-view.md)             | The view of a list: chosen columns, and the view the browser remembers        | Accepted                          |
 | [0043](0043-inline-editing.md)                                    | Inline editing in lists, one field at a time                                  | Accepted                          |
@@ -65,3 +65,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0057](0057-phone-extensions.md)                                  | Phone extensions                                                              | Proposed                          |
 | [0058](0058-multiple-countries-embed-providers-color-palettes.md) | Several countries, the providers of an embed, and color palettes              | Proposed                          |
 | [0059](0059-flags-of-regions.md)                                  | Flags of regions                                                              | Proposed                          |
+| [0060](0060-row-actions-colored-icons.md)                         | Row actions are colored icons, and a menu last                                | Proposed                          |

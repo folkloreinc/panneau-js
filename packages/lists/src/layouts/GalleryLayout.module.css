@@ -73,6 +73,13 @@
     display: flex;
     flex-shrink: 0;
     gap: var(--panneau-space-1);
+    max-width: 100%;
+    overflow: hidden;
+}
+
+/* On one line: the list measures what doesn't fit, and moves it to the menu (decision 0060). */
+.actions > * {
+    flex-wrap: nowrap;
 }
 
 .pageSelection {

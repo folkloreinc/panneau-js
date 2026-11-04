@@ -378,6 +378,7 @@ export interface ListViewProps {
     onRetry?: () => void;
     perPageOptions?: readonly number[];
     previewAction?: ListActionPreviewer;
+    primaryAction?: string | null;
     search?: boolean;
     selectable?: boolean;
     toolbar?: ReactNode;

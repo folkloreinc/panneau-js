@@ -421,11 +421,36 @@ describe('ListView', () => {
         );
         // Blog can't be deleted: no menu without actions.
         expect(screen.queryByRole('button', { name: 'Actions for Blog' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Delete: Blog' })).not.toBeInTheDocument();
 
-        await user.click(screen.getByRole('button', { name: 'Actions for Contact' }));
-        await user.click(await screen.findByRole('menuitem', { name: 'Delete' }));
+        // Actions placed in the menu are buttons too while they fit (decision 0060)
+        expect(screen.queryByRole('button', { name: 'Actions for Contact' })).toBeNull();
+        await user.click(screen.getByRole('button', { name: 'Delete: Contact' }));
         expect(onAction).toHaveBeenCalledWith(
             expect.objectContaining({ scope: 'item', count: 1, item: pages[1] }),
+        );
+    });
+
+    it('confirms `delete` from the button of its row', async () => {
+        const user = userEvent.setup();
+        const onAction = vi.fn(() => Promise.resolve());
+        renderList(
+            <ListView
+                list={createList()}
+                columns={columns}
+                items={pages}
+                actions={[{ ...remove, confirm: { message: 'Delete this page?' } }]}
+                onAction={onAction}
+                selectable={false}
+            />,
+        );
+        await user.click(screen.getByRole('button', { name: 'Delete: Contact' }));
+        const dialog = await screen.findByRole('alertdialog');
+        expect(dialog).toHaveTextContent('Delete this page?');
+        expect(onAction).not.toHaveBeenCalled();
+        await user.click(within(dialog).getByRole('button', { name: 'Delete' }));
+        expect(onAction).toHaveBeenCalledWith(
+            expect.objectContaining({ scope: 'item', item: pages[1] }),
         );
     });
 
@@ -445,7 +470,9 @@ describe('ListView', () => {
         );
         const link = screen.getByRole('link', { name: 'Edit: About us' });
         expect(link).toHaveAttribute('href', '/edit/1');
-        expect(link).toHaveTextContent('Edit');
+        // An icon: `show` is the main action, with its label (decision 0060)
+        expect(link).toHaveTextContent('');
+        expect(screen.getByRole('link', { name: 'View: About us' })).toHaveTextContent('View');
         expect(screen.getByRole('link', { name: 'View: Contact' })).toHaveAttribute(
             'href',
             '/show/2',
@@ -549,7 +576,6 @@ describe('ListView', () => {
     });
 
     it('shows the icons that actions name, and those given by action id', async () => {
-        const user = userEvent.setup();
         renderList(
             <ListView
                 list={createList()}
@@ -569,9 +595,9 @@ describe('ListView', () => {
                 ).toHaveClass('lucide-file-down'),
             { timeout: 5000 },
         );
-        await user.click(screen.getByRole('button', { name: 'Actions for Contact' }));
-        const item = await screen.findByRole('menuitem', { name: 'Delete' });
-        expect(item.querySelector('svg')).toHaveClass('lucide-archive');
+        expect(
+            screen.getByRole('button', { name: 'Delete: Contact' }).querySelector('svg'),
+        ).toHaveClass('lucide-archive');
     });
 
     it('hides the actions the user can’t run', () => {

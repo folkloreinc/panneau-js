@@ -1,8 +1,9 @@
 import { getActionLabel } from '@panneau/intl';
 import type { Action } from '@panneau/protocol';
-import { Button, LinkButton, usePanneauIntl } from '@panneau/ui';
+import { Button, LinkButton, Tooltip, usePanneauIntl } from '@panneau/ui';
 
-import { type ActionIcons, getActionIcon } from './icons';
+import styles from './Actions.module.css';
+import { type ActionIcons, getActionIcon, getActionTone } from './icons';
 
 export interface ActionButtonProps {
     action: Action;
@@ -14,6 +15,12 @@ export interface ActionButtonProps {
     isPending?: boolean;
     isDisabled?: boolean;
     size?: 'sm' | 'md';
+    /**
+     * Only the icon, in the color of the action, with the label as its accessible name and
+     * tooltip, as rows show their actions (decision 0060). An action without an icon keeps its
+     * label.
+     */
+    iconOnly?: boolean;
     /** Accessible label, when the label alone isn't enough (`Edit Ada Lovelace`). */
     'aria-label'?: string;
 }
@@ -32,38 +39,48 @@ export function ActionButton({
     isPending = false,
     isDisabled = false,
     size = 'sm',
+    iconOnly = false,
     'aria-label': ariaLabel,
 }: ActionButtonProps) {
     const intl = usePanneauIntl();
     const icon = getActionIcon(action, icons);
     const label = getActionLabel(action, intl);
-    // Small actions sit in rows, as ghost buttons; others beside the buttons of a toolbar.
-    const variant = action.destructive === true ? 'danger' : size === 'sm' ? 'ghost' : 'secondary';
-    if (href !== null) {
-        return (
+    const destructive = action.destructive === true;
+    // In rows, the color of the action, tinted (decision 0060); beside the buttons of a toolbar,
+    // outlined (solid when it destroys).
+    const inRow = size === 'sm';
+    const tone = inRow ? getActionTone(action) : destructive ? 'danger' : 'neutral';
+    const appearance = inRow ? 'subtle' : destructive ? 'solid' : 'outline';
+    const onlyIcon = iconOnly && icon !== undefined;
+    const name = ariaLabel ?? (onlyIcon ? label : undefined);
+    const button =
+        href !== null ? (
             <LinkButton
                 href={href}
                 size={size}
-                variant={variant}
+                tone={tone}
+                appearance={appearance}
                 {...(icon !== undefined ? { icon } : {})}
                 external={isExternal(href)}
-                aria-label={ariaLabel}
+                aria-label={name}
+                className={onlyIcon ? styles.iconOnly : undefined}
             >
-                {label}
+                {onlyIcon ? null : label}
             </LinkButton>
+        ) : (
+            <Button
+                size={size}
+                tone={tone}
+                appearance={appearance}
+                {...(icon !== undefined ? { icon } : {})}
+                isPending={isPending}
+                isDisabled={isDisabled}
+                aria-label={name}
+                className={onlyIcon ? styles.iconOnly : undefined}
+                onPress={onPress}
+            >
+                {onlyIcon ? null : label}
+            </Button>
         );
-    }
-    return (
-        <Button
-            size={size}
-            variant={variant}
-            {...(icon !== undefined ? { icon } : {})}
-            isPending={isPending}
-            isDisabled={isDisabled}
-            aria-label={ariaLabel}
-            onPress={onPress}
-        >
-            {label}
-        </Button>
-    );
+    return onlyIcon ? <Tooltip content={name ?? label}>{button}</Tooltip> : button;
 }
