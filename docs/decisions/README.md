@@ -52,11 +52,13 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0044](0044-gallery-and-calendar.md)                  | Gallery and calendar layouts, and the query of a calendar                     | Accepted                          |
 | [0045](0045-current-context.md)                       | A current context, picked in the app and sent with every request              | Proposed                          |
 | [0046](0046-abilities-in-the-ui.md)                   | Abilities of pages and fields, and a forbidden state                          | Accepted                          |
-| [0047](0047-countries-regions-and-phone-numbers.md)   | Countries, regions and phone numbers                                          | Amended by 0058                   |
+| [0047](0047-countries-regions-and-phone-numbers.md)   | Countries, regions and phone numbers                                          | Amended by 0057                   |
 | [0048](0048-password-reset-and-email-verification.md) | Password reset and email verification                                         | Proposed                          |
 | [0049](0049-two-factor-authentication.md)             | Two-factor authentication, required for some users, and password confirmation | Proposed                          |
 | [0050](0050-account-page.md)                          | The account page                                                              | Proposed                          |
 | [0051](0051-passkeys.md)                              | Passkeys                                                                      | Proposed                          |
 | [0052](0052-oauth-providers.md)                       | OAuth providers on the login page                                             | Proposed                          |
 | [0053](0053-date-ranges-and-money.md)                 | Date ranges and money                                                         | Proposed                          |
-| [0058](0058-phone-extensions.md)                      | Phone extensions                                                              | Proposed                          |
+| [0054](0054-addresses.md)                             | Postal addresses                                                              | Proposed                          |
+| [0055](0055-links.md)                                 | Links                                                                         | Proposed                          |
+| [0057](0057-phone-extensions.md)                      | Phone extensions                                                              | Proposed                          |

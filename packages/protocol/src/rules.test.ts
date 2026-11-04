@@ -230,6 +230,149 @@ describe('the tel rule', () => {
     });
 });
 
+describe('the postalCode rule', () => {
+    it('checks the postal codes of a country, in any spacing and case', () => {
+        const canada = [{ rule: 'postalCode' as const, value: 'CA' }];
+        expect(checkRules(canada, 'H2X 1Y4')).toEqual([]);
+        expect(checkRules(canada, 'h2x1y4')).toEqual([]);
+        expect(checkRules(canada, null)).toEqual([]);
+        expect(checkRules(canada, 'H2X 1Y')).toEqual([{ rule: 'postalCode', value: 'CA' }]);
+        // Canada Post uses no D, F, I, O, Q or U, and no W or Z first
+        expect(checkRules(canada, 'D2X 1Y4')).toEqual([{ rule: 'postalCode', value: 'CA' }]);
+        const states = [{ rule: 'postalCode' as const, value: 'US' }];
+        expect(checkRules(states, '12345')).toEqual([]);
+        expect(checkRules(states, '12345 6789')).toEqual([]);
+        expect(checkRules(states, '1234')).toEqual([{ rule: 'postalCode', value: 'US' }]);
+    });
+
+    it('passes the postal codes of other countries, and without a country', () => {
+        expect(checkRules([{ rule: 'postalCode', value: 'FR' }], '75001')).toEqual([]);
+        expect(checkRules([{ rule: 'postalCode' }], 'anything')).toEqual([]);
+    });
+
+    it('reads the country in another field of the form', () => {
+        const fields: Field[] = [
+            { name: 'country', type: 'country' },
+            {
+                name: 'postal',
+                type: 'text',
+                rules: [{ rule: 'postalCode', value: { field: 'country' } }],
+            },
+        ];
+        expect(checkValues(fields, { country: 'CA', postal: '12345' })).toEqual({
+            postal: [{ rule: 'postalCode', value: { field: 'country' } }],
+        });
+        expect(checkValues(fields, { country: 'US', postal: '12345' })).toEqual({});
+    });
+});
+
+describe('the checks of addresses', () => {
+    const fields: Field[] = [{ name: 'address', type: 'address' }];
+
+    it('requires the street, the city and the country of a filled address', () => {
+        expect(checkValues(fields, { address: null })).toEqual({});
+        expect(checkValues(fields, { address: {} })).toEqual({});
+        // A country, set by the field, or a point alone isn't an address yet
+        expect(checkValues(fields, { address: { country: 'CA' } })).toEqual({});
+        expect(checkValues(fields, { address: { postalCode: 'H2X 1Y4' } })).toEqual({
+            'address.street': [{ rule: 'required' }],
+            'address.city': [{ rule: 'required' }],
+            'address.country': [{ rule: 'required' }],
+        });
+        expect(
+            checkValues(fields, {
+                address: { street: '1234 Rue Saint-Denis', city: 'Montréal', country: 'CA' },
+            }),
+        ).toEqual({});
+    });
+
+    it('requires the parts of settings.required', () => {
+        const required: Field[] = [
+            { name: 'address', type: 'address', settings: { required: ['city', 'postalCode'] } },
+        ];
+        expect(checkValues(required, { address: { city: 'Montréal' } })).toEqual({
+            'address.postalCode': [{ rule: 'required' }],
+        });
+    });
+
+    it('checks the postal code against the country of the address', () => {
+        const address = { street: '1 Main St', city: 'Springfield', country: 'US' };
+        expect(checkValues(fields, { address: { ...address, postalCode: 'H2X 1Y4' } })).toEqual({
+            'address.postalCode': [{ rule: 'postalCode' }],
+        });
+        expect(checkValues(fields, { address: { ...address, postalCode: '12345' } })).toEqual({});
+    });
+
+    it('checks each locale of a localized address', () => {
+        const localized: Field[] = [{ name: 'address', type: 'address', localized: true }];
+        expect(
+            checkValues(localized, {
+                address: { fr: { city: 'Montréal' }, en: null },
+            }),
+        ).toEqual({
+            'address.fr.street': [{ rule: 'required' }],
+            'address.fr.country': [{ rule: 'required' }],
+        });
+    });
+});
+
+describe('the checks of links', () => {
+    const fields: Field[] = [{ name: 'link', type: 'link', resource: 'pages' }];
+
+    it('checks the URL of each type', () => {
+        const check = (link: unknown) => checkValues(fields, { link });
+        expect(check(null)).toEqual({});
+        expect(check({ type: 'url', url: 'https://example.com' })).toEqual({});
+        expect(check({ type: 'url', url: 'mailto:info@example.com' })).toEqual({
+            'link.url': [{ rule: 'url' }],
+        });
+        expect(check({ type: 'url', url: '' })).toEqual({ 'link.url': [{ rule: 'required' }] });
+        expect(check({ type: 'email', url: 'mailto:info@example.com?subject=Hi' })).toEqual({});
+        expect(check({ type: 'email', url: 'info@example.com' })).toEqual({
+            'link.url': [{ rule: 'email' }],
+        });
+        expect(check({ type: 'tel', url: 'tel:+15145550199' })).toEqual({});
+        expect(check({ type: 'tel', url: 'tel:514-555-0199' })).toEqual({
+            'link.url': [{ rule: 'tel' }],
+        });
+        expect(check({ type: 'page', page: { id: '12', label: 'About' } })).toEqual({});
+        expect(check({ type: 'page' })).toEqual({ 'link.page': [{ rule: 'required' }] });
+    });
+
+    it('refuses a type the field does not offer', () => {
+        expect(checkValues(fields, { link: { type: 'file', file: '1' } })).toEqual({
+            'link.type': [{ rule: 'in', value: ['page', 'url', 'email', 'tel'] }],
+        });
+        const withoutPages: Field[] = [{ name: 'link', type: 'link' }];
+        expect(checkValues(withoutPages, { link: { type: 'page', page: '12' } })).toEqual({
+            'link.type': [{ rule: 'in', value: ['url', 'email', 'tel'] }],
+        });
+    });
+
+    it('checks the types of the site against their pattern', () => {
+        const anchors: Field[] = [
+            {
+                name: 'link',
+                type: 'link',
+                settings: { types: ['url', { id: 'anchor', label: 'Anchor', pattern: '^#\\w+$' }] },
+            },
+        ];
+        expect(checkValues(anchors, { link: { type: 'anchor', url: '#program' } })).toEqual({});
+        expect(checkValues(anchors, { link: { type: 'anchor', url: 'program' } })).toEqual({
+            'link.url': [{ rule: 'pattern', value: '^#\\w+$' }],
+        });
+    });
+
+    it('requires a label in a locale with settings.label', () => {
+        const labelled: Field[] = [{ name: 'link', type: 'link', settings: { label: 'required' } }];
+        const link = { type: 'url', url: 'https://example.com' };
+        expect(checkValues(labelled, { link: { ...link, label: { fr: '', en: null } } })).toEqual({
+            'link.label': [{ rule: 'required' }],
+        });
+        expect(checkValues(labelled, { link: { ...link, label: { fr: 'Billets' } } })).toEqual({});
+    });
+});
+
 describe('the daterange rule', () => {
     it('accepts ranges of days and of date-times that end on or after their start', () => {
         const rules = [{ rule: 'daterange' as const }];

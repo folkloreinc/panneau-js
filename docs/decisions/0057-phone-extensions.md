@@ -1,4 +1,4 @@
-# 0058: Phone extensions
+# 0057: Phone extensions
 
 - Status: proposed
 - Date: 2026-11-04

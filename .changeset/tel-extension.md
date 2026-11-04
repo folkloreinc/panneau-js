@@ -6,7 +6,7 @@
 '@panneau/codemods': minor
 ---
 
-Phone extensions ([decision 0058](https://github.com/folkloreinc/panneau-js/blob/v5.x/docs/decisions/0058-phone-extensions.md)).
+Phone extensions ([decision 0057](https://github.com/folkloreinc/panneau-js/blob/v5.x/docs/decisions/0057-phone-extensions.md)).
 
 - **`tel` values can have an extension**, after `;ext=` as in a `tel:` URI: `+15145550199;ext=123`. A number without an extension doesn't change.
 - `@panneau/protocol`: the `tel` rule takes `extension: true`, which accepts 1 to 10 digits after `;ext=`; without it, a value with an extension fails. The `tel` type implies `{ rule: 'tel', extension: true }` when `settings.extension` is `true`.

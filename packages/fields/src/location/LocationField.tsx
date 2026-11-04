@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import type { LocationValue } from '@panneau/protocol';
 import {
@@ -17,6 +17,7 @@ import { messages } from '../shared/messages';
 import type { FieldEntryProps, FieldProps } from '../shared/types';
 import styles from './LocationField.module.css';
 import { LocationMap, type Point } from './LocationMap';
+import { SEARCH_MIN_LENGTH, useAddressSearch } from './search';
 import type { GeocodingResult, GeocodingSource, MapTiles } from './types';
 
 export type { LocationValue };
@@ -29,8 +30,6 @@ export const OPEN_STREET_MAP_TILES: MapTiles = {
     maxZoom: 19,
 };
 
-const SEARCH_DELAY = 400;
-const SEARCH_MIN_LENGTH = 3;
 const DEFAULT_CENTER: Point = { lat: 20, lng: 0 };
 
 export interface LocationFieldProps extends FieldProps<LocationValue> {
@@ -52,38 +51,6 @@ export function isLocation(value: unknown): value is LocationValue {
         isNumber((value as Record<string, unknown>).lat) &&
         isNumber((value as Record<string, unknown>).lng)
     );
-}
-
-/** The search of addresses: results of the text typed, after a pause. */
-function useAddressSearch(geocoding: GeocodingSource | null, query: string, locale: string) {
-    const [state, setState] = useState<{
-        query: string;
-        results: GeocodingResult[];
-        loading: boolean;
-    }>({ query: '', results: [], loading: false });
-    useEffect(() => {
-        const text = query.trim();
-        if (geocoding === null || text.length < SEARCH_MIN_LENGTH) {
-            return undefined;
-        }
-        const controller = new AbortController();
-        const timeout = window.setTimeout(() => {
-            setState((current) => ({ ...current, loading: true }));
-            geocoding
-                .search(text, { signal: controller.signal, locale })
-                .then((results) => setState({ query: text, results, loading: false }))
-                .catch(() => {
-                    if (!controller.signal.aborted) {
-                        setState({ query: text, results: [], loading: false });
-                    }
-                });
-        }, SEARCH_DELAY);
-        return () => {
-            window.clearTimeout(timeout);
-            controller.abort();
-        };
-    }, [geocoding, query, locale]);
-    return query.trim().length >= SEARCH_MIN_LENGTH ? state : { ...state, results: [] };
 }
 
 /**

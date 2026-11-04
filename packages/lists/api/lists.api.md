@@ -30,6 +30,9 @@ import type { Selection as Selection_2 } from '@panneau/protocol';
 export type ActionIcons = Readonly<Record<string, IconComponent>>;
 
 // @public
+export function AddressDisplay(input: DisplayProps): JSX.Element;
+
+// @public
 export function applyListQuery<T extends ListItem>(items: readonly T[], query: ListQuery, options?: LocalQueryOptions): LocalQueryResult<T>;
 
 // @public
@@ -212,6 +215,9 @@ export interface ItemDetailsProps {
 
 // @public
 export function JsonDisplay(input: DisplayProps): JSX.Element;
+
+// @public
+export function LinkDisplay(input: DisplayProps): JSX.Element;
 
 // @public
 export function List(input: ListProps): JSX.Element;
