@@ -32,10 +32,10 @@ Every field takes `value`, `onChange`, `onBlur`, `errors`, `disabled`, `readOnly
 | `@panneau/fields/select`    | `SelectField` (dropdown, radios, checkboxes) | an option's value, or a list with `multiple`                        |
 | `@panneau/fields/email`     | `EmailField`                                 | `string`                                                            |
 | `@panneau/fields/url`       | `UrlField`                                   | `string`, with `https://` added on blur                             |
-| `@panneau/fields/color`     | `ColorField`                                 | `'#1d4ed8'`                                                         |
+| `@panneau/fields/color`     | `ColorField`, `getColorPalette()`            | `'#1d4ed8'`, or a `value` of its `palette`                          |
 | `@panneau/fields/slug`      | `SlugField`, `slugify()`, `sourceText()`     | `string`, following a `source` until edited, checked with `onCheck` |
 | `@panneau/fields/tel`       | `TelField`, `parsePhone()`                   | E.164, `'+15145550199'`; the text until the number is complete      |
-| `@panneau/fields/country`   | `CountryField`, `getCountryName()`           | `'CA'`, ISO 3166-1 alpha-2                                          |
+| `@panneau/fields/country`   | `CountryField`, `getCountryName()`           | `'CA'`, ISO 3166-1 alpha-2, or a list with `multiple`               |
 | `@panneau/fields/region`    | `RegionField`, `getRegions()`                | `'QC'`, the region of its country; the text for other countries     |
 | `@panneau/fields/address`   | `AddressField`, `formatAddress()`            | `{ street, unit, city, region, postalCode, country, point }`        |
 | `@panneau/fields/link`      | `LinkField`, `getLinkText()`                 | `{ type, url, page, file, label, newTab }`                          |
@@ -143,6 +143,8 @@ import { createEmbedSource } from '@panneau/fields';
 <FieldsProvider embedSource={createEmbedSource(adapter)}>…</FieldsProvider>;
 ```
 
+`providers` (the `providers` rule of a definition) lists the providers an embed may come from, `['YouTube', 'Vimeo']`: the field names them under its help, and refuses an embed of another provider as soon as its preview comes back ([decision 0058](../../docs/decisions/0058-multiple-countries-embed-providers-color-palettes.md)).
+
 A `tel` field shows the country of the number, its flag and calling code, in a menu at the start of its input, and formats the number as it is typed. Its value is in E.164 once the number is complete, and the text as typed until then, which the `tel` rule refuses. `country` (`settings.country`) is the country of a new number, the region of the user's locale without it. Formats come from `libphonenumber-js`, with its smallest metadata.
 
 With `extension` (`settings.extension`), an input after the number takes the digits of an extension, kept with the number after `;ext=`: `+15145550199;ext=123`. An extension typed or pasted after the number (`ext. 123`, `x123`, `poste 123`) moves to that input when the field is left. To send a number to a service that has no extensions, such as SMS, take the `number` of `splitExtension(value)` ([decision 0057](../../docs/decisions/0057-phone-extensions.md)).
@@ -155,6 +157,21 @@ A `country` field picks a country by its name in the user's locale, with its fla
 <CountryField label="Country" preferred={['CA', 'US']} value={country} onChange={setCountry} />
 <RegionField label="Province" country={country} value={province} onChange={setProvince} />
 <TelField label="Phone" country="CA" value={phone} onChange={setPhone} />
+```
+
+With `multiple`, a `country` field holds several countries, in the order they were chosen: each one shows with its flag and a button that removes it, and the combo box adds another. A `color` field with a `palette` only offers its colors, in a select with their swatches: `value` is what it stores, `color` draws the swatch, and `label` names it ([decision 0058](../../docs/decisions/0058-multiple-countries-embed-providers-color-palettes.md)).
+
+```tsx
+<CountryField multiple label="Countries" value={countries} onChange={setCountries} />
+<ColorField
+    label="Background"
+    palette={[
+        { value: 'white', label: 'White', color: '#ffffff' },
+        { value: 'purple', label: 'Purple', color: '#6b21a8' },
+    ]}
+    value={background}
+    onChange={setBackground}
+/>
 ```
 
 An `address` field edits the parts of a postal address: the country first, which sets the labels (_Province_, _State_), the order (the postal code last in Canada and the United States, first elsewhere) and the regions of the others, then the street, the unit, the city, the region and the postal code, normalized for its country when it loses focus (`H2X 1Y4`). `country` is the country of a new address; with one country in `countries`, the field doesn't show it. With the address search of the `FieldsProvider`'s maps, a place found fills every part, when the source gives them (`createNominatimSource()` does); with `point`, a map places the address ([decision 0054](../../docs/decisions/0054-addresses.md)).

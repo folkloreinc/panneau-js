@@ -2,6 +2,7 @@ import { Check, File, FileText, Globe, Hash, Mail, Minus, Phone } from 'lucide-r
 
 import { toReferences } from '@panneau/fields';
 import { formatAddress, isAddress } from '@panneau/fields/address';
+import { getColorPalette, getSwatchColor } from '@panneau/fields/color';
 import { getCountryFlag, getCountryName, isCountryCode } from '@panneau/fields/country';
 import { formatDateRange, getDateRangeSettings } from '@panneau/fields/daterange';
 import { formatDuration, getDurationUnits } from '@panneau/fields/duration';
@@ -281,20 +282,37 @@ export function TelDisplay({ value, field }: DisplayProps) {
 }
 
 /** A country: its flag and its name in the user's locale. */
-export function CountryDisplay({ value }: DisplayProps) {
+function Country({ code }: { code: string }) {
     const intl = usePanneauIntl();
-    if (typeof value !== 'string' || value === '') {
-        return <EmptyValue />;
-    }
-    if (!isCountryCode(value)) {
-        return <span className={styles.text}>{value}</span>;
+    if (!isCountryCode(code)) {
+        return <span className={styles.text}>{code}</span>;
     }
     return (
         <span className={styles.flagged}>
             <span className={styles.flag} aria-hidden="true">
-                {getCountryFlag(value)}
+                {getCountryFlag(code)}
             </span>
-            <span className={styles.text}>{getCountryName(value, intl.locale)}</span>
+            <span className={styles.text}>{getCountryName(code, intl.locale)}</span>
+        </span>
+    );
+}
+
+/** A country, or several (`multiple`): their flags and their names in the user's locale. */
+export function CountryDisplay({ value }: DisplayProps) {
+    const codes = (Array.isArray(value) ? value : [value]).filter(
+        (code): code is string => typeof code === 'string' && code !== '',
+    );
+    if (codes.length === 0) {
+        return <EmptyValue />;
+    }
+    if (codes.length === 1) {
+        return <Country code={codes[0] as string} />;
+    }
+    return (
+        <span className={styles.countries}>
+            {codes.map((code) => (
+                <Country key={code} code={code} />
+            ))}
         </span>
     );
 }
@@ -475,10 +493,27 @@ export function LinkDisplay({ value }: DisplayProps) {
     );
 }
 
-/** A swatch, with the color's code. */
-export function ColorDisplay({ value }: DisplayProps) {
+/**
+ * A swatch, with the color's code. A color of the field's palette (`settings.palette`) shows its
+ * swatch and its label.
+ */
+export function ColorDisplay({ value, field }: DisplayProps) {
     if (typeof value !== 'string' || value === '') {
         return <EmptyValue />;
+    }
+    const entry = getColorPalette(field)?.find((candidate) => candidate.value === value);
+    if (entry !== undefined) {
+        const swatch = getSwatchColor(entry);
+        return (
+            <span className={styles.paletteColor}>
+                <span
+                    className={styles.swatch}
+                    style={swatch !== null ? { backgroundColor: swatch } : undefined}
+                    aria-hidden="true"
+                />
+                <span className={styles.text}>{entry.label ?? entry.value}</span>
+            </span>
+        );
     }
     return (
         <span className={styles.color}>

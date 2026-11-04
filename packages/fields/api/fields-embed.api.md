@@ -35,6 +35,7 @@ export interface EmbedFieldProps extends FieldProps<EmbedValue> {
     embedSource?: EmbedSource | null;
     // (undocumented)
     placeholder?: string;
+    providers?: readonly string[];
 }
 
 // @public

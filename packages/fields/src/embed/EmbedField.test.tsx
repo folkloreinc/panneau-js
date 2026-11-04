@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
-import type { EmbedValue } from '@panneau/protocol';
+import type { EmbedValue, Field } from '@panneau/protocol';
 
 import { Controlled, renderField } from '../__fixtures__/render';
 import { DefinitionField } from '../shared/DefinitionField';
@@ -15,12 +15,16 @@ const source: EmbedSource = {
             : Promise.reject(new Error('Not embeddable')),
 };
 
-function renderEmbed(onChange: (value: unknown) => void, embedSource: EmbedSource | null) {
+function renderEmbed(
+    onChange: (value: unknown) => void,
+    embedSource: EmbedSource | null,
+    field: Partial<Field> = {},
+) {
     renderField(
         <Controlled<unknown> initial={null} onChange={onChange}>
             {(value, setValue) => (
                 <DefinitionField
-                    field={{ name: 'video', type: 'embed', label: 'Video' }}
+                    field={{ name: 'video', type: 'embed', label: 'Video', ...field }}
                     path="video"
                     value={value}
                     onChange={setValue}
@@ -68,5 +72,33 @@ describe('EmbedField', () => {
         await userEvent.type(screen.getByRole('textbox', { name: 'Video' }), 'https://youtu.be/a');
         await userEvent.clear(screen.getByRole('textbox', { name: 'Video' }));
         expect(onChange).toHaveBeenLastCalledWith(null);
+    });
+
+    it('names the providers of its providers rule, and refuses an embed of another one', async () => {
+        const onChange = vi.fn();
+        const vimeo: EmbedSource = {
+            resolve: (url) => Promise.resolve({ url, type: 'video', provider: 'Vimeo' }),
+        };
+        renderEmbed(onChange, vimeo, {
+            help: 'A trailer.',
+            rules: [{ rule: 'providers', value: ['YouTube', 'Dailymotion'] }],
+        });
+        const input = screen.getByRole('textbox', { name: 'Video' });
+        expect(input).toHaveAccessibleDescription(
+            'A trailer. Accepted providers: YouTube and Dailymotion.',
+        );
+        await userEvent.type(input, 'https://vimeo.com/1');
+        expect(
+            await screen.findByText('This embed must come from YouTube or Dailymotion.'),
+        ).toBeInTheDocument();
+        expect(input).toHaveAttribute('aria-invalid', 'true');
+    });
+
+    it('accepts an embed of a listed provider, without case', async () => {
+        const onChange = vi.fn();
+        renderEmbed(onChange, source, { rules: [{ rule: 'providers', value: ['youtube'] }] });
+        await userEvent.type(screen.getByRole('textbox', { name: 'Video' }), 'https://youtu.be/a');
+        expect(await screen.findByRole('link', { name: /A video/ })).toBeInTheDocument();
+        expect(screen.queryByText(/must come from/)).not.toBeInTheDocument();
     });
 });

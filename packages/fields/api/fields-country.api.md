@@ -27,17 +27,12 @@ export interface CountryChoicesOptions {
 }
 
 // @public
-export function CountryField(input: CountryFieldProps): JSX.Element;
-
-// Warning: (ae-forgotten-export) The symbol "FieldEntryProps" needs to be exported by the entry point index.d.ts
-//
-// @public
-export function CountryFieldEntry(props: FieldEntryProps): JSX.Element;
+export function CountryField(props: CountryFieldProps): JSX.Element;
 
 // Warning: (ae-forgotten-export) The symbol "FieldProps" needs to be exported by the entry point index.d.ts
 //
-// @public (undocumented)
-export interface CountryFieldProps extends FieldProps<string> {
+// @public
+export interface CountryFieldBaseProps extends Omit<FieldProps<never>, 'value' | 'onChange'> {
     // (undocumented)
     controlClassName?: string;
     countries?: readonly string[];
@@ -45,6 +40,14 @@ export interface CountryFieldProps extends FieldProps<string> {
     placeholder?: string;
     preferred?: readonly string[];
 }
+
+// Warning: (ae-forgotten-export) The symbol "FieldEntryProps" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function CountryFieldEntry(props: FieldEntryProps): JSX.Element;
+
+// @public (undocumented)
+export type CountryFieldProps = SingleCountryFieldProps | MultipleCountryFieldProps;
 
 // @public
 export function getCountryChoices(locale: string, input?: CountryChoicesOptions): {
@@ -63,6 +66,24 @@ export function getLocaleCountry(locale: string): string | null;
 
 // @public
 export function isCountryCode(value: unknown): value is string;
+
+// @public (undocumented)
+export interface MultipleCountryFieldProps extends CountryFieldBaseProps {
+    multiple: true;
+    onChange?: (value: string[] | null) => void;
+    // (undocumented)
+    value?: readonly string[] | null;
+}
+
+// @public (undocumented)
+export interface SingleCountryFieldProps extends CountryFieldBaseProps {
+    // (undocumented)
+    multiple?: false;
+    // (undocumented)
+    onChange?: (value: string | null) => void;
+    // (undocumented)
+    value?: string | null;
+}
 
 // (No @packageDocumentation comment for this package)
 

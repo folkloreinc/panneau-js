@@ -5,7 +5,7 @@ import { usePanneauIntl } from '@panneau/ui';
 import { messages } from './messages';
 import { getPathSteps } from './paths';
 
-const COUNTED = new Set(['repeater', 'relation', 'media', 'select']);
+const COUNTED = new Set(['repeater', 'relation', 'media', 'select', 'country']);
 
 /**
  * Translates the failures of the portable rules with react-intl, for `formatError`. `min` and
@@ -77,6 +77,14 @@ export function useFormatRuleFailure(
                   })
                 : intl.formatMessage(messages.rule.crop);
         }
+        if (failure.rule === 'providers') {
+            const providers = Array.isArray(failure.value)
+                ? failure.value.filter((name): name is string => typeof name === 'string')
+                : [];
+            return intl.formatMessage(messages.rule.providers, {
+                providers: intl.formatList(providers, { type: 'disjunction' }),
+            });
+        }
         const rule = failure.rule as keyof typeof messages.rule;
         if (rule in messages.rule && rule !== 'min' && rule !== 'max') {
             return intl.formatMessage(
@@ -90,6 +98,7 @@ export function useFormatRuleFailure(
                         | 'minItems'
                         | 'maxItems'
                         | 'cropRatios'
+                        | 'providers'
                         | 'minAmount'
                         | 'maxAmount'
                     >

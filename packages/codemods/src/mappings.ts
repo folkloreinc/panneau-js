@@ -169,7 +169,10 @@ export const FIELD_TARGETS: Readonly<Record<string, FieldTarget>> = {
         source: '@panneau/fields/color',
         name: 'ColorField',
         valueType: 'string',
-        props: TEXT_PROPS.filter((prop) => !['type', 'prefix', 'maxLength'].includes(prop)),
+        props: [
+            ...TEXT_PROPS.filter((prop) => !['type', 'prefix', 'maxLength'].includes(prop)),
+            'palette',
+        ],
     },
     date: {
         source: '@panneau/fields/date',
@@ -209,7 +212,7 @@ export const FIELD_TARGETS: Readonly<Record<string, FieldTarget>> = {
     embed: {
         source: '@panneau/fields/embed',
         name: 'EmbedField',
-        props: ['embedSource', 'placeholder'],
+        props: ['embedSource', 'placeholder', 'providers'],
     },
     localized: {
         source: '@panneau/fields/localized',

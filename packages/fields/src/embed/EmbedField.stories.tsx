@@ -15,24 +15,32 @@ const THUMBNAIL = `data:image/svg+xml,${encodeURIComponent(
 
 const source: EmbedSource = {
     resolve: (url) =>
-        url.includes('youtu')
-            ? new Promise((resolve) =>
-                  setTimeout(
-                      () =>
-                          resolve({
-                              url,
-                              type: 'video',
-                              title: 'The river festival, in two minutes',
-                              provider: 'YouTube',
-                              thumbnailUrl: THUMBNAIL,
-                          }),
-                      300,
-                  ),
-              )
-            : Promise.reject(new Error('Not embeddable')),
+        url.includes('spotify')
+            ? Promise.resolve({ url, type: 'audio', title: 'A playlist', provider: 'Spotify' })
+            : url.includes('youtu')
+              ? new Promise((resolve) =>
+                    setTimeout(
+                        () =>
+                            resolve({
+                                url,
+                                type: 'video',
+                                title: 'The river festival, in two minutes',
+                                provider: 'YouTube',
+                                thumbnailUrl: THUMBNAIL,
+                            }),
+                        300,
+                    ),
+                )
+              : Promise.reject(new Error('Not embeddable')),
 };
 
-function Controlled({ initial }: { initial: EmbedValue | null }) {
+function Controlled({
+    initial,
+    providers,
+}: {
+    initial: EmbedValue | null;
+    providers?: readonly string[];
+}) {
     const [value, setValue] = useState<EmbedValue | null>(initial);
     return (
         <FieldsProvider embedSource={source}>
@@ -40,8 +48,9 @@ function Controlled({ initial }: { initial: EmbedValue | null }) {
                 <EmbedField
                     label="Video"
                     placeholder="https://"
-                    description="A YouTube or Vimeo video."
+                    description="A video of the event."
                     value={value}
+                    {...(providers !== undefined ? { providers } : {})}
                     onChange={setValue}
                 />
             </div>
@@ -92,5 +101,29 @@ export const NotEmbeddable: Story = {
         await expect(
             await canvas.findByText('This URL can’t be embedded.', {}, { timeout: 3000 }),
         ).toBeInTheDocument();
+    },
+};
+
+/**
+ * With a `providers` rule, the help names the providers, and an embed of another provider is
+ * refused as soon as its preview comes back.
+ */
+export const Providers: Story = {
+    args: { providers: ['YouTube', 'Vimeo'] },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const input = canvas.getByRole('textbox', { name: 'Video' });
+        await expect(input).toHaveAccessibleDescription(
+            'A video of the event. Accepted providers: YouTube and Vimeo.',
+        );
+        await userEvent.type(input, 'https://open.spotify.com/playlist/1');
+        await expect(
+            await canvas.findByText(
+                'This embed must come from YouTube or Vimeo.',
+                {},
+                { timeout: 3000 },
+            ),
+        ).toBeInTheDocument();
+        await expect(input).toHaveAttribute('aria-invalid', 'true');
     },
 };

@@ -672,6 +672,28 @@ describe('createMockBackend', () => {
         expect((await check({ locale: 'fr' })).status).toBe(422);
     });
 
+    it('checks the providers of an embed with the portable rules', async () => {
+        const definition = createDefinition();
+        const authors = definition.resources.find((resource) => resource.id === 'authors');
+        authors?.fields.push({
+            name: 'video',
+            type: 'embed',
+            rules: [{ rule: 'providers', value: ['YouTube', 'Vimeo'] }],
+        });
+        const backend = createMockBackend({ definition });
+        const create = (video: unknown) =>
+            backend.fetch(
+                '/panneau/api/resources/authors',
+                json({ name: 'Ada', video }, { method: 'POST' }),
+            );
+        const refused = await create({ url: 'https://open.spotify.com/1', provider: 'Spotify' });
+        expect(refused.status).toBe(422);
+        expect(await refused.json()).toMatchObject({
+            errors: { video: ['This embed must come from YouTube or Vimeo.'] },
+        });
+        expect((await create({ url: 'https://vimeo.com/1', provider: 'vimeo' })).status).toBe(201);
+    });
+
     it('resolves embeds, and refuses URLs it can not embed', async () => {
         const backend = createBackend();
         const embed = async (url: string) =>

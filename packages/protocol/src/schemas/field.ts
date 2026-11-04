@@ -131,6 +131,17 @@ export const Rule = z
         }),
         z
             .looseObject({
+                rule: z.literal('providers'),
+                value: z.array(z.string().min(1)).min(1),
+                message,
+                mode,
+            })
+            .meta({
+                description:
+                    'The providers an `embed` value may come from: the `provider_name` of their oEmbed (`YouTube`), compared without case (decision 0058).',
+            }),
+        z
+            .looseObject({
                 rule: z
                     .string()
                     .refine((rule) => !(PORTABLE_RULES as readonly string[]).includes(rule)),
@@ -144,7 +155,7 @@ export const Rule = z
     ])
     .meta({
         description:
-            'A portable validation rule. `min` and `max` apply to numbers, to the amount of `money` values (in minor units), and to the length of text and arrays. `daterange` and `money` are implied by their types, with the `open` bounds and the `currencies` of the field (decision 0053). `accept` lists MIME types (`image/*`). `maxSize` is in bytes. `tel` checks an E.164 number, with an extension when `extension` is `true`. `crop` checks the transform of each image of an `image` or `media` value (decision 0031). `postalCode` checks a postal code against the format of its country, for the countries whose format Panneau knows: Canada and the United States (decision 0054).',
+            'A portable validation rule. `min` and `max` apply to numbers, to the amount of `money` values (in minor units), and to the length of text and arrays. `daterange` and `money` are implied by their types, with the `open` bounds and the `currencies` of the field (decision 0053). `accept` lists MIME types (`image/*`). `maxSize` is in bytes. `tel` checks an E.164 number, with an extension when `extension` is `true`. `crop` checks the transform of each image of an `image` or `media` value (decision 0031). `postalCode` checks a postal code against the format of its country, for the countries whose format Panneau knows: Canada and the United States (decision 0054). `providers` lists the providers of an `embed` value (decision 0058).',
     });
 
 export const BlockType = z.looseObject({
@@ -186,7 +197,8 @@ export const Field = z
         visibleWhen: Condition.optional(),
         options: z.array(Option).optional().meta({ description: '`select`: the choices.' }),
         multiple: z.boolean().optional().meta({
-            description: '`select`, `relation`, `media`, `image`, `file`: the value is an array.',
+            description:
+                '`select`, `relation`, `media`, `image`, `file`, `country`: the value is an array.',
         }),
         resource: z
             .union([z.string().min(1), z.array(z.string().min(1)).min(1)])

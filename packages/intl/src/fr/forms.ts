@@ -59,5 +59,6 @@ export const formsFr: Record<string, string> = {
     'panneau.forms.rule.after': 'Cette date est trop hâtive.',
     'panneau.forms.rule.crop': 'Recadrez l’image pour cet usage.',
     'panneau.forms.rule.cropRatios': 'Recadrez l’image en {ratios}.',
+    'panneau.forms.rule.providers': 'Ce contenu intégré doit venir de {providers}.',
     'panneau.forms.rule.invalid': 'Cette valeur n’est pas valide.',
 };

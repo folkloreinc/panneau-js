@@ -152,7 +152,15 @@ export function createPlaygroundDefinition(): DefinitionInput {
                         name: 'video',
                         type: 'embed',
                         label: 'Video',
-                        help: 'A YouTube or Vimeo video.',
+                        help: 'A video of the festival.',
+                        rules: [{ rule: 'providers', value: ['YouTube', 'Vimeo'] }],
+                    },
+                    {
+                        name: 'countries',
+                        type: 'country',
+                        label: 'Countries of the artists',
+                        multiple: true,
+                        settings: { preferred: ['CA', 'US', 'FR'] },
                     },
                     {
                         name: 'place',
@@ -259,8 +267,26 @@ export function createPlaygroundDefinition(): DefinitionInput {
                 fields: [
                     { name: 'name', type: 'text', label: 'Name', rules: [{ rule: 'required' }] },
                     { name: 'color', type: 'color', label: 'Color' },
+                    {
+                        name: 'background',
+                        type: 'color',
+                        label: 'Background',
+                        settings: {
+                            palette: [
+                                { value: 'white', label: 'White', color: '#ffffff' },
+                                { value: 'sand', label: 'Sand', color: '#e7d8b8' },
+                                { value: 'night', label: 'Night', color: '#1e1b4b' },
+                            ],
+                        },
+                    },
                 ],
-                list: { columns: [{ field: 'name', sortable: true }, { field: 'color' }] },
+                list: {
+                    columns: [
+                        { field: 'name', sortable: true },
+                        { field: 'color' },
+                        { field: 'background' },
+                    ],
+                },
                 actions: [DELETE],
                 abilities: { viewAny: true, create: true },
             },
@@ -398,8 +424,8 @@ const STATUSES = ['published', 'draft', 'review'];
 /** Items of every resource, for the mock backend. */
 export function createPlaygroundItems(): Record<string, Values[]> {
     const categories = [
-        { id: '1', name: 'City', color: '#2563eb' },
-        { id: '2', name: 'Culture', color: '#db2777' },
+        { id: '1', name: 'City', color: '#2563eb', background: 'night' },
+        { id: '2', name: 'Culture', color: '#db2777', background: 'sand' },
         { id: '3', name: 'Outdoors', color: '#16a34a' },
         { id: '4', name: 'Food', color: '#ea580c' },
     ];

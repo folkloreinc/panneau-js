@@ -365,6 +365,9 @@ export const fieldsMessages: {
     }>;
     embedUrl: PanneauMessage<Record<never, never>>;
     embedLoading: PanneauMessage<Record<never, never>>;
+    embedProviders: PanneauMessage<    {
+    providers: string;
+    }>;
     embedFailed: PanneauMessage<Record<never, never>>;
     jsonInvalid: PanneauMessage<    {
     error: string;
@@ -432,6 +435,7 @@ export const fieldsMessages: {
     locale: string;
     }>;
     countryPlaceholder: PanneauMessage<Record<never, never>>;
+    addCountry: PanneauMessage<Record<never, never>>;
     noCountries: PanneauMessage<Record<never, never>>;
     regionPlaceholder: PanneauMessage<Record<never, never>>;
     noRegions: PanneauMessage<Record<never, never>>;
@@ -551,6 +555,9 @@ export const formsMessages: {
         crop: PanneauMessage<Record<never, never>>;
         cropRatios: PanneauMessage<    {
         ratios: string;
+        }>;
+        providers: PanneauMessage<    {
+        providers: string;
         }>;
         invalid: PanneauMessage<Record<never, never>>;
     };

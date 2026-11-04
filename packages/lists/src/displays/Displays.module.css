@@ -47,6 +47,12 @@
     font-size: var(--panneau-font-size-sm);
 }
 
+.paletteColor {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+}
+
 .swatch {
     flex: none;
     width: 1rem;
@@ -80,6 +86,13 @@
     display: inline-flex;
     flex-wrap: wrap;
     gap: var(--panneau-space-1);
+}
+
+/* Several countries. */
+.countries {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: var(--panneau-space-1) var(--panneau-space-3);
 }
 
 /* A value after a flag: a country, a phone number. */

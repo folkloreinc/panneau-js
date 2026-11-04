@@ -291,7 +291,7 @@ export type PartialTheme = Partial<Theme>;
 export const PASSWORD_CONFIRMATION_PROBLEM_TYPE = "urn:panneau:problem:password-confirmation";
 
 // @public
-export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "json", "tel", "postalCode", "daterange", "money", "in", "accept", "maxSize", "before", "after", "crop"];
+export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "json", "tel", "postalCode", "daterange", "money", "in", "accept", "maxSize", "before", "after", "crop", "providers"];
 
 // @public (undocumented)
 export type PortableRule = (typeof PORTABLE_RULES)[number];

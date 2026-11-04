@@ -100,6 +100,17 @@ describe('displays', () => {
 
     it('shows colors and media', () => {
         expect(renderDisplay('color', '#ff0000').textContent).toBe('#ff0000');
+        const palette: Field = {
+            name: 'background',
+            type: 'color',
+            settings: { palette: [{ value: 'purple', label: 'Purple', color: '#6b21a8' }] },
+        };
+        const purple = renderDisplay('color', 'purple', palette);
+        expect(purple.textContent).toBe('Purple');
+        expect(purple.querySelector('[aria-hidden="true"]')).toHaveStyle({
+            backgroundColor: '#6b21a8',
+        });
+        expect(renderDisplay('color', 'teal', palette).textContent).toBe('teal');
         const cell = renderDisplay('media', { id: '1', thumbnailUrl: '/a.jpg', name: 'a.jpg' });
         expect(cell.querySelector('img')).toHaveAttribute('src', '/a.jpg');
         expect(cell).toHaveTextContent('a.jpg');
@@ -146,6 +157,8 @@ describe('displays', () => {
         const country = renderDisplay('country', 'CA');
         expect(country).toHaveTextContent('🇨🇦Canada');
         expect(renderDisplay('country', 'Kanada')).toHaveTextContent('Kanada');
+        expect(renderDisplay('country', ['FR', 'CA'])).toHaveTextContent('🇫🇷France🇨🇦Canada');
+        expect(renderDisplay('country', []).textContent).toBe('—');
         expect(
             renderDisplay('region', 'QC', {
                 name: 'province',
