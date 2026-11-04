@@ -30,7 +30,12 @@ export {
     isExternalUrl,
     resolveLinkNewTab,
 } from '../links';
-export { getMediaLibraries, type MediaLibrariesDefinition } from '../libraries';
+export {
+    type ItemImageResource,
+    type MediaLibrariesDefinition,
+    getItemImageField,
+    getMediaLibraries,
+} from '../libraries';
 export { matchesRatio, parseRatio, renderedCropSize } from '../transforms';
 export { lintDefinition } from '../lint';
 export type { ValidationIssue } from '../validate';

@@ -114,6 +114,36 @@ describe('displays', () => {
         const cell = renderDisplay('media', { id: '1', thumbnailUrl: '/a.jpg', name: 'a.jpg' });
         expect(cell.querySelector('img')).toHaveAttribute('src', '/a.jpg');
         expect(cell).toHaveTextContent('a.jpg');
+        const reference = renderDisplay('image', {
+            id: 'med_1',
+            label: 'Portrait',
+            media: { type: 'image', url: '/b.heic', thumbnailUrl: '/b.jpg' },
+        });
+        expect(reference.querySelector('img')).toHaveAttribute('src', '/b.jpg');
+        expect(reference).toHaveTextContent('Portrait');
+    });
+
+    it('shows stored files, linked, with the thumbnail of images', () => {
+        const image = renderDisplay('file', {
+            name: 'portrait.png',
+            url: 'https://example.com/portrait.png',
+            mime: 'image/png',
+        });
+        expect(screen.getByRole('link', { name: 'portrait.png' })).toHaveAttribute(
+            'href',
+            'https://example.com/portrait.png',
+        );
+        expect(image.querySelector('img')).toHaveAttribute(
+            'src',
+            'https://example.com/portrait.png',
+        );
+        const documents = renderDisplay('file', [
+            { name: 'report.pdf', url: '/report.pdf', mime: 'application/pdf' },
+            { name: 'private.pdf', url: null },
+        ]);
+        expect(documents.querySelector('img')).toBeNull();
+        expect(documents).toHaveTextContent('report.pdfprivate.pdf');
+        expect(renderDisplay('file', null)).toHaveTextContent('—');
     });
 
     it('shows E.164 numbers with their flags in their international format', () => {

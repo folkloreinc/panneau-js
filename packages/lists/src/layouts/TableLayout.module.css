@@ -50,6 +50,37 @@
     background-color: var(--panneau-color-hover);
 }
 
+/* The thumbnail of an item, before its title (decision 0061). */
+.withThumbnail {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-3);
+}
+
+.withThumbnail > :last-child {
+    min-width: 0;
+}
+
+.thumbnail {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    overflow: hidden;
+    color: var(--panneau-color-text-muted);
+    background-color: var(--panneau-color-surface-sunken);
+    border-radius: var(--panneau-radius-sm);
+}
+
+.thumbnail img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .center {
     text-align: center !important;
 }

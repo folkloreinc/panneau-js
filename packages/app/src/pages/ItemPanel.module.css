@@ -151,3 +151,15 @@
             0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
     }
 }
+
+/* The image of a media, over its details (decision 0061). */
+.mediaImage {
+    display: block;
+    width: 100%;
+    flex: none;
+    max-height: 20rem;
+    margin-bottom: var(--panneau-space-4);
+    object-fit: contain;
+    background-color: var(--panneau-color-surface-sunken);
+    border-radius: var(--panneau-radius-md);
+}

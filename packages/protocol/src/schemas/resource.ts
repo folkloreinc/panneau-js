@@ -47,7 +47,7 @@ export const Resource = z
         }),
         itemImage: z.string().optional().meta({
             description:
-                'The field that holds the image of an item (a media or a URL), in search results, cards and pickers.',
+                "The field that holds the image of an item (a media, a file or a URL), in search results, pickers, the gallery and the thumbnails of the table. Defaults to the item's `media` in a resource of kind `media` (decision 0061).",
         }),
         open: z
             .union([z.enum(['panel', 'edit']), z.string().min(1)])

@@ -20,6 +20,8 @@ export interface ListSkeletonProps {
     perPage: number | undefined;
     sort: readonly string[];
     label: string;
+    /** Whether items have an image: the table draws the placeholder of their thumbnails. */
+    withImages?: boolean;
 }
 
 /**
@@ -28,7 +30,14 @@ export interface ListSkeletonProps {
  * inert and hidden: its headers can't be used before the items are there, and the status message
  * of the region says that the list loads.
  */
-export function ListSkeleton({ Layout, columns, perPage, sort, label }: ListSkeletonProps) {
+export function ListSkeleton({
+    Layout,
+    columns,
+    perPage,
+    sort,
+    label,
+    withImages = false,
+}: ListSkeletonProps) {
     const intl = usePanneauIntl();
     const rows = Math.max(1, Math.min(perPage ?? MAX_ROWS, MAX_ROWS));
     const items: ListItem[] = Array.from({ length: rows }, (_, index) => ({
@@ -47,6 +56,7 @@ export function ListSkeleton({ Layout, columns, perPage, sort, label }: ListSkel
                     renderValue={renderValue}
                     getItemLabel={(item) => item.id}
                     getItemHref={none}
+                    getItemImage={withImages ? none : undefined}
                     isCurrent={() => false}
                     selectable={false}
                     isSelected={() => false}

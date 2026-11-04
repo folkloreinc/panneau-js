@@ -67,6 +67,53 @@ function ArticlePreview({ item }: PreviewProps) {
     );
 }
 
+/** A media library: its items have a `media`, whose image the panel shows over the details. */
+const library: DefinitionInput['resources'][number] = {
+    id: 'images',
+    kind: 'media',
+    label: { singular: 'image', plural: 'images' },
+    itemTitle: 'name',
+    fields: [
+        { name: 'file', type: 'file', label: 'File' },
+        { name: 'name', type: 'text', label: 'Name' },
+    ],
+};
+
+/** An image drawn in place: stories don't fetch images. */
+const harbour = `data:image/svg+xml,${encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 3"><rect width="4" height="3" fill="#7dd3fc"/><rect y="2" width="4" height="1" fill="#0369a1"/><circle cx="3" cy="0.8" r="0.4" fill="#fde047"/></svg>',
+)}`;
+
+function createMediaSetup() {
+    const definition: DefinitionInput = { ...input, resources: [library] };
+    const result = validateDefinition(definition);
+    if (!result.success) {
+        throw new Error(JSON.stringify(result.issues));
+    }
+    const backend = createMockBackend({
+        definition,
+        items: {
+            images: [
+                {
+                    id: '1',
+                    name: 'The harbour at dawn',
+                    file: {
+                        name: 'harbour.heic',
+                        url: 'https://example.com/harbour.heic',
+                        mime: 'image/heic',
+                    },
+                    media: { type: 'image', url: harbour, thumbnailUrl: harbour },
+                },
+            ],
+        },
+    });
+    return {
+        resource: result.data.resources[0],
+        adapter: createRestAdapter({ baseUrl: '/api', fetch: backend.fetch }),
+        client: new QueryClient({ defaultOptions: { queries: { retry: false } } }),
+    };
+}
+
 function createSetup(mode: PreviewMode, loading: boolean) {
     const resourceInput = input.resources[0];
     const definition: DefinitionInput = {
@@ -120,11 +167,16 @@ function createSetup(mode: PreviewMode, loading: boolean) {
 function Panel({
     preview = 'none',
     loading = false,
+    media = false,
 }: {
     preview?: PreviewMode;
     loading?: boolean;
+    /** The panel of a media of a library, instead of an article. */
+    media?: boolean;
 }) {
-    const [{ resource, adapter, client }] = useState(() => createSetup(preview, loading));
+    const [{ resource, adapter, client }] = useState(() =>
+        media ? createMediaSetup() : createSetup(preview, loading),
+    );
     if (resource === undefined) {
         return null;
     }
@@ -141,7 +193,7 @@ function Panel({
                                 basePath="/admin"
                                 locale="en"
                                 id="1"
-                                closeHref="/admin/resources/articles"
+                                closeHref={`/admin/resources/${resource.id}`}
                             />
                         </PanneauProvider>
                     </RouterProvider>
@@ -233,5 +285,22 @@ export const LoadingPreview: Story = {
         const panel = canvas.getByRole('region', { name: 'Details of the article' });
         await expect(within(panel).getByRole('tab', { name: 'Preview' })).toBeInTheDocument();
         await expect(within(panel).getByRole('status')).toHaveTextContent('Loading the preview…');
+    },
+};
+
+/** A media of a library: its image over its details, and its file linked (decision 0061). */
+export const Media: Story = {
+    args: { media: true },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const panel = canvas.getByRole('region', { name: 'Details of the image' });
+        await expect(
+            await within(panel).findByRole('heading', { name: 'The harbour at dawn' }),
+        ).toBeInTheDocument();
+        await expect(panel.querySelector('img')).toHaveAttribute('alt', '');
+        await expect(within(panel).getByRole('link', { name: 'harbour.heic' })).toHaveAttribute(
+            'href',
+            'https://example.com/harbour.heic',
+        );
     },
 };

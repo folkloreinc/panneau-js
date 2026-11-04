@@ -19,9 +19,14 @@ import { getCommands, getSearchableResources, resolveResource, usePlugins } from
 import { isApiError } from '@panneau/data';
 import { useSearch } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
-import { toText } from '@panneau/lists';
+import { getImageUrl, toText } from '@panneau/lists';
 import type { Definition, Item, Resource } from '@panneau/protocol';
-import { SEARCH_MAX_LIMIT, SEARCH_MIN_LENGTH, toSearchParams } from '@panneau/protocol/runtime';
+import {
+    SEARCH_MAX_LIMIT,
+    SEARCH_MIN_LENGTH,
+    getItemImageField,
+    toSearchParams,
+} from '@panneau/protocol/runtime';
 import {
     CommandPalette,
     type CommandPaletteGroup,
@@ -73,20 +78,10 @@ function navIcon(link: NavLink): IconComponent {
     }
 }
 
-/** The URL of an item's image (`itemImage`): a URL, or a media with a thumbnail. */
+/** The URL of an item's image (`itemImage`, or the `media` of a library), or none. */
 function imageOf(item: Item, resource: Resource): string | undefined {
-    const value = resource.itemImage !== undefined ? item[resource.itemImage] : undefined;
-    if (typeof value === 'string') {
-        return value;
-    }
-    if (value !== null && typeof value === 'object') {
-        const media = (value as { media?: { thumbnailUrl?: unknown } }).media;
-        const url =
-            media?.thumbnailUrl ??
-            (value as { thumbnailUrl?: unknown; url?: unknown }).thumbnailUrl;
-        return typeof url === 'string' ? url : undefined;
-    }
-    return undefined;
+    const field = getItemImageField(resource);
+    return (field !== undefined ? getImageUrl(item[field]) : null) ?? undefined;
 }
 
 /**
