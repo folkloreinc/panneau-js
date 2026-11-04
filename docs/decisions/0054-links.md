@@ -51,7 +51,7 @@ This replaces the URL fields that accepted `mailto:` and the ones that checked n
 
 ### What the API returns
 
-- **In items,** a `page` link has its reference (`{ "id", "resource", "label" }`) and, when the backend knows it, the URL of the page in `url`. A `file` link has its `MediaReference` and the URL of the file in `url`. A site reads `url` for every type, and only resolves a page itself when the backend left `url` out.
+- **In items,** a `page` link has its reference (`{ "id", "resource", "label" }`) and, when the backend knows it, the URL of the page in `url`. A backend resolves the links at the top of a resource, and those inside groups and blocks where it serializes their references, as for `relation` and `media` values. A `file` link has its `MediaReference` and the URL of the file in `url`. A site reads `url` for every type, and only resolves a page itself when the backend left `url` out.
 - **In requests,** the client sends the `page` as an id, or `{ "id", "resource" }` when the field has several resources, and the `file` as media references are sent (0027). A backend ignores the `url` of `page` and `file` links, and resolves it again.
 - **`newTab`** with `external` is set by the backend too, so that values are right whoever wrote them.
 
@@ -64,4 +64,4 @@ Its `Page` field is a relation to its pages. It could become a `link` with the `
 - `link` is a built-in type. Its checks reuse the portable rules `in`, `url`, `email`, `tel`, `pattern` and `required`, on the paths of its parts.
 - `@panneau/fields` gets the `link` field. Its `file` links render the `media` entry of the fields context: without the media plugin, they can't be picked.
 - `@panneau/lists` gets the display of links.
-- `laravel-panneau` gets the `Link` field, which resolves the URL of pages with the resource or a callback, and the upgrade from 1.x points the URL fields that accepted `mailto:`, and the groups of a label, a URL and a new tab toggle, to it.
+- `laravel-panneau` gets the `Link` field, which resolves the URL of pages with a callback (`resolvePageUrlUsing()`), and the upgrade from 1.x points the URL fields that accepted `mailto:`, and the groups of a label, a URL and a new tab toggle, to it.

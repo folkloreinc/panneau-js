@@ -75,6 +75,7 @@ describe('formatAddress', () => {
 
     it('cleans an address: no empty parts, and its default country', () => {
         expect(cleanAddress({ street: '', city: ' ' }, 'CA')).toBeNull();
+        expect(cleanAddress({ country: 'FR' }, 'CA')).toBeNull();
         expect(cleanAddress({ city: 'Laval', region: '' }, 'CA')).toEqual({
             city: 'Laval',
             country: 'CA',

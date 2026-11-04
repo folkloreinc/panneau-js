@@ -25,8 +25,8 @@ function partText(value: unknown): string | undefined {
 }
 
 /**
- * An address without its empty parts, with `country` when it has a part and no country, and the
- * postal code normalized for its country. `null` when nothing is left.
+ * An address without its empty parts, with `country` when it has a part and no country. `null`
+ * when nothing but a country is left.
  */
 export function cleanAddress(
     address: Partial<Record<keyof AddressValue, unknown>>,
@@ -49,7 +49,8 @@ export function cleanAddress(
     ) {
         next.point = point as NonNullable<AddressValue['point']>;
     }
-    if (Object.keys(next).length === 0) {
+    // A country alone, picked before the other parts, isn't an address yet
+    if (Object.keys(next).every((part) => part === 'country')) {
         return null;
     }
     if (next.country === undefined && country !== null && country !== undefined) {

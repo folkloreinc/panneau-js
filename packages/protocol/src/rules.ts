@@ -253,12 +253,15 @@ function rulesOf(field: Field, mode: CheckOptions['mode']): Rule[] {
         : rules;
 }
 
+/** The parts that make an address filled: a country or a point alone don't. */
+const ADDRESS_TEXT_PARTS = ['street', 'unit', 'city', 'region', 'postalCode'] as const;
+
 /**
- * The checks of the parts of an `address` (decision 0053): a filled address has its required
- * parts, and a postal code of its country.
+ * The checks of the parts of an `address` (decision 0053): a filled address, with a part other
+ * than its country, has its required parts, and a postal code of its country.
  */
 function checkAddress(field: Field, value: unknown, path: string, context: Context) {
-    if (!isRecord(value) || !Object.values(value).some(isFilled)) {
+    if (!isRecord(value) || !ADDRESS_TEXT_PARTS.some((part) => isFilled(value[part]))) {
         return;
     }
     getAddressRequiredParts(field).forEach((part) => {

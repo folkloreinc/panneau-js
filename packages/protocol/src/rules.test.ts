@@ -221,6 +221,8 @@ describe('the checks of addresses', () => {
     it('requires the street, the city and the country of a filled address', () => {
         expect(checkValues(fields, { address: null })).toEqual({});
         expect(checkValues(fields, { address: {} })).toEqual({});
+        // A country, set by the field, or a point alone isn't an address yet
+        expect(checkValues(fields, { address: { country: 'CA' } })).toEqual({});
         expect(checkValues(fields, { address: { postalCode: 'H2X 1Y4' } })).toEqual({
             'address.street': [{ rule: 'required' }],
             'address.city': [{ rule: 'required' }],

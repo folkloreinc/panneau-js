@@ -19,21 +19,22 @@ Many admins keep postal addresses: of organisations, venues, users, participants
 
 ### `address`
 
-- **Value:** an object of strings, `{ "street", "unit", "city", "region", "postalCode", "country" }`, or `null` when every part is empty. A part that is empty is left out.
+- **Value:** an object of strings, `{ "street", "unit", "city", "region", "postalCode", "country" }`, or `null` when every part is empty. A part that is empty is left out. A country alone isn't an address yet: a field doesn't keep it, and the checks treat it as empty.
     - `street`: the number and the street, on one line (`1234 Rue Saint-Denis`).
     - `unit`: an apartment, a suite or a floor (`App. 5`), optional.
     - `region`: a value of the `region` type for the address's country (0047): the code of the region without its country for the countries Panneau knows the regions of (`QC`), the text as typed for the others.
     - `country`: an ISO 3166-1 alpha-2 code, as a value of the `country` type.
     - `point`: `{ "lat", "lng" }`, the place of the address on a map, only with `settings.point` (below).
 - **Settings:**
-    - `country`: the country of a new address (`"CA"`). The field puts it in the value as soon as a part is typed.
+    - `country`: the country of a new address (`"CA"`). The field puts it in the value as soon as a part is typed, and a backend sets it on an address without one before it saves.
     - `countries` and `preferred`: those of the `country` type. With one country in `countries`, the field doesn't show the country, and sets it.
-    - `required`: the parts that a filled address must have. Defaults to `["street", "city", "country"]`, the parts every postal address has. A project that only ships to Canada lists `region` and `postalCode` too. The `required` rule, as for any field, requires an address.
+    - `required`: the parts that a filled address (with a part other than its country) must have. Defaults to `["street", "city", "country"]`, the parts every postal address has. A project that only ships to Canada lists `region` and `postalCode` too. The `required` rule, as for any field, requires an address.
     - `point`: `true` adds a map under the parts, the one of `location`, and the point to the value.
 - **Field:** the parts as inputs that browsers can fill in (`autocomplete` `street-address`, `postal-code`…), the country first: it sets the labels, the order and the regions of the other parts.
     - The region is the `region` field of the country.
     - Labels by country: _Province_ and _Postal code_ for Canada, _State_ and _ZIP code_ for the United States, _Region_ and _Postal code_ elsewhere, in English and French.
     - Order: the city, the region and the postal code for the countries whose addresses end that way (Canada, the United States and the other countries of the known regions, `Montréal QC H2X 1Y4`); the postal code first elsewhere (`75001 Paris`).
+- **Backends** check each part as a string, the country as a code of the field's countries, and may turn the names of the regions they know into codes (`Québec` gives `QC`), as the address search does.
 - **Lists** show the address on one line, in the order of its country, with the flag of its country: `1234 Rue Saint-Denis, Montréal QC H2X 1Y4`.
 - **`localized`** works as for any field: an address per locale, for projects that write the street in each language.
 
