@@ -650,7 +650,7 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                     const mixed = parsed.data.some(
                         (credit) =>
                             (field.resource === undefined && 'id' in credit.person) ||
-                            credit.roles.some((role) => ('id' in role) !== roles),
+                            credit.roles.some((role) => 'id' in role !== roles),
                     );
                     check.expect(
                         !mixed,

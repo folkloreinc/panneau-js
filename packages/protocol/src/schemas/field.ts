@@ -168,7 +168,10 @@ export const Field = z
             return z
                 .array(Field)
                 .optional()
-                .meta({ description: '`group` and `repeater`: the nested fields. `credits`: the fields of each credit.' });
+                .meta({
+                    description:
+                        '`group` and `repeater`: the nested fields. `credits`: the fields of each credit.',
+                });
         },
         get types(): z.ZodOptional<z.ZodArray<typeof BlockType>> {
             return z
