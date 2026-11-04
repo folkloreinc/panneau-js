@@ -1,4 +1,4 @@
-# 0059: `delete` alone in a row is a button
+# 0060: `delete` alone in a row is a button
 
 - Status: proposed
 - Date: 2026-11-04

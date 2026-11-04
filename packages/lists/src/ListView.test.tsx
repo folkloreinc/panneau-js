@@ -423,7 +423,7 @@ describe('ListView', () => {
         expect(screen.queryByRole('button', { name: 'Actions for Blog' })).not.toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Delete: Blog' })).not.toBeInTheDocument();
 
-        // `delete` alone: a button, not a menu of one item (decision 0059)
+        // `delete` alone: a button, not a menu of one item (decision 0060)
         expect(screen.queryByRole('button', { name: 'Actions for Contact' })).toBeNull();
         await user.click(screen.getByRole('button', { name: 'Delete: Contact' }));
         expect(onAction).toHaveBeenCalledWith(

@@ -26,7 +26,7 @@ export interface RowActionsProps {
 
 /**
  * The action of a menu that would hold only `delete`: a menu for one item is a wasted click, so it
- * is an icon button instead (decision 0059).
+ * is an icon button instead (decision 0060).
  */
 function getLoneDelete(menu: readonly ItemAction[]): ItemAction | null {
     const [only, ...others] = menu;
@@ -40,7 +40,7 @@ function getLoneDelete(menu: readonly ItemAction[]): ItemAction | null {
 
 /**
  * The actions of a row: buttons, then an overflow menu. A menu that would hold only `delete` is an
- * icon button at the end of the row (decision 0059).
+ * icon button at the end of the row (decision 0060).
  */
 export function RowActions({ itemLabel, actions, menu, pending, onRun, icons }: RowActionsProps) {
     const intl = usePanneauIntl();

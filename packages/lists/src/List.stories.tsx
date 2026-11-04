@@ -685,7 +685,7 @@ export const RowActionsOnAPhone: Story = {
 
 /**
  * `delete` alone in the menu of rows: a button at the end of the row rather than a menu of one
- * item (decision 0059), with the same confirmation. Owners can't be deleted: they have no button.
+ * item (decision 0060), with the same confirmation. Owners can't be deleted: they have no button.
  */
 export const DeleteAlone: Story = {
     args: {

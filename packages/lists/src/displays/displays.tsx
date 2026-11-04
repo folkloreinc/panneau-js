@@ -8,7 +8,7 @@ import { formatDateRange, getDateRangeSettings } from '@panneau/fields/daterange
 import { formatDuration, getDurationUnits } from '@panneau/fields/duration';
 import { getLinkText, isLink } from '@panneau/fields/link';
 import { formatMoney } from '@panneau/fields/money';
-import { getRegionCountry, getRegionName } from '@panneau/fields/region';
+import { RegionFlag, getRegionCountry, getRegionName } from '@panneau/fields/region';
 import { parsePhone, splitExtension } from '@panneau/fields/tel';
 import { fieldsMessages } from '@panneau/intl';
 import { Badge, Icon, type Tone, usePanneauIntl } from '@panneau/ui';
@@ -318,8 +318,9 @@ export function CountryDisplay({ value }: DisplayProps) {
 }
 
 /**
- * A region: its name in the user's locale, from its country in the item (the field's `from`) or
- * the field's settings. A region that Panneau doesn't know shows as it is.
+ * A region: its flag, when it has one, and its name in the user's locale, from its country in the
+ * item (the field's `from`) or the field's settings. A region that Panneau doesn't know shows as it
+ * is.
  */
 export function RegionDisplay({ value, field, item }: DisplayProps) {
     const intl = usePanneauIntl();
@@ -327,8 +328,15 @@ export function RegionDisplay({ value, field, item }: DisplayProps) {
         return <EmptyValue />;
     }
     const country = field !== null ? getRegionCountry(field, item) : null;
+    const name = getRegionName(country, value, intl.locale);
+    if (name === null) {
+        return <span className={styles.text}>{value}</span>;
+    }
     return (
-        <span className={styles.text}>{getRegionName(country, value, intl.locale) ?? value}</span>
+        <span className={styles.flagged}>
+            <RegionFlag country={country} code={value} className={styles.regionFlag} />
+            <span className={styles.text}>{name}</span>
+        </span>
     );
 }
 
