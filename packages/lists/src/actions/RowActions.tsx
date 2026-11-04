@@ -1,4 +1,4 @@
-import { Ellipsis } from 'lucide-react';
+import { Ellipsis, Trash2 } from 'lucide-react';
 
 import type { ItemAction } from '@panneau/core';
 import { getActionLabel } from '@panneau/intl';
@@ -24,9 +24,27 @@ export interface RowActionsProps {
     icons?: ActionIcons | undefined;
 }
 
-/** The actions of a row: buttons, then an overflow menu. */
+/**
+ * The action of a menu that would hold only `delete`: a menu for one item is a wasted click, so it
+ * is an icon button instead (decision 0059).
+ */
+function getLoneDelete(menu: readonly ItemAction[]): ItemAction | null {
+    const [only, ...others] = menu;
+    return only !== undefined &&
+        others.length === 0 &&
+        only.action.id === 'delete' &&
+        only.href === null
+        ? only
+        : null;
+}
+
+/**
+ * The actions of a row: buttons, then an overflow menu. A menu that would hold only `delete` is an
+ * icon button at the end of the row (decision 0059).
+ */
 export function RowActions({ itemLabel, actions, menu, pending, onRun, icons }: RowActionsProps) {
     const intl = usePanneauIntl();
+    const loneDelete = getLoneDelete(menu);
     return (
         <div className={styles.row}>
             {actions.map(({ action, href }) => (
@@ -44,7 +62,21 @@ export function RowActions({ itemLabel, actions, menu, pending, onRun, icons }: 
                     onPress={() => onRun(action)}
                 />
             ))}
-            {menu.length > 0 ? (
+            {loneDelete !== null ? (
+                <IconButton
+                    icon={getActionIcon(loneDelete.action, icons) ?? Trash2}
+                    size="sm"
+                    tone="danger"
+                    appearance="ghost"
+                    label={intl.formatMessage(messages.actionOnItem, {
+                        action: getActionLabel(loneDelete.action, intl),
+                        item: itemLabel,
+                    })}
+                    isPending={pending === loneDelete.action.id}
+                    isDisabled={pending !== null && pending !== loneDelete.action.id}
+                    onPress={() => onRun(loneDelete.action)}
+                />
+            ) : menu.length > 0 ? (
                 <MenuTrigger>
                     <IconButton
                         icon={Ellipsis}

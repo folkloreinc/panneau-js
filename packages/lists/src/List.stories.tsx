@@ -483,6 +483,54 @@ export const SelectionAndActions: Story = {
 };
 
 /**
+ * A table wider than its list, scrolled sideways, as when a link at the end of a row takes the
+ * focus: the checkboxes stay in view, and the one of the page stays in the header, indeterminate
+ * while some rows are selected.
+ */
+export const SelectionInAWideTable: Story = {
+    ...SelectionAndActions,
+    args: {
+        ...SelectionAndActions.args,
+        // A long action on each row, on one line
+        actions: actions.map((action) =>
+            action.id === 'resend' ? { ...action, placement: ['row', 'toolbar'] } : action,
+        ),
+    },
+    decorators: [
+        (Story) => (
+            <div style={{ width: 680 }}>
+                <Story />
+            </div>
+        ),
+    ],
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const table = canvas.getByRole('table', { name: 'Members' });
+        const scroller = table.parentElement as HTMLElement;
+        await expect(scroller.scrollWidth).toBeGreaterThan(scroller.clientWidth);
+
+        await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Grace Hopper' }));
+        scroller.scrollLeft = scroller.scrollWidth;
+        await waitFor(() => expect(scroller.scrollLeft).toBeGreaterThan(0));
+
+        const page = canvas.getByRole('checkbox', { name: 'Select every item of the page' });
+        const box = (page.closest('label') as HTMLElement).getBoundingClientRect();
+        const hit = canvasElement.ownerDocument.elementFromPoint(
+            box.left + box.width / 2,
+            box.top + box.height / 2,
+        );
+        await expect(hit !== null && page.closest('th')?.contains(hit)).toBe(true);
+        await expect(page).toHaveProperty('indeterminate', true);
+
+        await userEvent.click(page);
+        await expect(canvas.getByText('10 items selected')).toBeVisible();
+        await expect(page).toBeChecked();
+        await userEvent.click(page);
+        await waitFor(() => expect(canvas.queryByText(/selected/)).not.toBeInTheDocument());
+    },
+};
+
+/**
  * The built-in links `show` and `edit` as a backend declares them, without a URL or a label: the
  * caller resolves them to its routes (`getLinkHref`), and the list labels them in its locale.
  * Owners can't be updated: they have no "Edit".
@@ -516,10 +564,11 @@ export const BuiltInLinks: Story = {
     },
 };
 
-/** The built-in links, and `delete` in the menu of rows. */
+/** The built-in links, and `duplicate` and `delete` in the menu of rows. */
 const builtInActions: Action[] = [
     { id: 'show', kind: 'link', scope: ['item'] },
     { id: 'edit', kind: 'link', scope: ['item'] },
+    { id: 'duplicate', kind: 'server', scope: ['item'], placement: ['menu'] },
     { id: 'delete', kind: 'server', scope: ['item'], placement: ['menu'], destructive: true },
 ];
 
@@ -531,7 +580,13 @@ export const BuiltInLinksAndMenu: Story = {
     args: {
         items: members.map((member) => ({
             ...member,
-            abilities: { ...member.abilities, view: true, update: true, delete: true },
+            abilities: {
+                ...member.abilities,
+                view: true,
+                update: true,
+                duplicate: true,
+                delete: true,
+            },
         })),
         actions: builtInActions,
         getLinkHref: (action: Action, item: ListItem) =>
@@ -624,6 +679,68 @@ export const RowActionsOnAPhone: Story = {
         // On two lines at least
         await expect(menu.getBoundingClientRect().top).toBeGreaterThan(
             edit.getBoundingClientRect().top,
+        );
+    },
+};
+
+/**
+ * `delete` alone in the menu of rows: a button at the end of the row rather than a menu of one
+ * item (decision 0059), with the same confirmation. Owners can't be deleted: they have no button.
+ */
+export const DeleteAlone: Story = {
+    args: {
+        items: members.map((member) => ({
+            ...member,
+            abilities: {
+                ...member.abilities,
+                view: true,
+                update: true,
+                delete: member.role !== 'owner',
+            },
+        })),
+        actions: [
+            { id: 'show', kind: 'link', scope: ['item'] },
+            { id: 'edit', kind: 'link', scope: ['item'] },
+            {
+                id: 'delete',
+                kind: 'server',
+                scope: ['item'],
+                placement: ['menu'],
+                destructive: true,
+                confirm: true,
+            },
+        ],
+        getLinkHref: (action: Action, item: ListItem) =>
+            action.id === 'edit' ? `#/members/${item.id}/edit` : `#/members/${item.id}`,
+        onAction: fn(),
+    },
+    play: async ({ args, canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        await expect(canvas.queryByRole('button', { name: /^Actions for/ })).toBeNull();
+        // Ada Lovelace is an owner
+        await expect(canvas.queryByRole('button', { name: 'Delete: Ada Lovelace' })).toBeNull();
+
+        const remove = canvas.getByRole('button', { name: 'Delete: Grace Hopper' });
+        await expect(remove).toHaveTextContent('');
+        await expect(remove.querySelector('svg')).toHaveClass('lucide-trash-2');
+        // At the end of the row, after the links, with their height
+        const edit = canvas.getByRole('link', { name: 'Edit: Grace Hopper' });
+        await expect(remove.getBoundingClientRect().left).toBeGreaterThan(
+            edit.getBoundingClientRect().right,
+        );
+        await expect(remove.getBoundingClientRect().height).toBe(
+            edit.getBoundingClientRect().height,
+        );
+
+        await userEvent.click(remove);
+        const dialog = await body.findByRole('alertdialog');
+        await expect(args.onAction).not.toHaveBeenCalled();
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Delete' }));
+        await waitFor(() =>
+            expect(args.onAction).toHaveBeenCalledWith(
+                expect.objectContaining({ scope: 'item', count: 1 }),
+            ),
         );
     },
 };
