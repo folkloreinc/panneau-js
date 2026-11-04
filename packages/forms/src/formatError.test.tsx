@@ -12,6 +12,8 @@ const FIELDS: Field[] = [
     { name: 'tags', type: 'select', multiple: true, options: [] },
     { name: 'countries', type: 'country', multiple: true },
     { name: 'video', type: 'embed' },
+    { name: 'price', type: 'money', settings: { currency: 'CAD' } },
+    { name: 'dates', type: 'daterange' },
 ];
 
 describe('useFormatRuleFailure', () => {
@@ -44,6 +46,26 @@ describe('useFormatRuleFailure', () => {
         const { result } = renderHook(() => useFormatRuleFailure(FIELDS));
         expect(result.current({ rule: 'providers', value: ['YouTube', 'Vimeo'] }, 'video')).toBe(
             'This embed must come from YouTube or Vimeo.',
+        );
+    });
+
+    it('formats the amounts of money, and says what a date range misses', () => {
+        const { result } = renderHook(() => useFormatRuleFailure(FIELDS));
+        const format = result.current;
+        expect(format({ rule: 'min', value: 100 }, 'price')).toBe(
+            'This amount must be at least CA$1.00.',
+        );
+        expect(format({ rule: 'max', value: 1250 }, 'price')).toBe(
+            'This amount must be at most CA$12.50.',
+        );
+        expect(format({ rule: 'daterange', value: 'end' }, 'dates')).toBe(
+            'Give the end of this range.',
+        );
+        expect(format({ rule: 'daterange', value: 'order' }, 'dates')).toBe(
+            'The end can’t be before the start.',
+        );
+        expect(format({ rule: 'money' }, 'price')).toBe(
+            'This value must be an amount in one of the allowed currencies.',
         );
     });
 });

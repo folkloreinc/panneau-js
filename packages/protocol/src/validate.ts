@@ -3,7 +3,7 @@ import type { z } from 'zod';
 import { lintDefinition } from './lint';
 import { BootConfig } from './schemas/boot';
 import { Definition } from './schemas/definition';
-import { type Field, RichTextSettings } from './schemas/field';
+import { DateRangeSettings, type Field, MoneySettings, RichTextSettings } from './schemas/field';
 
 export interface ValidationIssue {
     /** Dot path of the invalid value (`resources.0.fields.2.type`), empty for the root. */
@@ -32,13 +32,24 @@ export function validate<T extends z.ZodType>(
     };
 }
 
-/** Checks the settings of the `richtext` fields of a list of fields, nested ones included. */
+/** The schemas of the settings of the types that the protocol describes. */
+const SETTINGS: Readonly<Record<string, z.ZodType>> = {
+    richtext: RichTextSettings,
+    daterange: DateRangeSettings,
+    money: MoneySettings,
+};
+
+/**
+ * Checks the settings of the fields whose type the protocol describes the settings of (`richtext`,
+ * `daterange`, `money`), nested ones included.
+ */
 function checkFieldSettings(fields: readonly Field[], path: string): ValidationIssue[] {
     return fields.flatMap((field, index) => {
         const fieldPath = `${path}.${String(index)}`;
+        const schema = SETTINGS[field.type];
         const own =
-            field.type === 'richtext' && field.settings !== undefined
-                ? (RichTextSettings.safeParse(field.settings).error?.issues ?? []).map((issue) => ({
+            schema !== undefined && field.settings !== undefined
+                ? (schema.safeParse(field.settings).error?.issues ?? []).map((issue) => ({
                       path: [`${fieldPath}.settings`, ...issue.path.map(String)].join('.'),
                       message: issue.message,
                   }))
@@ -56,7 +67,7 @@ function checkFieldSettings(fields: readonly Field[], path: string): ValidationI
 /**
  * Validates a definition, as returned by `GET /definition`: against the schema, then the
  * references between its parts (see `lintDefinition()`), and the settings of field types that
- * the protocol describes (`RichTextSettings`).
+ * the protocol describes (`RichTextSettings`, `DateRangeSettings`, `MoneySettings`).
  */
 export function validateDefinition(input: unknown): ValidationResult<Definition> {
     const result = validate(Definition, input);

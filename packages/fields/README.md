@@ -37,6 +37,8 @@ Every field takes `value`, `onChange`, `onBlur`, `errors`, `disabled`, `readOnly
 | `@panneau/fields/tel`       | `TelField`, `parsePhone()`                   | E.164, `'+15145550199'`; the text until the number is complete      |
 | `@panneau/fields/country`   | `CountryField`, `getCountryName()`           | `'CA'`, ISO 3166-1 alpha-2, or a list with `multiple`               |
 | `@panneau/fields/region`    | `RegionField`, `getRegions()`                | `'QC'`, the region of its country; the text for other countries     |
+| `@panneau/fields/daterange` | `DateRangeField`, `formatDateRange()`        | `{ start, end }`, days or date-times, either `null` when open       |
+| `@panneau/fields/money`     | `MoneyField`, `formatMoney()`                | `{ amount, currency }`, the amount in minor units (`1250`)          |
 | `@panneau/fields/range`     | `RangeField` (a slider)                      | `number`, `null` until moved                                        |
 | `@panneau/fields/duration`  | `DurationField`, `formatDuration()`          | seconds, typed in hours, minutes and seconds                        |
 | `@panneau/fields/json`      | `JsonField`, `parseJson()`                   | an object or an array; the text while it doesn't parse              |
@@ -164,6 +166,15 @@ With `multiple`, a `country` field holds several countries, in the order they we
     value={background}
     onChange={setBackground}
 />
+```
+
+A `daterange` field edits a start and an end in one control, with one calendar for both ([decision 0053](../../docs/decisions/0053-date-ranges-and-money.md)). Its bounds are days (`2026-11-04`, both inclusive), or date-times with `time`, shown in the zone of the value, then `timeZone`, then the browser's, and written in UTC. `allDay` adds an "All day" switch, whose ranges have days as bounds and `allDay: true`; `chooseTimeZone` adds a menu of zones, kept in the value as `timeZone`. A bound left empty is `null`, which the `daterange` rule refuses unless the field's `open` allows it.
+
+A `money` field types an amount in the currency format of the locale, with the digits of its currency in ISO 4217, and keeps it in minor units, without floating point errors: `{ amount: 1250, currency: 'CAD' }` is 12.50 $. `currency` fixes the currency; `currencies` lists those a menu after the amount offers, every currency without either.
+
+```tsx
+<DateRangeField label="Dates" time allDay timeZone="America/Toronto" value={dates} onChange={setDates} />
+<MoneyField label="Price" currency="CAD" min={0} value={price} onChange={setPrice} />
 ```
 
 A `location` field places a point on a Leaflet map, loaded when the field is first shown. The tiles are OpenStreetMap's by default. `maps` sets other tiles and an address search, a `GeocodingSource`: `createNominatimSource()` searches OpenStreetMap's Nominatim, whose [usage policy](https://operations.osmfoundation.org/policies/nominatim/) suits small volumes; a product with more uses its own service. Without a geocoding source, the field has no address search, and the latitude and longitude are typed or picked on the map.

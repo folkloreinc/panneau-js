@@ -402,6 +402,49 @@ export interface DatePickerProps extends Omit<DatePickerProps_2<DateValue>, 'cla
 }
 
 // @public
+export function DateRangePicker(input: DateRangePickerProps): JSX.Element;
+
+// @public (undocumented)
+export interface DateRangePickerProps extends FieldChromeProps {
+    'aria-label'?: string;
+    // (undocumented)
+    autoFocus?: boolean;
+    // (undocumented)
+    controlClassName?: string;
+    end?: ReactNode;
+    granularity?: 'day' | 'hour' | 'minute' | 'second';
+    // (undocumented)
+    hideTimeZone?: boolean;
+    // (undocumented)
+    hourCycle?: 12 | 24;
+    // (undocumented)
+    isDisabled?: boolean;
+    // (undocumented)
+    isReadOnly?: boolean;
+    // (undocumented)
+    isRequired?: boolean;
+    // (undocumented)
+    maxValue?: DateValue;
+    // (undocumented)
+    minValue?: DateValue;
+    // (undocumented)
+    onBlur?: () => void;
+    onChange?: (value: DateRangePickerValue) => void;
+    placeholderValue?: DateValue;
+    // (undocumented)
+    popoverClassName?: string;
+    value?: DateRangePickerValue | null;
+}
+
+// @public
+export interface DateRangePickerValue {
+    // (undocumented)
+    end: DateValue | null;
+    // (undocumented)
+    start: DateValue | null;
+}
+
+// @public
 export function defineComponentTokens<const Component extends string, const Tokens extends Record<string, string>>(component: Component, tokens: Tokens): ComponentTokens<Component, `panneau-${Component}-${keyof Tokens & string}`>;
 
 // @public

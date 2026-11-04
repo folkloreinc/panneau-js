@@ -485,6 +485,45 @@ export const LocationValue = z
     })
     .meta({ description: 'The value of a `location` field: a point, and its address.' });
 
+export const DateRangeValue = z
+    .looseObject({
+        start: z.string().nullable().meta({
+            description:
+                'The first day (`2026-11-04`) or the start (`2026-11-04T23:30:00Z`), or `null` when the range is open at its start.',
+        }),
+        end: z.string().nullable().meta({
+            description:
+                'The last day, included, or the end, or `null` when the range is open at its end. On or after the start.',
+        }),
+        allDay: z
+            .boolean()
+            .optional()
+            .meta({ description: 'The range takes whole days: its bounds are days.' }),
+        timeZone: z.string().optional().meta({
+            description:
+                'The IANA time zone the date-times are shown and typed in (`America/Toronto`), when the field lets the user choose it.',
+        }),
+    })
+    .meta({
+        description:
+            'The value of a `daterange` field: a start and an end, days or date-times (decision 0053).',
+    });
+
+export const MoneyValue = z
+    .looseObject({
+        amount: z.number().int().meta({
+            description:
+                'The amount in the minor unit of the currency, its ISO 4217 exponent: `1250` is 12.50 CAD, `1250` is 1,250 JPY.',
+        }),
+        currency: z
+            .string()
+            .regex(/^[A-Z]{3}$/)
+            .meta({ description: 'An ISO 4217 currency code, in capitals: `CAD`.' }),
+    })
+    .meta({
+        description: 'The value of a `money` field: an amount and its currency (decision 0053).',
+    });
+
 export type Item = z.infer<typeof Item>;
 export type Pagination = z.infer<typeof Pagination>;
 export type ItemResponse = z.infer<typeof ItemResponse>;
@@ -522,3 +561,5 @@ export type PreviewResponse = z.infer<typeof PreviewResponse>;
 export type EmbedValue = z.infer<typeof EmbedValue>;
 export type EmbedResponse = z.infer<typeof EmbedResponse>;
 export type LocationValue = z.infer<typeof LocationValue>;
+export type DateRangeValue = z.infer<typeof DateRangeValue>;
+export type MoneyValue = z.infer<typeof MoneyValue>;

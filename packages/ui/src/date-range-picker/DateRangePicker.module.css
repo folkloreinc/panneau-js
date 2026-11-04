@@ -1,0 +1,37 @@
+.control.control {
+    flex-wrap: wrap;
+}
+
+.bounds {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 var(--panneau-space-2);
+    min-width: 0;
+}
+
+.bound {
+    display: flex;
+    min-width: 0;
+}
+
+.dash {
+    color: var(--panneau-color-text-muted);
+}
+
+/* An "All day" switch, a time zone: between the bounds and the calendar. */
+.end {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    padding-inline: var(--panneau-space-2);
+}
+
+/* The days between the start and the end. */
+.cell.cell[data-selected]:not([data-selection-start], [data-selection-end]) {
+    color: var(--panneau-color-text);
+    background-color: var(--panneau-color-accent-subtle);
+    border-radius: 0;
+}

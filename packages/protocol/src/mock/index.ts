@@ -202,9 +202,23 @@ function searchableText(value: unknown): string {
     return '';
 }
 
+/** What a value sorts by: the start of a `daterange`, the amount of `money`, or its text. */
+function sortValue(value: unknown): unknown {
+    if (!isRecord(value)) {
+        return value;
+    }
+    if ('start' in value && 'end' in value) {
+        return value.start ?? value.end;
+    }
+    if ('currency' in value && typeof value.amount === 'number') {
+        return value.amount;
+    }
+    return searchableText(value);
+}
+
 function compare(a: unknown, b: unknown): number {
-    const left = isRecord(a) ? searchableText(a) : a;
-    const right = isRecord(b) ? searchableText(b) : b;
+    const left = sortValue(a);
+    const right = sortValue(b);
     if (left === right) {
         return 0;
     }
@@ -213,6 +227,9 @@ function compare(a: unknown, b: unknown): number {
     }
     if (right === undefined || right === null) {
         return -1;
+    }
+    if (typeof left === 'number' && typeof right === 'number') {
+        return left - right;
     }
     return String(left).localeCompare(String(right), undefined, { numeric: true });
 }
