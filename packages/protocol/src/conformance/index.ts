@@ -1272,6 +1272,65 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
         }
     });
 
+    await run(
+        'create.implied-rules',
+        'A reversed date range and an invalid amount are refused with a 422 problem',
+        async (check) => {
+            if (writes === undefined || resource === null) {
+                check.skip('Write checks are disabled.');
+                return;
+            }
+            // Values that only the rules implied by their type refuse (decision 0053).
+            const cases = resource.fields.flatMap((field): [string, unknown, string][] => {
+                if (field.localized === true || field.readOnly === true) {
+                    return [];
+                }
+                if (field.type === 'daterange') {
+                    const time = field.settings?.time === true;
+                    return [
+                        [
+                            field.name,
+                            time
+                                ? { start: '2026-11-06T10:00:00Z', end: '2026-11-04T10:00:00Z' }
+                                : { start: '2026-11-06', end: '2026-11-04' },
+                            'a range that ends before it starts',
+                        ],
+                    ];
+                }
+                if (field.type === 'money') {
+                    const currencies = field.settings?.currencies;
+                    const currency =
+                        typeof field.settings?.currency === 'string'
+                            ? field.settings.currency
+                            : Array.isArray(currencies) && typeof currencies[0] === 'string'
+                              ? currencies[0]
+                              : 'CAD';
+                    return [[field.name, { amount: 12.5, currency }, 'an amount in major units']];
+                }
+                return [];
+            });
+            if (cases.length === 0) {
+                check.skip('The resource has no daterange or money field.');
+                return;
+            }
+            for (const [name, value, label] of cases) {
+                const reply = await request(resourcePath(), {
+                    method: 'POST',
+                    body: JSON.stringify({ ...writes.create, [name]: value }),
+                });
+                const failure = check.expectProblem(reply, 422);
+                if (failure !== null) {
+                    check.expect(
+                        Object.keys(failure.errors ?? {}).some(
+                            (key) => key === name || key.startsWith(`${name}.`),
+                        ),
+                        `${name}: ${label} is refused, but not in errors.${name}.`,
+                    );
+                }
+            }
+        },
+    );
+
     await run('create', 'POST /resources/{resource} creates an item', async (check) => {
         if (writes === undefined || resource === null) {
             check.skip('Write checks are disabled.');

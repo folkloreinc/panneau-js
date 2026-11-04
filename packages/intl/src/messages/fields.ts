@@ -186,6 +186,16 @@ export const fieldsMessages = {
         id: 'panneau.fields.telCountry',
         defaultMessage: 'Country of the number',
     }),
+    allDay: defineMessage({ id: 'panneau.fields.allDay', defaultMessage: 'All day' }),
+    timeZone: defineMessage({ id: 'panneau.fields.timeZone', defaultMessage: 'Time zone' }),
+    noTimeZones: defineMessage({
+        id: 'panneau.fields.noTimeZones',
+        defaultMessage: 'No time zones match',
+    }),
+    moneyCurrency: defineMessage({
+        id: 'panneau.fields.moneyCurrency',
+        defaultMessage: 'Currency',
+    }),
     credit: defineMessage<{ index: number }>({
         id: 'panneau.fields.credit',
         defaultMessage: 'Credit {index}',

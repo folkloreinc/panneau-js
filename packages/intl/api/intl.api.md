@@ -434,6 +434,10 @@ export const fieldsMessages: {
     regionPlaceholder: PanneauMessage<Record<never, never>>;
     noRegions: PanneauMessage<Record<never, never>>;
     telCountry: PanneauMessage<Record<never, never>>;
+    allDay: PanneauMessage<Record<never, never>>;
+    timeZone: PanneauMessage<Record<never, never>>;
+    noTimeZones: PanneauMessage<Record<never, never>>;
+    moneyCurrency: PanneauMessage<Record<never, never>>;
     credit: PanneauMessage<    {
     index: number;
     }>;
@@ -531,6 +535,16 @@ export const formsMessages: {
         url: PanneauMessage<Record<never, never>>;
         json: PanneauMessage<Record<never, never>>;
         tel: PanneauMessage<Record<never, never>>;
+        daterangeStart: PanneauMessage<Record<never, never>>;
+        daterangeEnd: PanneauMessage<Record<never, never>>;
+        daterangeOrder: PanneauMessage<Record<never, never>>;
+        money: PanneauMessage<Record<never, never>>;
+        minAmount: PanneauMessage<    {
+        value: string;
+        }>;
+        maxAmount: PanneauMessage<    {
+        value: string;
+        }>;
         in: PanneauMessage<Record<never, never>>;
         accept: PanneauMessage<Record<never, never>>;
         maxSize: PanneauMessage<Record<never, never>>;
@@ -576,6 +590,12 @@ export const listsMessages: {
     any: PanneauMessage<Record<never, never>>;
     from: PanneauMessage<Record<never, never>>;
     to: PanneauMessage<Record<never, never>>;
+    rangeFrom: PanneauMessage<    {
+    start: string;
+    }>;
+    rangeUntil: PanneauMessage<    {
+    end: string;
+    }>;
     dateRange: PanneauMessage<    {
     from: string;
     to: string;
@@ -944,6 +964,9 @@ export const uiMessages: {
     clear: PanneauMessage<Record<never, never>>;
     moreActions: PanneauMessage<Record<never, never>>;
     time: PanneauMessage<Record<never, never>>;
+    rangeStart: PanneauMessage<Record<never, never>>;
+    rangeEnd: PanneauMessage<Record<never, never>>;
+    calendar: PanneauMessage<Record<never, never>>;
     tags: PanneauMessage<    {
     label: string;
     }>;

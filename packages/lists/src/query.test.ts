@@ -48,6 +48,34 @@ describe('applyListQuery', () => {
         expect(applyListQuery(pages, { sort: ['published_on'] }).items[0]?.id).toBe('1');
     });
 
+    it('sorts date ranges by their start and money by its amount, and filters ranges by overlap', () => {
+        const events = [
+            {
+                id: '1',
+                dates: { start: '2026-11-10', end: '2026-11-12' },
+                price: { amount: 900, currency: 'CAD' },
+            },
+            {
+                id: '2',
+                dates: { start: '2026-10-30', end: '2026-11-02' },
+                price: { amount: 10000, currency: 'CAD' },
+            },
+            {
+                id: '3',
+                dates: { start: '2026-12-01', end: null },
+                price: { amount: 2500, currency: 'CAD' },
+            },
+        ];
+        const ids = (query: Parameters<typeof applyListQuery>[1]) =>
+            applyListQuery(events, query).items.map((item) => item.id);
+        expect(ids({ sort: ['dates'] })).toEqual(['2', '1', '3']);
+        expect(ids({ sort: ['-price'] })).toEqual(['2', '3', '1']);
+        expect(ids({ filter: { dates: { from: '2026-11-01', to: '2026-11-30' } } })).toEqual([
+            '1',
+            '2',
+        ]);
+    });
+
     it('returns a page, with the total of every page', () => {
         const result = applyListQuery(manyPages(45), { page: 3, perPage: 20 });
         expect(result.items.map((item) => item.id)).toEqual(['41', '42', '43', '44', '45']);

@@ -37,6 +37,8 @@ Every field takes `value`, `onChange`, `onBlur`, `errors`, `disabled`, `readOnly
 | `@panneau/fields/tel`       | `TelField`, `parsePhone()`                   | E.164, `'+15145550199'`; the text until the number is complete      |
 | `@panneau/fields/country`   | `CountryField`, `getCountryName()`           | `'CA'`, ISO 3166-1 alpha-2                                          |
 | `@panneau/fields/region`    | `RegionField`, `getRegions()`                | `'QC'`, the region of its country; the text for other countries     |
+| `@panneau/fields/daterange` | `DateRangeField`, `formatDateRange()`        | `{ start, end }`, days or date-times, either `null` when open       |
+| `@panneau/fields/money`     | `MoneyField`, `formatMoney()`                | `{ amount, currency }`, the amount in minor units (`1250`)          |
 | `@panneau/fields/range`     | `RangeField` (a slider)                      | `number`, `null` until moved                                        |
 | `@panneau/fields/duration`  | `DurationField`, `formatDuration()`          | seconds, typed in hours, minutes and seconds                        |
 | `@panneau/fields/json`      | `JsonField`, `parseJson()`                   | an object or an array; the text while it doesn't parse              |
@@ -148,6 +150,15 @@ A `country` field picks a country by its name in the user's locale, with its fla
 <CountryField label="Country" preferred={['CA', 'US']} value={country} onChange={setCountry} />
 <RegionField label="Province" country={country} value={province} onChange={setProvince} />
 <TelField label="Phone" country="CA" value={phone} onChange={setPhone} />
+```
+
+A `daterange` field edits a start and an end in one control, with one calendar for both ([decision 0053](../../docs/decisions/0053-date-ranges-and-money.md)). Its bounds are days (`2026-11-04`, both inclusive), or date-times with `time`, shown in the zone of the value, then `timeZone`, then the browser's, and written in UTC. `allDay` adds an "All day" switch, whose ranges have days as bounds and `allDay: true`; `chooseTimeZone` adds a menu of zones, kept in the value as `timeZone`. A bound left empty is `null`, which the `daterange` rule refuses unless the field's `open` allows it.
+
+A `money` field types an amount in the currency format of the locale, with the digits of its currency in ISO 4217, and keeps it in minor units, without floating point errors: `{ amount: 1250, currency: 'CAD' }` is 12.50 $. `currency` fixes the currency; `currencies` lists those a menu after the amount offers, every currency without either.
+
+```tsx
+<DateRangeField label="Dates" time allDay timeZone="America/Toronto" value={dates} onChange={setDates} />
+<MoneyField label="Price" currency="CAD" min={0} value={price} onChange={setPrice} />
 ```
 
 A `credits` field lists people and their roles, in order ([decision 0056](../../docs/decisions/0056-credits.md)). A person is picked in the resource of people (`resource`) through the relation source, created from the picker when the source can create items, or kept as a name, `{ name: 'Jane Doe' }`, unless `names` is `false`; without a resource, every person is a name. Roles are picked in the resource of roles (`roles`, `settings.roles` in the definition), or typed as names in each locale, `{ name: { fr: 'Musique', en: 'Music' } }`. `featured` lets users mark the credits to put forward, and `fields` are the fields of each credit.

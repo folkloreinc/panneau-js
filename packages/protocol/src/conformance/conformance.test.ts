@@ -18,6 +18,11 @@ function createBackend() {
         type: 'textarea',
         abilities: { view: false },
     });
+    // Types whose rules are implied (decision 0053).
+    definition.resources[0]?.fields.push(
+        { name: 'dates', type: 'daterange', settings: { open: 'end' } },
+        { name: 'price', type: 'money', settings: { currency: 'CAD' } },
+    );
     // Credits (decision 0056): people of a resource or names, and roles as names.
     definition.resources[0]?.fields.push({ name: 'credits', type: 'credits', resource: 'authors' });
     definition.resources.push({
@@ -371,6 +376,7 @@ describe('runConformance', () => {
             'abilities.create',
             'abilities.update',
             'create.invalid',
+            'create.implied-rules',
             'create',
             'update',
             'update.create-rules',
@@ -420,6 +426,7 @@ describe('runConformance', () => {
             'item.missing',
             'search.invalid',
             'create.invalid',
+            'create.implied-rules',
             'update.conflict',
             'duplicate',
             'delete',

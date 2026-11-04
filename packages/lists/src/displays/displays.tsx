@@ -3,7 +3,9 @@ import { Check, Minus } from 'lucide-react';
 import { toReferences } from '@panneau/fields';
 import { getCountryFlag, getCountryName, isCountryCode } from '@panneau/fields/country';
 import { formatCredits } from '@panneau/fields/credits';
+import { formatDateRange, getDateRangeSettings } from '@panneau/fields/daterange';
 import { formatDuration } from '@panneau/fields/duration';
+import { formatMoney } from '@panneau/fields/money';
 import { getRegionCountry, getRegionName } from '@panneau/fields/region';
 import { parsePhone } from '@panneau/fields/tel';
 import { Badge, Icon, type Tone, usePanneauIntl } from '@panneau/ui';
@@ -129,6 +131,40 @@ export function DateTimeDisplay({ value }: DisplayProps) {
             {intl.formatDate(date, { dateStyle: 'medium', timeStyle: 'short' })}
         </time>
     );
+}
+
+/**
+ * A range of dates (decision 0053), in the format of the locale: `Nov 4 – 6, 2026`. Date-times show
+ * in the zone of the value or the field, with its short name when it isn't the user's. A range open
+ * at one end shows `From Nov 4, 2026` or `Until Dec 1, 2026`.
+ */
+export function DateRangeDisplay({ value, field }: DisplayProps) {
+    const intl = usePanneauIntl();
+    const range = formatDateRange(
+        value,
+        intl.locale,
+        getDateRangeSettings(field?.settings).timeZone,
+    );
+    if (range === null) {
+        return <EmptyValue />;
+    }
+    const text =
+        range.kind === 'from'
+            ? intl.formatMessage(messages.rangeFrom, { start: range.text })
+            : range.kind === 'until'
+              ? intl.formatMessage(messages.rangeUntil, { end: range.text })
+              : range.text;
+    return <span className={styles.text}>{text}</span>;
+}
+
+/** An amount of money (decision 0053), in the currency format of the locale: `1 250,00 $`. */
+export function MoneyDisplay({ value }: DisplayProps) {
+    const intl = usePanneauIntl();
+    const text = formatMoney(value, intl.locale);
+    if (text === null) {
+        return <EmptyValue />;
+    }
+    return <span className={styles.number}>{text}</span>;
 }
 
 /** A time of day (`14:30`), in the format of the locale. */
@@ -423,5 +459,7 @@ export const builtInDisplays: Readonly<Record<string, DisplayEntry>> = {
     location: LocationDisplay,
     country: CountryDisplay,
     region: RegionDisplay,
+    daterange: DateRangeDisplay,
+    money: MoneyDisplay,
     credits: CreditsDisplay,
 };

@@ -136,6 +136,40 @@ describe('displays', () => {
         expect(renderDisplay('region', 'Bavaria')).toHaveTextContent('Bavaria');
     });
 
+    it('shows date ranges in the format of the locale, open at one end or not', () => {
+        expect(
+            renderDisplay('daterange', { start: '2026-11-04', end: '2026-11-06' }),
+        ).toHaveTextContent('Nov 4 – 6, 2026');
+        expect(renderDisplay('daterange', { start: '2026-11-04', end: null })).toHaveTextContent(
+            'From Nov 4, 2026',
+        );
+        expect(renderDisplay('daterange', { start: null, end: '2026-12-01' })).toHaveTextContent(
+            'Until Dec 1, 2026',
+        );
+        expect(
+            renderDisplay(
+                'daterange',
+                { start: '2026-11-05T00:30:00Z', end: '2026-11-05T02:00:00Z' },
+                {
+                    name: 'dates',
+                    type: 'daterange',
+                    settings: { time: true, timeZone: 'America/Toronto' },
+                },
+            ).textContent?.replace(/\s/g, ' '),
+        ).toMatch(/^Nov 4, 2026, 7:30 – 9:00 PM/);
+        expect(renderDisplay('daterange', null)).toHaveTextContent('—');
+    });
+
+    it('shows money in the currency format of the locale', () => {
+        expect(renderDisplay('money', { amount: 125000, currency: 'CAD' }).textContent).toMatch(
+            /^CA\$1,250\.00$/,
+        );
+        expect(renderDisplay('money', { amount: 1250, currency: 'JPY' })).toHaveTextContent(
+            '¥1,250',
+        );
+        expect(renderDisplay('money', 1250)).toHaveTextContent('—');
+    });
+
     it('shows credits: people with their roles', () => {
         expect(
             renderDisplay('credits', [

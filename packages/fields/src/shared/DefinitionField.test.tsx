@@ -91,6 +91,8 @@ describe('fieldsPlugin', () => {
                 'location',
                 'country',
                 'region',
+                'daterange',
+                'money',
                 'credits',
             ].sort(),
         );

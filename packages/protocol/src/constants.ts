@@ -75,6 +75,8 @@ export const BUILT_IN_FIELD_TYPES = [
     'location',
     'country',
     'region',
+    'daterange',
+    'money',
     'credits',
 ] as const;
 export type BuiltInFieldType = (typeof BUILT_IN_FIELD_TYPES)[number];
@@ -89,6 +91,8 @@ export const PORTABLE_RULES = [
     'url',
     'json',
     'tel',
+    'daterange',
+    'money',
     'in',
     'accept',
     'maxSize',
@@ -97,6 +101,10 @@ export const PORTABLE_RULES = [
     'crop',
 ] as const;
 export type PortableRule = (typeof PORTABLE_RULES)[number];
+
+/** Which bounds of a `daterange` value can be `null` (decision 0053). */
+export const DATE_RANGE_OPEN_BOUNDS = ['start', 'end', 'both'] as const;
+export type DateRangeOpenBound = (typeof DATE_RANGE_OPEN_BOUNDS)[number];
 
 /** Layout node types every Panneau frontend renders. */
 export const BUILT_IN_LAYOUT_NODE_TYPES = [

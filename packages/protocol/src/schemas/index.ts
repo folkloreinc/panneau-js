@@ -13,6 +13,7 @@ import {
     CreditRole,
     CreditsValue,
     CursorPagination,
+    DateRangeValue,
     EmbedResponse,
     EmbedValue,
     FieldCheckRequest,
@@ -25,6 +26,7 @@ import {
     MediaItem,
     MediaReference,
     MediaTransform,
+    MoneyValue,
     Pagination,
     Passkey,
     PreviewResponse,
@@ -59,7 +61,15 @@ import {
     User,
     Widget,
 } from './definition';
-import { BlockType, Field, RichTextSettings, RichTextStyle, Rule } from './field';
+import {
+    BlockType,
+    DateRangeSettings,
+    Field,
+    MoneySettings,
+    RichTextSettings,
+    RichTextStyle,
+    Rule,
+} from './field';
 import { actionJsonRules } from './jsonRules';
 import { LayoutNode } from './layout';
 import { Column, Filter, ListCalendar, ListDefinition } from './list';
@@ -98,6 +108,8 @@ export const namedSchemas = {
     Field,
     RichTextStyle,
     RichTextSettings,
+    DateRangeSettings,
+    MoneySettings,
     LayoutNode,
     Column,
     Filter,
@@ -166,6 +178,8 @@ export const namedSchemas = {
     EmbedValue,
     EmbedResponse,
     LocationValue,
+    DateRangeValue,
+    MoneyValue,
     CreditPerson,
     CreditRole,
     Credit,

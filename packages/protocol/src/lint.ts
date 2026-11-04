@@ -63,10 +63,10 @@ function checkResource(resource: ResourceInput, path: string, issues: Validation
                 path: `${path}.list.calendar.field`,
                 message: `No field named \`${calendar.field}\`.`,
             });
-        } else if (field.type !== 'date' && field.type !== 'datetime') {
+        } else if (!['date', 'datetime', 'daterange'].includes(field.type)) {
             issues.push({
                 path: `${path}.list.calendar.field`,
-                message: 'The field of a calendar must be a `date` or a `datetime`.',
+                message: 'The field of a calendar must be a `date`, a `datetime` or a `daterange`.',
             });
         }
         if (
