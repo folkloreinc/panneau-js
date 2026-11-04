@@ -27,6 +27,9 @@ import type {
 import { SEARCH_MAX_LIMIT, readSearchQuery } from '../search';
 import { isRecord } from '../values';
 import { PROBLEM_CONTENT_TYPE } from '../version';
+import { type MockAuthOptions, createMockAuth } from './auth';
+
+export type { MockAuthOptions, MockMail, MockUser } from './auth';
 
 type Values = Record<string, unknown>;
 
@@ -51,6 +54,12 @@ export interface MockBackendOptions {
      * one is a `403` problem.
      */
     context?: MockContextOptions;
+    /**
+     * Users and a session, for the `panneau` auth mode: the auth routes answer, guests get a `401`
+     * on the other routes, and with `auth.emailVerification`, users whose address isn't verified
+     * get its `403` problem (decision 0048). Without it, every request is the user's.
+     */
+    auth?: MockAuthOptions;
 }
 
 /** How the mock backend answers the context of its definition (decision 0045). */
@@ -324,6 +333,7 @@ function writableValues(resource: ResourceInput, body: Values): Values {
  */
 export function createMockBackend(options: MockBackendOptions): MockBackend {
     const { definition, items = {} } = options;
+    const auth = options.auth !== undefined ? createMockAuth(options.auth, definition.auth) : null;
     const store = new Map<string, Item[]>();
     let nextId = 1;
 
@@ -731,6 +741,16 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             return isRecord(body) ? body : {};
         };
 
+        if (auth !== null) {
+            if (segments[0] === 'auth') {
+                return auth.answer(segments.slice(1), method, readBody);
+            }
+            const refused = auth.refuse();
+            if (refused !== null) {
+                return refused;
+            }
+        }
+
         const context = readContext(request.headers.get(CONTEXT_HEADER));
         if (context instanceof Response) {
             return context;
@@ -743,7 +763,8 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
         };
 
         if (segments.length === 1 && segments[0] === 'definition' && method === 'GET') {
-            return json(200, definitionFor(context));
+            const built = definitionFor(context);
+            return json(200, auth !== null ? { ...built, user: auth.user() } : built);
         }
         if (
             segments.length === 3 &&

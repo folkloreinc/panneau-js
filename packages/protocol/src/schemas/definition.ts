@@ -52,10 +52,16 @@ export const Auth = z.looseObject({
             '`panneau`: a login with a single secret, such as an access token, sent as `token` to `POST /auth/login`.',
     }),
     providers: z.array(AuthProvider).optional(),
-    passwordReset: z.boolean().optional(),
+    passwordReset: z.boolean().optional().meta({
+        description:
+            '`panneau`: a "Forgot your password?" link on the login page, through `POST /auth/password/forgot` and `POST /auth/password/reset`.',
+    }),
     twoFactor: z.boolean().optional(),
     passkeys: z.boolean().optional(),
-    emailVerification: z.boolean().optional(),
+    emailVerification: z.boolean().optional().meta({
+        description:
+            "`panneau`: the backend refuses users whose email address isn't verified with a `403` problem of type `urn:panneau:problem:email-unverified`, and verifies it through `POST /auth/email/verification` and `POST /auth/email/verify`.",
+    }),
 });
 
 export const MenuItem = z

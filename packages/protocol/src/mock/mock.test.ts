@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
 import { createDefinition } from '../__fixtures__/definition';
+import { EMAIL_UNVERIFIED_PROBLEM_TYPE } from '../constants';
 import { ListResponse } from '../schemas';
-import { createExampleDefinition, createMockBackend } from './index';
+import { type MockMail, createExampleDefinition, createMockBackend } from './index';
 
 function createBackend() {
     return createMockBackend({
@@ -745,6 +746,107 @@ describe('createMockBackend', () => {
         const response = await createBackend().fetch('/panneau/api/resources/unknown');
         expect(response.status).toBe(404);
         expect(response.headers.get('Content-Type')).toBe('application/problem+json');
+    });
+});
+
+describe('the auth of the mock backend', () => {
+    function createAuthBackend(onMail: (mail: MockMail) => void = () => undefined) {
+        const definition = createDefinition();
+        definition.auth = { mode: 'panneau', passwordReset: true, emailVerification: true };
+        return createMockBackend({
+            definition,
+            auth: {
+                users: [
+                    { email: 'ada@example.com', password: 'secret', name: 'Ada' },
+                    { email: 'eve@example.com', password: 'secret', emailVerified: false },
+                ],
+                loggedIn: null,
+                onMail,
+            },
+        });
+    }
+
+    it('refuses guests, and logs in and out', async () => {
+        const backend = createAuthBackend();
+        const api = (path: string, init?: RequestInit) =>
+            backend.fetch(`/panneau/api/${path}`, init);
+
+        expect((await api('definition')).status).toBe(401);
+        expect((await api('auth/session')).status).toBe(401);
+        const wrong = await api(
+            'auth/login',
+            json({ email: 'ada@example.com', password: 'wrong' }, { method: 'POST' }),
+        );
+        expect(wrong.status).toBe(422);
+
+        const login = await api(
+            'auth/login',
+            json({ email: 'ada@example.com', password: 'secret' }, { method: 'POST' }),
+        );
+        expect(await login.json()).toEqual({
+            user: { id: '1', name: 'Ada', email: 'ada@example.com', abilities: {} },
+        });
+        const definition = (await (await api('definition')).json()) as { user: { id: string } };
+        expect(definition.user.id).toBe('1');
+
+        expect((await api('auth/logout', { method: 'POST' })).status).toBe(204);
+        expect((await api('definition')).status).toBe(401);
+    });
+
+    it('resets a password through the link of its email', async () => {
+        const mails: MockMail[] = [];
+        const backend = createAuthBackend((mail) => mails.push(mail));
+        const post = (path: string, body: unknown) =>
+            backend.fetch(`/panneau/api/${path}`, json(body, { method: 'POST' }));
+
+        expect((await post('auth/password/forgot', { email: 'nobody@example.com' })).status).toBe(
+            204,
+        );
+        expect(mails).toEqual([]);
+        expect((await post('auth/password/forgot', { email: 'not an email' })).status).toBe(422);
+        expect((await post('auth/password/forgot', { email: 'ada@example.com' })).status).toBe(204);
+        const [mail] = mails;
+        expect(mail).toMatchObject({ kind: 'password-reset', to: 'ada@example.com' });
+        expect(mail?.path).toBe(
+            `auth/reset-password?token=${mail?.token ?? ''}&email=ada%40example.com`,
+        );
+
+        const reset = { token: mail?.token, email: 'ada@example.com', password: 'new password' };
+        expect((await post('auth/password/reset', { ...reset, token: 'wrong' })).status).toBe(422);
+        expect((await post('auth/password/reset', { ...reset, password: 'short' })).status).toBe(
+            422,
+        );
+        expect((await post('auth/password/reset', reset)).status).toBe(204);
+        // The token is used, and the reset doesn't log in
+        expect((await post('auth/password/reset', reset)).status).toBe(422);
+        expect((await backend.fetch('/panneau/api/definition')).status).toBe(401);
+        const login = await post('auth/login', {
+            email: 'ada@example.com',
+            password: 'new password',
+        });
+        expect(login.status).toBe(200);
+    });
+
+    it('refuses users whose address is not verified until they verify it', async () => {
+        const mails: MockMail[] = [];
+        const backend = createAuthBackend((mail) => mails.push(mail));
+        const post = (path: string, body?: unknown) =>
+            backend.fetch(`/panneau/api/${path}`, json(body ?? {}, { method: 'POST' }));
+
+        expect((await post('auth/email/verification')).status).toBe(401);
+        await post('auth/login', { email: 'eve@example.com', password: 'secret' });
+        const refused = await backend.fetch('/panneau/api/definition');
+        expect(refused.status).toBe(403);
+        expect(await refused.json()).toMatchObject({ type: EMAIL_UNVERIFIED_PROBLEM_TYPE });
+
+        expect((await post('auth/email/verification')).status).toBe(204);
+        const [mail] = mails;
+        expect(mail).toMatchObject({ kind: 'email-verification', to: 'eve@example.com' });
+        expect(mail?.path).toBe(`auth/verify-email?token=${mail?.token ?? ''}`);
+
+        expect((await post('auth/email/verify', { token: 'wrong' })).status).toBe(422);
+        expect((await post('auth/email/verify', { token: mail?.token })).status).toBe(204);
+        expect((await backend.fetch('/panneau/api/definition')).status).toBe(200);
     });
 });
 

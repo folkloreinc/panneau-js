@@ -39,8 +39,11 @@ function createBackend() {
             { name: 'section', label: 'Section', allLabel: 'All sections' },
         ],
     };
+    // Password reset and email verification (decision 0048).
+    definition.auth = { mode: 'panneau', passwordReset: true, emailVerification: true };
     return createMockBackend({
         definition,
+        auth: { users: [{ email: 'ada@example.com', password: 'secret' }] },
         context: {
             options: (name, before) =>
                 name === 'section' && before.site !== undefined
@@ -240,6 +243,61 @@ describe('runConformance', () => {
         });
     });
 
+    it('checks password reset and email verification when the definition has them', async () => {
+        const backend = createBackend();
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: backend.fetch,
+        });
+        const statuses = Object.fromEntries(report.checks.map((check) => [check.id, check.status]));
+        expect(statuses).toMatchObject({
+            'auth.password-forgot': 'passed',
+            'auth.password-reset': 'passed',
+            'auth.email-verify': 'passed',
+        });
+
+        // A backend that tells which addresses have an account, and accepts any token.
+        const revealing = async (input: string, init?: RequestInit) => {
+            const path = new URL(input).pathname;
+            if (path.endsWith('/auth/password/forgot') && init?.body !== '{}') {
+                return new Response(
+                    JSON.stringify({
+                        type: 'about:blank',
+                        title: 'Invalid',
+                        status: 422,
+                        errors: { email: ['We can’t find a user with that email address.'] },
+                    }),
+                    { status: 422, headers: { 'Content-Type': 'application/problem+json' } },
+                );
+            }
+            if (path.endsWith('/auth/email/verify') || path.endsWith('/auth/password/reset')) {
+                return new Response(null, { status: 204 });
+            }
+            return backend.fetch(input, init);
+        };
+        const broken = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: revealing,
+        });
+        const failed = broken.checks.filter((check) => check.status === 'failed');
+        expect(failed.map((check) => check.id)).toEqual([
+            'auth.password-forgot',
+            'auth.password-reset',
+            'auth.email-verify',
+        ]);
+
+        // Without them, the checks are skipped.
+        const plain = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: createMockBackend({ definition: createDefinition() }).fetch,
+        });
+        expect(
+            plain.checks
+                .filter((check) => check.id.startsWith('auth.'))
+                .map((check) => check.status),
+        ).toEqual(['skipped', 'skipped', 'skipped']);
+    });
+
     it('skips the write checks unless asked', async () => {
         const backend = createBackend();
         const report = await runConformance({
@@ -289,6 +347,9 @@ describe('runConformance', () => {
         expect(report.passed).toBe(false);
         expect(failed).toEqual([
             'context.refused',
+            'auth.password-forgot',
+            'auth.password-reset',
+            'auth.email-verify',
             'uploads.sign',
             'fields.check',
             'list.unknown-resource',

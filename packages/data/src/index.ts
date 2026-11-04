@@ -3,6 +3,7 @@ export type {
     DataAdapter,
     LoginCredentials,
     PasswordCredentials,
+    PasswordReset,
     RequestOptions,
     SearchOptions,
     TokenCredentials,

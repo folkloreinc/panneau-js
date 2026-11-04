@@ -158,3 +158,21 @@ export const CONTEXT_HEADER = 'Panneau-Context';
 
 /** The type of the `403` problem of a value of the context that the user can't use. */
 export const CONTEXT_PROBLEM_TYPE = 'urn:panneau:problem:context';
+
+/**
+ * The type of the `403` problem of a user whose email address isn't verified yet, with
+ * `auth.emailVerification` (decision 0048). The app shows a page that sends a new link.
+ */
+export const EMAIL_UNVERIFIED_PROBLEM_TYPE = 'urn:panneau:problem:email-unverified';
+
+/**
+ * The paths of the auth pages of the app, under `basePath` (decision 0048), that the links of the
+ * backend's emails open:
+ *
+ * - `resetPassword`, with the `token` and the `email` of a password reset in the query;
+ * - `verifyEmail`, with the `token` of an email verification in the query.
+ */
+export const AUTH_PAGE_PATHS = {
+    resetPassword: 'auth/reset-password',
+    verifyEmail: 'auth/verify-email',
+} as const;

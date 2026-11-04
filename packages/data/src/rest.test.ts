@@ -406,6 +406,32 @@ describe('createRestAdapter', () => {
         expect(await requests[0]?.json()).toEqual({ token: 's3cret' });
     });
 
+    it('resets a password and verifies an email address', async () => {
+        const { fetch, requests } = createStubFetch(() => new Response(null, { status: 204 }));
+        const adapter = createRestAdapter({ baseUrl: BASE_URL, fetch });
+
+        await adapter.forgotPassword?.('ada@example.com');
+        await adapter.resetPassword?.({ token: 't1', email: 'ada@example.com', password: 'new' });
+        await adapter.sendEmailVerification?.();
+        await adapter.verifyEmail?.('t2');
+
+        expect(
+            requests.map((request) => `${request.method} ${new URL(request.url).pathname}`),
+        ).toEqual([
+            'POST /panneau/api/auth/password/forgot',
+            'POST /panneau/api/auth/password/reset',
+            'POST /panneau/api/auth/email/verification',
+            'POST /panneau/api/auth/email/verify',
+        ]);
+        expect(await requests[0]?.json()).toEqual({ email: 'ada@example.com' });
+        expect(await requests[1]?.json()).toEqual({
+            token: 't1',
+            email: 'ada@example.com',
+            password: 'new',
+        });
+        expect(await requests[3]?.json()).toEqual({ token: 't2' });
+    });
+
     it('checks a value of a field', async () => {
         const { fetch, requests } = createStubFetch(() =>
             jsonResponse(200, { available: false, suggestion: 'ete-2', prefix: null, url: null }),

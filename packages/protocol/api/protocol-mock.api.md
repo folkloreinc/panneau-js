@@ -14,6 +14,14 @@ export function createExampleDefinition(): DefinitionInput;
 // @public
 export function createMockBackend(options: MockBackendOptions): MockBackend;
 
+// @public
+export interface MockAuthOptions {
+    loggedIn?: string | null;
+    onMail?: (mail: MockMail) => void;
+    // (undocumented)
+    users: MockUser[];
+}
+
 // @public (undocumented)
 export interface MockBackend {
     fetch: (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
@@ -23,6 +31,7 @@ export interface MockBackend {
 
 // @public (undocumented)
 export interface MockBackendOptions {
+    auth?: MockAuthOptions;
     context?: MockContextOptions;
     definition: DefinitionInput;
     // Warning: (ae-forgotten-export) The symbol "EmbedValue" needs to be exported by the entry point index.d.ts
@@ -41,6 +50,28 @@ export interface MockContextOptions {
     // Warning: (ae-forgotten-export) The symbol "ContextOption" needs to be exported by the entry point index.d.ts
     options?: (name: string, before: ContextValues) => ContextOption[];
     scope?: (resource: string, item: Item, values: ContextValues) => boolean;
+}
+
+// @public
+export interface MockMail {
+    // (undocumented)
+    kind: 'password-reset' | 'email-verification';
+    path: string;
+    // (undocumented)
+    to: string;
+    // (undocumented)
+    token: string;
+}
+
+// @public
+export interface MockUser {
+    // (undocumented)
+    email: string;
+    emailVerified?: boolean;
+    id?: string;
+    name?: string;
+    // (undocumented)
+    password: string;
 }
 
 // (No @packageDocumentation comment for this package)

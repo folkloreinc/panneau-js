@@ -1,3 +1,5 @@
+import { AUTH_PAGE_PATHS } from '@panneau/protocol';
+
 /**
  * The client routes of the app, under the base path (see docs/decisions/0019). The shell of
  * Phase 2 builds on them; they are internal until then.
@@ -10,6 +12,24 @@ export type AppRoute =
     | { name: 'resource.edit'; resource: string; id: string }
     | { name: 'page'; page: string; segments?: readonly string[] }
     | { name: 'not-found' };
+
+/** An auth page of the app, which the links of the backend's emails open (decision 0048). */
+export type AuthPage = keyof typeof AUTH_PAGE_PATHS;
+
+/**
+ * The auth page of a path, under the base path and outside the context: `{basePath}/auth/…`.
+ * `null` for every other path.
+ */
+export function matchAuthPage(pathname: string, basePath: string): AuthPage | null {
+    const base = normalizeBasePath(basePath);
+    const rest = pathname.startsWith(`${base}/`)
+        ? pathname.slice(base.length + 1).replace(/\/+$/, '')
+        : null;
+    const found = (Object.keys(AUTH_PAGE_PATHS) as AuthPage[]).find(
+        (page) => AUTH_PAGE_PATHS[page] === rest,
+    );
+    return found ?? null;
+}
 
 /** The base path without its trailing slash: `/panneau/` is `/panneau`, and `/` is ``. */
 export function normalizeBasePath(basePath: string): string {

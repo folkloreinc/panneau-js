@@ -7,6 +7,12 @@
 import { z } from 'zod';
 
 // @public
+export const AUTH_PAGE_PATHS: {
+    readonly resetPassword: "auth/reset-password";
+    readonly verifyEmail: "auth/verify-email";
+};
+
+// @public
 export const BOOT_CONFIG_ELEMENT_ID = "panneau-boot";
 
 // @public
@@ -86,6 +92,9 @@ export interface CursorPageMeta {
     // (undocumented)
     total?: number | null;
 }
+
+// @public
+export const EMAIL_UNVERIFIED_PROBLEM_TYPE = "urn:panneau:problem:email-unverified";
 
 // Warning: (ae-forgotten-export) The symbol "Condition" needs to be exported by the entry point index.d.ts
 //

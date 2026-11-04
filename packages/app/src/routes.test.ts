@@ -1,6 +1,29 @@
 import { describe, expect, it } from 'vitest';
 
-import { type AppRoute, contextPath, matchContext, matchRoute, routePath } from './routes';
+import {
+    type AppRoute,
+    contextPath,
+    matchAuthPage,
+    matchContext,
+    matchRoute,
+    routePath,
+} from './routes';
+
+describe('matchAuthPage', () => {
+    it('matches the auth pages under the base path', () => {
+        expect(matchAuthPage('/panneau/auth/reset-password', '/panneau')).toBe('resetPassword');
+        expect(matchAuthPage('/panneau/auth/verify-email/', '/panneau/')).toBe('verifyEmail');
+        expect(matchAuthPage('/auth/verify-email', '/')).toBe('verifyEmail');
+    });
+
+    it('matches nothing else', () => {
+        expect(matchAuthPage('/panneau', '/panneau')).toBeNull();
+        expect(matchAuthPage('/panneau/auth', '/panneau')).toBeNull();
+        expect(matchAuthPage('/panneau/auth/login', '/panneau')).toBeNull();
+        expect(matchAuthPage('/site/auth/reset-password', '/panneau')).toBeNull();
+        expect(matchAuthPage('/panneau/site/main/auth/reset-password', '/panneau')).toBeNull();
+    });
+});
 
 const routes: [string, Exclude<AppRoute, { name: 'not-found' }>][] = [
     ['/panneau', { name: 'home' }],
