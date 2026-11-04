@@ -121,6 +121,16 @@ export type BuiltInListLayout = (typeof BUILT_IN_LIST_LAYOUTS)[number];
  */
 export const BOOT_CONFIG_ELEMENT_ID = 'panneau-boot';
 
+/**
+ * The units of a `duration` field, from the smallest to the largest: of its value
+ * (`settings.unit`), and of the parts its input shows (`settings.precision` and
+ * `settings.largestUnit`). A day is 24 hours: no calendar is involved.
+ */
+export const DURATION_UNITS = ['seconds', 'minutes', 'hours', 'days'] as const;
+
+/** A unit of a `duration` field. */
+export type DurationUnit = (typeof DURATION_UNITS)[number];
+
 /** The elements a block style of a `richtext` field can apply to. */
 export const RICH_TEXT_STYLE_ELEMENTS = [
     'p',

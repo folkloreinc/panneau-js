@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { PORTABLE_RULES, RICH_TEXT_STYLE_ELEMENTS } from '../constants';
+import { DURATION_UNITS, PORTABLE_RULES, RICH_TEXT_STYLE_ELEMENTS } from '../constants';
 import { Abilities, Condition, Option } from './common';
 
 const message = z
@@ -226,6 +226,30 @@ export const RichTextSettings = z
             'The `settings` of a `richtext` field. Its value is HTML. The toolbar only limits what users add: content that the field stores keeps its elements and attributes.',
     });
 
+/**
+ * The `settings` of a `duration` field: the unit of its value, and the parts its input shows.
+ * `validateDefinition()` checks them.
+ */
+export const DurationSettings = z
+    .looseObject({
+        unit: z.enum(DURATION_UNITS).optional().meta({
+            description:
+                'The unit of the value, a whole number: `seconds` (the default), `minutes`, `hours` or `days`. The `min` and `max` rules are in it too.',
+        }),
+        precision: z.enum(DURATION_UNITS).optional().meta({
+            description:
+                'The smallest part the input shows. Defaults to `unit`; a precision finer than `unit` is raised to it.',
+        }),
+        largestUnit: z.enum(DURATION_UNITS).optional().meta({
+            description:
+                'The largest part the input shows, which has no upper bound: `days` shows days, and hours from 0 to 23. Defaults to the larger of `hours` and `precision`; a largest unit smaller than `precision` is raised to it.',
+        }),
+    })
+    .meta({
+        description:
+            'The `settings` of a `duration` field. Its value is a whole number of `unit`, zero or more. A day is 24 hours.',
+    });
+
 export type Rule = z.infer<typeof Rule>;
 export type BlockType = z.infer<typeof BlockType>;
 export type Field = z.infer<typeof Field>;
@@ -233,3 +257,5 @@ export type Field = z.infer<typeof Field>;
 export type RichTextStyle = z.infer<typeof RichTextStyle>;
 /** The `settings` of a `richtext` field. */
 export type RichTextSettings = z.infer<typeof RichTextSettings>;
+/** The `settings` of a `duration` field. */
+export type DurationSettings = z.infer<typeof DurationSettings>;

@@ -88,6 +88,7 @@ describe('@panneau/protocol/runtime', () => {
             'BUILT_IN_LIST_LAYOUTS',
             'CONTEXT_HEADER',
             'CONTEXT_PROBLEM_TYPE',
+            'DURATION_UNITS',
             'EMAIL_UNVERIFIED_PROBLEM_TYPE',
             'ITEM_ACTION_ABILITIES',
             'PASSWORD_CONFIRMATION_PROBLEM_TYPE',

@@ -1426,6 +1426,37 @@ export const DefinitionTheme: z.ZodObject<{
 export type DefinitionTheme = z.infer<typeof DefinitionTheme>;
 
 // @public
+export const DURATION_UNITS: readonly ["seconds", "minutes", "hours", "days"];
+
+// @public
+export const DurationSettings: z.ZodObject<{
+    unit: z.ZodOptional<z.ZodEnum<{
+        seconds: "seconds";
+        minutes: "minutes";
+        hours: "hours";
+        days: "days";
+    }>>;
+    precision: z.ZodOptional<z.ZodEnum<{
+        seconds: "seconds";
+        minutes: "minutes";
+        hours: "hours";
+        days: "days";
+    }>>;
+    largestUnit: z.ZodOptional<z.ZodEnum<{
+        seconds: "seconds";
+        minutes: "minutes";
+        hours: "hours";
+        days: "days";
+    }>>;
+}, z.core.$loose>;
+
+// @public
+export type DurationSettings = z.infer<typeof DurationSettings>;
+
+// @public
+export type DurationUnit = (typeof DURATION_UNITS)[number];
+
+// @public
 export const EMAIL_UNVERIFIED_PROBLEM_TYPE = "urn:panneau:problem:email-unverified";
 
 // @public (undocumented)
@@ -2434,6 +2465,26 @@ export const namedSchemas: {
                 external: "external";
             }>>;
         }, z.core.$loose>>;
+    }, z.core.$loose>;
+    DurationSettings: z.ZodObject<{
+        unit: z.ZodOptional<z.ZodEnum<{
+            seconds: "seconds";
+            minutes: "minutes";
+            hours: "hours";
+            days: "days";
+        }>>;
+        precision: z.ZodOptional<z.ZodEnum<{
+            seconds: "seconds";
+            minutes: "minutes";
+            hours: "hours";
+            days: "days";
+        }>>;
+        largestUnit: z.ZodOptional<z.ZodEnum<{
+            seconds: "seconds";
+            minutes: "minutes";
+            hours: "hours";
+            days: "days";
+        }>>;
     }, z.core.$loose>;
     LayoutNode: z.ZodObject<{
         type: z.ZodString;

@@ -1,4 +1,4 @@
-/* Hours, minutes and seconds side by side. */
+/* The parts of the duration side by side: days, hours, minutes and seconds. */
 .parts {
     display: flex;
     flex-wrap: wrap;

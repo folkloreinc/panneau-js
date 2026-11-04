@@ -103,6 +103,12 @@ export interface CursorPageMeta {
 }
 
 // @public
+export const DURATION_UNITS: readonly ["seconds", "minutes", "hours", "days"];
+
+// @public
+export type DurationUnit = (typeof DURATION_UNITS)[number];
+
+// @public
 export const EMAIL_UNVERIFIED_PROBLEM_TYPE = "urn:panneau:problem:email-unverified";
 
 // Warning: (ae-forgotten-export) The symbol "Condition" needs to be exported by the entry point index.d.ts

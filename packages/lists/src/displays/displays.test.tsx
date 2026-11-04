@@ -2,11 +2,12 @@ import { screen } from '@testing-library/react';
 import type { ReactElement } from 'react';
 import { describe, expect, it } from 'vitest';
 
+import { fr } from '@panneau/intl';
 import type { Field } from '@panneau/protocol';
 
 import { renderList } from '../__fixtures__/render';
 import type { DisplayEntry } from '../types';
-import { RegionDisplay, builtInDisplays } from './displays';
+import { DurationDisplay, RegionDisplay, builtInDisplays } from './displays';
 
 function renderDisplay(display: string, value: unknown, field: Field | null = null): HTMLElement {
     const Display = builtInDisplays[display] as DisplayEntry;
@@ -134,6 +135,47 @@ describe('displays', () => {
         );
         expect(screen.getAllByTestId('cell').at(-1)).toHaveTextContent('California');
         expect(renderDisplay('region', 'Bavaria')).toHaveTextContent('Bavaria');
+    });
+
+    it('shows durations in the unit of their field, with days', () => {
+        const field = (settings: Record<string, unknown>): Field => ({
+            name: 'duration',
+            type: 'duration',
+            settings,
+        });
+        // 52 hours in hours, to the hour, with days
+        expect(
+            renderDisplay('duration', 52, field({ unit: 'hours', largestUnit: 'days' }))
+                .textContent,
+        ).toBe('2 d 4 h');
+        // Without days, the hours have no bound
+        expect(renderDisplay('duration', 52, field({ unit: 'hours' })).textContent).toBe('52 h');
+        // 90 minutes in minutes
+        expect(renderDisplay('duration', 90, field({ unit: 'minutes' })).textContent).toBe(
+            '1 h 30 min',
+        );
+        expect(renderDisplay('duration', 0, field({ unit: 'days' })).textContent).toBe('0 d');
+        // A precision of hours rounds 1 h 40 min
+        expect(
+            renderDisplay('duration', 100, field({ unit: 'minutes', precision: 'hours' }))
+                .textContent,
+        ).toBe('2 h');
+        // An unknown unit is ignored: seconds
+        expect(renderDisplay('duration', 90, field({ unit: 'weeks' })).textContent).toBe(
+            '1 min 30 s',
+        );
+        renderList(
+            <div data-testid="cell">
+                <DurationDisplay
+                    value={30}
+                    item={{ id: '1' }}
+                    column={{ id: 'value' }}
+                    field={field({ unit: 'days', largestUnit: 'days' })}
+                />
+            </div>,
+            { locale: 'fr', messages: fr },
+        );
+        expect(screen.getAllByTestId('cell').at(-1)).toHaveTextContent('30 j');
     });
 
     it('shows phone numbers, durations, JSON and tags', () => {

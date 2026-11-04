@@ -6,6 +6,7 @@ import { validate, validateDefinition } from '../validate';
 import {
     Action,
     Definition,
+    DurationSettings,
     Field,
     Item,
     ListResponse,
@@ -109,6 +110,17 @@ describe('Field', () => {
                 .success,
         ).toBe(false);
         expect(RichTextSettings.safeParse({ links: { newTab: 'always' } }).success).toBe(false);
+    });
+
+    it('describes the settings of duration fields', () => {
+        expect(DurationSettings.safeParse({}).success).toBe(true);
+        expect(
+            DurationSettings.safeParse({ unit: 'minutes', precision: 'hours', largestUnit: 'days' })
+                .success,
+        ).toBe(true);
+        expect(DurationSettings.safeParse({ unit: 'weeks' }).success).toBe(false);
+        expect(DurationSettings.safeParse({ precision: 'milliseconds' }).success).toBe(false);
+        expect(DurationSettings.safeParse({ largestUnit: 'months' }).success).toBe(false);
     });
 
     it('checks the parameters of known rules', () => {
@@ -248,6 +260,23 @@ describe('validateDefinition', () => {
             `resources.0.fields.${String(count + 1)}.settings.headings.0`,
             `resources.0.fields.${String(count + 2)}.fields.0.settings.styles.0.class`,
             `resources.0.fields.${String(count + 2)}.fields.0.settings.links.newTab`,
+        ]);
+    });
+
+    it('checks the settings of duration fields', () => {
+        const definition = createDefinition();
+        const resource = definition.resources[0];
+        if (resource === undefined) {
+            throw new Error('Fixture has no resource.');
+        }
+        const count = resource.fields.length;
+        resource.fields.push(
+            { name: 'running_time', type: 'duration', settings: { unit: 'minutes' } },
+            { name: 'window', type: 'duration', settings: { unit: 'days', largestUnit: 'weeks' } },
+        );
+        const result = validateDefinition(definition);
+        expect(result.success ? [] : result.issues.map((issue) => issue.path)).toEqual([
+            `resources.0.fields.${String(count + 1)}.settings.largestUnit`,
         ]);
     });
 });

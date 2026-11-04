@@ -55,7 +55,7 @@ import {
     User,
     Widget,
 } from './definition';
-import { BlockType, Field, RichTextSettings, RichTextStyle, Rule } from './field';
+import { BlockType, DurationSettings, Field, RichTextSettings, RichTextStyle, Rule } from './field';
 import { actionJsonRules } from './jsonRules';
 import { LayoutNode } from './layout';
 import { Column, Filter, ListCalendar, ListDefinition } from './list';
@@ -94,6 +94,7 @@ export const namedSchemas = {
     Field,
     RichTextStyle,
     RichTextSettings,
+    DurationSettings,
     LayoutNode,
     Column,
     Filter,

@@ -2,9 +2,10 @@ import { Check, Minus } from 'lucide-react';
 
 import { toReferences } from '@panneau/fields';
 import { getCountryFlag, getCountryName, isCountryCode } from '@panneau/fields/country';
-import { formatDuration } from '@panneau/fields/duration';
+import { formatDuration, getDurationUnits } from '@panneau/fields/duration';
 import { getRegionCountry, getRegionName } from '@panneau/fields/region';
 import { parsePhone } from '@panneau/fields/tel';
+import { fieldsMessages } from '@panneau/intl';
 import { Badge, Icon, type Tone, usePanneauIntl } from '@panneau/ui';
 
 import { messages } from '../messages';
@@ -261,13 +262,23 @@ export function RegionDisplay({ value, field, item }: DisplayProps) {
     );
 }
 
-/** A duration in seconds, with its units: `1 h 5 min`, to the precision of its field. */
+/**
+ * A duration with its units, `1 h 5 min` or `2 d 4 h`: in the unit of its field (seconds by
+ * default), from its largest unit to its precision.
+ */
 export function DurationDisplay({ value, field }: DisplayProps) {
+    const intl = usePanneauIntl();
     if (typeof value !== 'number' || Number.isNaN(value)) {
         return <EmptyValue />;
     }
-    const precision = field?.settings?.precision === 'minutes' ? 'minutes' : 'seconds';
-    return <span className={styles.number}>{formatDuration(value, { precision })}</span>;
+    const labels = {
+        days: intl.formatMessage(fieldsMessages.daysUnit),
+        hours: intl.formatMessage(fieldsMessages.hoursUnit),
+        minutes: intl.formatMessage(fieldsMessages.minutesUnit),
+        seconds: intl.formatMessage(fieldsMessages.secondsUnit),
+    };
+    const units = field !== null ? getDurationUnits(field) : {};
+    return <span className={styles.number}>{formatDuration(value, { ...units, labels })}</span>;
 }
 
 /** JSON on one line, shortened. */
