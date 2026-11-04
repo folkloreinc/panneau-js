@@ -21,26 +21,50 @@ export function isFilterRange(value: unknown): value is FilterRange {
 
 const RANGE_BOUNDS = ['from', 'to'] as const;
 
+/** Compares a value with a bound: numbers as numbers, other values on the length of the bound. */
+function compareBound(value: unknown, bound: string | number): number {
+    if (typeof value === 'number' || typeof bound === 'number') {
+        return Number(value) - Number(bound);
+    }
+    const prefix = String(value).slice(0, bound.length);
+    return prefix < bound ? -1 : prefix > bound ? 1 : 0;
+}
+
+function isOpen(bound: string | number | undefined): bound is undefined | '' {
+    return bound === undefined || bound === '';
+}
+
+function isEmptyBound(value: unknown): boolean {
+    return value === null || value === undefined || value === '';
+}
+
 /**
  * Whether a value is within the bounds of a range filter, both inclusive: the reference of how a
  * backend reads them. Numbers compare as numbers. Other values compare as strings, on the length of
  * the bound, so that a day (`2026-01-31`) includes the times of that day (`2026-01-31T18:00:00Z`).
  * An empty value is never in a range.
+ *
+ * A `daterange` value (`{ start, end }`) is in the range when it overlaps it: it starts on or
+ * before `to`, and ends on or after `from`. Its open bounds never limit the overlap (decision
+ * 0053).
  */
 export function matchesFilterRange(value: unknown, range: FilterRange): boolean {
-    if (value === null || value === undefined || value === '') {
+    if (isEmptyBound(value)) {
         return false;
     }
-    const compare = (bound: string | number): number => {
-        if (typeof value === 'number' || typeof bound === 'number') {
-            return Number(value) - Number(bound);
+    if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
+        const { start, end } = value as { start?: unknown; end?: unknown };
+        if (isEmptyBound(start) && isEmptyBound(end)) {
+            return false;
         }
-        const prefix = String(value).slice(0, bound.length);
-        return prefix < bound ? -1 : prefix > bound ? 1 : 0;
-    };
+        return (
+            (isOpen(range.from) || isEmptyBound(end) || compareBound(end, range.from) >= 0) &&
+            (isOpen(range.to) || isEmptyBound(start) || compareBound(start, range.to) <= 0)
+        );
+    }
     return (
-        (range.from === undefined || range.from === '' || compare(range.from) >= 0) &&
-        (range.to === undefined || range.to === '' || compare(range.to) <= 0)
+        (isOpen(range.from) || compareBound(value, range.from) >= 0) &&
+        (isOpen(range.to) || compareBound(value, range.to) <= 0)
     );
 }
 

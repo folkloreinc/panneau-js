@@ -98,4 +98,18 @@ describe('list queries', () => {
         expect(matchesFilterRange(50, { from: '10', to: '100' })).toBe(true);
         expect(matchesFilterRange(500, { from: '10', to: '100' })).toBe(false);
     });
+
+    it('matches the date ranges that overlap a range, whatever their open bounds', () => {
+        const january = { from: '2026-01-01', to: '2026-01-31' };
+        const range = (start: string | null, end: string | null) => ({ start, end });
+        expect(matchesFilterRange(range('2025-12-20', '2026-01-02'), january)).toBe(true);
+        expect(matchesFilterRange(range('2026-01-31T22:00:00Z', null), january)).toBe(true);
+        expect(matchesFilterRange(range('2025-12-01', '2026-03-01'), january)).toBe(true);
+        expect(matchesFilterRange(range(null, '2026-01-01'), january)).toBe(true);
+        expect(matchesFilterRange(range('2025-12-01', '2025-12-31'), january)).toBe(false);
+        expect(matchesFilterRange(range('2026-02-01', null), january)).toBe(false);
+        expect(matchesFilterRange(range(null, '2025-12-31T23:00:00Z'), january)).toBe(false);
+        expect(matchesFilterRange(range(null, null), january)).toBe(false);
+        expect(matchesFilterRange(range('2020-01-01', null), {})).toBe(true);
+    });
 });

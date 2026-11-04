@@ -1,5 +1,6 @@
 import { evaluateCondition } from './conditions';
 import { PORTABLE_RULES } from './constants';
+import { isCurrencyCode } from './currencies';
 import type { Field, Rule } from './schemas/field';
 import { matchesRatio, renderedCropSize } from './transforms';
 import { getValue, isFilled, isRecord } from './values';
@@ -7,7 +8,10 @@ import { getValue, isFilled, isRecord } from './values';
 /** A rule that a value doesn't satisfy. */
 export interface RuleFailure {
     rule: string;
-    /** The rule's parameter (`max: 120` gives `120`). */
+    /**
+     * The rule's parameter (`max: 120` gives `120`). For `daterange`, what fails: `start` or `end`
+     * (a bound missing where the range isn't open), or `order` (the end is before the start).
+     */
     value?: unknown;
     /** The message set on the rule, if any. */
     message?: string;
@@ -70,6 +74,10 @@ function sizeOf(value: unknown): number | null {
     if (typeof value === 'number') {
         return value;
     }
+    // A `money` value: `min` and `max` apply to its amount, in minor units (decision 0053).
+    if (isRecord(value) && 'currency' in value && typeof value.amount === 'number') {
+        return value.amount;
+    }
     if (typeof value === 'string' || Array.isArray(value)) {
         return value.length;
     }
@@ -117,6 +125,59 @@ function hasCrop(value: unknown, rule: { ratios?: string[]; required?: boolean }
     });
 }
 
+const DAY = /^\d{4}-\d{2}-\d{2}$/;
+const DATE_TIME = /^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}/;
+
+/** A bound of a `daterange`: a day or a date-time, `null` when empty, `undefined` when invalid. */
+function rangeBound(value: unknown): string | null | undefined {
+    if (value === null || value === undefined || value === '') {
+        return null;
+    }
+    if (typeof value !== 'string' || !(DAY.test(value) || DATE_TIME.test(value))) {
+        return undefined;
+    }
+    return toTime(value) !== null ? value : undefined;
+}
+
+/**
+ * What a `daterange` value fails (decision 0053): a bound that is missing or invalid where the range
+ * isn't open (`start`, `end`), or an end before the start (`order`). `null` when it is valid.
+ */
+function checkDateRange(value: unknown, open: unknown): 'start' | 'end' | 'order' | null {
+    if (!isRecord(value)) {
+        return 'start';
+    }
+    const start = rangeBound(value.start);
+    const end = rangeBound(value.end);
+    const openStart = open === 'start' || open === 'both';
+    const openEnd = open === 'end' || open === 'both';
+    if (start === undefined || (start === null && !openStart)) {
+        return 'start';
+    }
+    if (end === undefined || (end === null && !openEnd)) {
+        return 'end';
+    }
+    if (start === null || end === null) {
+        return null;
+    }
+    // Days compare as days; a date-time compares as its instant.
+    const before =
+        DAY.test(start) && DAY.test(end)
+            ? end < start
+            : (toTime(end) as number) < (toTime(start) as number);
+    return before ? 'order' : null;
+}
+
+/** Whether a `money` value has an integer amount, and a currency that the rule allows. */
+function isMoney(value: unknown, currencies: unknown): boolean {
+    if (!isRecord(value) || !Number.isSafeInteger(value.amount)) {
+        return false;
+    }
+    return Array.isArray(currencies) && currencies.length > 0
+        ? currencies.includes(value.currency)
+        : isCurrencyCode(value.currency);
+}
+
 function toTime(value: unknown): number | null {
     if (typeof value !== 'string' && typeof value !== 'number') {
         return null;
@@ -149,6 +210,8 @@ export function checkRules(
             return;
         }
         let valid = true;
+        // What fails, when the rule says more than its parameter (`daterange`).
+        let detail: string | null = null;
         switch (rule.rule) {
             case 'min':
             case 'max': {
@@ -181,6 +244,13 @@ export function checkRules(
                         ? TEL_EXTENSION
                         : TEL
                     ).test(value);
+                break;
+            case 'daterange':
+                detail = checkDateRange(value, (rule as { open?: unknown }).open);
+                valid = detail === null;
+                break;
+            case 'money':
+                valid = isMoney(value, (rule as { currencies?: unknown }).currencies);
                 break;
             case 'in': {
                 const allowed = rule.value as unknown[];
@@ -218,7 +288,7 @@ export function checkRules(
             }
         }
         if (!valid) {
-            failures.push(failure(rule));
+            failures.push(detail !== null ? { ...failure(rule), value: detail } : failure(rule));
         }
     });
     return failures;
@@ -230,30 +300,46 @@ function addFailures(context: Context, path: string, failures: RuleFailure[]) {
     }
 }
 
-/**
- * The rule a type implies: its values are checked whatever rules the field lists. A `tel` field
- * with `settings.extension` allows an extension.
- */
-function impliedRule(field: Field): Rule | undefined {
-    switch (field.type) {
-        case 'json':
-            return { rule: 'json' };
-        case 'tel':
-            return field.settings?.extension === true
-                ? { rule: 'tel', extension: true }
-                : { rule: 'tel' };
-        default:
-            return undefined;
-    }
+/** A string setting of a field. */
+function stringSetting(field: Field, key: string): string | undefined {
+    const value = field.settings?.[key];
+    return typeof value === 'string' && value !== '' ? value : undefined;
 }
 
 /**
+ * The rule each type implies: its values are checked whatever rules the field lists. `tel`,
+ * `daterange` and `money` carry settings of their field: the extension, the open bounds, the
+ * allowed currencies.
+ */
+const IMPLIED_RULES: Readonly<Record<string, (field: Field) => Rule>> = {
+    json: () => ({ rule: 'json' }),
+    tel: (field) =>
+        field.settings?.extension === true ? { rule: 'tel', extension: true } : { rule: 'tel' },
+    daterange: (field) => {
+        const open = stringSetting(field, 'open');
+        return { rule: 'daterange', ...(open !== undefined ? { open } : {}) } as Rule;
+    },
+    money: (field) => {
+        const currency = stringSetting(field, 'currency');
+        const listed = field.settings?.currencies;
+        const currencies =
+            currency !== undefined
+                ? [currency]
+                : Array.isArray(listed)
+                  ? listed.filter((code): code is string => typeof code === 'string')
+                  : [];
+        return { rule: 'money', ...(currencies.length > 0 ? { currencies } : {}) } as Rule;
+    },
+};
+
+/**
  * The rules of a field that apply in the mode, with the one its type implies: `json` for the
- * `json` type, `tel` for the `tel` type. A rule of the same name on the field wins.
+ * `json` type, `tel` for `tel`, `daterange` for `daterange` and `money` for `money`. A rule of
+ * the same name on the field wins.
  */
 function rulesOf(field: Field, mode: CheckOptions['mode']): Rule[] {
     const rules = (field.rules ?? []).filter((rule) => appliesIn(rule, mode));
-    const implied = impliedRule(field);
+    const implied = IMPLIED_RULES[field.type]?.(field);
     return implied !== undefined && !rules.some((rule) => rule.rule === implied.rule)
         ? [...rules, implied]
         : rules;

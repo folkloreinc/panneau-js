@@ -26,6 +26,7 @@ import { getImageUrl } from './images';
 import { InlineCell } from './inline/InlineCell';
 import { getInlineField } from './inline/editable';
 import { builtInLayouts } from './layouts/builtIn';
+import { getCalendarTimeZone } from './layouts/calendarDays';
 import { messages } from './messages';
 import { countSelected, getPageSelection, isItemSelected } from './selection';
 import { ColumnMenu } from './toolbar/ColumnMenu';
@@ -544,6 +545,11 @@ export function ListView({
                     inCalendar
                         ? {
                               field: calendar.field,
+                              timeZone: getCalendarTimeZone(
+                                  [...fields, ...allColumns.map((column) => column.field)].find(
+                                      (field) => field?.name === calendar.field,
+                                  ),
+                              ),
                               month: view.month ?? currentMonth(),
                               onMonthChange: (month) => list.setMonth(month),
                               more:

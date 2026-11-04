@@ -230,6 +230,118 @@ describe('the tel rule', () => {
     });
 });
 
+describe('the daterange rule', () => {
+    it('accepts ranges of days and of date-times that end on or after their start', () => {
+        const rules = [{ rule: 'daterange' as const }];
+        expect(checkRules(rules, { start: '2026-11-04', end: '2026-11-06' })).toEqual([]);
+        expect(checkRules(rules, { start: '2026-11-04', end: '2026-11-04' })).toEqual([]);
+        expect(
+            checkRules(rules, { start: '2026-11-04T23:30:00Z', end: '2026-11-04T19:45:00-04:00' }),
+        ).toEqual([]);
+        expect(checkRules(rules, { start: '2026-11-04', end: '2026-11-05', allDay: true })).toEqual(
+            [],
+        );
+        expect(checkRules(rules, null)).toEqual([]);
+    });
+
+    it('says which bound is missing, or that the end is before the start', () => {
+        const rules = [{ rule: 'daterange' as const }];
+        expect(checkRules(rules, { start: '2026-11-06', end: '2026-11-04' })).toEqual([
+            { rule: 'daterange', value: 'order' },
+        ]);
+        expect(
+            checkRules(rules, { start: '2026-11-04T23:30:00Z', end: '2026-11-04T19:00:00-04:00' }),
+        ).toEqual([{ rule: 'daterange', value: 'order' }]);
+        expect(checkRules(rules, { start: '2026-11-04', end: null })).toEqual([
+            { rule: 'daterange', value: 'end' },
+        ]);
+        expect(checkRules(rules, { start: null, end: '2026-11-04' })).toEqual([
+            { rule: 'daterange', value: 'start' },
+        ]);
+        expect(checkRules(rules, { start: 'tomorrow', end: '2026-11-04' })).toEqual([
+            { rule: 'daterange', value: 'start' },
+        ]);
+        expect(checkRules(rules, '2026-11-04')).toEqual([{ rule: 'daterange', value: 'start' }]);
+    });
+
+    it('leaves the open bounds of the field empty', () => {
+        expect(
+            checkRules([{ rule: 'daterange', open: 'end' }], { start: '2026-11-04', end: null }),
+        ).toEqual([]);
+        expect(
+            checkRules([{ rule: 'daterange', open: 'end' }], { start: null, end: '2026-11-04' }),
+        ).toEqual([{ rule: 'daterange', value: 'start' }]);
+        expect(
+            checkRules([{ rule: 'daterange', open: 'both' }], { start: null, end: '2026-11-04' }),
+        ).toEqual([]);
+    });
+
+    it('applies to every daterange field, with its open bounds', () => {
+        const fields: Field[] = [
+            { name: 'dates', type: 'daterange' },
+            { name: 'run', type: 'daterange', settings: { open: 'end' } },
+        ];
+        expect(
+            checkValues(fields, {
+                dates: { start: '2026-11-04', end: null },
+                run: { start: '2026-11-04', end: null },
+            }),
+        ).toEqual({ dates: [{ rule: 'daterange', value: 'end' }] });
+        expect(
+            checkValues([{ ...fields[0], rules: [{ rule: 'required' }] } as Field], {
+                dates: null,
+            }),
+        ).toEqual({ dates: [{ rule: 'required' }] });
+    });
+});
+
+describe('the money rule', () => {
+    it('accepts integer amounts with a currency', () => {
+        const rules = [{ rule: 'money' as const }];
+        expect(checkRules(rules, { amount: 1250, currency: 'CAD' })).toEqual([]);
+        expect(checkRules(rules, { amount: -500, currency: 'JPY' })).toEqual([]);
+        expect(checkRules(rules, null)).toEqual([]);
+        expect(checkRules(rules, { amount: 12.5, currency: 'CAD' })).toEqual([{ rule: 'money' }]);
+        expect(checkRules(rules, { amount: 1250, currency: null })).toEqual([{ rule: 'money' }]);
+        expect(checkRules(rules, { amount: 1250, currency: 'cad' })).toEqual([{ rule: 'money' }]);
+        expect(checkRules(rules, { amount: 1250, currency: 'ZZZ' })).toEqual([{ rule: 'money' }]);
+        expect(checkRules(rules, 1250)).toEqual([{ rule: 'money' }]);
+    });
+
+    it('applies to every money field, with its currencies', () => {
+        const fields: Field[] = [
+            { name: 'price', type: 'money', settings: { currency: 'CAD' } },
+            { name: 'fee', type: 'money', settings: { currencies: ['EUR', 'USD'] } },
+        ];
+        expect(
+            checkValues(fields, {
+                price: { amount: 100, currency: 'USD' },
+                fee: { amount: 100, currency: 'USD' },
+            }),
+        ).toEqual({ price: [{ rule: 'money' }] });
+    });
+
+    it('checks min and max on the amount, in minor units', () => {
+        const fields: Field[] = [
+            {
+                name: 'price',
+                type: 'money',
+                rules: [
+                    { rule: 'min', value: 100 },
+                    { rule: 'max', value: 10000 },
+                ],
+            },
+        ];
+        expect(checkValues(fields, { price: { amount: 50, currency: 'CAD' } })).toEqual({
+            price: [{ rule: 'min', value: 100 }],
+        });
+        expect(checkValues(fields, { price: { amount: 12000, currency: 'CAD' } })).toEqual({
+            price: [{ rule: 'max', value: 10000 }],
+        });
+        expect(checkValues(fields, { price: { amount: 1250, currency: 'CAD' } })).toEqual({});
+    });
+});
+
 describe('checkValues', () => {
     it('keys failures by dot path, with locales and repeater indexes', () => {
         const failures = checkValues(

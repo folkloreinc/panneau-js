@@ -28,6 +28,14 @@ export const listsMessages = {
     any: defineMessage({ id: 'panneau.lists.any', defaultMessage: 'Any' }),
     from: defineMessage({ id: 'panneau.lists.from', defaultMessage: 'From' }),
     to: defineMessage({ id: 'panneau.lists.to', defaultMessage: 'To' }),
+    rangeFrom: defineMessage<{ start: string }>({
+        id: 'panneau.lists.rangeFrom',
+        defaultMessage: 'From {start}',
+    }),
+    rangeUntil: defineMessage<{ end: string }>({
+        id: 'panneau.lists.rangeUntil',
+        defaultMessage: 'Until {end}',
+    }),
     dateRange: defineMessage<{ from: string; to: string }>({
         id: 'panneau.lists.dateRange',
         defaultMessage: '{from} – {to}',

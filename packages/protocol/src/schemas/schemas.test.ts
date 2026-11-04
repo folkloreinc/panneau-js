@@ -308,7 +308,7 @@ describe('lintDefinition', () => {
         expect(lintDefinition(definition)).toEqual([
             {
                 path: 'resources.0.list.calendar.field',
-                message: 'The field of a calendar must be a `date` or a `datetime`.',
+                message: 'The field of a calendar must be a `date`, a `datetime` or a `daterange`.',
             },
             {
                 path: 'resources.0.list.calendar',
