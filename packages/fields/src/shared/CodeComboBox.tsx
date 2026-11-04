@@ -8,7 +8,7 @@ import type { FieldProps } from './types';
 export interface CodeChoice {
     code: string;
     name: string;
-    prefix?: string;
+    prefix?: ReactNode;
 }
 
 export interface CodeComboBoxProps extends Omit<FieldProps<string>, 'onChange'> {

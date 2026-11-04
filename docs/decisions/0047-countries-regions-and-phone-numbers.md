@@ -1,6 +1,6 @@
 # 0047: Countries, regions and phone numbers
 
-- Status: accepted
+- Status: accepted, amended by [0059](0059-flags-of-regions.md): the regions of Canada and the United States have flags
 - Date: 2026-11-03
 - Changes: the `tel` values of [0033](0033-more-field-types.md)
 

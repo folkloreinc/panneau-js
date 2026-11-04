@@ -95,7 +95,7 @@
     gap: var(--panneau-space-1) var(--panneau-space-3);
 }
 
-/* A value after a flag: a country, a phone number. */
+/* A value after a flag: a country, a region, a phone number. */
 .flagged {
     display: inline-flex;
     align-items: baseline;
@@ -105,4 +105,9 @@
 
 .flag {
     flex: 0 0 auto;
+}
+
+/* The flag of a region is an image: centered on the text, where an emoji sits on its baseline. */
+.regionFlag {
+    align-self: center;
 }

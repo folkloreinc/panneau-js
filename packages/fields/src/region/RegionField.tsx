@@ -6,6 +6,8 @@ import { getFieldProps, getSetting, isString } from '../shared/entry';
 import { messages } from '../shared/messages';
 import type { FieldEntryProps, FieldProps } from '../shared/types';
 import { TextField } from '../text/TextField';
+import { FlagImage } from './RegionFlag';
+import { getRegionFlag, useRegionFlags } from './flags';
 import { getRegions } from './regions';
 
 export interface RegionFieldProps extends FieldProps<string> {
@@ -18,10 +20,12 @@ export interface RegionFieldProps extends FieldProps<string> {
 /**
  * A state, a province or a territory of a country. For the countries that Panneau knows the
  * regions of, a combo box of their names in the user's locale, whose value is the code of the
- * region without its country (`QC`). For the others, the region as typed.
+ * region without its country (`QC`), with their flags for the countries that have them (Canada and
+ * the United States). For the others, the region as typed.
  */
 export function RegionField({ country, placeholder, ...props }: RegionFieldProps) {
     const intl = usePanneauIntl();
+    const flags = useRegionFlags(country);
     const regions = getRegions(country, intl.locale);
     if (regions === null) {
         return (
@@ -35,7 +39,12 @@ export function RegionField({ country, placeholder, ...props }: RegionFieldProps
     return (
         <CodeComboBox
             {...props}
-            choices={regions}
+            choices={regions.map((region) => {
+                const flag = getRegionFlag(flags, region.code);
+                return flag !== undefined
+                    ? { ...region, prefix: <FlagImage src={flag} /> }
+                    : region;
+            })}
             placeholder={placeholder ?? intl.formatMessage(messages.regionPlaceholder)}
             emptyMessage={intl.formatMessage(messages.noRegions)}
         />

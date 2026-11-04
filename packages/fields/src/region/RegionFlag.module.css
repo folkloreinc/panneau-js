@@ -1,0 +1,9 @@
+/* The size of a flag emoji, whatever the shape of the flag: about 4:3 in most emoji fonts. */
+.flag {
+    display: inline-block;
+    flex: none;
+    width: 1.25em;
+    height: 0.9375em;
+    object-fit: contain;
+    vertical-align: -0.125em;
+}

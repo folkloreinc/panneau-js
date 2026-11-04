@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import type { ReactElement } from 'react';
 import { describe, expect, it } from 'vitest';
 
@@ -178,6 +178,23 @@ describe('displays', () => {
         );
         expect(screen.getAllByTestId('cell').at(-1)).toHaveTextContent('California');
         expect(renderDisplay('region', 'Bavaria')).toHaveTextContent('Bavaria');
+    });
+
+    it('shows the flags of the regions that have one, as decorative images', async () => {
+        const province = renderDisplay('region', 'QC', {
+            name: 'province',
+            type: 'region',
+            settings: { country: 'CA' },
+        });
+        await waitFor(() => expect(province.querySelector('img')).toHaveAttribute('alt', ''));
+        expect(province).toHaveTextContent('Quebec');
+        const state = renderDisplay('region', 'JAL', {
+            name: 'state',
+            type: 'region',
+            settings: { country: 'MX' },
+        });
+        expect(state).toHaveTextContent('Jalisco');
+        expect(state.querySelector('img')).toBeNull();
     });
 
     it('shows durations in the unit of their field, with days', () => {

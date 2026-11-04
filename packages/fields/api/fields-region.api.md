@@ -12,10 +12,16 @@ import type { ReactNode } from 'react';
 export function getRegionCountry(field: Field, parentValue: unknown): string | null;
 
 // @public
+export function getRegionFlag(flags: RegionFlags | null, code: string): string | undefined;
+
+// @public
 export function getRegionName(country: string | null | undefined, code: string, locale: string): string | null;
 
 // @public
 export function getRegions(country: string | null | undefined, locale: string): Region[] | null;
+
+// @public
+export function loadRegionFlags(country: string): Promise<RegionFlags | null>;
 
 // @public
 export interface Region {
@@ -27,6 +33,9 @@ export interface Region {
 
 // @public
 export const REGION_COUNTRIES: readonly string[];
+
+// @public
+export const REGION_FLAG_COUNTRIES: readonly string[];
 
 // @public
 export function RegionField(input: RegionFieldProps): JSX.Element;
@@ -46,6 +55,22 @@ export interface RegionFieldProps extends FieldProps<string> {
     // (undocumented)
     placeholder?: string;
 }
+
+// @public
+export function RegionFlag(input: RegionFlagProps): JSX.Element | null;
+
+// @public
+export interface RegionFlagProps {
+    className?: string;
+    code: string;
+    country: string | null | undefined;
+}
+
+// @public
+export type RegionFlags = Readonly<Record<string, string>>;
+
+// @public
+export function useRegionFlags(country: string | null | undefined): RegionFlags | null;
 
 // (No @packageDocumentation comment for this package)
 
