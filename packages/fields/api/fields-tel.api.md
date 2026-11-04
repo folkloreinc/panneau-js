@@ -18,6 +18,12 @@ export function getCallingCode(country: string | null | undefined): string | nul
 export function getPhoneCountries(): string[];
 
 // @public
+export function joinExtension(number: string | null | undefined, extension: string | null | undefined): string | null;
+
+// @public
+export const MAX_EXTENSION_LENGTH = 10;
+
+// @public
 export function parsePhone(value: unknown): PhoneNumber | null;
 
 // @public
@@ -30,10 +36,25 @@ export interface PhoneNumber {
 }
 
 // @public
+export interface PhoneParts {
+    extension: string | null;
+    number: string | null;
+}
+
+// @public
+export function readExtension(text: string): {
+    number: string;
+    extension: string;
+} | null;
+
+// @public
 export function readPhone(text: string, country: string | null): {
     value: string | null;
     country: string | null;
 };
+
+// @public
+export function splitExtension(value: string | null | undefined): PhoneParts;
 
 // @public
 export function TelField(input: TelFieldProps): JSX.Element;
@@ -48,6 +69,7 @@ export function TelFieldEntry(props: FieldEntryProps): JSX.Element;
 // @public (undocumented)
 export interface TelFieldProps extends Omit<TextFieldProps, 'type' | 'inputMode' | 'prefix' | 'maxLength' | 'secret'> {
     country?: string | null;
+    extension?: boolean;
 }
 
 // (No @packageDocumentation comment for this package)

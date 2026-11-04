@@ -177,6 +177,57 @@ describe('the tel rule', () => {
         });
         expect(checkValues(fields, { phone: '+15145550199' })).toEqual({});
     });
+
+    it('refuses an extension, unless the rule allows one', () => {
+        const rules = [{ rule: 'tel' as const }];
+        expect(checkRules(rules, '+15145550199;ext=123')).toEqual([{ rule: 'tel' }]);
+        const extension = [{ rule: 'tel' as const, extension: true }];
+        expect(checkRules(extension, '+15145550199;ext=123')).toEqual([]);
+        expect(checkRules(extension, '+15145550199;ext=1234567890')).toEqual([]);
+        expect(checkRules(extension, '+15145550199')).toEqual([]);
+        expect(checkRules(extension, '+15145550199;ext=12345678901')).toEqual([{ rule: 'tel' }]);
+        expect(checkRules(extension, '+15145550199;ext=')).toEqual([{ rule: 'tel' }]);
+        expect(checkRules(extension, '+15145550199;ext=12a')).toEqual([{ rule: 'tel' }]);
+        expect(checkRules(extension, '+15145550199 ext. 123')).toEqual([{ rule: 'tel' }]);
+        expect(checkRules(extension, '514 555;ext=123')).toEqual([{ rule: 'tel' }]);
+        expect(checkRules(extension, ';ext=123')).toEqual([{ rule: 'tel' }]);
+    });
+
+    it('allows an extension on tel fields with the extension setting', () => {
+        const value = { phone: '+15145550199;ext=123' };
+        expect(checkValues([{ name: 'phone', type: 'tel' }], value)).toEqual({
+            phone: [{ rule: 'tel' }],
+        });
+        expect(
+            checkValues([{ name: 'phone', type: 'tel', settings: { extension: false } }], value),
+        ).toEqual({ phone: [{ rule: 'tel' }] });
+        expect(
+            checkValues([{ name: 'phone', type: 'tel', settings: { extension: true } }], value),
+        ).toEqual({});
+    });
+
+    it('keeps the tel rule of the field instead of the one its type implies', () => {
+        const value = { phone: '+15145550199;ext=123' };
+        expect(
+            checkValues(
+                [
+                    {
+                        name: 'phone',
+                        type: 'tel',
+                        settings: { extension: true },
+                        rules: [{ rule: 'tel', message: 'No extensions here.' }],
+                    },
+                ],
+                value,
+            ),
+        ).toEqual({ phone: [{ rule: 'tel', message: 'No extensions here.' }] });
+        expect(
+            checkValues(
+                [{ name: 'phone', type: 'tel', rules: [{ rule: 'tel', extension: true }] }],
+                value,
+            ),
+        ).toEqual({});
+    });
 });
 
 describe('the providers rule', () => {
