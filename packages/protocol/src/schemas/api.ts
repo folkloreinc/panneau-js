@@ -485,6 +485,73 @@ export const LocationValue = z
     })
     .meta({ description: 'The value of a `location` field: a point, and its address.' });
 
+export const AddressValue = z
+    .looseObject({
+        street: z.string().optional().meta({ description: 'The number and the street.' }),
+        unit: z.string().optional().meta({ description: 'An apartment, a suite or a floor.' }),
+        city: z.string().optional(),
+        region: z.string().optional().meta({
+            description:
+                'A value of the `region` type for the country: the code of the region without its country (`QC`) for the countries Panneau knows the regions of, the text as typed for the others.',
+        }),
+        postalCode: z.string().optional().meta({
+            description: 'Normalized for its country: `H2X 1Y4`, `12345-6789`.',
+        }),
+        country: z
+            .string()
+            .regex(/^[A-Z]{2}$/)
+            .optional()
+            .meta({ description: 'An ISO 3166-1 alpha-2 code: `CA`.' }),
+        point: z
+            .looseObject({ lat: z.number().min(-90).max(90), lng: z.number().min(-180).max(180) })
+            .optional()
+            .meta({ description: 'The place of the address on a map, with `settings.point`.' }),
+    })
+    .meta({
+        description:
+            'The value of an `address` field (decision 0053): the parts of a postal address, the empty ones left out.',
+    });
+
+export const LinkValue = z
+    .looseObject({
+        type: z.string().min(1).meta({
+            description:
+                'The type of the link: `url`, `page`, `email`, `tel`, `file`, or a type of the site.',
+        }),
+        url: z.string().optional().meta({
+            description:
+                'The `href` of the link: `https://…`, `mailto:…`, `tel:+…`, or the text of a type of the site. For `page` and `file` links, the URL the backend resolved, in items only.',
+        }),
+        page: z
+            .union([
+                z.string(),
+                z.looseObject({
+                    id: z.string(),
+                    resource: z.string().optional(),
+                    label: z.string().optional(),
+                }),
+            ])
+            .optional()
+            .meta({
+                description:
+                    '`page` links: the item, `{ "id", "resource", "label" }` in items, its id or `{ "id", "resource" }` in requests.',
+            }),
+        file: z
+            .union([z.string(), z.looseObject({ id: z.string() })])
+            .optional()
+            .meta({ description: '`file` links: the media, as a `media` value.' }),
+        label: z
+            .union([z.string(), z.record(z.string(), z.string().nullable())])
+            .nullable()
+            .optional()
+            .meta({
+                description:
+                    'The words of the link, per locale; a string in a `localized` link field.',
+            }),
+        newTab: z.boolean().optional().meta({ description: 'The link opens in a new tab.' }),
+    })
+    .meta({ description: 'The value of a `link` field (decision 0054).' });
+
 export type Item = z.infer<typeof Item>;
 export type Pagination = z.infer<typeof Pagination>;
 export type ItemResponse = z.infer<typeof ItemResponse>;
@@ -522,3 +589,5 @@ export type PreviewResponse = z.infer<typeof PreviewResponse>;
 export type EmbedValue = z.infer<typeof EmbedValue>;
 export type EmbedResponse = z.infer<typeof EmbedResponse>;
 export type LocationValue = z.infer<typeof LocationValue>;
+export type AddressValue = z.infer<typeof AddressValue>;
+export type LinkValue = z.infer<typeof LinkValue>;

@@ -1,5 +1,7 @@
+import { getAddressRequiredParts, isPostalCode } from './addresses';
 import { evaluateCondition } from './conditions';
 import { PORTABLE_RULES } from './constants';
+import { getLinkTypes } from './links';
 import type { Field, Rule } from './schemas/field';
 import { matchesRatio, renderedCropSize } from './transforms';
 import { getValue, isFilled, isRecord } from './values';
@@ -175,6 +177,16 @@ export function checkRules(
             case 'tel':
                 valid = typeof value !== 'string' || TEL.test(value);
                 break;
+            case 'postalCode': {
+                // The country is a code, or another field of the form (decision 0053)
+                const country = isRecord(rule.value)
+                    ? getValue(root, String(rule.value.field))
+                    : rule.value;
+                valid =
+                    typeof value !== 'string' ||
+                    isPostalCode(value, typeof country === 'string' ? country : null);
+                break;
+            }
             case 'in': {
                 const allowed = rule.value as unknown[];
                 const values = Array.isArray(value) ? value : [value];
@@ -241,6 +253,95 @@ function rulesOf(field: Field, mode: CheckOptions['mode']): Rule[] {
         : rules;
 }
 
+/**
+ * The checks of the parts of an `address` (decision 0053): a filled address has its required
+ * parts, and a postal code of its country.
+ */
+function checkAddress(field: Field, value: unknown, path: string, context: Context) {
+    if (!isRecord(value) || !Object.values(value).some(isFilled)) {
+        return;
+    }
+    getAddressRequiredParts(field).forEach((part) => {
+        if (!isFilled(value[part])) {
+            addFailures(context, `${path}.${part}`, [{ rule: 'required' }]);
+        }
+    });
+    const { postalCode, country } = value;
+    if (
+        typeof postalCode === 'string' &&
+        isFilled(postalCode) &&
+        !isPostalCode(postalCode, typeof country === 'string' ? country : null)
+    ) {
+        addFailures(context, `${path}.postalCode`, [{ rule: 'postalCode' }]);
+    }
+}
+
+/** Whether a string is an email address. */
+const isEmail = (text: string) => EMAIL.test(text);
+
+/** Whether the `url` of a link of a type is valid: the `rule` it fails, or `null`. */
+function checkLinkUrl(type: string, url: string, pattern: string | undefined): string | null {
+    switch (type) {
+        case 'url':
+            return /^https?:\/\//i.test(url) && URL.canParse(url) ? null : 'url';
+        case 'email':
+            // `mailto:` and an address, with a query (`?subject=`) if any
+            return /^mailto:/i.test(url) && isEmail(url.slice(7).split('?')[0] ?? '')
+                ? null
+                : 'email';
+        case 'tel':
+            return /^tel:/i.test(url) && TEL.test(url.slice(4)) ? null : 'tel';
+        default:
+            return pattern === undefined || new RegExp(pattern).test(url) ? null : 'pattern';
+    }
+}
+
+/**
+ * The checks of the parts of a `link` (decision 0054): a type of the field, the URL of its type,
+ * its page or its file, and its label when the field requires one.
+ */
+function checkLink(field: Field, value: unknown, path: string, context: Context) {
+    if (!isRecord(value)) {
+        return;
+    }
+    const types = getLinkTypes(field);
+    const type = types.find((candidate) => candidate.id === value.type);
+    if (type === undefined) {
+        addFailures(context, `${path}.type`, [
+            { rule: 'in', value: types.map((candidate) => candidate.id) },
+        ]);
+        return;
+    }
+    if (type.id === 'page' || type.id === 'file') {
+        if (!isFilled(value[type.id])) {
+            addFailures(context, `${path}.${type.id}`, [{ rule: 'required' }]);
+        }
+    } else if (typeof value.url !== 'string' || !isFilled(value.url)) {
+        addFailures(context, `${path}.url`, [{ rule: 'required' }]);
+    } else {
+        const failed = checkLinkUrl(type.id, value.url.trim(), type.pattern);
+        if (failed !== null) {
+            addFailures(context, `${path}.url`, [
+                failed === 'pattern' ? { rule: 'pattern', value: type.pattern } : { rule: failed },
+            ]);
+        }
+    }
+    const label = value.label;
+    const hasLabel = isRecord(label) ? Object.values(label).some(isFilled) : isFilled(label);
+    if (field.settings?.label === 'required' && !hasLabel) {
+        addFailures(context, `${path}.label`, [{ rule: 'required' }]);
+    }
+}
+
+/** The checks of the parts of a value that the field's type implies. */
+function checkParts(field: Field, value: unknown, path: string, context: Context) {
+    if (field.type === 'address') {
+        checkAddress(field, value, path, context);
+    } else if (field.type === 'link') {
+        checkLink(field, value, path, context);
+    }
+}
+
 function checkFieldValue(field: Field, value: unknown, path: string, context: Context) {
     const rules = rulesOf(field, context.mode);
     if (field.localized === true) {
@@ -269,11 +370,13 @@ function checkFieldValue(field: Field, value: unknown, path: string, context: Co
                 `${path}.${locale}`,
                 checkRules(others, localeValue, context.root, context.mode),
             );
+            checkParts(field, localeValue, `${path}.${locale}`, context);
         });
         return;
     }
 
     addFailures(context, path, checkRules(rules, value, context.root, context.mode));
+    checkParts(field, value, path, context);
 
     if (field.type === 'group' && field.fields !== undefined && isRecord(value)) {
         checkFields(field.fields, value, `${path}.`, context);

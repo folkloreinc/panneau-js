@@ -7,6 +7,12 @@
 import { z } from 'zod';
 
 // @public
+export const ADDRESS_PARTS: readonly ["country", "street", "unit", "city", "region", "postalCode"];
+
+// @public
+export type AddressPart = (typeof ADDRESS_PARTS)[number];
+
+// @public
 export const AUTH_ERROR_CODES: readonly ["provider", "email", "domain", "access"];
 
 // @public
@@ -28,7 +34,7 @@ export const BOOT_CONFIG_ELEMENT_ID = "panneau-boot";
 export const BUILT_IN_ACTIONS: readonly ["show", "edit", "duplicate", "delete", "restore", "export", "import"];
 
 // @public
-export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "image", "relation", "group", "repeater", "slug", "tel", "range", "duration", "json", "tags", "embed", "location", "country", "region"];
+export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "image", "relation", "group", "repeater", "slug", "tel", "range", "duration", "json", "tags", "embed", "location", "country", "region", "address", "link"];
 
 // @public
 export const BUILT_IN_ITEM_ACTIONS: readonly ["show", "edit", "duplicate", "delete"];
@@ -38,6 +44,9 @@ export const BUILT_IN_LAYOUT_NODE_TYPES: readonly ["row", "column", "section", "
 
 // @public
 export const BUILT_IN_LINK_ACTIONS: readonly ["show", "edit"];
+
+// @public
+export const BUILT_IN_LINK_TYPES: readonly ["url", "page", "email", "tel", "file"];
 
 // @public
 export const BUILT_IN_LIST_LAYOUTS: readonly ["table", "cards", "gallery", "calendar"];
@@ -56,6 +65,9 @@ export type BuiltInLayoutNodeType = (typeof BUILT_IN_LAYOUT_NODE_TYPES)[number];
 
 // @public (undocumented)
 export type BuiltInLinkAction = (typeof BUILT_IN_LINK_ACTIONS)[number];
+
+// @public
+export type BuiltInLinkType = (typeof BUILT_IN_LINK_TYPES)[number];
 
 // @public (undocumented)
 export type BuiltInListLayout = (typeof BUILT_IN_LIST_LAYOUTS)[number];
@@ -103,6 +115,9 @@ export interface CursorPageMeta {
 }
 
 // @public
+export const DEFAULT_ADDRESS_REQUIRED_PARTS: readonly AddressPart[];
+
+// @public
 export const EMAIL_UNVERIFIED_PROBLEM_TYPE = "urn:panneau:problem:email-unverified";
 
 // Warning: (ae-forgotten-export) The symbol "Condition" needs to be exported by the entry point index.d.ts
@@ -128,6 +143,15 @@ export function formatContextHeader(values: Readonly<Record<string, string | nul
 export function fromSearchParams(params: URLSearchParams): ListQuery;
 
 // @public
+export function getAddressRequiredParts(field: Pick<Field, 'settings'>): AddressPart[];
+
+// @public
+export function getLinkNewTab(field: Pick<Field, 'settings'>): LinkNewTab;
+
+// @public
+export function getLinkTypes(field: Pick<Field, 'resource' | 'settings'>): LinkType[];
+
+// @public
 export function getMediaLibraries(definition: MediaLibrariesDefinition | null, field: {
     resource?: string | readonly string[] | undefined;
 }): string[];
@@ -136,19 +160,31 @@ export function getMediaLibraries(definition: MediaLibrariesDefinition | null, f
 export function getValue(values: unknown, path: string): unknown;
 
 // @public
+export function isAddressPart(value: unknown): value is AddressPart;
+
+// @public
 export function isBuiltInItemAction(id: string): id is BuiltInItemAction;
 
 // @public
 export function isBuiltInLink(id: string): id is BuiltInLinkAction;
 
 // @public
+export function isBuiltInLinkType(type: string): type is BuiltInLinkType;
+
+// @public
 export function isCursorPage(meta: object): meta is CursorPageMeta;
+
+// @public
+export function isExternalUrl(url: string): boolean;
 
 // @public
 export function isFilled(value: unknown): boolean;
 
 // @public
 export function isFilterRange(value: unknown): value is FilterRange;
+
+// @public
+export function isPostalCode(code: string, country?: string | null): boolean;
 
 // Warning: (ae-forgotten-export) The symbol "Problem" needs to be exported by the entry point index.d.ts
 //
@@ -160,6 +196,17 @@ export function isSearchableResource(resource: Omit<SearchableResource, 'id'>): 
 
 // @public
 export const ITEM_ACTION_ABILITIES: Readonly<Record<BuiltInItemAction, string>>;
+
+// @public
+export type LinkNewTab = 'choose' | 'external' | 'never';
+
+// @public
+export interface LinkType {
+    id: string;
+    label?: string;
+    pattern?: string;
+    placeholder?: string;
+}
 
 // Warning: (ae-forgotten-export) The symbol "DefinitionInput" needs to be exported by the entry point index.d.ts
 //
@@ -202,6 +249,9 @@ export interface MediaLibrariesDefinition {
 export function mergeThemes(...themes: readonly PartialTheme[]): Theme;
 
 // @public
+export function normalizePostalCode(code: string, country?: string | null): string;
+
+// @public
 export function parseContextHeader(header: string | null | undefined): ContextValues;
 
 // @public
@@ -214,10 +264,13 @@ export type PartialTheme = Partial<Theme>;
 export const PASSWORD_CONFIRMATION_PROBLEM_TYPE = "urn:panneau:problem:password-confirmation";
 
 // @public
-export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "json", "tel", "in", "accept", "maxSize", "before", "after", "crop"];
+export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "json", "tel", "postalCode", "in", "accept", "maxSize", "before", "after", "crop"];
 
 // @public (undocumented)
 export type PortableRule = (typeof PORTABLE_RULES)[number];
+
+// @public
+export const POSTAL_CODE_COUNTRIES: readonly string[];
 
 // @public
 export const PROBLEM_CONTENT_TYPE = "application/problem+json";
@@ -249,6 +302,13 @@ export function renderedCropSize(transform: Pick<MediaTransform, 'crop' | 'rotat
 
 // @public
 export const RESERVED_ROUTE_SEGMENTS: readonly ["resources", "pages", "media", "search", "account", "auth"];
+
+// @public
+export function resolveLinkNewTab(newTab: LinkNewTab, link: {
+    type?: unknown;
+    url?: unknown;
+    newTab?: unknown;
+}): boolean;
 
 // @public
 export const RICH_TEXT_STYLE_ELEMENTS: readonly ["p", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "ul", "ol", "li"];

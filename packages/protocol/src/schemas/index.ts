@@ -7,6 +7,7 @@ import {
     ActionResult,
     ActionRun,
     ActionRunResponse,
+    AddressValue,
     ContextOptionsResponse,
     CursorPagination,
     EmbedResponse,
@@ -15,6 +16,7 @@ import {
     FieldCheckResponse,
     Item,
     ItemResponse,
+    LinkValue,
     ListResponse,
     LocationValue,
     MediaInfo,
@@ -55,7 +57,16 @@ import {
     User,
     Widget,
 } from './definition';
-import { BlockType, Field, RichTextSettings, RichTextStyle, Rule } from './field';
+import {
+    AddressSettings,
+    BlockType,
+    Field,
+    LinkSettings,
+    LinkTypeSetting,
+    RichTextSettings,
+    RichTextStyle,
+    Rule,
+} from './field';
 import { actionJsonRules } from './jsonRules';
 import { LayoutNode } from './layout';
 import { Column, Filter, ListCalendar, ListDefinition } from './list';
@@ -94,6 +105,9 @@ export const namedSchemas = {
     Field,
     RichTextStyle,
     RichTextSettings,
+    LinkTypeSetting,
+    LinkSettings,
+    AddressSettings,
     LayoutNode,
     Column,
     Filter,
@@ -162,6 +176,8 @@ export const namedSchemas = {
     EmbedValue,
     EmbedResponse,
     LocationValue,
+    AddressValue,
+    LinkValue,
 } satisfies Record<string, z.ZodType>;
 
 /** A registry of the named schemas, used to reference them by name in generated files. */

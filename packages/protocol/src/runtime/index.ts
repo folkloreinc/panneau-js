@@ -6,6 +6,22 @@ export { PROBLEM_CONTENT_TYPE, PROTOCOL_VERSION } from '../version';
 export * from '../constants';
 export { type CheckOptions, type RuleFailure, checkRules, checkValues } from '../rules';
 export { evaluateCondition } from '../conditions';
+export {
+    POSTAL_CODE_COUNTRIES,
+    getAddressRequiredParts,
+    isAddressPart,
+    isPostalCode,
+    normalizePostalCode,
+} from '../addresses';
+export {
+    type LinkNewTab,
+    type LinkType,
+    getLinkNewTab,
+    getLinkTypes,
+    isBuiltInLinkType,
+    isExternalUrl,
+    resolveLinkNewTab,
+} from '../links';
 export { getMediaLibraries, type MediaLibrariesDefinition } from '../libraries';
 export { matchesRatio, parseRatio, renderedCropSize } from '../transforms';
 export { lintDefinition } from '../lint';
