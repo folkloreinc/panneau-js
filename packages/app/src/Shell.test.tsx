@@ -1066,6 +1066,44 @@ describe('the app shell', () => {
         expect(await screen.findByRole('link', { name: 'Contact' })).toBeInTheDocument();
     });
 
+    it('shows the images of a media library in its gallery and its table, without itemImage', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        renderApp(
+            {
+                resources: [
+                    {
+                        id: 'pages',
+                        kind: 'media',
+                        label: { singular: 'page', plural: 'pages' },
+                        itemTitle: 'title',
+                        fields: [
+                            { name: 'file', type: 'file' },
+                            { name: 'title', type: 'text' },
+                        ],
+                        list: { layouts: ['gallery', 'table'] },
+                    },
+                ],
+            },
+            [],
+            (backend) => {
+                const [about] = backend.items('pages');
+                Object.assign(about ?? {}, {
+                    media: { type: 'image', thumbnailUrl: 'https://example.com/about.jpg' },
+                });
+            },
+        );
+        const gallery = await screen.findByRole('list', { name: 'Pages' });
+        expect(await within(gallery).findByRole('link', { name: 'About us' })).toBeInTheDocument();
+        expect(gallery.querySelector('img')).toHaveAttribute(
+            'src',
+            'https://example.com/about.jpg',
+        );
+        await user.click(screen.getByRole('radio', { name: 'Table' }));
+        const table = await screen.findByRole('table', { name: 'Pages' });
+        expect(table.querySelector('img')).toHaveAttribute('src', 'https://example.com/about.jpg');
+    });
+
     it('edits a field in place in the list, and saves it alone', async () => {
         const user = userEvent.setup();
         window.history.replaceState(null, '', '/panneau/resources/pages');

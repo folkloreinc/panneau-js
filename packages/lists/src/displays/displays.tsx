@@ -13,9 +13,10 @@ import { parsePhone, splitExtension } from '@panneau/fields/tel';
 import { fieldsMessages } from '@panneau/intl';
 import { Badge, Icon, type Tone, usePanneauIntl } from '@panneau/ui';
 
+import { getImageUrl } from '../images';
 import { messages } from '../messages';
 import type { DisplayEntry, DisplayProps } from '../types';
-import { findOption, getFieldOptions, toText } from '../values';
+import { findOption, getFieldOptions, isRecord, toText } from '../values';
 import styles from './Displays.module.css';
 
 /** What a cell shows without a value. Hidden from assistive technologies, which skip the cell. */
@@ -565,24 +566,84 @@ export function ColorDisplay({ value, field }: DisplayProps) {
     );
 }
 
-/** A thumbnail and the name of a media item (or of the first one). */
+/** The text of a media, a reference or a file: its label, name or file name. */
+function mediaLabel(value: Record<string, unknown>): string {
+    for (const key of ['label', 'name', 'filename']) {
+        const text = value[key];
+        if (typeof text === 'string' && text !== '') {
+            return text;
+        }
+    }
+    return '';
+}
+
+/**
+ * A thumbnail and the name of a media (or of the first one), for `media` and `image` values:
+ * a media reference (`{ id, label, media }`), or a media with its URLs.
+ */
 export function MediaDisplay({ value }: DisplayProps) {
     const media: unknown = Array.isArray(value) ? value[0] : value;
-    if (media === null || typeof media !== 'object') {
+    if (!isRecord(media)) {
         return <EmptyValue />;
     }
-    const { thumbnailUrl, url, name, filename } = media as Record<string, unknown>;
-    const source =
-        typeof thumbnailUrl === 'string' ? thumbnailUrl : typeof url === 'string' ? url : null;
-    const label = typeof name === 'string' ? name : typeof filename === 'string' ? filename : '';
+    const source = getImageUrl(media);
+    const label = mediaLabel(media);
     return (
         <span className={styles.media}>
-            {source !== null ? <img className={styles.thumbnail} src={source} alt="" /> : null}
+            {source !== null ? (
+                <img className={styles.thumbnail} src={source} alt="" loading="lazy" />
+            ) : null}
             {label !== '' ? (
                 <span className={styles.text} data-clamp="">
                     {label}
                 </span>
             ) : null}
+        </span>
+    );
+}
+
+/**
+ * Stored files (`file` values): the thumbnail of an image, or an icon, and the name of each file,
+ * linked to its URL.
+ */
+export function FileDisplay({ value }: DisplayProps) {
+    const files = (Array.isArray(value) ? value : [value]).filter(isRecord);
+    if (files.length === 0) {
+        return <EmptyValue />;
+    }
+    return (
+        <span className={styles.files}>
+            {files.map((file, index) => {
+                const image = getImageUrl(file);
+                const name = mediaLabel(file);
+                const content = (
+                    <>
+                        {image !== null ? (
+                            <img className={styles.thumbnail} src={image} alt="" loading="lazy" />
+                        ) : (
+                            <Icon icon={File} size="sm" />
+                        )}
+                        <span className={styles.text} data-clamp="">
+                            {name !== '' ? name : typeof file.url === 'string' ? file.url : ''}
+                        </span>
+                    </>
+                );
+                return typeof file.url === 'string' && file.url !== '' ? (
+                    <a
+                        key={index}
+                        className={`${styles.link} ${styles.media}`}
+                        href={file.url}
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        {content}
+                    </a>
+                ) : (
+                    <span key={index} className={styles.media}>
+                        {content}
+                    </span>
+                );
+            })}
         </span>
     );
 }
@@ -608,6 +669,8 @@ export const builtInDisplays: Readonly<Record<string, DisplayEntry>> = {
     email: EmailDisplay,
     color: ColorDisplay,
     media: MediaDisplay,
+    image: MediaDisplay,
+    file: FileDisplay,
     tel: TelDisplay,
     range: NumberDisplay,
     duration: DurationDisplay,

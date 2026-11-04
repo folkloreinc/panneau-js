@@ -116,8 +116,9 @@ export interface ListViewProps {
     /** The field that titles items, for their label (`itemTitle` of the resource). */
     itemTitle?: string;
     /**
-     * The field shown as the image of items (`itemImage` of the resource): a media reference, a
-     * file or a URL. The `gallery` layout needs it (decision 0044).
+     * The field shown as the image of items (`itemImage` of the resource, or `media` in a media
+     * library): a media reference, a media, a file or a URL. The `gallery` layout needs it
+     * (decision 0044), and the table starts each title with its thumbnail (decision 0061).
      */
     itemImage?: string | undefined;
     /**
@@ -534,6 +535,7 @@ export function ListView({
                     perPage={query.perPage}
                     sort={sort}
                     label={label}
+                    withImages={itemImage !== undefined}
                 />
             );
         }

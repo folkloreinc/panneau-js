@@ -170,6 +170,9 @@ export function getAddressRequiredParts(field: Pick<Field, 'settings'>): Address
 export function getCurrencyDigits(code: string): number;
 
 // @public
+export function getItemImageField(resource: ItemImageResource): string | undefined;
+
+// @public
 export function getLinkNewTab(field: Pick<Field, 'settings'>): LinkNewTab;
 
 // @public
@@ -223,6 +226,14 @@ export function isSearchableResource(resource: Omit<SearchableResource, 'id'>): 
 
 // @public
 export const ITEM_ACTION_ABILITIES: Readonly<Record<BuiltInItemAction, string>>;
+
+// @public
+export interface ItemImageResource {
+    // (undocumented)
+    itemImage?: string | undefined;
+    // (undocumented)
+    kind?: string | undefined;
+}
 
 // @public
 export type LinkNewTab = 'choose' | 'external' | 'never';

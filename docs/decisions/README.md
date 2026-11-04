@@ -66,3 +66,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0058](0058-multiple-countries-embed-providers-color-palettes.md) | Several countries, the providers of an embed, and color palettes              | Proposed                          |
 | [0059](0059-flags-of-regions.md)                                  | Flags of regions                                                              | Proposed                          |
 | [0060](0060-row-actions-colored-icons.md)                         | Row actions are colored icons, and a menu last                                | Proposed                          |
+| [0061](0061-item-images-in-lists.md)                              | The image of items in the table, and in media libraries                       | Proposed                          |

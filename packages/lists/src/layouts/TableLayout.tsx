@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
+import { ArrowDown, ArrowUp, ArrowUpDown, ImageOff } from 'lucide-react';
 
 import { Checkbox, Icon, usePanneauIntl } from '@panneau/ui';
 
@@ -29,8 +29,25 @@ function alignClass(column: ListColumn): string | undefined {
 }
 
 /**
- * Items as a table, with sortable column headers. On narrow lists (phones), each row turns into a
- * block that shows the label of each value.
+ * The thumbnail of an item, before its title (decision 0061): a square of its image, loaded when it
+ * comes into view, or a placeholder. It has no text: the title is next to it.
+ */
+function Thumbnail({ url }: { url: string | null }) {
+    return (
+        <span className={styles.thumbnail}>
+            {url !== null ? (
+                <img src={url} alt="" loading="lazy" decoding="async" />
+            ) : (
+                <Icon icon={ImageOff} size="sm" />
+            )}
+        </span>
+    );
+}
+
+/**
+ * Items as a table, with sortable column headers. With the image of items (`getItemImage`), each
+ * title starts with a thumbnail. On narrow lists (phones), each row turns into a block that shows
+ * the label of each value.
  */
 export function TableLayout({
     items,
@@ -38,6 +55,7 @@ export function TableLayout({
     renderValue,
     getItemLabel,
     getItemHref,
+    getItemImage,
     isCurrent,
     selectable,
     isSelected,
@@ -150,6 +168,13 @@ export function TableLayout({
                                             ) : (
                                                 renderValue(item, column)
                                             );
+                                        const cell = (
+                                            <span>
+                                                {renderCell !== undefined
+                                                    ? renderCell(item, column, content)
+                                                    : content}
+                                            </span>
+                                        );
                                         return (
                                             <td
                                                 key={column.id}
@@ -161,11 +186,14 @@ export function TableLayout({
                                                 <span className={styles.cellLabel}>
                                                     {column.label ?? column.id}
                                                 </span>
-                                                <span>
-                                                    {renderCell !== undefined
-                                                        ? renderCell(item, column, content)
-                                                        : content}
-                                                </span>
+                                                {index === 0 && getItemImage !== undefined ? (
+                                                    <span className={styles.withThumbnail}>
+                                                        <Thumbnail url={getItemImage(item)} />
+                                                        {cell}
+                                                    </span>
+                                                ) : (
+                                                    cell
+                                                )}
                                             </td>
                                         );
                                     })}

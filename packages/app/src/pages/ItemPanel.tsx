@@ -5,8 +5,8 @@ import { type ResolvedResource, getItemActions, getVisibleFields } from '@pannea
 import { ForbiddenError, NotFoundError } from '@panneau/data';
 import { useResourceItem } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
-import { ItemDetails, type ItemDetailsColumn } from '@panneau/lists';
-import type { Field, RouteReference } from '@panneau/protocol';
+import { ItemDetails, type ItemDetailsColumn, getImageUrl } from '@panneau/lists';
+import type { Field, Item, RouteReference } from '@panneau/protocol';
 import {
     Alert,
     Button,
@@ -45,6 +45,16 @@ function toDetailsColumns(fields: readonly Field[]): ItemDetailsColumn[] {
             display: field.display ?? field.type,
             ...(field.type === 'group' ? { columns: toDetailsColumns(field.fields ?? []) } : {}),
         }));
+}
+
+/**
+ * The image of a media of a library, over its details: its thumbnail, or the URL of an image. A
+ * media without one (a document without a thumbnail) shows none, as a media that loads, whose
+ * details draw the skeleton. Its title is the heading.
+ */
+function MediaImage({ item }: { item: Item | undefined }) {
+    const url = item !== undefined ? getImageUrl(item.media) : null;
+    return url !== null ? <img className={styles.mediaImage} src={url} alt="" /> : null;
 }
 
 const SIZES = ['normal', 'wide'] as const;
@@ -130,8 +140,14 @@ export function ItemPanel({
             </Alert>
         );
     } else {
-        // While the item loads, its details and its preview draw their skeleton.
-        const details = <ItemDetails item={item} columns={columns} />;
+        // While the item loads, its details and its preview draw their skeleton. A media shows
+        // its image first (decision 0061).
+        const details = (
+            <>
+                {resource.kind === 'media' ? <MediaImage item={item} /> : null}
+                <ItemDetails item={item} columns={columns} />
+            </>
+        );
         content = hasPreview ? (
             <Tabs
                 selectedKey={tab ?? 'preview'}

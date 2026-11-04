@@ -14,6 +14,7 @@ import { useFormatRuleFailure } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
 import { ListView, getPagingProps } from '@panneau/lists';
 import type { RouteReference } from '@panneau/protocol';
+import { getItemImageField } from '@panneau/protocol/runtime';
 import { LinkButton, usePanneauIntl } from '@panneau/ui';
 
 import { cx } from '../cx';
@@ -150,7 +151,7 @@ export function ResourceListPage({
                     onRetry={() => void refetch()}
                     fields={getVisibleFields(resource.fields)}
                     itemTitle={resource.itemTitle}
-                    itemImage={resource.itemImage}
+                    itemImage={getItemImageField(resource)}
                     // The layouts of the definition, or the table and the cards without any
                     layouts={
                         resource.list?.layouts !== undefined

@@ -22,3 +22,17 @@ export function getMediaLibraries(
         typeof field.resource === 'string' ? [field.resource] : field.resource;
     return named.filter((id) => libraries.includes(id));
 }
+
+/** What `getItemImageField()` reads of a resource. */
+export interface ItemImageResource {
+    kind?: string | undefined;
+    itemImage?: string | undefined;
+}
+
+/**
+ * The key of an item that holds its image (decision 0061): the resource's `itemImage`, or `media`
+ * in a media library, whose items all have one. `undefined` for a resource without an image.
+ */
+export function getItemImageField(resource: ItemImageResource): string | undefined {
+    return resource.itemImage ?? (resource.kind === 'media' ? 'media' : undefined);
+}

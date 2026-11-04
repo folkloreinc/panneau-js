@@ -22,7 +22,12 @@ function renderPanel(
     {
         fields = [],
         values = {},
-    }: { fields?: ResourceInput['fields']; values?: Record<string, unknown> } = {},
+        kind,
+    }: {
+        fields?: ResourceInput['fields'];
+        values?: Record<string, unknown>;
+        kind?: string;
+    } = {},
 ) {
     const input = {
         protocol: 1 as const,
@@ -33,6 +38,7 @@ function renderPanel(
         resources: [
             {
                 id: 'pages',
+                ...(kind !== undefined ? { kind } : {}),
                 label: { singular: 'page', plural: 'pages' },
                 itemTitle: 'title',
                 fields: [{ name: 'title', type: 'text', label: 'Title' }, ...fields],
@@ -87,6 +93,41 @@ describe('ItemPanel', () => {
         expect(await within(panel).findByRole('heading', { name: 'About us' })).toBeInTheDocument();
         expect(within(panel).queryByRole('tab')).toBeNull();
         expect(within(panel).getByRole('term')).toHaveTextContent('Title');
+    });
+
+    it('shows the image of a media over its details', async () => {
+        const panel = renderPanel(undefined, {
+            kind: 'media',
+            fields: [{ name: 'file', type: 'file', label: 'File' }],
+            values: {
+                file: {
+                    name: 'about.heic',
+                    url: 'https://example.com/about.heic',
+                    mime: 'image/heic',
+                },
+                media: {
+                    type: 'image',
+                    url: 'https://example.com/about.heic',
+                    thumbnailUrl: 'https://example.com/about.jpg',
+                },
+            },
+        });
+        await within(panel).findByRole('heading', { name: 'About us' });
+        // The image of the media, and not the original, which browsers don't show
+        expect(panel.querySelectorAll('img')).toHaveLength(1);
+        expect(panel.querySelector('img')).toHaveAttribute('src', 'https://example.com/about.jpg');
+        expect(within(panel).getByRole('link', { name: 'about.heic' })).toHaveAttribute(
+            'href',
+            'https://example.com/about.heic',
+        );
+    });
+
+    it('shows no image for the items of other resources', async () => {
+        const panel = renderPanel(undefined, {
+            values: { media: { type: 'image', thumbnailUrl: 'https://example.com/about.jpg' } },
+        });
+        await within(panel).findByRole('heading', { name: 'About us' });
+        expect(panel.querySelector('img')).toBeNull();
     });
 
     it('lists the values of a group under its label, and leaves repeaters to the form', async () => {

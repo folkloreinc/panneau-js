@@ -144,6 +144,9 @@ export function EmbedDisplay(input: DisplayProps): JSX.Element;
 export function EmptyValue(): JSX.Element;
 
 // @public
+export function FileDisplay(input: DisplayProps): JSX.Element;
+
+// @public
 export interface FilterControlProps {
     // (undocumented)
     filter: Filter;

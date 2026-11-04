@@ -401,7 +401,7 @@ Built-in actions use reserved ids:
 
 **Layouts.** `layouts` lists those a list offers, the first being the default. Clients build in `table`, `cards`, `gallery` and `calendar`, and leave out those they can't show ([decisions/0044](decisions/0044-gallery-and-calendar.md)):
 
-- `gallery` shows the image of each item, its `itemImage` field (a media reference, a file or a URL), and is offered when the resource has one.
+- `gallery` shows the image of each item, its `itemImage` field (a media reference, a media, a file or a URL), and is offered when the resource has one: a media library has one, the `media` of its items. The `table` starts the title of each item with a thumbnail of the same image ([decisions/0061](decisions/0061-item-images-in-lists.md)).
 - `calendar` shows the items of a month on the days of a `date`, `datetime` or `daterange` field (a range on each day it covers, [0053](decisions/0053-date-ranges-and-money.md)), set by `calendar`: `{ "field": "starts_at", "filter": "starts_at", "perPage": 100 }`. `filter` is the list's `date-range` filter on that field (the field's name by default), and `perPage` how many items it asks for a month (100 by default). Instead of a page, the calendar asks for the list's query with that filter set to the days around the month, from 6 days before its first day to 6 days after its last, without `page` or `cursor`: `filter[starts_at][from]=2026-10-26&filter[starts_at][to]=2026-12-06&perPage=100`. When the answer has more items than it gives, the calendar says so. A backend needs nothing else.
 
 **Columns users choose.** The user of a list shows, hides and orders its columns. A column with `"hidden": true` isn't shown until the user shows it; one with `"hideable": false` is always shown. The chosen columns and the layout are the view of the list: clients keep them in the URL with the query, and may remember them for the user. They are never sent to the backend ([decisions/0042](decisions/0042-list-view-columns-and-remembered-view.md)).
@@ -781,7 +781,7 @@ A media library is a resource of kind `media` ([0026](decisions/0026-media-libra
 ```
 
 - **The `file` field**, of type `file` and not `multiple`, holds the original. Its `accept` and `maxSize` are the library's.
-- **Items have a `media`**, which the backend computes from the file. It is read-only: clients never send it. Its `transform` is the media's own transform, from the library's `transform` field: references give it to the fields, which draw a transform for one use over it ([0031](decisions/0031-image-editor-and-image-field.md)).
+- **Items have a `media`**, which the backend computes from the file. It is the image of the items (their `itemImage`) unless the library names another field: the gallery and the thumbnails of its list, search results and pickers show its `thumbnailUrl`, or its `url` for an image ([0061](decisions/0061-item-images-in-lists.md)). It is read-only: clients never send it. Its `transform` is the media's own transform, from the library's `transform` field: references give it to the fields, which draw a transform for one use over it ([0031](decisions/0031-image-editor-and-image-field.md)).
 
     ```jsonc
     {
@@ -894,7 +894,7 @@ Global search ([decisions/0029](decisions/0029-go-to-palette.md)):
     - `q`: the search, trimmed, from 2 to 255 characters. The backend searches it the way the list of each resource reads `q`, within the same scope.
     - `limit`: items per resource, an integer from 1 to 20. Defaults to 5.
     - `resources`: comma-separated ids of searchable resources, to search only those (`resources=pages`). Defaults to every searchable resource.
-- **Results.** The resources with results, in the order of the definition, at most `limit` items each and 20 in all. Items are serialized as in lists. `total`, when the backend counts it, is how many items of the resource match: the list of the resource, with `q`, shows them all. An item's title is its resource's `itemTitle`; `itemSubtitle` and `itemImage` name the fields shown under it and next to it, in search results, cards and pickers.
+- **Results.** The resources with results, in the order of the definition, at most `limit` items each and 20 in all. Items are serialized as in lists. `total`, when the backend counts it, is how many items of the resource match: the list of the resource, with `q`, shows them all. An item's title is its resource's `itemTitle`; `itemSubtitle` and `itemImage` name the fields shown under it and next to it, in search results, cards and pickers; a media library's image is the `media` of its items.
 - **Errors:**
     - an invalid parameter is a `422` problem, with `errors` keyed by parameter (`q`, `limit`, `resources`): a search shorter than 2 characters, a limit out of bounds, or a resource that isn't searchable;
     - a backend can limit how often a user searches: `429`, with `Retry-After` in seconds. Clients wait for the next search, and say so.

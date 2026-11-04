@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getMediaLibraries } from './libraries';
+import { getItemImageField, getMediaLibraries } from './libraries';
 
 const definition = {
     resources: [
@@ -28,5 +28,21 @@ describe('getMediaLibraries', () => {
         expect(getMediaLibraries(definition, { resource: ['pages', 'images', 'unknown'] })).toEqual(
             ['images'],
         );
+    });
+});
+
+describe('getItemImageField', () => {
+    it('is the itemImage of the resource', () => {
+        expect(getItemImageField({ itemImage: 'cover' })).toBe('cover');
+        expect(getItemImageField({ kind: 'media', itemImage: 'poster' })).toBe('poster');
+    });
+
+    it('is the media of the items of a library without one', () => {
+        expect(getItemImageField({ kind: 'media' })).toBe('media');
+    });
+
+    it('is undefined for other resources without one', () => {
+        expect(getItemImageField({})).toBeUndefined();
+        expect(getItemImageField({ kind: 'other' })).toBeUndefined();
     });
 });

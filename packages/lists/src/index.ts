@@ -16,6 +16,7 @@ export {
     EmailDisplay,
     EmbedDisplay,
     EmptyValue,
+    FileDisplay,
     JsonDisplay,
     LocationDisplay,
     MediaDisplay,

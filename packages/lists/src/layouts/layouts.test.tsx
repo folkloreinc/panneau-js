@@ -62,6 +62,59 @@ describe('the gallery', () => {
         expect(getImageUrl({ media: {} })).toBeNull();
         expect(getImageUrl(null)).toBeNull();
     });
+
+    it('reads the URL of images only, or the thumbnail of other media', () => {
+        expect(getImageUrl({ type: 'image', url: 'https://example.com/a.jpg' })).toBe(
+            'https://example.com/a.jpg',
+        );
+        expect(getImageUrl({ type: 'document', url: 'https://example.com/b.pdf' })).toBeNull();
+        expect(
+            getImageUrl({
+                type: 'video',
+                url: 'https://example.com/c.mp4',
+                thumbnailUrl: 'https://example.com/c.jpg',
+            }),
+        ).toBe('https://example.com/c.jpg');
+        expect(getImageUrl({ name: 'd.pdf', url: '/d.pdf', mime: 'application/pdf' })).toBeNull();
+        expect(getImageUrl({ name: 'e.png', url: '/e.png', mime: 'image/png' })).toBe('/e.png');
+        expect(getImageUrl({ name: 'f.heic', url: '/f.heic', mime: 'image/heic' })).toBeNull();
+    });
+});
+
+describe('the thumbnails of the table', () => {
+    it('start each title with the image of its item, or a placeholder', () => {
+        const { container } = renderList(
+            <ListView
+                list={createList()}
+                columns={columns}
+                items={pages.map((page, index) => ({
+                    ...page,
+                    cover: ['https://example.com/a.jpg', null, null][index],
+                }))}
+                itemImage="cover"
+                layouts={['table', 'gallery']}
+            />,
+        );
+        const table = screen.getByRole('table', { name: 'Items' });
+        const images = container.querySelectorAll('img');
+        expect(images).toHaveLength(1);
+        expect(images[0]).toHaveAttribute('src', 'https://example.com/a.jpg');
+        expect(images[0]).toHaveAttribute('alt', '');
+        expect(images[0]).toHaveAttribute('loading', 'lazy');
+        const [first] = within(table).getAllByRole('row').slice(1);
+        expect(within(first as HTMLElement).getAllByRole('cell')[0]).toContainElement(
+            images[0] as HTMLElement,
+        );
+        // The other items show a placeholder, which assistive technologies skip.
+        expect(table.querySelectorAll('td svg[aria-hidden="true"]')).toHaveLength(2);
+    });
+
+    it('are left out without the image of items', () => {
+        const { container } = renderList(
+            <ListView list={createList()} columns={columns} items={pages} layouts={['table']} />,
+        );
+        expect(container.querySelectorAll('img, td svg')).toHaveLength(0);
+    });
 });
 
 describe('the calendar', () => {

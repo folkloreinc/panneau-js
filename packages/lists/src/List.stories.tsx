@@ -310,6 +310,45 @@ export const Gallery: Story = {
 };
 
 /**
+ * The table of a resource with an `itemImage`: each title starts with a square thumbnail, or a
+ * placeholder for the members without a photo (decision 0061).
+ */
+export const TableWithThumbnails: Story = {
+    args: { ...Gallery.args, layouts: ['table', 'gallery'] },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const table = canvas.getByRole('table', { name: 'Members' });
+        const images = table.querySelectorAll('img');
+        await expect(images).toHaveLength(8);
+        await expect(images[0]).toHaveAttribute('alt', '');
+        await expect(images[0]).toHaveAttribute('loading', 'lazy');
+        const fourth = within(table).getAllByRole('row')[4] as HTMLElement;
+        await expect(fourth.querySelector('img')).toBeNull();
+        await expect(within(fourth).getByText('Katherine Johnson')).toBeVisible();
+    },
+};
+
+/** On a phone, the thumbnail stays before the title of each block. */
+export const TableWithThumbnailsOnAPhone: Story = {
+    ...TableWithThumbnails,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const table = canvas.getByRole('table', { name: 'Members' });
+        await expect(table.querySelectorAll('img')).toHaveLength(8);
+        await expect(
+            within(table).getAllByRole('columnheader', { hidden: true })[0],
+        ).not.toBeVisible();
+    },
+    decorators: [
+        (Story) => (
+            <div style={{ maxWidth: 360 }}>
+                <Story />
+            </div>
+        ),
+    ],
+};
+
+/**
  * The calendar: the members on the day they joined, in March (decision 0044). It asks for the
  * days around the month through the `joined_on` filter, and moves from month to month.
  */

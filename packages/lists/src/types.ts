@@ -178,7 +178,10 @@ export interface ListLayoutProps {
     label: string;
     /** The checkbox that selects the page, for layouts that show it in a header. */
     pageSelection: ReactNode;
-    /** The URL of the image of an item (`itemImage` of the resource), for the gallery. */
+    /**
+     * The URL of the image of an item (`itemImage` of the resource), or `null` for an item without
+     * one: the gallery shows it, and the table its thumbnail. `undefined` when items have no image.
+     */
     getItemImage?: ((item: ListItem) => string | null) | undefined;
     /** The month of the calendar, in the `calendar` layout. */
     calendar?: ListCalendarProps | undefined;
