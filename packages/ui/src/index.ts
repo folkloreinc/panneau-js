@@ -38,6 +38,11 @@ export { Checkbox, type CheckboxProps } from './checkbox/Checkbox';
 export { type ChoiceChromeProps } from './checkbox/ChoiceChrome';
 export { ComboBox, type ComboBoxItem, type ComboBoxProps } from './combo-box/ComboBox';
 export { DatePicker, type DatePickerProps } from './date-picker/DatePicker';
+export {
+    DateRangePicker,
+    type DateRangePickerProps,
+    type DateRangePickerValue,
+} from './date-range-picker/DateRangePicker';
 export { Dialog, type DialogProps, DialogTrigger } from './dialog/Dialog';
 export { Disclosure, type DisclosureProps } from './disclosure/Disclosure';
 export { type FieldChromeProps } from './field/FieldParts';

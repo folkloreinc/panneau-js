@@ -1,3 +1,4 @@
+import { formatMoney } from '@panneau/fields/money';
 import type { Field, RuleFailure } from '@panneau/protocol';
 import { usePanneauIntl } from '@panneau/ui';
 
@@ -22,6 +23,28 @@ export function useFormatRuleFailure(
         const step = getPathSteps(fields, path).at(-1);
         const field = step?.field;
         const value = typeof failure.value === 'number' ? failure.value : 0;
+        if ((failure.rule === 'min' || failure.rule === 'max') && field?.type === 'money') {
+            // An amount in minor units, in the currency of the field (decision 0053).
+            const currency = field.settings?.currency;
+            const amount =
+                formatMoney(
+                    { amount: value, currency: typeof currency === 'string' ? currency : null },
+                    intl.locale,
+                ) ?? String(value);
+            return intl.formatMessage(
+                failure.rule === 'min' ? messages.rule.minAmount : messages.rule.maxAmount,
+                { value: amount },
+            );
+        }
+        if (failure.rule === 'daterange') {
+            return intl.formatMessage(
+                failure.value === 'start'
+                    ? messages.rule.daterangeStart
+                    : failure.value === 'end'
+                      ? messages.rule.daterangeEnd
+                      : messages.rule.daterangeOrder,
+            );
+        }
         if (failure.rule === 'min' || failure.rule === 'max') {
             const list =
                 field !== undefined &&
@@ -67,6 +90,8 @@ export function useFormatRuleFailure(
                         | 'minItems'
                         | 'maxItems'
                         | 'cropRatios'
+                        | 'minAmount'
+                        | 'maxAmount'
                     >
                 ],
             );

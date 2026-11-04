@@ -20,6 +20,9 @@ export const uiMessages = {
     clear: defineMessage({ id: 'panneau.ui.clear', defaultMessage: 'Clear' }),
     moreActions: defineMessage({ id: 'panneau.ui.moreActions', defaultMessage: 'More actions' }),
     time: defineMessage({ id: 'panneau.ui.time', defaultMessage: 'Time' }),
+    rangeStart: defineMessage({ id: 'panneau.ui.rangeStart', defaultMessage: 'Start' }),
+    rangeEnd: defineMessage({ id: 'panneau.ui.rangeEnd', defaultMessage: 'End' }),
+    calendar: defineMessage({ id: 'panneau.ui.calendar', defaultMessage: 'Calendar' }),
     tags: defineMessage<{ label: string }>({
         id: 'panneau.ui.tags',
         defaultMessage: 'Tags: {label}',

@@ -101,6 +101,44 @@ describe('the calendar', () => {
         );
     });
 
+    it('shows a date range on each day it covers, and asks for the ranges that overlap the month', () => {
+        const router = createMemoryRouter('month=2027-03');
+        const festivals: ListItem[] = [
+            { id: '1', title: 'Festival', dates: { start: '2027-02-27', end: '2027-03-02' } },
+            { id: '2', title: 'Exhibition', dates: { start: '2027-03-20', end: null } },
+            { id: '3', title: 'Winter', dates: { start: '2027-01-10', end: '2027-02-10' } },
+        ];
+        renderList(
+            <List
+                columns={eventColumns}
+                items={festivals}
+                layouts={['calendar']}
+                calendar={{ field: 'dates', filter: 'dates' }}
+                filters={[{ id: 'dates', type: 'date-range', label: 'Dates' }]}
+                router={router}
+            />,
+        );
+        const grid = screen.getByRole('table', { name: 'Items, March 2027' });
+        const itemsOn = (day: string) => {
+            const cell = within(grid)
+                .getAllByRole('cell')
+                .find(
+                    (candidate) =>
+                        candidate.querySelector('time')?.getAttribute('dateTime') === day,
+                );
+            return within(cell as HTMLElement)
+                .queryAllByRole('listitem')
+                .map((item) => item.textContent);
+        };
+        expect(itemsOn('2027-02-28')).toEqual(['Festival']);
+        expect(itemsOn('2027-03-02')).toEqual(['Festival']);
+        expect(itemsOn('2027-03-03')).toEqual([]);
+        // A range open at its end shows on its first day.
+        expect(itemsOn('2027-03-20')).toEqual(['Exhibition']);
+        expect(itemsOn('2027-03-21')).toEqual([]);
+        expect(grid).not.toHaveTextContent('Winter');
+    });
+
     it('says when a month has more items than it shows', () => {
         renderList(
             <ListView

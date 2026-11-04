@@ -12,6 +12,8 @@ export const listsFr: Record<string, string> = {
     'panneau.lists.from': 'Du',
     'panneau.lists.to': 'Au',
     'panneau.lists.dateRange': '{from} – {to}',
+    'panneau.lists.rangeFrom': 'À partir du {start}',
+    'panneau.lists.rangeUntil': 'Jusqu’au {end}',
     'panneau.lists.yes': 'Oui',
     'panneau.lists.no': 'Non',
     'panneau.lists.sortBy': 'Trier par',
