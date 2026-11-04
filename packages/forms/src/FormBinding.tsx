@@ -7,9 +7,14 @@ import styles from './Form.module.css';
 import { useFormContext, useFormState } from './context';
 import { messages } from './messages';
 
-/** Fields that show the errors of their nested fields themselves. */
+/**
+ * Fields that show the errors of their nested fields themselves: an address and a link show the
+ * errors of each part under its input.
+ */
+const NESTED_TYPES = new Set(['group', 'repeater', 'address', 'link']);
+
 function rendersNestedFields(field: FieldBindingProps['field']): boolean {
-    return field.localized === true || field.type === 'group' || field.type === 'repeater';
+    return field.localized === true || NESTED_TYPES.has(field.type);
 }
 
 /**

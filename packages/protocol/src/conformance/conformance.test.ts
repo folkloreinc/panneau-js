@@ -12,6 +12,11 @@ function createBackend() {
         type: 'text',
         rules: [{ rule: 'required', mode: 'create' }],
     });
+    // An address and a link, whose parts are checked (decisions 0054 and 0055).
+    definition.resources[0]?.fields.push(
+        { name: 'venue', type: 'address' },
+        { name: 'cta', type: 'link', resource: 'pages' },
+    );
     // Abilities of the user (decision 0046): a field they can't see, a resource they can't reach.
     definition.resources[0]?.fields.push({
         name: 'notes',
@@ -339,6 +344,7 @@ describe('runConformance', () => {
             'create',
             'update',
             'update.create-rules',
+            'update.parts',
             'update.single-field',
             'update.conflict',
             'duplicate',
@@ -386,6 +392,7 @@ describe('runConformance', () => {
             'search.invalid',
             'create.invalid',
             'create.implied-rules',
+            'update.parts',
             'update.conflict',
             'duplicate',
             'delete',

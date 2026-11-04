@@ -24,9 +24,13 @@ export interface TextInputProps
         FieldChromeProps {
     type?: 'text' | 'email' | 'url' | 'tel' | 'password' | 'search';
     placeholder?: string;
-    /** Content before the text, inside the control: a unit, a URL prefix, an icon. */
+    /**
+     * Content before the text, inside the control: a unit, a URL prefix, an icon. `null` shows
+     * nothing, but keeps the input in the same control: an adornment that comes and goes as the
+     * text is typed doesn't take the focus away.
+     */
     prefix?: ReactNode;
-    /** Content after the text, inside the control. */
+    /** Content after the text, inside the control. `null` as for `prefix`. */
     suffix?: ReactNode;
     /** Class name of the control (the box around the text). */
     controlClassName?: string;
@@ -72,7 +76,7 @@ export function TextInput({
                     isReadOnly={isReadOnly}
                     isDisabled={props.isDisabled}
                 >
-                    {prefix !== undefined ? (
+                    {prefix !== undefined && prefix !== null ? (
                         <span
                             className={styles.adornment}
                             data-text={typeof prefix === 'string' || undefined}
@@ -81,7 +85,7 @@ export function TextInput({
                         </span>
                     ) : null}
                     <Input placeholder={placeholder} className={cx(styles.bare, inputClassName)} />
-                    {suffix !== undefined ? (
+                    {suffix !== undefined && suffix !== null ? (
                         <span
                             className={styles.adornment}
                             data-text={typeof suffix === 'string' || undefined}

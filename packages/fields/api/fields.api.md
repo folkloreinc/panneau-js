@@ -4,6 +4,7 @@
 
 ```ts
 
+import type { AddressValue } from '@panneau/protocol';
 import { ComponentType } from 'react';
 import { Context } from 'react';
 import type { Definition } from '@panneau/protocol';
@@ -249,6 +250,7 @@ export function formatSize(bytes: number, locale?: string): string;
 
 // @public
 export interface GeocodingResult {
+    address?: Omit<AddressValue, 'point'>;
     // (undocumented)
     label: string;
     // (undocumented)
