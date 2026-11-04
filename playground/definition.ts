@@ -132,7 +132,7 @@ export function createPlaygroundDefinition(): DefinitionInput {
                         name: 'contact',
                         type: 'tel',
                         label: 'Press contact',
-                        settings: { country: 'CA' },
+                        settings: { country: 'CA', extension: true },
                     },
                     {
                         name: 'video',

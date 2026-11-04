@@ -34,7 +34,16 @@ export const Rule = z
             message,
             mode,
         }),
-        z.looseObject({ rule: z.enum(['email', 'url', 'json', 'tel']), message, mode }),
+        z.looseObject({ rule: z.enum(['email', 'url', 'json']), message, mode }),
+        z.looseObject({
+            rule: z.literal('tel'),
+            extension: z.boolean().optional().meta({
+                description:
+                    'The number can have an extension, after `;ext=` as in a `tel:` URI (RFC 3966): `+15145550199;ext=123`, 1 to 10 digits. Without it, a value with an extension fails.',
+            }),
+            message,
+            mode,
+        }),
         z.looseObject({
             rule: z.literal('in'),
             value: z.array(z.union([z.string(), z.number(), z.boolean()])),
@@ -84,7 +93,7 @@ export const Rule = z
     ])
     .meta({
         description:
-            'A portable validation rule. `min` and `max` apply to numbers, and to the length of text and arrays. `accept` lists MIME types (`image/*`). `maxSize` is in bytes. `crop` checks the transform of each image of an `image` or `media` value (decision 0031).',
+            'A portable validation rule. `min` and `max` apply to numbers, and to the length of text and arrays. `accept` lists MIME types (`image/*`). `maxSize` is in bytes. `tel` checks an E.164 number, with an extension when `extension` is `true`. `crop` checks the transform of each image of an `image` or `media` value (decision 0031).',
     });
 
 export const BlockType = z.looseObject({

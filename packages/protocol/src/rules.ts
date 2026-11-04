@@ -40,6 +40,8 @@ interface Context extends CheckOptions {
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 /** An international phone number in E.164: `+`, then 7 to 15 digits, without a leading zero. */
 const TEL = /^\+[1-9]\d{6,14}$/;
+/** The same number, with an optional extension after `;ext=` (RFC 3966): `+15145550199;ext=123`. */
+const TEL_EXTENSION = /^\+[1-9]\d{6,14}(?:;ext=\d{1,10})?$/;
 
 function isKnownRule(rule: Rule): boolean {
     return (PORTABLE_RULES as readonly string[]).includes(rule.rule);
@@ -173,7 +175,12 @@ export function checkRules(
                 valid = isRecord(value) || Array.isArray(value);
                 break;
             case 'tel':
-                valid = typeof value !== 'string' || TEL.test(value);
+                valid =
+                    typeof value !== 'string' ||
+                    ((rule as { extension?: boolean }).extension === true
+                        ? TEL_EXTENSION
+                        : TEL
+                    ).test(value);
                 break;
             case 'in': {
                 const allowed = rule.value as unknown[];
@@ -223,19 +230,30 @@ function addFailures(context: Context, path: string, failures: RuleFailure[]) {
     }
 }
 
-/** The rule each type implies: its values are checked whatever rules the field lists. */
-const IMPLIED_RULES: Readonly<Record<string, Rule>> = {
-    json: { rule: 'json' },
-    tel: { rule: 'tel' },
-};
+/**
+ * The rule a type implies: its values are checked whatever rules the field lists. A `tel` field
+ * with `settings.extension` allows an extension.
+ */
+function impliedRule(field: Field): Rule | undefined {
+    switch (field.type) {
+        case 'json':
+            return { rule: 'json' };
+        case 'tel':
+            return field.settings?.extension === true
+                ? { rule: 'tel', extension: true }
+                : { rule: 'tel' };
+        default:
+            return undefined;
+    }
+}
 
 /**
  * The rules of a field that apply in the mode, with the one its type implies: `json` for the
- * `json` type, `tel` for the `tel` type.
+ * `json` type, `tel` for the `tel` type. A rule of the same name on the field wins.
  */
 function rulesOf(field: Field, mode: CheckOptions['mode']): Rule[] {
     const rules = (field.rules ?? []).filter((rule) => appliesIn(rule, mode));
-    const implied = IMPLIED_RULES[field.type];
+    const implied = impliedRule(field);
     return implied !== undefined && !rules.some((rule) => rule.rule === implied.rule)
         ? [...rules, implied]
         : rules;

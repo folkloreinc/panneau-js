@@ -397,6 +397,16 @@ describe('MediaTransform', () => {
     });
 });
 
+describe('the tel rule', () => {
+    it('can allow an extension', () => {
+        const field = (rule: Record<string, unknown>) =>
+            Field.safeParse({ name: 'phone', type: 'tel', rules: [rule] }).success;
+        expect(field({ rule: 'tel' })).toBe(true);
+        expect(field({ rule: 'tel', extension: true })).toBe(true);
+        expect(field({ rule: 'tel', extension: 'yes' })).toBe(false);
+    });
+});
+
 describe('the image field', () => {
     it('accepts its options and the crop rule', () => {
         const field = {

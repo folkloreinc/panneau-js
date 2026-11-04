@@ -68,5 +68,7 @@ export const fieldsFr: Record<string, string> = {
     'panneau.fields.regionPlaceholder': 'Choisir une région',
     'panneau.fields.noRegions': 'Aucune région ne correspond',
     'panneau.fields.telCountry': 'Pays du numéro',
+    'panneau.fields.telExtension': 'Poste',
+    'panneau.fields.telExtensionShort': 'poste',
     'panneau.fields.missingPlugin': 'Ce champ a besoin d’un plugin pour le type « {type} ».',
 };

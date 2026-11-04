@@ -2,11 +2,12 @@ import { screen } from '@testing-library/react';
 import type { ReactElement } from 'react';
 import { describe, expect, it } from 'vitest';
 
+import { fr } from '@panneau/intl';
 import type { Field } from '@panneau/protocol';
 
 import { renderList } from '../__fixtures__/render';
 import type { DisplayEntry } from '../types';
-import { RegionDisplay, builtInDisplays } from './displays';
+import { RegionDisplay, TelDisplay, builtInDisplays } from './displays';
 
 function renderDisplay(display: string, value: unknown, field: Field | null = null): HTMLElement {
     const Display = builtInDisplays[display] as DisplayEntry;
@@ -109,6 +110,36 @@ describe('displays', () => {
         expect(cell.querySelector('a')).toHaveAttribute('href', 'tel:+15145550199');
         expect(cell).toHaveTextContent('🇨🇦+1 514 555 0199');
         expect(screen.getByText('🇨🇦')).toHaveAttribute('aria-hidden', 'true');
+    });
+
+    it('shows the extension of a number, when its field allows one', () => {
+        const field: Field = { name: 'phone', type: 'tel', settings: { extension: true } };
+        const cell = renderDisplay('tel', '+15145550199;ext=123', field);
+        expect(cell.querySelector('a')).toHaveAttribute('href', 'tel:+15145550199;ext=123');
+        expect(cell).toHaveTextContent('🇨🇦+1 514 555 0199, ext. 123');
+        expect(renderDisplay('tel', '+15145550199;ext=123')).toHaveTextContent(
+            '+1 514 555 0199, ext. 123',
+        );
+        expect(renderDisplay('tel', '+15145550199', field)).toHaveTextContent('+1 514 555 0199');
+        // A field without the setting shows the value as it is.
+        expect(
+            renderDisplay('tel', '+15145550199;ext=123', { name: 'phone', type: 'tel' })
+                .textContent,
+        ).toBe('+15145550199;ext=123');
+        renderList(
+            <div data-testid="cell">
+                <TelDisplay
+                    value="+15145550199;ext=123"
+                    item={{ id: '1' }}
+                    column={{ id: 'phone' }}
+                    field={field}
+                />
+            </div>,
+            { locale: 'fr', messages: fr },
+        );
+        expect(screen.getAllByTestId('cell').at(-1)).toHaveTextContent(
+            '+1 514 555 0199, poste 123',
+        );
     });
 
     it('shows countries with their flags, and regions by their names', () => {

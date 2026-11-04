@@ -88,6 +88,7 @@ const tel: FieldTarget = {
             (prop) => !['maxLength', 'prefix', 'type', 'inputMode'].includes(prop),
         ),
         'country',
+        'extension',
     ],
     renames: { append: 'suffix' },
     valueType: 'string',

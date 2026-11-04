@@ -434,6 +434,8 @@ export const fieldsMessages: {
     regionPlaceholder: PanneauMessage<Record<never, never>>;
     noRegions: PanneauMessage<Record<never, never>>;
     telCountry: PanneauMessage<Record<never, never>>;
+    telExtension: PanneauMessage<Record<never, never>>;
+    telExtensionShort: PanneauMessage<Record<never, never>>;
     missingPlugin: PanneauMessage<    {
     type: string;
     }>;
@@ -650,6 +652,10 @@ export const listsMessages: {
     valueConflict: PanneauMessage<Record<never, never>>;
     keepTheirs: PanneauMessage<Record<never, never>>;
     saveMine: PanneauMessage<Record<never, never>>;
+    phoneExtension: PanneauMessage<    {
+    number: string;
+    extension: string;
+    }>;
 };
 
 // @public

@@ -73,4 +73,5 @@ export const listsFr: Record<string, string> = {
     'panneau.lists.valueConflict': 'Quelqu’un d’autre l’a changé en :',
     'panneau.lists.keepTheirs': 'Garder la sienne',
     'panneau.lists.saveMine': 'Enregistrer la mienne',
+    'panneau.lists.phoneExtension': '{number}, poste {extension}',
 };

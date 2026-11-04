@@ -1,0 +1,25 @@
+/* The extension, after the number, in the same box. */
+.extension {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--panneau-space-1);
+    align-self: stretch;
+    padding-inline-start: var(--panneau-space-2);
+    border-inline-start: var(--panneau-border-width) solid var(--panneau-color-border-control);
+}
+
+.extensionInput {
+    width: 6ch;
+    min-width: 0;
+    padding: 0;
+    font: inherit;
+    color: var(--panneau-color-text);
+    background: transparent;
+    border: 0;
+    outline: none;
+}
+
+.extensionInput:read-only,
+.extensionInput:disabled {
+    cursor: inherit;
+}

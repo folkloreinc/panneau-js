@@ -186,6 +186,14 @@ export const fieldsMessages = {
         id: 'panneau.fields.telCountry',
         defaultMessage: 'Country of the number',
     }),
+    telExtension: defineMessage({
+        id: 'panneau.fields.telExtension',
+        defaultMessage: 'Extension',
+    }),
+    telExtensionShort: defineMessage({
+        id: 'panneau.fields.telExtensionShort',
+        defaultMessage: 'ext.',
+    }),
     missingPlugin: defineMessage<{ type: string }>({
         id: 'panneau.fields.missingPlugin',
         defaultMessage: 'This field needs a plugin for the “{type}” type.',
