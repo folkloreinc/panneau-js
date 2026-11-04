@@ -20,6 +20,26 @@ export const actionsMessages: {
     done: PanneauMessage<    {
     action: string;
     }>;
+    doneFor: PanneauMessage<    {
+    action: string;
+    subject: string;
+    }>;
+    failedFor: PanneauMessage<    {
+    action: string;
+    subject: string;
+    }>;
+    cancelledFor: PanneauMessage<    {
+    action: string;
+    subject: string;
+    }>;
+    subjectItem: PanneauMessage<    {
+    title: string;
+    }>;
+    subjectCount: PanneauMessage<    {
+    count: number;
+    singular: string;
+    plural: string;
+    }>;
     failed: PanneauMessage<    {
     action: string;
     }>;
@@ -200,6 +220,9 @@ export const appMessages: {
     }>;
     created: PanneauMessage<    {
     resource: string;
+    }>;
+    itemCreated: PanneauMessage<    {
+    title: string;
     }>;
     saved: PanneauMessage<    {
     resource: string;

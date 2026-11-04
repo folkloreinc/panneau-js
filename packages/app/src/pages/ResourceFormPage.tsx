@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { type ResolvedResource, getItemActions, getItemValues, resolveForm } from '@panneau/core';
 import { NotFoundError } from '@panneau/data';
@@ -7,7 +7,7 @@ import { createRelationSource } from '@panneau/fields';
 import { Form } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
 import type { Definition, Item, RouteReference } from '@panneau/protocol';
-import { usePanneauIntl } from '@panneau/ui';
+import { usePanneauIntl, useToast } from '@panneau/ui';
 
 import { useDocumentTitle } from '../documentTitle';
 import { navigate } from '../location';
@@ -43,7 +43,10 @@ export function ResourceFormPage({
     resolveRoute,
 }: ResourceFormPageProps) {
     const intl = usePanneauIntl();
+    const toasts = useToast();
     const adapter = useDataAdapter();
+    // The version this page just saved: the form starts over from it, and still says "Saved".
+    const [savedVersion, setSavedVersion] = useState<string | null>(null);
     const { resource } = resolved;
     const mode = id === null ? 'create' : 'update';
     const itemQuery = useResourceItem(resource.id, id);
@@ -159,14 +162,32 @@ export function ResourceFormPage({
             locales={definition.locales}
             relationSource={relationSource}
             guardUnsavedChanges
-            showSavedToast
+            saved={savedVersion !== null && item?.version === savedVersion}
             onSubmit={(values, { version, changes }) =>
                 id === null
                     ? createItem.mutateAsync(values)
                     : updateItem.mutateAsync({ id, values: changes, version })
             }
             onSubmitted={(result) => {
+                const saved = result as Item;
+                setSavedVersion(saved.version ?? null);
                 if (id === null) {
+                    // The page changes: the toast says what was created, by its title.
+                    const created = getItemTitle(saved, resource.itemTitle, definition.locale);
+                    toasts.show(
+                        {
+                            title:
+                                created !== null && created !== ''
+                                    ? intl.formatMessage(appMessages.itemCreated, {
+                                          title: created,
+                                      })
+                                    : intl.formatMessage(appMessages.created, {
+                                          resource: singular,
+                                      }),
+                            tone: 'success',
+                        },
+                        { key: `panneau-created:${resource.id}` },
+                    );
                     navigate(
                         routePath(
                             {

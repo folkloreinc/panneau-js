@@ -151,10 +151,14 @@ export {
 } from './theme/tones';
 export { TimeInput, type TimeInputProps } from './time-input/TimeInput';
 export {
+    MAX_VISIBLE_TOASTS,
     type ToastContent,
     type ToastOptions,
+    type ToastPlacement,
     type ToastTone,
     type Toasts,
+    getToastTimeout,
     useToast,
+    useToastOffset,
 } from './toast/Toast';
 export { Tooltip, type TooltipProps } from './tooltip/Tooltip';

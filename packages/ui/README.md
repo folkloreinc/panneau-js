@@ -389,6 +389,25 @@ function ArticleCard({ article }: { article: Article | undefined }) {
 
 A skeleton never replaces content already shown: while it is fetched again, it stays, dimmed, with `aria-busy`, as in lists.
 
+### Toasts
+
+`useToast().show(content, options)` shows a toast in the region of the closest `PanneauRoot` ([decision 0062](../../docs/decisions/0062-toasts.md)):
+
+```tsx
+const toasts = useToast();
+toasts.show(
+    { title: '3 entries archived', tone: 'success', action: { label: 'Undo', onAction: undo } },
+    { key: 'archive' },
+);
+```
+
+- **Only when the page doesn't already say it.** A toast for what happened out of sight (a run that finished, a change made from a menu), for what can be undone, and for an error that has no place in the page (the network, a logout that failed). No toast where the page shows the result: a form says "Saved" in its footer, an error of a field stays on it, and a run that starts shows in the runs button of the shell.
+- **Name the thing, and offer the next step**: what was done to what ("“Spring contest” saved", "3 entries archived"), and an `action` that leads to the result ("Open", "Download") or undoes it ("Undo").
+- **One per thing**: a toast with the `key` of one already shown replaces it. At most three show at once; the older ones fold behind the newest and unfold on hover or focus.
+- **Timeouts that match what the toast holds** (`getToastTimeout()`): about 5 seconds, longer for a longer text, about 10 seconds with an action, none for an error (`danger`). Timers pause while the region is hovered or focused. `timeout` sets another, `null` none.
+- **Quiet**: a success has the neutral look with its icon; only warnings and errors color the edge.
+- **At the bottom, centered**, above what sticks to the bottom of the page: such an element calls `useToastOffset(ref)`, as the footer of a form does. `PanneauRoot`'s `toastPlacement` puts them at `bottom-end` or `top-end` instead. On a phone, they take the whole width.
+
 ## Icons
 
 Components take icons as components: any Lucide icon (`icon={Pencil}`), or a component with the same props.

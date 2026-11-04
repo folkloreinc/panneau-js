@@ -1,15 +1,33 @@
-/* The region carries the root's class (tokens), since React Aria renders it in the body. */
+/*
+ * The region carries the root's class (tokens), since React Aria renders it in the body. Toasts show
+ * at the bottom, centered, above what sticks to the bottom of the page (--panneau-toast-offset,
+ * set by useToastOffset()), or at the bottom or top of the end side (data-placement). React Aria
+ * renders them newest first, each in a list item with `display: contents`.
+ */
 .region.region {
     position: fixed;
-    inset-block-start: var(--panneau-space-4);
-    inset-inline-end: var(--panneau-space-4);
+    inset-block-end: calc(var(--panneau-toast-offset, 0px) + var(--panneau-space-4));
+    inset-inline: 0;
     z-index: var(--panneau-z-toast);
-    display: flex;
-    flex-direction: column;
-    gap: var(--panneau-space-2);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: end;
     width: min(var(--panneau-toast-width, 24rem), calc(100vw - 2 * var(--panneau-space-4)));
+    margin-inline: auto;
     background: transparent;
     outline: none;
+}
+
+.region[data-placement='bottom-end'] {
+    inset-inline: auto var(--panneau-space-4);
+    margin-inline: 0;
+}
+
+.region[data-placement='top-end'] {
+    inset-block: var(--panneau-space-4) auto;
+    inset-inline: auto var(--panneau-space-4);
+    align-items: start;
+    margin-inline: 0;
 }
 
 .region[data-focus-visible] {
@@ -17,16 +35,25 @@
     outline-offset: 4px;
 }
 
+/* On a phone, the whole width at the bottom (or the top). */
 @media (max-width: 30rem) {
-    .region.region {
+    .region.region,
+    .region.region[data-placement] {
         inset-inline: var(--panneau-space-2);
-        inset-block-start: var(--panneau-space-2);
         width: auto;
+        margin-inline: 0;
+    }
+
+    .region.region:not([data-placement='top-end']) {
+        inset-block: auto calc(var(--panneau-toast-offset, 0px) + var(--panneau-space-2));
     }
 }
 
 .toast {
+    --panneau-toast-rise: 1rem;
+
     display: flex;
+    grid-area: 1 / 1;
     align-items: flex-start;
     gap: var(--panneau-space-3);
     padding: var(--panneau-space-3) var(--panneau-space-3) var(--panneau-space-3)
@@ -35,10 +62,100 @@
     background-color: var(--panneau-toast-bg, var(--panneau-color-surface-raised));
     border: var(--panneau-border-width) solid
         var(--panneau-toast-border-color, var(--panneau-color-border));
-    border-inline-start-width: var(--panneau-toast-tone-width, 4px);
     border-radius: var(--panneau-toast-radius, var(--panneau-radius-lg));
     box-shadow: var(--panneau-toast-shadow, var(--panneau-shadow-lg));
     outline: none;
+    transition:
+        transform var(--panneau-duration) ease-out,
+        opacity var(--panneau-duration) ease-out;
+    animation: rise calc(2 * var(--panneau-duration)) ease-out;
+}
+
+.region[data-placement='top-end'] .toast {
+    --panneau-toast-rise: -1rem;
+}
+
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(var(--panneau-toast-rise));
+    }
+}
+
+/*
+ * Folded: the newest in front, the older ones behind it, peeking out a little. Hovered or focused,
+ * the region unfolds them in a column, the newest closest to the edge of the screen.
+ */
+.region li:nth-child(1) > .toast {
+    z-index: 3;
+}
+
+.region li:nth-child(2) > .toast {
+    z-index: 2;
+    transform: translateY(calc(-1 * var(--panneau-space-2))) scale(0.95);
+}
+
+.region li:nth-child(3) > .toast {
+    z-index: 1;
+    transform: translateY(calc(-2 * var(--panneau-space-2))) scale(0.9);
+}
+
+.region[data-placement='top-end'] li:nth-child(2) > .toast {
+    transform: translateY(var(--panneau-space-2)) scale(0.95);
+}
+
+.region[data-placement='top-end'] li:nth-child(3) > .toast {
+    transform: translateY(calc(2 * var(--panneau-space-2))) scale(0.9);
+}
+
+.region li:nth-child(n + 2) > .toast > * {
+    opacity: 0;
+    transition: opacity var(--panneau-duration) ease-out;
+}
+
+.region:is(:hover, :focus-within, [data-hovered], [data-focused]) {
+    gap: var(--panneau-space-2);
+}
+
+.region:is(:hover, :focus-within, [data-hovered], [data-focused]) li > .toast {
+    transform: none;
+}
+
+.region:is(:hover, :focus-within, [data-hovered], [data-focused]) li > .toast > * {
+    opacity: 1;
+}
+
+.region:not([data-placement='top-end']):is(:hover, :focus-within, [data-hovered], [data-focused])
+    li:nth-child(1)
+    > .toast {
+    grid-area: 3 / 1;
+}
+
+.region:not([data-placement='top-end']):is(:hover, :focus-within, [data-hovered], [data-focused])
+    li:nth-child(2)
+    > .toast {
+    grid-area: 2 / 1;
+}
+
+.region:not([data-placement='top-end']):is(:hover, :focus-within, [data-hovered], [data-focused])
+    li:nth-child(3)
+    > .toast {
+    grid-area: 1 / 1;
+}
+
+.region[data-placement='top-end']:is(:hover, :focus-within, [data-hovered], [data-focused])
+    li
+    > .toast {
+    grid-area: auto;
+}
+
+/* Without motion when the system asks for less. */
+@media (prefers-reduced-motion: reduce) {
+    .toast,
+    .region li > .toast > * {
+        transition: none;
+        animation: none;
+    }
 }
 
 .toast[data-focus-visible] {
@@ -46,17 +163,16 @@
     outline-offset: 2px;
 }
 
+/* A success or an info keeps the neutral look, with its icon in the color of its tone. */
 .icon {
     margin-top: 0.125rem;
-}
-
-/* A toast with a tone other than neutral: a colored edge and icon, from its tone class. */
-.toned {
-    border-inline-start-color: var(--panneau-tone-text);
-}
-
-.toned .icon {
     color: var(--panneau-tone-text);
+}
+
+/* Only what needs a look, a warning or an error, colors the edge. */
+.edge {
+    border-inline-start-color: var(--panneau-tone-text);
+    border-inline-start-width: var(--panneau-toast-tone-width, 4px);
 }
 
 .content {

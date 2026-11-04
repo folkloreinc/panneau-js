@@ -63,9 +63,9 @@ function Pages() {
 - **`server` actions:**
     1. asks for the parameters (`fields`, in their `layout`) in a dialog, with the forms of `@panneau/forms`: client validation, then the `422` errors of the action endpoint on the fields;
     2. runs the action through the adapter, with the item or the selection (`ids`, or the list query with exceptions), or nothing for the resource;
-    3. shows the result in a toast: its `message`, the counts of what didn't succeed, and a "Details" button that lists those items with their message or reason;
+    3. shows the result in a toast that names what it was done to (the item by the `itemTitle` of its resource, or the count of items): its `message`, the counts of what didn't succeed, and a "Details" button that lists those items with their message or reason. One toast per action and target: running it again replaces it ([decision 0062](../../docs/decisions/0062-toasts.md));
     4. calls `onResult` (refresh what it changed), opens the `download`, and goes to the `redirect`.
-- **Queued runs** (`202`): a toast says that the action runs in the background, the runner checks the run every `pollInterval` until it ends, then shows its result as above. `ActionRuns` lists the runs, with their progress, a button to cancel them (when the adapter has `cancelActionRun()`), and one to dismiss them once they have ended.
+- **Queued runs** (`202`): no toast when they start (the runs button of the shell shows them), the runner checks the run every `pollInterval` until it ends, then shows its result as above, unless `ActionRuns` is on screen and the result says nothing more than its status. `ActionRuns` lists the runs, with their progress, a button to cancel them (when the adapter has `cancelActionRun()`), and one to dismiss them once they have ended.
 - **`link` actions** go to their `url` (with `{id}`) or `route`, through `onNavigate`.
 - **`client` actions** render the handler that their `component` names: one of `clientActions`, or of the plugins of `PanneauProvider` (`definePlugin({ actions: { 'share-dialog': ShareDialog } })`). It gets `ClientActionProps`, and ends with `onDone(result?)` or `onCancel()`.
 

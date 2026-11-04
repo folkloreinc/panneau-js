@@ -1,3 +1,4 @@
+import { CircleCheck } from 'lucide-react';
 import { type ReactNode, useRef, useState } from 'react';
 
 import {
@@ -20,7 +21,7 @@ import {
     builtInFields,
 } from '@panneau/fields';
 import type { Field, LayoutNode } from '@panneau/protocol';
-import { Alert, Button, usePanneauIntl, useToast } from '@panneau/ui';
+import { Alert, Button, Icon, usePanneauIntl, useToast, useToastOffset } from '@panneau/ui';
 
 import { ConflictDialog } from './ConflictDialog';
 import { ErrorSummary } from './ErrorSummary';
@@ -73,8 +74,18 @@ export interface FormViewProps {
      * under a `LeaveGuardsProvider`, left through the app's router. Defaults to true.
      */
     guardUnsavedChanges?: boolean;
-    /** Shows a toast after a successful submit. Defaults to true. */
+    /**
+     * Shows "Saved" in a toast after a successful submit, when the form has no footer to say it
+     * (no submit button and no `actions`). Defaults to true. A form with a footer says "Saved" in
+     * it, next to its button, where "Unsaved changes" was: the page already shows it (decision
+     * 0062).
+     */
     showSavedToast?: boolean;
+    /**
+     * The item was saved just before the form started over from it (a new `key` after a save):
+     * the footer says "Saved" until the values change.
+     */
+    saved?: boolean;
     /**
      * The values load, such as the item to edit: the form draws a skeleton of its layout and
      * fields instead (decision 0034).
@@ -158,6 +169,7 @@ export function FormView({
     onReload,
     guardUnsavedChanges = true,
     showSavedToast = true,
+    saved = false,
     isLoading = false,
     id,
     'aria-label': ariaLabel,
@@ -175,6 +187,16 @@ export function FormView({
     const [registry] = useState(createRevealRegistry);
     const [resolving, setResolving] = useState(false);
     const root = useRef<HTMLFormElement>(null);
+    const footer = useRef<HTMLDivElement>(null);
+    const hasFooter = submitLabel !== null || actions !== undefined;
+    // Toasts rise above the footer, which sticks to the bottom of the page.
+    useToastOffset(footer, hasFooter && !isLoading);
+    // "Saved" in the footer, from the last submit or from before the form started over, until the
+    // values change.
+    const [savedShown, setSavedShown] = useState(saved);
+    if (savedShown && state.dirty) {
+        setSavedShown(false);
+    }
     const guarded = guardUnsavedChanges && state.dirty;
     useBeforeUnloadGuard(guarded);
     // Leaving through the app's router asks first, in a dialog
@@ -240,23 +262,16 @@ export function FormView({
                 goTo(first);
             }
         } else if (result.status === 'submitted') {
-            if (showSavedToast) {
-                toasts.show({ title: intl.formatMessage(messages.saved), tone: 'success' });
+            setSavedShown(true);
+            if (showSavedToast && !hasFooter) {
+                toasts.show(
+                    { title: intl.formatMessage(messages.saved), tone: 'success' },
+                    { key: 'panneau-form-saved' },
+                );
             }
             onSubmitted?.(result.result);
-        } else if (result.status === 'error') {
-            toasts.show(
-                {
-                    title: intl.formatMessage(messages.saveFailed),
-                    tone: 'danger',
-                    action: {
-                        label: intl.formatMessage(messages.retry),
-                        onAction: () => void form.submit().then(handle),
-                    },
-                },
-                { timeout: 8000 },
-            );
         }
+        // An error shows in the page: its alert, and the footer next to the button.
     };
 
     const resolve = async (choice: 'reload' | 'overwrite') => {
@@ -284,7 +299,7 @@ export function FormView({
                 flow={flow}
                 sidebar={resolved.layout.filter((node) => node.type === 'sidebar')}
                 fields={resolved.fieldsByName}
-                footer={submitLabel !== null || actions !== undefined}
+                footer={hasFooter}
                 className={className}
                 layoutClassName={layoutClassName}
                 sidebarClassName={sidebarClassName}
@@ -365,13 +380,26 @@ export function FormView({
                                 </aside>
                             ) : null}
                         </div>
-                        {submitLabel !== null || actions !== undefined ? (
-                            <div className={cx(styles.footer, footerClassName)}>
-                                {state.dirty ? (
-                                    <span className={styles.dirty} role="status">
-                                        {intl.formatMessage(messages.unsaved)}
-                                    </span>
-                                ) : null}
+                        {hasFooter ? (
+                            <div ref={footer} className={cx(styles.footer, footerClassName)}>
+                                <span
+                                    className={cx(
+                                        styles.status,
+                                        state.status === 'error' && styles.statusError,
+                                    )}
+                                    role="status"
+                                >
+                                    {state.status === 'error' ? (
+                                        intl.formatMessage(messages.saveFailed)
+                                    ) : state.dirty ? (
+                                        intl.formatMessage(messages.unsaved)
+                                    ) : savedShown && state.status !== 'submitting' ? (
+                                        <>
+                                            <Icon icon={CircleCheck} />
+                                            {intl.formatMessage(messages.saved)}
+                                        </>
+                                    ) : null}
+                                </span>
                                 {actions}
                                 {submitLabel !== null ? (
                                     <Button

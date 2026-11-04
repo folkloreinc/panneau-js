@@ -381,6 +381,10 @@ export const appMessages = {
         id: 'panneau.app.created',
         defaultMessage: 'The {resource} was created.',
     }),
+    itemCreated: defineMessage<{ title: string }>({
+        id: 'panneau.app.itemCreated',
+        defaultMessage: '“{title}” created.',
+    }),
     saved: defineMessage<{ resource: string }>({
         id: 'panneau.app.saved',
         defaultMessage: 'The {resource} was saved.',
