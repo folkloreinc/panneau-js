@@ -186,6 +186,66 @@ export const fieldsMessages = {
         id: 'panneau.fields.telCountry',
         defaultMessage: 'Country of the number',
     }),
+    credit: defineMessage<{ index: number }>({
+        id: 'panneau.fields.credit',
+        defaultMessage: 'Credit {index}',
+    }),
+    noCredits: defineMessage({
+        id: 'panneau.fields.noCredits',
+        defaultMessage: 'No credits yet.',
+    }),
+    addCredit: defineMessage({
+        id: 'panneau.fields.addCredit',
+        defaultMessage: 'Add a credit',
+    }),
+    removeCredit: defineMessage<{ index: number }>({
+        id: 'panneau.fields.removeCredit',
+        defaultMessage: 'Remove credit {index}',
+    }),
+    moveCreditUp: defineMessage<{ index: number }>({
+        id: 'panneau.fields.moveCreditUp',
+        defaultMessage: 'Move credit {index} up',
+    }),
+    moveCreditDown: defineMessage<{ index: number }>({
+        id: 'panneau.fields.moveCreditDown',
+        defaultMessage: 'Move credit {index} down',
+    }),
+    creditPerson: defineMessage({
+        id: 'panneau.fields.creditPerson',
+        defaultMessage: 'Person',
+    }),
+    creditPersonPlaceholder: defineMessage({
+        id: 'panneau.fields.creditPersonPlaceholder',
+        defaultMessage: 'Search or type a name',
+    }),
+    creditName: defineMessage<{ text: string }>({
+        id: 'panneau.fields.creditName',
+        defaultMessage: 'Add “{text}” as a name',
+    }),
+    creditNameOnly: defineMessage({
+        id: 'panneau.fields.creditNameOnly',
+        defaultMessage: 'Name only',
+    }),
+    creditRoles: defineMessage({
+        id: 'panneau.fields.creditRoles',
+        defaultMessage: 'Roles',
+    }),
+    creditRole: defineMessage<{ index: number }>({
+        id: 'panneau.fields.creditRole',
+        defaultMessage: 'Role {index}',
+    }),
+    addRole: defineMessage({
+        id: 'panneau.fields.addRole',
+        defaultMessage: 'Add a role',
+    }),
+    removeRole: defineMessage<{ index: number }>({
+        id: 'panneau.fields.removeRole',
+        defaultMessage: 'Remove role {index}',
+    }),
+    creditFeatured: defineMessage({
+        id: 'panneau.fields.creditFeatured',
+        defaultMessage: 'Featured',
+    }),
     missingPlugin: defineMessage<{ type: string }>({
         id: 'panneau.fields.missingPlugin',
         defaultMessage: 'This field needs a plugin for the “{type}” type.',

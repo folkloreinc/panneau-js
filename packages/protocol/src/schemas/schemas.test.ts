@@ -5,6 +5,7 @@ import { lintDefinition } from '../lint';
 import { validate, validateDefinition } from '../validate';
 import {
     Action,
+    CreditsValue,
     Definition,
     Field,
     Item,
@@ -292,6 +293,43 @@ describe('lintDefinition', () => {
         ]);
     });
 
+    it('checks the resources and the fields of credits', () => {
+        const definition = createDefinition();
+        const authors = definition.resources.find((resource) => resource.id === 'authors');
+        if (authors === undefined) {
+            throw new Error('Fixture has no authors.');
+        }
+        const index = authors.fields.length;
+        authors.fields.push({
+            name: 'credits',
+            type: 'credits',
+            resource: 'authors',
+            settings: { roles: 'authors', featured: true },
+            fields: [{ name: 'note', type: 'text' }],
+        });
+        expect(lintDefinition(definition)).toEqual([]);
+        authors.fields[index] = {
+            name: 'credits',
+            type: 'credits',
+            resource: 'people',
+            settings: { roles: 'roles' },
+            fields: [{ name: 'featured', type: 'boolean' }],
+        };
+        const at = `resources.1.fields.${String(index)}`;
+        expect(lintDefinition(definition)).toEqual([
+            {
+                path: `${at}.fields.0.name`,
+                message: '`featured` is a key of every credit: a field of the credit can’t use it.',
+            },
+            { path: `${at}.resource`, message: 'No resource `people`.' },
+            { path: `${at}.settings.roles`, message: 'No resource `roles`.' },
+        ]);
+        authors.fields[index] = { name: 'credits', type: 'credits', resource: ['authors'] };
+        expect(lintDefinition(definition)).toEqual([
+            { path: `${at}.resource`, message: 'A `credits` field names one resource.' },
+        ]);
+    });
+
     it('checks the field and the filter of a calendar', () => {
         const definition = createDefinition();
         const pages = definition.resources[0];
@@ -449,5 +487,34 @@ describe('the image field', () => {
             path: `resources.1.fields.${String(fields.length - 2)}.resource`,
             message: 'An `image` field needs a resource of kind `media`.',
         });
+    });
+});
+
+describe('CreditsValue', () => {
+    it('takes references and names, for people and roles', () => {
+        const value = [
+            {
+                person: { id: '12', label: 'Ada Lovelace' },
+                roles: [{ id: '3', label: 'Director' }],
+                featured: true,
+            },
+            {
+                person: { name: 'Jane Doe' },
+                roles: [{ name: { fr: 'Musique', en: 'Music' } }],
+                note: 'A field of the credit',
+            },
+            { person: { id: '13' }, roles: [] },
+        ];
+        expect(CreditsValue.safeParse(value).success).toBe(true);
+    });
+
+    it('refuses a person without an id or a name, and roles that aren’t a list', () => {
+        expect(CreditsValue.safeParse([{ person: {}, roles: [] }]).success).toBe(false);
+        expect(CreditsValue.safeParse([{ person: '12', roles: [] }]).success).toBe(false);
+        expect(CreditsValue.safeParse([{ person: { name: 'Ada' } }]).success).toBe(false);
+        expect(
+            CreditsValue.safeParse([{ person: { name: 'Ada' }, roles: [{ name: 'Music' }] }])
+                .success,
+        ).toBe(false);
     });
 });

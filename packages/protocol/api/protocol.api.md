@@ -547,7 +547,7 @@ export type BootConfigInput = z.input<typeof BootConfig>;
 export const BUILT_IN_ACTIONS: readonly ["show", "edit", "duplicate", "delete", "restore", "export", "import"];
 
 // @public
-export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "image", "relation", "group", "repeater", "slug", "tel", "range", "duration", "json", "tags", "embed", "location", "country", "region"];
+export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "image", "relation", "group", "repeater", "slug", "tel", "range", "duration", "json", "tags", "embed", "location", "country", "region", "credits"];
 
 // @public
 export const BUILT_IN_ITEM_ACTIONS: readonly ["show", "edit", "duplicate", "delete"];
@@ -701,6 +701,68 @@ export function createSchemaRegistry(): z.core.$ZodRegistry<{
 
 // @public
 export function createThemeJsonSchema(): JsonObject;
+
+// @public (undocumented)
+export const Credit: z.ZodObject<{
+    person: z.ZodUnion<readonly [z.ZodObject<{
+        id: z.ZodString;
+        label: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>, z.ZodObject<{
+        name: z.ZodString;
+    }, z.core.$loose>]>;
+    roles: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        id: z.ZodString;
+        label: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>, z.ZodObject<{
+        name: z.ZodRecord<z.ZodString, z.ZodString>;
+    }, z.core.$loose>]>>;
+    featured: z.ZodOptional<z.ZodBoolean>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type Credit = z.infer<typeof Credit>;
+
+// @public (undocumented)
+export const CreditPerson: z.ZodUnion<readonly [z.ZodObject<{
+    id: z.ZodString;
+    label: z.ZodOptional<z.ZodString>;
+}, z.core.$loose>, z.ZodObject<{
+    name: z.ZodString;
+}, z.core.$loose>]>;
+
+// @public (undocumented)
+export type CreditPerson = z.infer<typeof CreditPerson>;
+
+// @public (undocumented)
+export const CreditRole: z.ZodUnion<readonly [z.ZodObject<{
+    id: z.ZodString;
+    label: z.ZodOptional<z.ZodString>;
+}, z.core.$loose>, z.ZodObject<{
+    name: z.ZodRecord<z.ZodString, z.ZodString>;
+}, z.core.$loose>]>;
+
+// @public (undocumented)
+export type CreditRole = z.infer<typeof CreditRole>;
+
+// @public (undocumented)
+export const CreditsValue: z.ZodArray<z.ZodObject<{
+    person: z.ZodUnion<readonly [z.ZodObject<{
+        id: z.ZodString;
+        label: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>, z.ZodObject<{
+        name: z.ZodString;
+    }, z.core.$loose>]>;
+    roles: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+        id: z.ZodString;
+        label: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>, z.ZodObject<{
+        name: z.ZodRecord<z.ZodString, z.ZodString>;
+    }, z.core.$loose>]>>;
+    featured: z.ZodOptional<z.ZodBoolean>;
+}, z.core.$loose>>;
+
+// @public (undocumented)
+export type CreditsValue = z.infer<typeof CreditsValue>;
 
 // @public
 export interface CursorPageMeta {
@@ -4663,6 +4725,48 @@ export const namedSchemas: {
         lng: z.ZodNumber;
         address: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>;
+    CreditPerson: z.ZodUnion<readonly [z.ZodObject<{
+        id: z.ZodString;
+        label: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>, z.ZodObject<{
+        name: z.ZodString;
+    }, z.core.$loose>]>;
+    CreditRole: z.ZodUnion<readonly [z.ZodObject<{
+        id: z.ZodString;
+        label: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>, z.ZodObject<{
+        name: z.ZodRecord<z.ZodString, z.ZodString>;
+    }, z.core.$loose>]>;
+    Credit: z.ZodObject<{
+        person: z.ZodUnion<readonly [z.ZodObject<{
+            id: z.ZodString;
+            label: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>, z.ZodObject<{
+            name: z.ZodString;
+        }, z.core.$loose>]>;
+        roles: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+            id: z.ZodString;
+            label: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>, z.ZodObject<{
+            name: z.ZodRecord<z.ZodString, z.ZodString>;
+        }, z.core.$loose>]>>;
+        featured: z.ZodOptional<z.ZodBoolean>;
+    }, z.core.$loose>;
+    CreditsValue: z.ZodArray<z.ZodObject<{
+        person: z.ZodUnion<readonly [z.ZodObject<{
+            id: z.ZodString;
+            label: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>, z.ZodObject<{
+            name: z.ZodString;
+        }, z.core.$loose>]>;
+        roles: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
+            id: z.ZodString;
+            label: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>, z.ZodObject<{
+            name: z.ZodRecord<z.ZodString, z.ZodString>;
+        }, z.core.$loose>]>>;
+        featured: z.ZodOptional<z.ZodBoolean>;
+    }, z.core.$loose>>;
 };
 
 // @public (undocumented)

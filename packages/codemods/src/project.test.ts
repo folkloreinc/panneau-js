@@ -43,7 +43,7 @@ describe('a v4 project', () => {
                 ...output.matchAll(/export function (\w+Entry)\(props[^)]*\) \{\n([\s\S]*?)\n\}/g),
             ].map(([, name, body]) => ({ name, body })),
         );
-        expect(entries.map(({ name }) => name)).toHaveLength(6);
+        expect(entries.map(({ name }) => name)).toHaveLength(7);
         entries.forEach(({ body }) => {
             expect(body).toMatch(/\bvalue=\{props\.value\b/);
             expect(body).toContain('onChange={props.onChange}');

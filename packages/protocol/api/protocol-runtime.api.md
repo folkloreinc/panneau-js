@@ -28,7 +28,7 @@ export const BOOT_CONFIG_ELEMENT_ID = "panneau-boot";
 export const BUILT_IN_ACTIONS: readonly ["show", "edit", "duplicate", "delete", "restore", "export", "import"];
 
 // @public
-export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "image", "relation", "group", "repeater", "slug", "tel", "range", "duration", "json", "tags", "embed", "location", "country", "region"];
+export const BUILT_IN_FIELD_TYPES: readonly ["text", "textarea", "richtext", "number", "boolean", "date", "datetime", "time", "select", "email", "url", "color", "media", "image", "relation", "group", "repeater", "slug", "tel", "range", "duration", "json", "tags", "embed", "location", "country", "region", "credits"];
 
 // @public
 export const BUILT_IN_ITEM_ACTIONS: readonly ["show", "edit", "duplicate", "delete"];

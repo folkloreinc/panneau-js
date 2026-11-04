@@ -9,7 +9,12 @@ import { messages } from './messages';
 
 /** Fields that show the errors of their nested fields themselves. */
 function rendersNestedFields(field: FieldBindingProps['field']): boolean {
-    return field.localized === true || field.type === 'group' || field.type === 'repeater';
+    return (
+        field.localized === true ||
+        field.type === 'group' ||
+        field.type === 'repeater' ||
+        field.type === 'credits'
+    );
 }
 
 /**

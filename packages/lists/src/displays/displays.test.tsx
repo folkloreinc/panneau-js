@@ -136,6 +136,20 @@ describe('displays', () => {
         expect(renderDisplay('region', 'Bavaria')).toHaveTextContent('Bavaria');
     });
 
+    it('shows credits: people with their roles', () => {
+        expect(
+            renderDisplay('credits', [
+                {
+                    person: { id: '1', label: 'Ada Lovelace' },
+                    roles: [{ id: '3', label: 'Director' }],
+                },
+                { person: { name: 'Jane Doe' }, roles: [{ name: { fr: 'Musique', en: 'Music' } }] },
+                { person: { name: 'John Roe' }, roles: [{ name: { en: 'Music' } }] },
+            ]),
+        ).toHaveTextContent('Ada Lovelace (Director), Jane Doe, John Roe (Music)');
+        expect(renderDisplay('credits', []).textContent).toBe('—');
+    });
+
     it('shows phone numbers, durations, JSON and tags', () => {
         expect(renderDisplay('tel', '514 555-0199').querySelector('a')).toHaveAttribute(
             'href',

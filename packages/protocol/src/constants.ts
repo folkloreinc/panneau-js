@@ -75,6 +75,7 @@ export const BUILT_IN_FIELD_TYPES = [
     'location',
     'country',
     'region',
+    'credits',
 ] as const;
 export type BuiltInFieldType = (typeof BUILT_IN_FIELD_TYPES)[number];
 

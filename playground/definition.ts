@@ -147,6 +147,13 @@ export function createPlaygroundDefinition(): DefinitionInput {
                         settings: { center: { lat: 45.5017, lng: -73.5673 }, zoom: 14 },
                     },
                     { name: 'metadata', type: 'json', label: 'Metadata', settings: { rows: 4 } },
+                    {
+                        name: 'credits',
+                        type: 'credits',
+                        label: 'Credits',
+                        resource: 'authors',
+                        settings: { featured: true },
+                    },
                 ],
                 form: {
                     layout: [
@@ -163,6 +170,7 @@ export function createPlaygroundDefinition(): DefinitionInput {
                         { type: 'field', name: 'tags' },
                         { type: 'field', name: 'video' },
                         { type: 'field', name: 'place' },
+                        { type: 'field', name: 'credits' },
                         { type: 'field', name: 'metadata' },
                         {
                             type: 'sidebar',

@@ -3,6 +3,7 @@ import { fr } from '@panneau/intl';
 import { BooleanFieldEntry } from '../boolean/BooleanField';
 import { ColorFieldEntry } from '../color/ColorField';
 import { CountryFieldEntry } from '../country/CountryField';
+import { CreditsFieldEntry } from '../credits/CreditsField';
 import { DateFieldEntry } from '../date/DateField';
 import { DateTimeFieldEntry } from '../datetime/DateTimeField';
 import { DurationFieldEntry } from '../duration/DurationField';
@@ -32,6 +33,7 @@ import type { FieldEntry } from './types';
  * (`@panneau/editor` and `@panneau/media`): without them, `DefinitionField` renders a placeholder.
  * `file` uploads through the upload source of the fields context, or gives the files themselves.
  * `embed` and `location` use its embed source and its maps; `location` loads Leaflet when shown.
+ * `credits` searches people and roles through its relation source.
  */
 export const builtInFields: Readonly<Record<string, FieldEntry>> = {
     text: TextFieldEntry,
@@ -59,6 +61,7 @@ export const builtInFields: Readonly<Record<string, FieldEntry>> = {
     location: LocationFieldEntry,
     country: CountryFieldEntry,
     region: RegionFieldEntry,
+    credits: CreditsFieldEntry,
 };
 
 /**

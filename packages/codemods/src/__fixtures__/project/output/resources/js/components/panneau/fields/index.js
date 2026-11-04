@@ -1,3 +1,4 @@
+export { CreditFieldEntry as Credit } from './Credit';
 export { LinkFieldEntry as Link } from './Link';
 export { PageSlugFieldEntry as PageSlug } from './PageSlug';
 export { PageSlugLocalizedFieldEntry as PageSlugLocalized } from './PageSlugLocalized';

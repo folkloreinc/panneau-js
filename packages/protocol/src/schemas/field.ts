@@ -133,7 +133,7 @@ export const Field = z
             .optional()
             .meta({
                 description:
-                    '`relation`: id of the related resource. `media`, `image`: id of a resource of kind `media`, or a list of them; without it, every library of the definition (decision 0027).',
+                    '`relation`: id of the related resource. `credits`: id of the resource of people. `media`, `image`: id of a resource of kind `media`, or a list of them; without it, every library of the definition (decision 0027).',
             }),
         accept: z.array(z.string()).optional().meta({
             description:
@@ -168,7 +168,7 @@ export const Field = z
             return z
                 .array(Field)
                 .optional()
-                .meta({ description: '`group` and `repeater`: the nested fields.' });
+                .meta({ description: '`group` and `repeater`: the nested fields. `credits`: the fields of each credit.' });
         },
         get types(): z.ZodOptional<z.ZodArray<typeof BlockType>> {
             return z

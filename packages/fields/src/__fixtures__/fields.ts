@@ -105,6 +105,13 @@ export const EXAMPLE_FIELDS: Field[] = [
     { name: 'author', type: 'relation', label: 'Author', resource: 'authors' },
     { name: 'guests', type: 'relation', label: 'Guests', resource: 'authors', multiple: true },
     {
+        name: 'credits',
+        type: 'credits',
+        label: 'Credits',
+        resource: 'authors',
+        settings: { featured: true },
+    },
+    {
         name: 'transcript',
         type: 'file',
         label: 'Transcript',

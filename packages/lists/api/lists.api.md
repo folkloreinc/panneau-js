@@ -82,6 +82,9 @@ export function CountryDisplay(input: DisplayProps): JSX.Element;
 export function countSelected(selection: ListSelection, total: number): number;
 
 // @public
+export function CreditsDisplay(input: DisplayProps): JSX.Element;
+
+// @public
 export function CursorPagination(input: CursorPaginationProps): JSX.Element;
 
 // @public (undocumented)

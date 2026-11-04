@@ -1,3 +1,4 @@
+export { default as Credit } from './Credit';
 export { default as Link } from './Link';
 export { default as PageSlug } from './PageSlug';
 export { default as PageSlugLocalized } from './PageSlugLocalized';

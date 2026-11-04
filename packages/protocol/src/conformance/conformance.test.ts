@@ -18,6 +18,8 @@ function createBackend() {
         type: 'textarea',
         abilities: { view: false },
     });
+    // Credits (decision 0053): people of a resource or names, and roles as names.
+    definition.resources[0]?.fields.push({ name: 'credits', type: 'credits', resource: 'authors' });
     definition.resources.push({
         id: 'settings',
         label: { singular: 'setting', plural: 'settings' },
@@ -67,6 +69,14 @@ function createBackend() {
                     status: 'published',
                     published_at: '2026-10-01T12:00:00Z',
                     notes: 'Internal',
+                    credits: [
+                        {
+                            person: { id: '1', label: 'Ada' },
+                            roles: [{ name: { fr: 'Texte', en: 'Text' } }],
+                            featured: true,
+                        },
+                        { person: { name: 'Jane Doe' }, roles: [] },
+                    ],
                 },
                 { title: { fr: 'Contact', en: 'Contact' }, status: 'draft', published_at: null },
                 {
@@ -135,6 +145,37 @@ describe('runConformance', () => {
         expect(list?.status).toBe('failed');
         expect(list?.issues.join('\n')).toMatch(/repeats items of the first page/);
         expect(list?.issues.join('\n')).toMatch(/Expected status 422/);
+    });
+
+    it('reports credits that aren’t in the shape of the protocol', async () => {
+        const definition = createDefinition();
+        definition.resources[0]?.fields.push({
+            name: 'credits',
+            type: 'credits',
+            settings: { roles: 'authors' },
+        });
+        const backend = createMockBackend({
+            definition,
+            items: {
+                pages: [
+                    { title: { fr: 'A' }, credits: [{ person: 'Ada', role: 'Text' }] },
+                    {
+                        title: { fr: 'B' },
+                        credits: [{ person: { id: '1' }, roles: [{ name: { fr: 'Texte' } }] }],
+                    },
+                    { title: { fr: 'C' }, credits: null },
+                ],
+            },
+        });
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: backend.fetch,
+            resource: 'pages',
+        });
+        const check = report.checks.find((candidate) => candidate.id === 'values.credits');
+        expect(check?.status).toBe('failed');
+        expect(check?.issues.join('\n')).toMatch(/isn’t a list of credits/);
+        expect(check?.issues.join('\n')).toMatch(/people or roles of another kind/);
     });
 
     it('reports a backend that ignores the abilities it announces', async () => {

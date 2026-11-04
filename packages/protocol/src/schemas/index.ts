@@ -8,6 +8,10 @@ import {
     ActionRun,
     ActionRunResponse,
     ContextOptionsResponse,
+    Credit,
+    CreditPerson,
+    CreditRole,
+    CreditsValue,
     CursorPagination,
     EmbedResponse,
     EmbedValue,
@@ -162,6 +166,10 @@ export const namedSchemas = {
     EmbedValue,
     EmbedResponse,
     LocationValue,
+    CreditPerson,
+    CreditRole,
+    Credit,
+    CreditsValue,
 } satisfies Record<string, z.ZodType>;
 
 /** A registry of the named schemas, used to reference them by name in generated files. */

@@ -91,6 +91,7 @@ describe('fieldsPlugin', () => {
                 'location',
                 'country',
                 'region',
+                'credits',
             ].sort(),
         );
         expect(fieldsPlugin.fields).toBe(builtInFields);

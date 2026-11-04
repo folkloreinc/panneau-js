@@ -2,6 +2,7 @@ import { Check, Minus } from 'lucide-react';
 
 import { toReferences } from '@panneau/fields';
 import { getCountryFlag, getCountryName, isCountryCode } from '@panneau/fields/country';
+import { formatCredits } from '@panneau/fields/credits';
 import { formatDuration } from '@panneau/fields/duration';
 import { getRegionCountry, getRegionName } from '@panneau/fields/region';
 import { parsePhone } from '@panneau/fields/tel';
@@ -173,6 +174,19 @@ export function RelationDisplay({ value }: DisplayProps) {
             {references.map((reference) => reference.label).join(', ')}
         </span>
     );
+}
+
+/**
+ * Credits: the people in order, each with their roles, where consecutive credits with the same
+ * roles share them (decision 0053). Roles named in each locale show in the user's.
+ */
+export function CreditsDisplay({ value }: DisplayProps) {
+    const intl = usePanneauIntl();
+    const text = formatCredits(value, intl.locale);
+    if (text === '') {
+        return <EmptyValue />;
+    }
+    return <span className={styles.text}>{text}</span>;
 }
 
 /** A link that opens the URL. */
@@ -409,4 +423,5 @@ export const builtInDisplays: Readonly<Record<string, DisplayEntry>> = {
     location: LocationDisplay,
     country: CountryDisplay,
     region: RegionDisplay,
+    credits: CreditsDisplay,
 };

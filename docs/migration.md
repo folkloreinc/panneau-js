@@ -91,6 +91,14 @@ In v4, the app found a custom field by name in the `fields` namespace of its `co
 - what it registers is a **registry entry**: a component that gets `FieldEntryProps` of `@panneau/fields` (`field`, `path`, `value`, `onChange`, `onBlur`, `errors`, `disabled`, `readOnly`, `parentValue`, `locale`) and renders a controlled field, with its own label, help and errors;
 - the props of a field type beyond those of every field come from the `settings` of the field (`settings()` of the PHP field, which replaces `attributes()`).
 
+### Fields that a built-in type replaces
+
+Some custom fields of v4 have a built-in type in 5. Drop the component, declare the built-in field in PHP, and convert the values once:
+
+- **Credits** (people and their roles, grouped by person or by role, with names or references): the `credits` type ([decision 0053](decisions/0053-credits.md)). `Credits::make('credits')->resource(PeopleResource::class)->roles(RolesResource::class)`, then `php artisan panneau:convert-credits` turns the values kept in JSON into its shape. Credits kept in rows of a table of their own stay there, read and written by the repository. The credits of images stay text: a `credit` text field of the media library, localized when the project is.
+
+The codemods report these components.
+
 ### Running the codemods
 
 1. Commit the project, then run `php artisan panneau:install --upgrade`: it writes the entry of 5, `resources/js/panneau.tsx`.

@@ -118,6 +118,11 @@
             "types": "./dist/region/index.d.ts",
             "default": "./dist/region/index.js"
         },
+        "./credits": {
+            "@panneau/source": "./src/credits/index.ts",
+            "types": "./dist/credits/index.d.ts",
+            "default": "./dist/credits/index.js"
+        },
         "./location": {
             "@panneau/source": "./src/location/index.ts",
             "types": "./dist/location/index.d.ts",

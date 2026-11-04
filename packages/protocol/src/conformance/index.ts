@@ -7,6 +7,7 @@ import { Definition, type Resource, User } from '../schemas';
 import {
     ActionResult,
     ContextOptionsResponse,
+    CreditsValue,
     FieldCheckResponse,
     type Item,
     ItemResponse,
@@ -613,6 +614,52 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
             'An invalid cursor answers a 422 without errors.cursor.',
         );
     });
+
+    await run(
+        'values.credits',
+        'Items carry the values of `credits` fields as lists of credits',
+        async (check) => {
+            const fields = ((resource as Resource | null)?.fields ?? []).filter(
+                (field) => field.type === 'credits' && field.localized !== true,
+            );
+            if (resource === null || fields.length === 0) {
+                check.skip('The resource has no `credits` field.');
+                return;
+            }
+            const cursors = (resource as Resource).list?.pagination === 'cursor';
+            const reply = await request(`${resourcePath()}?${cursors ? '' : 'page=1&'}perPage=20`);
+            if (!check.expectStatus(reply, 200)) {
+                return;
+            }
+            const list = check.expectSchema(ListResponse, reply.body, 'The list');
+            (list?.data ?? []).forEach((item) => {
+                fields.forEach((field) => {
+                    const value = item[field.name];
+                    if (value === null || value === undefined) {
+                        return;
+                    }
+                    const parsed = CreditsValue.safeParse(value);
+                    check.expect(
+                        parsed.success,
+                        `The \`${field.name}\` of item ${item.id} isn’t a list of credits (decision 0053).`,
+                    );
+                    if (!parsed.success) {
+                        return;
+                    }
+                    const roles = field.settings?.roles !== undefined;
+                    const mixed = parsed.data.some(
+                        (credit) =>
+                            (field.resource === undefined && 'id' in credit.person) ||
+                            credit.roles.some((role) => ('id' in role) !== roles),
+                    );
+                    check.expect(
+                        !mixed,
+                        `The \`${field.name}\` of item ${item.id} has people or roles of another kind than its field.`,
+                    );
+                });
+            });
+        },
+    );
 
     await run('list.sort', 'GET /resources/{resource} accepts a sort', async (check) => {
         const sort = (resource as Resource | null)?.list?.sorts?.[0];

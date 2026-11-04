@@ -47,6 +47,7 @@ Every field takes `value`, `onChange`, `onBlur`, `errors`, `disabled`, `readOnly
 | `@panneau/fields/group`     | `GroupField`                                 | an object                                                           |
 | `@panneau/fields/repeater`  | `RepeaterField` (items or typed blocks)      | a list of objects; blocks have a `type`                             |
 | `@panneau/fields/relation`  | `RelationField`, `createRelationSource()`    | `{ id, label }`, or a list with `multiple`                          |
+| `@panneau/fields/credits`   | `CreditsField`, `formatCredits()`            | `[{ person, roles, featured }]`, people and their roles (below)     |
 | `@panneau/fields/file`      | `FileField`                                  | a file, or a list with `multiple` (below)                           |
 | `@panneau/fields/uppy`      | `createUppyUploadSource()`                   | the upload source on Uppy 6 (below)                                 |
 | `@panneau/fields/locales`   | `en`, `fr`                                   | deprecated: use `@panneau/intl`                                     |
@@ -147,6 +148,19 @@ A `country` field picks a country by its name in the user's locale, with its fla
 <CountryField label="Country" preferred={['CA', 'US']} value={country} onChange={setCountry} />
 <RegionField label="Province" country={country} value={province} onChange={setProvince} />
 <TelField label="Phone" country="CA" value={phone} onChange={setPhone} />
+```
+
+A `credits` field lists people and their roles, in order ([decision 0053](../../docs/decisions/0053-credits.md)). A person is picked in the resource of people (`resource`) through the relation source, created from the picker when the source can create items, or kept as a name, `{ name: 'Jane Doe' }`, unless `names` is `false`; without a resource, every person is a name. Roles are picked in the resource of roles (`roles`, `settings.roles` in the definition), or typed as names in each locale, `{ name: { fr: 'Musique', en: 'Music' } }`. `featured` lets users mark the credits to put forward, and `fields` are the fields of each credit.
+
+```tsx
+<CreditsField
+    label="Credits"
+    resource="people"
+    roles="roles"
+    featured
+    value={credits}
+    onChange={setCredits}
+/>
 ```
 
 A `location` field places a point on a Leaflet map, loaded when the field is first shown. The tiles are OpenStreetMap's by default. `maps` sets other tiles and an address search, a `GeocodingSource`: `createNominatimSource()` searches OpenStreetMap's Nominatim, whose [usage policy](https://operations.osmfoundation.org/policies/nominatim/) suits small volumes; a product with more uses its own service. Without a geocoding source, the field has no address search, and the latitude and longitude are typed or picked on the map.

@@ -14,7 +14,7 @@ import type {
 import { dirname, relative } from 'node:path';
 
 import { type FileInfo, TODO_PREFIX, type TransformApi, insertImport } from '../context';
-import { NAMESPACES, getNamespaceOfConstant } from '../mappings';
+import { NAMESPACES, PROJECT_FIELDS_WITH_BUILT_IN, getNamespaceOfConstant } from '../mappings';
 import { kebabCase } from '../names';
 
 /** The local names of the app of v4 in a file: its import, and the variables set to it. */
@@ -238,6 +238,14 @@ function writePlugin(api: TransformApi, element: ASTPath<JSXElement>): string {
                 (exported) => `        ${quote(kebabCase(exported))}: ${name}.${exported},`,
             );
             kinds.push(`    ${kind}: {\n${entries.join('\n')}\n    },`);
+            if (kind === 'fields') {
+                [...exports.keys()].forEach((exported) => {
+                    const replaced = PROJECT_FIELDS_WITH_BUILT_IN[kebabCase(exported)];
+                    if (replaced !== undefined) {
+                        todo(element, 'entry', `\`${kebabCase(exported)}\`: ${replaced}`);
+                    }
+                });
+            }
             todo(
                 element,
                 'entry',

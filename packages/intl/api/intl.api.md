@@ -434,6 +434,35 @@ export const fieldsMessages: {
     regionPlaceholder: PanneauMessage<Record<never, never>>;
     noRegions: PanneauMessage<Record<never, never>>;
     telCountry: PanneauMessage<Record<never, never>>;
+    credit: PanneauMessage<    {
+    index: number;
+    }>;
+    noCredits: PanneauMessage<Record<never, never>>;
+    addCredit: PanneauMessage<Record<never, never>>;
+    removeCredit: PanneauMessage<    {
+    index: number;
+    }>;
+    moveCreditUp: PanneauMessage<    {
+    index: number;
+    }>;
+    moveCreditDown: PanneauMessage<    {
+    index: number;
+    }>;
+    creditPerson: PanneauMessage<Record<never, never>>;
+    creditPersonPlaceholder: PanneauMessage<Record<never, never>>;
+    creditName: PanneauMessage<    {
+    text: string;
+    }>;
+    creditNameOnly: PanneauMessage<Record<never, never>>;
+    creditRoles: PanneauMessage<Record<never, never>>;
+    creditRole: PanneauMessage<    {
+    index: number;
+    }>;
+    addRole: PanneauMessage<Record<never, never>>;
+    removeRole: PanneauMessage<    {
+    index: number;
+    }>;
+    creditFeatured: PanneauMessage<Record<never, never>>;
     missingPlugin: PanneauMessage<    {
     type: string;
     }>;

@@ -111,14 +111,30 @@ function checkResource(resource: ResourceInput, path: string, issues: Validation
                 path: `${path}.fields.${index}.resource`,
                 message: 'A `relation` field needs a `resource`.',
             });
-        } else if (field.type === 'relation' && Array.isArray(field.resource)) {
+        } else if (
+            (field.type === 'relation' || field.type === 'credits') &&
+            Array.isArray(field.resource)
+        ) {
             issues.push({
                 path: `${path}.fields.${index}.resource`,
-                message: 'A `relation` field names one resource.',
+                message: `A \`${field.type}\` field names one resource.`,
+            });
+        }
+        if (field.type === 'credits') {
+            (field.fields ?? []).forEach((nested, nestedIndex) => {
+                if (CREDIT_KEYS.includes(nested.name)) {
+                    issues.push({
+                        path: `${path}.fields.${index}.fields.${nestedIndex}.name`,
+                        message: `\`${nested.name}\` is a key of every credit: a field of the credit can’t use it.`,
+                    });
+                }
             });
         }
     });
 }
+
+/** The keys of every credit, which the fields of a credit can't use (decision 0053). */
+const CREDIT_KEYS: readonly string[] = ['person', 'roles', 'featured'];
 
 /**
  * Checks what the schema can't: references between parts of a definition (layout nodes and
@@ -135,13 +151,23 @@ export function lintDefinition(definition: DefinitionInput): ValidationIssue[] {
         checkResource(resource, `resources.${index}`, issues);
         resource.fields.forEach((field, fieldIndex) => {
             if (
-                field.type === 'relation' &&
+                (field.type === 'relation' || field.type === 'credits') &&
                 typeof field.resource === 'string' &&
                 !resourceIds.has(field.resource)
             ) {
                 issues.push({
                     path: `resources.${index}.fields.${fieldIndex}.resource`,
                     message: `No resource \`${field.resource}\`.`,
+                });
+            }
+            const roles = field.type === 'credits' ? field.settings?.roles : undefined;
+            if (roles !== undefined && (typeof roles !== 'string' || !resourceIds.has(roles))) {
+                issues.push({
+                    path: `resources.${index}.fields.${fieldIndex}.settings.roles`,
+                    message:
+                        typeof roles === 'string'
+                            ? `No resource \`${roles}\`.`
+                            : 'The roles of a `credits` field are the id of a resource.',
                 });
             }
             if (field.type === 'media' || field.type === 'image') {

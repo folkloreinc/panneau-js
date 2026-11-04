@@ -1,6 +1,7 @@
 resources/js/components/Panneau.jsx
     16  entry            `../../styles/panneau.scss` was written for v4 and Bootstrap: check what it still styles
     17  entry            `import 'ckeditor5/ckeditor5.css'` is dropped with the container: import it where it is still needed
+    55  entry            `credit`: the built-in `credits` type replaces a field of credits (decision 0053): declare a `Credits` field in PHP, convert its values with `php artisan panneau:convert-credits`, and remove this component
     55  entry            the keys of `fields` are the types of the definition, in kebab case: check each one against the `type()` of its PHP field (v4 also found `video_or_embed` under `VideoOrEmbed`)
     55  entry            `displays`: displays of Panneau 5 get `value`, `item`, `field` and `column` (`DisplayProps` of `@panneau/lists`)
     55  entry            the keys of `displays` are in kebab case: check each one against the name the definition uses
@@ -22,6 +23,9 @@ resources/js/components/panneau/actions/Publish.jsx
 resources/js/components/panneau/displays/TextLocalized.jsx
      1  import           `useLocales` of `@panneau/core/contexts`: `useFieldsContext().locales` of `@panneau/fields`
     15  bootstrap        Bootstrap class `text-muted` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
+
+resources/js/components/panneau/fields/Credit.jsx
+    28  field-component  `<ResourceItem>` is `RelationField` of `@panneau/fields/relation`: it searches the resource through the relation source of the app: `resource` is its id
 
 resources/js/components/panneau/fields/Link.tsx
     27  field-entry      `LinkField` renders every locale itself: its PHP field must not be `localized()`, which renders a field once per locale
@@ -65,5 +69,5 @@ resources/js/components/panneau/fields/Visual.tsx
     29  field-component  `<ImageField>` is `ImageField` of `@panneau/media`: it needs `resource`, the id of the media library, and the `mediaPlugin`
     37  bootstrap        Bootstrap class `mx-2` in `className`: Panneau 5 has no Bootstrap (`@panneau/ui` primitives, CSS Modules, or the Bootstrap-compatible theme)
 
-15 files read, 12 changed, 47 findings.
+16 files read, 13 changed, 49 findings.
 Format the changed files with Prettier: the codemods print what they add their own way. Each finding to fix by hand also has a `// TODO(panneau-5): …` comment in its file. Run the codemods again with --dry to list what is left.

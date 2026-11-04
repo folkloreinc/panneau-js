@@ -9,6 +9,7 @@ export {
     BooleanDisplay,
     ColorDisplay,
     CountryDisplay,
+    CreditsDisplay,
     DateDisplay,
     DateTimeDisplay,
     DurationDisplay,
