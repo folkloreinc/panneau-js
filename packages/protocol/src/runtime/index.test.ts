@@ -76,6 +76,8 @@ describe('@panneau/protocol/runtime', () => {
 
     it('exports the constants and the runtime helpers', () => {
         expect(Object.keys(runtime).sort()).toEqual([
+            'AUTH_ERROR_CODES',
+            'AUTH_ERROR_PARAM',
             'AUTH_PAGE_PATHS',
             'BOOT_CONFIG_ELEMENT_ID',
             'BUILT_IN_ACTIONS',

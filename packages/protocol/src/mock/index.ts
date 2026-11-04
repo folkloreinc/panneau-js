@@ -743,7 +743,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
 
         if (auth !== null) {
             if (segments[0] === 'auth') {
-                return auth.answer(segments.slice(1), method, readBody);
+                return auth.answer(segments.slice(1), method, readBody, url);
             }
             const account =
                 segments[0] === 'account'

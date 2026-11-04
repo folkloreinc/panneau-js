@@ -44,6 +44,11 @@ export const appFr: Record<string, string> = {
     'panneau.app.verifyLinkIncomplete':
         'Ce lien est incomplet. Ouvrez de nouveau le lien du courriel.',
     'panneau.app.continue': 'Continuer',
+    'panneau.app.providerFailed': 'La connexion avec votre compte n’a pas fonctionné. Réessayez.',
+    'panneau.app.providerNoEmail': 'Votre compte n’a pas d’adresse courriel vérifiée.',
+    'panneau.app.providerDomain': 'Votre adresse courriel n’est pas acceptée ici.',
+    'panneau.app.providerAccess':
+        'Aucun compte de ce panneau d’administration n’a votre adresse courriel.',
     'panneau.app.logInWithPasskey': 'Se connecter avec une clé d’accès',
     'panneau.app.passkeyLogInError':
         'La connexion avec cette clé d’accès n’a pas pu se faire. Réessayez.',

@@ -442,6 +442,34 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
         }
     });
 
+    // OAuth providers (decision 0052): their redirect, without following it.
+    await run(
+        'auth.providers',
+        'GET /auth/providers/{provider}/redirect starts the login of each provider',
+        async (check) => {
+            // Those the app links to
+            const providers = (auth()?.providers ?? []).filter(({ url }) => url !== undefined);
+            if (providers.length === 0) {
+                check.skip('The definition has no `auth.providers` with a `url`.');
+                return;
+            }
+            for (const provider of providers) {
+                const reply = await request(
+                    `/auth/providers/${encodeURIComponent(provider.id)}/redirect?next=%2F`,
+                    { redirect: 'manual' },
+                );
+                check.expect(
+                    reply.status === 0 || (reply.status >= 301 && reply.status <= 308),
+                    `Expected a redirection for "${provider.id}", got ${reply.status}.`,
+                );
+            }
+            check.expectProblem(
+                await request(`/auth/providers/${UNKNOWN}/redirect`, { redirect: 'manual' }),
+                404,
+            );
+        },
+    );
+
     // Passkeys (decision 0051): the options of a login, a credential that doesn't exist, and the
     // list of the account, without adding one.
     await run(
