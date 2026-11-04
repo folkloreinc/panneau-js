@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect, useEffectEvent, useRef, useState } from 'react';
 
-import { usePanneau, usePlugins } from '@panneau/core';
+import { usePanneau } from '@panneau/core';
 import { getActionLabel } from '@panneau/intl';
 import type { ActionResult, ActionRun, RouteReference } from '@panneau/protocol';
 import { usePanneauIntl, useToast } from '@panneau/ui';
