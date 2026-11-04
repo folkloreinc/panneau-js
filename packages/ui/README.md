@@ -73,7 +73,7 @@ Every component reads its own tokens, `--panneau-<component>-<token>`, which def
 
 ### Tones and appearances
 
-Components with a color take a `tone`, like Bootstrap's theme colors: `neutral`, `accent`, `success`, `warning`, `danger` and `info` are built in. `Button`, `Badge` and `Alert` also take an `appearance` (`solid`, `outline`, `subtle`, and `ghost` for buttons):
+Components with a color take a `tone`, like Bootstrap's theme colors: `neutral`, `accent`, `success`, `warning`, `danger`, `info` and `muted` are built in. What each one means for a state (`muted` is what is over: Archived, Cancelled) is written once, in [the tones of the protocol](../../docs/protocol.md#tones): follow it, so that a user learns the colors once. `Button`, `Badge` and `Alert` also take an `appearance` (`solid`, `outline`, `subtle`, and `ghost` for buttons):
 
 ```tsx
 <Button tone="accent">Save</Button>

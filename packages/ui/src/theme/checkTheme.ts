@@ -68,6 +68,31 @@ const TOKEN_PAIRS: [name: string, foreground: string, background: string, minimu
         'panneau-color-surface',
         MIN_NON_TEXT_RATIO,
     ],
+    // The muted tone has no fill: its text and its outline sit on the surface.
+    [
+        'muted tone text on surface',
+        'panneau-color-muted',
+        'panneau-color-surface',
+        MIN_CONTRAST_RATIO,
+    ],
+    [
+        'muted tone border on surface',
+        'panneau-color-muted-border',
+        'panneau-color-surface',
+        MIN_NON_TEXT_RATIO,
+    ],
+    [
+        'muted tone solid text on solid',
+        'panneau-color-muted-solid-text',
+        'panneau-color-muted-solid',
+        MIN_CONTRAST_RATIO,
+    ],
+    [
+        'muted tone solid text on hover',
+        'panneau-color-muted-solid-text',
+        'panneau-color-muted-solid-hover',
+        MIN_CONTRAST_RATIO,
+    ],
 ];
 
 /**

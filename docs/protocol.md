@@ -103,7 +103,21 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     - `daterange`, `money` ([0053](decisions/0053-date-ranges-and-money.md));
     - `address` ([0054](decisions/0054-addresses.md)) and `link` ([0055](decisions/0055-links.md)).
 - **`text` settings:** `prefix` and `suffix` show in the control, around the value. With `"secret": true`, the value is a secret, such as an access key: clients type it in a password input that a button reveals, never let the browser fill it in, and show it as dots in lists and details. The backend still decides whether it sends the value back at all.
-- **`select` options** are `{ "value", "label", "description", "disabled", "tone" }`. `tone` colors the option where it shows as a badge, in lists and details: `neutral` (the default), `accent`, `success`, `warning`, `danger`, `info`, or a tone of the theme (`{ "value": "failed", "label": "Failed", "tone": "danger" }`).
+- **`select` options** are `{ "value", "label", "description", "disabled", "tone" }`. `tone` colors the option where it shows as a badge, in lists and details: `neutral` (the default), `info`, `success`, `warning`, `danger`, `muted`, or a tone of the theme (`{ "value": "failed", "label": "Failed", "tone": "danger" }`).
+    - <a id="tones"></a>**What each tone means**, the same in every admin, so that a user learns the colors once:
+
+        | Tone      | Means                            | Examples                                    |
+        | --------- | -------------------------------- | ------------------------------------------- |
+        | `neutral` | not started, waiting, a category | Draft, Pending, Idea                        |
+        | `info`    | in progress or coming            | In progress, Scheduled, New                 |
+        | `success` | done, live, in good shape        | Published, Active, Paid                     |
+        | `warning` | needs attention soon             | Expires soon, Low stock, Possible duplicate |
+        | `danger`  | a problem to fix now             | Failed, Expired, Overdue                    |
+        | `muted`   | over, no longer active           | Closed, Archived, Cancelled, Ended          |
+
+    - `neutral` and `muted` are both quiet, but don't say the same thing: "Draft" hasn't started, "Archived" is done with. `muted` has no fill, only a grey outline, so that what is over steps back from what is still alive. Projects coming from Panneau 4 map Bootstrap's `dark` to `muted`.
+    - `accent` is never a state: it is the main action of a screen.
+    - Sober by default: most states are `neutral`, and color is for what needs a look. Badges of states use the `subtle` appearance, never `solid`. A state is never shown by its color alone: its word is always there, and the same state has the same short word in every list of an admin. A number (a widget, the count of a group) takes a tone only when it calls for attention (overdue: 3), and stays neutral at 0.
 - **`localized`** makes the value an object keyed by locale (`{ "fr": "…", "en": "…" }`). It replaces the separate `localized` field and the `*Localized` PHP classes of v1.
 - **`group`** has `fields`, for a nested object.
 - **`repeater`** has `fields`, or `types` for typed blocks, for an array.

@@ -57,6 +57,12 @@
     --panneau-color-info-solid: #1d4ed8;
     --panneau-color-info-solid-hover: #1e40af;
     --panneau-color-info-solid-text: #ffffff;
+    --panneau-color-muted: #52525b;
+    --panneau-color-muted-subtle: transparent;
+    --panneau-color-muted-border: #8b8b94;
+    --panneau-color-muted-solid: #52525b;
+    --panneau-color-muted-solid-hover: #3f3f46;
+    --panneau-color-muted-solid-text: #ffffff;
 
     /*
      * Data visualization: 8 categorical colors in a fixed order, a sequential ramp from low to high,
@@ -190,6 +196,12 @@
     --panneau-color-info: #1d4ed8;
     --panneau-color-info-subtle: #eff6ff;
     --panneau-color-info-border: #93c5fd;
+    --panneau-color-muted: #52525b;
+    --panneau-color-muted-subtle: transparent;
+    --panneau-color-muted-border: #8b8b94;
+    --panneau-color-muted-solid: #52525b;
+    --panneau-color-muted-solid-hover: #3f3f46;
+    --panneau-color-muted-solid-text: #ffffff;
     --panneau-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.06);
     --panneau-shadow-md: 0 1px 3px rgb(0 0 0 / 0.08), 0 4px 12px rgb(0 0 0 / 0.08);
     --panneau-shadow-lg: 0 4px 8px rgb(0 0 0 / 0.08), 0 16px 40px rgb(0 0 0 / 0.16);
@@ -246,6 +258,12 @@
     --panneau-color-info: #93c5fd;
     --panneau-color-info-subtle: rgb(30 58 138 / 0.35);
     --panneau-color-info-border: #1d4ed8;
+    --panneau-color-muted: #a1a1aa;
+    --panneau-color-muted-subtle: transparent;
+    --panneau-color-muted-border: #71717a;
+    --panneau-color-muted-solid: #52525b;
+    --panneau-color-muted-solid-hover: #3f3f46;
+    --panneau-color-muted-solid-text: #ffffff;
     --panneau-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
     --panneau-shadow-md: 0 1px 3px rgb(0 0 0 / 0.4), 0 4px 12px rgb(0 0 0 / 0.4);
     --panneau-shadow-lg: 0 4px 8px rgb(0 0 0 / 0.4), 0 16px 40px rgb(0 0 0 / 0.5);
@@ -303,6 +321,12 @@
         --panneau-color-info: #93c5fd;
         --panneau-color-info-subtle: rgb(30 58 138 / 0.35);
         --panneau-color-info-border: #1d4ed8;
+        --panneau-color-muted: #a1a1aa;
+        --panneau-color-muted-subtle: transparent;
+        --panneau-color-muted-border: #71717a;
+        --panneau-color-muted-solid: #52525b;
+        --panneau-color-muted-solid-hover: #3f3f46;
+        --panneau-color-muted-solid-text: #ffffff;
         --panneau-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
         --panneau-shadow-md: 0 1px 3px rgb(0 0 0 / 0.4), 0 4px 12px rgb(0 0 0 / 0.4);
         --panneau-shadow-lg: 0 4px 8px rgb(0 0 0 / 0.4), 0 16px 40px rgb(0 0 0 / 0.5);

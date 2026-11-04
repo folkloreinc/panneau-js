@@ -1,9 +1,48 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { bootstrapTheme } from './bootstrap';
 import { checkTheme } from './checkTheme';
 
+/** The tokens the default theme declares in a block of its stylesheet. */
+function defaultTokens(selector: string): Record<string, string> {
+    const css = readFileSync(join(import.meta.dirname, '../root/PanneauRoot.module.css'), 'utf8');
+    const start = css.indexOf(selector);
+    const block = css.slice(start, css.indexOf('}', start));
+    return Object.fromEntries(
+        [...block.matchAll(/--(panneau-color-[a-z0-9-]+)\s*:\s*([^;]+);/g)].map((match) => [
+            match[1] as string,
+            match[2] as string,
+        ]),
+    );
+}
+
 describe('checkTheme', () => {
+    it('passes the colors of the default theme, the muted tone included', () => {
+        const report = checkTheme({
+            tokens: defaultTokens(':where(.root) {'),
+            dark: defaultTokens(":where(.root[data-color-scheme='dark']"),
+        });
+        expect(report.failures).toEqual([]);
+        expect(
+            report.checks
+                .filter(
+                    (check) => check.name.startsWith('tokens: muted tone ') && check.ratio !== null,
+                )
+                .map((check) => `${check.scheme} ${check.name}`),
+        ).toEqual([
+            'light tokens: muted tone text on surface',
+            'light tokens: muted tone border on surface',
+            'light tokens: muted tone solid text on solid',
+            'light tokens: muted tone solid text on hover',
+            'dark tokens: muted tone text on surface',
+            'dark tokens: muted tone border on surface',
+            'dark tokens: muted tone solid text on solid',
+            'dark tokens: muted tone solid text on hover',
+        ]);
+    });
+
     it('reports text tokens below 4.5:1', () => {
         const report = checkTheme({
             tokens: { 'panneau-color-text-muted': '#aaaaaa', 'panneau-color-surface': '#ffffff' },

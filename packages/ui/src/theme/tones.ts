@@ -28,12 +28,24 @@ export interface PanneauTones {
     warning: true;
     danger: true;
     info: true;
+    muted: true;
 }
 
 /** A tone name: a built-in tone, or one declared in `PanneauTones`. */
 export type Tone = keyof PanneauTones & string;
 
-/** The tones Panneau defines, from the semantic tokens of the theme. */
+/**
+ * The tones Panneau defines, from the semantic tokens of the theme. What each one means for a state
+ * is written once, in the protocol's docs ("Tones"):
+ *
+ * - `neutral`: not started, waiting, a category (Draft, Pending);
+ * - `info`: in progress or coming (In progress, Scheduled);
+ * - `success`: done, live, in good shape (Published, Paid);
+ * - `warning`: needs attention soon (Expires soon, Low stock);
+ * - `danger`: a problem to fix now (Failed, Overdue);
+ * - `muted`: over, no longer active (Archived, Cancelled);
+ * - `accent`: never a state, the main action of a screen.
+ */
 export const BUILT_IN_TONES = [
     'neutral',
     'accent',
@@ -41,6 +53,7 @@ export const BUILT_IN_TONES = [
     'warning',
     'danger',
     'info',
+    'muted',
 ] as const;
 
 /** The colors of a tone, as CSS values. */

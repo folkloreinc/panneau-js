@@ -46,7 +46,7 @@ export const Option = z.looseObject({
         .optional()
         .meta({
             description:
-                'The tone of the option where it shows as a badge, in lists and details: `neutral` (the default), `accent`, `success`, `warning`, `danger`, `info`, or a tone of the theme.',
+                'The tone of the option where it shows as a badge, in lists and details: `neutral` (the default), `info`, `success`, `warning`, `danger`, `muted`, or a tone of the theme. What each one means is in the Tones of docs/protocol.md.',
         }),
 });
 
