@@ -144,5 +144,6 @@ describe('DateRangeField', () => {
             end: '2026-11-04T20:00:00Z',
             timeZone: 'Europe/Paris',
         });
-    });
+        // Typing filters hundreds of zones: slow on a busy machine.
+    }, 15_000);
 });

@@ -75,7 +75,7 @@ Performances and screenings are a list of sessions, each a range and a venue. Th
 - **The `money` rule** is a new portable rule, implied by the type. A filled value is an object with an integer `amount` and a `currency`: among `currencies`, or equal to `currency`, when the field has them; an ISO 4217 code that Panneau knows otherwise (`CURRENCY_CODES`). The client adds them to the implied rule, `{ "rule": "money", "currencies": ["CAD", "USD"] }`. An amount typed without a currency keeps `currency: null`, which the rule refuses.
 - **`min` and `max`** apply to the amount, in minor units: `{ "rule": "min", "value": 100 }` is one dollar. They don't convert currencies.
 - **Field:** a number input in the currency format of the locale (`1 250,00 $` in French, `$1,250.00` in English), with the digits of the currency. It reads and writes minor units, without floating point errors. Clearing the amount gives `null`.
-- **Lists** show the amount in the locale's currency format, aligned at the end of their column.
+- **Lists** show the amount in the locale's currency format, and sort it by its amount.
 - **Taxes stay out of the type.** Whether a price includes taxes is a policy of the site, the same for all its prices in most of them, and a payment service doesn't take it. A site that needs it per price adds a `boolean` field next to the amount; the taxes of an order are amounts of their own.
 
 ## Consequences
