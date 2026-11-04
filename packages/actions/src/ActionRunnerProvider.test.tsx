@@ -8,7 +8,7 @@ import { PanneauProvider, createList, definePlugin } from '@panneau/core';
 import { ValidationError, createRestAdapter } from '@panneau/data';
 import { fr } from '@panneau/intl';
 import { ListView } from '@panneau/lists';
-import type { Action, ActionResult, ActionRun } from '@panneau/protocol';
+import type { Action, ActionResult, ActionRun, Definition } from '@panneau/protocol';
 import { createExampleDefinition, createMockBackend } from '@panneau/protocol/mock';
 import { Button, PanneauRoot } from '@panneau/ui';
 
@@ -104,7 +104,8 @@ describe('ActionRunnerProvider', () => {
         const adapter = createAdapter({
             runAction: vi.fn(() => Promise.resolve({ result: { refresh: 'none' as const } })),
         });
-        const definition = createExampleDefinition();
+        // Parsed, as the app gives it: actions have their `kind`.
+        const definition = createExampleDefinition() as Definition;
         const wrap = (ui: ReactNode) => (
             <PanneauProvider definition={definition}>{ui}</PanneauProvider>
         );
@@ -125,7 +126,8 @@ describe('ActionRunnerProvider', () => {
                 Promise.resolve({ result: { counts: { succeeded: 3 }, refresh: 'none' as const } }),
             ),
         });
-        const definition = createExampleDefinition();
+        // Parsed, as the app gives it: actions have their `kind`.
+        const definition = createExampleDefinition() as Definition;
         const { run } = renderRunner(
             { action: publish, scope: 'selection', selection: { ids: ['1', '2', '3'] }, count: 3 },
             { adapter },
