@@ -148,6 +148,11 @@
     border-color: var(--panneau-color-accent);
 }
 
+/* A selected image has an accent ring, outside of it: nothing covers it. */
+.card[data-selected] .thumbnail {
+    box-shadow: 0 0 0 2px var(--panneau-color-accent);
+}
+
 .card[data-focus-visible] {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
     outline-offset: 1px;
@@ -203,19 +208,25 @@
     letter-spacing: 0.04em;
 }
 
+/* The name of a card, after its checkbox. */
+.cardTitle {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    min-width: 0;
+    margin-top: var(--panneau-space-1);
+}
+
 .checkbox,
 .radio {
-    position: absolute;
-    top: var(--panneau-space-2);
-    left: var(--panneau-space-2);
     display: grid;
+    flex: none;
     place-items: center;
-    width: 1.25rem;
-    height: 1.25rem;
-    background-color: var(--panneau-color-surface-raised);
-    border: 2px solid var(--panneau-color-border-control);
+    width: 1rem;
+    height: 1rem;
+    background-color: var(--panneau-color-surface);
+    border: 1.5px solid var(--panneau-color-border-control);
     border-radius: var(--panneau-radius-sm);
-    box-shadow: var(--panneau-shadow-sm);
 }
 
 .radio {
@@ -231,7 +242,7 @@
 
 .card[data-disabled] .checkbox,
 .card[data-disabled] .radio {
-    display: none;
+    visibility: hidden;
 }
 
 .badges {
@@ -273,8 +284,17 @@
 }
 
 .cardName {
+    flex: 1 1 auto;
+    min-width: 0;
     font-size: var(--panneau-font-size-sm);
     font-weight: var(--panneau-font-weight-medium);
+}
+
+/* The lines under the name start with it, after the checkbox. */
+.cardStatus,
+.cardMeta,
+.reason {
+    margin-inline-start: calc(1rem + var(--panneau-space-2));
 }
 
 .cardMeta,

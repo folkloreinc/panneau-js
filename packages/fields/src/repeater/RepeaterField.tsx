@@ -1,10 +1,20 @@
-import { ArrowDown, ArrowUp, Plus, Trash2 } from 'lucide-react';
-import { type ReactNode, useId } from 'react';
+import {
+    ArrowDown,
+    ArrowUp,
+    ChevronRight,
+    ChevronsDownUp,
+    ChevronsUpDown,
+    CircleAlert,
+    Plus,
+    Trash2,
+} from 'lucide-react';
+import { type ReactNode, useId, useState } from 'react';
 
 import type { BlockType, Field } from '@panneau/protocol';
 import {
     Button,
     Fieldset,
+    Icon,
     IconButton,
     Menu,
     MenuItem,
@@ -14,7 +24,7 @@ import {
 
 import { NestedField } from '../shared/DefinitionField';
 import { cx } from '../shared/cx';
-import { getFieldProps, getRuleNumber } from '../shared/entry';
+import { getFieldProps, getRuleNumber, getSetting, isBoolean } from '../shared/entry';
 import { messages } from '../shared/messages';
 import type { FieldEntryProps, FieldProps } from '../shared/types';
 import styles from './RepeaterField.module.css';
@@ -43,6 +53,16 @@ export interface RepeaterFieldProps extends FieldProps<RepeaterItem[]> {
      * layout of a compound field (decision 0065).
      */
     renderFields?: (parts: Readonly<Record<string, ReactNode>>, item: RepeaterItem) => ReactNode;
+    /**
+     * Items collapse under their title (decision 0068). Items the list had when it showed start
+     * collapsed, and an item that is added starts expanded. Defaults to true.
+     */
+    collapsible?: boolean;
+    /**
+     * Paths inside the list that have errors (`blocks.2.title`), from the form's binding: an
+     * item with an error expands, and its header says so.
+     */
+    invalidPaths?: readonly string[];
     itemClassName?: string;
 }
 
@@ -54,10 +74,87 @@ function defaults(fields: readonly Field[]): RepeaterItem {
     );
 }
 
+/** Types whose value is text that can stand for an item in its collapsed header. */
+const EXCERPT_TYPES = new Set(['text', 'textarea', 'richtext', 'email', 'url']);
+const ENTITIES: Readonly<Record<string, string>> = {
+    amp: '&',
+    lt: '<',
+    gt: '>',
+    quot: '"',
+    nbsp: ' ',
+    '#39': "'",
+};
+
+/** Text without its tags, on one line: the excerpt of a rich text. */
+function plainText(text: string): string {
+    return text
+        .replace(/<[^>]*>/g, ' ')
+        .replace(/&(amp|lt|gt|quot|nbsp|#39);/g, (_, name: string) => ENTITIES[name] ?? '')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+/**
+ * The first text of an item, for its collapsed header: the value of its first text field that has
+ * one, in the first locale that has one for a localized field.
+ */
+export function getItemExcerpt(item: RepeaterItem, fields: readonly Field[]): string | null {
+    for (const field of fields) {
+        if (!EXCERPT_TYPES.has(field.type)) {
+            continue;
+        }
+        const value = item[field.name];
+        const texts =
+            typeof value === 'string'
+                ? [value]
+                : value !== null && typeof value === 'object' && !Array.isArray(value)
+                  ? Object.values(value)
+                  : [];
+        for (const text of texts) {
+            if (typeof text === 'string') {
+                const plain = plainText(text);
+                if (plain !== '') {
+                    return plain.length > 140 ? `${plain.slice(0, 140)}…` : plain;
+                }
+            }
+        }
+    }
+    return null;
+}
+
+/** The indexes of the items that have an error, from the paths in error inside the list. */
+function invalidIndexes(base: string, paths: readonly string[]): Set<number> {
+    const prefix = `${base}.`;
+    const indexes = new Set<number>();
+    for (const path of paths) {
+        if (path.startsWith(prefix)) {
+            const index = Number(path.slice(prefix.length).split('.')[0]);
+            if (Number.isInteger(index)) {
+                indexes.add(index);
+            }
+        }
+    }
+    return indexes;
+}
+
+/** Moves the value at `from` to `to`, as items move. */
+function moved<T>(list: readonly T[], from: number, to: number): T[] {
+    const next = [...list];
+    const [value] = next.splice(from, 1);
+    if (value !== undefined) {
+        next.splice(to, 0, value);
+    }
+    return next;
+}
+
 /**
  * A list of items, each with the same fields, or typed blocks with the fields of their type. Items
  * can be added, moved and removed. Each field renders at the path `<list>.<index>.<field>`. An
  * empty list is `null`.
+ *
+ * Items collapse under their title (decision 0068): those the list had when it showed start
+ * collapsed, an added item starts expanded, and an item with an error expands. The state of each
+ * item stays while the list shows.
  */
 export function RepeaterField({
     fields = [],
@@ -77,6 +174,8 @@ export function RepeaterField({
     max,
     itemTitle,
     renderFields,
+    collapsible = true,
+    invalidPaths = [],
     className,
     labelClassName,
     descriptionClassName,
@@ -90,20 +189,52 @@ export function RepeaterField({
     const editable = disabled !== true && readOnly !== true;
     const canAdd = editable && (max === undefined || items.length < max);
     const canRemove = editable && items.length > min;
+
+    // Whether each item is expanded, by index: an item the list doesn't know yet (it had it when
+    // it showed, or it came from outside, such as an undo) is collapsed. A disabled list can't be
+    // expanded, so it shows its items.
+    const [expanded, setExpanded] = useState<readonly boolean[]>([]);
+    const isExpanded = (index: number) =>
+        !collapsible || disabled === true || (expanded[index] ?? false);
+    const known = (list: readonly boolean[]) => items.map((_, index) => list[index] ?? false);
+
+    // Items that get an error expand, once: their fields show it, and the error summary can
+    // focus them. The state is adjusted while rendering, when the paths in error change.
+    const invalid = invalidIndexes(base, invalidPaths);
+    const invalidKey = [...invalid].sort((a, b) => a - b).join(',');
+    const [seenInvalid, setSeenInvalid] = useState('');
+    if (invalidKey !== seenInvalid) {
+        const before = new Set(seenInvalid === '' ? [] : seenInvalid.split(',').map(Number));
+        setSeenInvalid(invalidKey);
+        if ([...invalid].some((index) => !before.has(index))) {
+            setExpanded(
+                known(expanded).map(
+                    (open, index) => open || (invalid.has(index) && !before.has(index)),
+                ),
+            );
+        }
+    }
+
     const set = (next: RepeaterItem[]) => onChange?.(next.length > 0 ? next : null);
     const move = (from: number, to: number) => {
-        const next = [...items];
-        const [moved] = next.splice(from, 1);
-        if (moved !== undefined) {
-            next.splice(to, 0, moved);
-            set(next);
-        }
+        set(moved(items, from, to));
+        setExpanded(moved(known(expanded), from, to));
     };
-    const add = (type?: BlockType) =>
+    const remove = (index: number) => {
+        set(items.filter((_, i) => i !== index));
+        setExpanded(known(expanded).filter((_, i) => i !== index));
+    };
+    const add = (type?: BlockType) => {
         set([
             ...items,
             type !== undefined ? { type: type.id, ...defaults(type.fields) } : defaults(fields),
         ]);
+        setExpanded([...known(expanded), true]);
+    };
+    const toggle = (index: number) =>
+        setExpanded(known(expanded).map((open, i) => (i === index ? !open : open)));
+    const anyExpanded = items.some((_, index) => isExpanded(index));
+    const showToggleAll = collapsible && disabled !== true && items.length > 1;
 
     return (
         <Fieldset
@@ -116,6 +247,20 @@ export function RepeaterField({
             descriptionClassName={descriptionClassName}
             errorsClassName={errorsClassName}
         >
+            {showToggleAll ? (
+                <div className={styles.bar}>
+                    <Button
+                        size="sm"
+                        appearance="ghost"
+                        icon={anyExpanded ? ChevronsDownUp : ChevronsUpDown}
+                        onPress={() => setExpanded(items.map(() => !anyExpanded))}
+                    >
+                        {intl.formatMessage(
+                            anyExpanded ? messages.collapseAll : messages.expandAll,
+                        )}
+                    </Button>
+                </div>
+            ) : null}
             {items.length > 0 ? (
                 <ol className={styles.items}>
                     {items.map((item, index) => {
@@ -126,7 +271,32 @@ export function RepeaterField({
                         const itemFields = types !== undefined ? (type?.fields ?? []) : fields;
                         const number = index + 1;
                         const titleId = `${id}-${index}`;
+                        const bodyId = `${id}-${index}-body`;
                         const summary = itemTitle?.(item, index) ?? null;
+                        const open = isExpanded(index);
+                        const hasError = invalid.has(index);
+                        const excerpt =
+                            collapsible && !open && itemTitle === undefined
+                                ? getItemExcerpt(item, itemFields)
+                                : null;
+                        const title = (
+                            <span id={titleId} className={styles.title}>
+                                <span className={styles.index}>{number}</span>{' '}
+                                {summary ??
+                                    type?.label ??
+                                    (typeof item.type === 'string'
+                                        ? item.type
+                                        : intl.formatMessage(messages.item, {
+                                              index: number,
+                                          }))}
+                                {excerpt !== null ? (
+                                    <>
+                                        {' '}
+                                        <span className={styles.excerpt}>{excerpt}</span>
+                                    </>
+                                ) : null}
+                            </span>
+                        );
                         const renderField = (field: Field) => (
                             <NestedField
                                 key={field.name}
@@ -153,18 +323,41 @@ export function RepeaterField({
                                 key={index}
                                 className={cx(styles.item, itemClassName)}
                                 aria-labelledby={titleId}
+                                data-expanded={open || undefined}
+                                data-invalid={hasError || undefined}
                             >
                                 <div className={styles.header}>
-                                    <span id={titleId} className={styles.title}>
-                                        <span className={styles.index}>{number}</span>
-                                        {summary ??
-                                            type?.label ??
-                                            (typeof item.type === 'string'
-                                                ? item.type
-                                                : intl.formatMessage(messages.item, {
-                                                      index: number,
-                                                  }))}
-                                    </span>
+                                    {collapsible && disabled !== true ? (
+                                        <button
+                                            type="button"
+                                            className={styles.toggle}
+                                            aria-expanded={open}
+                                            aria-controls={bodyId}
+                                            onClick={() => toggle(index)}
+                                        >
+                                            <Icon
+                                                icon={ChevronRight}
+                                                size="sm"
+                                                className={styles.chevron}
+                                            />
+                                            {title}
+                                            {hasError ? (
+                                                <>
+                                                    {' '}
+                                                    <span className={styles.error}>
+                                                        <Icon icon={CircleAlert} size="sm" />
+                                                        <span className={styles.visuallyHidden}>
+                                                            {intl.formatMessage(
+                                                                messages.itemHasErrors,
+                                                            )}
+                                                        </span>
+                                                    </span>
+                                                </>
+                                            ) : null}
+                                        </button>
+                                    ) : (
+                                        title
+                                    )}
                                     {editable ? (
                                         <span className={styles.tools}>
                                             <IconButton
@@ -192,14 +385,14 @@ export function RepeaterField({
                                                     index: number,
                                                 })}
                                                 isDisabled={!canRemove}
-                                                onPress={() =>
-                                                    set(items.filter((_, i) => i !== index))
-                                                }
+                                                onPress={() => remove(index)}
                                             />
                                         </span>
                                     ) : null}
                                 </div>
-                                <div className={styles.body}>
+                                {/* Hidden, not removed: the fields keep their state, such as an
+                                    editor's history, while their item is collapsed. */}
+                                <div id={bodyId} className={styles.body} hidden={!open}>
                                     {renderFields !== undefined
                                         ? renderFields(
                                               Object.fromEntries(
@@ -250,12 +443,13 @@ export function RepeaterField({
 
 /**
  * The `repeater` type: `fields`, or `types` for typed blocks, with `min` and `max` items from its
- * rules.
+ * rules. The `collapsible` setting, `false`, keeps every item expanded (decision 0068).
  */
 export function RepeaterFieldEntry(props: FieldEntryProps) {
     const { field, value } = props;
     const min = getRuleNumber(field, 'min');
     const max = getRuleNumber(field, 'max');
+    const collapsible = getSetting(field, 'collapsible', isBoolean);
     return (
         <RepeaterField
             {...getFieldProps(props)}
@@ -274,6 +468,8 @@ export function RepeaterFieldEntry(props: FieldEntryProps) {
             onChange={props.onChange}
             {...(min !== undefined ? { min } : {})}
             {...(max !== undefined ? { max } : {})}
+            {...(collapsible !== undefined ? { collapsible } : {})}
+            {...(props.invalidPaths !== undefined ? { invalidPaths: props.invalidPaths } : {})}
         />
     );
 }

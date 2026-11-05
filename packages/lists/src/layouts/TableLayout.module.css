@@ -24,7 +24,6 @@
     font-weight: var(--panneau-font-weight-medium);
     color: var(--panneau-color-text-muted);
     white-space: nowrap;
-    background-color: var(--panneau-color-surface-sunken);
 }
 
 /* The title stays readable in a narrow list, such as next to an item's details: the table
@@ -35,6 +34,12 @@
 
 .table tbody tr:last-child td {
     border-bottom: 0;
+}
+
+@media (hover: hover) {
+    .table tbody tr:hover {
+        background-color: var(--panneau-color-hover);
+    }
 }
 
 .table tbody tr[data-selected] {
@@ -93,6 +98,27 @@
     width: 1px;
 }
 
+/* Checkboxes show on the row under the pointer or with the focus, and on every row once one is
+ * selected. They stay in place, and can be tabbed to, while hidden. */
+.check > * {
+    opacity: 0;
+    transition: opacity var(--panneau-duration);
+}
+
+.table tr:hover > .check > *,
+.table tr:focus-within > .check > *,
+.table:hover > thead .check > *,
+.table[data-selecting] .check > * {
+    opacity: 1;
+}
+
+/* Touch screens have no pointer to hover with. */
+@media (hover: none) {
+    .check > * {
+        opacity: 1;
+    }
+}
+
 .actionsCell {
     width: 1px;
     text-align: end !important;
@@ -128,12 +154,34 @@
     outline-offset: 1px;
 }
 
+/* The arrow of a column that sorts shows on hover and focus, and always on the sorted column.
+ * The header itself is announced as sortable (`aria-sort`). */
 .sortIcon {
+    display: inline-flex;
+    opacity: 0;
+    transition: opacity var(--panneau-duration);
+}
+
+.sort:hover .sortIcon,
+.sort:focus-visible .sortIcon {
     opacity: 0.5;
 }
 
 .sorted .sortIcon {
     opacity: 1;
+}
+
+@media (hover: none) {
+    .sortIcon {
+        opacity: 0.5;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sortIcon,
+    .check > * {
+        transition: none;
+    }
 }
 
 .cellLabel {

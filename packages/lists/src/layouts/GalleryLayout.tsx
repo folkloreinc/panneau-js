@@ -12,8 +12,8 @@ import highlight from './highlight.module.css';
 
 /**
  * Items as a grid of images (decision 0044): the image of each item (`itemImage` of the
- * resource), its title under it, its checkbox and its actions. An item without an image shows a
- * placeholder.
+ * resource), and under it its checkbox, its title and its actions. Nothing covers the image: a
+ * selected item has an accent outline. An item without an image shows a placeholder.
  */
 export function GalleryLayout({
     items,
@@ -61,6 +61,8 @@ export function GalleryLayout({
                                             <Icon icon={ImageOff} size="lg" />
                                         </span>
                                     )}
+                                </div>
+                                <div className={styles.caption}>
                                     {selectable ? (
                                         <span className={styles.check}>
                                             <Checkbox
@@ -75,8 +77,6 @@ export function GalleryLayout({
                                             />
                                         </span>
                                     ) : null}
-                                </div>
-                                <div className={styles.caption}>
                                     <div className={styles.title}>
                                         <ItemTitle
                                             href={getItemHref?.(item) ?? null}

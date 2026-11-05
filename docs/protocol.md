@@ -120,7 +120,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     - Sober by default: most states are `neutral`, and color is for what needs a look. Badges of states use the `subtle` appearance, never `solid`. A state is never shown by its color alone: its word is always there, and the same state has the same short word in every list of an admin. A number (a widget, the count of a group) takes a tone only when it calls for attention (overdue: 3), and stays neutral at 0.
 - **`localized`** makes the value an object keyed by locale (`{ "fr": "…", "en": "…" }`). It replaces the separate `localized` field and the `*Localized` PHP classes of v1.
 - **`group`** has `fields`, for a nested object.
-- **`repeater`** has `fields`, or `types` for typed blocks, for an array.
+- **`repeater`** has `fields`, or `types` for typed blocks, for an array. Clients collapse its items under their title; `settings.collapsible: false` keeps them expanded ([0068](decisions/0068-collapsed-items-and-lighter-controls.md)).
 - **Compound fields** ([0065](decisions/0065-compound-fields.md)) are types of plugins that carry their sub-fields in `fields` (`credits`, `sessions`). Their value is an object of them, or a list of objects with `"multiple": true`, checked as a `group` or a `repeater`. A client without the type's plugin renders it as a `group`, or as a `repeater` with `multiple` (`getNestedShape()`).
 - **`relation`** points to another resource:
 

@@ -21,7 +21,9 @@ export function RepeaterFieldEntry(props: FieldEntryProps): JSX.Element;
 //
 // @public (undocumented)
 export interface RepeaterFieldProps extends FieldProps<RepeaterItem[]> {
+    collapsible?: boolean;
     fields?: readonly Field[];
+    invalidPaths?: readonly string[];
     // (undocumented)
     itemClassName?: string;
     itemTitle?: (item: RepeaterItem, index: number) => string | null;

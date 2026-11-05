@@ -23,7 +23,8 @@
 
 .tile[data-selected] {
     background-color: var(--panneau-color-accent-subtle);
-    border-color: var(--panneau-color-border-control);
+    border-color: var(--panneau-color-accent);
+    box-shadow: inset 0 0 0 1px var(--panneau-color-accent);
 }
 
 .media {
@@ -47,13 +48,12 @@
     color: var(--panneau-color-text-muted);
 }
 
+/* The checkbox, in the caption: the image stays clear. */
 .check {
-    position: absolute;
-    top: var(--panneau-space-2);
-    left: var(--panneau-space-2);
-    padding: 2px;
-    background-color: var(--panneau-color-surface);
-    border-radius: var(--panneau-radius-sm);
+    display: flex;
+    flex: none;
+    align-items: center;
+    min-height: 1lh;
 }
 
 .caption {

@@ -126,6 +126,9 @@ export function defineCompoundField(options: CompoundFieldOptions = {}): Compoun
                         : {})}
                     {...(min !== undefined ? { min } : {})}
                     {...(max !== undefined ? { max } : {})}
+                    {...(props.invalidPaths !== undefined
+                        ? { invalidPaths: props.invalidPaths }
+                        : {})}
                 />
             );
         }

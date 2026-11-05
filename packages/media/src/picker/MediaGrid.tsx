@@ -82,8 +82,9 @@ export interface MediaGridProps {
 }
 
 /**
- * The media of a source: arrows move between them, Space or a click selects. Media that can't be
- * picked are greyed out, with the reason.
+ * The media of a source: arrows move between them, Space or a click selects. Nothing is drawn
+ * over a selected image: its card has an accent outline, and the checkbox in its caption is
+ * checked. Media that can't be picked are greyed out, with the reason.
  */
 export function MediaGrid({
     items,
@@ -131,13 +132,6 @@ export function MediaGrid({
                             <>
                                 <span className={styles.thumbnail}>
                                     <Thumbnail item={item} />
-                                    <span
-                                        className={multiple ? styles.checkbox : styles.radio}
-                                        data-selected={isSelected || undefined}
-                                        aria-hidden
-                                    >
-                                        {isSelected ? <Check size={14} strokeWidth={3} /> : null}
-                                    </span>
                                     <span className={styles.badges}>
                                         {current.has(item.id) ? (
                                             <Badge tone="info" appearance="solid">
@@ -152,7 +146,18 @@ export function MediaGrid({
                                         </span>
                                     ) : null}
                                 </span>
-                                <span className={styles.cardName}>{item.label}</span>
+                                {/* The checkbox is in the caption, off the image. The item itself
+                                    is announced as selected: the checkbox is only seen. */}
+                                <span className={styles.cardTitle}>
+                                    <span
+                                        className={multiple ? styles.checkbox : styles.radio}
+                                        data-selected={isSelected || undefined}
+                                        aria-hidden
+                                    >
+                                        {isSelected ? <Check size={12} strokeWidth={3} /> : null}
+                                    </span>
+                                    <span className={styles.cardName}>{item.label}</span>
+                                </span>
                                 {/* On phones, where the badges don't fit on the thumbnail. */}
                                 {current.has(item.id) || isProcessingMedia(item) ? (
                                     <span className={styles.cardStatus}>

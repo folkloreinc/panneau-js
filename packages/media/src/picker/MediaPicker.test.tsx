@@ -66,6 +66,21 @@ describe('MediaPicker', () => {
         expect(onOpenChange).toHaveBeenCalledWith(false);
     });
 
+    it('selects with the keyboard, and shows the selection under the image, not over it', async () => {
+        open({ multiple: true });
+
+        const autumn = await card('autumn forest');
+        autumn.focus();
+        await userEvent.keyboard(' ');
+        expect(autumn).toHaveAttribute('aria-selected', 'true');
+        const image = autumn.querySelector('img');
+        // The check is drawn next to the name, and nothing is drawn over the image.
+        expect(image?.parentElement?.querySelector('svg')).toBeNull();
+        expect(
+            within(autumn).getByText('autumn forest').parentElement?.querySelector('svg'),
+        ).not.toBeNull();
+    });
+
     it('selects media across libraries, even with the same id in both', async () => {
         const documents = createMemorySource({
             id: 'documents',

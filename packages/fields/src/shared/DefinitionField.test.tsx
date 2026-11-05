@@ -41,6 +41,8 @@ describe('NestedField', () => {
                 value: path === 'blocks' ? [{ text: 'stored elsewhere' }] : `value of ${path}`,
                 onChange: (value) => setValue(path, value),
                 errors: path === 'blocks.0.text' ? ['Required.'] : [],
+                // The item in error expands (decision 0068).
+                ...(path === 'blocks' ? { invalidPaths: ['blocks.0.text'] } : {}),
             });
         renderField(
             <NestedField
