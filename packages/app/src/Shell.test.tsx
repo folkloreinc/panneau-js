@@ -1141,5 +1141,48 @@ describe('the app shell', () => {
             }),
         );
         expect(await screen.findByRole('link', { name: 'About' })).toBeInTheDocument();
+        // "Undo" in its toast saves the previous value the same way (decision 0063)
+        const toast = await screen.findByRole('alertdialog');
+        expect(toast).toHaveTextContent('“About”: title saved.');
+        await user.click(within(toast).getByRole('button', { name: 'Undo' }));
+        await waitFor(() =>
+            expect(backend.items('pages').find((item) => item.id === '1')).toMatchObject({
+                title: 'About us',
+            }),
+        );
+        expect(await screen.findByText('“About us”: title put back.')).toBeInTheDocument();
+    });
+
+    it('deletes an item of a resource with a trash at once, and "Undo" puts it back', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        const definition = createDefinition();
+        const pages = definition.resources[0] as NonNullable<(typeof definition.resources)[0]>;
+        const backend = renderApp({
+            resources: [
+                {
+                    ...pages,
+                    actions: [
+                        ...(pages.actions ?? []),
+                        {
+                            id: 'delete',
+                            kind: 'server',
+                            scope: ['item', 'selection'],
+                            undoable: true,
+                        },
+                    ],
+                } as typeof pages,
+                ...definition.resources.slice(1),
+            ],
+        });
+        const before = backend.items('pages').length;
+        await user.click(await screen.findByRole('button', { name: 'Delete: About us' }));
+        // No confirmation: the toast offers to undo it
+        expect(screen.queryByRole('alertdialog', { name: /Delete/ })).toBeNull();
+        await waitFor(() => expect(backend.items('pages')).toHaveLength(before - 1));
+        const toast = await screen.findByRole('alertdialog');
+        await user.click(within(toast).getByRole('button', { name: 'Undo' }));
+        await waitFor(() => expect(backend.items('pages')).toHaveLength(before));
+        expect(await screen.findByRole('link', { name: 'About us' })).toBeInTheDocument();
     });
 });

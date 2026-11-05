@@ -2,7 +2,7 @@ import { ExternalLink } from 'lucide-react';
 import { useState } from 'react';
 
 import { type ActionOutcome, type ActionTarget, useActionRunner } from '@panneau/actions';
-import type { ItemAction } from '@panneau/core';
+import { type ItemAction, asksConfirmation } from '@panneau/core';
 import { getActionLabel, listsMessages } from '@panneau/intl';
 import { ConfirmDialog, type ListActionEvent, getActionIcon } from '@panneau/lists';
 import type { Action, Item } from '@panneau/protocol';
@@ -76,7 +76,8 @@ export function ItemActions({
         setPending(null);
     };
     const run = (action: Action) => {
-        if (action.confirm !== undefined && action.confirm !== false) {
+        // An undoable action runs at once: "Undo" in its toast replaces the confirmation.
+        if (asksConfirmation(action)) {
             setConfirming({ action, scope: 'item', item, count: 1, skipped: [] });
         } else {
             void execute(action);

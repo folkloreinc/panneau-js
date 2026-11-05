@@ -16,7 +16,7 @@ import { SelectFieldEntry } from '@panneau/fields/select';
 import { TextFieldEntry } from '@panneau/fields/text';
 import type { Field, RuleFailure } from '@panneau/protocol';
 import { checkValues } from '@panneau/protocol/runtime';
-import { Button, IconButton, Spinner, usePanneauIntl } from '@panneau/ui';
+import { Button, IconButton, Spinner, usePanneauIntl, useToast } from '@panneau/ui';
 
 import { messages } from '../messages';
 import type { ListItem } from '../types';
@@ -45,6 +45,8 @@ export interface InlineCellProps {
     field: Field;
     /** The label of the item, for the name of the edit button. */
     itemLabel: string;
+    /** The label of an item the backend gave back, for the toast that says it was saved. */
+    getItemLabel?: (item: ListItem) => string;
     /** The content of the cell when it doesn't edit: the value, or the title's link. */
     children: ReactNode;
     /** Renders a value of the field, for the current value of a conflict. */
@@ -70,6 +72,7 @@ export function InlineCell({
     item,
     field,
     itemLabel,
+    getItemLabel,
     children,
     renderValue,
     onSave,
@@ -77,6 +80,7 @@ export function InlineCell({
     formatError,
 }: InlineCellProps) {
     const intl = usePanneauIntl();
+    const toasts = useToast();
     const [state, setState] = useState<State>({ mode: 'idle' });
     const root = useRef<HTMLDivElement>(null);
     // Where focus goes once the cell has drawn its new state.
@@ -97,13 +101,34 @@ export function InlineCell({
         focus.current = null;
     });
 
-    const save = (base: ListItem, draft: unknown) => {
+    /**
+     * Saves a value on an item. The toast that says it has "Undo", which saves the previous value
+     * the same way, with the version the save just got (decision 0063): a conflict then shows in
+     * the cell, as for any change. After an undo, a short toast says the value is back.
+     */
+    const save = (base: ListItem, draft: unknown, { undoing = false } = {}) => {
+        const previous = base[field.name];
         setState({ mode: 'saving', draft });
         onSave(base, draft).then(
             (saved) => {
                 onItem(saved);
                 focus.current = isBoolean ? null : 'button';
                 setState({ mode: 'idle' });
+                const names = { item: getItemLabel?.(saved) ?? itemLabel, field: label };
+                const key = { key: `panneau-inline:${item.id}:${field.name}` };
+                toasts.show(
+                    undoing
+                        ? { title: intl.formatMessage(messages.inlineUndone, names) }
+                        : {
+                              title: intl.formatMessage(messages.inlineSaved, names),
+                              tone: 'success',
+                              action: {
+                                  label: intl.formatMessage(messages.undo),
+                                  onAction: () => save(saved, previous, { undoing: true }),
+                              },
+                          },
+                    key,
+                );
             },
             (error: unknown) => {
                 const problem = getProblem(error);

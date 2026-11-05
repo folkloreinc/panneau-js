@@ -49,6 +49,10 @@ export const Action = z
             description:
                 'The backend answers dry runs of this action (`dryRun` in the request): lists ask it how many items of a query selection will be skipped. Without it, the UI never sends `dryRun`, since a backend that ignores it would run the action.',
         }),
+        undoable: z.boolean().optional().meta({
+            description:
+                'Its runs can be undone: the client runs it without a confirmation (unless it sets `confirm`), and shows "Undo" when its result has an `undo`. Above `UNDO_LIMIT` items (100), and for queued runs, the client confirms it first (decision 0063). The `delete` of a resource with a trash declares it, undone by `restore`.',
+        }),
         url: z
             .string()
             .optional()

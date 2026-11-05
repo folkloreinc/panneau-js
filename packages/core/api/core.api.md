@@ -37,6 +37,9 @@ export interface ActionItem {
 }
 
 // @public
+export function asksConfirmation(action: Action, count?: number): boolean;
+
+// @public
 export function can(abilities: Abilities | undefined, ability: string): boolean;
 
 // @public

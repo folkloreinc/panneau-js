@@ -33,6 +33,16 @@ const actions: Action[] = [
         ],
     },
     { id: 'export', label: 'Export', kind: 'server', scope: ['resource'] },
+    // Undoable: runs at once, and its toast offers "Undo" (decision 0063)
+    {
+        id: 'archive',
+        label: 'Archive',
+        kind: 'server',
+        scope: ['item'],
+        placement: ['row'],
+        undoable: true,
+    },
+    { id: 'unarchive', label: 'Unarchive', kind: 'server', scope: ['item'], placement: [] },
 ];
 
 /** An adapter in memory: `publish` answers at once, `export` is queued and runs for a while. */
@@ -53,6 +63,17 @@ function createStoryAdapter(): ActionAdapter {
                 return Promise.resolve({ run });
             }
             const ids = (request.selection as { ids?: string[] } | undefined)?.ids ?? [];
+            if (action === 'archive') {
+                return Promise.resolve({
+                    result: {
+                        message: `“${items.find((item) => item.id === ids[0])?.title ?? ''}” archived.`,
+                        undo: { action: 'unarchive', items: ids },
+                    },
+                });
+            }
+            if (action === 'unarchive') {
+                return Promise.resolve({ result: { refresh: 'items' } });
+            }
             const result: ActionResult = {
                 message: `${ids.length - 1} page published.`,
                 summary: { succeeded: ids.length - 1, failed: 0, skipped: 1 },
@@ -166,5 +187,29 @@ export const QueuedRun: Story = {
             filename: 'pages.csv',
         });
         await expect(within(runs).getByText('Done')).toBeVisible();
+    },
+};
+
+/**
+ * An undoable action: it runs without a confirmation, and its toast offers "Undo" for about 10
+ * seconds, with the keyboard too. After it, a short toast says it was undone.
+ */
+export const Undo: Story = {
+    play: async ({ args, canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        await userEvent.click(canvas.getAllByRole('button', { name: /Archive/ })[1] as HTMLElement);
+        await expect(body.queryByRole('alertdialog', { name: /Archive\?/ })).toBeNull();
+        const toast = await body.findByRole('alertdialog', { name: /“Contact” archived\./ });
+        const undo = within(toast).getByRole('button', { name: 'Undo' });
+        undo.focus();
+        await userEvent.keyboard('{Enter}');
+        await expect(await body.findByText('“Archive” is undone.')).toBeInTheDocument();
+        await waitFor(() =>
+            expect(args.onResult).toHaveBeenLastCalledWith(
+                { refresh: 'items' },
+                expect.objectContaining({ resource: 'pages' }),
+            ),
+        );
     },
 };

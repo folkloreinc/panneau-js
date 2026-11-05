@@ -110,6 +110,7 @@ describe('@panneau/protocol/runtime', () => {
             'SEARCH_MAX_LIMIT',
             'SEARCH_MIN_LENGTH',
             'TWO_FACTOR_REQUIRED_PROBLEM_TYPE',
+            'UNDO_LIMIT',
             'WIDGET_LIST_MAX_ITEMS',
             'WIDGET_RESERVED_QUERY_PARAMS',
             'WIDGET_SERIES_PERIODS',

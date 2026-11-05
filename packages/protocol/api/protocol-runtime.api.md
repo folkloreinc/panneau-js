@@ -428,6 +428,9 @@ export function toSearchQueryParams(query: SearchQuery): URLSearchParams;
 // @public
 export const TWO_FACTOR_REQUIRED_PROBLEM_TYPE = "urn:panneau:problem:two-factor-required";
 
+// @public
+export const UNDO_LIMIT = 100;
+
 // @public (undocumented)
 export interface ValidationIssue {
     // (undocumented)

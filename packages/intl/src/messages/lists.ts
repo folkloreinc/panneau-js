@@ -5,6 +5,16 @@ import { defineMessage } from '../message';
  * is in `../fr/lists.ts`.
  */
 export const listsMessages = {
+    /** The toast of a value changed in place, and its undo (decisions 0043 and 0063). */
+    inlineSaved: defineMessage<{ item: string; field: string }>({
+        id: 'panneau.lists.inlineSaved',
+        defaultMessage: '“{item}”: {field} saved.',
+    }),
+    inlineUndone: defineMessage<{ item: string; field: string }>({
+        id: 'panneau.lists.inlineUndone',
+        defaultMessage: '“{item}”: {field} put back.',
+    }),
+    undo: defineMessage({ id: 'panneau.lists.undo', defaultMessage: 'Undo' }),
     list: defineMessage({ id: 'panneau.lists.list', defaultMessage: 'Items' }),
     search: defineMessage({ id: 'panneau.lists.search', defaultMessage: 'Search' }),
     searchPlaceholder: defineMessage({

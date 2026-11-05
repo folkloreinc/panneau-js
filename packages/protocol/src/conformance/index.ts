@@ -1682,6 +1682,100 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
         },
     );
 
+    await run(
+        'action.undo',
+        'The undo of an undoable action runs, and puts the item back',
+        async (check) => {
+            const current = resource as Resource | null;
+            if (current === null) {
+                check.skip('No resource to test.');
+                return;
+            }
+            if (createdId === null) {
+                check.skip('No item was created.');
+                return;
+            }
+            // The delete of a trash, or an action of the resource that needs no parameters
+            const declared = current.actions ?? [];
+            const action =
+                declared.find(
+                    (candidate) => candidate.id === 'delete' && candidate.undoable === true,
+                ) ??
+                declared.find(
+                    (candidate) =>
+                        candidate.undoable === true &&
+                        (candidate.kind ?? 'server') === 'server' &&
+                        candidate.queued !== true &&
+                        (candidate.fields ?? []).length === 0 &&
+                        candidate.scope.some((scope) => scope === 'item' || scope === 'selection'),
+                );
+            if (action === undefined) {
+                check.skip('The resource has no undoable action without parameters.');
+                return;
+            }
+            const before = await request(itemPath());
+            const item = check.expectStatus(before, 200)
+                ? check.expectSchema(ItemResponse, before.body, 'The item')
+                : null;
+            if (item === null) {
+                return;
+            }
+            const reply = await request(
+                `${resourcePath()}/actions/${encodeURIComponent(action.id)}`,
+                { method: 'POST', body: JSON.stringify({ selection: { ids: [createdId] } }) },
+            );
+            if (!check.expectStatus(reply, 200)) {
+                return;
+            }
+            const result = check.expectSchema(
+                ActionResult,
+                reply.body,
+                `The result of \`${action.id}\``,
+            );
+            const undo = result?.undo;
+            if (
+                !check.expect(
+                    undo !== undefined && undo.items.includes(createdId),
+                    `The result of the undoable \`${action.id}\` has no \`undo\` with the item it changed.`,
+                ) ||
+                undo === undefined
+            ) {
+                return;
+            }
+            const undone = await request(
+                `${resourcePath()}/actions/${encodeURIComponent(undo.action)}`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        selection: { ids: undo.items },
+                        values: undo.params ?? {},
+                    }),
+                },
+            );
+            if (!check.expectStatus(undone, 200)) {
+                return;
+            }
+            const after = await request(itemPath());
+            if (!check.expect(after.status === 200, 'After the undo, the item is not back.')) {
+                return;
+            }
+            const restored = check.expectSchema(
+                ItemResponse,
+                after.body,
+                'The item after the undo',
+            );
+            if (restored === null) {
+                return;
+            }
+            current.fields.forEach((field) => {
+                check.expect(
+                    isEqual(restored.data[field.name], item.data[field.name]),
+                    `After the undo, \`${field.name}\` is ${JSON.stringify(restored.data[field.name])}, not ${JSON.stringify(item.data[field.name])}.`,
+                );
+            });
+        },
+    );
+
     await run('delete', 'DELETE /resources/{resource}/{id} deletes the item', async (check) => {
         if (createdId === null) {
             check.skip('No item was created.');

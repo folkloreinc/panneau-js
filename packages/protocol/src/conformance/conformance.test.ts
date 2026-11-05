@@ -17,6 +17,12 @@ function createBackend() {
         { name: 'venue', type: 'address' },
         { name: 'cta', type: 'link', resource: 'pages' },
     );
+    // A trash: the delete of pages is undone by restore (decision 0063).
+    definition.resources[0]?.actions?.push({
+        id: 'delete',
+        undoable: true,
+        scope: ['item', 'selection'],
+    });
     // Abilities of the user (decision 0046): a field they can't see, a resource they can't reach.
     definition.resources[0]?.fields.push({
         name: 'notes',
@@ -127,6 +133,56 @@ describe('runConformance', () => {
         expect(formatReport(report)).not.toContain('✗');
         expect(report.passed).toBe(true);
         expect(report.checks.filter((check) => check.status === 'skipped')).toEqual([]);
+    });
+
+    it('fails a backend whose undoable action gives no undo, or whose undo leaves the item out', async () => {
+        const backend = createBackend();
+        // A backend that forgets the undo of its delete
+        const forgets = (input: string, init?: RequestInit) =>
+            backend.fetch(input, init).then(async (response) => {
+                if (!input.endsWith('/actions/delete')) {
+                    return response;
+                }
+                const { undo: _undo, ...result } = (await response.json()) as Record<
+                    string,
+                    unknown
+                >;
+                return new Response(JSON.stringify(result), {
+                    status: response.status,
+                    headers: response.headers,
+                });
+            });
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: forgets,
+            writes,
+        });
+        expect(report.checks.find((check) => check.id === 'action.undo')).toMatchObject({
+            status: 'failed',
+            issues: [expect.stringContaining('has no `undo`')],
+        });
+        // A backend whose restore does nothing
+        const ignoring = createBackend();
+        const ignores = (input: string, init?: RequestInit) =>
+            input.endsWith('/actions/restore')
+                ? Promise.resolve(
+                      new Response(
+                          JSON.stringify({ summary: { succeeded: 1, failed: 0, skipped: 0 } }),
+                          {
+                              status: 200,
+                              headers: { 'Content-Type': 'application/json' },
+                          },
+                      ),
+                  )
+                : ignoring.fetch(input, init);
+        const ignored = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: ignores,
+            writes,
+        });
+        expect(ignored.checks.find((check) => check.id === 'action.undo')?.issues).toEqual([
+            'After the undo, the item is not back.',
+        ]);
     });
 
     it('fails widgets whose data does not have the shape of their type', async () => {
@@ -387,6 +443,7 @@ describe('runConformance', () => {
             'update.single-field',
             'update.conflict',
             'duplicate',
+            'action.undo',
             'delete',
         ]);
     });

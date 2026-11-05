@@ -1,5 +1,8 @@
 /** The French messages of `@panneau/lists`, by id. */
 export const listsFr: Record<string, string> = {
+    'panneau.lists.inlineSaved': '« {item} » : {field} enregistré.',
+    'panneau.lists.inlineUndone': '« {item} » : {field} rétabli.',
+    'panneau.lists.undo': 'Annuler',
     'panneau.lists.list': 'Éléments',
     'panneau.lists.search': 'Rechercher',
     'panneau.lists.searchPlaceholder': 'Rechercher…',

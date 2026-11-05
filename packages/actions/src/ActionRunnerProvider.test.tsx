@@ -140,6 +140,79 @@ describe('ActionRunnerProvider', () => {
         expect(await screen.findAllByText('“Publish” is done for 3 pages.')).toHaveLength(1);
     });
 
+    it('offers "Undo" when the result says how, runs it, and says it is undone', async () => {
+        const remove: Action = {
+            id: 'delete',
+            kind: 'server',
+            scope: ['item', 'selection'],
+            undoable: true,
+        };
+        const runAction = vi
+            .fn<ActionAdapter['runAction']>()
+            .mockResolvedValueOnce({
+                result: {
+                    message: '2 pages deleted.',
+                    refresh: 'list',
+                    undo: { action: 'restore', items: ['1', '2'] },
+                },
+            })
+            .mockResolvedValueOnce({ result: { refresh: 'list' } });
+        const onResult = vi.fn();
+        const { run } = renderRunner(
+            { action: remove, scope: 'selection', selection: { ids: ['1', '2', '3'] }, count: 3 },
+            { adapter: createAdapter({ runAction }), onResult },
+        );
+        await run();
+        expect(await screen.findByText('2 pages deleted.')).toBeInTheDocument();
+        await userEvent.click(screen.getByRole('button', { name: 'Undo' }));
+        // The undo is an action like any other, on the items the run changed
+        await waitFor(() =>
+            expect(runAction).toHaveBeenLastCalledWith('pages', 'restore', {
+                selection: { ids: ['1', '2'] },
+                values: {},
+            }),
+        );
+        expect(await screen.findByText('“Delete” is undone.')).toBeInTheDocument();
+        expect(screen.queryByText('2 pages deleted.')).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Undo' })).not.toBeInTheDocument();
+        // What the undo changed is refreshed
+        expect(onResult).toHaveBeenLastCalledWith(
+            { refresh: 'list' },
+            expect.objectContaining({
+                resource: 'pages',
+                target: expect.objectContaining({ selection: { ids: ['1', '2'] } }),
+            }),
+        );
+    });
+
+    it('says when the undo failed', async () => {
+        const runAction = vi
+            .fn<ActionAdapter['runAction']>()
+            .mockResolvedValueOnce({
+                result: { undo: { action: 'unarchive', items: ['1'], params: { reason: 'undo' } } },
+            })
+            .mockRejectedValueOnce(new Error('Network error'));
+        const archive: Action = {
+            id: 'archive',
+            label: 'Archive',
+            kind: 'server',
+            scope: ['item'],
+            undoable: true,
+        };
+        const { run } = renderRunner(
+            { action: archive, scope: 'item', item: { id: '1' } },
+            { adapter: createAdapter({ runAction }) },
+        );
+        await run();
+        await userEvent.click(await screen.findByRole('button', { name: 'Undo' }));
+        expect(runAction).toHaveBeenLastCalledWith('pages', 'unarchive', {
+            selection: { ids: ['1'] },
+            values: { reason: 'undo' },
+        });
+        expect(await screen.findByText('“Archive” could not be undone.')).toBeInTheDocument();
+        expect(screen.getByText('Network error')).toBeInTheDocument();
+    });
+
     it('sends the selection, and no selection for the resource', async () => {
         const adapter = createAdapter();
         const selection = { query: { filter: { status: 'draft' } }, except: ['3'] };

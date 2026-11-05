@@ -32,6 +32,7 @@ export {
     type ResolvedCalendar,
     type ResolvedColumn,
     type ResolvedList,
+    asksConfirmation,
     getOpenMode,
     getResourceActions,
     groupActions,
