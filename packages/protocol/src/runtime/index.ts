@@ -71,3 +71,16 @@ export {
 } from '../context';
 export { isProblem } from '../problem';
 export { type PartialTheme, mergeThemes } from '../themes';
+export {
+    type BuiltInWidgetType,
+    type WidgetResource,
+    type WidgetSeriesPeriod,
+    BUILT_IN_WIDGET_TYPES,
+    RESOURCE_WIDGET_TYPES,
+    WIDGET_LIST_MAX_ITEMS,
+    WIDGET_RESERVED_QUERY_PARAMS,
+    WIDGET_SERIES_PERIODS,
+    checkWidgetData,
+    getWidgetResource,
+    isBuiltInWidgetType,
+} from '../widgets';

@@ -89,6 +89,7 @@ export {
     type SingleSelectProps,
 } from './select/Select';
 export { Inline, type InlineProps } from './inline/Inline';
+export { LineChart, type LineChartPoint, type LineChartProps } from './line-chart/LineChart';
 export {
     BREAKPOINTS,
     type Breakpoint,
@@ -101,6 +102,7 @@ export { LoadingRegion, type LoadingRegionProps } from './skeleton/LoadingRegion
 export { Skeleton, type SkeletonProps } from './skeleton/Skeleton';
 export { Spinner, type SpinnerProps } from './spinner/Spinner';
 export { Stack, type StackProps } from './stack/Stack';
+export { Stat, type StatProps } from './stat/Stat';
 export { Switch, type SwitchProps } from './switch/Switch';
 export {
     Tab,

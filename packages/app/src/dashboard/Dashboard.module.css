@@ -1,0 +1,105 @@
+/* One column on a phone, a grid of 12 from the width of the widgets past it. */
+.grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--panneau-space-4);
+    align-items: stretch;
+}
+
+@container panneau-root (min-width: 48rem) {
+    .grid {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+
+    .cell {
+        grid-column: span var(--_panneau-widget-span, 6);
+    }
+}
+
+.cell {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.widget {
+    flex: 1;
+}
+
+.series {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-3);
+}
+
+.items {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-3);
+    min-width: 0;
+    padding-block: var(--panneau-space-2);
+    border-top: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
+.item:first-child {
+    padding-block-start: 0;
+    border-top: 0;
+}
+
+.itemText {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.itemTitle {
+    overflow: hidden;
+    color: var(--panneau-color-text);
+    font-weight: var(--panneau-font-weight-medium);
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+a.itemTitle:hover,
+a.itemTitle[data-hovered] {
+    text-decoration: underline;
+}
+
+.itemTitle[data-focus-visible],
+.seeAll[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 2px;
+    border-radius: var(--panneau-radius-sm);
+}
+
+.itemDescription,
+.itemMeta,
+.empty {
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-text-muted);
+}
+
+.itemMeta {
+    flex-shrink: 0;
+    font-variant-numeric: var(--panneau-font-numeric);
+}
+
+.empty {
+    margin: 0;
+}
+
+.seeAll {
+    font-size: var(--panneau-font-size-sm);
+    font-weight: var(--panneau-font-weight-medium);
+    color: var(--panneau-color-link, var(--panneau-color-accent));
+}

@@ -85,6 +85,7 @@ export const queryKeys: {
     account: () => readonly ["panneau", "account"];
     twoFactor: () => readonly ["panneau", "account", "two-factor"];
     passkeys: () => readonly ["panneau", "account", "passkeys"];
+    widget: (widget: string) => readonly ["panneau", "dashboard", "widgets", string];
     actionRuns: () => readonly ["panneau", "actions", "runs"];
     actionRun: (id: string) => readonly ["panneau", "actions", "runs", string];
 };
@@ -163,6 +164,12 @@ export function useSearch(q: string, input?: QueryHookOptions<SearchResponse, Re
 
 // @public
 export function useUpdateItem(resource: string): UseMutationResult<Item, Error, UpdateItemVariables>;
+
+// @public
+export function useWidgetData(widget: string, options?: QueryHookOptions<unknown, ReturnType<typeof queryKeys.widget>>): UseQueryResult<unknown>;
+
+// @public
+export function widgetDataQueryOptions(adapter: DataAdapter, widget: string): DataQueryOptions<unknown, ReturnType<typeof queryKeys.widget>>;
 
 // (No @packageDocumentation comment for this package)
 

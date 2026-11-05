@@ -103,6 +103,7 @@ export {
     isSearchable,
 } from './commands';
 export { type PreviewProps } from './preview';
+export { type WidgetProps } from './widget';
 export {
     type LeaveGuard,
     type LeaveGuards,

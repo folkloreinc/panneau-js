@@ -1,0 +1,45 @@
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-stat-gap, var(--panneau-space-1));
+    min-width: 0;
+    color: var(--panneau-color-text);
+    text-decoration: none;
+    border-radius: var(--panneau-radius-sm);
+}
+
+.stat[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 2px;
+}
+
+.label {
+    font-size: var(--panneau-stat-label-font-size, var(--panneau-font-size-sm));
+    font-weight: var(--panneau-font-weight-medium);
+    color: var(--panneau-color-text-muted);
+}
+
+.value {
+    font-family: var(--panneau-stat-value-font-family, var(--panneau-font-family-heading));
+    font-size: var(--panneau-stat-value-font-size, 2rem);
+    font-weight: var(--panneau-stat-value-font-weight, var(--panneau-font-weight-bold));
+    font-variant-numeric: var(--panneau-font-numeric);
+    line-height: var(--panneau-line-height-tight);
+}
+
+/* A tone only when the number calls for attention: the help says why, never the color alone. */
+.toned .value {
+    color: var(--panneau-tone-text);
+}
+
+.help {
+    font-size: var(--panneau-stat-help-font-size, var(--panneau-font-size-sm));
+    color: var(--panneau-color-text-muted);
+}
+
+.stat[href]:hover .value,
+.stat[data-hovered] .value {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.15em;
+}
