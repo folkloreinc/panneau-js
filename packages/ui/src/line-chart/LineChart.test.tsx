@@ -53,4 +53,19 @@ describe('LineChart', () => {
         expect(container.querySelector('svg')).toBeNull();
         expect(container.querySelectorAll('.panneau-skeleton').length).toBeGreaterThan(0);
     });
+
+    it('shows no top of the scale when every value is 0', () => {
+        render(
+            <LineChart label="Entries" points={points.map((point) => ({ ...point, value: 0 }))} />,
+        );
+        // Only in the table
+        expect(screen.getAllByText('0')).toHaveLength(points.length);
+    });
+
+    it('hides the table, its caption included, in a wrapper', () => {
+        render(<LineChart label="Entries per day" points={points} />);
+        const table = screen.getByRole('table', { name: 'Entries per day' });
+        expect(table.className).toBe('');
+        expect(table.parentElement?.className).toMatch(/visuallyHidden/);
+    });
 });
