@@ -65,8 +65,11 @@ export const AllZero: Story = {
         const caption = canvas.getByText('Entries per day');
         // Clipped by its hidden wrapper: no box of its own shows over the plot
         const wrapper = caption.closest('table')?.parentElement;
-        await expect(wrapper?.getBoundingClientRect().width).toBeLessThanOrEqual(1);
-        await expect(getComputedStyle(wrapper!).overflow).toBe('hidden');
+        if (wrapper === null || wrapper === undefined) {
+            throw new Error('The table has no wrapper.');
+        }
+        await expect(wrapper.getBoundingClientRect().width).toBeLessThanOrEqual(1);
+        await expect(getComputedStyle(wrapper).overflow).toBe('hidden');
         // The 0s are only in the table
         await expect(canvas.getAllByText('0')).toHaveLength(DAYS.length);
     },
