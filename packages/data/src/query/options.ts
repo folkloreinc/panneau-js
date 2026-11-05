@@ -112,3 +112,19 @@ export function searchQueryOptions(
         staleTime: 30_000,
     });
 }
+
+/**
+ * Query options of the data of a widget of the dashboard, with data of its own (decision 0064):
+ * the shape of its type, unchecked. Widgets on a resource read its list instead.
+ */
+export function widgetDataQueryOptions(
+    adapter: DataAdapter,
+    widget: string,
+): DataQueryOptions<unknown, ReturnType<typeof queryKeys.widget>> {
+    return queryOptions({
+        queryKey: queryKeys.widget(widget),
+        queryFn: ({ signal }) => adapter.getWidgetData(widget, { signal }),
+        // The dashboard is a glance: a minute old is fresh enough when the user comes back to it.
+        staleTime: 60_000,
+    });
+}

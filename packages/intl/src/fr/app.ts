@@ -185,4 +185,11 @@ export const appFr: Record<string, string> = {
     'panneau.app.unreachableText':
         'Il est peut-être arrêté ou en train de redémarrer. Réessayez dans un instant.',
     'panneau.app.missingPage': 'Aucun plugin ne fournit la page « {component} ».',
+    'panneau.app.missingWidget': 'Aucun plugin ne fournit le widget « {type} ».',
+    'panneau.app.widgetLoading': 'Chargement de {label}…',
+    'panneau.app.widgetError': 'Ce widget n’a pas pu se charger.',
+    'panneau.app.widgetEmpty': 'Rien pour l’instant.',
+    'panneau.app.widgetSeeAll': 'Tout voir',
+    'panneau.app.widgetTotal': 'Total',
+    'panneau.app.widgetUntitled': 'Élément {id}',
 };

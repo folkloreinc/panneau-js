@@ -20,7 +20,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0012](0012-authentication.md)                                    | Complete, optional auth that works next to a site's own auth                  | Amended by 0037                   |
 | [0013](0013-public-api-and-stability.md)                          | Public API and stability rules                                                | Accepted                          |
 | [0014](0014-testing.md)                                           | Testing strategy                                                              | Accepted                          |
-| [0015](0015-dashboards-and-search.md)                             | Dashboards and global search                                                  | Accepted                          |
+| [0015](0015-dashboards-and-search.md)                             | Dashboards and global search                                                  | Amended by 0064                   |
 | [0016](0016-migration-strategy.md)                                | Clean break, maintained old lines, Niche as pilot                             | Accepted                          |
 | [0017](0017-actions.md)                                           | Actions on items, selections and resources                                    | Amended by 0040                   |
 | [0018](0018-new-packages-next-to-v4.md)                           | New packages next to the v4 code, which moves to `legacy/`                    | Accepted                          |
@@ -69,3 +69,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0061](0061-item-images-in-lists.md)                              | The image of items in the table, and in media libraries                       | Proposed                          |
 | [0062](0062-toasts.md)                                            | Toasts at the bottom, one per thing, and only when the page doesn't say it    | Proposed                          |
 | [0063](0063-undo-instead-of-a-confirmation.md)                    | "Undo" instead of a confirmation                                              | Proposed                          |
+| [0064](0064-dashboard-widgets.md)                                 | The widgets of the dashboard                                                  | Proposed                          |

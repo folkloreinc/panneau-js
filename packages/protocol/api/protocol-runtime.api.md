@@ -51,6 +51,9 @@ export const BUILT_IN_LINK_TYPES: readonly ["url", "page", "email", "tel", "file
 // @public
 export const BUILT_IN_LIST_LAYOUTS: readonly ["table", "cards", "gallery", "calendar"];
 
+// @public
+export const BUILT_IN_WIDGET_TYPES: readonly ["stat", "series", "list"];
+
 // @public (undocumented)
 export type BuiltInAction = (typeof BUILT_IN_ACTIONS)[number];
 
@@ -73,6 +76,9 @@ export type BuiltInLinkType = (typeof BUILT_IN_LINK_TYPES)[number];
 export type BuiltInListLayout = (typeof BUILT_IN_LIST_LAYOUTS)[number];
 
 // @public (undocumented)
+export type BuiltInWidgetType = (typeof BUILT_IN_WIDGET_TYPES)[number];
+
+// @public (undocumented)
 export interface CheckOptions {
     item?: Record<string, unknown>;
     locales?: string[];
@@ -89,6 +95,9 @@ export function checkRules(rules: Rule[], value: unknown, root?: Record<string, 
 //
 // @public
 export function checkValues(fields: Field[], values: Record<string, unknown>, options?: CheckOptions): Record<string, RuleFailure[]>;
+
+// @public
+export function checkWidgetData(type: string, data: unknown): string[];
 
 // @public
 export const CONTEXT_HEADER = "Panneau-Context";
@@ -186,6 +195,11 @@ export function getMediaLibraries(definition: MediaLibrariesDefinition | null, f
 // @public
 export function getValue(values: unknown, path: string): unknown;
 
+// Warning: (ae-forgotten-export) The symbol "WidgetLike" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function getWidgetResource(widget: WidgetLike): WidgetResource | null;
+
 // @public
 export function isAddressPart(value: unknown): value is AddressPart;
 
@@ -197,6 +211,9 @@ export function isBuiltInLink(id: string): id is BuiltInLinkAction;
 
 // @public
 export function isBuiltInLinkType(type: string): type is BuiltInLinkType;
+
+// @public (undocumented)
+export function isBuiltInWidgetType(type: string): type is BuiltInWidgetType;
 
 // @public
 export function isCurrencyCode(code: unknown): code is CurrencyCode;
@@ -349,6 +366,9 @@ export function resolveLinkNewTab(newTab: LinkNewTab, link: {
 }): boolean;
 
 // @public
+export const RESOURCE_WIDGET_TYPES: readonly ["stat", "list"];
+
+// @public
 export const RICH_TEXT_STYLE_ELEMENTS: readonly ["p", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "ul", "ol", "li"];
 
 // @public
@@ -417,6 +437,25 @@ export interface ValidationIssue {
     message: string;
     path: string;
 }
+
+// @public
+export const WIDGET_LIST_MAX_ITEMS = 5;
+
+// @public
+export const WIDGET_RESERVED_QUERY_PARAMS: readonly ["page", "perPage", "cursor"];
+
+// @public
+export const WIDGET_SERIES_PERIODS: readonly ["day", "week", "month"];
+
+// @public
+export interface WidgetResource {
+    params: URLSearchParams;
+    query: ListQuery;
+    resource: string;
+}
+
+// @public (undocumented)
+export type WidgetSeriesPeriod = (typeof WIDGET_SERIES_PERIODS)[number];
 
 // (No @packageDocumentation comment for this package)
 

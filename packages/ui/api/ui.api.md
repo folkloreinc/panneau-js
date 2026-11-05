@@ -12,6 +12,7 @@ import type { CSSProperties } from 'react';
 import { DatePickerProps as DatePickerProps_2 } from 'react-aria-components';
 import { DateValue } from 'react-aria-components';
 import { DialogTrigger } from 'react-aria-components';
+import type { FormatNumberOptions } from 'react-intl';
 import { HTMLAttributes } from 'react';
 import { IntlShape } from 'react-intl';
 import { JSX } from 'react';
@@ -364,6 +365,7 @@ export const componentTokens: Readonly<{
     heading: Readonly<Record<"panneau-heading-color" | "panneau-heading-font-family" | "panneau-heading-display-font-family" | "panneau-heading-1-font-size" | "panneau-heading-1-font-weight" | "panneau-heading-1-line-height" | "panneau-heading-1-letter-spacing" | "panneau-heading-2-font-size" | "panneau-heading-2-font-weight" | "panneau-heading-2-line-height" | "panneau-heading-2-letter-spacing" | "panneau-heading-3-font-size" | "panneau-heading-3-font-weight" | "panneau-heading-3-line-height" | "panneau-heading-3-letter-spacing" | "panneau-heading-4-font-size" | "panneau-heading-4-font-weight" | "panneau-heading-4-line-height" | "panneau-heading-4-letter-spacing" | "panneau-heading-display-1-font-size" | "panneau-heading-display-1-font-weight" | "panneau-heading-display-1-line-height" | "panneau-heading-display-1-letter-spacing" | "panneau-heading-display-2-font-size" | "panneau-heading-display-2-font-weight" | "panneau-heading-display-2-line-height" | "panneau-heading-display-2-letter-spacing", string>>;
     inline: Readonly<Record<"panneau-inline-gap", string>>;
     input: Readonly<Record<"panneau-input-radius" | "panneau-input-padding-x" | "panneau-input-border-width" | "panneau-input-bg" | "panneau-input-border-color" | "panneau-input-border-color-hover", string>>;
+    'line-chart': Readonly<Record<"panneau-line-chart-height" | "panneau-line-chart-label-font-size" | "panneau-line-chart-line-width" | "panneau-line-chart-dot-size" | "panneau-line-chart-area-opacity", string>>;
     'list-box': Readonly<Record<"panneau-list-box-padding" | "panneau-list-box-item-radius" | "panneau-list-box-item-padding-y" | "panneau-list-box-item-padding-y-described" | "panneau-list-box-item-padding-x" | "panneau-list-box-item-bg-hover", string>>;
     menu: Readonly<Record<"panneau-menu-header-font-size" | "panneau-menu-header-font-weight" | "panneau-menu-header-color" | "panneau-menu-header-text-transform" | "panneau-menu-header-letter-spacing" | "panneau-menu-footer-font-size" | "panneau-menu-footer-color" | "panneau-menu-media-size" | "panneau-menu-media-size-described" | "panneau-menu-media-radius" | "panneau-menu-item-bg-selected", string>>;
     'number-input': Readonly<Record<"panneau-number-input-stepper-width", string>>;
@@ -375,6 +377,7 @@ export const componentTokens: Readonly<{
     skeleton: Readonly<Record<"panneau-skeleton-color" | "panneau-skeleton-radius" | "panneau-skeleton-duration", string>>;
     spinner: Readonly<Record<"panneau-spinner-border-width", string>>;
     stack: Readonly<Record<"panneau-stack-gap", string>>;
+    stat: Readonly<Record<"panneau-stat-gap" | "panneau-stat-label-font-size" | "panneau-stat-value-font-family" | "panneau-stat-value-font-size" | "panneau-stat-value-font-weight" | "panneau-stat-help-font-size", string>>;
     switch: Readonly<Record<"panneau-switch-height" | "panneau-switch-width" | "panneau-switch-radius" | "panneau-switch-checked-bg" | "panneau-switch-track-bg" | "panneau-switch-thumb-size" | "panneau-switch-thumb-bg" | "panneau-switch-checked-thumb-bg", string>>;
     tabs: Readonly<Record<"panneau-tabs-gap" | "panneau-tabs-border-color" | "panneau-tabs-tab-padding-x" | "panneau-tabs-tab-font-weight" | "panneau-tabs-tab-color" | "panneau-tabs-indicator-height" | "panneau-tabs-tab-color-selected" | "panneau-tabs-indicator-color", string>>;
     text: Readonly<Record<"panneau-text-muted-color", string>>;
@@ -667,6 +670,27 @@ export function isApplePlatform(): boolean;
 
 // @public
 export type Justification = 'start' | 'center' | 'end' | 'between';
+
+// @public
+export function LineChart(input: LineChartProps): JSX.Element;
+
+// @public
+export interface LineChartPoint {
+    label: string;
+    // (undocumented)
+    value: number;
+}
+
+// @public (undocumented)
+export interface LineChartProps {
+    // (undocumented)
+    className?: string;
+    color?: number;
+    formatValue?: (value: number) => string;
+    height?: string;
+    label: string;
+    points?: LineChartPoint[] | undefined;
+}
 
 // @public
 export function LinkButton(input: LinkButtonProps): JSX.Element;
@@ -1067,6 +1091,21 @@ export interface StackProps extends HTMLAttributes<HTMLElement> {
     as?: 'div' | 'section' | 'article' | 'aside' | 'header' | 'footer' | 'nav' | 'main' | 'ul' | 'ol' | 'form';
     gap?: Responsive<Space>;
     justify?: Responsive<Justification>;
+}
+
+// @public
+export function Stat(input: StatProps): JSX.Element;
+
+// @public (undocumented)
+export interface StatProps {
+    // (undocumented)
+    className?: string;
+    format?: FormatNumberOptions;
+    help?: ReactNode;
+    href?: string | undefined;
+    label?: ReactNode;
+    tone?: Tone | undefined;
+    value?: number | string | undefined;
 }
 
 // @public

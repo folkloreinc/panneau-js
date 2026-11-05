@@ -18,7 +18,7 @@ export interface HomePageProps {
 }
 
 /**
- * The home page, until the dashboard of 5.x: a welcome, and a card for each resource the user can
+ * The home page without widgets in the dashboard: a welcome, and a card for each resource the user can
  * list.
  */
 export function HomePage({ definition, basePath }: HomePageProps) {

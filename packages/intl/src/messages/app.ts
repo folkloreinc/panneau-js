@@ -535,4 +535,26 @@ export const appMessages = {
         id: 'panneau.app.missingPage',
         defaultMessage: 'No plugin provides the page “{component}”.',
     }),
+    missingWidget: defineMessage<{ type: string }>({
+        id: 'panneau.app.missingWidget',
+        defaultMessage: 'No plugin provides the widget “{type}”.',
+    }),
+    widgetLoading: defineMessage<{ label: string }>({
+        id: 'panneau.app.widgetLoading',
+        defaultMessage: 'Loading {label}…',
+    }),
+    widgetError: defineMessage({
+        id: 'panneau.app.widgetError',
+        defaultMessage: 'This widget couldn’t load.',
+    }),
+    widgetEmpty: defineMessage({
+        id: 'panneau.app.widgetEmpty',
+        defaultMessage: 'Nothing here yet.',
+    }),
+    widgetSeeAll: defineMessage({ id: 'panneau.app.widgetSeeAll', defaultMessage: 'See all' }),
+    widgetTotal: defineMessage({ id: 'panneau.app.widgetTotal', defaultMessage: 'Total' }),
+    widgetUntitled: defineMessage<{ id: string }>({
+        id: 'panneau.app.widgetUntitled',
+        defaultMessage: 'Item {id}',
+    }),
 };

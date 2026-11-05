@@ -25,6 +25,7 @@ import type { Resource } from '@panneau/protocol';
 import type { RuleFailure } from '@panneau/protocol';
 import type { Selection as Selection_2 } from '@panneau/protocol';
 import type { Theme } from '@panneau/protocol';
+import type { Widget } from '@panneau/protocol';
 
 // @public
 export interface ActionItem {
@@ -689,6 +690,14 @@ export function useResource(id: string, formOptions?: ResolveFormOptions): Resol
 
 // @public
 export type Values = Record<string, unknown>;
+
+// @public
+export interface WidgetProps {
+    data: unknown;
+    // (undocumented)
+    definition: Definition;
+    widget: Widget;
+}
 
 // (No @packageDocumentation comment for this package)
 

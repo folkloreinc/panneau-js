@@ -667,6 +667,9 @@ export const BUILT_IN_LINK_TYPES: readonly ["url", "page", "email", "tel", "file
 // @public
 export const BUILT_IN_LIST_LAYOUTS: readonly ["table", "cards", "gallery", "calendar"];
 
+// @public
+export const BUILT_IN_WIDGET_TYPES: readonly ["stat", "series", "list"];
+
 // @public (undocumented)
 export type BuiltInAction = (typeof BUILT_IN_ACTIONS)[number];
 
@@ -689,6 +692,9 @@ export type BuiltInLinkType = (typeof BUILT_IN_LINK_TYPES)[number];
 export type BuiltInListLayout = (typeof BUILT_IN_LIST_LAYOUTS)[number];
 
 // @public (undocumented)
+export type BuiltInWidgetType = (typeof BUILT_IN_WIDGET_TYPES)[number];
+
+// @public (undocumented)
 export interface CheckOptions {
     item?: Record<string, unknown>;
     locales?: string[];
@@ -701,6 +707,9 @@ export function checkRules(rules: Rule[], value: unknown, root?: Record<string, 
 
 // @public
 export function checkValues(fields: Field[], values: Record<string, unknown>, options?: CheckOptions): Record<string, RuleFailure[]>;
+
+// @public
+export function checkWidgetData(type: string, data: unknown): string[];
 
 // @public (undocumented)
 export const Column: z.ZodObject<{
@@ -1474,7 +1483,10 @@ export const Definition: z.ZodObject<{
             type: z.ZodString;
             label: z.ZodOptional<z.ZodString>;
             width: z.ZodOptional<z.ZodNumber>;
-            settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+            settings: z.ZodOptional<z.ZodObject<{
+                resource: z.ZodOptional<z.ZodString>;
+                query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+            }, z.core.$loose>>;
         }, z.core.$loose>>;
     }, z.core.$loose>>;
     search: z.ZodOptional<z.ZodObject<{
@@ -2025,6 +2037,11 @@ export function getMediaLibraries(definition: MediaLibrariesDefinition | null, f
 // @public
 export function getValue(values: unknown, path: string): unknown;
 
+// Warning: (ae-forgotten-export) The symbol "WidgetLike" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function getWidgetResource(widget: WidgetLike): WidgetResource | null;
+
 // @public (undocumented)
 export const Id: z.ZodString;
 
@@ -2042,6 +2059,9 @@ export function isBuiltInLink(id: string): id is BuiltInLinkAction;
 
 // @public
 export function isBuiltInLinkType(type: string): type is BuiltInLinkType;
+
+// @public (undocumented)
+export function isBuiltInWidgetType(type: string): type is BuiltInWidgetType;
 
 // @public
 export function isCurrencyCode(code: unknown): code is CurrencyCode;
@@ -2302,6 +2322,40 @@ export const ListResponse: z.ZodObject<{
 
 // @public (undocumented)
 export type ListResponse = z.infer<typeof ListResponse>;
+
+// @public (undocumented)
+export const ListWidgetData: z.ZodObject<{
+    items: z.ZodArray<z.ZodObject<{
+        title: z.ZodString;
+        description: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        meta: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        badge: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            label: z.ZodString;
+            tone: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>>>;
+    }, z.core.$loose>>;
+    empty: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type ListWidgetData = z.infer<typeof ListWidgetData>;
+
+// @public (undocumented)
+export const ListWidgetItem: z.ZodObject<{
+    title: z.ZodString;
+    description: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    meta: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    badge: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+        label: z.ZodString;
+        tone: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type ListWidgetItem = z.infer<typeof ListWidgetItem>;
 
 // @public (undocumented)
 export const LocationValue: z.ZodObject<{
@@ -4031,12 +4085,19 @@ export const namedSchemas: {
         params: z.ZodOptional<z.ZodArray<z.ZodString>>;
         abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
     }, z.core.$loose>;
+    WidgetSettings: z.ZodObject<{
+        resource: z.ZodOptional<z.ZodString>;
+        query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+    }, z.core.$loose>;
     Widget: z.ZodObject<{
         id: z.ZodString;
         type: z.ZodString;
         label: z.ZodOptional<z.ZodString>;
         width: z.ZodOptional<z.ZodNumber>;
-        settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+        settings: z.ZodOptional<z.ZodObject<{
+            resource: z.ZodOptional<z.ZodString>;
+            query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+        }, z.core.$loose>>;
     }, z.core.$loose>;
     Uploads: z.ZodObject<{
         mode: z.ZodEnum<{
@@ -4848,7 +4909,10 @@ export const namedSchemas: {
                 type: z.ZodString;
                 label: z.ZodOptional<z.ZodString>;
                 width: z.ZodOptional<z.ZodNumber>;
-                settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+                settings: z.ZodOptional<z.ZodObject<{
+                    resource: z.ZodOptional<z.ZodString>;
+                    query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                }, z.core.$loose>>;
             }, z.core.$loose>>;
         }, z.core.$loose>>;
         search: z.ZodOptional<z.ZodObject<{
@@ -5560,6 +5624,56 @@ export const namedSchemas: {
         amount: z.ZodNumber;
         currency: z.ZodString;
     }, z.core.$loose>;
+    WidgetBadge: z.ZodObject<{
+        label: z.ZodString;
+        tone: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>;
+    StatWidgetData: z.ZodObject<{
+        value: z.ZodNumber;
+        help: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        tone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    }, z.core.$loose>;
+    SeriesPoint: z.ZodObject<{
+        date: z.ZodString;
+        value: z.ZodNumber;
+    }, z.core.$loose>;
+    SeriesWidgetData: z.ZodObject<{
+        period: z.ZodEnum<{
+            day: "day";
+            week: "week";
+            month: "month";
+        }>;
+        points: z.ZodArray<z.ZodObject<{
+            date: z.ZodString;
+            value: z.ZodNumber;
+        }, z.core.$loose>>;
+        total: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    }, z.core.$loose>;
+    ListWidgetItem: z.ZodObject<{
+        title: z.ZodString;
+        description: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        meta: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        badge: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            label: z.ZodString;
+            tone: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>>>;
+    }, z.core.$loose>;
+    ListWidgetData: z.ZodObject<{
+        items: z.ZodArray<z.ZodObject<{
+            title: z.ZodString;
+            description: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            meta: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            badge: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+                label: z.ZodString;
+                tone: z.ZodOptional<z.ZodString>;
+            }, z.core.$loose>>>;
+        }, z.core.$loose>>;
+        empty: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    }, z.core.$loose>;
 };
 
 // @public
@@ -6252,6 +6366,9 @@ export const Resource: z.ZodObject<{
 // @public (undocumented)
 export type Resource = z.infer<typeof Resource>;
 
+// @public
+export const RESOURCE_WIDGET_TYPES: readonly ["stat", "list"];
+
 // @public (undocumented)
 export const ResourceFeatures: z.ZodObject<{
     drafts: z.ZodOptional<z.ZodBoolean>;
@@ -6561,6 +6678,32 @@ type Selection_2 = z.infer<typeof Selection_2>;
 export { Selection_2 as Selection }
 
 // @public (undocumented)
+export const SeriesPoint: z.ZodObject<{
+    date: z.ZodString;
+    value: z.ZodNumber;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type SeriesPoint = z.infer<typeof SeriesPoint>;
+
+// @public (undocumented)
+export const SeriesWidgetData: z.ZodObject<{
+    period: z.ZodEnum<{
+        day: "day";
+        week: "week";
+        month: "month";
+    }>;
+    points: z.ZodArray<z.ZodObject<{
+        date: z.ZodString;
+        value: z.ZodNumber;
+    }, z.core.$loose>>;
+    total: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type SeriesWidgetData = z.infer<typeof SeriesWidgetData>;
+
+// @public (undocumented)
 export const Session: z.ZodObject<{
     user: z.ZodObject<{
         id: z.ZodString;
@@ -6574,6 +6717,17 @@ export const Session: z.ZodObject<{
 
 // @public (undocumented)
 export type Session = z.infer<typeof Session>;
+
+// @public (undocumented)
+export const StatWidgetData: z.ZodObject<{
+    value: z.ZodNumber;
+    help: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    tone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type StatWidgetData = z.infer<typeof StatWidgetData>;
 
 // @public (undocumented)
 export const StoredFile: z.ZodObject<{
@@ -6905,11 +7059,87 @@ export const Widget: z.ZodObject<{
     type: z.ZodString;
     label: z.ZodOptional<z.ZodString>;
     width: z.ZodOptional<z.ZodNumber>;
-    settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+    settings: z.ZodOptional<z.ZodObject<{
+        resource: z.ZodOptional<z.ZodString>;
+        query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+    }, z.core.$loose>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
 export type Widget = z.infer<typeof Widget>;
+
+// @public
+export const WIDGET_LIST_MAX_ITEMS = 5;
+
+// @public
+export const WIDGET_RESERVED_QUERY_PARAMS: readonly ["page", "perPage", "cursor"];
+
+// @public
+export const WIDGET_SERIES_PERIODS: readonly ["day", "week", "month"];
+
+// @public (undocumented)
+export const WidgetBadge: z.ZodObject<{
+    label: z.ZodString;
+    tone: z.ZodOptional<z.ZodString>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type WidgetBadge = z.infer<typeof WidgetBadge>;
+
+// @public
+export const widgetDataSchemas: {
+    readonly stat: z.ZodObject<{
+        value: z.ZodNumber;
+        help: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        tone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    }, z.core.$loose>;
+    readonly series: z.ZodObject<{
+        period: z.ZodEnum<{
+            day: "day";
+            week: "week";
+            month: "month";
+        }>;
+        points: z.ZodArray<z.ZodObject<{
+            date: z.ZodString;
+            value: z.ZodNumber;
+        }, z.core.$loose>>;
+        total: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    }, z.core.$loose>;
+    readonly list: z.ZodObject<{
+        items: z.ZodArray<z.ZodObject<{
+            title: z.ZodString;
+            description: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            meta: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            badge: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+                label: z.ZodString;
+                tone: z.ZodOptional<z.ZodString>;
+            }, z.core.$loose>>>;
+        }, z.core.$loose>>;
+        empty: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    }, z.core.$loose>;
+};
+
+// @public
+export interface WidgetResource {
+    params: URLSearchParams;
+    query: ListQuery;
+    resource: string;
+}
+
+// @public (undocumented)
+export type WidgetSeriesPeriod = (typeof WIDGET_SERIES_PERIODS)[number];
+
+// @public (undocumented)
+export const WidgetSettings: z.ZodObject<{
+    resource: z.ZodOptional<z.ZodString>;
+    query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type WidgetSettings = z.infer<typeof WidgetSettings>;
 
 // (No @packageDocumentation comment for this package)
 
