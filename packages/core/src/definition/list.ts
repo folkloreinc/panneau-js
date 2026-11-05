@@ -2,8 +2,8 @@ import type { Action, ActionPlacement, Column, Field, Filter, Resource } from '@
 import {
     BUILT_IN_ITEM_ACTIONS,
     type BuiltInItemAction,
-    isBuiltInItemAction,
     UNDO_LIMIT,
+    isBuiltInItemAction,
 } from '@panneau/protocol/runtime';
 
 import { canRunAction, canUpdateField, canViewField, getActionPlacements } from './abilities';
