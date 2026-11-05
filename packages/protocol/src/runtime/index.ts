@@ -14,6 +14,7 @@ export {
 } from '../currencies';
 export { type CheckOptions, type RuleFailure, checkRules, checkValues } from '../rules';
 export { evaluateCondition } from '../conditions';
+export { type NestedShape, getNestedShape, isBuiltInFieldType, isCompoundField } from '../compound';
 export {
     POSTAL_CODE_COUNTRIES,
     getAddressRequiredParts,

@@ -198,7 +198,7 @@ export const Field = z
         options: z.array(Option).optional().meta({ description: '`select`: the choices.' }),
         multiple: z.boolean().optional().meta({
             description:
-                '`select`, `relation`, `media`, `image`, `file`, `country`: the value is an array.',
+                '`select`, `relation`, `media`, `image`, `file`, `country`, and compound fields: the value is an array.',
         }),
         resource: z
             .union([z.string().min(1), z.array(z.string().min(1)).min(1)])
@@ -237,10 +237,10 @@ export const Field = z
             description: 'Display used in lists, when it differs from the default one of the type.',
         }),
         get fields(): z.ZodOptional<z.ZodArray<typeof Field>> {
-            return z
-                .array(Field)
-                .optional()
-                .meta({ description: '`group` and `repeater`: the nested fields.' });
+            return z.array(Field).optional().meta({
+                description:
+                    "`group` and `repeater`: the nested fields. On a type that isn't built in, they make it a compound field (decision 0065): its value is an object of them, or a list of objects with `multiple`, and a client without the type's plugin renders it as a `group` or a `repeater`.",
+            });
         },
         get types(): z.ZodOptional<z.ZodArray<typeof BlockType>> {
             return z

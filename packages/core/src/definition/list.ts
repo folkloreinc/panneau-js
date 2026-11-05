@@ -3,6 +3,7 @@ import {
     BUILT_IN_ITEM_ACTIONS,
     type BuiltInItemAction,
     UNDO_LIMIT,
+    getNestedShape,
     isBuiltInItemAction,
 } from '@panneau/protocol/runtime';
 
@@ -64,7 +65,7 @@ export interface ResolvedList {
 
 /** Fields shown when the list declares no columns. */
 const DEFAULT_COLUMN_COUNT = 4;
-const NON_COLUMN_TYPES = new Set(['group', 'repeater', 'richtext']);
+const NON_COLUMN_TYPES = new Set(['richtext']);
 
 export const DEFAULT_PER_PAGE = 20;
 
@@ -74,7 +75,10 @@ export const DEFAULT_CALENDAR_PER_PAGE = 100;
 function columnsFromFields(resource: Resource): Column[] {
     const title = resource.itemTitle;
     const fields = resource.fields.filter(
-        (field) => !NON_COLUMN_TYPES.has(field.type) && canViewField(field),
+        (field) =>
+            !NON_COLUMN_TYPES.has(field.type) &&
+            getNestedShape(field) === null &&
+            canViewField(field),
     );
     const ordered =
         title !== undefined

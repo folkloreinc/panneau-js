@@ -144,6 +144,38 @@ describe('Form layout', () => {
         expect(screen.getByText('Preview: Card')).toBeInTheDocument();
     });
 
+    it('gives component nodes their children, and shows the children without the plugin', () => {
+        const fields: Field[] = [{ name: 'credit', type: 'text', label: 'Credit' }];
+        const layout: LayoutNode[] = [
+            {
+                type: 'component',
+                component: 'card',
+                children: [{ type: 'field', name: 'credit' }],
+            },
+        ];
+        const plugin = definePlugin({
+            id: 'card',
+            components: {
+                card: ({ children }: { children: React.ReactNode }) => (
+                    <section aria-label="Card">{children}</section>
+                ),
+            },
+        });
+        const { unmount } = renderForm(
+            <PanneauProvider plugins={[plugin]}>
+                <Form fields={fields} layout={layout} />
+            </PanneauProvider>,
+        );
+        expect(
+            within(screen.getByRole('region', { name: 'Card' })).getByRole('textbox', {
+                name: 'Credit',
+            }),
+        ).toBeInTheDocument();
+        unmount();
+        renderForm(<Form fields={fields} layout={layout} />);
+        expect(screen.getAllByRole('textbox', { name: 'Credit' })).toHaveLength(1);
+    });
+
     it('uses field components from plugins', () => {
         const plugin = definePlugin({
             id: 'rich',

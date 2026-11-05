@@ -62,4 +62,10 @@ export const formsFr: Record<string, string> = {
     'panneau.forms.rule.cropRatios': 'Recadrez l’image en {ratios}.',
     'panneau.forms.rule.providers': 'Ce contenu intégré doit venir de {providers}.',
     'panneau.forms.rule.invalid': 'Cette valeur n’est pas valide.',
+    'panneau.forms.publication.title': 'Publication',
+    'panneau.forms.publication.published': 'Publié',
+    'panneau.forms.publication.scheduled': 'Programmé',
+    'panneau.forms.publication.unpublished': 'Non publié',
+    'panneau.forms.publication.publishedOn': 'Publié le {date}',
+    'panneau.forms.publication.scheduledFor': 'Sera publié le {date}',
 };

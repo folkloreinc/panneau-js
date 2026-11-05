@@ -4,6 +4,7 @@ export default definePackageConfig({
     root: import.meta.dirname,
     entries: {
         index: 'src/index.ts',
+        'publication/index': 'src/publication/index.ts',
         'locales/index': 'src/locales/index.ts',
     },
     react: true,

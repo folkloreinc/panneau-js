@@ -193,6 +193,9 @@ export function getMediaLibraries(definition: MediaLibrariesDefinition | null, f
 }): string[];
 
 // @public
+export function getNestedShape(field: Pick<Field, 'type' | 'fields' | 'multiple'>): NestedShape | null;
+
+// @public
 export function getValue(values: unknown, path: string): unknown;
 
 // Warning: (ae-forgotten-export) The symbol "WidgetLike" needs to be exported by the entry point index.d.ts
@@ -202,6 +205,9 @@ export function getWidgetResource(widget: WidgetLike): WidgetResource | null;
 
 // @public
 export function isAddressPart(value: unknown): value is AddressPart;
+
+// @public
+export function isBuiltInFieldType(type: string): boolean;
 
 // @public
 export function isBuiltInItemAction(id: string): id is BuiltInItemAction;
@@ -214,6 +220,9 @@ export function isBuiltInLinkType(type: string): type is BuiltInLinkType;
 
 // @public (undocumented)
 export function isBuiltInWidgetType(type: string): type is BuiltInWidgetType;
+
+// @public
+export function isCompoundField(field: Pick<Field, 'type' | 'fields'>): boolean;
 
 // @public
 export function isCurrencyCode(code: unknown): code is CurrencyCode;
@@ -302,6 +311,9 @@ export interface MediaLibrariesDefinition {
 //
 // @public
 export function mergeThemes(...themes: readonly PartialTheme[]): Theme;
+
+// @public
+export type NestedShape = 'group' | 'repeater';
 
 // @public
 export function normalizePostalCode(code: string, country?: string | null): string;

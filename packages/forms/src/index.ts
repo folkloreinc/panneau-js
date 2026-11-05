@@ -4,6 +4,7 @@ export { ErrorSummary, type ErrorSummaryProps } from './ErrorSummary';
 export { Form, type FormProps } from './Form';
 export { FormBinding } from './FormBinding';
 export { FormView, type FormViewProps } from './FormView';
+export type { LayoutComponentProps } from './layout/Layout';
 export { useFormContext, useFormState } from './context';
 export { useFormatRuleFailure } from './formatError';
 export { type LeaveConfirmation, useBeforeUnloadGuard, useLeaveConfirmation } from './unsaved';

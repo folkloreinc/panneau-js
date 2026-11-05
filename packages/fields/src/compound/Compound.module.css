@@ -1,0 +1,26 @@
+/* The layout of compound fields (decision 0065): their parts side by side, the wide ones on a row
+   of their own. */
+.row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr));
+    gap: var(--panneau-space-3) var(--panneau-space-4);
+    align-items: start;
+}
+
+.part {
+    min-width: 0;
+}
+
+/* A part hidden by its condition renders nothing: its cell takes no column. */
+.part:empty {
+    display: none;
+}
+
+.wide {
+    grid-column: 1 / -1;
+}
+
+.stack {
+    display: grid;
+    gap: var(--panneau-space-3);
+}

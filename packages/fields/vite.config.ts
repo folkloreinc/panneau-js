@@ -29,6 +29,8 @@ export default definePackageConfig({
         'link/index': 'src/link/index.ts',
         'daterange/index': 'src/daterange/index.ts',
         'money/index': 'src/money/index.ts',
+        'credits/index': 'src/credits/index.ts',
+        'sessions/index': 'src/sessions/index.ts',
         'localized/index': 'src/localized/index.ts',
         'group/index': 'src/group/index.ts',
         'repeater/index': 'src/repeater/index.ts',

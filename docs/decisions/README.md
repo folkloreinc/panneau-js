@@ -70,3 +70,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0062](0062-toasts.md)                                            | Toasts at the bottom, one per thing, and only when the page doesn't say it    | Proposed                          |
 | [0063](0063-undo-instead-of-a-confirmation.md)                    | "Undo" instead of a confirmation                                              | Proposed                          |
 | [0064](0064-dashboard-widgets.md)                                 | The widgets of the dashboard                                                  | Proposed                          |
+| [0065](0065-compound-fields.md)                                   | Compound fields: plugin types made of sub-fields                              | Proposed                          |

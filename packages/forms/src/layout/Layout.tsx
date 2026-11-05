@@ -155,15 +155,36 @@ function SectionNode({ node, fields }: { node: LayoutNode; fields: ReadonlyMap<s
     );
 }
 
-function ComponentNode({ node }: { node: LayoutNode }) {
+/** What the component of a `component` node of a form layout gets, with the node's `props`. */
+export interface LayoutComponentProps {
+    node: LayoutNode;
+    form: Form;
+    /** The fields of the form, by name. */
+    fields: ReadonlyMap<string, Field>;
+    /** The node's children, rendered: the fields a component frames (decision 0065). */
+    children: ReactNode;
+}
+
+/**
+ * A `component` node: the plugin's component, with the node's children rendered. Without the
+ * plugin, the children show as in a column, so that the fields the node frames stay in the form
+ * (decision 0065).
+ */
+function ComponentNode({ node, fields }: { node: LayoutNode; fields: ReadonlyMap<string, Field> }) {
     const form = useFormContext();
     const { components } = usePlugins();
     const Component = node.component !== undefined ? components.get(node.component) : undefined;
+    const children =
+        node.children !== undefined && node.children.length > 0 ? (
+            <div className={styles.stack}>
+                <LayoutNodes nodes={node.children} fields={fields} />
+            </div>
+        ) : null;
     if (Component === undefined) {
-        return null;
+        return children;
     }
     // A component of the plugin registry, looked up by name: not created during render.
-    return createElement(Component, { ...node.props, node, form });
+    return createElement(Component, { ...node.props, node, form, fields, children });
 }
 
 function LayoutNodeView({
@@ -206,7 +227,7 @@ function LayoutNodeView({
         case 'text':
             return <p className={styles.text}>{node.text ?? node.label}</p>;
         case 'component':
-            return <ComponentNode node={node} />;
+            return <ComponentNode node={node} fields={fields} />;
         default:
             // `column`, a `tab` or a `sidebar` out of place, and unknown containers.
             return (

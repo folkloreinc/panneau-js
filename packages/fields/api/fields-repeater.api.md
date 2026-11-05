@@ -7,7 +7,7 @@
 import type { BlockType } from '@panneau/protocol';
 import type { Field } from '@panneau/protocol';
 import { JSX } from 'react';
-import type { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 // @public
 export function RepeaterField(input: RepeaterFieldProps): JSX.Element;
@@ -24,9 +24,11 @@ export interface RepeaterFieldProps extends FieldProps<RepeaterItem[]> {
     fields?: readonly Field[];
     // (undocumented)
     itemClassName?: string;
+    itemTitle?: (item: RepeaterItem, index: number) => string | null;
     max?: number;
     min?: number;
     path?: string;
+    renderFields?: (parts: Readonly<Record<string, ReactNode>>, item: RepeaterItem) => ReactNode;
     types?: readonly BlockType[];
 }
 

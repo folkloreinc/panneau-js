@@ -104,6 +104,16 @@ export interface FormViewProps {
     uploadSource?: UploadSource | null;
 }
 
+// @public
+export interface LayoutComponentProps {
+    children: ReactNode;
+    fields: ReadonlyMap<string, Field>;
+    // (undocumented)
+    form: Form_2;
+    // (undocumented)
+    node: LayoutNode;
+}
+
 // @public (undocumented)
 export interface LeaveConfirmation {
     confirmLeave: () => Promise<boolean>;

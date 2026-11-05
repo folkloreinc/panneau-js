@@ -46,6 +46,8 @@ Two kinds of values are rebuilt by hand in the admins that move to Panneau 5.
 
 #### Sessions: a repeater, not a type
 
+> Changed by [0065](0065-compound-fields.md): sessions are a compound field, `"type": "sessions"` with `multiple`, which renders as this repeater without its plugin.
+
 Performances and screenings are a list of sessions, each a range and a venue. They are a `repeater` of a `daterange` and a `relation` to the venues, not a type of their own:
 
 ```jsonc

@@ -24,6 +24,7 @@ export interface GroupFieldProps extends FieldProps<GroupValue> {
     // (undocumented)
     fieldsClassName?: string;
     path?: string;
+    renderFields?: (parts: Readonly<Record<string, ReactNode>>, value: GroupValue) => ReactNode;
 }
 
 // @public (undocumented)
