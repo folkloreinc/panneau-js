@@ -6,6 +6,10 @@ import { defineMessage } from '../message';
  */
 export const formsMessages = {
     save: defineMessage({ id: 'panneau.forms.save', defaultMessage: 'Save' }),
+    saveShortcut: defineMessage<{ modifier: string }>({
+        id: 'panneau.forms.saveShortcut',
+        defaultMessage: '{modifier} Enter',
+    }),
     saved: defineMessage({ id: 'panneau.forms.saved', defaultMessage: 'Saved' }),
     loading: defineMessage({ id: 'panneau.forms.loading', defaultMessage: 'Loading the form…' }),
     unsaved: defineMessage({ id: 'panneau.forms.unsaved', defaultMessage: 'Unsaved changes' }),

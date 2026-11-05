@@ -54,6 +54,25 @@ describe('RichTextField', () => {
         expect(onChange).not.toHaveBeenCalled();
     });
 
+    it('breaks lines with Shift Enter, and leaves Ctrl Enter to the form', async () => {
+        const onChange = vi.fn();
+        const onKeyDown = vi.fn();
+        renderInRoot(
+            <div onKeyDown={(event) => onKeyDown(event.key, event.ctrlKey)}>
+                <RichTextField label="Body" value={null} onChange={onChange} />
+            </div>,
+        );
+        await userEvent.click(screen.getByRole('textbox', { name: 'Body' }));
+        await userEvent.keyboard('Hello');
+        expect(onChange).toHaveBeenLastCalledWith('<p>Hello</p>');
+        const changes = onChange.mock.calls.length;
+        await userEvent.keyboard('{Control>}{Enter}{/Control}');
+        expect(onKeyDown).toHaveBeenLastCalledWith('Enter', true);
+        expect(onChange).toHaveBeenCalledTimes(changes);
+        await userEvent.keyboard('{Shift>}{Enter}{/Shift}');
+        expect(onChange).toHaveBeenLastCalledWith('<p>Hello<br></p>');
+    });
+
     it('gives HTML once edited, and null once empty', async () => {
         const onChange = vi.fn();
         renderInRoot(
