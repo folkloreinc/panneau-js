@@ -136,7 +136,9 @@ export const Parameters: Story = {
             'Ready to go.',
         );
         await userEvent.click(within(dialog).getByRole('button', { name: 'Publish' }));
-        await expect(await body.findByText('1 page published.')).toBeVisible();
+        // Toasts fade in from below.
+        const published = await body.findByText('1 page published.');
+        await waitFor(() => expect(published).toBeVisible());
         await expect(body.getByText('1 item done, 1 skipped')).toBeVisible();
         await waitFor(() => expect(args.onResult).toHaveBeenCalled());
         await userEvent.click(body.getByRole('button', { name: 'Details' }));
@@ -151,14 +153,14 @@ export const QueuedRun: Story = {
         const canvas = within(canvasElement);
         const body = within(canvasElement.ownerDocument.body);
         await userEvent.click(canvas.getByRole('button', { name: 'Export' }));
-        await expect(await body.findByText('“Export” is running in the background.')).toBeVisible();
+        // No toast when it starts: the list of runs follows it.
         const runs = await canvas.findByRole('list', { name: 'Actions in progress' });
+        await expect(body.queryByText(/running in the background/)).toBeNull();
         await expect(
             await within(runs).findByRole('progressbar', { name: 'Export' }),
         ).toBeInTheDocument();
-        await expect(
-            await body.findByText('3 pages exported.', {}, { timeout: 5000 }),
-        ).toBeVisible();
+        const exported = await body.findByText('3 pages exported.', {}, { timeout: 5000 });
+        await waitFor(() => expect(exported).toBeVisible());
         await expect(args.onDownload).toHaveBeenCalledWith({
             url: '#pages.csv',
             filename: 'pages.csv',
