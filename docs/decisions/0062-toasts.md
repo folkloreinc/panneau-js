@@ -12,7 +12,7 @@ Toasts showed at the top right of the screen, where the page keeps its header an
 
 ### Where
 
-- **At the bottom, centered**, by default. They rise above what sticks to the bottom of the page, such as the footer of a form: that element calls `useToastOffset(ref)`, and its height becomes the `--panneau-toast-offset` of the region.
+- **At the bottom, centered**, by default. They rise above what sticks to the bottom of the page, such as the footer of a form: that element calls `useToastOffset(ref)`, and its height becomes the `--panneau-bottom-offset` of the region.
 - `PanneauRoot` takes a `toastPlacement`, for a project that wants them elsewhere: `bottom` (the default), `bottom-end` or `top-end`.
 - On a phone, they take the whole width, at the bottom (or the top with `top-end`).
 - They appear from below (from above at the top), without motion when the system asks for less.

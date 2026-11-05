@@ -1,12 +1,12 @@
 /*
  * The region carries the root's class (tokens), since React Aria renders it in the body. Toasts show
- * at the bottom, centered, above what sticks to the bottom of the page (--panneau-toast-offset,
+ * at the bottom, centered, above what sticks to the bottom of the page (--panneau-bottom-offset,
  * set by useToastOffset()), or at the bottom or top of the end side (data-placement). React Aria
  * renders them newest first, each in a list item with `display: contents`.
  */
 .region.region {
     position: fixed;
-    inset-block-end: calc(var(--panneau-toast-offset, 0px) + var(--panneau-space-4));
+    inset-block-end: calc(var(--panneau-bottom-offset, 0px) + var(--panneau-space-4));
     inset-inline: 0;
     z-index: var(--panneau-z-toast);
     display: grid;
@@ -45,12 +45,12 @@
     }
 
     .region.region:not([data-placement='top-end']) {
-        inset-block: auto calc(var(--panneau-toast-offset, 0px) + var(--panneau-space-2));
+        inset-block: auto calc(var(--panneau-bottom-offset, 0px) + var(--panneau-space-2));
     }
 }
 
 .toast {
-    --panneau-toast-rise: 1rem;
+    --toast-rise: 1rem;
 
     display: flex;
     grid-area: 1 / 1;
@@ -72,13 +72,13 @@
 }
 
 .region[data-placement='top-end'] .toast {
-    --panneau-toast-rise: -1rem;
+    --toast-rise: -1rem;
 }
 
 @keyframes rise {
     from {
         opacity: 0;
-        transform: translateY(var(--panneau-toast-rise));
+        transform: translateY(var(--toast-rise));
     }
 }
 

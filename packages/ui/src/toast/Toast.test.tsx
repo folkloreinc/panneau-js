@@ -150,7 +150,7 @@ describe('Toast', () => {
         );
         await userEvent.click(screen.getByRole('button', { name: 'Show' }));
         const region = await screen.findByRole('region', { name: 'Notifications' });
-        expect(region.style.getPropertyValue('--panneau-toast-offset')).toBe('64px');
+        expect(region.style.getPropertyValue('--panneau-bottom-offset')).toBe('64px');
         vi.restoreAllMocks();
     });
 

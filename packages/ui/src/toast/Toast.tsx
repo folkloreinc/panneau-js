@@ -132,7 +132,7 @@ export function useToast(): Toasts {
 
 /**
  * Raises the toasts above an element that sticks to the bottom of the page, such as the footer of
- * a form, while it is mounted and `active`: its height becomes the `--panneau-toast-offset` of the
+ * a form, while it is mounted and `active`: its height becomes the `--panneau-bottom-offset` of the
  * region. Toasts at the top ignore it.
  */
 export function useToastOffset(ref: RefObject<HTMLElement | null>, active = true): void {
@@ -234,7 +234,7 @@ export function ToastProvider({
                 aria-label={intl.formatMessage(messages.notifications)}
                 className={cx('panneau-toast-region', regionClassName, styles.region)}
                 data-placement={placement}
-                style={{ '--panneau-toast-offset': `${offset}px` } as CSSProperties}
+                style={{ '--panneau-bottom-offset': `${offset}px` } as CSSProperties}
                 {...regionProps}
             >
                 {({ toast }) => {
