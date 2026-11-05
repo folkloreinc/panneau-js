@@ -6,7 +6,7 @@ import { createList, createMemoryRouter } from '@panneau/core';
 
 import { List } from '../List';
 import { ListView } from '../ListView';
-import { columns, pages } from '../__fixtures__/pages';
+import { columns, pages, publish } from '../__fixtures__/pages';
 import { renderList } from '../__fixtures__/render';
 import { getImageUrl } from '../images';
 import type { ListItem } from '../types';
@@ -46,6 +46,24 @@ describe('the gallery', () => {
         expect(within(gallery).getAllByRole('listitem')[2]).toHaveTextContent('Blog');
     });
 
+    it('has the checkbox of each item under its image, not over it', async () => {
+        const { container } = renderList(
+            <ListView
+                list={createList()}
+                columns={columns}
+                items={pages.map((page) => ({ ...page, cover: 'https://example.com/a.jpg' }))}
+                itemImage="cover"
+                layouts={['gallery']}
+                actions={[publish]}
+            />,
+        );
+        const checkbox = screen.getByRole('checkbox', { name: 'Select Blog' });
+        const image = container.querySelectorAll('img')[2];
+        expect(image?.parentElement).not.toContainElement(checkbox);
+        await userEvent.click(checkbox);
+        expect(checkbox.closest('li')).toHaveAttribute('data-selected');
+    });
+
     it('is left out without the image of items', () => {
         renderList(
             <ListView list={createList()} columns={columns} items={pages} layouts={['gallery']} />,
@@ -82,7 +100,7 @@ describe('the gallery', () => {
 });
 
 describe('the thumbnails of the table', () => {
-    it('start each title with the image of its item, or a placeholder', () => {
+    it('start each title with the image of its item, or an empty square', () => {
         const { container } = renderList(
             <ListView
                 list={createList()}
@@ -105,8 +123,29 @@ describe('the thumbnails of the table', () => {
         expect(within(first as HTMLElement).getAllByRole('cell')[0]).toContainElement(
             images[0] as HTMLElement,
         );
-        // The other items show a placeholder, which assistive technologies skip.
-        expect(table.querySelectorAll('td svg[aria-hidden="true"]')).toHaveLength(2);
+        // The other items show an empty square, without an icon repeated on each row.
+        const [, second] = within(table).getAllByRole('row').slice(1);
+        const cell = within(second as HTMLElement).getAllByRole('cell')[0] as HTMLElement;
+        expect(cell.querySelector('svg')).toBeNull();
+    });
+
+    it('shows every checkbox once a row is selected', async () => {
+        renderList(
+            <ListView
+                list={createList()}
+                columns={columns}
+                items={pages}
+                layouts={['table']}
+                actions={[publish]}
+            />,
+        );
+        // The checkboxes show on hover and focus until then, from the styles of the table.
+        const table = screen.getByRole('table', { name: 'Items' });
+        expect(table).not.toHaveAttribute('data-selecting');
+        await userEvent.click(screen.getByRole('checkbox', { name: 'Select Blog' }));
+        expect(table).toHaveAttribute('data-selecting');
+        await userEvent.click(screen.getByRole('checkbox', { name: 'Select Blog' }));
+        expect(table).not.toHaveAttribute('data-selecting');
     });
 
     it('are left out without the image of items', () => {

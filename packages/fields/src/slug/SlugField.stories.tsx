@@ -78,10 +78,40 @@ export const Checked: Story = {
         await userEvent.click(canvas.getByRole('button', { name: 'Use ete-a-montreal-3' }));
         await waitFor(() =>
             expect(
-                canvas.getByRole('link', {
-                    name: 'https://example.com/fr/vacances/ete-a-montreal-3',
-                }),
-            ).toBeVisible(),
+                canvas.getByRole('link', { name: 'Open the page in a new window' }),
+            ).toHaveAttribute('href', 'https://example.com/fr/vacances/ete-a-montreal-3'),
         );
+        await expect(canvas.getByText('example.com/fr/vacances/')).toBeVisible();
+    },
+};
+
+/** Read-only, for a user who can't edit it: the address and the link to the page stay. */
+export const ReadOnly: Story = {
+    args: { value: 'ete-a-montreal-3', readOnly: true, onCheck: check, checkDelay: 0 },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(
+            await canvas.findByRole('link', { name: 'Open the page in a new window' }),
+        ).toHaveAttribute('target', '_blank');
+        await expect(canvas.getByRole('textbox', { name: 'Slug' })).toHaveAttribute('readonly');
+    },
+};
+
+/** Disabled: the field is greyed out, with its address. */
+export const Disabled: Story = {
+    args: { value: 'ete-a-montreal-3', disabled: true, onCheck: check, checkDelay: 0 },
+};
+
+/** The home page, whose slug doesn't apply: the backend's check makes the field read-only. */
+export const Locked: Story = {
+    args: {
+        value: 'accueil',
+        onCheck: () => Promise.resolve({ available: true, disabled: true }),
+        checkDelay: 0,
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(await canvas.findByText('This address can’t be changed.')).toBeVisible();
+        await expect(canvas.getByRole('textbox', { name: 'Slug' })).toHaveAttribute('readonly');
     },
 };

@@ -392,6 +392,9 @@ export const fieldsMessages: {
     index: number;
     }>;
     noItems: PanneauMessage<Record<never, never>>;
+    collapseAll: PanneauMessage<Record<never, never>>;
+    expandAll: PanneauMessage<Record<never, never>>;
+    itemHasErrors: PanneauMessage<Record<never, never>>;
     characterCount: PanneauMessage<    {
     count: number;
     max: number;
@@ -431,6 +434,8 @@ export const fieldsMessages: {
     field: string;
     }>;
     slugTaken: PanneauMessage<Record<never, never>>;
+    openPage: PanneauMessage<Record<never, never>>;
+    slugLocked: PanneauMessage<Record<never, never>>;
     useSuggestion: PanneauMessage<    {
     suggestion: string;
     }>;

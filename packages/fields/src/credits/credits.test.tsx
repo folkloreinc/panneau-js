@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 
 import type { Field } from '@panneau/protocol';
@@ -48,7 +49,7 @@ describe('formatCredit', () => {
 });
 
 describe('CreditsFieldEntry', () => {
-    it('renders each credit with its parts, titled by the credit', () => {
+    it('renders each credit with its parts, titled by the credit', async () => {
         renderField(
             <DefinitionField
                 field={credits}
@@ -59,6 +60,8 @@ describe('CreditsFieldEntry', () => {
             { components: { ...builtInFields, credits: CreditsFieldEntry } },
         );
         expect(screen.getAllByRole('listitem')[0]).toHaveAccessibleName(/^1\s*Jane Doe \(Music\)$/);
+        // Items start collapsed (decision 0068).
+        await userEvent.click(screen.getByRole('button', { expanded: false }));
         expect(screen.getByRole('textbox', { name: 'Name' })).toHaveAttribute(
             'name',
             'credits.0.name',

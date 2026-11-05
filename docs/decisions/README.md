@@ -73,3 +73,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0065](0065-compound-fields.md)                                   | Compound fields: plugin types made of sub-fields                              | Proposed                          |
 | [0066](0066-a-create-goes-back-to-the-list.md)                    | A create goes back to the list, which shows the new item                      | Proposed                          |
 | [0067](0067-relation-cards.md)                                    | Relation fields show their items as cards                                     | Proposed                          |
+| [0068](0068-collapsed-items-and-lighter-controls.md)              | Collapsed repeater items, permalink slugs, and controls shown when needed     | Proposed                          |

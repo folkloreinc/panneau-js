@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, ArrowUpDown, ImageOff } from 'lucide-react';
+import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 
 import { Checkbox, Icon, usePanneauIntl } from '@panneau/ui';
 
@@ -31,16 +31,13 @@ function alignClass(column: ListColumn): string | undefined {
 
 /**
  * The thumbnail of an item, before its title (decision 0061): a square of its image, loaded when it
- * comes into view, or a placeholder. It has no text: the title is next to it.
+ * comes into view, or an empty square, so that titles stay aligned. It has no text: the title is
+ * next to it.
  */
 function Thumbnail({ url }: { url: string | null }) {
     return (
         <span className={styles.thumbnail}>
-            {url !== null ? (
-                <img src={url} alt="" loading="lazy" decoding="async" />
-            ) : (
-                <Icon icon={ImageOff} size="sm" />
-            )}
+            {url !== null ? <img src={url} alt="" loading="lazy" decoding="async" /> : null}
         </span>
     );
 }
@@ -48,7 +45,9 @@ function Thumbnail({ url }: { url: string | null }) {
 /**
  * Items as a table, with sortable column headers. With the image of items (`getItemImage`), each
  * title starts with a thumbnail. On narrow lists (phones), each row turns into a block that shows
- * the label of each value.
+ * the label of each value. To keep the table light, the arrows of sortable columns and the
+ * checkboxes of rows show on hover and focus, the arrow of the sorted column and the checkboxes
+ * once a row is selected always, and both always on touch screens.
  */
 export function TableLayout({
     items,
@@ -73,10 +72,15 @@ export function TableLayout({
     const actions = items.map((item) => renderActions(item));
     const hasActions = actions.some((node) => node !== null);
     const [fitLevel, measureList] = useRowActionsFit(fitContent(items, columns));
+    const selecting = selectable && items.some((item) => isSelected(item));
     return (
         <RowActionsFit value={fitLevel}>
             <div className={styles.scroller} ref={measureList}>
-                <table className={styles.table} aria-label={label}>
+                <table
+                    className={styles.table}
+                    aria-label={label}
+                    data-selecting={selecting || undefined}
+                >
                     <thead>
                         <tr>
                             {selectable ? <th className={styles.check}>{pageSelection}</th> : null}

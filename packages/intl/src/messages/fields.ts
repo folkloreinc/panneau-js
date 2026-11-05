@@ -30,6 +30,15 @@ export const fieldsMessages = {
         defaultMessage: 'Item {index}',
     }),
     noItems: defineMessage({ id: 'panneau.fields.noItems', defaultMessage: 'No items yet.' }),
+    collapseAll: defineMessage({
+        id: 'panneau.fields.collapseAll',
+        defaultMessage: 'Collapse all',
+    }),
+    expandAll: defineMessage({ id: 'panneau.fields.expandAll', defaultMessage: 'Expand all' }),
+    itemHasErrors: defineMessage({
+        id: 'panneau.fields.itemHasErrors',
+        defaultMessage: 'Has errors',
+    }),
     characterCount: defineMessage<{ count: number; max: number }>({
         id: 'panneau.fields.characterCount',
         defaultMessage: '{count, number} / {max, number} characters',
@@ -88,6 +97,14 @@ export const fieldsMessages = {
     slugTaken: defineMessage({
         id: 'panneau.fields.slugTaken',
         defaultMessage: 'This slug is already used.',
+    }),
+    openPage: defineMessage({
+        id: 'panneau.fields.openPage',
+        defaultMessage: 'Open the page in a new window',
+    }),
+    slugLocked: defineMessage({
+        id: 'panneau.fields.slugLocked',
+        defaultMessage: 'This address can’t be changed.',
     }),
     useSuggestion: defineMessage<{ suggestion: string }>({
         id: 'panneau.fields.useSuggestion',

@@ -1,10 +1,11 @@
-import { WandSparkles } from 'lucide-react';
+import { ExternalLink, WandSparkles } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 import type { FieldCheckResponse } from '@panneau/protocol';
-import { Button, IconButton, usePanneauIntl } from '@panneau/ui';
+import { Button, IconButton, LinkButton, Tooltip, usePanneauIntl } from '@panneau/ui';
 
 import { useFieldsContext } from '../shared/context';
+import { cx } from '../shared/cx';
 import { getFieldProps, getSetting, isString } from '../shared/entry';
 import { messages } from '../shared/messages';
 import type { FieldEntryProps } from '../shared/types';
@@ -56,15 +57,16 @@ export interface SlugFieldProps extends Omit<TextFieldProps, 'type' | 'suffix'> 
 }
 
 /**
- * Checks a slug after a pause in typing, and keeps the latest answer for it. A check that
- * fails leaves the field as it is: saving still validates the slug.
+ * Checks a slug after a pause in typing, and keeps the latest answer: `check` is the answer for
+ * the value, and `latest` the last answer, for what doesn't change as the slug is typed (the
+ * prefix). A check that fails leaves the field as it is: saving still validates the slug.
  */
 function useSlugCheck(
     value: string,
     onCheck: SlugCheck | null | undefined,
     delay: number,
     key: string,
-): FieldCheckResponse | null {
+): { check: FieldCheckResponse | null; latest: FieldCheckResponse | null } {
     const [result, setResult] = useState<{ value: string; check: FieldCheckResponse } | null>(null);
     const latest = useRef(onCheck);
     useEffect(() => {
@@ -94,13 +96,33 @@ function useSlugCheck(
             controller.abort();
         };
     }, [value, enabled, delay, key]);
-    return result !== null && result.value === value ? result.check : null;
+    return {
+        check: result !== null && result.value === value ? result.check : null,
+        latest: result?.check ?? null,
+    };
 }
 
 /**
- * A slug for URLs. Typed text is cleaned up on blur. With a `source`, the slug follows it until
- * it is edited, and a button generates it again. With `onCheck`, the backend says whether the
- * slug is taken, and gives its URL.
+ * The prefix as the field shows it: a URL without its scheme (`example.com/fr/`), the whole of it
+ * in a tooltip.
+ */
+function SlugPrefix({ prefix, disabled }: { prefix: string; disabled: boolean }) {
+    return (
+        // Disabled with its field, faded as an inactive control is.
+        <span className={styles.prefix} title={prefix} aria-disabled={disabled || undefined}>
+            {/* A long prefix is cut at its start, not its end (see the CSS). */}
+            <span className={styles.cut}>
+                <bdi dir="ltr">{prefix.replace(/^[a-z][a-z0-9+.-]*:\/\//i, '')}</bdi>
+            </span>
+        </span>
+    );
+}
+
+/**
+ * A slug for URLs, as a permalink: the start of the URL in front of the slug, and a button that
+ * opens the page. Typed text is cleaned up on blur. With a `source`, the slug follows it until it
+ * is edited, and a button generates it again. With `onCheck`, the backend says whether the slug
+ * is taken, and gives the start of the URL and the URL itself.
  */
 export function SlugField({
     value,
@@ -120,7 +142,8 @@ export function SlugField({
 }: SlugFieldProps) {
     const intl = usePanneauIntl();
     const previousSource = useRef(source);
-    const check = useSlugCheck(value ?? '', onCheck, checkDelay, checkKey);
+    const { check, latest } = useSlugCheck(value ?? '', onCheck, checkDelay, checkKey);
+    const checked = onCheck !== null && onCheck !== undefined;
     const disabledByBackend = check?.disabled === true;
     const editable = disabled !== true && readOnly !== true && !disabledByBackend;
 
@@ -143,6 +166,40 @@ export function SlugField({
     const taken = check !== null && !check.available;
     const suggestion = taken && isString(check.suggestion) ? check.suggestion : null;
     const url = check !== null && isString(check.url) && !taken ? check.url : null;
+    // The prefix of the latest check stays while the slug is typed, until the next one answers.
+    const shownPrefix =
+        check !== null && isString(check.prefix)
+            ? check.prefix
+            : check === null && latest !== null && isString(latest.prefix)
+              ? latest.prefix
+              : prefix;
+    const generate =
+        source !== undefined && editable ? (
+            <IconButton
+                icon={WandSparkles}
+                size="sm"
+                label={intl.formatMessage(messages.generateSlug, {
+                    field: sourceLabel ?? '',
+                })}
+                isDisabled={generated === '' || generated === value}
+                onPress={() => onChange?.(generated === '' ? null : generated)}
+            />
+        ) : null;
+    const openLabel = intl.formatMessage(messages.openPage);
+    const open =
+        url !== null ? (
+            <Tooltip content={openLabel}>
+                <LinkButton
+                    href={url}
+                    external
+                    size="sm"
+                    appearance="ghost"
+                    icon={ExternalLink}
+                    aria-label={openLabel}
+                    className={styles.open}
+                />
+            </Tooltip>
+        ) : null;
     return (
         <TextField
             autoComplete="off"
@@ -151,20 +208,29 @@ export function SlugField({
             onChange={onChange}
             disabled={disabled}
             readOnly={readOnly === true || disabledByBackend}
-            {...(check !== null && isString(check.prefix)
-                ? { prefix: check.prefix }
-                : prefix !== undefined
-                  ? { prefix }
-                  : {})}
+            // With a check, the prefix and the buttons come and go in the same control (`null`),
+            // so that the input keeps the focus.
+            {...(typeof shownPrefix === 'string'
+                ? { prefix: <SlugPrefix prefix={shownPrefix} disabled={disabled === true} /> }
+                : shownPrefix !== undefined
+                  ? { prefix: shownPrefix }
+                  : checked
+                    ? { prefix: null }
+                    : {})}
+            controlClassName={cx(
+                typeof shownPrefix === 'string' && styles.withPrefix,
+                props.controlClassName,
+            )}
             {...(errors !== undefined ? { errors } : {})}
+            // With a check, the description is there from the start, empty: the input is described
+            // by what the check says later.
+            descriptionClassName={cx(styles.descriptionSlot, props.descriptionClassName)}
             description={
-                taken || url !== null || description !== undefined ? (
+                checked || taken || description !== undefined ? (
                     <span className={styles.description}>
                         {description !== undefined ? <span>{description}</span> : null}
-                        {url !== null ? (
-                            <a href={url} target="_blank" rel="noreferrer" className={styles.url}>
-                                {url}
-                            </a>
+                        {disabledByBackend ? (
+                            <span>{intl.formatMessage(messages.slugLocked)}</span>
                         ) : null}
                         {taken ? (
                             <span className={styles.taken} role="status">
@@ -195,17 +261,12 @@ export function SlugField({
                 onBlur?.();
             }}
             suffix={
-                source !== undefined && editable ? (
-                    <IconButton
-                        icon={WandSparkles}
-                        size="sm"
-                        label={intl.formatMessage(messages.generateSlug, {
-                            field: sourceLabel ?? '',
-                        })}
-                        isDisabled={generated === '' || generated === value}
-                        onPress={() => onChange?.(generated === '' ? null : generated)}
-                    />
-                ) : undefined
+                generate !== null || open !== null ? (
+                    <>
+                        {generate}
+                        {open}
+                    </>
+                ) : checked || source !== undefined ? null : undefined
             }
         />
     );

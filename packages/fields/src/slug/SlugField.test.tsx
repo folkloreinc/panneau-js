@@ -149,7 +149,11 @@ describe('SlugField', () => {
         renderField(<Form />, { checkSource: { check } });
 
         expect(await screen.findByText('This slug is already used.')).toBeInTheDocument();
-        expect(screen.getByText('https://site.test/fr/')).toBeInTheDocument();
+        // The start of the URL is an addon in front of the slug, without its scheme.
+        expect(screen.getByText('site.test/fr/').closest('[title]')).toHaveAttribute(
+            'title',
+            'https://site.test/fr/',
+        );
         expect(check).toHaveBeenCalledWith(
             'slug',
             { value: 'ete', values: { slug: 'ete', parent: '7' } },
@@ -158,10 +162,62 @@ describe('SlugField', () => {
 
         await userEvent.click(screen.getByRole('button', { name: 'Use ete-2' }));
         expect(onChange).toHaveBeenLastCalledWith('ete-2');
-        expect(
-            await screen.findByRole('link', { name: 'https://site.test/fr/ete-2' }),
-        ).toHaveAttribute('href', 'https://site.test/fr/ete-2');
+        const open = await screen.findByRole('link', { name: 'Open the page in a new window' });
+        expect(open).toHaveAttribute('href', 'https://site.test/fr/ete-2');
+        expect(open).toHaveAttribute('target', '_blank');
         expect(screen.queryByText('This slug is already used.')).not.toBeInTheDocument();
+    });
+
+    it('keeps the prefix while the slug is typed, and the focus in the input', async () => {
+        const check = vi.fn((value: string) =>
+            Promise.resolve({
+                available: true,
+                prefix: 'https://site.test/fr/',
+                url: `https://site.test/fr/${value}`,
+            }),
+        );
+        renderField(
+            <Controlled<string | null> initial="ete">
+                {(value, setValue) => (
+                    <SlugField
+                        label="Slug"
+                        value={value}
+                        onChange={setValue}
+                        onCheck={check}
+                        checkDelay={200}
+                    />
+                )}
+            </Controlled>,
+        );
+        expect(await screen.findByText('site.test/fr/')).toBeInTheDocument();
+        await userEvent.type(screen.getByRole('textbox', { name: 'Slug' }), '-x');
+        // The check of the new slug hasn't answered: the prefix stays, the link waits for it.
+        expect(screen.getByText('site.test/fr/')).toBeInTheDocument();
+        expect(screen.queryByRole('link')).not.toBeInTheDocument();
+        expect(screen.getByRole('textbox', { name: 'Slug' })).toHaveFocus();
+        expect(
+            await screen.findByRole('link', { name: 'Open the page in a new window' }),
+        ).toHaveAttribute('href', 'https://site.test/fr/ete-x');
+    });
+
+    it('shows the prefix setting as an addon, and opens the page when read-only', async () => {
+        renderField(
+            <SlugField
+                label="Slug"
+                value="ete"
+                prefix="/episodes/"
+                readOnly
+                onCheck={() =>
+                    Promise.resolve({ available: true, url: 'https://site.test/episodes/ete' })
+                }
+                checkDelay={0}
+            />,
+        );
+        expect(screen.getByText('/episodes/')).toBeInTheDocument();
+        expect(
+            await screen.findByRole('link', { name: 'Open the page in a new window' }),
+        ).toHaveAttribute('href', 'https://site.test/episodes/ete');
+        expect(screen.getByRole('textbox', { name: 'Slug' })).toHaveAttribute('readonly');
     });
 
     it('is read-only when the backend says the field does not apply', async () => {
@@ -179,6 +235,12 @@ describe('SlugField', () => {
             },
         );
         await waitFor(() => expect(screen.getByRole('textbox')).toHaveAttribute('readonly'));
+        await waitFor(() =>
+            expect(screen.getByRole('textbox')).toHaveAccessibleDescription(
+                'This address can’t be changed.',
+            ),
+        );
+        expect(screen.queryByRole('button')).not.toBeInTheDocument();
     });
 
     it("doesn't check a slug inside a group or a block", async () => {

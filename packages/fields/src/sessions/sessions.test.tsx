@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 
 import type { Field } from '@panneau/protocol';
@@ -38,7 +39,7 @@ describe('SessionsFieldEntry', () => {
         ).toMatch(/^Nov 4\s–\s6, 2026 · Salle Wilfrid-Pelletier, Studio$/);
     });
 
-    it('renders the fields a site adds after the dates and the venue', () => {
+    it('renders the fields a site adds after the dates and the venue', async () => {
         renderField(
             <DefinitionField
                 field={sessions}
@@ -49,6 +50,8 @@ describe('SessionsFieldEntry', () => {
             { components: { ...builtInFields, sessions: SessionsFieldEntry } },
         );
         expect(screen.getByRole('group', { name: 'Sessions' })).toBeInTheDocument();
+        // Items start collapsed (decision 0068).
+        await userEvent.click(screen.getByRole('button', { expanded: false }));
         expect(screen.getByRole('textbox', { name: 'Tickets' })).toHaveAttribute(
             'name',
             'sessions.0.tickets',
