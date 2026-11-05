@@ -38,6 +38,21 @@ describe('paths', () => {
         expect(getFieldAtPath(FIELDS, 'nope')).toBeUndefined();
     });
 
+    it('follows the items of compound fields with multiple', () => {
+        const credits: Field = {
+            name: 'credits',
+            type: 'credits',
+            multiple: true,
+            fields: [{ name: 'name', type: 'text' }],
+        };
+        expect(
+            getPathSteps([credits], 'credits.1.name').map((step) => [step.field.name, step.index]),
+        ).toEqual([
+            ['credits', 1],
+            ['name', undefined],
+        ]);
+    });
+
     it('describes paths with labels', () => {
         expect(describePath(FIELDS, 'title.fr')).toBe('Title (fr)');
         expect(describePath(FIELDS, 'blocks.2.body.en')).toBe('Blocks › 3 › Body (en)');

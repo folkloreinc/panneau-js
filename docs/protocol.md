@@ -121,6 +121,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 - **`localized`** makes the value an object keyed by locale (`{ "fr": "…", "en": "…" }`). It replaces the separate `localized` field and the `*Localized` PHP classes of v1.
 - **`group`** has `fields`, for a nested object.
 - **`repeater`** has `fields`, or `types` for typed blocks, for an array.
+- **Compound fields** ([0065](decisions/0065-compound-fields.md)) are types of plugins that carry their sub-fields in `fields` (`credits`, `sessions`). Their value is an object of them, or a list of objects with `"multiple": true`, checked as a `group` or a `repeater`. A client without the type's plugin renders it as a `group`, or as a `repeater` with `multiple` (`getNestedShape()`).
 - **`relation`** points to another resource:
 
     ```jsonc
@@ -337,7 +338,7 @@ Node types:
 - **Containers:**
     - `row`, whose children have `width` on a 12-column grid;
     - `column`, `section`, `tabs` and `tab`, `sidebar`.
-- **Content:** `field`, `text` (a static help paragraph), `component` (rendered by a plugin).
+- **Content:** `field`, `text` (a static help paragraph), `component` (rendered by a plugin, with its `children` rendered: a `component` without its plugin renders its children, [0065](decisions/0065-compound-fields.md)).
 
 Any node can have `visibleWhen`.
 

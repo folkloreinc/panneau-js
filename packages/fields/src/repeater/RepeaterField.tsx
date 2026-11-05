@@ -1,5 +1,5 @@
 import { ArrowDown, ArrowUp, Plus, Trash2 } from 'lucide-react';
-import { useId } from 'react';
+import { type ReactNode, useId } from 'react';
 
 import type { BlockType, Field } from '@panneau/protocol';
 import {
@@ -33,6 +33,16 @@ export interface RepeaterFieldProps extends FieldProps<RepeaterItem[]> {
     min?: number;
     /** Most items: no item can be added above it. */
     max?: number;
+    /**
+     * The title of an item, after its number: a summary of its values (decision 0065). Without
+     * one, or when it gives `null`, the label of its type, or "Item 2".
+     */
+    itemTitle?: (item: RepeaterItem, index: number) => string | null;
+    /**
+     * Lays out the rendered fields of an item, by name, instead of one under the other: the
+     * layout of a compound field (decision 0065).
+     */
+    renderFields?: (parts: Readonly<Record<string, ReactNode>>, item: RepeaterItem) => ReactNode;
     itemClassName?: string;
 }
 
@@ -65,6 +75,8 @@ export function RepeaterField({
     required,
     min = 0,
     max,
+    itemTitle,
+    renderFields,
     className,
     labelClassName,
     descriptionClassName,
@@ -114,6 +126,28 @@ export function RepeaterField({
                         const itemFields = types !== undefined ? (type?.fields ?? []) : fields;
                         const number = index + 1;
                         const titleId = `${id}-${index}`;
+                        const summary = itemTitle?.(item, index) ?? null;
+                        const renderField = (field: Field) => (
+                            <NestedField
+                                key={field.name}
+                                field={field}
+                                path={`${base}.${index}.${field.name}`}
+                                value={item[field.name]}
+                                onChange={(next) =>
+                                    set(
+                                        items.map((current, i) =>
+                                            i === index
+                                                ? { ...current, [field.name]: next }
+                                                : current,
+                                        ),
+                                    )
+                                }
+                                {...(onBlur !== undefined ? { onBlur } : {})}
+                                parentValue={item}
+                                {...(disabled !== undefined ? { disabled } : {})}
+                                {...(readOnly !== undefined ? { readOnly } : {})}
+                            />
+                        );
                         return (
                             <li
                                 key={index}
@@ -123,7 +157,8 @@ export function RepeaterField({
                                 <div className={styles.header}>
                                     <span id={titleId} className={styles.title}>
                                         <span className={styles.index}>{number}</span>
-                                        {type?.label ??
+                                        {summary ??
+                                            type?.label ??
                                             (typeof item.type === 'string'
                                                 ? item.type
                                                 : intl.formatMessage(messages.item, {
@@ -165,27 +200,17 @@ export function RepeaterField({
                                     ) : null}
                                 </div>
                                 <div className={styles.body}>
-                                    {itemFields.map((field) => (
-                                        <NestedField
-                                            key={field.name}
-                                            field={field}
-                                            path={`${base}.${index}.${field.name}`}
-                                            value={item[field.name]}
-                                            onChange={(next) =>
-                                                set(
-                                                    items.map((current, i) =>
-                                                        i === index
-                                                            ? { ...current, [field.name]: next }
-                                                            : current,
-                                                    ),
-                                                )
-                                            }
-                                            {...(onBlur !== undefined ? { onBlur } : {})}
-                                            parentValue={item}
-                                            {...(disabled !== undefined ? { disabled } : {})}
-                                            {...(readOnly !== undefined ? { readOnly } : {})}
-                                        />
-                                    ))}
+                                    {renderFields !== undefined
+                                        ? renderFields(
+                                              Object.fromEntries(
+                                                  itemFields.map((field) => [
+                                                      field.name,
+                                                      renderField(field),
+                                                  ]),
+                                              ),
+                                              item,
+                                          )
+                                        : itemFields.map(renderField)}
                                 </div>
                             </li>
                         );

@@ -192,4 +192,30 @@ export const formsMessages = {
             defaultMessage: 'This value is invalid.',
         }),
     },
+    publication: {
+        title: defineMessage({
+            id: 'panneau.forms.publication.title',
+            defaultMessage: 'Publication',
+        }),
+        published: defineMessage({
+            id: 'panneau.forms.publication.published',
+            defaultMessage: 'Published',
+        }),
+        scheduled: defineMessage({
+            id: 'panneau.forms.publication.scheduled',
+            defaultMessage: 'Scheduled',
+        }),
+        unpublished: defineMessage({
+            id: 'panneau.forms.publication.unpublished',
+            defaultMessage: 'Not published',
+        }),
+        publishedOn: defineMessage<{ date: string }>({
+            id: 'panneau.forms.publication.publishedOn',
+            defaultMessage: 'Published on {date}',
+        }),
+        scheduledFor: defineMessage<{ date: string }>({
+            id: 'panneau.forms.publication.scheduledFor',
+            defaultMessage: 'Will be published on {date}',
+        }),
+    },
 };

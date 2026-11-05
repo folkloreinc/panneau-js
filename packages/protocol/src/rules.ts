@@ -1,4 +1,5 @@
 import { getAddressRequiredParts, isPostalCode } from './addresses';
+import { getNestedShape } from './compound';
 import { evaluateCondition } from './conditions';
 import { PORTABLE_RULES } from './constants';
 import { isCurrencyCode } from './currencies';
@@ -502,10 +503,12 @@ function checkFieldValue(field: Field, value: unknown, path: string, context: Co
     addFailures(context, path, checkRules(rules, value, context.root, context.mode));
     checkParts(field, value, path, context);
 
-    if (field.type === 'group' && field.fields !== undefined && isRecord(value)) {
+    // Compound fields of plugins check their `fields` as groups and repeaters do (decision 0065).
+    const shape = getNestedShape(field);
+    if (shape === 'group' && field.fields !== undefined && isRecord(value)) {
         checkFields(field.fields, value, `${path}.`, context);
     }
-    if (field.type === 'repeater' && Array.isArray(value)) {
+    if (shape === 'repeater' && Array.isArray(value)) {
         value.forEach((item, index) => {
             if (!isRecord(item)) {
                 return;

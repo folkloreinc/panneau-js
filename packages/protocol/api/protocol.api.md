@@ -2035,6 +2035,9 @@ export function getMediaLibraries(definition: MediaLibrariesDefinition | null, f
 }): string[];
 
 // @public
+export function getNestedShape(field: Pick<Field, 'type' | 'fields' | 'multiple'>): NestedShape | null;
+
+// @public
 export function getValue(values: unknown, path: string): unknown;
 
 // Warning: (ae-forgotten-export) The symbol "WidgetLike" needs to be exported by the entry point index.d.ts
@@ -2052,6 +2055,9 @@ export type Id = z.infer<typeof Id>;
 export function isAddressPart(value: unknown): value is AddressPart;
 
 // @public
+export function isBuiltInFieldType(type: string): boolean;
+
+// @public
 export function isBuiltInItemAction(id: string): id is BuiltInItemAction;
 
 // @public
@@ -2062,6 +2068,9 @@ export function isBuiltInLinkType(type: string): type is BuiltInLinkType;
 
 // @public (undocumented)
 export function isBuiltInWidgetType(type: string): type is BuiltInWidgetType;
+
+// @public
+export function isCompoundField(field: Pick<Field, 'type' | 'fields'>): boolean;
 
 // @public
 export function isCurrencyCode(code: unknown): code is CurrencyCode;
@@ -5675,6 +5684,9 @@ export const namedSchemas: {
         url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     }, z.core.$loose>;
 };
+
+// @public
+export type NestedShape = 'group' | 'repeater';
 
 // @public
 export function normalizePostalCode(code: string, country?: string | null): string;

@@ -1,4 +1,5 @@
 import type { Field } from '@panneau/protocol';
+import { getNestedShape } from '@panneau/protocol/runtime';
 
 /** A step from a field to the value at a path: the field, and a locale or an item index. */
 export interface PathStep {
@@ -32,7 +33,7 @@ export function getPathSteps(fields: readonly Field[], path: string): PathStep[]
             index += 1;
         }
         if (
-            field.type === 'repeater' &&
+            getNestedShape(field) === 'repeater' &&
             next !== undefined &&
             /^\d+$/.test(segments[index + 1] ?? '')
         ) {

@@ -84,6 +84,29 @@ import {
 - **Files** upload through the `uploadSource` of the provider (below). Without one, the value holds the files themselves.
 - **Plugin slot:** a type without an entry, such as `richtext` and `media` without their plugins (`@panneau/editor`, `@panneau/media`), renders a placeholder that names it. A plugin that provides the type replaces it.
 
+### Compound fields
+
+A compound field (decision 0065) is a type of a plugin that carries its sub-fields in `fields`: an object of them, or a list with `multiple`. Without its plugin, it renders as a group, or as a repeater. `defineCompoundField()` makes the entry of such a type: `layout` places the rendered sub-fields of one value by name, and `summarize` gives one value as text, for the title of an item and for lists and details.
+
+```tsx
+import { defineCompoundField, restParts } from '@panneau/fields';
+
+export const TeamFieldEntry = defineCompoundField({
+    layout: ({ parts }) => (
+        <div className={styles.row}>
+            {parts.person}
+            {parts.role}
+            {restParts(parts, ['person', 'role'])}
+        </div>
+    ),
+    summarize: (member) => (typeof member.role === 'string' ? member.role : null),
+});
+
+const teamPlugin = { id: 'team', fields: { team: TeamFieldEntry } };
+```
+
+Two are ready to load: `creditsPlugin` (`@panneau/fields/credits`: `person`, `name`, `roles`, `featured`) and `sessionsPlugin` (`@panneau/fields/sessions`: `dates`, `venue`). The definition gives the sub-fields: those a site adds come after.
+
 ## Files and uploads
 
 `FileField` (the `file` type) holds files that belong to an item, outside the media library: an attachment, a PDF, a CSV ([decision 0025](../../docs/decisions/0025-presigned-uploads.md)). Its value is a file, or a list of them with `multiple`:

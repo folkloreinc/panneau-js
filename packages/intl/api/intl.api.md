@@ -611,6 +611,18 @@ export const formsMessages: {
         }>;
         invalid: PanneauMessage<Record<never, never>>;
     };
+    publication: {
+        title: PanneauMessage<Record<never, never>>;
+        published: PanneauMessage<Record<never, never>>;
+        scheduled: PanneauMessage<Record<never, never>>;
+        unpublished: PanneauMessage<Record<never, never>>;
+        publishedOn: PanneauMessage<    {
+        date: string;
+        }>;
+        scheduledFor: PanneauMessage<    {
+        date: string;
+        }>;
+    };
 };
 
 // @public

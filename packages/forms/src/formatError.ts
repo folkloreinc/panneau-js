@@ -1,11 +1,12 @@
 import { formatMoney } from '@panneau/fields/money';
 import type { Field, RuleFailure } from '@panneau/protocol';
+import { getNestedShape } from '@panneau/protocol/runtime';
 import { usePanneauIntl } from '@panneau/ui';
 
 import { messages } from './messages';
 import { getPathSteps } from './paths';
 
-const COUNTED = new Set(['repeater', 'relation', 'media', 'select', 'country']);
+const COUNTED = new Set(['relation', 'media', 'select', 'country']);
 
 /**
  * Translates the failures of the portable rules with react-intl, for `formatError`. `min` and
@@ -49,8 +50,8 @@ export function useFormatRuleFailure(
             const list =
                 field !== undefined &&
                 step?.index === undefined &&
-                COUNTED.has(field.type) &&
-                (field.type === 'repeater' || field.multiple === true);
+                (getNestedShape(field) === 'repeater' ||
+                    (COUNTED.has(field.type) && field.multiple === true));
             const numeric = field?.type === 'number';
             const key = list
                 ? failure.rule === 'min'

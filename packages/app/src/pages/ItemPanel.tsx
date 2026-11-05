@@ -33,7 +33,8 @@ import { getItemTitle } from './itemTitle';
 
 /**
  * The value of a field in the details: a group with the values of its fields, under its label.
- * Repeaters hold lists of fields, which only the form shows.
+ * Repeaters hold lists of fields, which only the form shows. A compound field (decision 0065) is
+ * one value, shown by its display.
  */
 function toDetailsColumns(fields: readonly Field[]): ItemDetailsColumn[] {
     return fields

@@ -36,6 +36,33 @@ export interface BoundFieldProps {
 export const builtInFields: Readonly<Record<string, FieldEntry>>;
 
 // @public
+export type CompoundFieldEntry = FieldEntry & {
+    summarize?: CompoundSummary;
+};
+
+// @public (undocumented)
+export interface CompoundFieldOptions {
+    layout?: (props: CompoundLayoutProps) => ReactNode;
+    summarize?: CompoundSummary;
+}
+
+// @public
+export interface CompoundLayoutProps {
+    field: Field;
+    parts: Readonly<Record<string, ReactNode>>;
+    value: Readonly<Record<string, unknown>>;
+}
+
+// @public
+export type CompoundSummary = (value: Readonly<Record<string, unknown>>, context: CompoundSummaryContext) => string | null;
+
+// @public
+export interface CompoundSummaryContext {
+    field: Field;
+    locale: string;
+}
+
+// @public
 export function createEmbedSource(adapter: EmbedAdapter): EmbedSource | null;
 
 // Warning: (tsdoc-code-span-missing-delimiter) The code span is missing its closing backtick
@@ -56,6 +83,9 @@ export function createRelationSource(adapter: RelationListAdapter, input?: Relat
 
 // @public (undocumented)
 export function createRevealRegistry(): RevealRegistry;
+
+// @public
+export function defineCompoundField(options?: CompoundFieldOptions): CompoundFieldEntry;
 
 // @public
 export function DefinitionField(props: FieldEntryProps): JSX.Element;
@@ -406,6 +436,9 @@ export interface RelationSourceOptions {
 }
 
 // @public
+export function restParts(parts: Readonly<Record<string, ReactNode>>, names: readonly string[]): ReactNode[];
+
+// @public
 export const RevealContext: Context<RevealRegistry>;
 
 // @public
@@ -428,6 +461,9 @@ export interface SingleFileFieldProps extends FileFieldBaseProps {
     // (undocumented)
     value?: FileValue | null;
 }
+
+// @public
+export function summarizeCompound(entry: unknown, value: unknown, context: CompoundSummaryContext): string | null;
 
 // @public
 export function toFiles(value: unknown): FileValue[];

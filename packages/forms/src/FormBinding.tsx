@@ -1,5 +1,6 @@
 import { selectErrors, selectValue, selectVisible } from '@panneau/core';
 import type { FieldBindingProps } from '@panneau/fields';
+import { getNestedShape } from '@panneau/protocol/runtime';
 import { Alert, Button, usePanneauIntl } from '@panneau/ui';
 
 import { FieldErrorBoundary } from './FieldErrorBoundary';
@@ -9,12 +10,15 @@ import { messages } from './messages';
 
 /**
  * Fields that show the errors of their nested fields themselves: an address and a link show the
- * errors of each part under its input.
+ * errors of each part under its input. Groups, repeaters and compound fields (decision 0065) bind
+ * their fields to their own paths.
  */
-const NESTED_TYPES = new Set(['group', 'repeater', 'address', 'link']);
+const NESTED_TYPES = new Set(['address', 'link']);
 
 function rendersNestedFields(field: FieldBindingProps['field']): boolean {
-    return field.localized === true || NESTED_TYPES.has(field.type);
+    return (
+        field.localized === true || NESTED_TYPES.has(field.type) || getNestedShape(field) !== null
+    );
 }
 
 /**

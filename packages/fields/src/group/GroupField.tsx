@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 import type { Field } from '@panneau/protocol';
 import { Fieldset } from '@panneau/ui';
 
@@ -15,6 +17,11 @@ export interface GroupFieldProps extends FieldProps<GroupValue> {
     fields: readonly Field[];
     /** Dot path of the group's value, the prefix of its fields' paths. Defaults to `name`. */
     path?: string;
+    /**
+     * Lays out the rendered fields, by name, instead of the flow of short fields side by side:
+     * the layout of a compound field (decision 0065).
+     */
+    renderFields?: (parts: Readonly<Record<string, ReactNode>>, value: GroupValue) => ReactNode;
     fieldsClassName?: string;
 }
 
@@ -40,10 +47,23 @@ export function GroupField({
     labelClassName,
     descriptionClassName,
     errorsClassName,
+    renderFields,
     fieldsClassName,
 }: GroupFieldProps) {
     const base = path ?? name ?? '';
     const object = value ?? {};
+    const renderField = (field: Field) => (
+        <NestedField
+            field={field}
+            path={base !== '' ? `${base}.${field.name}` : field.name}
+            value={object[field.name]}
+            onChange={(next) => onChange?.({ ...object, [field.name]: next })}
+            {...(onBlur !== undefined ? { onBlur } : {})}
+            parentValue={object}
+            {...(disabled !== undefined ? { disabled } : {})}
+            {...(readOnly !== undefined ? { readOnly } : {})}
+        />
+    );
     return (
         <Fieldset
             legend={label}
@@ -56,25 +76,23 @@ export function GroupField({
             errorsClassName={errorsClassName}
         >
             <div className={cx(styles.fields, fieldsClassName)}>
-                <div className={styles.flow}>
-                    {fields.map((field) => (
-                        <div
-                            key={field.name}
-                            className={cx(styles.cell, isWideField(field) && styles.wide)}
-                        >
-                            <NestedField
-                                field={field}
-                                path={base !== '' ? `${base}.${field.name}` : field.name}
-                                value={object[field.name]}
-                                onChange={(next) => onChange?.({ ...object, [field.name]: next })}
-                                {...(onBlur !== undefined ? { onBlur } : {})}
-                                parentValue={object}
-                                {...(disabled !== undefined ? { disabled } : {})}
-                                {...(readOnly !== undefined ? { readOnly } : {})}
-                            />
-                        </div>
-                    ))}
-                </div>
+                {renderFields !== undefined ? (
+                    renderFields(
+                        Object.fromEntries(fields.map((field) => [field.name, renderField(field)])),
+                        object,
+                    )
+                ) : (
+                    <div className={styles.flow}>
+                        {fields.map((field) => (
+                            <div
+                                key={field.name}
+                                className={cx(styles.cell, isWideField(field) && styles.wide)}
+                            >
+                                {renderField(field)}
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </Fieldset>
     );

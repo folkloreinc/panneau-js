@@ -104,9 +104,8 @@ function NodeSkeleton({
             );
         case 'text':
             return <Skeleton className={styles.text} lines={2} />;
-        case 'component':
-            return null;
         default:
+            // Containers out of place, unknown ones, and the fields a `component` node frames.
             return <NodesSkeleton nodes={node.children ?? []} fields={fields} />;
     }
 }
