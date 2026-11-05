@@ -362,6 +362,7 @@ An action is an operation applied to one item, a selection, or the whole resourc
     "fields": [/* Field */], // parameters, shown in a modal
     "layout": [/* LayoutNode */],
     "queued": false, // true: always answers 202 with a run
+    "undoable": false, // true: runs without a confirmation, and its result says how to undo it
     "abilities": { "run": true },
 }
 ```
@@ -381,16 +382,21 @@ An action is an operation applied to one item, a selection, or the whole resourc
     - `menu`: in an overflow menu.
 - **`confirm`:** `true` uses a default message. Its `message` can use `{count}`.
 - **`destructive`:** styles the action and its confirmation as dangerous.
+- **`undoable`** ([0063](decisions/0063-undo-instead-of-a-confirmation.md)): the action can be undone, so it runs **without a confirmation**, unless it sets `confirm` itself, and the toast of its result has "Undo" when the result has an `undo` (below). The confirmation comes back above `UNDO_LIMIT` items (100), counted from the selection or the dry run, and for queued runs. Only for an action whose inverse doesn't depend on each item's previous value ("Change the status" of items that each had their own is not undoable).
+    - The `delete` of a resource with a trash is declared `{ "id": "delete", "undoable": true }`: it is undone by the built-in `restore`. A resource without a trash keeps the confirmation of the built-in `delete`.
+    - Projects declare pairs: archive and unarchive, publish and unpublish. The inverse can appear nowhere (`"placement": []`) and still be run as an undo, by the same abilities.
 
 Built-in actions use reserved ids:
 
-| Id                  | Kind     | Scope                   |
-| ------------------- | -------- | ----------------------- |
-| `show`, `edit`      | `link`   | `item`                  |
-| `duplicate`         | `server` | `item`                  |
-| `delete`, `restore` | `server` | `item`, `selection`     |
-| `export`            | `server` | `selection`, `resource` |
-| `import`            | `server` | `resource`              |
+| Id                  | Kind     | Scope               |
+| ------------------- | -------- | ------------------- |
+| `show`, `edit`      | `link`   | `item`              |
+| `duplicate`         | `server` | `item`              |
+| `delete`, `restore` | `server` | `item`, `selection` |
+
+`restore` puts deleted items back from the trash of a resource, by their ids: it is the undo of an `undoable` `delete`, and needs no declaration there.
+| `export` | `server` | `selection`, `resource` |
+| `import` | `server` | `resource` |
 
 **Built-in item actions** ([decisions/0040](decisions/0040-row-links-and-open-mode.md)). `show`, `edit`, `duplicate` and `delete` exist on every resource without being declared. The client shows each one on the items whose abilities allow it; a missing or false ability hides it:
 
@@ -607,7 +613,7 @@ A field with `"check": true`, at the top of a resource, checks its value with th
 - Every item has `id`, `version` and `abilities`. `abilities` includes the ids of the actions allowed on that item (`"publish": true`). `view`, `update`, `duplicate` and `delete` show the built-in item actions ([decisions/0040](decisions/0040-row-links-and-open-mode.md)): without them, the client shows none.
 - **Abilities are enforced.** A resource without `viewAny` answers `403` on its list, one without `create` on creates, and an item without `view`, `update` or `delete` on those requests. Items leave out the values of fields with `view: false` ([0046](decisions/0046-abilities-in-the-ui.md)).
 - **Single items.** Show, create and update return `{ "data": Item }`. They also send `version` as a quoted `ETag` header (`"3"`).
-- **Partial updates.** An update only validates and saves the fields it sends: a list that edits a field in place sends that field alone, with `If-Match` ([decisions/0043](decisions/0043-inline-editing.md)). Whether a field applies (`visibleWhen`), and rules that read other fields, use the item's values for the fields that aren't sent: a field shown when `status` is `published`, sent alone, is saved on a published item.
+- **Partial updates.** An update only validates and saves the fields it sends: a list that edits a field in place sends that field alone, with `If-Match` ([decisions/0043](decisions/0043-inline-editing.md)). Its "Undo" saves the previous value the same way, with the version the save just got ([0063](decisions/0063-undo-instead-of-a-confirmation.md)): the backend needs nothing else. Whether a field applies (`visibleWhen`), and rules that read other fields, use the item's values for the fields that aren't sent: a field shown when `status` is `published`, sent alone, is saved on a published item.
 - **Version conflicts.** An update with a stale `If-Match` returns `412 Precondition Failed`. The current item is in `current`.
 - **`version: null`.** The backend has no versions: it sends no `ETag`, and it ignores `If-Match`.
 
@@ -658,6 +664,7 @@ A field with `"check": true`, at the top of a resource, checks its value with th
     - `list`: refetch the list and the counts.
 - **`redirect`:** a path or a `{ "route": "…", "params": {} }` object.
 - **`download`:** a short-lived URL that the UI opens.
+- **`undo`** ([0063](decisions/0063-undo-instead-of-a-confirmation.md)): how to undo the run, for an `undoable` action: `{ "action": "restore", "items": ["12", "13"], "params": {} }`. `action` is an action of the same resource, `items` the items the run changed (not those it skipped or failed), at most `UNDO_LIMIT` (100), and `params` the `values` to run it with. The client runs it as any action, when the user presses "Undo" in the toast of the result, for about 10 seconds; the backend checks it with its policies and keeps no state for it. A run on more items, or that changed none, has no `undo`, nor has a queued run.
 
 **Single item.** A `403` or `404` on the only item of an `item` action is returned as an error, not as a skipped result.
 

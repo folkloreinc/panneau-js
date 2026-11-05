@@ -1,5 +1,6 @@
 import type { IntlShape } from 'react-intl';
 
+import { asksConfirmation } from '@panneau/core';
 import { getActionLabel } from '@panneau/intl';
 import { Button, Dialog, Spinner, usePanneauIntl } from '@panneau/ui';
 
@@ -24,10 +25,13 @@ function formatDefinitionMessage(
     }
 }
 
-/** Whether an action needs a confirmation: it asks for one, or some selected items are skipped. */
+/**
+ * Whether an action needs a confirmation: it asks for one, or it is undoable but runs on more items
+ * than an undo can put back (`asksConfirmation()`, decision 0063), or some selected items are
+ * skipped.
+ */
 export function needsConfirmation(event: ListActionEvent): boolean {
-    const { confirm } = event.action;
-    return (confirm !== undefined && confirm !== false) || event.skipped.length > 0;
+    return asksConfirmation(event.action, event.count) || event.skipped.length > 0;
 }
 
 /** The dry run of a query selection: in progress, or done with the backend's count. */

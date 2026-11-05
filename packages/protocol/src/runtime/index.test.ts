@@ -108,6 +108,7 @@ describe('@panneau/protocol/runtime', () => {
             'SEARCH_MAX_LIMIT',
             'SEARCH_MIN_LENGTH',
             'TWO_FACTOR_REQUIRED_PROBLEM_TYPE',
+            'UNDO_LIMIT',
             'checkRules',
             'checkValues',
             'contextBefore',

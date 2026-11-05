@@ -2,6 +2,7 @@ import {
     CONTEXT_HEADER,
     CONTEXT_PROBLEM_TYPE,
     ITEM_ACTION_ABILITIES,
+    UNDO_LIMIT,
     isBuiltInItemAction,
 } from '../constants';
 import { type ContextValues, contextBefore, parseContextHeader } from '../context';
@@ -341,7 +342,9 @@ function writableValues(resource: ResourceInput, body: Values): Values {
 
 /**
  * An in-memory backend that implements the protocol's resource routes: definition, list, show,
- * create, update (with `If-Match`), delete, duplicate and the built-in `delete` action. Its items
+ * create, update (with `If-Match`), delete, duplicate and the built-in `delete` action. A resource
+ * that declares its `delete` `undoable` has a trash: the result of `delete` says how to undo it,
+ * and the built-in `restore` puts the items back (decision 0063). Its items
  * allow every built-in item action (`view`, `update`, `duplicate`, `delete`), unless an item of
  * `items` gives its own `abilities`. It reads abilities as clients do (decision 0046): a resource
  * without `viewAny` answers `403` on its list, one without `create` on creates, an item without
@@ -354,6 +357,8 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
     const { definition, items = {} } = options;
     const auth = options.auth !== undefined ? createMockAuth(options.auth, definition.auth) : null;
     const store = new Map<string, Item[]>();
+    // The deleted items of the resources whose `delete` is undoable: their trash (decision 0063).
+    const trash = new Map<string, Item[]>();
     let nextId = 1;
 
     const abilitiesFor = (resource: ResourceInput) =>
@@ -976,6 +981,48 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                 };
                 return json(200, result);
             }
+            // A resource with a trash declares its delete undoable, and restores what it deleted.
+            const hasTrash = (resource.actions ?? []).some(
+                (candidate) => candidate.id === 'delete' && candidate.undoable === true,
+            );
+            if (actionId === 'restore' && hasTrash) {
+                const selection = body.selection as Selection | undefined;
+                const ids =
+                    selection !== undefined && 'ids' in selection && Array.isArray(selection.ids)
+                        ? selection.ids.map(String)
+                        : null;
+                if (ids === null) {
+                    return problem(422, 'The selection needs ids.', {
+                        type: 'urn:panneau:problem:validation',
+                        errors: { selection: ['The selection needs ids.'] },
+                    });
+                }
+                const deleted = trash.get(resource.id) ?? [];
+                const restored = deleted.filter((item) => ids.includes(item.id));
+                const missing = ids.filter((id) => !restored.some((item) => item.id === id));
+                if (ids.length === 1 && missing.length === 1) {
+                    return problem(404, 'Item not found.');
+                }
+                trash.set(
+                    resource.id,
+                    deleted.filter((item) => !restored.includes(item)),
+                );
+                store.set(resource.id, [...list, ...restored]);
+                const result: ActionResult = {
+                    summary: { succeeded: restored.length, failed: 0, skipped: missing.length },
+                    ...(missing.length > 0
+                        ? {
+                              results: missing.map((id) => ({
+                                  id,
+                                  status: 'skipped' as const,
+                                  reason: 'not_found',
+                              })),
+                          }
+                        : {}),
+                    refresh: 'list',
+                };
+                return json(200, result);
+            }
             if (actionId !== 'delete') {
                 return problem(404, 'Action not found.');
             }
@@ -995,8 +1042,15 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                 resource.id,
                 list.filter((item) => !deleted.includes(item)),
             );
+            if (hasTrash) {
+                trash.set(resource.id, [...(trash.get(resource.id) ?? []), ...deleted]);
+            }
             const result: ActionResult = {
                 message: `${deleted.length} deleted.`,
+                // What was deleted can be put back, up to the limit of the protocol.
+                ...(hasTrash && deleted.length > 0 && deleted.length <= UNDO_LIMIT
+                    ? { undo: { action: 'restore', items: deleted.map((item) => item.id) } }
+                    : {}),
                 summary: { succeeded: deleted.length, failed: 0, skipped: skipped.length },
                 ...(skipped.length > 0
                     ? {

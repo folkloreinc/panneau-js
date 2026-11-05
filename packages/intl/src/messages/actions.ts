@@ -31,6 +31,20 @@ export const actionsMessages = {
         id: 'panneau.actions.cancelledFor',
         defaultMessage: '“{action}” was cancelled for {subject}.',
     }),
+    /** The button of a toast that undoes what was done (decision 0063). */
+    undo: defineMessage({ id: 'panneau.actions.undo', defaultMessage: 'Undo' }),
+    undone: defineMessage<{ action: string }>({
+        id: 'panneau.actions.undone',
+        defaultMessage: '“{action}” is undone.',
+    }),
+    undoneFor: defineMessage<{ action: string; subject: string }>({
+        id: 'panneau.actions.undoneFor',
+        defaultMessage: '“{action}” is undone for {subject}.',
+    }),
+    undoFailed: defineMessage<{ action: string }>({
+        id: 'panneau.actions.undoFailed',
+        defaultMessage: '“{action}” could not be undone.',
+    }),
     /** What an action applied to, in its toast: one item by its title. */
     subjectItem: defineMessage<{ title: string }>({
         id: 'panneau.actions.subjectItem',

@@ -15,7 +15,7 @@ import {
 } from './abilities';
 import { getLayoutFieldNames, resolveFields, resolveForm } from './form';
 import { getItemActions } from './itemActions';
-import { getOpenMode, getResourceActions, resolveList } from './list';
+import { asksConfirmation, getOpenMode, getResourceActions, resolveList } from './list';
 import { findResource, resolveResource } from './resource';
 
 const item = (id: string, abilities: Record<string, boolean>): Item => ({
@@ -317,6 +317,45 @@ describe('abilities', () => {
         expect(
             getActionPlacements({ id: 'edit', kind: 'link', scope: ['item'], placement: ['menu'] }),
         ).toEqual(['menu']);
+    });
+});
+
+describe('asksConfirmation', () => {
+    const archive: Action = {
+        id: 'archive',
+        label: 'Archive',
+        kind: 'server',
+        scope: ['selection'],
+    };
+
+    it('asks when the action sets a confirmation', () => {
+        expect(asksConfirmation({ ...archive, confirm: true })).toBe(true);
+        expect(asksConfirmation({ ...archive, confirm: false })).toBe(false);
+        expect(asksConfirmation(archive)).toBe(false);
+        // An undoable action that sets its own confirmation keeps it
+        expect(asksConfirmation({ ...archive, undoable: true, confirm: true })).toBe(true);
+    });
+
+    it('runs an undoable action at once, up to the limit of the undo', () => {
+        const undoable = { ...archive, undoable: true };
+        expect(asksConfirmation(undoable, 1)).toBe(false);
+        expect(asksConfirmation(undoable, 100)).toBe(false);
+        expect(asksConfirmation(undoable, 101)).toBe(true);
+        // A queued run finishes later: it can't be undone
+        expect(asksConfirmation({ ...undoable, queued: true })).toBe(true);
+    });
+
+    it('drops the confirmation of the built-in delete when the declared one is undoable', () => {
+        const resource = getResource('authors');
+        const remove = (actions: Action[]) =>
+            getResourceActions({ ...resource, actions }).find((action) => action.id === 'delete');
+        expect(remove([])).toMatchObject({ confirm: true, destructive: true });
+        const undoable = remove([
+            { id: 'delete', kind: 'server', scope: ['item', 'selection'], undoable: true },
+        ]);
+        expect(undoable).toMatchObject({ undoable: true, destructive: true, dryRun: true });
+        expect(undoable).not.toHaveProperty('confirm');
+        expect(asksConfirmation(undoable as Action, 3)).toBe(false);
     });
 });
 

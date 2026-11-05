@@ -26,6 +26,12 @@ export function isBuiltInLink(id: string): id is BuiltInLinkAction {
 }
 
 /**
+ * A run on more items than this can't be undone (decision 0063): the client confirms it before it
+ * starts, and its result has no `undo`. Under it, the result lists the ids to put back.
+ */
+export const UNDO_LIMIT = 100;
+
+/**
  * Built-in item actions, in their default order (decision 0040). Every resource has them without
  * declaring them, and clients show each one on the items whose abilities allow it
  * (`ITEM_ACTION_ABILITIES`). A resource's `itemActions` picks some of them, in its order.

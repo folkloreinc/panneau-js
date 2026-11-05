@@ -125,6 +125,26 @@ export const ActionResult = z.looseObject({
         })
         .nullable()
         .optional(),
+    undo: z
+        .looseObject({
+            action: z.string().min(1).meta({
+                description:
+                    'An action of the same resource that undoes this run: `restore` after a `delete` with a trash, or the inverse a project declares (`unarchive`).',
+            }),
+            items: z.array(Id).min(1).max(100).meta({
+                description:
+                    'The items the run changed, to run the undo on: not those it skipped or failed. At most `UNDO_LIMIT` (100): a larger run has no `undo`.',
+            }),
+            params: z
+                .record(z.string(), z.unknown())
+                .optional()
+                .meta({ description: 'The `values` of the request that runs the undo.' }),
+        })
+        .optional()
+        .meta({
+            description:
+                'How to undo the run, for an `undoable` action (decision 0063): the client runs it as any action, through the action endpoint, when the user presses "Undo" in the toast of the result. Without it, the run can not be undone.',
+        }),
 });
 
 export const ActionRun = z.looseObject({

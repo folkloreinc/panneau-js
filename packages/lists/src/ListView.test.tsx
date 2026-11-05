@@ -366,6 +366,36 @@ describe('ListView', () => {
         expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
     });
 
+    it('runs an undoable action at once, and confirms it above the limit of the undo', async () => {
+        const user = userEvent.setup();
+        const onAction = vi.fn(() => Promise.resolve());
+        const undoable = { ...remove, confirm: undefined, undoable: true, dryRun: true };
+        renderList(
+            <ListView
+                list={createList()}
+                columns={columns}
+                items={pages}
+                total={101}
+                actions={[undoable]}
+                onAction={onAction}
+                previewAction={() => Promise.resolve({ skipped: 0 })}
+            />,
+        );
+        // One item: at once, "Undo" in its toast replaces the confirmation
+        await user.click(screen.getByRole('button', { name: 'Delete: Contact' }));
+        await waitFor(() => expect(onAction).toHaveBeenCalledTimes(1));
+        expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+        // Every matching item, more than an undo puts back: the confirmation comes back
+        await user.click(screen.getByRole('checkbox', { name: 'Select every item of the page' }));
+        await user.click(screen.getByRole('button', { name: 'Select all 101 items' }));
+        const bar = screen.getByText(/selected, on every page/).parentElement as HTMLElement;
+        await user.click(within(bar).getByRole('button', { name: 'Delete' }));
+        const dialog = await screen.findByRole('alertdialog');
+        expect(onAction).toHaveBeenCalledTimes(1);
+        await user.click(within(dialog).getByRole('button', { name: 'Delete' }));
+        expect(onAction).toHaveBeenLastCalledWith(expect.objectContaining({ count: 101 }));
+    });
+
     it('keeps the selection when the action handler gives false', async () => {
         const user = userEvent.setup();
         const list = createList();

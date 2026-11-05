@@ -1,7 +1,13 @@
 import { type ReactNode, useRef, useState } from 'react';
 
 import type { List, ResolvedCalendar } from '@panneau/core';
-import { currentMonth, formatRuleFailure, selectItemActions, usePlugins } from '@panneau/core';
+import {
+    asksConfirmation,
+    currentMonth,
+    formatRuleFailure,
+    selectItemActions,
+    usePlugins,
+} from '@panneau/core';
 import { getActionLabel } from '@panneau/intl';
 import type { Action, Field, Filter, RuleFailure } from '@panneau/protocol';
 import { Alert, Button, Checkbox, usePanneauIntl, useToast } from '@panneau/ui';
@@ -329,6 +335,7 @@ export function ListView({
                 item={item}
                 field={field}
                 itemLabel={getItemLabel(item)}
+                getItemLabel={getItemLabel}
                 renderValue={(current) => renderValue(current, column)}
                 onSave={(base, value) => onInlineEdit({ item: base, field, value })}
                 onItem={showItem}
@@ -390,7 +397,13 @@ export function ListView({
                         return;
                     }
                     const skipped = result?.skipped ?? event.skipped.length;
-                    if (skipped === 0 && !asks) {
+                    // An undoable action asks above the limit of the undo, counted without the
+                    // items it skips (decision 0063).
+                    if (
+                        skipped === 0 &&
+                        !asks &&
+                        !asksConfirmation(action, Math.max(0, event.count - skipped))
+                    ) {
                         void execute(event);
                     } else {
                         setPreview(result !== null ? { status: 'done', ...result } : null);

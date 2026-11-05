@@ -3,6 +3,7 @@ import {
     BUILT_IN_ITEM_ACTIONS,
     type BuiltInItemAction,
     isBuiltInItemAction,
+    UNDO_LIMIT,
 } from '@panneau/protocol/runtime';
 
 import { canRunAction, canUpdateField, canViewField, getActionPlacements } from './abilities';
@@ -85,6 +86,18 @@ function columnsFromFields(resource: Resource): Column[] {
     return ordered.slice(0, DEFAULT_COLUMN_COUNT).map((field) => ({ field: field.name }));
 }
 
+/**
+ * Whether running an action asks first (decisions 0017 and 0063): its `confirm`, when it sets one;
+ * otherwise, for an `undoable` action, only above `UNDO_LIMIT` items or for a queued one, which
+ * can't be undone. `count` is the number of items, from the selection or a dry run.
+ */
+export function asksConfirmation(action: Action, count = 1): boolean {
+    if (action.confirm !== undefined) {
+        return action.confirm !== false;
+    }
+    return action.undoable === true && (count > UNDO_LIMIT || action.queued === true);
+}
+
 /** Groups the actions the user can run by placement. */
 export function groupActions(actions: readonly Action[]): Record<ActionPlacement, Action[]> {
     const groups: Record<ActionPlacement, Action[]> = { row: [], toolbar: [], form: [], menu: [] };
@@ -130,10 +143,15 @@ export function getResourceActions(resource: Resource): Action[] {
         ...ids.map((id): Action => {
             const replacement = declared.find((action) => action.id === id);
             // What the declared action doesn't set (placement, confirmation, dry runs) is the
-            // built-in one's.
-            return replacement !== undefined
-                ? { ...BUILT_IN_ITEM_ACTION_DEFINITIONS[id], ...replacement }
-                : BUILT_IN_ITEM_ACTION_DEFINITIONS[id];
+            // built-in one's. An undoable one doesn't take the built-in confirmation (decision
+            // 0063): "Undo" replaces it.
+            if (replacement === undefined) {
+                return BUILT_IN_ITEM_ACTION_DEFINITIONS[id];
+            }
+            const { confirm, ...builtIn } = BUILT_IN_ITEM_ACTION_DEFINITIONS[id];
+            return replacement.undoable === true
+                ? { ...builtIn, ...replacement }
+                : { ...builtIn, ...(confirm !== undefined ? { confirm } : {}), ...replacement };
         }),
         ...declared.filter((action) => !isBuiltInItemAction(action.id)),
     ];

@@ -150,34 +150,103 @@ export function ActionRunnerProvider({
             }
             return;
         }
+        // "Undo" lives in the toast only (decision 0063): a queued run, which finished later, isn't
+        // undone.
+        const undo = !queued ? (result.undo ?? null) : null;
         toasts.show(
             {
                 ...content,
-                ...(hasDetails
+                ...(undo !== null
                     ? {
                           action: {
-                              label: intl.formatMessage(messages.details),
-                              onAction: () =>
-                                  setDetails({
-                                      label: getActionLabel(target.action, intl),
-                                      result,
-                                  }),
+                              label: intl.formatMessage(messages.undo),
+                              onAction: () => void runUndo(resource, target, undo),
                           },
                       }
-                    : download !== null
+                    : hasDetails
                       ? {
                             action: {
-                                label: intl.formatMessage(messages.download),
-                                onAction: () => onDownload(download),
+                                label: intl.formatMessage(messages.details),
+                                onAction: () =>
+                                    setDetails({
+                                        label: getActionLabel(target.action, intl),
+                                        result,
+                                    }),
                             },
                         }
-                      : {}),
+                      : download !== null
+                        ? {
+                              action: {
+                                  label: intl.formatMessage(messages.download),
+                                  onAction: () => onDownload(download),
+                              },
+                          }
+                        : {}),
             },
             { key: toastKey(resource, target) },
         );
         if (redirect !== null) {
             onNavigate(redirect);
         }
+    };
+
+    /**
+     * Runs the undo of a result: an action of the same resource, on the items it lists, as any
+     * action. A short toast then says it was undone, in place of the first one.
+     */
+    const runUndo = async (
+        resource: string,
+        target: ActionTarget,
+        undo: NonNullable<ActionResult['undo']>,
+    ) => {
+        const label = getActionLabel(target.action, intl);
+        const key = { key: toastKey(resource, target) };
+        const declared = definition?.resources
+            .find((candidate) => candidate.id === resource)
+            ?.actions?.find((action) => action.id === undo.action);
+        const undoTarget: ActionTarget = {
+            action: declared ?? { id: undo.action, kind: 'server', scope: ['selection'] },
+            scope: 'selection',
+            selection: { ids: undo.items },
+            count: undo.items.length,
+        };
+        await adapter
+            .runAction(resource, undo.action, {
+                selection: { ids: undo.items },
+                values: undo.params ?? {},
+            })
+            .then(async (response) => {
+                if (response.run !== undefined) {
+                    follow(resource, undoTarget, response.run);
+                    return;
+                }
+                await onResult?.(response.result, { resource, target: undoTarget });
+                const subject = subjectOf(resource, target, undo.items.length);
+                toasts.show(
+                    {
+                        title:
+                            subject !== null
+                                ? intl.formatMessage(messages.undoneFor, {
+                                      action: label,
+                                      subject,
+                                  })
+                                : intl.formatMessage(messages.undone, { action: label }),
+                    },
+                    key,
+                );
+            })
+            .catch((error: unknown) => {
+                toasts.show(
+                    {
+                        title: intl.formatMessage(messages.undoFailed, { action: label }),
+                        ...(error instanceof Error && error.message !== ''
+                            ? { description: error.message }
+                            : {}),
+                        tone: 'danger',
+                    },
+                    key,
+                );
+            });
     };
 
     // No toast when a run starts: the runs button of the shell shows it, and its popover follows

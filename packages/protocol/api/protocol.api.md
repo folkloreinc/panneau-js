@@ -250,6 +250,7 @@ export const Action: z.ZodObject<{
     }, z.core.$loose>>>;
     queued: z.ZodOptional<z.ZodBoolean>;
     dryRun: z.ZodOptional<z.ZodBoolean>;
+    undoable: z.ZodOptional<z.ZodBoolean>;
     url: z.ZodOptional<z.ZodString>;
     route: z.ZodOptional<z.ZodString>;
     component: z.ZodOptional<z.ZodString>;
@@ -347,6 +348,11 @@ export const ActionResult: z.ZodObject<{
         filename: z.ZodOptional<z.ZodString>;
         expiresAt: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>>>;
+    undo: z.ZodOptional<z.ZodObject<{
+        action: z.ZodString;
+        items: z.ZodArray<z.ZodString>;
+        params: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+    }, z.core.$loose>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -397,6 +403,11 @@ export const ActionRun: z.ZodObject<{
             filename: z.ZodOptional<z.ZodString>;
             expiresAt: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>>>;
+        undo: z.ZodOptional<z.ZodObject<{
+            action: z.ZodString;
+            items: z.ZodArray<z.ZodString>;
+            params: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+        }, z.core.$loose>>;
     }, z.core.$loose>>;
     createdAt: z.ZodOptional<z.ZodString>;
     finishedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -451,6 +462,11 @@ export const ActionRunResponse: z.ZodObject<{
                 filename: z.ZodOptional<z.ZodString>;
                 expiresAt: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>>>;
+            undo: z.ZodOptional<z.ZodObject<{
+                action: z.ZodString;
+                items: z.ZodArray<z.ZodString>;
+                params: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+            }, z.core.$loose>>;
         }, z.core.$loose>>;
         createdAt: z.ZodOptional<z.ZodString>;
         finishedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -1382,6 +1398,7 @@ export const Definition: z.ZodObject<{
             }, z.core.$loose>>>;
             queued: z.ZodOptional<z.ZodBoolean>;
             dryRun: z.ZodOptional<z.ZodBoolean>;
+            undoable: z.ZodOptional<z.ZodBoolean>;
             url: z.ZodOptional<z.ZodString>;
             route: z.ZodOptional<z.ZodString>;
             component: z.ZodOptional<z.ZodString>;
@@ -3396,6 +3413,7 @@ export const namedSchemas: {
         }, z.core.$loose>>>;
         queued: z.ZodOptional<z.ZodBoolean>;
         dryRun: z.ZodOptional<z.ZodBoolean>;
+        undoable: z.ZodOptional<z.ZodBoolean>;
         url: z.ZodOptional<z.ZodString>;
         route: z.ZodOptional<z.ZodString>;
         component: z.ZodOptional<z.ZodString>;
@@ -3926,6 +3944,7 @@ export const namedSchemas: {
             }, z.core.$loose>>>;
             queued: z.ZodOptional<z.ZodBoolean>;
             dryRun: z.ZodOptional<z.ZodBoolean>;
+            undoable: z.ZodOptional<z.ZodBoolean>;
             url: z.ZodOptional<z.ZodString>;
             route: z.ZodOptional<z.ZodString>;
             component: z.ZodOptional<z.ZodString>;
@@ -4753,6 +4772,7 @@ export const namedSchemas: {
                 }, z.core.$loose>>>;
                 queued: z.ZodOptional<z.ZodBoolean>;
                 dryRun: z.ZodOptional<z.ZodBoolean>;
+                undoable: z.ZodOptional<z.ZodBoolean>;
                 url: z.ZodOptional<z.ZodString>;
                 route: z.ZodOptional<z.ZodString>;
                 component: z.ZodOptional<z.ZodString>;
@@ -5045,6 +5065,11 @@ export const namedSchemas: {
             filename: z.ZodOptional<z.ZodString>;
             expiresAt: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>>>;
+        undo: z.ZodOptional<z.ZodObject<{
+            action: z.ZodString;
+            items: z.ZodArray<z.ZodString>;
+            params: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+        }, z.core.$loose>>;
     }, z.core.$loose>;
     ActionRun: z.ZodObject<{
         id: z.ZodString;
@@ -5090,6 +5115,11 @@ export const namedSchemas: {
                 filename: z.ZodOptional<z.ZodString>;
                 expiresAt: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>>>;
+            undo: z.ZodOptional<z.ZodObject<{
+                action: z.ZodString;
+                items: z.ZodArray<z.ZodString>;
+                params: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+            }, z.core.$loose>>;
         }, z.core.$loose>>;
         createdAt: z.ZodOptional<z.ZodString>;
         finishedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -5139,6 +5169,11 @@ export const namedSchemas: {
                     filename: z.ZodOptional<z.ZodString>;
                     expiresAt: z.ZodOptional<z.ZodString>;
                 }, z.core.$loose>>>;
+                undo: z.ZodOptional<z.ZodObject<{
+                    action: z.ZodString;
+                    items: z.ZodArray<z.ZodString>;
+                    params: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+                }, z.core.$loose>>;
             }, z.core.$loose>>;
             createdAt: z.ZodOptional<z.ZodString>;
             finishedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -6186,6 +6221,7 @@ export const Resource: z.ZodObject<{
         }, z.core.$loose>>>;
         queued: z.ZodOptional<z.ZodBoolean>;
         dryRun: z.ZodOptional<z.ZodBoolean>;
+        undoable: z.ZodOptional<z.ZodBoolean>;
         url: z.ZodOptional<z.ZodString>;
         route: z.ZodOptional<z.ZodString>;
         component: z.ZodOptional<z.ZodString>;
@@ -6736,6 +6772,9 @@ export const TwoFactorStatus: z.ZodObject<{
 
 // @public (undocumented)
 export type TwoFactorStatus = z.infer<typeof TwoFactorStatus>;
+
+// @public
+export const UNDO_LIMIT = 100;
 
 // @public (undocumented)
 export const Upload: z.ZodObject<{

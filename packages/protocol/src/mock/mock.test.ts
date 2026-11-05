@@ -341,6 +341,51 @@ describe('createMockBackend', () => {
         expect(backend.items('pages').map((item) => item.id)).toEqual(['1', '3']);
     });
 
+    it('keeps a trash for an undoable delete: its result says how to undo it, and restore puts the items back', async () => {
+        const definition = createDefinition();
+        definition.resources[0]?.actions?.push({
+            id: 'delete',
+            undoable: true,
+            scope: ['item', 'selection'],
+        });
+        const backend = createMockBackend({
+            definition,
+            items: {
+                pages: [{ title: { fr: 'A' } }, { title: { fr: 'B' } }, { title: { fr: 'C' } }],
+            },
+        });
+        const deleted = await backend.fetch(
+            '/panneau/api/resources/pages/actions/delete',
+            json({ selection: { ids: ['1', '3'] } }, { method: 'POST' }),
+        );
+        const result = (await deleted.json()) as { undo: { action: string; items: string[] } };
+        expect(result.undo).toEqual({ action: 'restore', items: ['1', '3'] });
+        expect(backend.items('pages').map((item) => item.id)).toEqual(['2']);
+        const restored = await backend.fetch(
+            '/panneau/api/resources/pages/actions/restore',
+            json({ selection: { ids: result.undo.items } }, { method: 'POST' }),
+        );
+        expect(await restored.json()).toMatchObject({ summary: { succeeded: 2 } });
+        expect(
+            backend
+                .items('pages')
+                .map((item) => item.id)
+                .sort(),
+        ).toEqual(['1', '2', '3']);
+        // A resource without a trash has no restore, and its delete no undo
+        const plain = createBackend();
+        const response = await plain.fetch(
+            '/panneau/api/resources/pages/actions/delete',
+            json({ selection: { ids: ['1'] } }, { method: 'POST' }),
+        );
+        expect(await response.json()).not.toHaveProperty('undo');
+        const missing = await plain.fetch(
+            '/panneau/api/resources/pages/actions/restore',
+            json({ selection: { ids: ['1'] } }, { method: 'POST' }),
+        );
+        expect(missing.status).toBe(404);
+    });
+
     it('answers a dry run of an action with dryRun, without changing anything', async () => {
         const backend = createBackend();
         const before = backend.items('pages').map((item) => item.id);

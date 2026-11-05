@@ -32,6 +32,17 @@ export const actionsMessages: {
     action: string;
     subject: string;
     }>;
+    undo: PanneauMessage<Record<never, never>>;
+    undone: PanneauMessage<    {
+    action: string;
+    }>;
+    undoneFor: PanneauMessage<    {
+    action: string;
+    subject: string;
+    }>;
+    undoFailed: PanneauMessage<    {
+    action: string;
+    }>;
     subjectItem: PanneauMessage<    {
     title: string;
     }>;
@@ -606,6 +617,15 @@ export function getPanneauMessages(locale: string): MessageCatalog;
 
 // @public
 export const listsMessages: {
+    inlineSaved: PanneauMessage<    {
+    item: string;
+    field: string;
+    }>;
+    inlineUndone: PanneauMessage<    {
+    item: string;
+    field: string;
+    }>;
+    undo: PanneauMessage<Record<never, never>>;
     list: PanneauMessage<Record<never, never>>;
     search: PanneauMessage<Record<never, never>>;
     searchPlaceholder: PanneauMessage<Record<never, never>>;
