@@ -49,6 +49,7 @@
         "lucide-react": "^1.57.0"
     },
     "devDependencies": {
-        "@panneau/data": "5.0.0-alpha.17"
+        "@panneau/data": "5.0.0-alpha.17",
+        "@panneau/editor": "5.0.0-alpha.17"
     }
 }

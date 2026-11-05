@@ -133,6 +133,7 @@ export type ButtonAppearance = 'solid' | 'outline' | 'subtle' | 'ghost';
 
 // @public (undocumented)
 export interface ButtonProps extends ButtonStyleProps, Omit<ButtonProps_2, 'className' | 'style' | 'children'> {
+    'aria-keyshortcuts'?: string;
     // (undocumented)
     children?: ReactNode;
     // (undocumented)

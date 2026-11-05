@@ -1,5 +1,5 @@
 import { CircleCheck } from 'lucide-react';
-import { type ReactNode, useRef, useState } from 'react';
+import { type KeyboardEvent, type ReactNode, useRef, useState } from 'react';
 
 import {
     type Form,
@@ -21,14 +21,29 @@ import {
     builtInFields,
 } from '@panneau/fields';
 import type { Field, LayoutNode } from '@panneau/protocol';
-import { Alert, Button, Icon, usePanneauIntl, useToast, useToastOffset } from '@panneau/ui';
+import {
+    Alert,
+    Button,
+    Icon,
+    Tooltip,
+    isApplePlatform,
+    usePanneauIntl,
+    useToast,
+    useToastOffset,
+} from '@panneau/ui';
 
 import { ConflictDialog } from './ConflictDialog';
 import { ErrorSummary } from './ErrorSummary';
 import styles from './Form.module.css';
 import { FormBinding } from './FormBinding';
 import { FormSkeleton } from './FormSkeleton';
-import { FormContext, RevealContext, createRevealRegistry, useFormState } from './context';
+import {
+    ErrorSectionsContext,
+    FormContext,
+    RevealContext,
+    createRevealRegistry,
+    useFormState,
+} from './context';
 import { cx } from './cx';
 import { FieldFlow, LayoutNodes } from './layout/Layout';
 import { messages } from './messages';
@@ -148,11 +163,26 @@ function isUnplacedField(node: LayoutNode | undefined, placed: ReadonlySet<strin
     return node?.type === 'field' && node.name !== undefined && !placed.has(node.name);
 }
 
+/** Whether a key press saves: ⌘ Enter on Apple platforms, Ctrl Enter elsewhere. */
+function isSaveShortcut(event: KeyboardEvent, apple: boolean): boolean {
+    return (
+        event.key === 'Enter' &&
+        (apple ? event.metaKey : event.ctrlKey) &&
+        !event.altKey &&
+        !event.shiftKey &&
+        !event.repeat &&
+        !event.nativeEvent.isComposing
+    );
+}
+
 /**
  * Renders a form: its fields in their layout, bound to the form state of `@panneau/core`, with
  * an error summary, a scroll to the first error, error counts on tabs and sections, a guard for
  * unsaved changes and the dialog of version conflicts. Saving is the job of the form's
  * `onSubmit`.
+ *
+ * ⌘ Enter (Ctrl Enter elsewhere) saves from any of its fields. After a failed save, every
+ * collapsed section that holds an error opens, and the first error is focused.
  */
 export function FormView({
     form,
@@ -185,6 +215,7 @@ export function FormView({
     const plugins = usePlugins();
     const state = useFormState(form);
     const [registry] = useState(createRevealRegistry);
+    const [errorSections] = useState(createRevealRegistry);
     const [resolving, setResolving] = useState(false);
     const root = useRef<HTMLFormElement>(null);
     const footer = useRef<HTMLDivElement>(null);
@@ -257,6 +288,9 @@ export function FormView({
             return;
         }
         if (result.status === 'invalid') {
+            // Every collapsed section with an error opens: what is left to fix shows while
+            // scrolling down
+            Object.keys(result.errors).forEach((path) => errorSections.reveal(path));
             const first = Object.keys(orderErrors(order, result.errors, formLocales))[0];
             if (first !== undefined) {
                 goTo(first);
@@ -286,6 +320,22 @@ export function FormView({
             .finally(() => setResolving(false));
     };
 
+    const apple = isApplePlatform();
+    const onKeyDown = (event: KeyboardEvent<HTMLFormElement>) => {
+        // Not `defaultPrevented`: rich text editors prevent the default of every Enter. Keys of
+        // what a field opens in a portal, such as a dialog, reach the form through React: they
+        // are that dialog's own.
+        if (
+            !isSaveShortcut(event, apple) ||
+            !(event.target instanceof Node) ||
+            !event.currentTarget.contains(event.target)
+        ) {
+            return;
+        }
+        event.preventDefault();
+        event.currentTarget.requestSubmit();
+    };
+
     const problem = state.status === 'error' ? getProblem(state.error) : null;
     const errorDetail =
         problem?.detail ??
@@ -311,119 +361,131 @@ export function FormView({
     return (
         <FormContext value={form}>
             <RevealContext value={registry}>
-                <FieldsProvider
-                    components={entries}
-                    locales={formLocales}
-                    {...(relationSource !== undefined ? { relationSource } : {})}
-                    {...(uploadSource !== undefined ? { uploadSource } : {})}
-                    {...(checkSource !== undefined ? { checkSource } : {})}
-                    binding={FormBinding}
-                >
-                    <form
-                        ref={root}
-                        id={id}
-                        aria-label={ariaLabel}
-                        noValidate
-                        className={cx(styles.form, className)}
-                        onSubmit={(event) => {
-                            event.preventDefault();
-                            void form.submit().then(handle);
-                        }}
+                <ErrorSectionsContext value={errorSections}>
+                    <FieldsProvider
+                        components={entries}
+                        locales={formLocales}
+                        {...(relationSource !== undefined ? { relationSource } : {})}
+                        {...(uploadSource !== undefined ? { uploadSource } : {})}
+                        {...(checkSource !== undefined ? { checkSource } : {})}
+                        binding={FormBinding}
                     >
-                        {showSummary ? (
-                            <ErrorSummary
-                                errors={orderErrors(order, state.errors, formLocales)}
-                                fields={resolved.fields}
-                                onSelect={goTo}
-                                {...(summaryClassName !== undefined
-                                    ? { className: summaryClassName }
-                                    : {})}
-                            />
-                        ) : null}
-                        {state.status === 'error' ? (
-                            <Alert
-                                tone="danger"
-                                role="alert"
-                                title={intl.formatMessage(messages.saveFailed)}
-                                actions={
-                                    <Button size="sm" type="submit">
-                                        {intl.formatMessage(messages.retry)}
-                                    </Button>
-                                }
-                            >
-                                {errorDetail}
-                            </Alert>
-                        ) : null}
-                        <div
-                            className={cx(
-                                styles.layout,
-                                sidebar.length > 0 && styles.withSidebar,
-                                layoutClassName,
-                            )}
+                        <form
+                            ref={root}
+                            id={id}
+                            aria-label={ariaLabel}
+                            noValidate
+                            className={cx(styles.form, className)}
+                            onSubmit={(event) => {
+                                event.preventDefault();
+                                void form.submit().then(handle);
+                            }}
+                            onKeyDown={onKeyDown}
                         >
-                            <div className={styles.stack}>
-                                <LayoutNodes nodes={laidOut} fields={resolved.fieldsByName} />
-                                {flow.length > 0 ? (
-                                    <FieldFlow nodes={flow} fields={resolved.fieldsByName} />
-                                ) : null}
-                            </div>
-                            {sidebar.length > 0 ? (
-                                <aside className={cx(styles.sidebar, sidebarClassName)}>
-                                    {sidebar.map((node, index) => (
-                                        <div key={index} className={styles.stack}>
-                                            <LayoutNodes
-                                                nodes={node.children ?? []}
-                                                fields={resolved.fieldsByName}
-                                            />
-                                        </div>
-                                    ))}
-                                </aside>
+                            {showSummary ? (
+                                <ErrorSummary
+                                    errors={orderErrors(order, state.errors, formLocales)}
+                                    fields={resolved.fields}
+                                    onSelect={goTo}
+                                    {...(summaryClassName !== undefined
+                                        ? { className: summaryClassName }
+                                        : {})}
+                                />
                             ) : null}
-                        </div>
-                        {hasFooter ? (
-                            <div ref={footer} className={cx(styles.footer, footerClassName)}>
-                                <span
-                                    className={cx(
-                                        styles.status,
-                                        state.status === 'error' && styles.statusError,
-                                    )}
-                                    role="status"
+                            {state.status === 'error' ? (
+                                <Alert
+                                    tone="danger"
+                                    role="alert"
+                                    title={intl.formatMessage(messages.saveFailed)}
+                                    actions={
+                                        <Button size="sm" type="submit">
+                                            {intl.formatMessage(messages.retry)}
+                                        </Button>
+                                    }
                                 >
-                                    {state.status === 'error' ? (
-                                        intl.formatMessage(messages.saveFailed)
-                                    ) : state.dirty ? (
-                                        intl.formatMessage(messages.unsaved)
-                                    ) : savedShown && state.status !== 'submitting' ? (
-                                        <>
-                                            <Icon icon={CircleCheck} />
-                                            {intl.formatMessage(messages.saved)}
-                                        </>
+                                    {errorDetail}
+                                </Alert>
+                            ) : null}
+                            <div
+                                className={cx(
+                                    styles.layout,
+                                    sidebar.length > 0 && styles.withSidebar,
+                                    layoutClassName,
+                                )}
+                            >
+                                <div className={styles.stack}>
+                                    <LayoutNodes nodes={laidOut} fields={resolved.fieldsByName} />
+                                    {flow.length > 0 ? (
+                                        <FieldFlow nodes={flow} fields={resolved.fieldsByName} />
                                     ) : null}
-                                </span>
-                                {actions}
-                                {submitLabel !== null ? (
-                                    <Button
-                                        type="submit"
-                                        variant="primary"
-                                        isPending={state.status === 'submitting'}
-                                    >
-                                        {submitLabel ?? intl.formatMessage(messages.save)}
-                                    </Button>
+                                </div>
+                                {sidebar.length > 0 ? (
+                                    <aside className={cx(styles.sidebar, sidebarClassName)}>
+                                        {sidebar.map((node, index) => (
+                                            <div key={index} className={styles.stack}>
+                                                <LayoutNodes
+                                                    nodes={node.children ?? []}
+                                                    fields={resolved.fieldsByName}
+                                                />
+                                            </div>
+                                        ))}
+                                    </aside>
                                 ) : null}
                             </div>
-                        ) : null}
-                    </form>
-                    <ConflictDialog
-                        isOpen={state.status === 'conflict' || resolving}
-                        fields={resolved.fields}
-                        values={state.values}
-                        current={state.conflict?.current ?? null}
-                        isPending={resolving}
-                        onReload={() => void resolve('reload')}
-                        onOverwrite={() => void resolve('overwrite')}
-                    />
-                    {leave.dialog}
-                </FieldsProvider>
+                            {hasFooter ? (
+                                <div ref={footer} className={cx(styles.footer, footerClassName)}>
+                                    <span
+                                        className={cx(
+                                            styles.status,
+                                            state.status === 'error' && styles.statusError,
+                                        )}
+                                        role="status"
+                                    >
+                                        {state.status === 'error' ? (
+                                            intl.formatMessage(messages.saveFailed)
+                                        ) : state.dirty ? (
+                                            intl.formatMessage(messages.unsaved)
+                                        ) : savedShown && state.status !== 'submitting' ? (
+                                            <>
+                                                <Icon icon={CircleCheck} />
+                                                {intl.formatMessage(messages.saved)}
+                                            </>
+                                        ) : null}
+                                    </span>
+                                    {actions}
+                                    {submitLabel !== null ? (
+                                        <Tooltip
+                                            content={intl.formatMessage(messages.saveShortcut, {
+                                                modifier: apple ? '⌘' : 'Ctrl',
+                                            })}
+                                        >
+                                            <Button
+                                                type="submit"
+                                                variant="primary"
+                                                isPending={state.status === 'submitting'}
+                                                aria-keyshortcuts={
+                                                    apple ? 'Meta+Enter' : 'Control+Enter'
+                                                }
+                                            >
+                                                {submitLabel ?? intl.formatMessage(messages.save)}
+                                            </Button>
+                                        </Tooltip>
+                                    ) : null}
+                                </div>
+                            ) : null}
+                        </form>
+                        <ConflictDialog
+                            isOpen={state.status === 'conflict' || resolving}
+                            fields={resolved.fields}
+                            values={state.values}
+                            current={state.conflict?.current ?? null}
+                            isPending={resolving}
+                            onReload={() => void resolve('reload')}
+                            onOverwrite={() => void resolve('overwrite')}
+                        />
+                        {leave.dialog}
+                    </FieldsProvider>
+                </ErrorSectionsContext>
             </RevealContext>
         </FormContext>
     );

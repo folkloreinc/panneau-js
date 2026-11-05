@@ -13,6 +13,19 @@ describe('Button', () => {
         expect(onPress).toHaveBeenCalledTimes(1);
     });
 
+    it('gives the keys of its shortcut to assistive technologies', async () => {
+        const onPress = vi.fn();
+        render(
+            <Button aria-keyshortcuts="Control+Enter" onPress={onPress}>
+                Save
+            </Button>,
+        );
+        const button = screen.getByRole('button', { name: 'Save' });
+        expect(button).toHaveAttribute('aria-keyshortcuts', 'Control+Enter');
+        await userEvent.click(button);
+        expect(onPress).toHaveBeenCalledTimes(1);
+    });
+
     it('renders its icon as decorative', () => {
         const { container } = render(<Button icon={Plus}>Add</Button>);
         expect(screen.getByRole('button', { name: 'Add' })).toBeInTheDocument();

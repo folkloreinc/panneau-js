@@ -20,7 +20,7 @@ import type { Field, LayoutNode } from '@panneau/protocol';
 import { Badge, Disclosure, Tab, TabList, TabPanel, Tabs, usePanneauIntl } from '@panneau/ui';
 
 import styles from '../Form.module.css';
-import { RevealContext, useFormContext, useFormState } from '../context';
+import { ErrorSectionsContext, RevealContext, useFormContext, useFormState } from '../context';
 import { cx } from '../cx';
 import { messages } from '../messages';
 
@@ -94,19 +94,25 @@ function TabsNode({ node, fields }: { node: LayoutNode; fields: ReadonlyMap<stri
 function SectionNode({ node, fields }: { node: LayoutNode; fields: ReadonlyMap<string, Field> }) {
     const form = useFormContext();
     const registry = use(RevealContext);
+    const errorSections = use(ErrorSectionsContext);
     const titleId = useId();
     const names = getLayoutFieldNames(node.children ?? []);
     const [expanded, setExpanded] = useState(node.collapsed !== true);
 
-    useEffect(
-        () =>
-            registry.add((path) => {
-                if (containsPath(names, path)) {
-                    setExpanded(true);
-                }
-            }),
-        [registry, names],
-    );
+    // Opens to reveal a field, and after a failed save when it holds an error
+    useEffect(() => {
+        const open = (path: string) => {
+            if (containsPath(names, path)) {
+                setExpanded(true);
+            }
+        };
+        const removeRevealer = registry.add(open);
+        const removeOpener = errorSections.add(open);
+        return () => {
+            removeRevealer();
+            removeOpener();
+        };
+    }, [registry, errorSections, names]);
 
     const content = (
         <>

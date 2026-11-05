@@ -43,6 +43,13 @@ const KeptLink = Link.extend({
     },
 });
 
+/** Line breaks with Shift Enter only: in a form, ⌘ Enter (Ctrl Enter elsewhere) saves. */
+const LineBreak = HardBreak.extend({
+    addKeyboardShortcuts() {
+        return { 'Shift-Enter': () => this.editor.commands.setHardBreak() };
+    },
+});
+
 export interface RichTextExtensionsOptions {
     /** TipTap extensions of the project. One with the name of a built-in extension replaces it. */
     extensions?: readonly AnyExtension[];
@@ -72,7 +79,7 @@ export function createRichTextExtensions({
         OrderedList,
         ListItem,
         ListKeymap,
-        HardBreak,
+        LineBreak,
         HorizontalRule,
         ...markExtensions,
         KeptLink.configure({
