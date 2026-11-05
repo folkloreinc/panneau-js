@@ -881,7 +881,9 @@ describe('ListView inline editing', () => {
             field: activeField,
             value: true,
         });
-        await waitFor(() => expect(screen.queryByRole('alert')).toBeNull());
+        // The conflict leaves the cell; the toast that says it was saved offers "Undo"
+        await waitFor(() => expect(within(row()).queryByRole('alert')).toBeNull());
         expect(within(row()).getByRole('checkbox', { name: 'Active' })).toBeChecked();
+        expect(await screen.findByRole('button', { name: 'Undo' })).toBeInTheDocument();
     });
 });
