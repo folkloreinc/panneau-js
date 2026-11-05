@@ -103,6 +103,23 @@ export const actionsMessages = {
         id: 'panneau.actions.reasonUnchanged',
         defaultMessage: 'Unchanged',
     }),
+    /** The reason `in_use`: something else uses the item, so it can't be deleted. */
+    reasonInUse: defineMessage({
+        id: 'panneau.actions.reasonInUse',
+        defaultMessage: 'In use elsewhere',
+    }),
+    /** The toast of a result whose item is skipped as `in_use`, by its title. */
+    inUseItem: defineMessage<{ title: string }>({
+        id: 'panneau.actions.inUseItem',
+        defaultMessage:
+            '“{title}” is in use elsewhere: remove it from where it is used, then try again.',
+    }),
+    /** The toast of a result whose items are skipped as `in_use`, by their count. */
+    inUseCount: defineMessage<{ count: number }>({
+        id: 'panneau.actions.inUseCount',
+        defaultMessage:
+            '{count, plural, one {# item is in use elsewhere: remove it from where it is used, then try again.} other {# items are in use elsewhere: remove them from where they are used, then try again.}}',
+    }),
     queued: defineMessage<{ action: string }>({
         id: 'panneau.actions.queued',
         defaultMessage: '“{action}” is running in the background.',

@@ -8,7 +8,7 @@ import { usePanneauIntl, useToast } from '@panneau/ui';
 import { ParametersDialog } from './ParametersDialog';
 import { ResultsDialog } from './ResultsDialog';
 import { ActionRunnerContext, type ActionRunnerContextValue } from './context';
-import { describeResult, describeSubject } from './describe';
+import { describeResult, describeSubject, getItemTitle, isInUse } from './describe';
 import { messages } from './messages';
 import { buildActionRequest, getLinkTarget, getResultCounts, isFinished } from './request';
 import type {
@@ -117,6 +117,17 @@ export function ActionRunnerProvider({
             count,
         );
 
+    /** The title of the item of an `item` action, to name it. */
+    const itemTitleOf = (resource: string, target: ActionTarget) => {
+        if (target.item === undefined) {
+            return null;
+        }
+        const itemTitle = definition?.resources.find(
+            (candidate) => candidate.id === resource,
+        )?.itemTitle;
+        return getItemTitle(target.item, itemTitle, intl.locale);
+    };
+
     /** One toast per action and target: running it again replaces it. */
     const toastKey = (resource: string, target: ActionTarget) =>
         `panneau-action:${resource}:${target.action.id}:${target.item?.id ?? 'selection'}`;
@@ -129,13 +140,24 @@ export function ActionRunnerProvider({
     ) => {
         await onResult?.(result, { resource, target });
         const counts = getResultCounts(result);
+        const itemTitle = itemTitleOf(resource, target);
         const content = describeResult(
             result,
             getActionLabel(target.action, intl),
             intl,
             subjectOf(resource, target, counts.succeeded),
+            itemTitle,
         );
-        const hasDetails = (result.results ?? []).length > 0;
+        const entries = result.results ?? [];
+        // The toast already names an item that is in use: its details would only repeat it.
+        const hasDetails =
+            entries.length > 0 &&
+            !(
+                entries.length === 1 &&
+                entries[0] !== undefined &&
+                isInUse(entries[0]) &&
+                itemTitle !== null
+            );
         const download = result.download ?? null;
         if (download !== null) {
             onDownload(download);

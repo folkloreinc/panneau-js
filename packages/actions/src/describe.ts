@@ -61,24 +61,56 @@ export function describeSubject(
     });
 }
 
+/** Whether an item of a result was skipped because something else uses it (`in_use`). */
+export function isInUse(entry: ActionItemResult): boolean {
+    return entry.status === 'skipped' && entry.reason === 'in_use';
+}
+
+/**
+ * What the toast says of the items skipped as `in_use`: the item by its title when it is the only
+ * one and `itemTitle` is known, or their count. `null` when there are none.
+ */
+function describeInUse(count: number, intl: IntlShape, itemTitle: string | null): string | null {
+    if (count === 0) {
+        return null;
+    }
+    return count === 1 && itemTitle !== null && itemTitle !== ''
+        ? intl.formatMessage(messages.inUseItem, { title: itemTitle })
+        : intl.formatMessage(messages.inUseCount, { count });
+}
+
 /**
  * The toast of a result: its message, or "done" with what it was done to (`subject`), the counts,
- * and a tone that says how it went.
+ * and a tone that says how it went. Items skipped as `in_use` are explained, by the title of the
+ * item (`itemTitle`) when it is the only one: when every item is, that is the title of the toast.
  */
 export function describeResult(
     result: ActionResult,
     actionLabel: string,
     intl: IntlShape,
     subject: string | null = null,
+    itemTitle: string | null = null,
 ): Omit<ToastContent, 'action'> {
     const { succeeded, failed, skipped } = getResultCounts(result);
+    const inUse = Math.min(skipped, (result.results ?? []).filter(isInUse).length);
+    const inUseText = describeInUse(inUse, intl, itemTitle);
+    if (inUseText !== null && (succeeded ?? 0) === 0 && failed === 0 && skipped === inUse) {
+        // Nothing was done: the toast says why.
+        return { title: inUseText, tone: 'warning' };
+    }
     const parts = [
         ...(succeeded !== null && (failed > 0 || skipped > 0)
             ? [intl.formatMessage(messages.succeededCount, { count: succeeded })]
             : []),
         ...(failed > 0 ? [intl.formatMessage(messages.failedCount, { count: failed })] : []),
-        ...(skipped > 0 ? [intl.formatMessage(messages.skippedCount, { count: skipped })] : []),
+        ...(skipped > inUse
+            ? [intl.formatMessage(messages.skippedCount, { count: skipped - inUse })]
+            : []),
     ];
+    const description = [
+        ...(parts.length > 0 ? [intl.formatList(parts, { type: 'unit' })] : []),
+        ...(inUseText !== null ? [inUseText] : []),
+    ].join('. ');
     const tone: ToastContent['tone'] =
         failed > 0 ? (succeeded === 0 ? 'danger' : 'warning') : skipped > 0 ? 'warning' : 'success';
     return {
@@ -88,12 +120,15 @@ export function describeResult(
                 : subject !== null
                   ? intl.formatMessage(messages.doneFor, { action: actionLabel, subject })
                   : intl.formatMessage(messages.done, { action: actionLabel }),
-        ...(parts.length > 0 ? { description: intl.formatList(parts, { type: 'unit' }) } : {}),
+        ...(description !== '' ? { description } : {}),
         tone,
     };
 }
 
-/** Why an item didn't succeed: its message, or its reason (`forbidden`, `not_found`, `unchanged`). */
+/**
+ * Why an item didn't succeed: its message, or its reason (`forbidden`, `not_found`, `unchanged`,
+ * `in_use`).
+ */
 export function describeItemResult(entry: ActionItemResult, intl: IntlShape): string {
     if (entry.message !== undefined && entry.message !== '') {
         return entry.message;
@@ -105,6 +140,8 @@ export function describeItemResult(entry: ActionItemResult, intl: IntlShape): st
             return intl.formatMessage(messages.reasonNotFound);
         case 'unchanged':
             return intl.formatMessage(messages.reasonUnchanged);
+        case 'in_use':
+            return intl.formatMessage(messages.reasonInUse);
         default:
             return intl.formatMessage(
                 entry.status === 'failed' ? messages.statusFailed : messages.statusSkipped,

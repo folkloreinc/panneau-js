@@ -32,6 +32,11 @@ export const actionsFr: Record<string, string> = {
     'panneau.actions.reasonForbidden': 'Non autorisé',
     'panneau.actions.reasonNotFound': 'Introuvable',
     'panneau.actions.reasonUnchanged': 'Inchangé',
+    'panneau.actions.reasonInUse': 'Utilisé ailleurs',
+    'panneau.actions.inUseItem':
+        '« {title} » est utilisé ailleurs : retirez-le de là où il sert, puis réessayez.',
+    'panneau.actions.inUseCount':
+        '{count, plural, one {# élément est utilisé ailleurs : retirez-le de là où il sert, puis réessayez.} other {# éléments sont utilisés ailleurs : retirez-les de là où ils servent, puis réessayez.}}',
     'panneau.actions.queued': '« {action} » s’exécute en arrière-plan.',
     'panneau.actions.queuedDescription': 'Vous serez averti à la fin.',
     'panneau.actions.runs': 'Actions en cours',

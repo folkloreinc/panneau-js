@@ -96,10 +96,10 @@ export const ActionItemResult = z.looseObject({
     id: Id,
     status: z.enum(['failed', 'skipped']),
     message: z.string().optional(),
-    reason: z
-        .string()
-        .optional()
-        .meta({ description: '`skipped`: `forbidden`, `not_found` or `unchanged`.' }),
+    reason: z.string().optional().meta({
+        description:
+            '`skipped`: `forbidden`, `not_found`, `unchanged`, or `in_use` (something else uses the item, so it can’t be deleted).',
+    }),
 });
 
 export const ActionResult = z.looseObject({

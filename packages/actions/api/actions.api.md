@@ -118,7 +118,7 @@ export interface ClientActionProps {
 export function describeItemResult(entry: ActionItemResult, intl: IntlShape): string;
 
 // @public
-export function describeResult(result: ActionResult, actionLabel: string, intl: IntlShape, subject?: string | null): Omit<ToastContent, 'action'>;
+export function describeResult(result: ActionResult, actionLabel: string, intl: IntlShape, subject?: string | null, itemTitle?: string | null): Omit<ToastContent, 'action'>;
 
 // @public
 export interface FollowedRun {

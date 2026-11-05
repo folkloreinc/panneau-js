@@ -1,8 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
+import { PanneauProvider } from '@panneau/core';
 import { List } from '@panneau/lists';
-import type { Action, ActionResult, ActionRun } from '@panneau/protocol';
+import type { Action, ActionResult, ActionRun, Definition } from '@panneau/protocol';
+import { createExampleDefinition } from '@panneau/protocol/mock';
 
 import { ActionRunnerProvider } from './ActionRunnerProvider';
 import { ActionRuns } from './ActionRuns';
@@ -213,3 +215,82 @@ export const Undo: Story = {
         );
     },
 };
+
+const remove: Action = {
+    id: 'delete',
+    kind: 'server',
+    scope: ['item', 'selection'],
+    placement: ['row', 'toolbar'],
+    undoable: true,
+};
+
+/** An adapter in memory whose `delete` skips “Contact” as `in_use`: something else uses it. */
+function createInUseAdapter(): ActionAdapter {
+    return {
+        runAction: (_resource, action, request) => {
+            if (action === 'restore') {
+                return Promise.resolve({ result: { refresh: 'list' } });
+            }
+            const ids = (request.selection as { ids?: string[] } | undefined)?.ids ?? [];
+            const inUse = ids.filter((id) => id === '2');
+            const deleted = ids.filter((id) => id !== '2');
+            const result: ActionResult = {
+                summary: { succeeded: deleted.length, failed: 0, skipped: inUse.length },
+                results: inUse.map((id) => ({ id, status: 'skipped', reason: 'in_use' })),
+                refresh: 'list',
+                ...(deleted.length > 0 ? { undo: { action: 'restore', items: deleted } } : {}),
+            };
+            return Promise.resolve({ result });
+        },
+        getActionRun: () => Promise.reject(new Error('No runs.')),
+    };
+}
+
+/**
+ * Items in use: a backend can't delete an item that something else uses, and skips it with the
+ * reason `in_use`. Alone, the toast names it, without "Undo"; with others, it says so after what
+ * was deleted, and "Undo" puts back only those.
+ */
+export const InUse: Story = {
+    args: { adapter: createInUseAdapter() },
+    render: (args) => (
+        // The definition gives the title of the items: `title`, on `pages`.
+        <PanneauProvider definition={createExampleDefinition() as Definition}>
+            <ActionRunnerProvider {...args}>
+                <InUsePages />
+            </ActionRunnerProvider>
+        </PanneauProvider>
+    ),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        await userEvent.click(canvas.getByRole('button', { name: 'Delete: Contact' }));
+        const alone = await body.findByRole('alertdialog', {
+            name: /“Contact” is in use elsewhere: remove it from where it is used, then try again\./,
+        });
+        await expect(within(alone).queryByRole('button', { name: 'Undo' })).toBeNull();
+        await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Home' }));
+        await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Contact' }));
+        await userEvent.click(canvas.getByRole('button', { name: 'Delete' }));
+        const several = await body.findByRole('alertdialog', { name: /is done for 1 page/ });
+        await expect(several).toHaveTextContent(
+            '1 item done. 1 item is in use elsewhere: remove it from where it is used, then try again.',
+        );
+        await expect(within(several).getByRole('button', { name: 'Undo' })).toBeVisible();
+    },
+};
+
+function InUsePages() {
+    const runAction = useActionRunner('pages');
+    return (
+        <List
+            aria-label="Pages"
+            columns={[{ id: 'title', label: 'Title' }]}
+            // Built-in actions are offered on the items that allow them.
+            items={items.map((item) => ({ ...item, abilities: { delete: true } }))}
+            actions={[remove]}
+            onAction={runAction}
+            router={null}
+        />
+    );
+}

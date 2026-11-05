@@ -80,6 +80,13 @@ export const actionsMessages: {
     reasonForbidden: PanneauMessage<Record<never, never>>;
     reasonNotFound: PanneauMessage<Record<never, never>>;
     reasonUnchanged: PanneauMessage<Record<never, never>>;
+    reasonInUse: PanneauMessage<Record<never, never>>;
+    inUseItem: PanneauMessage<    {
+    title: string;
+    }>;
+    inUseCount: PanneauMessage<    {
+    count: number;
+    }>;
     queued: PanneauMessage<    {
     action: string;
     }>;

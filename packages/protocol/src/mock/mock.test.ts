@@ -386,6 +386,43 @@ describe('createMockBackend', () => {
         expect(missing.status).toBe(404);
     });
 
+    it('skips the items in use with in_use, alone or not, and leaves them out of the undo', async () => {
+        const definition = createDefinition();
+        definition.resources[0]?.actions?.push({
+            id: 'delete',
+            undoable: true,
+            scope: ['item', 'selection'],
+        });
+        const backend = createMockBackend({
+            definition,
+            items: {
+                pages: [{ title: { fr: 'A' } }, { title: { fr: 'B' } }, { title: { fr: 'C' } }],
+            },
+            inUse: ({ resource, item }) => resource === 'pages' && item.id === '2',
+        });
+        const alone = await backend.fetch(
+            '/panneau/api/resources/pages/actions/delete',
+            json({ selection: { ids: ['2'] } }, { method: 'POST' }),
+        );
+        expect(alone.status).toBe(200);
+        const aloneResult = (await alone.json()) as Record<string, unknown>;
+        expect(aloneResult).toMatchObject({
+            summary: { succeeded: 0, failed: 0, skipped: 1 },
+            results: [{ id: '2', status: 'skipped', reason: 'in_use' }],
+        });
+        expect(aloneResult).not.toHaveProperty('undo');
+        const several = await backend.fetch(
+            '/panneau/api/resources/pages/actions/delete',
+            json({ selection: { ids: ['1', '2', '3'] } }, { method: 'POST' }),
+        );
+        expect(await several.json()).toMatchObject({
+            summary: { succeeded: 2, failed: 0, skipped: 1 },
+            results: [{ id: '2', status: 'skipped', reason: 'in_use' }],
+            undo: { action: 'restore', items: ['1', '3'] },
+        });
+        expect(backend.items('pages').map((item) => item.id)).toEqual(['2']);
+    });
+
     it('answers a dry run of an action with dryRun, without changing anything', async () => {
         const backend = createBackend();
         const before = backend.items('pages').map((item) => item.id);
