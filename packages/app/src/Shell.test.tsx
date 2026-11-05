@@ -164,6 +164,22 @@ describe('the app shell', () => {
             ),
         );
         expect(backend.items('authors').map((author) => author.name)).toEqual(['Ada', 'Grace']);
+        // The page changed: a toast says what was created (by its title, when the resource has one).
+        expect(await screen.findByRole('alertdialog')).toHaveTextContent('The author was created.');
+    });
+
+    it('says "Saved" in the footer of a form, not in a toast, after it starts over', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/authors/1/edit');
+        renderApp();
+        const field = await screen.findByRole('textbox', { name: /name/i });
+        await user.type(field, ' Lovelace');
+        await user.click(screen.getByRole('button', { name: 'Save' }));
+        const form = await screen.findByRole('form');
+        await waitFor(() => expect(within(form).getByRole('status')).toHaveTextContent('Saved'));
+        expect(screen.queryByRole('alertdialog')).toBeNull();
+        await user.type(screen.getByRole('textbox', { name: /name/i }), '!');
+        expect(within(form).getByRole('status')).toHaveTextContent('Unsaved changes');
     });
 
     it('shows a page for paths that match nothing', () => {

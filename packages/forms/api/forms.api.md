@@ -94,6 +94,7 @@ export interface FormViewProps {
     onReload?: () => void;
     onSubmitted?: (result: unknown) => void;
     relationSource?: RelationSource | null;
+    saved?: boolean;
     showSavedToast?: boolean;
     // (undocumented)
     sidebarClassName?: string;

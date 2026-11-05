@@ -19,6 +19,28 @@ export const actionsMessages = {
         id: 'panneau.actions.done',
         defaultMessage: '“{action}” is done.',
     }),
+    doneFor: defineMessage<{ action: string; subject: string }>({
+        id: 'panneau.actions.doneFor',
+        defaultMessage: '“{action}” is done for {subject}.',
+    }),
+    failedFor: defineMessage<{ action: string; subject: string }>({
+        id: 'panneau.actions.failedFor',
+        defaultMessage: '“{action}” failed for {subject}.',
+    }),
+    cancelledFor: defineMessage<{ action: string; subject: string }>({
+        id: 'panneau.actions.cancelledFor',
+        defaultMessage: '“{action}” was cancelled for {subject}.',
+    }),
+    /** What an action applied to, in its toast: one item by its title. */
+    subjectItem: defineMessage<{ title: string }>({
+        id: 'panneau.actions.subjectItem',
+        defaultMessage: '“{title}”',
+    }),
+    /** What an action applied to, in its toast: a count of items, with the resource's labels. */
+    subjectCount: defineMessage<{ count: number; singular: string; plural: string }>({
+        id: 'panneau.actions.subjectCount',
+        defaultMessage: '{count, plural, one {# {singular}} other {# {plural}}}',
+    }),
     failed: defineMessage<{ action: string }>({
         id: 'panneau.actions.failed',
         defaultMessage: '“{action}” failed.',

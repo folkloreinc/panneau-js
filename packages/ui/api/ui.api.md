@@ -28,6 +28,7 @@ import { RadioGroupProps as RadioGroupProps_2 } from 'react-aria-components';
 import type { ReactElement } from 'react';
 import { ReactNode } from 'react';
 import type { Ref } from 'react';
+import { RefObject } from 'react';
 import { SliderProps as SliderProps_2 } from 'react-aria-components';
 import { SwitchProps as SwitchProps_2 } from 'react-aria-components';
 import { TabListProps as TabListProps_2 } from 'react-aria-components';
@@ -572,6 +573,9 @@ export function findUnknownTokens(theme: Theme): string[];
 export function getNamedIcon(name: string): IconComponent;
 
 // @public
+export function getToastTimeout(content: ToastContent): number | null;
+
+// @public
 export function Grid(input: GridProps): JSX.Element;
 
 // @public
@@ -723,6 +727,9 @@ export function loadNamedIcon(name: string, loader: NamedIconLoader): Promise<Ic
 export function matchCommands(groups: readonly CommandPaletteGroup[], query: string, locale?: string): CommandPaletteGroup[];
 
 // @public
+export const MAX_VISIBLE_TOASTS = 3;
+
+// @public
 export function Menu<T extends object>(input: MenuProps<T>): JSX.Element;
 
 // @public
@@ -830,6 +837,7 @@ export interface PanneauRootProps extends HTMLAttributes<HTMLDivElement> {
     messages?: Readonly<Record<string, string>> | null;
     nonce?: string;
     theme?: Theme | null;
+    toastPlacement?: ToastPlacement;
 }
 
 // @public
@@ -1348,10 +1356,14 @@ export interface ToastContent {
 
 // @public (undocumented)
 export interface ToastOptions {
+    key?: string;
     // (undocumented)
     onClose?: () => void;
     timeout?: number | null;
 }
+
+// @public
+export type ToastPlacement = 'bottom' | 'bottom-end' | 'top-end';
 
 // @public (undocumented)
 export interface Toasts {
@@ -1420,6 +1432,9 @@ export function usePortalContainer(): Element | null | undefined;
 
 // @public
 export function useToast(): Toasts;
+
+// @public
+export function useToastOffset(ref: RefObject<HTMLElement | null>, active?: boolean): void;
 
 // (No @packageDocumentation comment for this package)
 

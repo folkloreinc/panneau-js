@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-import { use } from 'react';
+import { use, useEffect } from 'react';
 import { ProgressBar } from 'react-aria-components';
 
 import { getActionLabel } from '@panneau/intl';
@@ -34,6 +34,8 @@ export interface ActionRunsProps {
 export function ActionRuns({ 'aria-label': ariaLabel, className }: ActionRunsProps) {
     const intl = usePanneauIntl();
     const context = use(ActionRunnerContext);
+    // Its user sees the runs that end here: the runner shows no toast for them.
+    useEffect(() => context?.watchRuns(), [context]);
     if (context === null || context.runs.length === 0) {
         return null;
     }

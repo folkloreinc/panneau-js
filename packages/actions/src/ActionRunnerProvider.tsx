@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect, useEffectEvent, useRef, useState } from 'react';
 
-import { usePlugins } from '@panneau/core';
+import { usePanneau } from '@panneau/core';
 import { getActionLabel } from '@panneau/intl';
 import type { ActionResult, ActionRun, RouteReference } from '@panneau/protocol';
 import { usePanneauIntl, useToast } from '@panneau/ui';
@@ -8,9 +8,9 @@ import { usePanneauIntl, useToast } from '@panneau/ui';
 import { ParametersDialog } from './ParametersDialog';
 import { ResultsDialog } from './ResultsDialog';
 import { ActionRunnerContext, type ActionRunnerContextValue } from './context';
-import { describeResult } from './describe';
+import { describeResult, describeSubject } from './describe';
 import { messages } from './messages';
-import { buildActionRequest, getLinkTarget, isFinished } from './request';
+import { buildActionRequest, getLinkTarget, getResultCounts, isFinished } from './request';
 import type {
     ActionAdapter,
     ActionDownload,
@@ -98,59 +98,95 @@ export function ActionRunnerProvider({
 }: ActionRunnerProviderProps) {
     const intl = usePanneauIntl();
     const toasts = useToast();
-    const plugins = usePlugins();
+    const { definition, plugins } = usePanneau();
     const [parameters, setParameters] = useState<Pending | null>(null);
     const [client, setClient] = useState<ClientPending | null>(null);
     const [details, setDetails] = useState<{ label: string; result: ActionResult } | null>(null);
     const [runs, setRuns] = useState<readonly FollowedRun[]>([]);
     // Runs whose end was already shown, so that a late poll doesn't show it twice.
     const notified = useRef(new Set<string>());
+    // How many lists of runs are on screen (the popover of the runs): their user sees a run end.
+    const watchers = useRef(0);
 
-    const finish = async (resource: string, target: ActionTarget, result: ActionResult) => {
+    /** What the action applied to, by the item's title or the count of items. */
+    const subjectOf = (resource: string, target: ActionTarget, count: number | null = null) =>
+        describeSubject(
+            target,
+            definition?.resources.find((candidate) => candidate.id === resource),
+            intl,
+            count,
+        );
+
+    /** One toast per action and target: running it again replaces it. */
+    const toastKey = (resource: string, target: ActionTarget) =>
+        `panneau-action:${resource}:${target.action.id}:${target.item?.id ?? 'selection'}`;
+
+    const finish = async (
+        resource: string,
+        target: ActionTarget,
+        result: ActionResult,
+        { queued = false }: { queued?: boolean } = {},
+    ) => {
         await onResult?.(result, { resource, target });
-        const content = describeResult(result, getActionLabel(target.action, intl), intl);
+        const counts = getResultCounts(result);
+        const content = describeResult(
+            result,
+            getActionLabel(target.action, intl),
+            intl,
+            subjectOf(resource, target, counts.succeeded),
+        );
         const hasDetails = (result.results ?? []).length > 0;
         const download = result.download ?? null;
         if (download !== null) {
             onDownload(download);
         }
-        toasts.show({
-            ...content,
-            ...(hasDetails
-                ? {
-                      action: {
-                          label: intl.formatMessage(messages.details),
-                          onAction: () =>
-                              setDetails({ label: getActionLabel(target.action, intl), result }),
-                      },
-                  }
-                : download !== null
-                  ? {
-                        action: {
-                            label: intl.formatMessage(messages.download),
-                            onAction: () => onDownload(download),
-                        },
-                    }
-                  : {}),
-        });
         const redirect = result.redirect ?? null;
+        // A queued run that ends in the open list of runs is seen there, unless its result says
+        // more than its status: a message, items that didn't succeed, a download.
+        const saysMore = (result.message ?? '') !== '' || hasDetails || download !== null;
+        if (queued && watchers.current > 0 && !saysMore) {
+            if (redirect !== null) {
+                onNavigate(redirect);
+            }
+            return;
+        }
+        toasts.show(
+            {
+                ...content,
+                ...(hasDetails
+                    ? {
+                          action: {
+                              label: intl.formatMessage(messages.details),
+                              onAction: () =>
+                                  setDetails({
+                                      label: getActionLabel(target.action, intl),
+                                      result,
+                                  }),
+                          },
+                      }
+                    : download !== null
+                      ? {
+                            action: {
+                                label: intl.formatMessage(messages.download),
+                                onAction: () => onDownload(download),
+                            },
+                        }
+                      : {}),
+            },
+            { key: toastKey(resource, target) },
+        );
         if (redirect !== null) {
             onNavigate(redirect);
         }
     };
 
+    // No toast when a run starts: the runs button of the shell shows it, and its popover follows
+    // it. The toast comes when the run ends.
     const follow = (resource: string, target: ActionTarget, run: ActionRun) => {
         setRuns((current) => [
             ...current.filter((entry) => entry.run.id !== run.id),
             { run, resource, target },
         ]);
-        toasts.show({
-            title: intl.formatMessage(messages.queued, {
-                action: getActionLabel(target.action, intl),
-            }),
-            description: intl.formatMessage(messages.queuedDescription),
-            tone: 'info',
-        });
     };
 
     const ended = async (entry: FollowedRun) => {
@@ -160,27 +196,44 @@ export function ActionRunnerProvider({
         }
         notified.current.add(run.id);
         if (run.result !== undefined) {
-            await finish(resource, target, run.result);
-        } else if (run.status === 'cancelled') {
-            toasts.show({
-                title: intl.formatMessage(messages.cancelled, {
-                    action: getActionLabel(target.action, intl),
-                }),
-            });
+            await finish(resource, target, run.result, { queued: true });
+            return;
+        }
+        const action = getActionLabel(target.action, intl);
+        const subject = subjectOf(resource, target);
+        const key = { key: toastKey(resource, target) };
+        if (run.status === 'cancelled') {
+            toasts.show(
+                {
+                    title:
+                        subject !== null
+                            ? intl.formatMessage(messages.cancelledFor, { action, subject })
+                            : intl.formatMessage(messages.cancelled, { action }),
+                },
+                key,
+            );
         } else if (run.status === 'failed') {
-            toasts.show({
-                title: intl.formatMessage(messages.failed, {
-                    action: getActionLabel(target.action, intl),
-                }),
-                tone: 'danger',
-            });
-        } else {
-            toasts.show({
-                title: intl.formatMessage(messages.done, {
-                    action: getActionLabel(target.action, intl),
-                }),
-                tone: 'success',
-            });
+            toasts.show(
+                {
+                    title:
+                        subject !== null
+                            ? intl.formatMessage(messages.failedFor, { action, subject })
+                            : intl.formatMessage(messages.failed, { action }),
+                    tone: 'danger',
+                },
+                key,
+            );
+        } else if (watchers.current === 0) {
+            toasts.show(
+                {
+                    title:
+                        subject !== null
+                            ? intl.formatMessage(messages.doneFor, { action, subject })
+                            : intl.formatMessage(messages.done, { action }),
+                    tone: 'success',
+                },
+                key,
+            );
         }
     };
 
@@ -291,7 +344,21 @@ export function ActionRunnerProvider({
         };
     }, [runs, adapter, pollInterval]);
 
-    const value: ActionRunnerContextValue = { adapter, run, runs, cancelRun, dismissRun };
+    const watchRuns = () => {
+        watchers.current += 1;
+        return () => {
+            watchers.current -= 1;
+        };
+    };
+
+    const value: ActionRunnerContextValue = {
+        adapter,
+        run,
+        runs,
+        cancelRun,
+        dismissRun,
+        watchRuns,
+    };
 
     const ClientHandler = client?.Handler;
     return (

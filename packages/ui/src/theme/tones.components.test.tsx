@@ -77,16 +77,24 @@ describe('tones and appearances', () => {
         expect(container.querySelector('.panneau-alert svg')).not.toBeNull();
     });
 
-    it('colors the edge of toasts with a tone', async () => {
+    it('gives toasts their tone, and colors the edge of warnings and errors only', async () => {
         function Show() {
             const toasts = useToast();
             return (
-                <button
-                    type="button"
-                    onClick={() => toasts.show({ title: 'Saved', tone: 'signal' })}
-                >
-                    Show
-                </button>
+                <>
+                    <button
+                        type="button"
+                        onClick={() => toasts.show({ title: 'Saved', tone: 'signal' })}
+                    >
+                        Signal
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => toasts.show({ title: 'Failed', tone: 'danger' })}
+                    >
+                        Danger
+                    </button>
+                </>
             );
         }
         render(
@@ -94,10 +102,13 @@ describe('tones and appearances', () => {
                 <Show />
             </ToastProvider>,
         );
-        screen.getByRole('button', { name: 'Show' }).click();
-        const toast = await screen.findByText('Saved');
-        expect(toast.closest('.panneau-toast')?.className).toMatch(
-            /panneau-tone-signal.*toned|toned.*panneau-tone-signal/,
-        );
+        screen.getByRole('button', { name: 'Signal' }).click();
+        const signal = (await screen.findByText('Saved')).closest('.panneau-toast');
+        expect(signal?.className).toContain('panneau-tone-signal');
+        expect(signal?.className).not.toMatch(/edge/);
+        screen.getByRole('button', { name: 'Danger' }).click();
+        const danger = (await screen.findByText('Failed')).closest('.panneau-toast');
+        expect(danger?.className).toContain('panneau-tone-danger');
+        expect(danger?.className).toMatch(/edge/);
     });
 });

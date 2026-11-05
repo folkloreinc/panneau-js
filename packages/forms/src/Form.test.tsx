@@ -280,6 +280,42 @@ describe('Form without a definition', () => {
         expect(await screen.findByText('Saved')).toBeInTheDocument();
     });
 
+    it('says "Saved" in its footer, not in a toast, until the values change', async () => {
+        const onSubmit = vi.fn().mockResolvedValue(undefined);
+        renderForm(<Form fields={FIELDS} values={{ name: 'Ada' }} onSubmit={onSubmit} />);
+        await userEvent.type(screen.getByRole('textbox', { name: /Name/ }), ' L.');
+        expect(screen.getByRole('status')).toHaveTextContent('Unsaved changes');
+        await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('Saved'));
+        expect(screen.queryByRole('region', { name: 'Notifications' })).not.toBeInTheDocument();
+        await userEvent.type(screen.getByRole('textbox', { name: /Name/ }), '!');
+        expect(screen.getByRole('status')).toHaveTextContent('Unsaved changes');
+    });
+
+    it('says "Saved" when it starts over from the item it just saved', () => {
+        renderForm(<Form fields={FIELDS} values={{ name: 'Ada' }} saved />);
+        expect(screen.getByRole('status')).toHaveTextContent('Saved');
+    });
+
+    it('says "Saved" in a toast when it has no footer', async () => {
+        renderForm(
+            <>
+                <Form
+                    id="headless"
+                    fields={FIELDS}
+                    values={{ name: 'Ada' }}
+                    submitLabel={null}
+                    onSubmit={vi.fn().mockResolvedValue(undefined)}
+                />
+                <button type="submit" form="headless">
+                    Save elsewhere
+                </button>
+            </>,
+        );
+        await userEvent.click(screen.getByRole('button', { name: 'Save elsewhere' }));
+        expect(await screen.findByRole('alertdialog')).toHaveTextContent('Saved');
+    });
+
     it('translates rule messages and the UI', async () => {
         renderForm(<Form fields={FIELDS} />, {
             locale: 'fr',

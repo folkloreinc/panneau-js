@@ -8,6 +8,11 @@ export const actionsFr: Record<string, string> = {
     'panneau.actions.duplicated': '« {title} » est dupliqué.',
     'panneau.actions.done': '« {action} » est terminé.',
     'panneau.actions.failed': '« {action} » a échoué.',
+    'panneau.actions.doneFor': '« {action} » est terminé pour {subject}.',
+    'panneau.actions.failedFor': '« {action} » a échoué pour {subject}.',
+    'panneau.actions.cancelledFor': '« {action} » a été annulé pour {subject}.',
+    'panneau.actions.subjectItem': '« {title} »',
+    'panneau.actions.subjectCount': '{count, plural, one {# {singular}} other {# {plural}}}',
     'panneau.actions.cancelled': '« {action} » a été annulé.',
     'panneau.actions.succeededCount':
         '{count, plural, one {# élément traité} other {# éléments traités}}',

@@ -13,7 +13,7 @@ import {
     getThemeCss,
     hashString,
 } from '../theme/theme';
-import { ToastProvider } from '../toast/Toast';
+import { type ToastPlacement, ToastProvider } from '../toast/Toast';
 import { cx } from '../utils/cx';
 import styles from './PanneauRoot.module.css';
 
@@ -58,6 +58,12 @@ export interface PanneauRootProps extends HTMLAttributes<HTMLDivElement> {
      * nonce React Aria reads too: that of `<meta property="csp-nonce">`, or `__webpack_nonce__`.
      */
     nonce?: string;
+    /**
+     * Where toasts show: `bottom` (centered, the default), `bottom-end` or `top-end`. At the bottom,
+     * they rise above what sticks to the bottom of the page, such as the footer of a form
+     * (`useToastOffset()`). On a phone, they take the whole width.
+     */
+    toastPlacement?: ToastPlacement;
     children?: ReactNode;
 }
 
@@ -194,6 +200,7 @@ export function PanneauRoot({
     locale,
     messages,
     nonce: givenNonce,
+    toastPlacement = 'bottom',
     className,
     children,
     ...props
@@ -217,6 +224,7 @@ export function PanneauRoot({
                     <ScopeContext value={{ colorScheme, density, nonce }}>
                         <PortalContext value={container}>
                             <ToastProvider
+                                placement={toastPlacement}
                                 regionClassName={styles.root}
                                 regionProps={{
                                     'data-color-scheme': colorScheme,

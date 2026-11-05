@@ -136,10 +136,18 @@
     border-top: var(--panneau-border-width) solid var(--panneau-color-border);
 }
 
-.dirty {
+/* "Unsaved changes", "Saved" or the failure of the last save, next to the button. */
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--panneau-space-1);
     margin-inline-end: auto;
     font-size: var(--panneau-font-size-sm);
     color: var(--panneau-color-text-muted);
+}
+
+.statusError {
+    color: var(--panneau-color-danger);
 }
 
 .summary:focus {
@@ -172,7 +180,7 @@
 }
 
 @container panneau-form (max-width: 36rem) {
-    .footer > :not(.dirty) {
+    .footer > :not(.status) {
         flex: 1 1 auto;
     }
 }

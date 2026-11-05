@@ -8,7 +8,7 @@ import { PanneauProvider, createList, definePlugin } from '@panneau/core';
 import { ValidationError, createRestAdapter } from '@panneau/data';
 import { fr } from '@panneau/intl';
 import { ListView } from '@panneau/lists';
-import type { Action, ActionResult, ActionRun } from '@panneau/protocol';
+import type { Action, ActionResult, ActionRun, Definition } from '@panneau/protocol';
 import { createExampleDefinition, createMockBackend } from '@panneau/protocol/mock';
 import { Button, PanneauRoot } from '@panneau/ui';
 
@@ -98,6 +98,46 @@ describe('ActionRunnerProvider', () => {
             { resource: 'pages', target: { action: publish, scope: 'item', item } },
         );
         expect(outcomes).toEqual([{ status: 'done', result: { message: 'Done.' } }]);
+    });
+
+    it('names the item or the count of items in its toast', async () => {
+        const adapter = createAdapter({
+            runAction: vi.fn(() => Promise.resolve({ result: { refresh: 'none' as const } })),
+        });
+        // Parsed, as the app gives it: actions have their `kind`.
+        const definition = createExampleDefinition() as Definition;
+        const wrap = (ui: ReactNode) => (
+            <PanneauProvider definition={definition}>{ui}</PanneauProvider>
+        );
+        const { run } = renderRunner(
+            { action: publish, scope: 'item', item: { id: '12', title: 'Spring contest' } },
+            { adapter },
+            { wrap },
+        );
+        await run();
+        expect(
+            await screen.findByText('“Publish” is done for “Spring contest”.'),
+        ).toBeInTheDocument();
+    });
+
+    it('names the count of items a selection changed, and replaces its own toast', async () => {
+        const adapter = createAdapter({
+            runAction: vi.fn(() =>
+                Promise.resolve({ result: { counts: { succeeded: 3 }, refresh: 'none' as const } }),
+            ),
+        });
+        // Parsed, as the app gives it: actions have their `kind`.
+        const definition = createExampleDefinition() as Definition;
+        const { run } = renderRunner(
+            { action: publish, scope: 'selection', selection: { ids: ['1', '2', '3'] }, count: 3 },
+            { adapter },
+            { wrap: (ui) => <PanneauProvider definition={definition}>{ui}</PanneauProvider> },
+        );
+        await run();
+        expect(await screen.findByText('“Publish” is done for 3 pages.')).toBeInTheDocument();
+        await run();
+        await waitFor(() => expect(adapter.runAction).toHaveBeenCalledTimes(2));
+        expect(await screen.findAllByText('“Publish” is done for 3 pages.')).toHaveLength(1);
     });
 
     it('sends the selection, and no selection for the resource', async () => {
@@ -312,11 +352,10 @@ describe('ActionRunnerProvider', () => {
                 { children: <ActionRuns /> },
             );
             await run();
-            expect(
-                await screen.findByText('“Export” is running in the background.'),
-            ).toBeInTheDocument();
             expect(outcomes).toEqual([{ status: 'queued', run: queued }]);
-            const runs = screen.getByRole('list', { name: 'Actions in progress' });
+            const runs = await screen.findByRole('list', { name: 'Actions in progress' });
+            // No toast when it starts: the list of runs follows it.
+            expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
             expect(await within(runs).findByText('50 of 200')).toBeInTheDocument();
             expect(within(runs).getByRole('progressbar', { name: 'Export' })).toHaveAttribute(
                 'aria-valuenow',

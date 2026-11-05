@@ -8,7 +8,7 @@ export const toastTokens = defineComponentTokens('toast', {
     bg: 'var(--panneau-color-surface-raised)',
     /** Border color. */
     'border-color': 'var(--panneau-color-border)',
-    /** Width of the colored edge of a toast with a tone. */
+    /** Width of the colored edge of a warning or an error. */
     'tone-width': '4px',
     /** Corner radius. */
     radius: 'var(--panneau-radius-lg)',
