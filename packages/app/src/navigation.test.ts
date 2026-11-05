@@ -29,6 +29,26 @@ describe('getNavigation', () => {
         ]);
     });
 
+    it('leaves the home page out of the default menu, since the shell links to it', () => {
+        const definition = parse(
+            createDefinition({
+                pages: {
+                    home: { component: 'dashboard' },
+                    stats: { component: 'stats', label: 'Statistics' },
+                },
+            }),
+        );
+        expect(
+            getNavigation(definition, '/panneau').map((entry) =>
+                entry.type === 'link' ? [entry.label, entry.href] : entry.type,
+            ),
+        ).toEqual([
+            ['Pages', '/panneau/resources/pages'],
+            ['Authors', '/panneau/resources/authors'],
+            ['Statistics', '/panneau/pages/stats'],
+        ]);
+    });
+
     it('follows the main menu: groups, separators, labels and icons of its own', () => {
         const definition = parse(
             createDefinition({
