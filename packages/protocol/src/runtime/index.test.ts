@@ -124,6 +124,7 @@ describe('@panneau/protocol/runtime', () => {
             'fromSearchParams',
             'getAddressRequiredParts',
             'getCurrencyDigits',
+            'getImageUrl',
             'getItemImageField',
             'getLinkNewTab',
             'getLinkTypes',
