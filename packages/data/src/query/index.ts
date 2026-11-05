@@ -21,6 +21,7 @@ export {
     useRunAction,
     useSearch,
     useUpdateItem,
+    useWidgetData,
 } from './hooks';
 export { type SearchKeyOptions, queryKeys } from './keys';
 export {
@@ -30,5 +31,6 @@ export {
     resourceItemQueryOptions,
     resourceListQueryOptions,
     searchQueryOptions,
+    widgetDataQueryOptions,
 } from './options';
 export { invalidateActionResult } from './refresh';

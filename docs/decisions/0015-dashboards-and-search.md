@@ -1,6 +1,6 @@
 # 0015: Dashboards and global search
 
-- Status: accepted
+- Status: accepted, amended by [0064](0064-dashboard-widgets.md): the built-in widgets are `stat`, `series` and `list`, and the shape of their data
 - Date: 2026-10-14
 
 ## Context

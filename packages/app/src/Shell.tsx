@@ -16,6 +16,7 @@ import { appMessages } from '@panneau/intl';
 import type { Definition } from '@panneau/protocol';
 import { Alert, usePanneauIntl, useToast } from '@panneau/ui';
 
+import { Dashboard } from './dashboard/Dashboard';
 import { DocumentTitle } from './documentTitle';
 import { navigate, setHistoryGuard, usePathname } from './location';
 import { AccountPage } from './pages/AccountPage';
@@ -46,8 +47,9 @@ interface PageProps {
 
 /**
  * A page of the definition's `pages`: a plugin's component, with the page's props, the definition,
- * and the values of its `params` from the path. The built-in `dashboard`, which plugins can replace, is the cards of the resources
- * until the dashboard of 5.x has widgets.
+ * and the values of its `params` from the path. The built-in `dashboard`, which plugins can
+ * replace, is the widgets of `definition.dashboard`, or the cards of the resources without any
+ * (decision 0064).
  */
 function DefinitionPage({
     page,
@@ -69,7 +71,7 @@ function DefinitionPage({
             {Component !== undefined ? (
                 createElement(Component, { ...page.props, definition, params })
             ) : page.component === 'dashboard' ? (
-                <HomePage definition={definition} basePath={basePath} />
+                <Dashboard definition={definition} basePath={basePath} />
             ) : (
                 <Alert tone="warning">
                     {intl.formatMessage(appMessages.missingPage, {

@@ -4,7 +4,7 @@ import { CONTEXT_HEADER, CONTEXT_PROBLEM_TYPE } from '../constants';
 import { formatContextHeader } from '../context';
 import { getLinkTypes } from '../links';
 import { type FilterRange, isCursorPage, toSearchParams } from '../query';
-import { Definition, type Resource, User } from '../schemas';
+import { Definition, type Resource, User, widgetDataSchemas } from '../schemas';
 import {
     ActionResult,
     ContextOptionsResponse,
@@ -28,6 +28,7 @@ import {
 } from '../search';
 import { isEqual, isFilled } from '../values';
 import { PROBLEM_CONTENT_TYPE } from '../version';
+import { WIDGET_LIST_MAX_ITEMS, getWidgetResource, isBuiltInWidgetType } from '../widgets';
 
 export interface ConformanceOptions {
     /** Base URL of the API, the same as `api.baseUrl` of the definition, but absolute. */
@@ -1131,6 +1132,111 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                     );
                 }
             }
+        },
+    );
+
+    // The dashboard (decision 0064): the data of the widgets with data of their own, the lists
+    // that feed the widgets on a resource, and a widget that isn't in the dashboard.
+    const widgets = () => (definition as Definition | null)?.dashboard?.widgets ?? [];
+
+    await run(
+        'dashboard.widgets',
+        'GET /dashboard/widgets/{widget} answers each widget in the shape of its type',
+        async (check) => {
+            const own = widgets().filter((widget) => getWidgetResource(widget) === null);
+            if (own.length === 0) {
+                check.skip('The dashboard has no widget with data of its own.');
+                return;
+            }
+            for (const widget of own) {
+                const reply = await request(`/dashboard/widgets/${encodeURIComponent(widget.id)}`);
+                // A widget the user can't see right now: the client hides it
+                if (reply.status === 403) {
+                    check.expectProblem(reply, 403);
+                    continue;
+                }
+                if (
+                    !check.expect(
+                        reply.status === 200,
+                        `Widget "${widget.id}": expected status 200, got ${reply.status}.`,
+                    )
+                ) {
+                    continue;
+                }
+                if (isBuiltInWidgetType(widget.type)) {
+                    check.expectSchema(
+                        widgetDataSchemas[widget.type],
+                        reply.body,
+                        `The data of the ${widget.type} "${widget.id}"`,
+                    );
+                } else {
+                    check.expect(
+                        reply.body !== null &&
+                            typeof reply.body === 'object' &&
+                            !Array.isArray(reply.body),
+                        `The data of the widget "${widget.id}" must be an object.`,
+                    );
+                }
+            }
+        },
+    );
+
+    await run(
+        'dashboard.widgets.resource',
+        'The lists of the widgets on a resource answer their query, with a total for a stat',
+        async (check) => {
+            const onResource = widgets().flatMap((widget) => {
+                const read = getWidgetResource(widget);
+                return read !== null ? [{ widget, read }] : [];
+            });
+            if (onResource.length === 0) {
+                check.skip('The dashboard has no widget on a resource.');
+                return;
+            }
+            for (const { widget, read } of onResource) {
+                const params = new URLSearchParams(read.params);
+                params.set('perPage', widget.type === 'stat' ? '1' : String(WIDGET_LIST_MAX_ITEMS));
+                const reply = await request(
+                    `/resources/${encodeURIComponent(read.resource)}?${params.toString()}`,
+                );
+                // A list the user can't read: the client hides the widget
+                if (reply.status === 403) {
+                    check.expectProblem(reply, 403);
+                    continue;
+                }
+                if (
+                    !check.expect(
+                        reply.status === 200,
+                        `Widget "${widget.id}": expected status 200, got ${reply.status}.`,
+                    )
+                ) {
+                    continue;
+                }
+                const list = check.expectSchema(
+                    ListResponse,
+                    reply.body,
+                    `The list of the widget "${widget.id}"`,
+                );
+                if (list !== null && widget.type === 'stat') {
+                    check.expect(
+                        typeof (list.meta as { total?: unknown }).total === 'number',
+                        `The list of the stat "${widget.id}" has no meta.total to count.`,
+                    );
+                }
+            }
+        },
+    );
+
+    await run(
+        'dashboard.widgets.unknown',
+        'A widget that is not in the dashboard of the user is a 404 problem',
+        async (check) => {
+            const current = definition as Definition | null;
+            if (current?.dashboard === undefined) {
+                check.skip('The definition has no dashboard.');
+                return;
+            }
+            check.expectProblem(await request(`/dashboard/widgets/${UNKNOWN}`), 404);
         },
     );
 

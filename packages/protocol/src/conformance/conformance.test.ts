@@ -61,8 +61,29 @@ function createBackend() {
             { id: 'google', label: 'Google', url: '/panneau/api/auth/providers/google/redirect' },
         ],
     };
+    // A dashboard (decision 0064): widgets on a resource, and widgets with data of their own.
+    definition.dashboard = {
+        widgets: [
+            {
+                id: 'drafts',
+                type: 'stat',
+                settings: { resource: 'pages', query: { 'filter[status]': 'draft' } },
+            },
+            {
+                id: 'latest',
+                type: 'list',
+                settings: { resource: 'pages', query: { sort: '-title' } },
+            },
+            { id: 'visits', type: 'series' },
+            { id: 'map', type: 'map' },
+        ],
+    };
     return createMockBackend({
         definition,
+        widgets: {
+            visits: { period: 'week', points: [{ date: '2026-10-05', value: 4 }], total: 4 },
+            map: { pins: [] },
+        },
         auth: { users: [{ email: 'ada@example.com', password: 'secret' }] },
         context: {
             options: (name, before) =>
@@ -106,6 +127,24 @@ describe('runConformance', () => {
         expect(formatReport(report)).not.toContain('✗');
         expect(report.passed).toBe(true);
         expect(report.checks.filter((check) => check.status === 'skipped')).toEqual([]);
+    });
+
+    it('fails widgets whose data does not have the shape of their type', async () => {
+        const backend = createBackend();
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: (input, init) =>
+                input.endsWith('/dashboard/widgets/visits')
+                    ? Promise.resolve(
+                          new Response(JSON.stringify({ period: 'year', points: [] }), {
+                              headers: { 'Content-Type': 'application/json' },
+                          }),
+                      )
+                    : backend.fetch(input, init),
+        });
+        const check = report.checks.find(({ id }) => id === 'dashboard.widgets');
+        expect(check?.status).toBe('failed');
+        expect(check?.issues.join('\n')).toContain('The data of the series "visits"');
     });
 
     it('checks a list paged with cursors: the next page, and an invalid cursor', async () => {
@@ -390,6 +429,7 @@ describe('runConformance', () => {
             'item',
             'item.missing',
             'search.invalid',
+            'dashboard.widgets.unknown',
             'create.invalid',
             'create.implied-rules',
             'update.parts',

@@ -14,6 +14,7 @@ import { fieldTokens } from '../field/tokens';
 import { gridTokens } from '../grid/tokens';
 import { headingTokens } from '../heading/tokens';
 import { inlineTokens } from '../inline/tokens';
+import { lineChartTokens } from '../line-chart/tokens';
 import { menuTokens } from '../menu/tokens';
 import { numberInputTokens } from '../number-input/tokens';
 import { pillTriggerTokens } from '../pill-trigger/tokens';
@@ -25,6 +26,7 @@ import { listBoxTokens } from '../select/listBoxTokens';
 import { skeletonTokens } from '../skeleton/tokens';
 import { spinnerTokens } from '../spinner/tokens';
 import { stackTokens } from '../stack/tokens';
+import { statTokens } from '../stat/tokens';
 import { switchTokens } from '../switch/tokens';
 import { tabsTokens } from '../tabs/tokens';
 import { textTokens } from '../text/tokens';
@@ -52,6 +54,7 @@ export const componentTokens = Object.freeze({
     heading: headingTokens.tokens,
     inline: inlineTokens.tokens,
     input: inputTokens.tokens,
+    'line-chart': lineChartTokens.tokens,
     'list-box': listBoxTokens.tokens,
     menu: menuTokens.tokens,
     'number-input': numberInputTokens.tokens,
@@ -63,6 +66,7 @@ export const componentTokens = Object.freeze({
     skeleton: skeletonTokens.tokens,
     spinner: spinnerTokens.tokens,
     stack: stackTokens.tokens,
+    stat: statTokens.tokens,
     switch: switchTokens.tokens,
     tabs: tabsTokens.tokens,
     text: textTokens.tokens,

@@ -245,6 +245,17 @@ Charts (dashboard widgets, reports) use only the chart tokens of the theme, in b
 
 Each default categorical color reaches 3:1 against the surface (WCAG non-text contrast), and the eight stay distinct for people with protanopia, deuteranopia or tritanopia: a test checks it. `checkTheme()` runs the same checks on the chart colors a theme sets, and `checkColorDifferences(colors)` on any palette.
 
+`Stat` and `LineChart` are the charts of the dashboard ([decision 0064](../../docs/decisions/0064-dashboard-widgets.md)):
+
+```tsx
+<Stat label="Overdue" value={3} help="Since Monday" tone="danger" href="/entries?filter[late]=1" />
+<LineChart label="Entries per day" points={[{ label: 'Oct 5', value: 4 }, { label: 'Oct 6', value: 8 }]} />
+```
+
+- `Stat` shows a number for the locale (`format` takes the options of `Intl.NumberFormat`), what it counts above it and its help under it. A `tone` colors the number only when it calls for attention: the help says why.
+- `LineChart` draws a line and the area under it on a categorical chart color (`color`, from 0), with the top of its scale and its first and last labels. The plot is hidden from assistive technologies, which read the values in a table.
+- Both draw a skeleton of their shape while their `value` or `points` are `undefined`.
+
 ### Checking a theme
 
 `checkTheme(theme)` reports what a theme makes hard to read: text tokens against backgrounds (4.5:1), control borders and chart colors (3:1), the text of each tone on the surface and on its subtle background, and categorical chart colors that look alike with a color vision deficiency. The `panneau-check-theme` command runs it on a JSON theme or on an export of a module, and exits with 1 when a check fails, for CI:

@@ -27,6 +27,7 @@ import type {
 import { SEARCH_MAX_LIMIT, readSearchQuery } from '../search';
 import { isRecord } from '../values';
 import { PROBLEM_CONTENT_TYPE } from '../version';
+import { checkWidgetData, getWidgetResource } from '../widgets';
 import { type MockAuthOptions, createMockAuth } from './auth';
 
 export type { MockAuthOptions, MockMail, MockUser } from './auth';
@@ -60,6 +61,30 @@ export interface MockBackendOptions {
      * get its `403` problem (decision 0048). Without it, every request is the user's.
      */
     auth?: MockAuthOptions;
+    /**
+     * The data of `GET /dashboard/widgets/{widget}`, per widget id (decision 0064): the data, a
+     * function that returns it for the current context, or a `Response` to answer as is (a `403`,
+     * a slow or failing widget). Data that doesn't have the shape of a built-in type is a `500`
+     * problem that names the wrong keys, as a backend answers it. Widgets of the dashboard without
+     * data, and built-in `stat` and `list` on a resource, are a `404`.
+     */
+    widgets?: Record<string, MockWidget>;
+}
+
+/** The data of a widget in the mock backend: its data, or what answers it. */
+export type MockWidget =
+    | Response
+    | Record<string, unknown>
+    | ((
+          context: MockWidgetContext,
+      ) => Response | Record<string, unknown> | Promise<Response | Record<string, unknown>>);
+
+/** What the function of a widget of the mock backend gets. */
+export interface MockWidgetContext {
+    /** The values of the context of the request. */
+    context: ContextValues;
+    /** The current items of a resource, in the context. */
+    items: (resource: string) => Item[];
 }
 
 /** How the mock backend answers the context of its definition (decision 0045). */
@@ -713,6 +738,37 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
         return values;
     };
     /** The definition for the values of the context: the `value` and `valueLabel` of each param. */
+    // A widget of the dashboard with data of its own (decision 0064)
+    const answerWidget = async (
+        id: string,
+        values: ContextValues,
+        inScope: (resource: string, list: Item[]) => Item[],
+    ): Promise<Response> => {
+        const widget = definitionFor(values).dashboard?.widgets.find(
+            (candidate) => candidate.id === id,
+        );
+        const data = options.widgets?.[id];
+        if (widget === undefined || getWidgetResource(widget) !== null || data === undefined) {
+            return problem(404, 'Widget not found.');
+        }
+        const answer =
+            typeof data === 'function'
+                ? await data({
+                      context: values,
+                      items: (resource) => inScope(resource, store.get(resource) ?? []),
+                  })
+                : data;
+        if (answer instanceof Response) {
+            return answer;
+        }
+        const wrong = checkWidgetData(widget.type, answer);
+        return wrong.length === 0
+            ? json(200, answer)
+            : problem(500, `The data of the widget doesn't have the shape of \`${widget.type}\`.`, {
+                  detail: `Wrong keys: ${wrong.map((key) => (key === '' ? '(the data)' : key)).join(', ')}.`,
+              });
+    };
+
     const definitionFor = (values: ContextValues): DefinitionInput =>
         definition.context === undefined
             ? definition
@@ -817,6 +873,14 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                       type: 'urn:panneau:problem:validation',
                       errors: { url: ['This URL can’t be embedded.'] },
                   });
+        }
+        if (
+            segments.length === 3 &&
+            segments[0] === 'dashboard' &&
+            segments[1] === 'widgets' &&
+            method === 'GET'
+        ) {
+            return answerWidget(segments[2] ?? '', context, inScope);
         }
         if (segments.length === 1 && segments[0] === 'search' && method === 'GET') {
             return search(url.searchParams, inScope);

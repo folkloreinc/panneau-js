@@ -28,7 +28,7 @@ function EditPage({ item, onSave }) {
 
 ## Plugins
 
-`definePlugin()` declares what a plugin adds, keyed by the names the definition uses: `fields`, `displays`, `listLayouts`, `actions` (handlers of `client` actions), `pages`, `widgets`, `components` (layout nodes), `locales` and `themes`.
+`definePlugin()` declares what a plugin adds, keyed by the names the definition uses: `fields`, `displays`, `listLayouts`, `actions` (handlers of `client` actions), `pages`, `widgets`, `components` (layout nodes), `locales` and `themes`. A widget of a plugin gets `WidgetProps`: the widget, its data from `GET /dashboard/widgets/{widget}`, and the definition; the dashboard draws its card, skeleton and error ([decision 0064](../../docs/decisions/0064-dashboard-widgets.md)).
 
 `resolveTheme(definition.theme, registry.themes)` returns the theme of the admin: the themes of plugins that the definition's theme `extends`, by id, then its own tokens, tones and variants. `Theme` is the theme of `@panneau/ui` as plain data, the `Theme` schema of `@panneau/protocol`.
 

@@ -1,5 +1,10 @@
 import type { DefinitionInput, Field, LayoutNode, ResourceInput } from './schemas';
 import type { ValidationIssue } from './validate';
+import {
+    RESOURCE_WIDGET_TYPES,
+    WIDGET_RESERVED_QUERY_PARAMS,
+    isBuiltInWidgetType,
+} from './widgets';
 
 function fieldNames(fields: Field[]): Set<string> {
     return new Set(fields.map((field) => field.name));
@@ -172,5 +177,76 @@ export function lintDefinition(definition: DefinitionInput): ValidationIssue[] {
             }
         });
     });
+    checkWidgets(definition, issues);
     return issues;
+}
+
+const FILTER_PARAM = /^filter\[([^\]]+)\]/;
+
+/**
+ * The widgets of the dashboard (decision 0064): unique ids, and the built-in `stat` and `list` on
+ * a resource that exists, with filters of its list. A `stat` counts the items of the list, so the
+ * list can't be paged with cursors, which give no total.
+ */
+function checkWidgets(definition: DefinitionInput, issues: ValidationIssue[]) {
+    const ids = new Set<string>();
+    (definition.dashboard?.widgets ?? []).forEach((widget, index) => {
+        const path = `dashboard.widgets.${index}`;
+        if (ids.has(widget.id)) {
+            issues.push({ path: `${path}.id`, message: `Duplicate widget id \`${widget.id}\`.` });
+        }
+        ids.add(widget.id);
+        if (!isBuiltInWidgetType(widget.type)) {
+            return;
+        }
+        const settings = widget.settings ?? {};
+        const onResource = typeof settings.resource === 'string';
+        if (!onResource) {
+            if (settings.query !== undefined) {
+                issues.push({
+                    path: `${path}.settings.query`,
+                    message: '`query` goes with a `resource`.',
+                });
+            }
+            return;
+        }
+        if (!(RESOURCE_WIDGET_TYPES as readonly string[]).includes(widget.type)) {
+            issues.push({
+                path: `${path}.settings.resource`,
+                message: `A \`${widget.type}\` widget has data of its own: only \`stat\` and \`list\` read a resource.`,
+            });
+            return;
+        }
+        const resource = definition.resources.find(
+            (candidate) => candidate.id === settings.resource,
+        );
+        if (resource === undefined) {
+            issues.push({
+                path: `${path}.settings.resource`,
+                message: `No resource \`${String(settings.resource)}\`.`,
+            });
+            return;
+        }
+        if (widget.type === 'stat' && resource.list?.pagination === 'cursor') {
+            issues.push({
+                path: `${path}.settings.resource`,
+                message: `The list of \`${resource.id}\` is paged with cursors and has no total: it can't feed a \`stat\`.`,
+            });
+        }
+        const filters = new Set((resource.list?.filters ?? []).map((filter) => filter.id));
+        Object.keys(settings.query ?? {}).forEach((key) => {
+            const filter = FILTER_PARAM.exec(key)?.[1];
+            if ((WIDGET_RESERVED_QUERY_PARAMS as readonly string[]).includes(key)) {
+                issues.push({
+                    path: `${path}.settings.query.${key}`,
+                    message: `The client sets \`${key}\`.`,
+                });
+            } else if (filter !== undefined && !filters.has(filter)) {
+                issues.push({
+                    path: `${path}.settings.query.${key}`,
+                    message: `The list of \`${resource.id}\` has no filter \`${filter}\`.`,
+                });
+            }
+        });
+    });
 }

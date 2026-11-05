@@ -28,6 +28,7 @@ import {
     resourceItemQueryOptions,
     resourceListQueryOptions,
     searchQueryOptions,
+    widgetDataQueryOptions,
 } from './options';
 import { invalidateActionResult } from './refresh';
 
@@ -99,6 +100,19 @@ export function useSearch(
 ): UseQueryResult<SearchResponse> {
     const adapter = useDataAdapter();
     return useQuery({ ...searchQueryOptions(adapter, q, { limit, resources }), ...options });
+}
+
+/**
+ * The data of a widget of the dashboard with data of its own (decision 0064), unchecked: check it
+ * with `checkWidgetData()` of `@panneau/protocol/runtime`. A `403` fails with a `ForbiddenError`:
+ * the widget is hidden.
+ */
+export function useWidgetData(
+    widget: string,
+    options: QueryHookOptions<unknown, ReturnType<typeof queryKeys.widget>> = {},
+): UseQueryResult<unknown> {
+    const adapter = useDataAdapter();
+    return useQuery({ ...widgetDataQueryOptions(adapter, widget), ...options });
 }
 
 /** Creates an item, then refetches the lists of the resource. */
