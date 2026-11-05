@@ -409,8 +409,10 @@ export interface RelationListAdapter {
 
 // @public
 export interface RelationReference {
+    description?: string;
     // (undocumented)
     id: string;
+    imageUrl?: string;
     // (undocumented)
     label: string;
 }
@@ -419,6 +421,9 @@ export interface RelationReference {
 export interface RelationSource {
     canCreate?(resource: string): boolean;
     create?(resource: string, text: string): Promise<RelationReference | null>;
+    // Warning: (ae-forgotten-export) The symbol "RelationResourceInfo" needs to be exported by the entry point index.d.ts
+    describe?(resource: string): RelationResourceInfo | null;
+    getItemHref?(resource: string, id: string): string | null;
     resolve?(resource: string, ids: readonly string[], options: {
         signal: AbortSignal;
     }): Promise<RelationReference[]>;
@@ -431,6 +436,7 @@ export interface RelationSource {
 export interface RelationSourceOptions {
     create?: boolean | ((text: string, resource: string) => Record<string, unknown> | null);
     definition?: (Pick<Definition, 'resources'> & Partial<Pick<Definition, 'locales'>>) | null;
+    getItemHref?: (resource: string, id: string) => string | null;
     getLabel?: (item: Item, resource: string) => string;
     perPage?: number;
 }

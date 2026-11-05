@@ -3,10 +3,12 @@ import { ImageOff } from 'lucide-react';
 import { Checkbox, Icon, usePanneauIntl } from '@panneau/ui';
 
 import { RowActionsFit, fitContent, useRowActionsFit } from '../actions/fit';
+import { cx } from '../cx';
 import { messages } from '../messages';
 import type { ListLayoutProps } from '../types';
 import styles from './GalleryLayout.module.css';
 import { ItemTitle } from './ItemTitle';
+import highlight from './highlight.module.css';
 
 /**
  * Items as a grid of images (decision 0044): the image of each item (`itemImage` of the
@@ -21,6 +23,7 @@ export function GalleryLayout({
     getItemHref,
     getItemImage,
     isCurrent,
+    isHighlighted,
     selectable,
     isSelected,
     onToggle,
@@ -40,13 +43,15 @@ export function GalleryLayout({
                         const selected = selectable && isSelected(item);
                         const actions = renderActions(item);
                         const current = isCurrent?.(item) ?? false;
+                        const highlighted = isHighlighted?.(item) ?? false;
                         const image = getItemImage?.(item) ?? null;
                         return (
                             <li
                                 key={item.id}
-                                className={styles.tile}
+                                className={cx(styles.tile, highlighted && highlight.highlighted)}
                                 data-selected={selected || undefined}
                                 data-current={current || undefined}
+                                data-highlighted={highlighted || undefined}
                             >
                                 <div className={styles.media}>
                                     {image !== null ? (

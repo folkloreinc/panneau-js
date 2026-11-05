@@ -1,10 +1,12 @@
 import { Checkbox, usePanneauIntl } from '@panneau/ui';
 
 import { RowActionsFit, fitContent, useRowActionsFit } from '../actions/fit';
+import { cx } from '../cx';
 import { messages } from '../messages';
 import type { ListLayoutProps } from '../types';
 import styles from './CardsLayout.module.css';
 import { ItemTitle } from './ItemTitle';
+import highlight from './highlight.module.css';
 
 /** Items as cards: the first column is the title, the others are listed under it. */
 export function CardsLayout({
@@ -14,6 +16,7 @@ export function CardsLayout({
     getItemLabel,
     getItemHref,
     isCurrent,
+    isHighlighted,
     selectable,
     isSelected,
     onToggle,
@@ -33,12 +36,14 @@ export function CardsLayout({
                         const selected = selectable && isSelected(item);
                         const actions = renderActions(item);
                         const current = isCurrent?.(item) ?? false;
+                        const highlighted = isHighlighted?.(item) ?? false;
                         return (
                             <li
                                 key={item.id}
-                                className={styles.card}
+                                className={cx(styles.card, highlighted && highlight.highlighted)}
                                 data-selected={selected || undefined}
                                 data-current={current || undefined}
+                                data-highlighted={highlighted || undefined}
                             >
                                 <div className={styles.header}>
                                     <div className={styles.title}>

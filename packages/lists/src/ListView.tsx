@@ -1,4 +1,4 @@
-import { type ReactNode, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 
 import type { List, ResolvedCalendar } from '@panneau/core';
 import {
@@ -153,6 +153,11 @@ export interface ListViewProps {
      * the link of its title is the current page.
      */
     currentItemId?: string | null;
+    /**
+     * An item that just appeared, such as one just created (decision 0066): once it is among the
+     * items, it is scrolled into view, and its background shows it for a moment, then fades.
+     */
+    highlightedItemId?: string | null;
     /** Displays by name, over the built-in ones and those of the plugins. */
     displays?: Readonly<Record<string, DisplayEntry>>;
     /** Layouts by id, over the built-in ones and those of the plugins. */
@@ -220,6 +225,7 @@ export function ListView({
     getItemHref,
     getLinkHref,
     currentItemId = null,
+    highlightedItemId = null,
     displays,
     layoutComponents,
     filterControls,
@@ -240,6 +246,7 @@ export function ListView({
     const [preview, setPreview] = useState<ConfirmPreview | null>(null);
     // The confirmation a dry run belongs to: a later one, or a cancel, discards its answer.
     const confirmation = useRef(0);
+    const root = useRef<HTMLDivElement>(null);
     const [pending, setPending] = useState<string | null>(null);
 
     // Items saved in place, over the item the caller gave, until it gives another one.
@@ -600,6 +607,7 @@ export function ListView({
                         : undefined
                 }
                 isCurrent={(item) => item.id === currentItemId}
+                isHighlighted={(item) => item.id === highlightedItemId}
                 selectable={selectable}
                 isSelected={(item) => isItemSelected(selection, item.id)}
                 onToggle={(item) => list.toggle(item.id)}
@@ -613,8 +621,20 @@ export function ListView({
         );
     })();
 
+    // The highlighted item comes into view once the list shows it
+    const highlightShown =
+        highlightedItemId !== null && pageItems.some((item) => item.id === highlightedItemId);
+    useEffect(() => {
+        if (!highlightShown) {
+            return;
+        }
+        const element = root.current?.querySelector<HTMLElement>('[data-highlighted]');
+        const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+        element?.scrollIntoView?.({ block: 'nearest', behavior: reduced ? 'auto' : 'smooth' });
+    }, [highlightShown, highlightedItemId]);
+
     return (
-        <div className={cx(styles.list, className)}>
+        <div ref={root} className={cx(styles.list, className)}>
             {showToolbar ? (
                 <div className={styles.toolbar}>
                     <div className={styles.toolbarStart}>

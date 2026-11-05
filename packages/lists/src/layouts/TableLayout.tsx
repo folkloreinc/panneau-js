@@ -8,6 +8,7 @@ import { messages } from '../messages';
 import type { ListColumn, ListLayoutProps } from '../types';
 import { ItemTitle } from './ItemTitle';
 import styles from './TableLayout.module.css';
+import highlight from './highlight.module.css';
 
 /** The sort direction of a column, from the first `sort` value. */
 export function getSortDirection(
@@ -57,6 +58,7 @@ export function TableLayout({
     getItemHref,
     getItemImage,
     isCurrent,
+    isHighlighted,
     selectable,
     isSelected,
     onToggle,
@@ -139,11 +141,14 @@ export function TableLayout({
                             const selected = selectable && isSelected(item);
                             const href = getItemHref?.(item) ?? null;
                             const current = isCurrent?.(item) ?? false;
+                            const highlighted = isHighlighted?.(item) ?? false;
                             return (
                                 <tr
                                     key={item.id}
+                                    className={highlighted ? highlight.highlighted : undefined}
                                     data-selected={selected || undefined}
                                     data-current={current || undefined}
+                                    data-highlighted={highlighted || undefined}
                                 >
                                     {selectable ? (
                                         <td className={styles.check}>

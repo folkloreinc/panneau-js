@@ -245,6 +245,27 @@ export const Cards: Story = {
 };
 
 /**
+ * An item that just appeared, such as one just created (decision 0066): it is scrolled into view,
+ * and its background shows it for a moment, then fades (without the fade when the system asks for
+ * less motion).
+ */
+export const HighlightedItem: Story = {
+    args: { highlightedItemId: '8', layouts: ['table', 'cards'] },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const table = canvas.getByRole('table', { name: 'Members' });
+        const highlighted = table.querySelectorAll('[data-highlighted]');
+        await expect(highlighted).toHaveLength(1);
+        await expect(highlighted[0]).toHaveTextContent(members[7]?.name as string);
+        await userEvent.click(canvas.getByRole('radio', { name: 'Cards' }));
+        const cards = canvas.getByRole('list', { name: 'Members' });
+        await expect(cards.querySelector('[data-highlighted]')).toHaveTextContent(
+            members[7]?.name as string,
+        );
+    },
+};
+
+/**
  * The "Columns" menu: the name can't be hidden, the email is hidden until the user shows it, and
  * the others can be hidden and moved (decision 0042).
  */

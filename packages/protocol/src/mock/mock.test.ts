@@ -326,6 +326,18 @@ describe('createMockBackend', () => {
         expect((await backend.fetch(`/panneau/api/resources/pages/${data.id}`)).status).toBe(404);
     });
 
+    it('gives a created item an id that the items it started with don’t have', async () => {
+        const backend = createBackend();
+        const before = backend.items('pages').map((item) => item.id);
+        const created = await backend.fetch(
+            '/panneau/api/resources/pages',
+            json({ title: { fr: 'Nouvelle', en: 'New' }, status: 'draft' }, { method: 'POST' }),
+        );
+        const { data } = (await created.json()) as { data: { id: string } };
+        expect(before).not.toContain(data.id);
+        expect(backend.items('pages').filter((item) => item.id === data.id)).toHaveLength(1);
+    });
+
     it('runs the delete action on a query selection', async () => {
         const backend = createBackend();
         const response = await backend.fetch(

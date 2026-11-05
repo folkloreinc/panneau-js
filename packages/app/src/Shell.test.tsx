@@ -151,21 +151,45 @@ describe('the app shell', () => {
         expect(screen.queryByRole('region', { name: 'Details of the page' })).toBeNull();
     });
 
-    it('creates an item, then opens its edit page', async () => {
+    it('creates an item, then goes back to the list, which highlights it without a toast', async () => {
         const user = userEvent.setup();
         window.history.replaceState(null, '', '/panneau/resources/authors/create');
         const backend = renderApp();
         expect(screen.getByRole('heading', { name: 'New author' })).toBeInTheDocument();
         await user.type(screen.getByRole('textbox', { name: /name/i }), 'Grace');
         await user.click(screen.getByRole('button', { name: 'Save' }));
-        await waitFor(() =>
-            expect(window.location.pathname).toMatch(
-                /^\/panneau\/resources\/authors\/[^/]+\/edit$/,
-            ),
-        );
+        await waitFor(() => expect(window.location.pathname).toBe('/panneau/resources/authors'));
         expect(backend.items('authors').map((author) => author.name)).toEqual(['Ada', 'Grace']);
-        // The page changed: a toast says what was created (by its title, when the resource has one).
-        expect(await screen.findByRole('alertdialog')).toHaveTextContent('The author was created.');
+        // The list shows the new item: highlighted, without a toast (decision 0066)
+        const table = await screen.findByRole('table', { name: 'Authors' });
+        await waitFor(() =>
+            expect(table.querySelector('[data-highlighted]')).toHaveTextContent('Grace'),
+        );
+        expect(table.querySelectorAll('[data-highlighted]')).toHaveLength(1);
+        expect(screen.queryByRole('alertdialog')).toBeNull();
+    });
+
+    it('says the item was created when the list doesn’t show it, with a link to open it', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/authors/create');
+        const backend = renderApp();
+        // More authors than a page of the list shows: the new one comes after them
+        for (let index = 2; index <= 30; index += 1) {
+            await backend.fetch('/panneau/api/resources/authors', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: `Author ${index}` }),
+            });
+        }
+        await user.type(screen.getByRole('textbox', { name: /name/i }), 'Grace');
+        await user.click(screen.getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(window.location.pathname).toBe('/panneau/resources/authors'));
+        const toast = await screen.findByRole('alertdialog');
+        expect(toast).toHaveTextContent('The author was created.');
+        await user.click(within(toast).getByRole('button', { name: 'Open' }));
+        await waitFor(() =>
+            expect(window.location.pathname).toMatch(/^\/panneau\/resources\/authors\/[^/]+/),
+        );
     });
 
     it('says "Saved" in the footer of a form, not in a toast, after it starts over', async () => {

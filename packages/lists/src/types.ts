@@ -165,6 +165,11 @@ export interface ListLayoutProps {
     getItemHref?: ((item: ListItem) => string | null) | undefined;
     /** Whether the item is the one shown next to the list, such as in a panel of its details. */
     isCurrent?: ((item: ListItem) => boolean) | undefined;
+    /**
+     * Whether the item just appeared, such as one just created (decision 0066): the layout gives
+     * its element the `highlighted` class of `@panneau/lists`' highlight, and `data-highlighted`.
+     */
+    isHighlighted?: ((item: ListItem) => boolean) | undefined;
     /** Whether items have checkboxes. */
     selectable: boolean;
     isSelected: (item: ListItem) => boolean;

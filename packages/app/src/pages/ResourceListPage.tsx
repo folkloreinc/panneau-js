@@ -1,5 +1,5 @@
 import { Plus } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 
 import { useActionPreview } from '@panneau/actions';
 import {
@@ -15,7 +15,7 @@ import { appMessages } from '@panneau/intl';
 import { ListView, getPagingProps } from '@panneau/lists';
 import type { RouteReference } from '@panneau/protocol';
 import { getItemImageField } from '@panneau/protocol/runtime';
-import { LinkButton, usePanneauIntl } from '@panneau/ui';
+import { LinkButton, usePanneauIntl, useToast } from '@panneau/ui';
 
 import { cx } from '../cx';
 import { useDocumentTitle } from '../documentTitle';
@@ -25,10 +25,14 @@ import { routePath } from '../routes';
 import { ErrorPage, getErrorPageKind } from './ErrorPage';
 import { ItemPanel } from './ItemPanel';
 import { PageHeader } from './PageHeader';
+import { clearCreatedItem, peekCreatedItem } from './createdItem';
 import { filterActions, useItemActionRunner } from './itemActionRunner';
 import { createLinkResolver, getItemPath, opensInForm } from './itemLinks';
 import { getItemTitle } from './itemTitle';
 import styles from './pages.module.css';
+
+/** How long the item just created stays highlighted: its fade, with some room. */
+const HIGHLIGHT_DURATION = 4000;
 
 export interface ResourceListPageProps {
     resolved: ResolvedResource;
@@ -53,6 +57,7 @@ export function ResourceListPage({
     resolveRoute,
 }: ResourceListPageProps) {
     const intl = usePanneauIntl();
+    const toasts = useToast();
     const { resource, list: definitionList, abilities } = resolved;
     const { definition } = usePanneau();
     // The view of the list (filters, sort, layout, columns) is remembered for the user, in this
@@ -70,6 +75,53 @@ export function ResourceListPage({
     const update = useUpdateItem(resource.id);
     const formatError = useFormatRuleFailure(resource.fields);
     const title = capitalize(resource.label.plural, locale);
+    // The item that the create page just created: the list highlights it once it shows it, without
+    // a toast. A list that doesn't show it (another page, a filter) says it was created, in a toast
+    // with "Open" (decision 0066).
+    const [created] = useState(() => peekCreatedItem(resource.id));
+    const [highlightedId, setHighlightedId] = useState(created?.id ?? null);
+    useEffect(() => {
+        if (created !== null) {
+            clearCreatedItem(created);
+        }
+    }, [created]);
+    const createdSettled = created !== null && data !== undefined && !isFetching;
+    const createdShown = created !== null && (data?.data ?? []).some(({ id }) => id === created.id);
+    const createdReported = useRef(false);
+    const reportCreated = useEffectEvent(() => {
+        if (created === null || createdReported.current) {
+            return;
+        }
+        createdReported.current = true;
+        if (createdShown) {
+            return;
+        }
+        toasts.show(
+            {
+                title:
+                    created.title !== null && created.title !== ''
+                        ? intl.formatMessage(appMessages.itemCreated, { title: created.title })
+                        : intl.formatMessage(appMessages.created, {
+                              resource: resource.label.singular,
+                          }),
+                tone: 'success',
+                action: {
+                    label: intl.formatMessage(appMessages.openCreated),
+                    onAction: () => navigate(created.href),
+                },
+            },
+            { key: `panneau-created:${resource.id}` },
+        );
+    });
+    useEffect(() => {
+        if (!createdSettled) {
+            return undefined;
+        }
+        reportCreated();
+        // The highlight fades by itself: then the item is like the others, also when it shows again
+        const timer = setTimeout(() => setHighlightedId(null), HIGHLIGHT_DURATION);
+        return () => clearTimeout(timer);
+    }, [createdSettled]);
     // The item of the panel, which the panel fetches too
     const { data: selected, isError: selectedError } = useResourceItem(resource.id, selectedId);
     useDocumentTitle([
@@ -163,6 +215,7 @@ export function ResourceListPage({
                     getItemHref={(item) => getItemPath(resource, item, basePath, search)}
                     getLinkHref={createLinkResolver(resource, basePath, { search, resolveRoute })}
                     currentItemId={selectedId}
+                    highlightedItemId={highlightedId}
                     // The main action of rows keeps its label: what the title opens
                     primaryAction={getOpenMode(resource) === 'edit' ? 'edit' : 'show'}
                     onAction={runAction}

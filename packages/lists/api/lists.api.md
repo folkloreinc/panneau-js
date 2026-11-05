@@ -12,6 +12,7 @@ import type { ComponentType } from 'react';
 import type { Field } from '@panneau/protocol';
 import type { Filter } from '@panneau/protocol';
 import type { FilterValue } from '@panneau/protocol';
+import { getImageUrl } from '@panneau/protocol/runtime';
 import { IconComponent } from '@panneau/ui';
 import { JSX } from 'react';
 import type { List as List_2 } from '@panneau/core';
@@ -170,8 +171,7 @@ export function getActionHref(action: Action, item?: ListItem): string | null;
 // @public
 export function getActionIcon(action: Action, icons?: ActionIcons): IconComponent | undefined;
 
-// @public
-export function getImageUrl(value: unknown): string | null;
+export { getImageUrl }
 
 // @public
 export function getLocalizedValue(value: unknown, locale: string): unknown;
@@ -302,6 +302,7 @@ export interface ListLayoutProps {
     getItemImage?: ((item: ListItem) => string | null) | undefined;
     getItemLabel: (item: ListItem) => string;
     isCurrent?: ((item: ListItem) => boolean) | undefined;
+    isHighlighted?: ((item: ListItem) => boolean) | undefined;
     // (undocumented)
     isSelected: (item: ListItem) => boolean;
     // (undocumented)
@@ -363,6 +364,7 @@ export interface ListViewProps {
     getItemHref?: (item: ListItem) => string | null;
     getItemLabel?: (item: ListItem) => string;
     getLinkHref?: (action: Action, item: ListItem) => string | null;
+    highlightedItemId?: string | null;
     inlineEdit?: readonly string[];
     isLoading?: boolean;
     itemImage?: string | undefined;
