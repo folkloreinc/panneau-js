@@ -689,7 +689,7 @@ A field with `"check": true`, at the top of a resource, checks its value with th
 ```
 
 - **`results`** only lists the items that didn't succeed.
-- **`reason`** for skipped items is `forbidden`, `not_found` or `unchanged`.
+- **`reason`** for skipped items is `forbidden`, `not_found`, `unchanged` or `in_use`. `in_use`: something else uses the item, so the action can't apply to it: a media that a model uses can't be deleted. The client names the item and says to remove it from where it is used first. When it is the only item, the result has no `undo`; when others were deleted, `undo` lists only those.
 - **`refresh`:**
     - `none`;
     - `items`: refetch the affected items;

@@ -30,7 +30,56 @@ describe('describeResult', () => {
     });
 });
 
+describe('items in use', () => {
+    const inUse = (id: string) => ({ id, status: 'skipped' as const, reason: 'in_use' });
+
+    it('names the only item in use, or counts them, as the title when nothing was done', () => {
+        const one = { summary: { succeeded: 0, failed: 0, skipped: 1 }, results: [inUse('1')] };
+        expect(describeResult(one, 'Delete', intl, null, 'essai.png')).toEqual({
+            title: '“essai.png” is in use elsewhere: remove it from where it is used, then try again.',
+            tone: 'warning',
+        });
+        expect(describeResult(one, 'Delete', intl)).toEqual({
+            title: '1 item is in use elsewhere: remove it from where it is used, then try again.',
+            tone: 'warning',
+        });
+        expect(
+            describeResult(
+                { results: [inUse('1'), inUse('2')] },
+                'Delete',
+                intl,
+                null,
+                'essai.png',
+            ),
+        ).toEqual({
+            title: '2 items are in use elsewhere: remove them from where they are used, then try again.',
+            tone: 'warning',
+        });
+    });
+
+    it('says it after the counts of what else happened', () => {
+        expect(
+            describeResult(
+                {
+                    summary: { succeeded: 3, failed: 0, skipped: 2 },
+                    results: [inUse('1'), { id: '2', status: 'skipped', reason: 'forbidden' }],
+                },
+                'Delete',
+                intl,
+                '3 pages',
+            ),
+        ).toEqual({
+            title: '“Delete” is done for 3 pages.',
+            description:
+                '3 items done, 1 skipped. 1 item is in use elsewhere: remove it from where it is used, then try again.',
+            tone: 'warning',
+        });
+    });
+});
+
 describe('describeItemResult', () => {
+    const inUseEntry = { id: '1', status: 'skipped' as const, reason: 'in_use' };
+
     it('gives the message, the reason, or the status', () => {
         expect(describeItemResult({ id: '1', status: 'failed', message: 'No title.' }, intl)).toBe(
             'No title.',
@@ -38,6 +87,7 @@ describe('describeItemResult', () => {
         expect(describeItemResult({ id: '1', status: 'skipped', reason: 'not_found' }, intl)).toBe(
             'Not found',
         );
+        expect(describeItemResult(inUseEntry, intl)).toBe('In use elsewhere');
         expect(describeItemResult({ id: '1', status: 'skipped', reason: 'other' }, intl)).toBe(
             'Skipped',
         );

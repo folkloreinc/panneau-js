@@ -70,6 +70,11 @@ export interface MockBackendOptions {
      * data, and built-in `stat` and `list` on a resource, are a `404`.
      */
     widgets?: Record<string, MockWidget>;
+    /**
+     * Whether something else uses an item, so that it can't be deleted: `delete` skips it with
+     * the reason `in_use`, and its `undo` leaves it out. Without it, no item is in use.
+     */
+    inUse?: (context: { resource: string; item: Item }) => boolean;
 }
 
 /** The data of a widget in the mock backend: its data, or what answers it. */
@@ -1092,8 +1097,13 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             }
             const selection = body.selection as Selection | undefined;
             const selected = selectItems(scoped, selection);
-            const deleted = selected.filter((item) => allows(item, 'delete'));
-            const skipped = selected.filter((item) => !deleted.includes(item));
+            const allowed = selected.filter((item) => allows(item, 'delete'));
+            const skipped = selected.filter((item) => !allowed.includes(item));
+            // An item that something else uses is skipped, even alone: it isn't an error.
+            const inUse = allowed.filter(
+                (item) => options.inUse?.({ resource: resource.id, item }) === true,
+            );
+            const deleted = allowed.filter((item) => !inUse.includes(item));
             // The only item of an item action is an error, not a skipped result
             const ids =
                 selection !== undefined && 'ids' in selection && Array.isArray(selection.ids)
@@ -1115,14 +1125,25 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                 ...(hasTrash && deleted.length > 0 && deleted.length <= UNDO_LIMIT
                     ? { undo: { action: 'restore', items: deleted.map((item) => item.id) } }
                     : {}),
-                summary: { succeeded: deleted.length, failed: 0, skipped: skipped.length },
-                ...(skipped.length > 0
+                summary: {
+                    succeeded: deleted.length,
+                    failed: 0,
+                    skipped: skipped.length + inUse.length,
+                },
+                ...(skipped.length + inUse.length > 0
                     ? {
-                          results: skipped.slice(0, 20).map((item) => ({
-                              id: item.id,
-                              status: 'skipped' as const,
-                              reason: 'forbidden',
-                          })),
+                          results: [
+                              ...skipped.map((item) => ({
+                                  id: item.id,
+                                  status: 'skipped' as const,
+                                  reason: 'forbidden',
+                              })),
+                              ...inUse.map((item) => ({
+                                  id: item.id,
+                                  status: 'skipped' as const,
+                                  reason: 'in_use',
+                              })),
+                          ].slice(0, 20),
                       }
                     : {}),
                 refresh: 'list',

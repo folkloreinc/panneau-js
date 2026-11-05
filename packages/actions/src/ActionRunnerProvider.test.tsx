@@ -185,6 +185,110 @@ describe('ActionRunnerProvider', () => {
         );
     });
 
+    describe('items in use', () => {
+        const remove: Action = {
+            id: 'delete',
+            kind: 'server',
+            scope: ['item', 'selection'],
+            undoable: true,
+        };
+        // Parsed, as the app gives it: actions have their `kind`.
+        const definition = createExampleDefinition() as Definition;
+
+        it('names the item, without "Undo" or details, when it is the only one', async () => {
+            const runAction = vi.fn<ActionAdapter['runAction']>().mockResolvedValue({
+                result: {
+                    summary: { succeeded: 0, failed: 0, skipped: 1 },
+                    results: [{ id: '12', status: 'skipped', reason: 'in_use' }],
+                    refresh: 'list',
+                },
+            });
+            const { run } = renderRunner(
+                { action: remove, scope: 'item', item: { id: '12', title: 'essai.png' }, count: 1 },
+                { adapter: createAdapter({ runAction }) },
+                { wrap: (ui) => <PanneauProvider definition={definition}>{ui}</PanneauProvider> },
+            );
+            await run();
+            expect(
+                await screen.findByText(
+                    '“essai.png” is in use elsewhere: remove it from where it is used, then try again.',
+                ),
+            ).toBeInTheDocument();
+            expect(screen.queryByRole('button', { name: 'Undo' })).not.toBeInTheDocument();
+            expect(screen.queryByRole('button', { name: 'Details' })).not.toBeInTheDocument();
+        });
+
+        it('says it in French', async () => {
+            const runAction = vi.fn<ActionAdapter['runAction']>().mockResolvedValue({
+                result: {
+                    summary: { succeeded: 0, failed: 0, skipped: 2 },
+                    results: [
+                        { id: '1', status: 'skipped', reason: 'in_use' },
+                        { id: '2', status: 'skipped', reason: 'in_use' },
+                    ],
+                },
+            });
+            const { run } = renderRunner(
+                { action: remove, scope: 'selection', selection: { ids: ['1', '2'] }, count: 2 },
+                { adapter: createAdapter({ runAction }) },
+                {
+                    wrap: (ui) => (
+                        <IntlProvider locale="fr" messages={fr}>
+                            <PanneauProvider definition={definition}>{ui}</PanneauProvider>
+                        </IntlProvider>
+                    ),
+                },
+            );
+            await run();
+            expect(
+                await screen.findByText(
+                    '2 éléments sont utilisés ailleurs : retirez-les de là où ils servent, puis réessayez.',
+                ),
+            ).toBeInTheDocument();
+            expect(screen.queryByRole('button', { name: 'Annuler' })).not.toBeInTheDocument();
+            // Which ones, in the details
+            expect(screen.getByRole('button', { name: 'Détails' })).toBeInTheDocument();
+        });
+
+        it('says it next to what was deleted, whose "Undo" covers only those', async () => {
+            const runAction = vi
+                .fn<ActionAdapter['runAction']>()
+                .mockResolvedValueOnce({
+                    result: {
+                        summary: { succeeded: 2, failed: 0, skipped: 1 },
+                        results: [{ id: '2', status: 'skipped', reason: 'in_use' }],
+                        refresh: 'list',
+                        undo: { action: 'restore', items: ['1', '3'] },
+                    },
+                })
+                .mockResolvedValueOnce({ result: { refresh: 'list' } });
+            const { run } = renderRunner(
+                {
+                    action: remove,
+                    scope: 'selection',
+                    selection: { ids: ['1', '2', '3'] },
+                    count: 3,
+                },
+                { adapter: createAdapter({ runAction }) },
+                { wrap: (ui) => <PanneauProvider definition={definition}>{ui}</PanneauProvider> },
+            );
+            await run();
+            expect(await screen.findByText('“Delete” is done for 2 pages.')).toBeInTheDocument();
+            expect(
+                screen.getByText(
+                    '2 items done. 1 item is in use elsewhere: remove it from where it is used, then try again.',
+                ),
+            ).toBeInTheDocument();
+            await userEvent.click(screen.getByRole('button', { name: 'Undo' }));
+            await waitFor(() =>
+                expect(runAction).toHaveBeenLastCalledWith('pages', 'restore', {
+                    selection: { ids: ['1', '3'] },
+                    values: {},
+                }),
+            );
+        });
+    });
+
     it('says when the undo failed', async () => {
         const runAction = vi
             .fn<ActionAdapter['runAction']>()
