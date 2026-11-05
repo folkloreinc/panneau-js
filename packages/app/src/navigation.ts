@@ -146,7 +146,7 @@ function withoutExtraSeparators(entries: NavEntry[]): NavEntry[] {
 
 /**
  * The entries of the main navigation: the `main` menu of the definition, or every resource and
- * page without one. Resources the user can't list (`abilities.viewAny`), pages they can't open
+ * page without one, but `home`, which the shell links to already. Resources the user can't list (`abilities.viewAny`), pages they can't open
  * (`abilities.view: false`) and entries of unknown types are left out, and so are the groups and
  * separators they leave empty (decision 0046). Groups keep one level: the links of nested groups
  * join their parent.
@@ -154,8 +154,9 @@ function withoutExtraSeparators(entries: NavEntry[]): NavEntry[] {
 export function getNavigation(definition: Definition, basePath: string): NavEntry[] {
     const menu: MenuItem[] = definition.menus?.main ?? [
         { type: 'resources' },
+        // `home` is the home page, which the shell already links to (the dashboard of decision 0064)
         ...Object.entries(definition.pages ?? {})
-            .filter(([, page]) => (page.params ?? []).length === 0)
+            .filter(([id, page]) => id !== 'home' && (page.params ?? []).length === 0)
             .map(([page]) => ({ type: 'page', page })),
     ];
     const entries = menu.flatMap((item, index): NavEntry[] => {
