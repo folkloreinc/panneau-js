@@ -1,5 +1,36 @@
 # @panneau/lists
 
+## 5.0.0-alpha.18
+
+### Minor Changes
+
+- 19d0892: The image of items in the table, and in media libraries (decision 0061):
+  
+  - `@panneau/protocol`: the `itemImage` of a resource of kind `media` defaults to the `media` of its items. `getItemImageField(resource)` gives it, or the resource's `itemImage`.
+  - `@panneau/lists`: with `itemImage`, the table starts each title with a square thumbnail of the image of its item, loaded lazily, or a placeholder for an item without one, and its skeleton draws their placeholders. `getImageUrl()` gives the URL of a media only when it is an image or has a thumbnail, and the URL of a file only when it is an image that browsers show: a PDF or a HEIC original has no image. `file` values have a display (`FileDisplay`: the name of each file linked to its URL, after the thumbnail of an image or an icon), `image` values are shown as `media` ones, and `MediaDisplay` reads media references (the thumbnail of their `media`, their `label`).
+  - `@panneau/app`: a media library offers its gallery and shows its thumbnails without declaring `itemImage`, and so do its items in "Go to…". The panel of a media shows its image over its details.
+- d46a16d: "Undo" instead of a confirmation (decision 0063):
+  
+  - `@panneau/protocol`: an action declares `undoable: true`, and its result carries `undo`: `{ action, items, params }`, an action of the same resource that undoes the run, the items it changed, and its parameters. `UNDO_LIMIT` (100): above it, the client confirms, and the result has no `undo`. The built-in `restore` undoes the `delete` of a resource with a trash. In the JSON Schema, the OpenAPI spec and `docs/protocol.md`. The mock backend keeps a trash for a resource whose `delete` is undoable, answers its `undo`, and runs `restore`; the conformance kit runs the undo of a result and checks that the item is back (`action.undo`).
+  - `@panneau/core`: `asksConfirmation(action, count)`: an undoable action asks first only above the limit, or when it is queued, unless it sets `confirm`. A declared `delete` that is undoable doesn't take the built-in confirmation.
+  - `@panneau/actions`: the toast of a result with an `undo` has "Undo", which runs it, refreshes, and says it was undone.
+  - `@panneau/lists`: undoable actions run without a confirmation up to the limit; a value changed in place says so in a toast whose "Undo" saves the previous value the same way.
+  - `@panneau/app`: the item header runs undoable actions without a confirmation.
+
+### Patch Changes
+
+- Updated dependencies [b200640]
+- Updated dependencies [93223bd]
+- Updated dependencies [19d0892]
+- Updated dependencies [11bcf36]
+- Updated dependencies [aae4bf7]
+- Updated dependencies [d46a16d]
+  - @panneau/protocol@5.0.0-alpha.18
+  - @panneau/ui@5.0.0-alpha.18
+  - @panneau/core@5.0.0-alpha.18
+  - @panneau/intl@5.0.0-alpha.18
+  - @panneau/fields@5.0.0-alpha.18
+
 ## 5.0.0-alpha.17
 
 ### Minor Changes
