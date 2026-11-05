@@ -126,3 +126,110 @@ export const Light: Story = {
 };
 
 export const Dark: Story = { args: { colorScheme: 'dark' } };
+
+/** What each built-in tone means for a state, with examples (the table of `docs/protocol.md`). */
+const MEANINGS: { tone: Tone; means: string; examples: string[] }[] = [
+    {
+        tone: 'neutral',
+        means: 'Not started, waiting, a category',
+        examples: ['Draft', 'Pending', 'Idea'],
+    },
+    { tone: 'info', means: 'In progress or coming', examples: ['In progress', 'Scheduled', 'New'] },
+    {
+        tone: 'success',
+        means: 'Done, live, in good shape',
+        examples: ['Published', 'Active', 'Paid'],
+    },
+    {
+        tone: 'warning',
+        means: 'Needs attention soon',
+        examples: ['Expires soon', 'Low stock', 'Possible duplicate'],
+    },
+    { tone: 'danger', means: 'A problem to fix now', examples: ['Failed', 'Expired', 'Overdue'] },
+    {
+        tone: 'muted',
+        means: 'Over, no longer active',
+        examples: ['Closed', 'Archived', 'Cancelled', 'Ended'],
+    },
+];
+
+/** Each tone of a state with its meaning, in the subtle appearance that badges of states use. */
+function Meanings({ colorScheme = 'light' }: { colorScheme?: ColorScheme }) {
+    return (
+        <PanneauRoot colorScheme={colorScheme} style={{ padding: '1rem' }}>
+            <table style={{ borderCollapse: 'collapse' }}>
+                <thead>
+                    <tr>
+                        <th style={{ textAlign: 'start', padding: '0.25rem 1rem 0.25rem 0' }}>
+                            Tone
+                        </th>
+                        <th style={{ textAlign: 'start', padding: '0.25rem 1rem 0.25rem 0' }}>
+                            Means
+                        </th>
+                        <th style={{ textAlign: 'start', padding: '0.25rem 0' }}>Examples</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {MEANINGS.map(({ tone, means, examples }) => (
+                        <tr key={tone}>
+                            <th
+                                scope="row"
+                                style={{ textAlign: 'start', padding: '0.25rem 1rem 0.25rem 0' }}
+                            >
+                                <code>{tone}</code>
+                            </th>
+                            <td style={{ padding: '0.25rem 1rem 0.25rem 0' }}>{means}</td>
+                            <td style={{ padding: '0.25rem 0' }}>
+                                <span style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem' }}>
+                                    {examples.map((example) => (
+                                        <Badge key={example} tone={tone}>
+                                            {example}
+                                        </Badge>
+                                    ))}
+                                </span>
+                            </td>
+                        </tr>
+                    ))}
+                    <tr>
+                        <th
+                            scope="row"
+                            style={{ textAlign: 'start', padding: '0.25rem 1rem 0.25rem 0' }}
+                        >
+                            <code>accent</code>
+                        </th>
+                        <td style={{ padding: '0.25rem 1rem 0.25rem 0' }}>
+                            Never a state: the main action of a screen
+                        </td>
+                        <td style={{ padding: '0.25rem 0' }}>
+                            <Button tone="accent">Save</Button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </PanneauRoot>
+    );
+}
+
+/** The tones of states, what each one means, and examples. */
+export const Meaning: StoryObj<typeof Meanings> = {
+    render: (args) => <Meanings {...args} />,
+    args: { colorScheme: 'light' },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getAllByRole('row')).toHaveLength(MEANINGS.length + 2);
+        // What is over has no fill, only an outline: it steps back from what is still alive.
+        const archived = canvas.getByText('Archived');
+        const style = getComputedStyle(archived.closest('.panneau-tone-muted') ?? archived);
+        await expect(archived.closest('.panneau-tone-muted')).not.toBeNull();
+        await expect(style.backgroundColor).toBe('rgba(0, 0, 0, 0)');
+        await expect(style.borderTopColor).toBe('rgb(139, 139, 148)');
+        const draft = canvas.getByText('Draft').closest('.panneau-tone-neutral');
+        await expect(getComputedStyle(draft as Element).backgroundColor).toBe('rgb(244, 244, 245)');
+    },
+};
+
+/** The same, in the dark scheme. */
+export const MeaningDark: StoryObj<typeof Meanings> = {
+    render: (args) => <Meanings {...args} />,
+    args: { colorScheme: 'dark' },
+};

@@ -80,6 +80,7 @@ Rector rules will cover the mechanical parts: field class renames, `localized()`
 | `ApiProvider` / `DataProvider` with `Api` classes                  | `DataAdapter` and the REST adapter                                                              |
 | CKEditor `html` field                                              | `richtext` field (TipTap); HTML stays the storage format (see [Rich text](#rich-text))          |
 | Bootstrap classes in custom components                             | Design tokens and `@panneau/ui` primitives; the Bootstrap-compatible theme eases the transition |
+| Bootstrap's theme colors on states (`dark`, `secondary`…)          | Tones, with one meaning each ([Tones](protocol.md#tones)): `dark` becomes `muted`               |
 
 The codemods of `@panneau/codemods` rewrite the entry, the imports and the custom field components, and report the rest: see [Custom fields](#custom-fields).
 

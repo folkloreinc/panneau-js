@@ -68,3 +68,17 @@
     --panneau-tone-solid-hover: var(--panneau-color-info-solid-hover);
     --panneau-tone-solid-text: var(--panneau-color-info-solid-text);
 }
+
+/*
+ * What is over (Archived, Cancelled): no fill in the subtle appearance, a grey outline and the muted
+ * text, so that it steps back from what is still alive.
+ */
+.muted {
+    --panneau-tone-text: var(--panneau-color-muted);
+    --panneau-tone-subtle: var(--panneau-color-muted-subtle);
+    --panneau-tone-border: var(--panneau-color-muted-border);
+    --panneau-tone-outline: var(--panneau-color-muted-border);
+    --panneau-tone-solid: var(--panneau-color-muted-solid);
+    --panneau-tone-solid-hover: var(--panneau-color-muted-solid-hover);
+    --panneau-tone-solid-text: var(--panneau-color-muted-solid-text);
+}
