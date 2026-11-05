@@ -1,5 +1,36 @@
 # @panneau/forms
 
+## 5.0.0-alpha.18
+
+### Minor Changes
+
+- 93223bd: Quicker long forms ([#227](https://github.com/folkloreinc/panneau-js/issues/227)):
+  
+  - `@panneau/forms`: ⌘ Enter on Apple platforms, Ctrl Enter elsewhere, saves a `FormView` (and a `Form`) from any of its fields, a text area and the rich text editor included. Keys pressed in a dialog or a popover that a field opens are left to it. The submit button gives the shortcut in its tooltip and in `aria-keyshortcuts`. After a failed save, every collapsed section that holds an error opens, not only the one of the first error; tabs keep their error counts, and the tab of the first error shows.
+  - `@panneau/editor`: Mod-Enter no longer adds a line break, so that it saves the form. Shift Enter still does.
+  - `@panneau/ui`: `Button` (and `IconButton`) render `aria-keyshortcuts`, which React Aria left out: the "Go to…" button of the sidebar now gives its shortcut too.
+  - `@panneau/intl`: the `panneau.forms.saveShortcut` message, in English and French.
+- 11bcf36: Toasts (decision 0062):
+  
+  - `@panneau/ui`: toasts show at the bottom, centered, above what sticks to the bottom of the page (`useToastOffset(ref)`), and take the whole width on a phone. `PanneauRoot` takes a `toastPlacement` (`bottom`, `bottom-end`, `top-end`). `show()` takes a `key`: a toast with the key of one already shown replaces it. At most three show at once, the older ones folded behind the newest until the region is hovered or focused. Timeouts follow what a toast holds (`getToastTimeout()`): about 5 seconds, longer for a longer text, about 10 seconds with an action (instead of never), none for an error. A success keeps the neutral look; only warnings and errors color the edge. They appear from below, without motion when the system asks for less.
+  - `@panneau/forms`: a form says "Saved" in its footer, next to its button, until its values change, instead of in a toast, and a failed save says so there too, without a toast. `saved` keeps "Saved" when the form starts over from the item it just saved. `showSavedToast` only applies to a form without a footer. The footer raises the toasts above it.
+  - `@panneau/actions`: toasts name what an action was done to (the item by its title, or the count of items), one per action and target. No toast when a queued run starts: the runs button shows it, and the toast comes when it ends (not at all when the open list of runs shows it and the result says nothing more).
+  - `@panneau/app`: creating an item says what was created in a toast, since the page changes; saving it again says "Saved" in the footer of its form.
+
+### Patch Changes
+
+- Updated dependencies [b200640]
+- Updated dependencies [93223bd]
+- Updated dependencies [19d0892]
+- Updated dependencies [11bcf36]
+- Updated dependencies [aae4bf7]
+- Updated dependencies [d46a16d]
+  - @panneau/protocol@5.0.0-alpha.18
+  - @panneau/ui@5.0.0-alpha.18
+  - @panneau/core@5.0.0-alpha.18
+  - @panneau/intl@5.0.0-alpha.18
+  - @panneau/fields@5.0.0-alpha.18
+
 ## 5.0.0-alpha.17
 
 ### Patch Changes
