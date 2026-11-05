@@ -1,5 +1,15 @@
 # @panneau/lists
 
+## 5.0.0-alpha.20
+
+### Patch Changes
+
+- @panneau/core@5.0.0-alpha.20
+  - @panneau/fields@5.0.0-alpha.20
+  - @panneau/intl@5.0.0-alpha.20
+  - @panneau/protocol@5.0.0-alpha.20
+  - @panneau/ui@5.0.0-alpha.20
+
 ## 5.0.0-alpha.19
 
 ### Minor Changes

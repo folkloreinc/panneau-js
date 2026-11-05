@@ -1,5 +1,20 @@
 # @panneau/app
 
+## 5.0.0-alpha.20
+
+### Patch Changes
+
+- da7d159: The default main menu leaves out `pages.home`: the shell already links to the home page, which the dashboard of decision 0064 adds, and the menu showed it again under its id.
+- @panneau/actions@5.0.0-alpha.20
+  - @panneau/core@5.0.0-alpha.20
+  - @panneau/data@5.0.0-alpha.20
+  - @panneau/fields@5.0.0-alpha.20
+  - @panneau/forms@5.0.0-alpha.20
+  - @panneau/intl@5.0.0-alpha.20
+  - @panneau/lists@5.0.0-alpha.20
+  - @panneau/protocol@5.0.0-alpha.20
+  - @panneau/ui@5.0.0-alpha.20
+
 ## 5.0.0-alpha.19
 
 ### Patch Changes
