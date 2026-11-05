@@ -119,8 +119,10 @@ Goal: a complete admin panel, ready for client projects.
 
 Minor releases, each one additive:
 
-- **Image editing (done in phase 2):** crop, rotate, flip and focal point. Edits are non-destructive and rendered through `laravel-image` ([#100](https://github.com/folkloreinc/panneau-js/issues/100), [decisions/0031](decisions/0031-image-editor-and-image-field.md)).
-- **Media library:** conversions, tags, search, usage tracking. Depends on the `laravel-mediatheque` roadmap.
+- **Image editing (done in phase 2):** crop, rotate, flip and focal point. Edits are non-destructive and rendered through `laravel-image` ([#100](https://github.com/folkloreinc/panneau-js/issues/100), [decisions/0031](decisions/0031-image-editor-and-image-field.md)). Left: the crop of an image in a block is lost on save, because `laravel-folklore`'s blocks keep only the reference to the media.
+- **Media library:** conversions, tags, search. Depends on the `laravel-mediatheque` roadmap. Also:
+    - an alternative text on each media, optional, that image fields and the site use by default;
+    - its usage: the list of the items that use a media (pages, blocks), on its details. Deleting a media in use already warns.
 - **Home page:** dashboards with widgets, defined per project and per role. Done: the built-in `stat`, `series` and `list` and the shape of their data, `stat` and `list` on the list of a resource, widgets of plugins, their skeletons and errors, and a grid of 12 columns ([#228](https://github.com/folkloreinc/panneau-js/issues/228), [decisions/0064](decisions/0064-dashboard-widgets.md)), with `laravel-panneau`'s builders, endpoint and cache ([folkloreinc/laravel-panneau#178](https://github.com/folkloreinc/laravel-panneau/issues/178)). Later: users choosing and arranging their own widgets, with the preferences of saved views.
 - **Global search (done in phase 2):** a "Go to…" command palette (⌘K) ([#97](https://github.com/folkloreinc/panneau-js/issues/97), [decisions/0029](decisions/0029-go-to-palette.md)): recent items, navigation, create, commands of plugins and results of `GET /search` grouped by resource. Then the `limit` and `resources` parameters, the `422` and `429` problems, conformance checks and a scope per resource ([decisions/0030](decisions/0030-search-parameters-and-scope.md)), and `laravel-panneau`'s endpoint, on Laravel Scout when the model is searchable ([folkloreinc/laravel-panneau#96](https://github.com/folkloreinc/laravel-panneau/issues/96)). Recent items on the server are set aside for now.
 - **AI agents (MCP):** an MCP server that lets an AI assistant work in a Panneau, authenticated as its user.
@@ -128,10 +130,15 @@ Minor releases, each one additive:
     - The agent signs in with OAuth as the user, as the MCP specification describes: it acts with the user's abilities and the backend's policies, and the user can revoke it.
     - It lives in `laravel-panneau`. The tools are built once from the definition, with Laravel's JSON Schema builder. `laravel/mcp` serves them to outside AI clients, signed in with OAuth 2.1 (Passport) or a Sanctum token. The Laravel AI SDK (`laravel/ai`) uses the same tools for an assistant inside Panneau, with its answers streamed to a panel of the app.
     - A decision record sets the tools, their names and their limits when the work starts.
-- **Preview:** component previews and iframe previews of the real site fed with unsaved values.
-- **Drafts and revisions:** per resource.
+- **Preview:** component previews and iframe previews of the real site fed with unsaved values, live, next to the form. Left besides building it: wiring it on the sites.
+- **Revisions:** the history of an item, per resource: who changed what and when, a comparison of two versions, and restoring one.
+- **Drafts and no lost work:** drafts per resource. The form also keeps its unsaved values in the browser as they are typed, and offers them back after a crash or a closed tab. Leaving a changed form already warns (phase 1).
+- **SEO and sharing:** a preset of compound field (decision 0065, as `sessions`) for the title and description for search engines and the share image, with a preview of the page in a search result and in a social card.
+- **Page tree:** a tree layout of a list, where pages are moved by drag and drop to change their parent and their order. Menus of the sites are managed with it too.
+- **Blocks:** duplicate a block, copy and paste blocks from one page to another, reusable blocks, and page templates.
+- **Activity log:** who did what and when, on a widget of the home page, then per item.
 - **Collaboration:**
-    - presence ("Marie is editing this page");
+    - presence ("Marie is editing this page"), after the activity log;
     - optional realtime collaboration with Yjs (`@panneau/collab`), first on rich text fields and then on whole forms.
 
 ## Open questions
