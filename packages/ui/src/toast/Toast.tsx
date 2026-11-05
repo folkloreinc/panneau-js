@@ -1,8 +1,10 @@
 import { CircleAlert, CircleCheck, Info, TriangleAlert, X } from 'lucide-react';
 import {
     type CSSProperties,
+    type Dispatch,
     type ReactNode,
     type RefObject,
+    type SetStateAction,
     createContext,
     use,
     useEffect,
@@ -154,6 +156,64 @@ export function useToastOffset(ref: RefObject<HTMLElement | null>, active = true
     }, [ref, toasts, active]);
 }
 
+/**
+ * The toasts of a region: `show()` with keys over React Aria's queue, and the offsets of what
+ * sticks to the bottom of the page.
+ */
+function createToasts(
+    queue: AriaToastQueue<ToastContent>,
+    setOffsets: Dispatch<SetStateAction<ReadonlyMap<object, number>>>,
+): ToastContextValue {
+    // The toast shown for each key given to show(), and back.
+    const shown = new Map<string, string>();
+    const keys = new Map<string, string>();
+    const forget = (added: string) => {
+        const own = keys.get(added);
+        if (own !== undefined && shown.get(own) === added) {
+            shown.delete(own);
+        }
+        keys.delete(added);
+    };
+    return {
+        show(content, { key, timeout, onClose } = {}) {
+            const delay = timeout === undefined ? getToastTimeout(content) : timeout;
+            const previous = key !== undefined ? shown.get(key) : undefined;
+            if (previous !== undefined) {
+                keys.delete(previous);
+                queue.close(previous);
+            }
+            let added = '';
+            added = queue.add(content, {
+                ...(delay !== null ? { timeout: delay } : {}),
+                onClose: () => {
+                    forget(added);
+                    onClose?.();
+                },
+            });
+            if (key === undefined) {
+                return added;
+            }
+            shown.set(key, added);
+            keys.set(added, key);
+            return key;
+        },
+        close(key) {
+            queue.close(shown.get(key) ?? key);
+        },
+        setOffset(id, height) {
+            setOffsets((current) => {
+                const next = new Map(current);
+                if (height === null) {
+                    next.delete(id);
+                } else {
+                    next.set(id, height);
+                }
+                return next;
+            });
+        },
+    };
+}
+
 export interface ToastProviderProps {
     children?: ReactNode;
     /** Where the toasts show. Defaults to `bottom`. */
@@ -179,52 +239,7 @@ export function ToastProvider({
         () => new AriaToastQueue<ToastContent>({ maxVisibleToasts: MAX_VISIBLE_TOASTS }),
     );
     const [offsets, setOffsets] = useState<ReadonlyMap<object, number>>(() => new Map());
-    const [toasts] = useState<ToastContextValue>(() => {
-        // The toast shown for each key given to show(), and back.
-        const shown = new Map<string, string>();
-        const keys = new Map<string, string>();
-        return {
-            show(content, { key, timeout, onClose } = {}) {
-                const delay = timeout === undefined ? getToastTimeout(content) : timeout;
-                const previous = key !== undefined ? shown.get(key) : undefined;
-                if (previous !== undefined) {
-                    keys.delete(previous);
-                    queue.close(previous);
-                }
-                const added = queue.add(content, {
-                    ...(delay !== null ? { timeout: delay } : {}),
-                    onClose: () => {
-                        const own = keys.get(added);
-                        if (own !== undefined && shown.get(own) === added) {
-                            shown.delete(own);
-                        }
-                        keys.delete(added);
-                        onClose?.();
-                    },
-                });
-                if (key === undefined) {
-                    return added;
-                }
-                shown.set(key, added);
-                keys.set(added, key);
-                return key;
-            },
-            close(key) {
-                queue.close(shown.get(key) ?? key);
-            },
-            setOffset(id, height) {
-                setOffsets((current) => {
-                    const next = new Map(current);
-                    if (height === null) {
-                        next.delete(id);
-                    } else {
-                        next.set(id, height);
-                    }
-                    return next;
-                });
-            },
-        };
-    });
+    const [toasts] = useState(() => createToasts(queue, setOffsets));
     const offset = Math.max(0, ...offsets.values());
     return (
         <ToastContext value={toasts}>
