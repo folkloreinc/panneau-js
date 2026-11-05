@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { expect, within } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 
 import type { Field } from '@panneau/protocol';
 
@@ -59,6 +59,8 @@ export const Default: Story = {
         await expect(
             canvas.getByRole('listitem', { name: /Salle Wilfrid-Pelletier$/ }),
         ).toBeInTheDocument();
-        await expect(canvas.getByRole('textbox', { name: 'Tickets' })).toBeInTheDocument();
+        // A saved session starts collapsed under its summary (decision 0068).
+        await userEvent.click(canvas.getByRole('button', { name: /Salle Wilfrid-Pelletier$/ }));
+        await expect(canvas.getByRole('textbox', { name: 'Tickets' })).toBeVisible();
     },
 };
