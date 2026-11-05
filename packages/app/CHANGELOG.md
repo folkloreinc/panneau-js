@@ -1,5 +1,22 @@
 # @panneau/app
 
+## 5.0.0-alpha.23
+
+### Patch Changes
+
+- Updated dependencies [c310e38]
+- Updated dependencies [c310e38]
+- Updated dependencies [c310e38]
+  - @panneau/fields@5.0.0-alpha.23
+  - @panneau/intl@5.0.0-alpha.23
+  - @panneau/lists@5.0.0-alpha.23
+  - @panneau/forms@5.0.0-alpha.23
+  - @panneau/actions@5.0.0-alpha.23
+  - @panneau/ui@5.0.0-alpha.23
+  - @panneau/core@5.0.0-alpha.23
+  - @panneau/data@5.0.0-alpha.23
+  - @panneau/protocol@5.0.0-alpha.23
+
 ## 5.0.0-alpha.22
 
 ### Minor Changes
