@@ -1,9 +1,115 @@
+.single,
 .multiple {
     display: flex;
     flex-direction: column;
     gap: var(--panneau-space-2);
 }
 
+/* The picker of the single field, with "Cancel" while it changes the item. */
+.picker {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+}
+
+.picker > :first-child {
+    flex: 1;
+    min-width: 0;
+}
+
+/* The chosen items, as cards (decision 0067). */
+.cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.card {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-3);
+    min-width: 0;
+    padding: var(--panneau-space-2);
+    background-color: var(--panneau-color-surface);
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-radius-md);
+}
+
+/* The item's image, or its resource's icon. */
+.thumbnail {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    overflow: hidden;
+    color: var(--panneau-color-text-muted);
+    background-color: var(--panneau-color-surface-sunken);
+    border-radius: var(--panneau-radius-sm);
+}
+
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.optionThumbnail {
+    width: 1.75rem;
+    height: 1.75rem;
+}
+
+.cardText {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.cardLabel {
+    overflow: hidden;
+    font-size: var(--panneau-font-size-md);
+    font-weight: var(--panneau-font-weight-medium);
+    color: var(--panneau-color-text);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.link {
+    align-self: flex-start;
+    max-width: 100%;
+    text-decoration: none;
+    border-radius: var(--panneau-radius-sm);
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+.link[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 2px;
+}
+
+.cardDescription {
+    overflow: hidden;
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-text-muted);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cardActions {
+    display: inline-flex;
+    flex: none;
+    gap: var(--panneau-space-1);
+}
+
+/* The items of a compact field, as chips. */
 .selected {
     display: flex;
     flex-wrap: wrap;

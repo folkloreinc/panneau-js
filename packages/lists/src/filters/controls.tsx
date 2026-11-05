@@ -188,11 +188,13 @@ export function RelationFilter({
                     onChange(ids);
                 }}
                 className={styles.control}
+                compact
             />
         );
     }
     return (
         <RelationField
+            compact
             label={label}
             resource={resource}
             value={references[0] ?? null}

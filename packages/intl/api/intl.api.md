@@ -242,6 +242,7 @@ export const appMessages: {
     itemCreated: PanneauMessage<    {
     title: string;
     }>;
+    openCreated: PanneauMessage<Record<never, never>>;
     saved: PanneauMessage<    {
     resource: string;
     }>;
@@ -442,6 +443,11 @@ export const fieldsMessages: {
     createRelationFailed: PanneauMessage<    {
     text: string;
     }>;
+    change: PanneauMessage<Record<never, never>>;
+    changeRelation: PanneauMessage<    {
+    item: string;
+    }>;
+    cancelChange: PanneauMessage<Record<never, never>>;
     relationUnavailable: PanneauMessage<Record<never, never>>;
     chooseFile: PanneauMessage<Record<never, never>>;
     chooseFiles: PanneauMessage<Record<never, never>>;

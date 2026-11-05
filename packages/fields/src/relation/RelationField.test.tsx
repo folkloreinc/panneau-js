@@ -55,7 +55,7 @@ describe('RelationField', () => {
         expect(search).toHaveBeenCalledWith('authors', expect.any(String), expect.anything());
     });
 
-    it('shows the label of the selected reference, and clears it', async () => {
+    it('shows the selected item as a card, and removes it', async () => {
         const { source } = createSource();
         const onChange = vi.fn();
         renderField(
@@ -67,10 +67,115 @@ describe('RelationField', () => {
             />,
             { relationSource: source },
         );
+        expect(screen.getByRole('group', { name: 'Author' })).toBeInTheDocument();
+        expect(screen.getByRole('listitem')).toHaveTextContent('Ada Lovelace');
+        // Without a link from the source, the label is plain text
+        expect(screen.queryByRole('link')).not.toBeInTheDocument();
+        expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+        await userEvent.click(screen.getByRole('button', { name: 'Remove Ada Lovelace' }));
+        expect(onChange).toHaveBeenLastCalledWith(null);
+    });
+
+    it('shows the item in its picker, and items as chips, when compact', async () => {
+        const { source } = createSource();
+        const onChange = vi.fn();
+        const { unmount } = renderField(
+            <RelationField
+                compact
+                label="Author"
+                resource="authors"
+                value={{ id: '1', label: 'Ada Lovelace' }}
+                onChange={onChange}
+            />,
+            { relationSource: source },
+        );
         const input = screen.getByRole('combobox', { name: 'Author' });
         expect(input).toHaveValue('Ada Lovelace');
+        expect(screen.queryByRole('listitem')).not.toBeInTheDocument();
         await userEvent.clear(input);
         expect(onChange).toHaveBeenLastCalledWith(null);
+        unmount();
+
+        renderField(
+            <RelationField
+                compact
+                multiple
+                label="Authors"
+                resource="authors"
+                value={[{ id: '1', label: 'Ada Lovelace' }]}
+            />,
+            { relationSource: source },
+        );
+        expect(screen.getByRole('button', { name: 'Remove Ada Lovelace' })).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /Change/ })).not.toBeInTheDocument();
+    });
+
+    it('changes the item from its card, and goes back to it with Escape', async () => {
+        const { source } = createSource();
+        renderField(
+            <Controlled<RelationReference | null> initial={{ id: '1', label: 'Ada Lovelace' }}>
+                {(value, setValue) => (
+                    <RelationField
+                        label="Author"
+                        resource="authors"
+                        value={value}
+                        onChange={setValue}
+                    />
+                )}
+            </Controlled>,
+            { relationSource: source },
+        );
+        await userEvent.click(screen.getByRole('button', { name: 'Change Ada Lovelace' }));
+        // The picker takes the focus
+        const input = screen.getByRole('combobox', { name: 'Author' });
+        expect(input).toHaveFocus();
+        await userEvent.keyboard('{Escape}');
+        // The card is back, with the focus on its first button
+        expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Change Ada Lovelace' })).toHaveFocus();
+
+        await userEvent.click(screen.getByRole('button', { name: 'Change Ada Lovelace' }));
+        await userEvent.type(screen.getByRole('combobox', { name: 'Author' }), 'hop');
+        await userEvent.click(await screen.findByRole('option', { name: 'Grace Hopper' }));
+        expect(screen.getByRole('listitem')).toHaveTextContent('Grace Hopper');
+        expect(screen.getByRole('button', { name: 'Change Grace Hopper' })).toHaveFocus();
+    });
+
+    it('shows the image, the description and the link of items, as the source describes them', async () => {
+        const { source } = createSource();
+        const resolve = vi.fn(async (_resource: string, ids: readonly string[]) =>
+            ids.map((id) => ({
+                id,
+                label: `Author ${id}`,
+                description: 'Writer',
+                imageUrl: `https://example.com/${id}.jpg`,
+            })),
+        );
+        const { container } = renderField(
+            <RelationField
+                multiple
+                label="Authors"
+                resource="authors"
+                // From items: references without their image or description
+                value={[{ id: '1', label: 'Ada Lovelace' }]}
+            />,
+            {
+                relationSource: {
+                    ...source,
+                    resolve,
+                    describe: () => ({ image: true, description: true }),
+                    getItemHref: (resource, id) => `/${resource}/${id}`,
+                },
+            },
+        );
+        expect(await screen.findByText('Writer')).toBeInTheDocument();
+        // The label of the value wins over the resolved one
+        expect(screen.getByRole('link', { name: 'Ada Lovelace' })).toHaveAttribute(
+            'href',
+            '/authors/1',
+        );
+        expect(container.querySelector('img')).toHaveAttribute('src', 'https://example.com/1.jpg');
+        expect(resolve).toHaveBeenCalledTimes(1);
     });
 
     it('adds and removes references with multiple', async () => {
@@ -141,7 +246,7 @@ describe('RelationField', () => {
             { relationSource: source },
         );
         await vi.waitFor(() =>
-            expect(screen.getByRole('combobox', { name: 'Author' })).toHaveValue('Grace Hopper'),
+            expect(screen.getByRole('button', { name: 'Change Grace Hopper' })).toBeInTheDocument(),
         );
         expect(await screen.findByText('Ada Lovelace')).toBeInTheDocument();
         // An id the source doesn't find keeps its id as label.

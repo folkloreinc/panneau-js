@@ -694,6 +694,45 @@ describe('ListView layouts', () => {
     });
 });
 
+describe('ListView highlight', () => {
+    it.each(['table', 'cards'] as const)(
+        'highlights an item that just appeared, and brings it into view, in %s',
+        (layout) => {
+            const scrollIntoView = vi.fn();
+            Element.prototype.scrollIntoView = scrollIntoView;
+            const { container } = renderList(
+                <ListView
+                    list={createList()}
+                    columns={columns}
+                    items={pages}
+                    layout={layout}
+                    highlightedItemId={pages[1]?.id ?? null}
+                />,
+            );
+            const highlighted = container.querySelectorAll('[data-highlighted]');
+            expect(highlighted).toHaveLength(1);
+            expect(highlighted[0]).toHaveTextContent('Contact');
+            expect(scrollIntoView).toHaveBeenCalledTimes(1);
+            expect(scrollIntoView.mock.contexts[0]).toBe(highlighted[0]);
+        },
+    );
+
+    it('doesn’t scroll for an item it doesn’t show', () => {
+        const scrollIntoView = vi.fn();
+        Element.prototype.scrollIntoView = scrollIntoView;
+        const { container } = renderList(
+            <ListView
+                list={createList()}
+                columns={columns}
+                items={pages}
+                highlightedItemId="404"
+            />,
+        );
+        expect(container.querySelector('[data-highlighted]')).toBeNull();
+        expect(scrollIntoView).not.toHaveBeenCalled();
+    });
+});
+
 describe('ListView columns', () => {
     // The menu is a modal popover: the table behind it is hidden from the accessibility tree.
     const headers = () =>

@@ -34,6 +34,60 @@ describe('createRelationSource', () => {
         expect(list).toHaveBeenCalledWith('authors', { page: 1, perPage: 5, q: 'ad' }, { signal });
     });
 
+    it('describes items with the itemSubtitle and the itemImage of the resource, and links them', async () => {
+        const list = vi.fn(async () => ({
+            data: [
+                {
+                    id: '1',
+                    version: null,
+                    abilities: {},
+                    name: 'Ada',
+                    role: 'Writer',
+                    photo: { id: 'm1', label: 'Ada', media: { thumbnailUrl: 'https://x/1.jpg' } },
+                },
+                { id: '2', version: null, abilities: {}, name: 'Grace' },
+            ],
+        }));
+        const source = createRelationSource(
+            { list },
+            {
+                definition: {
+                    resources: [
+                        {
+                            id: 'authors',
+                            label: { singular: 'a', plural: 'b' },
+                            icon: 'users',
+                            fields: [],
+                            itemTitle: 'name',
+                            itemSubtitle: 'role',
+                            itemImage: 'photo',
+                        },
+                        {
+                            id: 'pages',
+                            label: { singular: 'page', plural: 'pages' },
+                            fields: [],
+                        },
+                    ],
+                },
+                getItemHref: (resource, id) => `/${resource}/${id}`,
+            },
+        );
+        await expect(
+            source.search('authors', '', { signal: new AbortController().signal }),
+        ).resolves.toEqual([
+            { id: '1', label: 'Ada', description: 'Writer', imageUrl: 'https://x/1.jpg' },
+            { id: '2', label: 'Grace' },
+        ]);
+        expect(source.describe?.('authors')).toEqual({
+            icon: 'users',
+            image: true,
+            description: true,
+        });
+        expect(source.describe?.('pages')).toEqual({ image: false, description: false });
+        expect(source.describe?.('nope')).toBeNull();
+        expect(source.getItemHref?.('authors', '1')).toBe('/authors/1');
+    });
+
     it('labels items with getLabel', async () => {
         const source = createRelationSource(
             {
@@ -161,6 +215,12 @@ describe('createRelationSource: ids and creation', () => {
 });
 
 describe('toReferences', () => {
+    it('keeps the description and the image of references', () => {
+        expect(
+            toReferences({ id: 1, label: 'Ada', description: 'Writer', imageUrl: 'https://x' }),
+        ).toEqual([{ id: '1', label: 'Ada', description: 'Writer', imageUrl: 'https://x' }]);
+    });
+
     it('reads references, ids and lists', () => {
         expect(toReferences(null)).toEqual([]);
         expect(toReferences('12')).toEqual([{ id: '12', label: '12' }]);

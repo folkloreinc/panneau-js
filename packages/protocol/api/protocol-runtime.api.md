@@ -179,6 +179,9 @@ export function getAddressRequiredParts(field: Pick<Field, 'settings'>): Address
 export function getCurrencyDigits(code: string): number;
 
 // @public
+export function getImageUrl(value: unknown): string | null;
+
+// @public
 export function getItemImageField(resource: ItemImageResource): string | undefined;
 
 // @public

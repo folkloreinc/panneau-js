@@ -400,11 +400,21 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             ...(resource.actions ?? []).map((action) => [action.id, true]),
         ]);
 
+    // An id that no item of the resource has, also among the items it started with
+    const freshId = (resource: ResourceInput): string => {
+        const items = store.get(resource.id) ?? [];
+        let id = String(nextId++);
+        while (items.some((item) => item.id === id)) {
+            id = String(nextId++);
+        }
+        return id;
+    };
+
     const makeItem = (resource: ResourceInput, values: Values): Item => {
         const id =
             typeof values.id === 'string' || typeof values.id === 'number'
                 ? String(values.id)
-                : String(nextId++);
+                : freshId(resource);
         const rest = Object.fromEntries(
             Object.entries(values).filter(([key]) => !RESERVED_KEYS.has(key)),
         );
@@ -1164,11 +1174,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             }
             // A copy of its values, under an id no item has
             const { id: _id, version: _version, abilities: _abilities, ...values } = current;
-            let copyId = String(nextId++);
-            while (list.some((item) => item.id === copyId)) {
-                copyId = String(nextId++);
-            }
-            const copy = makeItem(resource, { ...values, id: copyId });
+            const copy = makeItem(resource, { ...values, id: freshId(resource) });
             list.push(copy);
             return json(201, { data: present(resource, copy) }, etag(copy));
         }

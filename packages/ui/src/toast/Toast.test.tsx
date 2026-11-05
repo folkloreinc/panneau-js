@@ -8,6 +8,7 @@ import { PanneauRoot } from '../root/PanneauRoot';
 import {
     type ToastContent,
     type ToastOptions,
+    getToastOffset,
     getToastTimeout,
     useToast,
     useToastOffset,
@@ -140,6 +141,8 @@ describe('Toast', () => {
             return <div ref={ref}>Footer</div>;
         }
         vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({
+            top: window.innerHeight - 64,
+            bottom: window.innerHeight,
             height: 64,
         } as DOMRect);
         render(
@@ -152,6 +155,17 @@ describe('Toast', () => {
         const region = await screen.findByRole('region', { name: 'Notifications' });
         expect(region.style.getPropertyValue('--panneau-bottom-offset')).toBe('64px');
         vi.restoreAllMocks();
+    });
+
+    it('stays at the bottom when what would stick shows higher, as the footer of a short form', () => {
+        // The footer of a short form ends after its last field, in the middle of the screen
+        expect(getToastOffset({ top: 300, bottom: 364, height: 64 }, 768)).toBe(0);
+        // Stuck to the bottom, or in the frame's gutter just above it
+        expect(getToastOffset({ top: 704, bottom: 768, height: 64 }, 768)).toBe(64);
+        expect(getToastOffset({ top: 698, bottom: 762, height: 64 }, 768)).toBe(70);
+        // Below the viewport, or not shown
+        expect(getToastOffset({ top: 900, bottom: 964, height: 64 }, 768)).toBe(0);
+        expect(getToastOffset({ top: 0, bottom: 0, height: 0 }, 768)).toBe(0);
     });
 
     it('needs a PanneauRoot', () => {

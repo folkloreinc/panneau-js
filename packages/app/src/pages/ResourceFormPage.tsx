@@ -7,7 +7,7 @@ import { createRelationSource } from '@panneau/fields';
 import { Form } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
 import type { Definition, Item, RouteReference } from '@panneau/protocol';
-import { usePanneauIntl, useToast } from '@panneau/ui';
+import { usePanneauIntl } from '@panneau/ui';
 
 import { useDocumentTitle } from '../documentTitle';
 import { navigate } from '../location';
@@ -17,8 +17,9 @@ import { routePath } from '../routes';
 import { ErrorPage, getErrorPageKind } from './ErrorPage';
 import { ItemActions } from './ItemActions';
 import { PageHeader, PageLayout } from './PageHeader';
+import { setCreatedItem } from './createdItem';
 import { useItemActionRunner } from './itemActionRunner';
-import { createLinkResolver } from './itemLinks';
+import { createLinkResolver, getItemPath } from './itemLinks';
 import { getItemTitle } from './itemTitle';
 
 export interface ResourceFormPageProps {
@@ -33,7 +34,8 @@ export interface ResourceFormPageProps {
 
 /**
  * The form to create or edit an item: saved through the adapter, with validation errors from the
- * server, version conflicts and a guard on unsaved changes. A new item opens in its edit page.
+ * server, version conflicts and a guard on unsaved changes. A new item goes back to the list, which
+ * highlights it (decision 0066).
  */
 export function ResourceFormPage({
     definition,
@@ -43,7 +45,6 @@ export function ResourceFormPage({
     resolveRoute,
 }: ResourceFormPageProps) {
     const intl = usePanneauIntl();
-    const toasts = useToast();
     const adapter = useDataAdapter();
     // The version this page just saved: the form starts over from it, and still says "Saved".
     const [savedVersion, setSavedVersion] = useState<string | null>(null);
@@ -52,7 +53,15 @@ export function ResourceFormPage({
     const itemQuery = useResourceItem(resource.id, id);
     const createItem = useCreateItem(resource.id);
     const updateItem = useUpdateItem(resource.id);
-    const relationSource = createRelationSource(adapter, { definition });
+    // The cards of relation fields link to their items: the show route, which goes to the form of
+    // an item that opens there (decision 0067).
+    const relationSource = createRelationSource(adapter, {
+        definition,
+        getItemHref: (related, relatedId) =>
+            definition.resources.some((candidate) => candidate.id === related)
+                ? routePath({ name: 'resource.show', resource: related, id: relatedId }, basePath)
+                : null,
+    });
     const { fields, layout } = resolveForm(resource, { mode });
     const item = itemQuery.data;
     const singular = resource.label.singular;
@@ -172,32 +181,16 @@ export function ResourceFormPage({
                 const saved = result as Item;
                 setSavedVersion(saved.version ?? null);
                 if (id === null) {
-                    // The page changes: the toast says what was created, by its title.
-                    const created = getItemTitle(saved, resource.itemTitle, definition.locale);
-                    toasts.show(
-                        {
-                            title:
-                                created !== null && created !== ''
-                                    ? intl.formatMessage(appMessages.itemCreated, {
-                                          title: created,
-                                      })
-                                    : intl.formatMessage(appMessages.created, {
-                                          resource: singular,
-                                      }),
-                            tone: 'success',
-                        },
-                        { key: `panneau-created:${resource.id}` },
-                    );
-                    navigate(
-                        routePath(
-                            {
-                                name: 'resource.edit',
-                                resource: resource.id,
-                                id: (result as Item).id,
-                            },
-                            basePath,
-                        ),
-                    );
+                    // Back to the list, which highlights the new item: it says it was created,
+                    // without a toast (decision 0066). In place of the create page, which Back
+                    // would open again empty.
+                    setCreatedItem({
+                        resource: resource.id,
+                        id: saved.id,
+                        title: getItemTitle(saved, resource.itemTitle, definition.locale),
+                        href: getItemPath(resource, saved, basePath),
+                    });
+                    navigate(back.href, { replace: true });
                 }
             }}
             onReload={() => void itemQuery.refetch()}

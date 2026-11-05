@@ -67,7 +67,9 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0059](0059-flags-of-regions.md)                                  | Flags of regions                                                              | Proposed                          |
 | [0060](0060-row-actions-colored-icons.md)                         | Row actions are colored icons, and a menu last                                | Proposed                          |
 | [0061](0061-item-images-in-lists.md)                              | The image of items in the table, and in media libraries                       | Proposed                          |
-| [0062](0062-toasts.md)                                            | Toasts at the bottom, one per thing, and only when the page doesn't say it    | Proposed                          |
+| [0062](0062-toasts.md)                                            | Toasts at the bottom, one per thing, and only when the page doesn't say it    | Proposed, amended by 0066         |
 | [0063](0063-undo-instead-of-a-confirmation.md)                    | "Undo" instead of a confirmation                                              | Proposed                          |
 | [0064](0064-dashboard-widgets.md)                                 | The widgets of the dashboard                                                  | Proposed                          |
 | [0065](0065-compound-fields.md)                                   | Compound fields: plugin types made of sub-fields                              | Proposed                          |
+| [0066](0066-a-create-goes-back-to-the-list.md)                    | A create goes back to the list, which shows the new item                      | Proposed                          |
+| [0067](0067-relation-cards.md)                                    | Relation fields show their items as cards                                     | Proposed                          |

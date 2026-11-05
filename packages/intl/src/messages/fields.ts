@@ -104,6 +104,15 @@ export const fieldsMessages = {
         id: 'panneau.fields.createRelationFailed',
         defaultMessage: '“{text}” couldn’t be created.',
     }),
+    change: defineMessage({ id: 'panneau.fields.change', defaultMessage: 'Change' }),
+    changeRelation: defineMessage<{ item: string }>({
+        id: 'panneau.fields.changeRelation',
+        defaultMessage: 'Change {item}',
+    }),
+    cancelChange: defineMessage({
+        id: 'panneau.fields.cancelChange',
+        defaultMessage: 'Cancel',
+    }),
     relationUnavailable: defineMessage({
         id: 'panneau.fields.relationUnavailable',
         defaultMessage: 'Items can’t be searched here.',

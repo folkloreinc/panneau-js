@@ -34,6 +34,7 @@ export {
 export {
     type ItemImageResource,
     type MediaLibrariesDefinition,
+    getImageUrl,
     getItemImageField,
     getMediaLibraries,
 } from '../libraries';

@@ -12,6 +12,8 @@ Toasts showed at the top right of the screen, where the page keeps its header an
 
 ### Where
 
+> Changed by [0066](0066-a-create-goes-back-to-the-list.md): they rise above what sticks to the bottom only while it covers the bottom of the viewport.
+
 - **At the bottom, centered**, by default. They rise above what sticks to the bottom of the page, such as the footer of a form: that element calls `useToastOffset(ref)`, and its height becomes the `--panneau-bottom-offset` of the region.
 - `PanneauRoot` takes a `toastPlacement`, for a project that wants them elsewhere: `bottom` (the default), `bottom-end` or `top-end`.
 - On a phone, they take the whole width, at the bottom (or the top with `top-end`).
@@ -36,6 +38,8 @@ Toasts showed at the top right of the screen, where the page keeps its header an
 - Timers pause while the region is hovered or focused. `getToastTimeout(content)` gives the default; `timeout` in the options sets another.
 
 ### When
+
+> Changed by [0066](0066-a-create-goes-back-to-the-list.md): a create goes back to the list, which highlights the new item: the page shows it, so no toast, unless the list doesn't show it.
 
 A toast says what the page doesn't:
 

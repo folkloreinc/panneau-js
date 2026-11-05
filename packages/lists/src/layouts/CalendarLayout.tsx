@@ -9,6 +9,7 @@ import type { ListItem, ListLayoutProps } from '../types';
 import styles from './CalendarLayout.module.css';
 import { ItemTitle } from './ItemTitle';
 import { getItemDays } from './calendarDays';
+import highlight from './highlight.module.css';
 
 function pad(value: number, length = 2): string {
     return String(value).padStart(length, '0');
@@ -67,6 +68,7 @@ export function CalendarLayout({
     getItemLabel,
     getItemHref,
     isCurrent,
+    isHighlighted,
     label,
     calendar,
 }: ListLayoutProps) {
@@ -184,8 +186,17 @@ export function CalendarLayout({
                                                 {entries.map(({ item }) => (
                                                     <li
                                                         key={item.id}
+                                                        className={
+                                                            isHighlighted?.(item) === true
+                                                                ? highlight.highlighted
+                                                                : undefined
+                                                        }
                                                         data-current={
                                                             isCurrent?.(item) === true || undefined
+                                                        }
+                                                        data-highlighted={
+                                                            isHighlighted?.(item) === true ||
+                                                            undefined
                                                         }
                                                     >
                                                         <ItemTitle

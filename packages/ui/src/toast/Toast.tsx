@@ -132,10 +132,25 @@ export function useToast(): Toasts {
     return toasts;
 }
 
+/** How far from the bottom of the viewport an element can end and still stick to it (the frame's gutter). */
+const STUCK_SLACK = 32;
+
+/**
+ * How far the toasts rise above an element: from its top to the bottom of the viewport, when it
+ * covers the bottom of the viewport, as a sticky footer does once the page scrolls. `0` when it
+ * shows higher, as the footer of a short form does, after its last field: toasts then stay at the
+ * bottom, rather than floating where nothing is.
+ */
+export function getToastOffset(rect: Pick<DOMRect, 'top' | 'bottom' | 'height'>, viewport: number) {
+    const stuck = rect.height > 0 && rect.top < viewport && rect.bottom >= viewport - STUCK_SLACK;
+    return stuck ? Math.ceil(viewport - rect.top) : 0;
+}
+
 /**
  * Raises the toasts above an element that sticks to the bottom of the page, such as the footer of
- * a form, while it is mounted and `active`: its height becomes the `--panneau-bottom-offset` of the
- * region. Toasts at the top ignore it.
+ * a form, while it is mounted and `active` and it covers the bottom of the viewport: the space it
+ * takes there becomes the `--panneau-bottom-offset` of the region. Measured again when the page
+ * scrolls or resizes. Toasts at the top ignore it.
  */
 export function useToastOffset(ref: RefObject<HTMLElement | null>, active = true): void {
     const toasts = use(ToastContext);
@@ -145,12 +160,34 @@ export function useToastOffset(ref: RefObject<HTMLElement | null>, active = true
             return undefined;
         }
         const id = {};
-        const measure = () => toasts.setOffset(id, element.getBoundingClientRect().height);
+        let frame: number | null = null;
+        const measure = () => {
+            frame = null;
+            toasts.setOffset(
+                id,
+                getToastOffset(element.getBoundingClientRect(), window.innerHeight),
+            );
+        };
+        // Once per frame, however many scroll events
+        const schedule = () => {
+            if (frame === null) {
+                frame = requestAnimationFrame(measure);
+            }
+        };
         measure();
-        const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null;
+        const observer =
+            typeof ResizeObserver !== 'undefined' ? new ResizeObserver(schedule) : null;
         observer?.observe(element);
+        // Any scroll: the page may scroll in an element of the frame rather than the window
+        window.addEventListener('scroll', schedule, { capture: true, passive: true });
+        window.addEventListener('resize', schedule, { passive: true });
         return () => {
             observer?.disconnect();
+            window.removeEventListener('scroll', schedule, { capture: true });
+            window.removeEventListener('resize', schedule);
+            if (frame !== null) {
+                cancelAnimationFrame(frame);
+            }
             toasts.setOffset(id, null);
         };
     }, [ref, toasts, active]);

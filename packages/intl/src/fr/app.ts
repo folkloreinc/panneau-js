@@ -130,6 +130,7 @@ export const appFr: Record<string, string> = {
     'panneau.app.created': 'Création réussie : {resource}.',
     'panneau.app.saved': 'Enregistrement réussi : {resource}.',
     'panneau.app.itemCreated': '« {title} » : création réussie.',
+    'panneau.app.openCreated': 'Ouvrir',
     'panneau.app.itemLoadError': 'Impossible de charger cet élément ({resource}).',
     'panneau.app.itemPanel': 'Détails : {resource}',
     'panneau.app.editItem': 'Modifier',
