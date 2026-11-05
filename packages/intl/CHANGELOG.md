@@ -1,5 +1,11 @@
 # @panneau/intl
 
+## 5.0.0-alpha.23
+
+### Patch Changes
+
+- c310e38: "Expand all", "Collapse all" and "Has errors" for the items of repeaters, and "Open the page in a new window" and "This address can’t be changed." for slugs (decision 0068), in English and French.
+
 ## 5.0.0-alpha.22
 
 ### Patch Changes

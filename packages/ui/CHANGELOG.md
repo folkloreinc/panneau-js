@@ -1,5 +1,12 @@
 # @panneau/ui
 
+## 5.0.0-alpha.23
+
+### Patch Changes
+
+- Updated dependencies [c310e38]
+  - @panneau/intl@5.0.0-alpha.23
+
 ## 5.0.0-alpha.22
 
 ### Patch Changes
