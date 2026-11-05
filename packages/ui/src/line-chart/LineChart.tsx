@@ -104,7 +104,8 @@ export function LineChart({
                         ) : null,
                     )}
                 </svg>
-                {points.length > 0 ? (
+                {/* The top of the scale, unless every value is at the bottom of it (all 0) */}
+                {points.length > 0 && Math.max(...values) > low ? (
                     <span className={styles.max} aria-hidden="true">
                         {format(Math.max(...values))}
                     </span>
@@ -116,17 +117,20 @@ export function LineChart({
                     {points.length > 1 ? <span>{last.label}</span> : null}
                 </div>
             ) : null}
-            <table className={styles.visuallyHidden}>
-                <caption>{label}</caption>
-                <tbody>
-                    {points.map((point) => (
-                        <tr key={point.label}>
-                            <th scope="row">{point.label}</th>
-                            <td>{format(point.value)}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            {/* Hidden in a wrapper: on the table itself, Chrome leaves its caption visible */}
+            <div className={styles.visuallyHidden}>
+                <table>
+                    <caption>{label}</caption>
+                    <tbody>
+                        {points.map((point) => (
+                            <tr key={point.label}>
+                                <th scope="row">{point.label}</th>
+                                <td>{format(point.value)}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </figure>
     );
 }
