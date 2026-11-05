@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { type ResolvedResource, getItemActions, getItemValues, resolveForm } from '@panneau/core';
 import { NotFoundError } from '@panneau/data';
 import { useCreateItem, useDataAdapter, useResourceItem, useUpdateItem } from '@panneau/data/query';
-import { createRelationSource } from '@panneau/fields';
+import { createFieldCheckSource, createRelationSource } from '@panneau/fields';
 import { Form } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
 import type { Definition, Item, RouteReference } from '@panneau/protocol';
@@ -62,6 +62,8 @@ export function ResourceFormPage({
                 ? routePath({ name: 'resource.show', resource: related, id: relatedId }, basePath)
                 : null,
     });
+    // Fields with `check`, such as slugs, check their value with the backend as it is typed
+    const checkSource = createFieldCheckSource(adapter, resource.id, id);
     const { fields, layout } = resolveForm(resource, { mode });
     const item = itemQuery.data;
     const singular = resource.label.singular;
@@ -170,6 +172,7 @@ export function ResourceFormPage({
             mode={mode}
             locales={definition.locales}
             relationSource={relationSource}
+            checkSource={checkSource}
             guardUnsavedChanges
             saved={savedVersion !== null && item?.version === savedVersion}
             onSubmit={(values, { version, changes }) =>

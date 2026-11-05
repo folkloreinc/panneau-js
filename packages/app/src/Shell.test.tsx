@@ -169,6 +169,39 @@ describe('the app shell', () => {
         expect(screen.queryByRole('alertdialog')).toBeNull();
     });
 
+    it('checks a slug with the backend in the form of an item, and shows its URL', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/authors/create');
+        const backend = renderApp({
+            resources: [
+                {
+                    id: 'authors',
+                    label: { singular: 'author', plural: 'authors' },
+                    itemTitle: 'name',
+                    fields: [
+                        { name: 'name', type: 'text', label: 'Name' },
+                        {
+                            name: 'slug',
+                            type: 'slug',
+                            label: 'Address',
+                            from: 'name',
+                            check: true,
+                            settings: { prefix: 'https://example.com/' },
+                        },
+                    ],
+                },
+            ],
+        });
+        await user.type(screen.getByRole('textbox', { name: /name/i }), 'Grace');
+        // The slug follows the name, and the backend's check gives its URL
+        await waitFor(() =>
+            expect(
+                screen.getByRole('link', { name: 'Open the page in a new window' }),
+            ).toHaveAttribute('href', 'https://example.com/grace'),
+        );
+        expect(backend.items('authors')).toHaveLength(1);
+    });
+
     it('says the item was created when the list doesn’t show it, with a link to open it', async () => {
         const user = userEvent.setup();
         window.history.replaceState(null, '', '/panneau/resources/authors/create');
