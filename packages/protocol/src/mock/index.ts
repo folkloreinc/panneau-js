@@ -1,6 +1,8 @@
 import {
     CONTEXT_HEADER,
     CONTEXT_PROBLEM_TYPE,
+    IDS_FILTER,
+    IDS_FILTER_LIMIT,
     ITEM_ACTION_ABILITIES,
     UNDO_LIMIT,
     isBuiltInItemAction,
@@ -268,6 +270,14 @@ function compare(a: unknown, b: unknown): number {
 function applyQuery(items: Item[], query: Pick<ListQuery, 'filter' | 'q' | 'sort'>): Item[] {
     let result = items;
     Object.entries(query.filter ?? {}).forEach(([key, expected]) => {
+        // Every list filters on the ids of its items (decision 0069).
+        if (key === IDS_FILTER) {
+            const ids = (Array.isArray(expected) ? expected : [expected])
+                .map(String)
+                .slice(0, IDS_FILTER_LIMIT);
+            result = result.filter((item) => ids.includes(item.id));
+            return;
+        }
         if (isFilterRange(expected)) {
             result = result.filter((item) => matchesFilterRange(item[key], expected));
             return;

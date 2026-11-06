@@ -10,6 +10,7 @@ import {
     Definition,
     DurationSettings,
     Field,
+    Filter,
     Item,
     LinkSettings,
     LinkValue,
@@ -34,6 +35,12 @@ describe('Definition', () => {
     it('requires version 1 of the protocol', () => {
         const result = validateDefinition({ ...createDefinition(), protocol: 2 });
         expect(result.success).toBe(false);
+    });
+
+    it('keeps the filter id `ids` for the filter of every list on ids', () => {
+        expect(Filter.safeParse({ id: 'ids', type: 'text' }).success).toBe(false);
+        expect(Filter.safeParse({ id: 'idsx', type: 'text' }).success).toBe(true);
+        expect(Filter.safeParse({ id: 'status', type: 'select' }).success).toBe(true);
     });
 
     it('refuses duplicate resource ids', () => {

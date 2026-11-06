@@ -585,7 +585,9 @@ All paths are relative to `api.baseUrl`.
     - any of several values: `filter[tags][]=a&filter[tags][]=b`;
     - the bounds of a range filter (`date-range`): `filter[published_at][from]=2026-01-01&filter[published_at][to]=2026-01-31`. Both bounds are inclusive, and either can be left out for an open end. A `date-range` has days as bounds (`YYYY-MM-DD`): `to` includes the whole day, so a date-time on `2026-01-31` is in the range above.
 
-    A backend ignores the filters it doesn't declare. In an action's query selection, the same values are JSON: `"filter": { "published_at": { "from": "2026-01-01" } }`.
+    - the ids of items, a filter of every list that no definition declares: `filter[ids][]=12&filter[ids][]=13`. It lists those items only, at most 100, with the other filters, the search and the sort; ids the backend doesn't find, or that the user can't see, are left out. `ids` is reserved: a definition can't declare a filter with that id ([0069](decisions/0069-show-the-items-an-action-changed.md)).
+
+    A backend ignores the filters it doesn't declare, but `ids`. In an action's query selection, the same values are JSON: `"filter": { "published_at": { "from": "2026-01-01" } }`.
 
 - `q`: search
 - `fields`: requested fields, so lists can ask for less

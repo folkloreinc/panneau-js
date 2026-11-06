@@ -185,6 +185,24 @@ describe('List', () => {
         expect(router.getSearch()).toBe('');
     });
 
+    it('lists the items of a filter on ids, as a chip that removes it', async () => {
+        const user = userEvent.setup();
+        const router = createMemoryRouter(
+            `filter[ids][]=${pages[0]?.id ?? ''}&filter[ids][]=${pages[2]?.id ?? ''}`,
+        );
+        renderList(
+            <PanneauProvider router={router}>
+                <List columns={columns} items={pages} />
+            </PanneauProvider>,
+        );
+        expect(screen.getAllByRole('row')).toHaveLength(3);
+        const chips = screen.getByRole('list', { name: 'Active filters' });
+        expect(chips).toHaveTextContent('2 items');
+        await user.click(within(chips).getByRole('button', { name: 'Remove the filter 2 items' }));
+        expect(screen.getAllByRole('row')).toHaveLength(4);
+        expect(router.getSearch()).toBe('');
+    });
+
     it('translates its messages', () => {
         renderList(<List columns={columns} items={manyPages(30)} search />, {
             locale: 'fr',

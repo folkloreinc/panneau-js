@@ -34,6 +34,10 @@ export const listsMessages = {
         id: 'panneau.lists.searchChip',
         defaultMessage: 'Search: {q}',
     }),
+    idsChip: defineMessage<{ count: number }>({
+        id: 'panneau.lists.idsChip',
+        defaultMessage: '{count, plural, one {# item} other {# items}}',
+    }),
     clearFilters: defineMessage({ id: 'panneau.lists.clearFilters', defaultMessage: 'Clear all' }),
     any: defineMessage({ id: 'panneau.lists.any', defaultMessage: 'Any' }),
     from: defineMessage({ id: 'panneau.lists.from', defaultMessage: 'From' }),

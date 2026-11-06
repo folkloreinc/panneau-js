@@ -77,6 +77,7 @@ export const actionsMessages = {
     }),
     details: defineMessage({ id: 'panneau.actions.details', defaultMessage: 'Details' }),
     download: defineMessage({ id: 'panneau.actions.download', defaultMessage: 'Download' }),
+    showChanged: defineMessage({ id: 'panneau.actions.showChanged', defaultMessage: 'Show' }),
     resultsTitle: defineMessage<{ action: string }>({
         id: 'panneau.actions.resultsTitle',
         defaultMessage: '“{action}”: items not done',

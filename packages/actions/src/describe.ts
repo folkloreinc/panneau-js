@@ -1,6 +1,7 @@
 import type { IntlShape } from 'react-intl';
 
 import type { ActionItemResult, ActionResult, Item, Resource } from '@panneau/protocol';
+import { IDS_FILTER_LIMIT } from '@panneau/protocol/runtime';
 import type { ToastContent } from '@panneau/ui';
 
 import { messages } from './messages';
@@ -147,4 +148,28 @@ export function describeItemResult(entry: ActionItemResult, intl: IntlShape): st
                 entry.status === 'failed' ? messages.statusFailed : messages.statusSkipped,
             );
     }
+}
+
+/**
+ * The items a run changed, for "Show" in its toast (decision 0069): those of a selection by ids,
+ * without those its `results` list (they failed or were skipped), or the `items` of its `undo`.
+ * `null` for an item action, whose toast names the item, for a `delete`, whose items are gone, for
+ * a query selection without `undo`,
+ * whose items the client doesn't know, and when the run changed none or more than
+ * `IDS_FILTER_LIMIT`.
+ */
+export function getChangedItems(target: ActionTarget, result: ActionResult): string[] | null {
+    // A deleted item isn't in its list any more: its "Undo" brings it back, when there is one.
+    if (target.scope === 'item' || target.action.id === 'delete') {
+        return null;
+    }
+    const selection = target.selection;
+    let ids: string[] | null = null;
+    if (result.undo !== undefined) {
+        ids = [...result.undo.items];
+    } else if (selection !== undefined && 'ids' in selection) {
+        const left = new Set((result.results ?? []).map((entry) => entry.id));
+        ids = (selection.ids as string[]).filter((id) => !left.has(id));
+    }
+    return ids !== null && ids.length > 0 && ids.length <= IDS_FILTER_LIMIT ? ids : null;
 }

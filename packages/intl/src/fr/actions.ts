@@ -24,6 +24,7 @@ export const actionsFr: Record<string, string> = {
     'panneau.actions.skippedCount': '{count, plural, one {# ignoré} other {# ignorés}}',
     'panneau.actions.details': 'Détails',
     'panneau.actions.download': 'Télécharger',
+    'panneau.actions.showChanged': 'Afficher',
     'panneau.actions.resultsTitle': '« {action} » : éléments non traités',
     'panneau.actions.close': 'Fermer',
     'panneau.actions.item': 'Élément {id}',

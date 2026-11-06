@@ -96,6 +96,8 @@ describe('@panneau/protocol/runtime', () => {
             'DEFAULT_ADDRESS_REQUIRED_PARTS',
             'DURATION_UNITS',
             'EMAIL_UNVERIFIED_PROBLEM_TYPE',
+            'IDS_FILTER',
+            'IDS_FILTER_LIMIT',
             'ITEM_ACTION_ABILITIES',
             'PASSWORD_CONFIRMATION_PROBLEM_TYPE',
             'PORTABLE_RULES',
