@@ -295,6 +295,7 @@ describe('ListView', () => {
                 onAction={onAction}
             />,
         );
+        await user.click(screen.getByRole('button', { name: 'Select' }));
         await user.click(screen.getByRole('checkbox', { name: 'Select Contact' }));
         expect(screen.getByText('1 item selected')).toBeInTheDocument();
         await user.click(screen.getByRole('checkbox', { name: 'Select every item of the page' }));
@@ -341,6 +342,7 @@ describe('ListView', () => {
                 previewAction={previewAction}
             />,
         );
+        await user.click(screen.getByRole('button', { name: 'Select' }));
         await user.click(screen.getByRole('checkbox', { name: 'Select every item of the page' }));
         await user.click(screen.getByRole('button', { name: 'Select all 40 items' }));
         const bar = screen.getByText(/selected, on every page/).parentElement as HTMLElement;
@@ -376,6 +378,7 @@ describe('ListView', () => {
                 previewAction={() => Promise.resolve({ skipped: 0 })}
             />,
         );
+        await user.click(screen.getByRole('button', { name: 'Select' }));
         await user.click(screen.getByRole('checkbox', { name: 'Select every item of the page' }));
         await user.click(screen.getByRole('button', { name: 'Select all 40 items' }));
         const bar = screen.getByText(/selected, on every page/).parentElement as HTMLElement;
@@ -404,6 +407,7 @@ describe('ListView', () => {
         await waitFor(() => expect(onAction).toHaveBeenCalledTimes(1));
         expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
         // Every matching item, more than an undo puts back: the confirmation comes back
+        await user.click(screen.getByRole('button', { name: 'Select' }));
         await user.click(screen.getByRole('checkbox', { name: 'Select every item of the page' }));
         await user.click(screen.getByRole('button', { name: 'Select all 101 items' }));
         const bar = screen.getByText(/selected, on every page/).parentElement as HTMLElement;
@@ -427,6 +431,7 @@ describe('ListView', () => {
                 onAction={onAction}
             />,
         );
+        await user.click(screen.getByRole('button', { name: 'Select' }));
         await user.click(screen.getByRole('checkbox', { name: 'Select Contact' }));
         await user.click(screen.getByRole('button', { name: 'Delete' }));
         await waitFor(() => expect(onAction).toHaveBeenCalled());
@@ -439,6 +444,7 @@ describe('ListView', () => {
         renderList(
             <ListView list={createList()} columns={columns} items={pages} actions={[publish]} />,
         );
+        await user.click(screen.getByRole('button', { name: 'Select' }));
         await user.click(screen.getByRole('checkbox', { name: 'Select every item of the page' }));
         const bar = screen.getByText('3 items selected').parentElement as HTMLElement;
         await user.click(within(bar).getByRole('button', { name: 'Publish' }));
@@ -680,6 +686,7 @@ describe('ListView toolbar', () => {
         renderList(
             <ListView list={createList()} columns={columns} items={pages} actions={[remove]} />,
         );
+        await user.click(screen.getByRole('button', { name: 'Select' }));
         await user.click(screen.getByRole('checkbox', { name: 'Select Contact' }));
         expect(screen.getAllByRole('button', { name: 'Delete' })).toHaveLength(1);
     });

@@ -141,6 +141,7 @@ export const Parameters: Story = {
     play: async ({ args, canvasElement }) => {
         const canvas = within(canvasElement);
         const body = within(canvasElement.ownerDocument.body);
+        await userEvent.click(canvas.getByRole('button', { name: 'Select' }));
         await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Contact' }));
         await userEvent.click(canvas.getByRole('checkbox', { name: 'Select About us' }));
         await userEvent.click(canvas.getByRole('button', { name: 'Publish' }));
@@ -234,6 +235,7 @@ export const ShowChanged: Story = {
     play: async ({ args, canvasElement }) => {
         const canvas = within(canvasElement);
         const body = within(canvasElement.ownerDocument.body);
+        await userEvent.click(canvas.getByRole('button', { name: 'Select' }));
         await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Home' }));
         await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Contact' }));
         await userEvent.click(canvas.getByRole('button', { name: 'Publish' }));
@@ -302,6 +304,7 @@ export const InUse: Story = {
             name: /“Contact” is in use elsewhere: remove it from where it is used, then try again\./,
         });
         await expect(within(alone).queryByRole('button', { name: 'Undo' })).toBeNull();
+        await userEvent.click(canvas.getByRole('button', { name: 'Select' }));
         await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Home' }));
         await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Contact' }));
         await userEvent.click(canvas.getByRole('button', { name: 'Delete' }));

@@ -325,6 +325,7 @@ export const Gallery: Story = {
         const gallery = canvas.getByRole('list', { name: 'Members' });
         await expect(within(gallery).getAllByRole('listitem')).toHaveLength(10);
         await expect(gallery.querySelectorAll('img')).toHaveLength(8);
+        await userEvent.click(canvas.getByRole('button', { name: 'Select' }));
         await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Ada Lovelace' }));
         await expect(canvas.getByText('1 item selected')).toBeVisible();
     },
@@ -519,6 +520,7 @@ export const SelectionAndActions: Story = {
     play: async ({ args, canvasElement }) => {
         const canvas = within(canvasElement);
         const body = within(canvasElement.ownerDocument.body);
+        await userEvent.click(canvas.getByRole('button', { name: 'Select' }));
         await userEvent.click(
             canvas.getByRole('checkbox', { name: 'Select every item of the page' }),
         );

@@ -57,6 +57,7 @@ describe('the gallery', () => {
                 actions={[publish]}
             />,
         );
+        await userEvent.click(screen.getByRole('button', { name: 'Select' }));
         const checkbox = screen.getByRole('checkbox', { name: 'Select Blog' });
         const image = container.querySelectorAll('img')[2];
         expect(image?.parentElement).not.toContainElement(checkbox);
@@ -129,7 +130,7 @@ describe('the thumbnails of the table', () => {
         expect(cell.querySelector('svg')).toBeNull();
     });
 
-    it('shows every checkbox once a row is selected', async () => {
+    it('shows the checkboxes once "Select" is pressed, and hides them with "Done"', async () => {
         renderList(
             <ListView
                 list={createList()}
@@ -139,13 +140,14 @@ describe('the thumbnails of the table', () => {
                 actions={[publish]}
             />,
         );
-        // The checkboxes show on hover and focus until then, from the styles of the table.
-        const table = screen.getByRole('table', { name: 'Items' });
-        expect(table).not.toHaveAttribute('data-selecting');
+        // Until then, rows read without a column of checkboxes before them.
+        expect(screen.queryByRole('checkbox')).toBeNull();
+        await userEvent.click(screen.getByRole('button', { name: 'Select' }));
         await userEvent.click(screen.getByRole('checkbox', { name: 'Select Blog' }));
-        expect(table).toHaveAttribute('data-selecting');
-        await userEvent.click(screen.getByRole('checkbox', { name: 'Select Blog' }));
-        expect(table).not.toHaveAttribute('data-selecting');
+        expect(screen.getByRole('status')).toHaveTextContent('1 item selected');
+        await userEvent.click(screen.getByRole('button', { name: 'Done' }));
+        expect(screen.queryByRole('checkbox')).toBeNull();
+        expect(screen.queryByText('1 item selected')).toBeNull();
     });
 
     it('are left out without the image of items', () => {

@@ -98,27 +98,6 @@
     width: 1px;
 }
 
-/* Checkboxes show on the row under the pointer or with the focus, and on every row once one is
- * selected. They stay in place, and can be tabbed to, while hidden. */
-.check > * {
-    opacity: 0;
-    transition: opacity var(--panneau-duration);
-}
-
-.table tr:hover > .check > *,
-.table tr:focus-within > .check > *,
-.table:hover > thead .check > *,
-.table[data-selecting] .check > * {
-    opacity: 1;
-}
-
-/* Touch screens have no pointer to hover with. */
-@media (hover: none) {
-    .check > * {
-        opacity: 1;
-    }
-}
-
 .actionsCell {
     width: 1px;
     text-align: end !important;

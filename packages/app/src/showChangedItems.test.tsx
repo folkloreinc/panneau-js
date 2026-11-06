@@ -88,6 +88,7 @@ describe('"Show" and the filter on ids (decision 0069)', () => {
             [definePlugin({ id: 'featured', actions: { feature: Feature } })],
         );
         const table = await screen.findByRole('table', { name: 'Pages' });
+        await user.click(await screen.findByRole('button', { name: 'Select' }));
         await user.click(await within(table).findByRole('checkbox', { name: 'Select Contact' }));
         await user.click(screen.getByRole('button', { name: 'Feature' }));
         await user.click(await screen.findByRole('button', { name: 'Feature now' }));

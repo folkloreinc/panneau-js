@@ -124,6 +124,11 @@ export const listsMessages = {
         defaultMessage:
             '{total, plural, one {The # item is selected} other {All # items are selected}}, on every page.',
     }),
+    startSelection: defineMessage({
+        id: 'panneau.lists.startSelection',
+        defaultMessage: 'Select',
+    }),
+    endSelection: defineMessage({ id: 'panneau.lists.endSelection', defaultMessage: 'Done' }),
     clearSelection: defineMessage({
         id: 'panneau.lists.clearSelection',
         defaultMessage: 'Clear the selection',
