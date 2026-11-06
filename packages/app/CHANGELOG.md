@@ -1,5 +1,20 @@
 # @panneau/app
 
+## 5.0.0-alpha.24
+
+### Patch Changes
+
+- c805476: The forms of the app check their fields with `check`, such as slugs, with the backend (`POST /resources/{resource}/fields/{field}/check`): a slug now shows its URL prefix, the link to its page, and whether it is taken. The create and edit pages didn't give their form a check source, so only forms rendered outside the app checked their fields.
+- @panneau/actions@5.0.0-alpha.24
+  - @panneau/core@5.0.0-alpha.24
+  - @panneau/data@5.0.0-alpha.24
+  - @panneau/fields@5.0.0-alpha.24
+  - @panneau/forms@5.0.0-alpha.24
+  - @panneau/intl@5.0.0-alpha.24
+  - @panneau/lists@5.0.0-alpha.24
+  - @panneau/protocol@5.0.0-alpha.24
+  - @panneau/ui@5.0.0-alpha.24
+
 ## 5.0.0-alpha.23
 
 ### Patch Changes
