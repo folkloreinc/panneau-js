@@ -104,6 +104,91 @@ export const Refused: Story = {
     },
 };
 
+const PHOTO_SVG = `data:image/svg+xml;utf8,${encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="240"><defs><linearGradient id="g" x2="1" y2="1"><stop offset="0" stop-color="#f59e0b"/><stop offset="1" stop-color="#be185d"/></linearGradient></defs><rect width="320" height="240" fill="url(#g)"/><circle cx="240" cy="70" r="28" fill="#fde68a"/><path d="M0 240 110 120 190 200 240 160 320 240Z" fill="#7c2d12"/></svg>',
+)}`;
+
+/**
+ * The file of a media, as its edit form shows it: the thumbnail of an image (or its preview, for a
+ * HEIC), the icon of other types, never a broken image, with the name, type and size.
+ */
+export const Previews: Story = {
+    render: function Render(args) {
+        const [value, setValue] = useState<FileValue[] | null>([
+            { name: 'sunset.jpg', url: PHOTO_SVG, mime: 'image/jpeg', size: 2_400_000 },
+            {
+                name: 'IMG_2041.HEIC',
+                url: 'https://files.example/IMG_2041.HEIC',
+                thumbnailUrl: PHOTO_SVG,
+                mime: 'image/heic',
+                size: 3_100_000,
+            },
+            {
+                name: 'teaser.mp4',
+                thumbnailUrl: 'https://files.invalid/teaser-poster.jpg',
+                mime: 'video/mp4',
+                size: 48_000_000,
+            },
+            TERMS,
+            {
+                name: 'pricing.xlsx',
+                mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                size: 180_000,
+            },
+        ]);
+        return (
+            <FileField
+                label="Files"
+                description={args.description}
+                multiple
+                uploadSource={null}
+                value={value}
+                onChange={setValue}
+            />
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByRole('link', { name: 'sunset.jpg' })).toBeVisible();
+        await expect(canvas.getByText(/^XLSX · /)).toBeVisible();
+        // The poster of the video doesn't load: its icon shows instead.
+        await waitFor(() =>
+            expect(canvasElement.querySelector('[data-kind="video"] img')).toBeNull(),
+        );
+        await expect(canvasElement.querySelectorAll('img')).toHaveLength(2);
+    },
+};
+
+/** An image just chosen shows before it is saved. */
+export const NewImage: Story = {
+    render: function Render(args) {
+        const [value, setValue] = useState<FileValue | null>(null);
+        return (
+            <FileField
+                label="Image"
+                description={args.description}
+                accept={['image/*']}
+                uploadSource={null}
+                value={value}
+                onChange={setValue}
+            />
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await userEvent.upload(
+            fileInput(canvasElement),
+            new File(['<svg xmlns="http://www.w3.org/2000/svg"/>'], 'logo.svg', {
+                type: 'image/svg+xml',
+            }),
+        );
+        await expect(await canvas.findByText('logo.svg')).toBeVisible();
+        await waitFor(() =>
+            expect(canvasElement.querySelector('img')?.getAttribute('src')).toMatch(/^data:image/),
+        );
+    },
+};
+
 export const ReadOnly: Story = {
     args: { readOnly: true, value: TERMS },
     play: async ({ canvasElement }) => {

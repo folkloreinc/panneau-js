@@ -1,5 +1,6 @@
 import type { ComponentType, ReactNode } from 'react';
 
+import type { FileKind } from '@panneau/fields';
 import type {
     Abilities,
     Action,
@@ -188,6 +189,11 @@ export interface ListLayoutProps {
      * one: the gallery shows it, and the table its thumbnail. `undefined` when items have no image.
      */
     getItemImage?: ((item: ListItem) => string | null) | undefined;
+    /**
+     * The kind of the file of an item's image (`itemImage`), from its media `type` or `mime`: an
+     * item without an image to show (a PDF) shows the icon of its kind, never a broken image.
+     */
+    getItemFileKind?: ((item: ListItem) => FileKind | null) | undefined;
     /** The month of the calendar, in the `calendar` layout. */
     calendar?: ListCalendarProps | undefined;
     /**

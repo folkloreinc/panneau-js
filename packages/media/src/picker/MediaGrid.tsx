@@ -1,20 +1,13 @@
-import { AudioLines, Check, File, FileText, Film, Image as ImageIcon, Info } from 'lucide-react';
+import { Check, Info } from 'lucide-react';
 import { GridList, GridListItem } from 'react-aria-components';
 
-import { formatSize } from '@panneau/fields';
+import { FileThumbnail, formatSize, getFileKind } from '@panneau/fields';
 import { mediaMessages as messages } from '@panneau/intl';
-import { Badge, IconButton, type IconComponent, usePanneauIntl } from '@panneau/ui';
+import { Badge, IconButton, usePanneauIntl } from '@panneau/ui';
 
 import styles from './MediaPicker.module.css';
 import { extensionOf, formatDuration, isProcessingMedia, refusalOf } from './format';
 import type { PickerMedia } from './types';
-
-const TYPE_ICONS: Record<string, IconComponent> = {
-    image: ImageIcon,
-    video: Film,
-    audio: AudioLines,
-    document: FileText,
-};
 
 /** The status badge of a media being processed, or whose processing failed. */
 export function StatusBadge({ item }: { item: PickerMedia }) {
@@ -47,22 +40,17 @@ export function Thumbnail({ item, large = false }: { item: PickerMedia; large?: 
         large && item.media.type === 'image'
             ? (item.media.url ?? item.media.thumbnailUrl)
             : item.media.thumbnailUrl;
-    if (typeof url === 'string') {
-        const alt = item.values?.alt;
-        return (
-            <img
-                className={large ? styles.previewImage : styles.thumbnailImage}
-                src={url}
-                alt={large && typeof alt === 'string' ? alt : ''}
-            />
-        );
-    }
-    const Icon = TYPE_ICONS[item.media.type] ?? File;
+    const alt = item.values?.alt;
+    // An image that fails to load (a document's missing preview) falls back to the type's icon.
     return (
-        <span className={styles.typeIcon} data-type={item.media.type}>
-            <Icon aria-hidden size={large ? 48 : 32} strokeWidth={1.5} />
-            <span className={styles.extension}>{extensionOf(item)}</span>
-        </span>
+        <FileThumbnail
+            src={typeof url === 'string' ? url : null}
+            kind={getFileKind(item.media)}
+            extension={extensionOf(item)}
+            iconSize={large ? 48 : 32}
+            imageClassName={large ? styles.previewImage : styles.thumbnailImage}
+            {...(large && typeof alt === 'string' ? { alt } : {})}
+        />
     );
 }
 

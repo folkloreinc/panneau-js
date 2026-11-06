@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -22,11 +22,58 @@ describe('FileField', () => {
             'href',
             'https://files.test/terms.pdf',
         );
-        expect(screen.getByText('51 KB')).toBeInTheDocument();
+        expect(screen.getByText('PDF · 51 KB')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Replace the file' })).toBeInTheDocument();
 
         await userEvent.click(screen.getByRole('button', { name: 'Remove terms.pdf' }));
         expect(onChange).toHaveBeenCalledWith(null);
+    });
+
+    it('shows the thumbnail of an image, and the icon of a document', () => {
+        const { container } = renderInRoot(
+            <FileField
+                label="Files"
+                multiple
+                value={[
+                    TERMS,
+                    {
+                        name: 'photo.heic',
+                        url: 'https://files.test/photo.heic',
+                        thumbnailUrl: 'https://files.test/photo.jpg',
+                        mime: 'image/heic',
+                        size: 1000,
+                    },
+                    {
+                        name: 'cover.png',
+                        url: 'https://files.test/cover.png',
+                        mime: 'image/png',
+                        size: 1000,
+                    },
+                ]}
+            />,
+        );
+        const images = [...container.querySelectorAll('img')].map((img) => img.getAttribute('src'));
+        expect(images).toEqual(['https://files.test/photo.jpg', 'https://files.test/cover.png']);
+        expect(container.querySelector('[data-kind="document"]')).toHaveTextContent('PDF');
+    });
+
+    it('falls back to the icon when the thumbnail fails to load', () => {
+        const { container } = renderInRoot(
+            <FileField
+                label="Video"
+                value={{
+                    name: 'clip.mp4',
+                    thumbnailUrl: 'https://files.test/missing.jpg',
+                    mime: 'video/mp4',
+                    size: 1000,
+                }}
+            />,
+        );
+        const image = container.querySelector('img');
+        expect(image).not.toBeNull();
+        fireEvent.error(image as HTMLImageElement);
+        expect(container.querySelector('img')).toBeNull();
+        expect(screen.getByText(/^MP4 · /)).toBeInTheDocument();
     });
 
     it('gives the file itself without direct uploads', async () => {

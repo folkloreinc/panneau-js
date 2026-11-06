@@ -67,6 +67,15 @@ export {
     toFiles,
 } from './file/FileField';
 export { FilePicker, type FilePickerProps } from './upload/FilePicker';
+export {
+    type FileKind,
+    FileKindIcon,
+    FileThumbnail,
+    type FileThumbnailProps,
+    extensionOfName,
+    getFileKind,
+    kindOfMime,
+} from './upload/FileThumbnail';
 export { UploadList, type UploadListProps } from './upload/UploadList';
 export { formatSize, matchesMime } from './upload/files';
 export {
