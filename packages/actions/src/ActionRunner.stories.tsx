@@ -276,7 +276,10 @@ export const InUse: Story = {
         await expect(several).toHaveTextContent(
             '1 item done. 1 item is in use elsewhere: remove it from where it is used, then try again.',
         );
-        await expect(within(several).getByRole('button', { name: 'Undo' })).toBeVisible();
+        // The toast rises in from transparent: its button shows once it is in.
+        await waitFor(() =>
+            expect(within(several).getByRole('button', { name: 'Undo' })).toBeVisible(),
+        );
     },
 };
 
