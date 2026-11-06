@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { CONTEXT_HEADER, CONTEXT_PROBLEM_TYPE } from '../constants';
+import { CONTEXT_HEADER, CONTEXT_PROBLEM_TYPE, IDS_FILTER } from '../constants';
 import { formatContextHeader } from '../context';
 import { getLinkTypes } from '../links';
 import { type FilterRange, isCursorPage, toSearchParams } from '../query';
@@ -679,6 +679,49 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                     `Filtered from 9999-12-31, the list has ${total} items, expected 0.`,
                 );
             }
+        },
+    );
+
+    await run(
+        'list.filter-ids',
+        'GET /resources/{resource} filters on the ids of items (filter[ids])',
+        async (check) => {
+            if (resource === null) {
+                check.skip('No resource to test.');
+                return;
+            }
+            const first = await request(`${resourcePath()}?perPage=3`);
+            if (!check.expectStatus(first, 200)) {
+                return;
+            }
+            const page = check.expectSchema(ListResponse, first.body, 'The list');
+            const items = page?.data ?? [];
+            if (items.length < 2) {
+                check.skip('The list has fewer than 2 items.');
+                return;
+            }
+            // Two items of the first page, in reverse, and an id that no item has.
+            const wanted = items.slice(0, 2).map((item) => item.id);
+            const ids = [...wanted].reverse().concat('panneau-conformance-missing');
+            const reply = await request(
+                `${resourcePath()}?${toSearchParams({ filter: { [IDS_FILTER]: ids } })}`,
+            );
+            if (!check.expectStatus(reply, 200)) {
+                return;
+            }
+            const filtered = check.expectSchema(
+                ListResponse,
+                reply.body,
+                'The list filtered on ids',
+            );
+            if (filtered === null) {
+                return;
+            }
+            const got = filtered.data.map((item) => item.id);
+            check.expect(
+                got.length === wanted.length && wanted.every((id) => got.includes(id)),
+                `filter[ids][] of ${wanted.join(', ')} listed ${got.length > 0 ? got.join(', ') : 'no items'}.`,
+            );
         },
     );
 

@@ -2,6 +2,7 @@ import { X } from 'lucide-react';
 import { useState } from 'react';
 
 import type { Field, Filter, FilterValue } from '@panneau/protocol';
+import { IDS_FILTER } from '@panneau/protocol/runtime';
 import { Button, IconButton, usePanneauIntl } from '@panneau/ui';
 
 import { messages } from '../messages';
@@ -111,6 +112,11 @@ export function FilterChips({
 }: FilterChipsProps) {
     const intl = usePanneauIntl();
     const chips = Object.entries(values).map(([id, value]) => {
+        // The filter of every list on ids (decision 0069): the count of its items, set by a link.
+        if (id === IDS_FILTER) {
+            const count = (Array.isArray(value) ? value : [value]).length;
+            return { id, label: intl.formatMessage(messages.idsChip, { count }), text: null };
+        }
         const filter = filters.find((candidate) => candidate.id === id) ?? { id, type: 'text' };
         const label = getFilterLabel(filter, columns, fields);
         const text =

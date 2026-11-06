@@ -68,6 +68,7 @@ export const actionsMessages: {
     }>;
     details: PanneauMessage<Record<never, never>>;
     download: PanneauMessage<Record<never, never>>;
+    showChanged: PanneauMessage<Record<never, never>>;
     resultsTitle: PanneauMessage<    {
     action: string;
     }>;
@@ -686,6 +687,9 @@ export const listsMessages: {
     }>;
     searchChip: PanneauMessage<    {
     q: string;
+    }>;
+    idsChip: PanneauMessage<    {
+    count: number;
     }>;
     clearFilters: PanneauMessage<Record<never, never>>;
     any: PanneauMessage<Record<never, never>>;

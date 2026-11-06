@@ -8,7 +8,13 @@ import { usePanneauIntl, useToast } from '@panneau/ui';
 import { ParametersDialog } from './ParametersDialog';
 import { ResultsDialog } from './ResultsDialog';
 import { ActionRunnerContext, type ActionRunnerContextValue } from './context';
-import { describeResult, describeSubject, getItemTitle, isInUse } from './describe';
+import {
+    describeResult,
+    describeSubject,
+    getChangedItems,
+    getItemTitle,
+    isInUse,
+} from './describe';
 import { messages } from './messages';
 import { buildActionRequest, getLinkTarget, getResultCounts, isFinished } from './request';
 import type {
@@ -36,6 +42,12 @@ export interface ActionRunnerProviderProps {
      * `window.location.assign()` for URLs; routes need it.
      */
     onNavigate?: (to: string | RouteReference) => void;
+    /**
+     * Opens the list of a resource filtered on the items a run changed (`filter[ids]`, decision
+     * 0069). With it, the toast of a run offers "Show" when it has nothing more to say: no "Undo",
+     * "Details" or "Download". Without it, there is no "Show".
+     */
+    onShowItems?: (resource: string, ids: readonly string[]) => void;
     /** Opens the `download` of a result. Defaults to a link to its URL, clicked. */
     onDownload?: (download: ActionDownload) => void;
     /** Handlers of `client` actions by their `component`, over those of the plugins. */
@@ -92,6 +104,7 @@ export function ActionRunnerProvider({
     onResult,
     onNavigate = navigateTo,
     onDownload = openDownload,
+    onShowItems,
     clientActions,
     pollInterval = 2000,
     locales,
@@ -175,6 +188,9 @@ export function ActionRunnerProvider({
         // "Undo" lives in the toast only (decision 0063): a queued run, which finished later, isn't
         // undone.
         const undo = !queued ? (result.undo ?? null) : null;
+        // "Show" comes after what says more, and not when the run goes somewhere else.
+        const changed =
+            onShowItems !== undefined && redirect === null ? getChangedItems(target, result) : null;
         toasts.show(
             {
                 ...content,
@@ -203,7 +219,14 @@ export function ActionRunnerProvider({
                                   onAction: () => onDownload(download),
                               },
                           }
-                        : {}),
+                        : changed !== null
+                          ? {
+                                action: {
+                                    label: intl.formatMessage(messages.showChanged),
+                                    onAction: () => onShowItems?.(resource, changed),
+                                },
+                            }
+                          : {}),
             },
             { key: toastKey(resource, target) },
         );

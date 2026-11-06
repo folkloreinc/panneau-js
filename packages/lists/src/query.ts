@@ -1,5 +1,10 @@
 import type { ListQuery } from '@panneau/protocol';
-import { isFilterRange, matchesFilterRange } from '@panneau/protocol/runtime';
+import {
+    IDS_FILTER,
+    IDS_FILTER_LIMIT,
+    isFilterRange,
+    matchesFilterRange,
+} from '@panneau/protocol/runtime';
 
 import type { ListColumn, ListItem } from './types';
 import { getColumnValue, toText } from './values';
@@ -54,6 +59,14 @@ export function applyListQuery<T extends ListItem>(
     const locale = options.locale ?? 'en';
     let result = [...items];
     Object.entries(query.filter ?? {}).forEach(([key, expected]) => {
+        // Every list filters on the ids of its items (decision 0069).
+        if (key === IDS_FILTER) {
+            const ids = (Array.isArray(expected) ? expected : [expected])
+                .map(String)
+                .slice(0, IDS_FILTER_LIMIT);
+            result = result.filter((item) => ids.includes(item.id));
+            return;
+        }
         if (isFilterRange(expected)) {
             result = result.filter((item) =>
                 matchesFilterRange(valueOf(item, key, options), expected),

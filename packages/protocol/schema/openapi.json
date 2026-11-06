@@ -4369,7 +4369,8 @@
                     "id": {
                         "type": "string",
                         "minLength": 1,
-                        "description": "Sent as `filter[id]`."
+                        "pattern": "^(?!ids$)",
+                        "description": "Sent as `filter[id]`. `ids` is reserved: every list has a filter on the ids of its items, `filter[ids][]` (decision 0069)."
                     },
                     "type": {
                         "type": "string",

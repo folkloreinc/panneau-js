@@ -41,7 +41,7 @@
 
 .tab::after {
     position: absolute;
-    inset-inline: var(--panneau-space-2);
+    inset-inline: 0;
     bottom: 0;
     height: var(--panneau-tabs-indicator-height, 2px);
     content: '';

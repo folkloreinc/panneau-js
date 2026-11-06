@@ -29,7 +29,14 @@ export const Column = z
     });
 
 export const Filter = z.looseObject({
-    id: z.string().min(1).meta({ description: 'Sent as `filter[id]`.' }),
+    id: z
+        .string()
+        .min(1)
+        .regex(/^(?!ids$)/, 'The filter id `ids` is reserved for the filter of every list on ids.')
+        .meta({
+            description:
+                'Sent as `filter[id]`. `ids` is reserved: every list has a filter on the ids of its items, `filter[ids][]` (decision 0069).',
+        }),
     type: z.string().min(1).meta({
         description:
             'Built-in: `text`, `select`, `toggle`, `date`, `date-range`, `relation`. A `date-range` value is the bounds of a range: `filter[id][from]` and `filter[id][to]`, days (`2026-01-31`), both inclusive and both optional.',

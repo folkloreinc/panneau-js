@@ -9,11 +9,13 @@ import {
     createLeaveGuards,
     findResource,
     resolveResource,
+    usePanneau,
     usePlugins,
 } from '@panneau/core';
 import { invalidateActionResult, useDataAdapter } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
 import type { Definition } from '@panneau/protocol';
+import { IDS_FILTER, toSearchParams } from '@panneau/protocol/runtime';
 import { Alert, usePanneauIntl, useToast } from '@panneau/ui';
 
 import { Dashboard } from './dashboard/Dashboard';
@@ -193,6 +195,7 @@ export function Shell({
 }: ShellProps) {
     const intl = usePanneauIntl();
     const toasts = useToast();
+    const { router } = usePanneau();
     const pathname = usePathname();
     const queryClient = useQueryClient();
     const adapter = useDataAdapter();
@@ -241,6 +244,19 @@ export function Shell({
                     onResult={(result, { resource, target }) =>
                         invalidateActionResult(queryClient, resource, result, target.selection)
                     }
+                    // "Show" in the toast of a run: the list of the resource, filtered on the items
+                    // it changed (decision 0069). On that list already, its router changes its query.
+                    onShowItems={(resource, ids) => {
+                        const path = routePath({ name: 'resource.index', resource }, basePath);
+                        const search = toSearchParams({
+                            filter: { [IDS_FILTER]: [...ids] },
+                        }).toString();
+                        if (router !== null && window.location.pathname === path) {
+                            router.setSearch(search);
+                        } else {
+                            go(`${path}?${search}`);
+                        }
+                    }}
                     onNavigate={(to) => {
                         const path =
                             typeof to === 'string' ? to : resolveRoute(definition, basePath, to);
