@@ -128,6 +128,14 @@ export function Select(props: SelectProps) {
         props.multiple !== true && props.value !== undefined && props.value !== null
             ? options.find((option) => option.value === props.value)
             : undefined;
+    // Several options read as one line, their labels in a list ("Draft, In review and Published"):
+    // their whole content (descriptions, prefixes) would stack in the trigger.
+    const chosenLabels =
+        props.multiple === true
+            ? options
+                  .filter((option) => (props.value ?? []).includes(option.value))
+                  .map((option) => option.label)
+            : [];
 
     const shared = {
         id,
@@ -158,7 +166,11 @@ export function Select(props: SelectProps) {
             >
                 <SelectValue className={styles.value}>
                     {({ defaultChildren, isPlaceholder }) =>
-                        !isPlaceholder && selected !== undefined ? (
+                        !isPlaceholder && chosenLabels.length > 0 ? (
+                            <span className={styles.valueList}>
+                                {intl.formatList(chosenLabels, { type: 'conjunction' })}
+                            </span>
+                        ) : !isPlaceholder && selected !== undefined ? (
                             <span className={styles.valueText}>
                                 {selected.prefix !== undefined ? (
                                     <span className={styles.prefix} aria-hidden="true">

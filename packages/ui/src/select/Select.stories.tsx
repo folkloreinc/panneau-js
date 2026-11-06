@@ -43,10 +43,23 @@ export const Single: Story = {
     },
 };
 
+/** Several options read as one line, their labels in a list, cut when it is too long. */
 export const Multiple: Story = {
     render: function Render(args) {
-        const [value, setValue] = useState<OptionValue[]>(['draft']);
-        return <Select {...args} label="Statuses" multiple value={value} onChange={setValue} />;
+        const [value, setValue] = useState<OptionValue[]>(['draft', 'review', 'published']);
+        return (
+            <div style={{ maxWidth: '16rem' }}>
+                <Select {...args} label="Statuses" multiple value={value} onChange={setValue} />
+            </div>
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const trigger = canvas.getByRole('button', { name: /Statuses/ });
+        await expect(trigger).toHaveTextContent('Draft, In review, and Published');
+        await expect(trigger).not.toHaveTextContent('Waiting for an editor');
+        // One line: the trigger keeps the height of a control, where options would stack.
+        await expect(trigger.getBoundingClientRect().height).toBeLessThan(48);
     },
 };
 
