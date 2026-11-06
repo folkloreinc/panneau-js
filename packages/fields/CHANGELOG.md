@@ -1,5 +1,22 @@
 # @panneau/fields
 
+## 5.0.0-alpha.25
+
+### Patch Changes
+
+- f316d86: The address field checks its postal code for Canada and the United States, the countries whose format the `postalCode` rule knows, once the code loses focus and then as it is typed: "Enter a postal code like H2X 1Y4." or "Enter a ZIP code like 12345.", in English and French. It no longer waits for the form to say so. The form's errors, once shown, replace that check.
+- f316d86: An embed can say how long its video or sound lasts: `duration`, in seconds, when its provider gives it (Vimeo's oEmbed does). The preview of the embed field shows it over the thumbnail, as players do (`2:14`), or after the provider without a thumbnail, and has a button that opens the embed in a new window ("Open in a new window", in English and French) instead of being a link as a whole.
+- 516f777: The slug field shows its URL prefix as the muted start of the address, running into the slug (`example.com/fr/ete-a-montreal`), instead of a grey addon with a divider. A click on the prefix puts the caret at the start of the slug.
+- Updated dependencies [f316d86]
+- Updated dependencies [f316d86]
+- Updated dependencies [f316d86]
+- Updated dependencies [f316d86]
+- Updated dependencies [f316d86]
+- Updated dependencies [f316d86]
+  - @panneau/intl@5.0.0-alpha.25
+  - @panneau/protocol@5.0.0-alpha.25
+  - @panneau/ui@5.0.0-alpha.25
+
 ## 5.0.0-alpha.24
 
 ### Patch Changes

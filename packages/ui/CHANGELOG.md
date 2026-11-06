@@ -1,5 +1,17 @@
 # @panneau/ui
 
+## 5.0.0-alpha.25
+
+### Patch Changes
+
+- f316d86: The thumb of a slider stays between the edges of its field, as the other fields line up: at its ends, it reached half its width past them. The rail and the fill still take the whole width.
+- f316d86: The spinner is a quarter of a circle with rounded ends, turning on a faint ring of the same color, instead of a ring with one quarter cut out.
+- f316d86: The indicator of the selected tab covers the line under the tabs again: the list scrolls, which cut the indicator to a thin line above it, with a gap.
+- f316d86: Toasts line up their icon, the first line of their text and their buttons on one axis: the text sat a few pixels above the buttons. They are more compact, their action is a ghost button next to the close button, and the colored edge of a warning or an error is a straight band at their start instead of a thick rounded border.
+- Updated dependencies [f316d86]
+- Updated dependencies [f316d86]
+  - @panneau/intl@5.0.0-alpha.25
+
 ## 5.0.0-alpha.24
 
 ### Patch Changes
