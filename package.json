@@ -15,6 +15,7 @@
         "packages/*"
     ],
     "scripts": {
+        "start": "npm run storybook",
         "build": "node scripts/workspaces.js build --parallel",
         "typecheck": "node scripts/workspaces.js typecheck --any-order",
         "api": "node scripts/workspaces.js api --parallel",
