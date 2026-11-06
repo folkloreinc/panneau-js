@@ -561,6 +561,29 @@ describe('runConformance', () => {
         expect(check?.issues).toEqual(['An update of status alone also changed slug.']);
     });
 
+    it('reports a backend that ignores the filter on ids', async () => {
+        const backend = createBackend();
+        const withoutIds = (input: string, init?: RequestInit) => {
+            const url = new URL(input);
+            url.searchParams.delete('filter[ids][]');
+            return backend.fetch(url.toString(), init);
+        };
+        const passing = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: backend.fetch,
+        });
+        expect(passing.checks.find((check) => check.id === 'list.filter-ids')?.status).toBe(
+            'passed',
+        );
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: withoutIds,
+        });
+        const ids = report.checks.find((check) => check.id === 'list.filter-ids');
+        expect(ids?.status).toBe('failed');
+        expect(ids?.issues?.[0]).toMatch(/^filter\[ids\]\[\] of .+ listed /);
+    });
+
     it('reports a backend that ignores the bounds of a range filter', async () => {
         const backend = createBackend();
         // A backend that only knows `filter[id]` and `filter[id][]`.

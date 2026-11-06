@@ -2057,6 +2057,12 @@ export const Id: z.ZodString;
 export type Id = z.infer<typeof Id>;
 
 // @public
+export const IDS_FILTER = "ids";
+
+// @public
+export const IDS_FILTER_LIMIT = 100;
+
+// @public
 export function isAddressPart(value: unknown): value is AddressPart;
 
 // @public

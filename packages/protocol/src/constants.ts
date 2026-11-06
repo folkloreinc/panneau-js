@@ -32,6 +32,15 @@ export function isBuiltInLink(id: string): id is BuiltInLinkAction {
 export const UNDO_LIMIT = 100;
 
 /**
+ * The filter of every list on the ids of its items (decision 0069): `filter[ids][]=12`. No list's
+ * definition declares it, and none can declare a filter with this id.
+ */
+export const IDS_FILTER = 'ids';
+
+/** A list filtered on ids takes at most this many (decision 0069), as an undo does. */
+export const IDS_FILTER_LIMIT = 100;
+
+/**
  * Built-in item actions, in their default order (decision 0040). Every resource has them without
  * declaring them, and clients show each one on the items whose abilities allow it
  * (`ITEM_ACTION_ABILITIES`). A resource's `itemActions` picks some of them, in its order.

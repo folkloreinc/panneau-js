@@ -66,6 +66,7 @@ export interface ActionRunnerProviderProps {
     onDownload?: (download: ActionDownload) => void;
     onNavigate?: (to: string | RouteReference) => void;
     onResult?: (result: ActionResult, context: ActionResultContext) => unknown;
+    onShowItems?: (resource: string, ids: readonly string[]) => void;
     pollInterval?: number;
 }
 

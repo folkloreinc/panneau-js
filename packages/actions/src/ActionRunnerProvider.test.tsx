@@ -140,6 +140,55 @@ describe('ActionRunnerProvider', () => {
         expect(await screen.findAllByText('“Publish” is done for 3 pages.')).toHaveLength(1);
     });
 
+    it('offers "Show" for the items a selection changed, without those it skipped', async () => {
+        const adapter = createAdapter({
+            runAction: vi.fn(() =>
+                Promise.resolve({
+                    result: {
+                        message: '2 pages published.',
+                        results: [{ id: '2', status: 'skipped' as const, reason: 'unchanged' }],
+                    },
+                }),
+            ),
+        });
+        const onShowItems = vi.fn();
+        const { run } = renderRunner(
+            { action: publish, scope: 'selection', selection: { ids: ['1', '2', '3'] }, count: 3 },
+            { adapter, onShowItems },
+        );
+        await run();
+        expect(await screen.findByText('2 pages published.')).toBeInTheDocument();
+        // A skipped item has its details, which say more than "Show".
+        expect(screen.getByRole('button', { name: 'Details' })).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Show' })).not.toBeInTheDocument();
+    });
+
+    it('opens the list of the items a selection changed with "Show"', async () => {
+        const adapter = createAdapter({
+            runAction: vi.fn(() => Promise.resolve({ result: { message: '3 pages published.' } })),
+        });
+        const onShowItems = vi.fn();
+        const { run } = renderRunner(
+            { action: publish, scope: 'selection', selection: { ids: ['1', '2', '3'] }, count: 3 },
+            { adapter, onShowItems },
+        );
+        await run();
+        await userEvent.click(await screen.findByRole('button', { name: 'Show' }));
+        expect(onShowItems).toHaveBeenCalledWith('pages', ['1', '2', '3']);
+        await waitFor(() => expect(screen.queryByText('3 pages published.')).toBeNull());
+    });
+
+    it('has no "Show" for an item, a query selection, or without onShowItems', async () => {
+        const adapter = createAdapter();
+        const first = renderRunner(
+            { action: publish, scope: 'item', item: { id: '12' } },
+            { adapter, onShowItems: vi.fn() },
+        );
+        await first.run();
+        expect(await screen.findByText('Done.')).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Show' })).not.toBeInTheDocument();
+    });
+
     it('offers "Undo" when the result says how, runs it, and says it is undone', async () => {
         const remove: Action = {
             id: 'delete',

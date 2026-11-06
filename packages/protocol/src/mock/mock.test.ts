@@ -141,6 +141,20 @@ describe('createMockBackend', () => {
         expect(await response.json()).toMatchObject({ protocol: 1, name: 'Test site' });
     });
 
+    it('filters every list on the ids of its items (filter[ids])', async () => {
+        const backend = createBackend();
+        const all = (await (await backend.fetch('/panneau/api/resources/pages')).json()) as {
+            data: { id: string }[];
+        };
+        const ids = all.data.slice(0, 2).map((item) => item.id);
+        expect(ids).toHaveLength(2);
+        const params = ids.map((id) => `filter[ids][]=${id}`).join('&');
+        const filtered = (await (
+            await backend.fetch(`/panneau/api/resources/pages?${params}&filter[ids][]=missing`)
+        ).json()) as { data: { id: string }[] };
+        expect(filtered.data.map((item) => item.id).sort()).toEqual([...ids].sort());
+    });
+
     it('duplicates an item under a new id, with every built-in item action allowed', async () => {
         const backend = createBackend();
         const response = await backend.fetch('/panneau/api/resources/pages/2/duplicate', {

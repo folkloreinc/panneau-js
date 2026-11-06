@@ -10,6 +10,7 @@ export const listsFr: Record<string, string> = {
     'panneau.lists.activeFilters': 'Filtres actifs',
     'panneau.lists.removeFilter': 'Retirer le filtre {filter}',
     'panneau.lists.searchChip': 'Recherche : {q}',
+    'panneau.lists.idsChip': '{count, plural, one {# élément} other {# éléments}}',
     'panneau.lists.clearFilters': 'Tout effacer',
     'panneau.lists.any': 'Tous',
     'panneau.lists.from': 'Du',

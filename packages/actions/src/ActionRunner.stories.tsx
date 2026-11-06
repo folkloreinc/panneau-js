@@ -216,6 +216,39 @@ export const Undo: Story = {
     },
 };
 
+/**
+ * "Show" opens the list of the items a selection changed (decision 0069), when the toast has
+ * nothing more to say: no "Undo", "Details" or "Download".
+ */
+export const ShowChanged: Story = {
+    args: {
+        adapter: {
+            ...createStoryAdapter(),
+            runAction: (_resource, _action, request) => {
+                const ids = (request.selection as { ids?: string[] } | undefined)?.ids ?? [];
+                return Promise.resolve({ result: { message: `${ids.length} pages published.` } });
+            },
+        },
+        onShowItems: fn(),
+    },
+    play: async ({ args, canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Home' }));
+        await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Contact' }));
+        await userEvent.click(canvas.getByRole('button', { name: 'Publish' }));
+        const dialog = await body.findByRole('dialog', { name: 'Publish' });
+        await userEvent.type(
+            within(dialog).getByRole('textbox', { name: 'Note to the authors' }),
+            'Ready to go.',
+        );
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Publish' }));
+        const toast = await body.findByRole('alertdialog', { name: /2 pages published\./ });
+        await userEvent.click(within(toast).getByRole('button', { name: 'Show' }));
+        await expect(args.onShowItems).toHaveBeenCalledWith('pages', ['1', '2']);
+    },
+};
+
 const remove: Action = {
     id: 'delete',
     kind: 'server',

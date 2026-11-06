@@ -1,7 +1,7 @@
 import { createIntl } from 'react-intl';
 import { describe, expect, it } from 'vitest';
 
-import { describeItemResult, describeResult } from './describe';
+import { describeItemResult, describeResult, getChangedItems } from './describe';
 
 const intl = createIntl({ locale: 'en', messages: {} });
 
@@ -92,5 +92,59 @@ describe('describeItemResult', () => {
             'Skipped',
         );
         expect(describeItemResult({ id: '1', status: 'failed' }, intl)).toBe('Failed');
+    });
+});
+
+describe('getChangedItems', () => {
+    const action = {
+        id: 'publish',
+        label: 'Publish',
+        kind: 'server' as const,
+        scope: ['selection' as const],
+    };
+
+    it('gives the selected ids, without those that failed or were skipped', () => {
+        expect(
+            getChangedItems(
+                { action, scope: 'selection', selection: { ids: ['1', '2', '3'] } },
+                { results: [{ id: '2', status: 'failed' }] },
+            ),
+        ).toEqual(['1', '3']);
+    });
+
+    it('gives the items of an undo, even for a query selection', () => {
+        expect(
+            getChangedItems(
+                { action, scope: 'selection', selection: { query: {} } },
+                { undo: { action: 'restore', items: ['4'] } },
+            ),
+        ).toEqual(['4']);
+    });
+
+    it('gives nothing for an item, a query selection, no change, or too many items', () => {
+        expect(getChangedItems({ action, scope: 'item', item: { id: '1' } }, {})).toBeNull();
+        expect(
+            getChangedItems(
+                {
+                    action: { ...action, id: 'delete' },
+                    scope: 'selection',
+                    selection: { ids: ['1'] },
+                },
+                {},
+            ),
+        ).toBeNull();
+        expect(
+            getChangedItems({ action, scope: 'selection', selection: { query: {} } }, {}),
+        ).toBeNull();
+        expect(
+            getChangedItems(
+                { action, scope: 'selection', selection: { ids: ['1'] } },
+                { results: [{ id: '1', status: 'skipped' }] },
+            ),
+        ).toBeNull();
+        const many = Array.from({ length: 101 }, (_, index) => String(index));
+        expect(
+            getChangedItems({ action, scope: 'selection', selection: { ids: many } }, {}),
+        ).toBeNull();
     });
 });
