@@ -86,6 +86,10 @@ export const fieldsMessages = {
         id: 'panneau.fields.embedFailed',
         defaultMessage: 'This URL can’t be embedded.',
     }),
+    openEmbed: defineMessage({
+        id: 'panneau.fields.openEmbed',
+        defaultMessage: 'Open in a new window',
+    }),
     jsonInvalid: defineMessage<{ error: string }>({
         id: 'panneau.fields.jsonInvalid',
         defaultMessage: 'This JSON doesn’t parse: {error}',
@@ -249,6 +253,14 @@ export const fieldsMessages = {
     addressZipCode: defineMessage({
         id: 'panneau.fields.addressZipCode',
         defaultMessage: 'ZIP code',
+    }),
+    addressPostalCodeFormat: defineMessage<{ example: string }>({
+        id: 'panneau.fields.addressPostalCodeFormat',
+        defaultMessage: 'Enter a postal code like {example}.',
+    }),
+    addressZipCodeFormat: defineMessage<{ example: string }>({
+        id: 'panneau.fields.addressZipCodeFormat',
+        defaultMessage: 'Enter a ZIP code like {example}.',
     }),
     addressCountry: defineMessage({
         id: 'panneau.fields.addressCountry',

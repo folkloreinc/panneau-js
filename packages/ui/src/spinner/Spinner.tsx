@@ -24,7 +24,11 @@ export function Spinner({ label, showLabel = false, size = 'md', className }: Sp
             aria-label={text}
             className={cx('panneau-spinner', styles.spinner, styles[size], className)}
         >
-            <span className={styles.circle} aria-hidden="true" />
+            {/* A faint ring, and an arc with rounded ends that turns on it. */}
+            <svg className={styles.circle} viewBox="0 0 24 24" aria-hidden="true">
+                <circle className={styles.track} cx="12" cy="12" r="10.5" />
+                <path className={styles.arc} d="M12 1.5a10.5 10.5 0 0 1 10.5 10.5" />
+            </svg>
             {showLabel ? <span>{text}</span> : null}
         </ProgressBar>
     );

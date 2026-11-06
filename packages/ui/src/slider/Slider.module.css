@@ -1,6 +1,8 @@
 /* A track with the part before the thumb filled, and the value next to the label. */
 
 .slider {
+    --slider-thumb-size: 1.125rem;
+
     width: 100%;
 }
 
@@ -17,18 +19,22 @@
     color: var(--panneau-color-text-muted);
 }
 
+/*
+ * The thumb moves between the edges of the field, not past them: its center goes from half its
+ * width in to half its width before the end. The rail and the fill reach the edges.
+ */
 .track {
     position: relative;
     height: var(--panneau-control-height-sm);
+    margin-inline: calc(var(--slider-thumb-size) / 2);
     cursor: pointer;
 }
 
-/* The rail, centered in the track. */
+/* The rail, centered in the track, the whole width of the field. */
 .track::before {
     position: absolute;
     top: 50%;
-    right: 0;
-    left: 0;
+    inset-inline: calc(var(--slider-thumb-size) / -2);
     height: 0.25rem;
     content: '';
     background-color: var(--panneau-color-surface-sunken);
@@ -37,11 +43,14 @@
     transform: translateY(-50%);
 }
 
+/* From the edge of the field to the center of the thumb. */
 .fill {
     position: absolute;
     top: 50%;
-    left: 0;
+    inset-inline-start: calc(var(--slider-thumb-size) / -2);
+    box-sizing: content-box;
     height: 0.25rem;
+    padding-inline-start: calc(var(--slider-thumb-size) / 2);
     background-color: var(--panneau-color-accent);
     border-radius: var(--panneau-radius-full);
     transform: translateY(-50%);
@@ -49,8 +58,8 @@
 
 .thumb {
     top: 50%;
-    width: 1.125rem;
-    height: 1.125rem;
+    width: var(--slider-thumb-size);
+    height: var(--slider-thumb-size);
     background-color: var(--panneau-color-surface);
     border: 2px solid var(--panneau-color-accent);
     border-radius: var(--panneau-radius-full);

@@ -1,9 +1,11 @@
+import { ExternalLink } from 'lucide-react';
 import { type ReactNode, useEffect, useEffectEvent, useState } from 'react';
 
 import { formsMessages } from '@panneau/intl';
 import type { EmbedValue } from '@panneau/protocol';
-import { Spinner, TextInput, usePanneauIntl } from '@panneau/ui';
+import { LinkButton, Spinner, TextInput, Tooltip, usePanneauIntl } from '@panneau/ui';
 
+import { splitDuration } from '../duration/DurationField';
 import { useFieldsContext } from '../shared/context';
 import type { EmbedSource } from '../shared/embed';
 import { findRule, getFieldProps, isString } from '../shared/entry';
@@ -48,6 +50,31 @@ function isAllowed(value: EmbedValue, providers: readonly string[] | undefined):
 /** Whether a value has been resolved: it has more than its URL. */
 function isResolved(value: EmbedValue): boolean {
     return Object.keys(value).some((key) => key !== 'url');
+}
+
+/**
+ * A duration as players show it, and its ISO 8601 form for `<time>`: `2:14` (`PT2M14S`), `1:02:03`.
+ */
+function playbackTime(duration: number): { text: string; iso: string } {
+    const { hours, minutes, seconds } = splitDuration(duration);
+    const pad = (count: number) => String(count).padStart(2, '0');
+    return {
+        text:
+            hours > 0
+                ? `${String(hours)}:${pad(minutes)}:${pad(seconds)}`
+                : `${String(minutes)}:${pad(seconds)}`,
+        iso: `PT${String(hours)}H${String(minutes)}M${String(seconds)}S`,
+    };
+}
+
+/** How long a video or a sound lasts, as players show it. */
+function Duration({ duration, className }: { duration: number; className?: string }) {
+    const { text, iso } = playbackTime(duration);
+    return (
+        <time className={className} dateTime={iso}>
+            {text}
+        </time>
+    );
 }
 
 /**
@@ -152,18 +179,55 @@ export function EmbedField({
                 </div>
             ) : null}
             {value !== null && value !== undefined && isResolved(value) ? (
-                <a className={styles.preview} href={value.url} target="_blank" rel="noreferrer">
-                    {value.thumbnailUrl !== undefined ? (
-                        <img className={styles.thumbnail} src={value.thumbnailUrl} alt="" />
-                    ) : null}
-                    <span className={styles.text}>
-                        <span className={styles.title}>{value.title ?? value.url}</span>
-                        {value.provider !== undefined ? (
-                            <span className={styles.provider}>{value.provider}</span>
-                        ) : null}
-                    </span>
-                </a>
+                <EmbedPreview value={value} />
             ) : null}
+        </div>
+    );
+}
+
+/**
+ * What a URL embeds: its thumbnail, with the duration of a video or a sound over it, its title and
+ * provider, and a link that opens it in a new window.
+ */
+function EmbedPreview({ value }: { value: EmbedValue }) {
+    const intl = usePanneauIntl();
+    const openLabel = intl.formatMessage(messages.openEmbed);
+    const duration =
+        typeof value.duration === 'number' && Number.isFinite(value.duration)
+            ? value.duration
+            : null;
+    const thumbnail = value.thumbnailUrl !== undefined;
+    return (
+        <div className={styles.preview}>
+            {thumbnail ? (
+                <span className={styles.media}>
+                    <img className={styles.thumbnail} src={value.thumbnailUrl} alt="" />
+                    {duration !== null ? (
+                        <Duration duration={duration} className={styles.duration} />
+                    ) : null}
+                </span>
+            ) : null}
+            <span className={styles.text}>
+                <span className={styles.title}>{value.title ?? value.url}</span>
+                {value.provider !== undefined || (duration !== null && !thumbnail) ? (
+                    <span className={styles.meta}>
+                        {value.provider !== undefined ? <span>{value.provider}</span> : null}
+                        {/* Without a thumbnail to show it on, the duration follows the provider. */}
+                        {duration !== null && !thumbnail ? <Duration duration={duration} /> : null}
+                    </span>
+                ) : null}
+            </span>
+            <Tooltip content={openLabel}>
+                <LinkButton
+                    href={value.url}
+                    external
+                    size="sm"
+                    appearance="ghost"
+                    icon={ExternalLink}
+                    aria-label={openLabel}
+                    className={styles.open}
+                />
+            </Tooltip>
         </div>
     );
 }

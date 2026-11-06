@@ -38,5 +38,14 @@ export const WithErrorCount: Story = {
         const canvas = within(canvasElement);
         await userEvent.click(canvas.getByRole('tab', { name: /SEO/ }));
         await expect(canvas.getByRole('tabpanel')).toHaveTextContent('Meta title');
+        // The selected tab reaches the line under the list, which its indicator covers: the list
+        // scrolls, so an indicator drawn past its edge, over a border, would be cut, above the line.
+        const list = canvas.getByRole('tablist');
+        const selected = canvas.getByRole('tab', { selected: true });
+        await expect(getComputedStyle(list).borderBottomWidth).toBe('0px');
+        await expect(selected.getBoundingClientRect().bottom).toBe(
+            list.getBoundingClientRect().bottom,
+        );
+        await expect(getComputedStyle(selected, '::after').bottom).toBe('0px');
     },
 };

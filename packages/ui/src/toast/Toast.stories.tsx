@@ -127,10 +127,23 @@ export const ErrorToast: Story = {
         const toast = await body.findByRole('alertdialog', {
             name: /The server could not be reached/,
         });
-        await expect(getComputedStyle(toast).borderInlineStartWidth).toBe('4px');
+        // An error has a colored band at its start; a neutral toast has none.
+        await expect(getComputedStyle(toast, '::before').width).toBe('4px');
+        // The icon, the first line of the title and the buttons share one axis.
+        const middle = (rect: DOMRect | undefined) =>
+            rect === undefined ? Number.NaN : rect.top + rect.height / 2;
+        const line = document.createRange();
+        line.selectNodeContents(within(toast).getByText('The server could not be reached'));
+        const axis = middle(
+            within(toast).getByRole('button', { name: 'Retry' }).getBoundingClientRect(),
+        );
+        await expect(Math.abs(middle(line.getClientRects()[0]) - axis)).toBeLessThan(1);
+        await expect(
+            Math.abs(middle(toast.querySelector('svg')?.getBoundingClientRect()) - axis),
+        ).toBeLessThan(1);
         await userEvent.click(canvas.getByRole('button', { name: 'Neutral' }));
         const neutral = await body.findByRole('alertdialog', { name: /Link copied/ });
-        await expect(getComputedStyle(neutral).borderInlineStartWidth).toBe('1px');
+        await expect(getComputedStyle(neutral, '::before').content).toBe('none');
         await userEvent.click(await body.findByRole('button', { name: 'Retry' }));
         await waitFor(() => expect(body.queryByText('The server could not be reached')).toBeNull());
     },
