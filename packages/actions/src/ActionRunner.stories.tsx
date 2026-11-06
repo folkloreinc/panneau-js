@@ -235,6 +235,7 @@ export const ShowChanged: Story = {
     play: async ({ args, canvasElement }) => {
         const canvas = within(canvasElement);
         const body = within(canvasElement.ownerDocument.body);
+        await userEvent.click(canvas.getByRole('button', { name: 'Select' }));
         await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Home' }));
         await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Contact' }));
         await userEvent.click(canvas.getByRole('button', { name: 'Publish' }));
