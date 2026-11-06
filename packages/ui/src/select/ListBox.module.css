@@ -126,6 +126,15 @@
 
 /* A flex box rather than an inline one: inside the block of the value, an inline box sits on a
    line of text, whose strut pushed the label below the middle of the trigger. */
+/* The labels of several chosen options, on one line, cut at its end when it is too long. */
+.valueList {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .valueText {
     display: flex;
     align-items: center;
