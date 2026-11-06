@@ -10,6 +10,7 @@ import type { ActionPlacement } from '@panneau/protocol';
 import type { ActionScope } from '@panneau/protocol';
 import type { ComponentType } from 'react';
 import type { Field } from '@panneau/protocol';
+import type { FileKind } from '@panneau/fields';
 import type { Filter } from '@panneau/protocol';
 import type { FilterValue } from '@panneau/protocol';
 import { getImageUrl } from '@panneau/protocol/runtime';
@@ -298,6 +299,7 @@ export interface ListLayoutProps {
     calendar?: ListCalendarProps | undefined;
     // (undocumented)
     columns: readonly ListColumn[];
+    getItemFileKind?: ((item: ListItem) => FileKind | null) | undefined;
     getItemHref?: ((item: ListItem) => string | null) | undefined;
     getItemImage?: ((item: ListItem) => string | null) | undefined;
     getItemLabel: (item: ListItem) => string;

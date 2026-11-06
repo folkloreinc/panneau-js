@@ -107,6 +107,9 @@ export interface EmbedSource {
 }
 
 // @public
+export function extensionOfName(name: string | null | undefined): string | null;
+
+// @public
 export type FieldBinding = ComponentType<FieldBindingProps>;
 
 // @public
@@ -254,6 +257,16 @@ export function FileFieldEntry(props: FieldEntryProps): JSX.Element;
 export type FileFieldProps = SingleFileFieldProps | MultipleFileFieldProps;
 
 // @public
+export type FileKind = 'image' | 'video' | 'audio' | 'document' | 'spreadsheet' | 'presentation' | 'archive' | 'other';
+
+// @public
+export function FileKindIcon(input: {
+    kind: FileKind | null;
+    size?: number;
+    className?: string;
+}): JSX.Element;
+
+// @public
 export function FilePicker(input: FilePickerProps): JSX.Element;
 
 // @public (undocumented)
@@ -267,6 +280,23 @@ export interface FilePickerProps {
     // (undocumented)
     multiple?: boolean;
     onSelect: (files: File[]) => void;
+}
+
+// @public
+export function FileThumbnail(input: FileThumbnailProps): JSX.Element;
+
+// @public (undocumented)
+export interface FileThumbnailProps {
+    alt?: string;
+    // (undocumented)
+    className?: string;
+    extension?: string | null;
+    iconSize?: number;
+    // (undocumented)
+    imageClassName?: string;
+    // (undocumented)
+    kind: FileKind | null;
+    src?: string | null;
 }
 
 // @public
@@ -313,6 +343,9 @@ export function getFieldProps(props: FieldEntryProps): Omit<FieldProps<never>, '
 };
 
 // @public
+export function getFileKind(value: unknown): FileKind | null;
+
+// @public
 export function getMaxSize(field: Field): number | null;
 
 // @public
@@ -329,6 +362,9 @@ export function isRequired(field: Field): boolean;
 
 // @public
 export function isWideField(field: Field): boolean;
+
+// @public
+export function kindOfMime(mime: string | null | undefined): FileKind;
 
 // @public
 export interface MapsConfig {

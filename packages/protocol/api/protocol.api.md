@@ -5282,6 +5282,7 @@ export const namedSchemas: {
         url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         mime: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         size: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        thumbnailUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     }, z.core.$loose>;
     UploadReference: z.ZodObject<{
         upload: z.ZodString;
@@ -6754,6 +6755,7 @@ export const StoredFile: z.ZodObject<{
     url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     mime: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     size: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    thumbnailUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
