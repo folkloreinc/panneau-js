@@ -218,6 +218,10 @@ export const StoredFile = z
         }),
         mime: z.string().nullable().optional(),
         size: z.number().int().nonnegative().nullable().optional(),
+        thumbnailUrl: z.string().nullable().optional().meta({
+            description:
+                'The URL of a preview image, such as the poster of a video or the first page of a PDF. Without one, clients show an image (its `url`, when browsers show its type) or the icon of its type.',
+        }),
     })
     .meta({
         description:

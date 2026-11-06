@@ -46,6 +46,31 @@ describe('the gallery', () => {
         expect(within(gallery).getAllByRole('listitem')[2]).toHaveTextContent('Blog');
     });
 
+    it('shows the icon of a document without a thumbnail, never a broken image', () => {
+        const { container } = renderList(
+            <ListView
+                list={createList()}
+                columns={columns}
+                items={pages.map((page, index) => ({
+                    ...page,
+                    media: [
+                        { type: 'document', mime: 'application/pdf', thumbnailUrl: null },
+                        { type: 'video', mime: 'video/mp4', thumbnailUrl: null },
+                        null,
+                    ][index],
+                }))}
+                itemImage="media"
+                layouts={['gallery', 'table']}
+            />,
+        );
+        expect(container.querySelectorAll('img')).toHaveLength(0);
+        expect(
+            [...container.querySelectorAll('[data-kind]')].map((icon) =>
+                icon.getAttribute('data-kind'),
+            ),
+        ).toEqual(['document', 'video']);
+    });
+
     it('has the checkbox of each item under its image, not over it', async () => {
         const { container } = renderList(
             <ListView

@@ -9,6 +9,7 @@ import {
     selectItemActions,
     usePlugins,
 } from '@panneau/core';
+import { getFileKind } from '@panneau/fields';
 import { getActionLabel } from '@panneau/intl';
 import type { Action, Field, Filter, RuleFailure } from '@panneau/protocol';
 import { Alert, Button, Checkbox, usePanneauIntl, useToast } from '@panneau/ui';
@@ -598,6 +599,9 @@ export function ListView({
                 getItemHref={getItemHref}
                 getItemImage={
                     itemImage !== undefined ? (item) => getImageUrl(item[itemImage]) : undefined
+                }
+                getItemFileKind={
+                    itemImage !== undefined ? (item) => getFileKind(item[itemImage]) : undefined
                 }
                 calendar={
                     inCalendar

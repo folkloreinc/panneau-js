@@ -1,5 +1,6 @@
 import { ImageOff } from 'lucide-react';
 
+import { FileThumbnail } from '@panneau/fields';
 import { Checkbox, Icon, usePanneauIntl } from '@panneau/ui';
 
 import { RowActionsFit, fitContent, useRowActionsFit } from '../actions/fit';
@@ -13,7 +14,7 @@ import highlight from './highlight.module.css';
 /**
  * Items as a grid of images (decision 0044): the image of each item (`itemImage` of the
  * resource), and under it its checkbox, its title and its actions. Nothing covers the image: a
- * selected item has an accent outline. An item without an image shows a placeholder.
+ * selected item has an accent outline. An item without an image shows the icon of its file's kind (a PDF), or a placeholder.
  */
 export function GalleryLayout({
     items,
@@ -22,6 +23,7 @@ export function GalleryLayout({
     getItemLabel,
     getItemHref,
     getItemImage,
+    getItemFileKind,
     isCurrent,
     isHighlighted,
     selectable,
@@ -45,6 +47,7 @@ export function GalleryLayout({
                         const current = isCurrent?.(item) ?? false;
                         const highlighted = isHighlighted?.(item) ?? false;
                         const image = getItemImage?.(item) ?? null;
+                        const kind = getItemFileKind?.(item) ?? null;
                         return (
                             <li
                                 key={item.id}
@@ -54,8 +57,8 @@ export function GalleryLayout({
                                 data-highlighted={highlighted || undefined}
                             >
                                 <div className={styles.media}>
-                                    {image !== null ? (
-                                        <img src={image} alt="" loading="lazy" />
+                                    {image !== null || kind !== null ? (
+                                        <FileThumbnail src={image} kind={kind} iconSize={40} />
                                     ) : (
                                         <span className={styles.placeholder}>
                                             <Icon icon={ImageOff} size="lg" />

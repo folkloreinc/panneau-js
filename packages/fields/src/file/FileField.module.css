@@ -14,26 +14,45 @@
 .file {
     display: flex;
     align-items: center;
-    gap: var(--panneau-space-2);
-    min-height: var(--panneau-control-height-sm);
-    padding-inline: var(--panneau-space-2) var(--panneau-space-1);
-    background-color: var(--panneau-color-surface-sunken);
+    gap: var(--panneau-space-3);
+    padding: var(--panneau-space-2);
+    background-color: var(--panneau-color-surface);
     border: var(--panneau-border-width) solid var(--panneau-color-border);
     border-radius: var(--panneau-radius-md);
 }
 
-.icon {
+/* A square for the image, or the icon of the type. */
+.thumbnail {
+    display: block;
     flex: none;
-    width: 1rem;
-    height: 1rem;
-    color: var(--panneau-color-text-muted);
+    width: 4.5rem;
+    height: 4.5rem;
+    overflow: hidden;
+    background-color: var(--panneau-color-surface-sunken);
+    border-radius: var(--panneau-radius-sm);
+}
+
+.thumbnailImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.thumbnailIcon {
+    background-color: var(--panneau-color-surface-sunken);
+}
+
+.details {
+    display: grid;
+    flex: 1 1 auto;
+    gap: var(--panneau-space-1);
+    min-width: 0;
 }
 
 .name {
-    flex: 1 1 auto;
-    min-width: 0;
     overflow: hidden;
-    font-size: var(--panneau-font-size-sm);
+    font-size: var(--panneau-font-size-md);
+    font-weight: var(--panneau-font-weight-medium);
     text-overflow: ellipsis;
     white-space: nowrap;
 }
@@ -42,10 +61,14 @@ a.name {
     color: var(--panneau-color-link);
 }
 
-.size {
-    flex: none;
+.meta {
     font-size: var(--panneau-font-size-sm);
     color: var(--panneau-color-text-muted);
+}
+
+.remove {
+    flex: none;
+    align-self: flex-start;
 }
 
 .none {

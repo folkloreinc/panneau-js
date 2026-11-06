@@ -183,31 +183,6 @@
     object-fit: cover;
 }
 
-.typeIcon {
-    display: grid;
-    gap: var(--panneau-space-1);
-    justify-items: center;
-    color: var(--panneau-color-text-muted);
-}
-
-.typeIcon[data-type='video'] {
-    color: var(--panneau-color-info);
-}
-
-.typeIcon[data-type='audio'] {
-    color: var(--panneau-color-success);
-}
-
-.typeIcon[data-type='document'] {
-    color: var(--panneau-color-danger);
-}
-
-.extension {
-    font-size: var(--panneau-font-size-xs);
-    font-weight: var(--panneau-font-weight-bold);
-    letter-spacing: 0.04em;
-}
-
 /* The name of a card, after its checkbox. */
 .cardTitle {
     display: flex;

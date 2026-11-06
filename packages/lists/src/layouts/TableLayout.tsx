@@ -1,5 +1,6 @@
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 
+import { type FileKind, FileThumbnail } from '@panneau/fields';
 import { Checkbox, Icon, usePanneauIntl } from '@panneau/ui';
 
 import { RowActionsFit, fitContent, useRowActionsFit } from '../actions/fit';
@@ -31,13 +32,16 @@ function alignClass(column: ListColumn): string | undefined {
 
 /**
  * The thumbnail of an item, before its title (decision 0061): a square of its image, loaded when it
- * comes into view, or an empty square, so that titles stay aligned. It has no text: the title is
+ * comes into view, the icon of its file's kind (a PDF without a preview), or an empty square, so
+ * that titles stay aligned. It has no text: the title is
  * next to it.
  */
-function Thumbnail({ url }: { url: string | null }) {
+function Thumbnail({ url, kind }: { url: string | null; kind: FileKind | null }) {
     return (
         <span className={styles.thumbnail}>
-            {url !== null ? <img src={url} alt="" loading="lazy" decoding="async" /> : null}
+            {url !== null || kind !== null ? (
+                <FileThumbnail src={url} kind={kind} iconSize={18} />
+            ) : null}
         </span>
     );
 }
@@ -56,6 +60,7 @@ export function TableLayout({
     getItemLabel,
     getItemHref,
     getItemImage,
+    getItemFileKind,
     isCurrent,
     isHighlighted,
     selectable,
@@ -197,7 +202,10 @@ export function TableLayout({
                                                 </span>
                                                 {index === 0 && getItemImage !== undefined ? (
                                                     <span className={styles.withThumbnail}>
-                                                        <Thumbnail url={getItemImage(item)} />
+                                                        <Thumbnail
+                                                            url={getItemImage(item)}
+                                                            kind={getItemFileKind?.(item) ?? null}
+                                                        />
                                                         {cell}
                                                     </span>
                                                 ) : (
