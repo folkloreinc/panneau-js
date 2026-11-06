@@ -104,12 +104,31 @@ function useSlugCheck(
 
 /**
  * The prefix as the field shows it: a URL without its scheme (`example.com/fr/`), the whole of it
- * in a tooltip.
+ * in a tooltip. It reads as the start of the text: a click on it puts the caret at the start of
+ * the slug.
  */
 function SlugPrefix({ prefix, disabled }: { prefix: string; disabled: boolean }) {
     return (
         // Disabled with its field, faded as an inactive control is.
-        <span className={styles.prefix} title={prefix} aria-disabled={disabled || undefined}>
+        <span
+            className={styles.prefix}
+            title={prefix}
+            aria-disabled={disabled || undefined}
+            onMouseDown={(event) => {
+                const input = event.currentTarget
+                    .closest('.panneau-text-input')
+                    ?.querySelector('input');
+                if (disabled || input === null || input === undefined) {
+                    return;
+                }
+                // Keeps the focus from leaving the input when it is already there.
+                event.preventDefault();
+                input.focus();
+                input.setSelectionRange(0, 0);
+                // Chrome keeps a long slug scrolled to its end.
+                input.scrollLeft = 0;
+            }}
+        >
             {/* A long prefix is cut at its start, not its end (see the CSS). */}
             <span className={styles.cut}>
                 <bdi dir="ltr">{prefix.replace(/^[a-z][a-z0-9+.-]*:\/\//i, '')}</bdi>

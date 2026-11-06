@@ -200,7 +200,28 @@ describe('SlugField', () => {
         ).toHaveAttribute('href', 'https://site.test/fr/ete-x');
     });
 
-    it('shows the prefix setting as an addon, and opens the page when read-only', async () => {
+    it('puts the caret at the start of the slug on a click on the prefix', async () => {
+        renderField(
+            <SlugField
+                label="Slug"
+                value="ete"
+                prefix="https://site.test/fr/"
+                onChange={vi.fn()}
+            />,
+        );
+        await userEvent.click(screen.getByText('site.test/fr/'));
+        const input = screen.getByRole<HTMLInputElement>('textbox', { name: 'Slug' });
+        expect(input).toHaveFocus();
+        expect(input.selectionStart).toBe(0);
+    });
+
+    it('leaves a disabled field alone on a click on the prefix', async () => {
+        renderField(<SlugField label="Slug" value="ete" prefix="/episodes/" disabled />);
+        await userEvent.click(screen.getByText('/episodes/'));
+        expect(screen.getByRole('textbox', { name: 'Slug' })).not.toHaveFocus();
+    });
+
+    it('shows the prefix setting in front of the slug, and opens the page when read-only', async () => {
         renderField(
             <SlugField
                 label="Slug"
