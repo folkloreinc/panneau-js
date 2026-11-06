@@ -1,5 +1,14 @@
 # @panneau/ui
 
+## 5.0.0-alpha.26
+
+### Patch Changes
+
+- d44397d: The indicator of the selected tab takes the width of the tab, not that of its text. A multiple select shows its chosen options as one line, their labels in a list ("Draft, In review, and Published"), cut at its end when it is too long: their whole content, descriptions included, stacked in the trigger.
+- Updated dependencies [8461e06]
+- Updated dependencies [e322361]
+  - @panneau/intl@5.0.0-alpha.26
+
 ## 5.0.0-alpha.25
 
 ### Patch Changes
