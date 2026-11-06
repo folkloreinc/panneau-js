@@ -17,32 +17,21 @@
     color: var(--panneau-color-warning);
 }
 
-/* A permalink: the start of the URL is an addon in front of the slug, in the same box. */
-.withPrefix {
-    align-items: stretch;
-    padding-inline-start: 0;
-    /* The addon's background follows the rounded corners. */
-    overflow: hidden;
-}
-
-/* The adornment that holds the addon: it gives up room to the slug, down to half of it. */
+/* A permalink: the start of the URL, muted, runs into the slug, and reads with it as one address
+ * (`example.com/fr/ete-a-montreal`). The adornment that holds it touches the slug, and gives up
+ * room to it, down to half. */
 .withPrefix.withPrefix > :first-child {
     flex: 0 1 auto;
     min-width: 0;
-    max-width: min(24rem, 55%);
+    max-width: min(24rem, 50%);
+    margin-inline-end: 0;
 }
 
 .prefix {
     display: flex;
-    flex: 1 1 auto;
-    align-items: center;
     min-width: 0;
-    padding-inline: var(--panneau-input-padding-x, var(--panneau-control-padding-x));
-    overflow: hidden;
     color: var(--panneau-color-text-muted);
     white-space: nowrap;
-    background-color: var(--panneau-color-surface-sunken);
-    border-inline-end: var(--panneau-border-width) solid var(--panneau-color-border-control);
 }
 
 /* A long prefix is cut at its start, which the domain repeats (`…/fr/vacances/`): the box is
