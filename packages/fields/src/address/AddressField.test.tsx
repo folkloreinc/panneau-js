@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -111,6 +111,33 @@ describe('AddressField', () => {
         expect(input).toHaveValue('H2X 1Y4');
     });
 
+    it('checks the postal code once it loses focus, then as it is typed', async () => {
+        renderAddress({}, { initial: { country: 'CA' } });
+        const input = screen.getByRole('textbox', { name: 'Postal code' });
+        await userEvent.type(input, 'h2x1');
+        expect(input).not.toHaveAccessibleDescription();
+        await userEvent.tab();
+        expect(input).toHaveAccessibleDescription('Enter a postal code like H2X 1Y4.');
+        expect(input).toHaveAttribute('aria-invalid', 'true');
+        await userEvent.type(input, 'y4');
+        expect(input).not.toHaveAccessibleDescription();
+    });
+
+    it('asks for a ZIP code in the United States, and lets other countries’ codes pass', async () => {
+        renderAddress({}, { initial: { country: 'US' } });
+        const zip = screen.getByRole('textbox', { name: 'ZIP code' });
+        await userEvent.type(zip, '1234');
+        await userEvent.tab();
+        expect(zip).toHaveAccessibleDescription('Enter a ZIP code like 12345.');
+        const country = screen.getByRole('combobox', { name: 'Country' });
+        await userEvent.clear(country);
+        await userEvent.type(country, 'franc');
+        await userEvent.click(screen.getByRole('option', { name: 'France' }));
+        expect(
+            screen.getByRole('textbox', { name: 'Postal code' }),
+        ).not.toHaveAccessibleDescription();
+    });
+
     it('drops the region of another country, and writes the postal code as in the new one', async () => {
         const onChange = renderAddress(
             {},
@@ -196,9 +223,11 @@ describe('AddressField', () => {
             />,
             { binding: Binding },
         );
-        expect(screen.getByRole('textbox', { name: 'Postal code' })).toHaveAccessibleDescription(
-            'Not a postal code.',
-        );
+        const postalCode = screen.getByRole('textbox', { name: 'Postal code' });
+        expect(postalCode).toHaveAccessibleDescription('Not a postal code.');
+        // The form's errors replace the field's own check
+        fireEvent.blur(postalCode);
+        expect(postalCode).toHaveAccessibleDescription('Not a postal code.');
         expect(screen.getByRole('textbox', { name: 'City' })).not.toHaveAccessibleDescription();
     });
 });

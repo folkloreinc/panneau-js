@@ -94,6 +94,17 @@ export const Empty: Story = {
     },
 };
 
+/** A postal code that isn't one of its country says so once it loses focus. */
+export const WrongPostalCode: Story = {
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const postalCode = canvas.getByRole('textbox', { name: 'Postal code' });
+        await userEvent.type(postalCode, 'h2x');
+        await userEvent.tab();
+        await expect(postalCode).toHaveAccessibleDescription('Enter a postal code like H2X 1Y4.');
+    },
+};
+
 /** A place found fills every part, and the point on the map. */
 export const Search: Story = {
     args: { point: true },

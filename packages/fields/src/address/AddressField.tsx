@@ -5,6 +5,7 @@ import type { AddressPart, AddressValue, Field } from '@panneau/protocol';
 import {
     DEFAULT_ADDRESS_REQUIRED_PARTS,
     getAddressRequiredParts,
+    isPostalCode,
     normalizePostalCode,
 } from '@panneau/protocol/runtime';
 import { ComboBox, Fieldset, IconButton, usePanneauIntl } from '@panneau/ui';
@@ -48,6 +49,9 @@ export interface AddressFieldProps extends FieldProps<AddressValue> {
 
 const WORLD: Point = { lat: 20, lng: 0 };
 
+/** A postal code of each country whose format the `postalCode` rule checks, for its message. */
+const POSTAL_CODE_EXAMPLES: Readonly<Record<string, string>> = { CA: 'H2X 1Y4', US: '12345' };
+
 /** The type of the field of each part, for the binding of the fields context. */
 const PART_TYPES: Readonly<Record<AddressPart, string>> = {
     country: 'country',
@@ -61,7 +65,8 @@ const PART_TYPES: Readonly<Record<AddressPart, string>> = {
 /**
  * A postal address (decision 0054): the country first, which sets the labels, the order and the
  * regions of the other parts, then the street, the unit, the city, the region and the postal
- * code, which is normalized for the country when it loses focus. With an address search, a place
+ * code, which is normalized for the country when it loses focus, and checked then for the
+ * countries whose format the `postalCode` rule knows (Canada and the United States). With an address search, a place
  * found fills every part; with `point`, a map places the address. Each part shows the errors of
  * its own path (`address.postalCode`) in a form.
  */
@@ -114,6 +119,23 @@ export function AddressField({
                     ? normalizePostalCode(address.postalCode, next)
                     : undefined,
         });
+
+    // The postal code is checked once it has lost focus, then as it is typed: a code being typed
+    // isn't wrong yet. The form's errors, once shown, replace that check.
+    const [postalCodeLeft, setPostalCodeLeft] = useState(false);
+    const postalCodeExample = country !== null ? POSTAL_CODE_EXAMPLES[country] : undefined;
+    const postalCodeError =
+        postalCodeLeft &&
+        address.postalCode !== undefined &&
+        postalCodeExample !== undefined &&
+        !isPostalCode(address.postalCode, country)
+            ? intl.formatMessage(
+                  country === 'US'
+                      ? messages.addressZipCodeFormat
+                      : messages.addressPostalCodeFormat,
+                  { example: postalCodeExample },
+              )
+            : null;
 
     const [query, setQuery] = useState('');
     const [chosen, setChosen] = useState<GeocodingResult | null>(null);
@@ -196,10 +218,14 @@ export function AddressField({
     const postalCode = renderPart('postalCode', (bound) => (
         <TextField
             {...shared('postalCode', bound)}
+            {...(postalCodeError !== null && (bound.errors ?? []).length === 0
+                ? { errors: [postalCodeError] }
+                : {})}
             autoComplete="postal-code"
             value={address.postalCode ?? null}
             onChange={(text) => setPart('postalCode', text)}
             onBlur={() => {
+                setPostalCodeLeft(true);
                 if (address.postalCode !== undefined) {
                     const normalized = normalizePostalCode(address.postalCode, country);
                     if (normalized !== address.postalCode) {

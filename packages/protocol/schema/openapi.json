@@ -7166,6 +7166,11 @@
                     },
                     "height": {
                         "type": "number"
+                    },
+                    "duration": {
+                        "description": "How long the video or the sound lasts, in seconds, when its provider says (Vimeo’s oEmbed does).",
+                        "type": "number",
+                        "minimum": 0
                     }
                 },
                 "required": [

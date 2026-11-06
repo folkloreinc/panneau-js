@@ -5,11 +5,15 @@
     min-width: 0;
 }
 
+/*
+ * The line under the tabs is drawn inside the list, under its tabs: the list scrolls, and clips what
+ * would reach over a border, as the indicator of the selected tab must.
+ */
 .list {
     display: flex;
     gap: var(--panneau-space-1);
     overflow-x: auto;
-    border-bottom: var(--panneau-border-width) solid
+    box-shadow: inset 0 calc(-1 * var(--panneau-border-width)) 0
         var(--panneau-tabs-border-color, var(--panneau-color-border));
     scrollbar-width: none;
 }
@@ -38,7 +42,7 @@
 .tab::after {
     position: absolute;
     inset-inline: var(--panneau-space-2);
-    bottom: calc(-1 * var(--panneau-border-width));
+    bottom: 0;
     height: var(--panneau-tabs-indicator-height, 2px);
     content: '';
     background-color: transparent;

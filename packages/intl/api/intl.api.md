@@ -427,6 +427,7 @@ export const fieldsMessages: {
     providers: string;
     }>;
     embedFailed: PanneauMessage<Record<never, never>>;
+    openEmbed: PanneauMessage<Record<never, never>>;
     jsonInvalid: PanneauMessage<    {
     error: string;
     }>;
@@ -515,6 +516,12 @@ export const fieldsMessages: {
     addressState: PanneauMessage<Record<never, never>>;
     addressPostalCode: PanneauMessage<Record<never, never>>;
     addressZipCode: PanneauMessage<Record<never, never>>;
+    addressPostalCodeFormat: PanneauMessage<    {
+    example: string;
+    }>;
+    addressZipCodeFormat: PanneauMessage<    {
+    example: string;
+    }>;
     addressCountry: PanneauMessage<Record<never, never>>;
     linkType: PanneauMessage<Record<never, never>>;
     linkTypeUrl: PanneauMessage<Record<never, never>>;

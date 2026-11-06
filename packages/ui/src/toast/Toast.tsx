@@ -304,7 +304,9 @@ export function ToastProvider({
                             )}
                         >
                             {icon !== null ? (
-                                <Icon icon={icon} size="lg" className={styles.icon} />
+                                <span className={styles.icon}>
+                                    <Icon icon={icon} size="md" />
+                                </span>
                             ) : null}
                             <AriaToastContent className={styles.content}>
                                 <Text slot="title" className={styles.title}>
@@ -320,6 +322,8 @@ export function ToastProvider({
                                 {action !== undefined ? (
                                     <Button
                                         size="sm"
+                                        tone="accent"
+                                        appearance="ghost"
                                         onPress={() => {
                                             action.onAction();
                                             queue.close(toast.key);

@@ -32,4 +32,24 @@ export const Default: Story = {
 
 export const WithValue: Story = { args: { value: 7.5 } };
 
+/** At its ends, the thumb lines up with the edges of the field, as the other fields do. */
+export const AtTheEnds: Story = {
+    args: { value: 0 },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const field = canvasElement.querySelector('.panneau-slider');
+        const thumb = canvasElement.querySelector('.panneau-slider-thumb');
+        await expect(field).not.toBeNull();
+        await expect(thumb).not.toBeNull();
+        const edges = () => ({
+            field: field?.getBoundingClientRect() ?? new DOMRect(),
+            thumb: thumb?.getBoundingClientRect() ?? new DOMRect(),
+        });
+        await expect(Math.abs(edges().thumb.left - edges().field.left)).toBeLessThan(1);
+        canvas.getByRole('slider', { name: 'Rating' }).focus();
+        await userEvent.keyboard('{End}');
+        await expect(Math.abs(edges().thumb.right - edges().field.right)).toBeLessThan(1);
+    },
+};
+
 export const WithErrors: Story = { args: { value: 2, errors: ['Rate it at least 5.'] } };

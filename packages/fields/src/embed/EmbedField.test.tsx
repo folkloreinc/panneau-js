@@ -7,6 +7,7 @@ import type { EmbedValue, Field } from '@panneau/protocol';
 import { Controlled, renderField } from '../__fixtures__/render';
 import { DefinitionField } from '../shared/DefinitionField';
 import type { EmbedSource } from '../shared/embed';
+import { EmbedField } from './EmbedField';
 
 const source: EmbedSource = {
     resolve: (url) =>
@@ -52,7 +53,8 @@ describe('EmbedField', () => {
                 provider: 'YouTube',
             }),
         );
-        expect(await screen.findByRole('link', { name: /A video/ })).toHaveAttribute(
+        expect(await screen.findByText('A video')).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Open in a new window' })).toHaveAttribute(
             'href',
             'https://youtu.be/abc',
         );
@@ -98,7 +100,44 @@ describe('EmbedField', () => {
         const onChange = vi.fn();
         renderEmbed(onChange, source, { rules: [{ rule: 'providers', value: ['youtube'] }] });
         await userEvent.type(screen.getByRole('textbox', { name: 'Video' }), 'https://youtu.be/a');
-        expect(await screen.findByRole('link', { name: /A video/ })).toBeInTheDocument();
+        expect(await screen.findByText('A video')).toBeInTheDocument();
         expect(screen.queryByText(/must come from/)).not.toBeInTheDocument();
+    });
+
+    it('shows the duration of a video over its thumbnail, as players do', () => {
+        renderField(
+            <EmbedField
+                label="Video"
+                value={{
+                    url: 'https://vimeo.com/1',
+                    title: 'A video',
+                    provider: 'Vimeo',
+                    thumbnailUrl: 'https://i.vimeocdn.com/1.jpg',
+                    duration: 3723,
+                }}
+            />,
+        );
+        const duration = screen.getByText('1:02:03');
+        expect(duration.tagName).toBe('TIME');
+        expect(duration).toHaveAttribute('datetime', 'PT1H2M3S');
+        expect(screen.getByRole('link', { name: 'Open in a new window' })).toHaveAttribute(
+            'target',
+            '_blank',
+        );
+    });
+
+    it('shows the duration after the provider without a thumbnail', () => {
+        renderField(
+            <EmbedField
+                label="Sound"
+                value={{
+                    url: 'https://example.com/1',
+                    title: 'A sound',
+                    provider: 'Podcast',
+                    duration: 134,
+                }}
+            />,
+        );
+        expect(screen.getByText('2:14').parentElement).toHaveTextContent('Podcast2:14');
     });
 });

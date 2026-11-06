@@ -1730,6 +1730,7 @@ export const EmbedResponse: z.ZodObject<{
         html: z.ZodOptional<z.ZodString>;
         width: z.ZodOptional<z.ZodNumber>;
         height: z.ZodOptional<z.ZodNumber>;
+        duration: z.ZodOptional<z.ZodNumber>;
     }, z.core.$loose>;
 }, z.core.$loose>;
 
@@ -1752,6 +1753,7 @@ export const EmbedValue: z.ZodObject<{
     html: z.ZodOptional<z.ZodString>;
     width: z.ZodOptional<z.ZodNumber>;
     height: z.ZodOptional<z.ZodNumber>;
+    duration: z.ZodOptional<z.ZodNumber>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -5576,6 +5578,7 @@ export const namedSchemas: {
         html: z.ZodOptional<z.ZodString>;
         width: z.ZodOptional<z.ZodNumber>;
         height: z.ZodOptional<z.ZodNumber>;
+        duration: z.ZodOptional<z.ZodNumber>;
     }, z.core.$loose>;
     EmbedResponse: z.ZodObject<{
         data: z.ZodObject<{
@@ -5593,6 +5596,7 @@ export const namedSchemas: {
             html: z.ZodOptional<z.ZodString>;
             width: z.ZodOptional<z.ZodNumber>;
             height: z.ZodOptional<z.ZodNumber>;
+            duration: z.ZodOptional<z.ZodNumber>;
         }, z.core.$loose>;
     }, z.core.$loose>;
     LocationValue: z.ZodObject<{

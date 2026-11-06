@@ -19,26 +19,38 @@
     gap: var(--panneau-space-3);
     padding: var(--panneau-space-2);
     color: var(--panneau-color-text);
-    text-decoration: none;
     background-color: var(--panneau-color-surface-sunken);
     border: var(--panneau-border-width) solid var(--panneau-color-border);
     border-radius: var(--panneau-radius-md);
 }
 
-.preview:hover {
-    border-color: var(--panneau-color-border-control);
-}
-
-.preview:focus-visible {
-    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: 1px;
+/* The thumbnail, with the duration in its corner, as players show it. */
+.media {
+    position: relative;
+    flex: none;
+    display: block;
+    line-height: 0;
 }
 
 .thumbnail {
-    flex: none;
     width: 7rem;
     aspect-ratio: 16 / 9;
     object-fit: cover;
+    border-radius: var(--panneau-radius-sm);
+}
+
+.duration {
+    position: absolute;
+    inset-block-end: var(--panneau-space-1);
+    inset-inline-end: var(--panneau-space-1);
+    padding: 0.0625rem 0.3125rem;
+    font-size: var(--panneau-font-size-xs);
+    font-weight: var(--panneau-font-weight-medium);
+    font-variant-numeric: tabular-nums;
+    line-height: var(--panneau-line-height-tight);
+    /* Over a picture: light on dark in every theme, as players show it. */
+    color: #fff;
+    background-color: rgb(0 0 0 / 75%);
     border-radius: var(--panneau-radius-sm);
 }
 
@@ -54,7 +66,25 @@
     overflow-wrap: anywhere;
 }
 
-.provider {
+.meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--panneau-space-2);
     font-size: var(--panneau-font-size-sm);
+    font-variant-numeric: tabular-nums;
     color: var(--panneau-color-text-muted);
+}
+
+/* The provider, then the duration: `Vimeo · 2:14`. */
+.meta > * + *::before {
+    margin-inline-end: var(--panneau-space-2);
+    content: '·';
+}
+
+/* The link that opens it, at the end: a square, as an icon button. */
+.open.open {
+    flex: none;
+    width: var(--panneau-control-height-sm);
+    margin-inline-start: auto;
+    padding: 0;
 }

@@ -76,8 +76,12 @@ export const Empty: Story = {
             'https://youtu.be/abc',
         );
         await expect(
-            await canvas.findByRole('link', { name: /The river festival/ }, { timeout: 3000 }),
-        ).toHaveAttribute('href', 'https://youtu.be/abc');
+            await canvas.findByText('The river festival, in two minutes', {}, { timeout: 3000 }),
+        ).toBeVisible();
+        await expect(canvas.getByRole('link', { name: 'Open in a new window' })).toHaveAttribute(
+            'href',
+            'https://youtu.be/abc',
+        );
     },
 };
 
@@ -89,7 +93,16 @@ export const WithVideo: Story = {
             title: 'The river festival, in two minutes',
             provider: 'YouTube',
             thumbnailUrl: THUMBNAIL,
+            duration: 134,
         },
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByText('2:14')).toBeVisible();
+        await expect(canvas.getByRole('link', { name: 'Open in a new window' })).toHaveAttribute(
+            'target',
+            '_blank',
+        );
     },
 };
 

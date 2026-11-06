@@ -489,6 +489,10 @@ export const EmbedValue = z
             .meta({ description: 'The HTML that embeds it, from the oEmbed of its provider.' }),
         width: z.number().optional(),
         height: z.number().optional(),
+        duration: z.number().nonnegative().optional().meta({
+            description:
+                'How long the video or the sound lasts, in seconds, when its provider says (Vimeo’s oEmbed does).',
+        }),
     })
     .meta({
         description:
