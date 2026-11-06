@@ -1,5 +1,12 @@
 # @panneau/core
 
+## 5.0.0-alpha.26
+
+### Patch Changes
+
+- Updated dependencies [e322361]
+  - @panneau/protocol@5.0.0-alpha.26
+
 ## 5.0.0-alpha.25
 
 ### Patch Changes
