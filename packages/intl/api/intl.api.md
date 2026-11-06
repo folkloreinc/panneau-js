@@ -747,6 +747,8 @@ export const listsMessages: {
     allMatchingSelected: PanneauMessage<    {
     total: number;
     }>;
+    startSelection: PanneauMessage<Record<never, never>>;
+    endSelection: PanneauMessage<Record<never, never>>;
     clearSelection: PanneauMessage<Record<never, never>>;
     actions: PanneauMessage<Record<never, never>>;
     actionOnItem: PanneauMessage<    {

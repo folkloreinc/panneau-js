@@ -1,6 +1,6 @@
 # 0068: Collapsed repeater items, permalink slugs, and controls shown when needed
 
-- Status: proposed
+- Status: proposed, amended by [0070](0070-select-mode-in-lists.md): checkboxes show once "Select" is pressed
 - Date: 2026-11-05
 - Changes: the items of a `repeater` ([0065](0065-compound-fields.md) titles them), the slug's URL ([0032](0032-field-checks-and-slugs.md)), the checkboxes and sort arrows of the table, and the selection of the gallery and the media picker
 

@@ -1,3 +1,4 @@
+import { ListChecks } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 
 import type { List, ResolvedCalendar } from '@panneau/core';
@@ -99,7 +100,10 @@ export interface ListViewProps {
     onLayoutChange?: (layout: string) => void;
     /** Page sizes to choose from. */
     perPageOptions?: readonly number[];
-    /** Shows checkboxes. Defaults to whether there are selection actions. */
+    /**
+     * Whether items can be selected: a "Select" button in the toolbar shows their checkboxes.
+     * Defaults to whether there are selection actions.
+     */
     selectable?: boolean;
     /**
      * Actions: a list (placed by their `placement`, or by scope), or grouped by placement as
@@ -248,6 +252,9 @@ export function ListView({
     const confirmation = useRef(0);
     const root = useRef<HTMLDivElement>(null);
     const [pending, setPending] = useState<string | null>(null);
+    // Checkboxes show once the user asks for them ("Select"), or while items are selected: until
+    // then, rows read without a column of empty space before them.
+    const [selecting, setSelecting] = useState(false);
 
     // Items saved in place, over the item the caller gave, until it gives another one.
     const [saved, setSaved] = useState<
@@ -312,6 +319,11 @@ export function ListView({
     const selectedCount = selectable ? countSelected(selection, count) : 0;
     const selectedItems = pageItems.filter((item) => isItemSelected(selection, item.id));
     const pageSelection = getPageSelection(selection, pageItems);
+    const showsChecks = selectable && (selecting || selectedCount > 0);
+    const endSelection = () => {
+        setSelecting(false);
+        list.clearSelection();
+    };
 
     const getItemLabel = (item: ListItem): string => {
         if (getItemLabelProp !== undefined) {
@@ -368,7 +380,7 @@ export function ListView({
             .then((outcome) => {
                 // `false`: the action didn't run (its parameters were cancelled).
                 if (event.scope === 'selection' && outcome !== false) {
-                    list.clearSelection();
+                    endSelection();
                 }
             })
             .catch((caught: unknown) => {
@@ -520,6 +532,7 @@ export function ListView({
         choosesColumns ||
         layouts.length > 1 ||
         resourceActions.length > 0 ||
+        selectable ||
         toolbar !== undefined;
 
     function clearFilters() {
@@ -608,7 +621,7 @@ export function ListView({
                 }
                 isCurrent={(item) => item.id === currentItemId}
                 isHighlighted={(item) => item.id === highlightedItemId}
-                selectable={selectable}
+                selectable={showsChecks}
                 isSelected={(item) => isItemSelected(selection, item.id)}
                 onToggle={(item) => list.toggle(item.id)}
                 renderActions={renderActions}
@@ -688,6 +701,17 @@ export function ListView({
                                     view.columns !== undefined ? () => list.resetColumns() : null
                                 }
                             />
+                        ) : null}
+                        {selectable ? (
+                            <Button
+                                icon={ListChecks}
+                                appearance={showsChecks ? 'solid' : 'outline'}
+                                onPress={() => (showsChecks ? endSelection() : setSelecting(true))}
+                            >
+                                {intl.formatMessage(
+                                    showsChecks ? messages.endSelection : messages.startSelection,
+                                )}
+                            </Button>
                         ) : null}
                         {resourceActions
                             .filter(

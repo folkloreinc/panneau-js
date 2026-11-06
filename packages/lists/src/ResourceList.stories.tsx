@@ -254,6 +254,7 @@ export const FilterAndPublish: Story = {
         await userEvent.click(await body.findByRole('option', { name: 'Brouillon' }));
         await waitFor(() => expect(canvas.getByRole('navigation')).toHaveTextContent('1–16 of 16'));
 
+        await userEvent.click(canvas.getByRole('button', { name: 'Select' }));
         await userEvent.click(
             canvas.getByRole('checkbox', { name: 'Select every item of the page' }),
         );

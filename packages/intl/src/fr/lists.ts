@@ -47,6 +47,8 @@ export const listsFr: Record<string, string> = {
         'Sélectionner {total, plural, one {l’élément} other {les # éléments}}',
     'panneau.lists.allMatchingSelected':
         '{total, plural, one {L’élément est sélectionné} other {Les # éléments sont sélectionnés}}, sur toutes les pages.',
+    'panneau.lists.startSelection': 'Sélectionner',
+    'panneau.lists.endSelection': 'Terminé',
     'panneau.lists.clearSelection': 'Effacer la sélection',
     'panneau.lists.actions': 'Actions',
     'panneau.lists.actionOnItem': '{action} : {item}',

@@ -757,6 +757,7 @@ describe('useActionRunner', () => {
                 </ActionRunnerProvider>
             </PanneauRoot>,
         );
+        await user.click(screen.getByRole('button', { name: 'Select' }));
         await user.click(screen.getByRole('checkbox', { name: 'Select draft' }));
         await user.click(screen.getByRole('button', { name: 'Delete' }));
         expect(await screen.findByText('1 deleted.')).toBeInTheDocument();
