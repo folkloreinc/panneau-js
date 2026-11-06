@@ -12,6 +12,22 @@ async function settledBackground(element: Element): Promise<string> {
     return getComputedStyle(element).backgroundColor;
 }
 
+/**
+ * The background of an element while it is hovered. The hover is done again until it holds: a real
+ * pointer event, when the layout shifts under the browser's own cursor, can end a simulated hover.
+ */
+async function hoveredBackground(element: Element): Promise<string> {
+    let background = '';
+    await waitFor(async () => {
+        await userEvent.hover(element);
+        background = await settledBackground(element);
+        if (!element.hasAttribute('data-hovered')) {
+            throw new Error('The hover didn’t hold.');
+        }
+    });
+    return background;
+}
+
 const meta = {
     title: 'UI/LinkButton',
     component: LinkButton,
@@ -71,13 +87,9 @@ export const BesideButtons: Story = {
             button.getBoundingClientRect().height,
         );
         const idle = await settledBackground(link);
-        await userEvent.hover(link);
-        await waitFor(() => expect(link).toHaveAttribute('data-hovered'));
-        const hovered = await settledBackground(link);
+        const hovered = await hoveredBackground(link);
         await expect(hovered).not.toBe(idle);
-        await userEvent.hover(button);
-        await waitFor(() => expect(button).toHaveAttribute('data-hovered'));
-        await expect(await settledBackground(button)).toBe(hovered);
+        await expect(await hoveredBackground(button)).toBe(hovered);
         await userEvent.unhover(button);
     },
 };
