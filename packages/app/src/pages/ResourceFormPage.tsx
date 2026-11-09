@@ -18,9 +18,13 @@ import { ErrorPage, getErrorPageKind } from './ErrorPage';
 import { ItemActions } from './ItemActions';
 import { PageHeader, PageLayout } from './PageHeader';
 import { setCreatedItem } from './createdItem';
+import { ActionsPanel, FormPageContext } from './formPage';
 import { useItemActionRunner } from './itemActionRunner';
 import { createLinkResolver, getItemPath } from './itemLinks';
 import { getItemTitle } from './itemTitle';
+
+/** The panels of the app, for the sidebars of its forms (decision 0075). */
+const PANELS = { actions: ActionsPanel };
 
 export interface ResourceFormPageProps {
     definition: Definition;
@@ -174,6 +178,7 @@ export function ResourceFormPage({
             relationSource={relationSource}
             checkSource={checkSource}
             guardUnsavedChanges
+            panels={PANELS}
             // The panels of its sidebar that the user collapsed, per resource (decision 0074)
             sidebarStorageKey={`form-${resource.id}`}
             saved={savedVersion !== null && item?.version === savedVersion}
@@ -204,10 +209,28 @@ export function ResourceFormPage({
 
     // A form with a sidebar takes the width of a list: its main column stays wide enough
     const hasSidebar = layout.some((node) => node.type === 'sidebar');
+    // The `actions` panel of its sidebar takes the actions of the header (decision 0075)
+    const hasActionsPanel = layout.some(
+        (node) => node.type === 'sidebar' && node.panel === 'actions',
+    );
     return (
-        <PageLayout width={hasSidebar ? 'default' : 'narrow'}>
-            <PageHeader title={title} back={back} actions={itemActions} />
-            {content}
-        </PageLayout>
+        <FormPageContext
+            value={{
+                resource: resolved,
+                item,
+                basePath,
+                locale: definition.locale,
+                actions: itemActions,
+            }}
+        >
+            <PageLayout width={hasSidebar ? 'default' : 'narrow'}>
+                <PageHeader
+                    title={title}
+                    back={back}
+                    actions={hasActionsPanel ? undefined : itemActions}
+                />
+                {content}
+            </PageLayout>
+        </FormPageContext>
     );
 }

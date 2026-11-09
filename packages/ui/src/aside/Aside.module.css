@@ -170,10 +170,30 @@
     min-width: 0;
 }
 
-.panel + .panel {
+/* A panel with nothing to show, such as the errors of a form before a failed save, takes no
+   space. So does a panel shown beside the content only, below or over it. Lines separate the
+   panels that show. */
+.panel:empty,
+.panel[data-beside-only] {
+    display: none;
+}
+
+.panel:not(:empty, [data-beside-only]) ~ .panel:not(:empty, [data-beside-only]) {
     margin-top: var(--panneau-aside-padding, var(--panneau-space-4));
     padding-top: var(--panneau-aside-padding, var(--panneau-space-4));
     border-top: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
+@container panneau-aside-layout (min-width: 56rem) {
+    .panel[data-beside-only]:not(:empty) {
+        display: flex;
+    }
+
+    .panel:not(:empty) ~ .panel:not(:empty) {
+        margin-top: var(--panneau-aside-padding, var(--panneau-space-4));
+        padding-top: var(--panneau-aside-padding, var(--panneau-space-4));
+        border-top: var(--panneau-border-width) solid var(--panneau-color-border);
+    }
 }
 
 .panelHeading {

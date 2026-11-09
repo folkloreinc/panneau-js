@@ -11,6 +11,16 @@ import type { LayoutNode } from '@panneau/protocol';
 import { ReactNode } from 'react';
 
 // @public
+export interface FormPanelProps {
+    children: ReactNode;
+    fields: ReadonlyMap<string, Field>;
+    // (undocumented)
+    form: Form;
+    // (undocumented)
+    node: LayoutNode;
+}
+
+// @public
 export interface LayoutComponentProps {
     children: ReactNode;
     fields: ReadonlyMap<string, Field>;
@@ -24,10 +34,25 @@ export interface LayoutComponentProps {
 export function Publication(input: PublicationProps): JSX.Element;
 
 // @public
+export function PublicationPanel(input: PublicationPanelProps): JSX.Element;
+
+// @public (undocumented)
+export interface PublicationPanelProps extends FormPanelProps {
+    draftStatus?: string;
+    published?: string;
+    publishedAt?: string;
+    publishedStatus?: string;
+    status?: string;
+}
+
+// @public
 export const publicationPlugin: {
     id: string;
     components: {
         publication: typeof Publication;
+    };
+    panels: {
+        publication: typeof PublicationPanel;
     };
 };
 

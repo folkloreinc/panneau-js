@@ -4284,6 +4284,11 @@
                         "description": "`component`: a component provided by a plugin.",
                         "type": "string"
                     },
+                    "panel": {
+                        "description": "`sidebar`: the panel it is, by name: a built-in panel (`save`, `errors`, `publication`, `actions`) or one provided by a plugin. Without its component, the node renders its children.",
+                        "type": "string",
+                        "minLength": 1
+                    },
                     "props": {
                         "type": "object",
                         "propertyNames": {

@@ -199,6 +199,11 @@ export interface AsidePanelProps {
     /** Starts collapsed, until the user expands it. */
     defaultCollapsed?: boolean;
     /**
+     * Shows only beside the content: below it or over it, something else in the page does its
+     * work, such as the footer of a form for its Save button.
+     */
+    isBesideOnly?: boolean;
+    /**
      * Whether it is expanded, for a panel that something else opens, such as a form on an error.
      * The browser then remembers nothing: the owner does.
      */
@@ -216,6 +221,7 @@ export function AsidePanel({
     headingLevel = 3,
     isCollapsible = true,
     defaultCollapsed = false,
+    isBesideOnly = false,
     isExpanded,
     onExpandedChange,
     children,
@@ -230,11 +236,21 @@ export function AsidePanel({
     );
     const hasTitle = title !== undefined && title !== null;
     if (!hasTitle) {
-        return <div className={cx('panneau-aside-panel', styles.panel, className)}>{children}</div>;
+        return (
+            <div
+                className={cx('panneau-aside-panel', styles.panel, className)}
+                data-beside-only={isBesideOnly || undefined}
+            >
+                {children}
+            </div>
+        );
     }
     if (!isCollapsible) {
         return (
-            <section className={cx('panneau-aside-panel', styles.panel, className)}>
+            <section
+                className={cx('panneau-aside-panel', styles.panel, className)}
+                data-beside-only={isBesideOnly || undefined}
+            >
                 <Heading level={headingLevel} className={styles.panelTitle}>
                     {title}
                     {titleEnd !== undefined ? <> {titleEnd}</> : null}
@@ -253,6 +269,7 @@ export function AsidePanel({
                 onExpandedChange?.(next);
             }}
             className={cx('panneau-aside-panel', styles.panel, className)}
+            data-beside-only={isBesideOnly || undefined}
         >
             <AriaHeading level={headingLevel} className={styles.panelHeading}>
                 <AriaButton slot="trigger" className={styles.panelTrigger}>
