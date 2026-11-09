@@ -9,7 +9,9 @@
     display: inline-flex;
     align-items: flex-start;
     gap: var(--panneau-space-2);
-    min-height: 1.5rem;
+    /* As tall as a target of the density, with the box on the first line of the label */
+    min-height: var(--panneau-target-size);
+    padding-block: calc((var(--panneau-target-size) - 1.5rem) / 2);
     font-size: var(--panneau-font-size-md);
     color: var(--panneau-color-text);
     cursor: pointer;
@@ -65,16 +67,4 @@
 .label {
     line-height: var(--panneau-line-height);
     overflow-wrap: anywhere;
-}
-
-/* Touch screens: a taller row, so the whole label is an easy target. */
-@media (pointer: coarse) {
-    .control {
-        min-height: 2.75rem;
-        align-items: center;
-    }
-
-    .box {
-        margin-top: 0;
-    }
 }

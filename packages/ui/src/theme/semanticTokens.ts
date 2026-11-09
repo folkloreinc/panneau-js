@@ -104,6 +104,7 @@ export const SEMANTIC_TOKENS = [
     'panneau-control-height-sm',
     'panneau-control-padding-x',
     'panneau-row-padding-y',
+    'panneau-target-size',
     'panneau-focus-width',
     'panneau-duration',
     'panneau-z-overlay',

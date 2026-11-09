@@ -133,6 +133,7 @@
     --panneau-control-height-sm: 1.875rem;
     --panneau-control-padding-x: 0.75rem;
     --panneau-row-padding-y: 0.5rem;
+    --panneau-target-size: 1.5rem;
     --panneau-focus-width: 2px;
 
     /* Motion and layers */
@@ -347,6 +348,7 @@
     --panneau-font-size-control: 0.875rem;
     --panneau-control-padding-x: 0.75rem;
     --panneau-row-padding-y: 0.5rem;
+    --panneau-target-size: 1.5rem;
 }
 
 :where(.root[data-density='compact'], .density[data-density='compact']) {
@@ -355,6 +357,7 @@
     --panneau-font-size-control: 0.8125rem;
     --panneau-control-padding-x: 0.5rem;
     --panneau-row-padding-y: 0.25rem;
+    --panneau-target-size: 1.5rem;
 }
 
 :where(.root[data-density='touch'], .density[data-density='touch']) {
@@ -363,6 +366,7 @@
     --panneau-font-size-control: 1rem;
     --panneau-control-padding-x: 0.75rem;
     --panneau-row-padding-y: 0.75rem;
+    --panneau-target-size: 2.75rem;
 }
 
 @media (pointer: coarse) {
@@ -372,6 +376,7 @@
         --panneau-font-size-control: 1rem;
         --panneau-control-padding-x: 0.75rem;
         --panneau-row-padding-y: 0.75rem;
+        --panneau-target-size: 2.75rem;
     }
 }
 

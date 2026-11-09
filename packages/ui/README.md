@@ -214,7 +214,7 @@ Responsive values are inline CSS variables, read by static rules in each contain
 
 ### Density
 
-A density is a set of tokens: `--panneau-control-height` and `-sm`, `--panneau-font-size-control`, `--panneau-control-padding-x` (inputs and buttons) and `--panneau-row-padding-y` (rows of tables, options of lists). The `density` of the root picks one, and the `size` props of components (`size="sm"`) stay relative to it.
+A density is a set of tokens: `--panneau-control-height` and `-sm`, `--panneau-font-size-control`, `--panneau-control-padding-x` (inputs and buttons), `--panneau-row-padding-y` (rows of tables, options of lists) and `--panneau-target-size`, the smallest size of what a pointer or a finger hits that isn't a control (rows of checkboxes, radios and switches, links of the sidebar, sortable headers): 1.5rem, and 2.75rem in the touch density. The `density` of the root picks one, and the `size` props of components (`size="sm"`) stay relative to it.
 
 A theme redefines a density in `densities`. Density tokens set in `tokens` instead apply to every density, which then no longer changes them.
 

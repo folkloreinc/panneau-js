@@ -24,7 +24,7 @@
     align-items: center;
     gap: var(--panneau-space-2);
     min-width: 0;
-    min-height: var(--panneau-control-height-sm);
+    min-height: max(var(--panneau-control-height-sm), var(--panneau-target-size));
     padding-inline: var(--panneau-space-1);
     border-radius: var(--panneau-radius-md);
     color: var(--panneau-color-text);
@@ -56,7 +56,7 @@
     display: flex;
     align-items: center;
     gap: var(--panneau-space-2);
-    min-height: var(--panneau-control-height-sm);
+    min-height: max(var(--panneau-control-height-sm), var(--panneau-target-size));
     padding: 0 var(--panneau-space-2);
     border: var(--panneau-border-width) solid var(--panneau-color-border);
     border-radius: var(--panneau-sidebar-link-radius, var(--panneau-radius-md));
@@ -150,7 +150,7 @@
     display: flex;
     align-items: center;
     gap: var(--panneau-space-2);
-    min-height: var(--panneau-control-height-sm);
+    min-height: max(var(--panneau-control-height-sm), var(--panneau-target-size));
     padding: 0 var(--panneau-space-2);
     border: var(--panneau-border-width) solid transparent;
     border-radius: var(--panneau-sidebar-link-radius, var(--panneau-radius-md));
@@ -215,7 +215,7 @@
 }
 
 .userLink {
-    min-height: var(--panneau-control-height-sm);
+    min-height: max(var(--panneau-control-height-sm), var(--panneau-target-size));
     padding-block: var(--panneau-space-1);
     border: var(--panneau-border-width) solid transparent;
     border-radius: var(--panneau-radius-md);

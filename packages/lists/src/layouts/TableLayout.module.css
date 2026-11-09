@@ -110,6 +110,7 @@
 }
 
 .sort {
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: var(--panneau-space-1);
@@ -121,6 +122,14 @@
     border: 0;
     border-radius: var(--panneau-radius-sm);
     cursor: pointer;
+}
+
+/* The whole height of the header cell hits the button, without making it taller. */
+.sort::after {
+    position: absolute;
+    inset-block: calc(var(--panneau-space-1) - var(--panneau-row-padding-y));
+    inset-inline: 0;
+    content: '';
 }
 
 .sort:hover {

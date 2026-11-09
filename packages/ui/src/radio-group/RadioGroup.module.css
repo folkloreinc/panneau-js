@@ -13,7 +13,9 @@
     display: inline-flex;
     align-items: flex-start;
     gap: var(--panneau-space-2);
-    min-height: 1.5rem;
+    /* As tall as a target of the density, with the circle on the first line of the label */
+    min-height: var(--panneau-target-size);
+    padding-block: calc((var(--panneau-target-size) - 1.5rem) / 2);
     font-size: var(--panneau-font-size-md);
     color: var(--panneau-color-text);
     cursor: pointer;
@@ -160,15 +162,4 @@
 
 .card[data-focus-visible] .circle {
     outline: none;
-}
-
-@media (pointer: coarse) {
-    .radio {
-        min-height: 2.75rem;
-        align-items: center;
-    }
-
-    .circle {
-        margin-top: 0;
-    }
 }

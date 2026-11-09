@@ -38,8 +38,11 @@
     outline-offset: 1px;
 }
 
+/* Half a target of the density: the tag stays inside the control. */
 .remove {
     display: inline-flex;
+    min-width: calc(var(--panneau-target-size) / 2);
+    min-height: calc(var(--panneau-target-size) / 2);
     align-items: center;
     justify-content: center;
     padding: 0.125rem;
