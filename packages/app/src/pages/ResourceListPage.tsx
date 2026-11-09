@@ -1,4 +1,4 @@
-import { Plus } from 'lucide-react';
+import { ChevronDown, Plus } from 'lucide-react';
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 
 import { useActionPreview } from '@panneau/actions';
@@ -14,8 +14,18 @@ import { useFormatRuleFailure } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
 import { ListView, getPagingProps } from '@panneau/lists';
 import type { RouteReference } from '@panneau/protocol';
-import { getItemImageField } from '@panneau/protocol/runtime';
-import { AsideLayout, LinkButton, usePanneauIntl, useToast } from '@panneau/ui';
+import { getCreatableTypes, getItemImageField } from '@panneau/protocol/runtime';
+import {
+    AsideLayout,
+    Button,
+    LinkButton,
+    Menu,
+    MenuItem,
+    MenuTrigger,
+    getNamedIcon,
+    usePanneauIntl,
+    useToast,
+} from '@panneau/ui';
 
 import { cx } from '../cx';
 import { useDocumentTitle } from '../documentTitle';
@@ -59,6 +69,10 @@ export function ResourceListPage({
     const intl = usePanneauIntl();
     const toasts = useToast();
     const { resource, list: definitionList, abilities } = resolved;
+    const createLabel = intl.formatMessage(appMessages.create, {
+        resource: resource.label.singular,
+    });
+    const creatableTypes = getCreatableTypes(resource);
     const { definition } = usePanneau();
     // The view of the list (filters, sort, layout, columns) is remembered for the user, in this
     // browser (decision 0042).
@@ -171,20 +185,55 @@ export function ResourceListPage({
             <PageHeader
                 title={title}
                 actions={
-                    abilities.create ? (
+                    !abilities.create ? undefined : creatableTypes.length > 1 ? (
+                        // A resource with types: a menu of the types to create (decision 0075)
+                        <MenuTrigger>
+                            <Button variant="primary" icon={Plus} iconEnd={ChevronDown}>
+                                {createLabel}
+                            </Button>
+                            <Menu placement="bottom end">
+                                {creatableTypes.map((type) => (
+                                    <MenuItem
+                                        key={type.id}
+                                        id={type.id}
+                                        href={routePath(
+                                            {
+                                                name: 'resource.create',
+                                                resource: resource.id,
+                                                type: type.id,
+                                            },
+                                            basePath,
+                                        )}
+                                        {...(type.icon !== undefined
+                                            ? { icon: getNamedIcon(type.icon) }
+                                            : {})}
+                                        {...(type.description !== undefined
+                                            ? { description: type.description }
+                                            : {})}
+                                    >
+                                        {type.label}
+                                    </MenuItem>
+                                ))}
+                            </Menu>
+                        </MenuTrigger>
+                    ) : (
                         <LinkButton
                             href={routePath(
-                                { name: 'resource.create', resource: resource.id },
+                                {
+                                    name: 'resource.create',
+                                    resource: resource.id,
+                                    ...(creatableTypes[0] !== undefined
+                                        ? { type: creatableTypes[0].id }
+                                        : {}),
+                                },
                                 basePath,
                             )}
                             variant="primary"
                             icon={Plus}
                         >
-                            {intl.formatMessage(appMessages.create, {
-                                resource: resource.label.singular,
-                            })}
+                            {createLabel}
                         </LinkButton>
-                    ) : undefined
+                    )
                 }
             />
             {resource.description !== undefined ? (

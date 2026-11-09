@@ -234,6 +234,9 @@ export const appMessages: {
     create: PanneauMessage<    {
     resource: string;
     }>;
+    chooseType: PanneauMessage<    {
+    resource: string;
+    }>;
     edit: PanneauMessage<    {
     resource: string;
     }>;

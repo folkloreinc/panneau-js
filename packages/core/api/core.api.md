@@ -561,7 +561,7 @@ export function resolveForm(resource: Resource, options?: ResolveFormOptions): R
 // @public (undocumented)
 export interface ResolveFormOptions {
     mode?: FormMode;
-    type?: string;
+    type?: string | undefined;
 }
 
 // @public
@@ -575,7 +575,6 @@ export function resolveTheme(theme: DefinitionTheme | undefined, themes: Readonl
 
 // @public
 export interface ResourceAbilities {
-    // (undocumented)
     create: boolean;
     // (undocumented)
     viewAny: boolean;

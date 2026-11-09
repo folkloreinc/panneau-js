@@ -1,3 +1,4 @@
+import { ITEM_TYPE_KEY } from './resourceTypes';
 import type { DefinitionInput, Field, LayoutNode, ResourceInput } from './schemas';
 import type { ValidationIssue } from './validate';
 import {
@@ -43,13 +44,78 @@ function checkLayout(
     });
 }
 
+/**
+ * The types of a resource (decision 0075): unique ids, fields named apart from those of the
+ * resource, and no field `type` in the form, which holds the item's type.
+ */
+function checkTypes(
+    resource: ResourceInput,
+    names: Set<string>,
+    path: string,
+    issues: ValidationIssue[],
+) {
+    const ids = new Set<string>();
+    (resource.types ?? []).forEach((type, index) => {
+        const typePath = `${path}.types.${index}`;
+        if (ids.has(type.id)) {
+            issues.push({ path: `${typePath}.id`, message: `Duplicate type id \`${type.id}\`.` });
+        }
+        ids.add(type.id);
+        const own = fieldNames(type.fields);
+        if (own.size !== type.fields.length) {
+            issues.push({ path: `${typePath}.fields`, message: 'Field names must be unique.' });
+        }
+        type.fields.forEach((field, fieldIndex) => {
+            if (names.has(field.name)) {
+                issues.push({
+                    path: `${typePath}.fields.${fieldIndex}.name`,
+                    message: `The resource already has a field named \`${field.name}\`.`,
+                });
+            } else if (field.name === ITEM_TYPE_KEY) {
+                issues.push({
+                    path: `${typePath}.fields.${fieldIndex}.name`,
+                    message: `\`${ITEM_TYPE_KEY}\` holds the type of the item.`,
+                });
+            }
+        });
+    });
+    const typeField = resource.fields.findIndex((field) => field.name === ITEM_TYPE_KEY);
+    if (ids.size > 0 && typeField !== -1 && resource.fields[typeField]?.notInForm !== true) {
+        issues.push({
+            path: `${path}.fields.${typeField}`,
+            message: `\`${ITEM_TYPE_KEY}\` holds the type of the item, set when it is created: its field must be \`notInForm\`.`,
+        });
+    }
+}
+
+/** The fields of a resource and of its types, with their paths. */
+function allFields(resource: ResourceInput, path: string): { field: Field; path: string }[] {
+    return [
+        ...resource.fields.map((field, index) => ({ field, path: `${path}.fields.${index}` })),
+        ...(resource.types ?? []).flatMap((type, typeIndex) =>
+            type.fields.map((field, index) => ({
+                field,
+                path: `${path}.types.${typeIndex}.fields.${index}`,
+            })),
+        ),
+    ];
+}
+
 function checkResource(resource: ResourceInput, path: string, issues: ValidationIssue[]) {
     const names = fieldNames(resource.fields);
     if (names.size !== resource.fields.length) {
         issues.push({ path: `${path}.fields`, message: 'Field names must be unique.' });
     }
+    checkTypes(resource, names, path, issues);
     if (resource.form?.layout !== undefined) {
-        checkLayout(resource.form.layout, names, `${path}.form.layout`, issues);
+        // The layout can name the fields of the types: the forms of the other types leave them out.
+        const typeNames = (resource.types ?? []).flatMap((type) => [...fieldNames(type.fields)]);
+        checkLayout(
+            resource.form.layout,
+            new Set([...names, ...typeNames]),
+            `${path}.form.layout`,
+            issues,
+        );
     }
     (resource.list?.columns ?? []).forEach((column, index) => {
         if (column.field !== undefined && !names.has(column.field)) {
@@ -110,15 +176,15 @@ function checkResource(resource: ResourceInput, path: string, issues: Validation
             });
         }
     }
-    resource.fields.forEach((field, index) => {
+    allFields(resource, path).forEach(({ field, path: fieldPath }) => {
         if (field.type === 'relation' && field.resource === undefined) {
             issues.push({
-                path: `${path}.fields.${index}.resource`,
+                path: `${fieldPath}.resource`,
                 message: 'A `relation` field needs a `resource`.',
             });
         } else if (field.type === 'relation' && Array.isArray(field.resource)) {
             issues.push({
-                path: `${path}.fields.${index}.resource`,
+                path: `${fieldPath}.resource`,
                 message: 'A `relation` field names one resource.',
             });
         }
@@ -128,7 +194,7 @@ function checkResource(resource: ResourceInput, path: string, issues: Validation
 /**
  * Checks what the schema can't: references between parts of a definition (layout nodes and
  * columns that name existing fields, relations, `media` and `image` fields that name a resource,
- * unique names), and the `file` field of `media` resources.
+ * unique names), the types of resources, and the `file` field of `media` resources.
  */
 export function lintDefinition(definition: DefinitionInput): ValidationIssue[] {
     const issues: ValidationIssue[] = [];
@@ -138,19 +204,19 @@ export function lintDefinition(definition: DefinitionInput): ValidationIssue[] {
         .map((resource) => resource.id);
     definition.resources.forEach((resource, index) => {
         checkResource(resource, `resources.${index}`, issues);
-        resource.fields.forEach((field, fieldIndex) => {
+        allFields(resource, `resources.${index}`).forEach(({ field, path }) => {
             if (
                 field.type === 'relation' &&
                 typeof field.resource === 'string' &&
                 !resourceIds.has(field.resource)
             ) {
                 issues.push({
-                    path: `resources.${index}.fields.${fieldIndex}.resource`,
+                    path: `${path}.resource`,
                     message: `No resource \`${field.resource}\`.`,
                 });
             }
             if (field.type === 'media' || field.type === 'image') {
-                const fieldPath = `resources.${index}.fields.${fieldIndex}.resource`;
+                const fieldPath = `${path}.resource`;
                 if (field.resource === undefined) {
                     // Every library of the definition (decision 0027).
                     if (libraries.length === 0) {

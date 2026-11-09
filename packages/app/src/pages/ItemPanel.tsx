@@ -6,6 +6,7 @@ import { useResourceItem } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
 import { ItemDetails, type ItemDetailsColumn, getImageUrl } from '@panneau/lists';
 import type { Field, Item, RouteReference } from '@panneau/protocol';
+import { ITEM_TYPE_KEY, getTypeFields } from '@panneau/protocol/runtime';
 import {
     Alert,
     Aside,
@@ -100,7 +101,10 @@ export function ItemPanel({
         panel.current?.focus();
     }, [id]);
 
-    const columns = toDetailsColumns(getVisibleFields(resource.fields));
+    // The fields of the item's type after those of the resource (decision 0075)
+    const columns = toDetailsColumns(
+        getVisibleFields(getTypeFields(resource, item?.[ITEM_TYPE_KEY])),
+    );
     // The actions of the item, as its row and its form show them, but `show`: this panel
     const { run, isSupported } = useItemActionRunner(resource, { basePath, locale });
     const itemActions =

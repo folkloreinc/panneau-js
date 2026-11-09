@@ -1,4 +1,5 @@
 import type { Definition, Resource } from '@panneau/protocol';
+import { getCreatableTypes, hasResourceTypes } from '@panneau/protocol/runtime';
 
 import { can } from './abilities';
 import { type ResolveFormOptions, type ResolvedForm, resolveForm } from './form';
@@ -7,6 +8,7 @@ import { type ResolvedList, resolveList } from './list';
 /** What the current user can do with a resource as a whole. */
 export interface ResourceAbilities {
     viewAny: boolean;
+    /** With `types`, only when one of them can be created too (decision 0075). */
     create: boolean;
 }
 
@@ -30,7 +32,9 @@ export function resolveResource(
         list: resolveList(resource),
         abilities: {
             viewAny: can(resource.abilities, 'viewAny'),
-            create: can(resource.abilities, 'create'),
+            create:
+                can(resource.abilities, 'create') &&
+                (!hasResourceTypes(resource) || getCreatableTypes(resource).length > 0),
         },
     };
 }

@@ -7,6 +7,7 @@ import { createFieldCheckSource, createRelationSource } from '@panneau/fields';
 import { Form } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
 import type { Definition, Item, RouteReference } from '@panneau/protocol';
+import { ITEM_TYPE_KEY, getItemType, getResourceType } from '@panneau/protocol/runtime';
 import { usePanneauIntl } from '@panneau/ui';
 
 import { useDocumentTitle } from '../documentTitle';
@@ -28,6 +29,11 @@ export interface ResourceFormPageProps {
     basePath: string;
     /** The item to edit, or `null` to create one. */
     id: string | null;
+    /**
+     * The type of the item to create, in a resource with types (decision 0075). An item to edit
+     * has its own.
+     */
+    type?: string | undefined;
     /** The path of a route reference of the definition, for `link` actions with a `route`. */
     resolveRoute?: (reference: RouteReference) => string | null;
 }
@@ -42,6 +48,7 @@ export function ResourceFormPage({
     resolved,
     basePath,
     id,
+    type: createType,
     resolveRoute,
 }: ResourceFormPageProps) {
     const intl = usePanneauIntl();
@@ -64,12 +71,19 @@ export function ResourceFormPage({
     });
     // Fields with `check`, such as slugs, check their value with the backend as it is typed
     const checkSource = createFieldCheckSource(adapter, resource.id, id);
-    const { fields, layout } = resolveForm(resource, { mode });
     const item = itemQuery.data;
+    // The fields of the item's type after those of the resource (decision 0075)
+    const type =
+        mode === 'create'
+            ? getResourceType(resource, createType)
+            : item !== undefined
+              ? getItemType(resource, item)
+              : undefined;
+    const { fields, layout } = resolveForm(resource, { mode, type: type?.id });
     const singular = resource.label.singular;
     const title =
         mode === 'create'
-            ? intl.formatMessage(appMessages.create, { resource: singular })
+            ? intl.formatMessage(appMessages.create, { resource: type?.label ?? singular })
             : (getItemTitle(item, resource.itemTitle, definition.locale) ??
               intl.formatMessage(appMessages.edit, { resource: singular }));
     useRecordRecentItem(
@@ -179,7 +193,9 @@ export function ResourceFormPage({
             saved={savedVersion !== null && item?.version === savedVersion}
             onSubmit={(values, { version, changes }) =>
                 id === null
-                    ? createItem.mutateAsync(values)
+                    ? createItem.mutateAsync(
+                          type !== undefined ? { ...values, [ITEM_TYPE_KEY]: type.id } : values,
+                      )
                     : updateItem.mutateAsync({ id, values: changes, version })
             }
             onSubmitted={(result) => {

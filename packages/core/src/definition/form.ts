@@ -1,4 +1,5 @@
 import type { Field, LayoutNode, Resource, Rule } from '@panneau/protocol';
+import { getTypeFields } from '@panneau/protocol/runtime';
 
 import { canUpdateField, canViewField } from './abilities';
 
@@ -25,8 +26,11 @@ export interface ResolveFormOptions {
      * `mode`, in that mode only, in nested fields too. Without a mode, every field is kept as is.
      */
     mode?: FormMode;
-    /** The type of the item, among the resource's `types`: its fields are added. */
-    type?: string;
+    /**
+     * The type of the item, among the resource's `types` (decision 0075): its fields come after
+     * those of the resource. The layout's nodes that name the fields of other types are removed.
+     */
+    type?: string | undefined;
 }
 
 function referencedNames(nodes: readonly LayoutNode[], names = new Set<string>()): Set<string> {
@@ -125,11 +129,11 @@ export function resolveFields(
 
 /** Resolves the form of a resource: its fields (plus those of the item's type) and its layout. */
 export function resolveForm(resource: Resource, options: ResolveFormOptions = {}): ResolvedForm {
-    const typeFields =
-        options.type !== undefined
-            ? (resource.types?.find((type) => type.id === options.type)?.fields ?? [])
-            : [];
-    return resolveFields([...resource.fields, ...typeFields], resource.form?.layout ?? [], options);
+    return resolveFields(
+        getTypeFields(resource, options.type),
+        resource.form?.layout ?? [],
+        options,
+    );
 }
 
 /** The field names a layout references, in order. */

@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { PanneauPlugin } from '@panneau/core';
 import { createRestAdapter } from '@panneau/data';
-import { validateBootConfig } from '@panneau/protocol';
+import { type ResourceInput, validateBootConfig } from '@panneau/protocol';
 import { createMockBackend } from '@panneau/protocol/mock';
 
 import { Panneau } from '../Panneau';
@@ -21,7 +21,12 @@ function renderApp(
             { id: '2', title: 'Contact', status: 'Draft' },
         ],
         wrapFetch = (fetch) => fetch,
-    }: { pages?: Record<string, unknown>[]; wrapFetch?: (fetch: Fetch) => Fetch } = {},
+        types,
+    }: {
+        pages?: Record<string, unknown>[];
+        wrapFetch?: (fetch: Fetch) => Fetch;
+        types?: ResourceInput['types'];
+    } = {},
 ) {
     const definition = createDefinition({
         resources: [
@@ -35,6 +40,7 @@ function renderApp(
                     { name: 'status', type: 'text', label: 'Status' },
                 ],
                 list: { search: true },
+                ...(types !== undefined ? { types } : {}),
             },
             {
                 id: 'authors',
@@ -99,6 +105,22 @@ describe('the "Go to…" palette', () => {
         expect(labels()).toEqual(['New page']);
         await user.keyboard('{ArrowDown}{Enter}');
         expect(window.location.pathname).toBe('/panneau/resources/pages/create');
+    });
+
+    it('has a create entry per type of a resource with types (decision 0075)', async () => {
+        const user = userEvent.setup();
+        renderApp([], {
+            types: [
+                { id: 'home', label: 'Front page', fields: [], abilities: { create: false } },
+                { id: 'event', label: 'Event', fields: [] },
+                { id: 'article', label: 'Article', fields: [] },
+            ],
+        });
+        await user.click(goToButton());
+        await user.type(palette().getByRole('searchbox'), 'new');
+        expect(labels()).toEqual(['New Event', 'New Article']);
+        await user.click(palette().getByRole('menuitem', { name: 'New Article' }));
+        expect(window.location.pathname).toBe('/panneau/resources/pages/create/article');
     });
 
     it('searches the server, and opens a result in its form', async () => {

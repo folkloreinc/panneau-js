@@ -10,6 +10,10 @@ export const Item = z
             description: 'Changes on every update. `null` when the backend has no versions.',
         }),
         abilities: Abilities,
+        type: z.string().min(1).optional().meta({
+            description:
+                "In a resource with `types`: the id of the item's type (decision 0075). Set when the item is created; updates ignore it.",
+        }),
     })
     .meta({
         description: 'An item of a resource. Its other properties are the values of its fields.',

@@ -1243,3 +1243,156 @@ describe('the app shell', () => {
         expect(await screen.findByRole('link', { name: 'About us' })).toBeInTheDocument();
     });
 });
+
+describe('resource types (decision 0075)', () => {
+    beforeEach(() => {
+        window.history.replaceState(null, '', '/panneau');
+        window.localStorage.clear();
+    });
+
+    const types = [
+        { id: 'home', label: 'Front page', fields: [], abilities: { create: false } },
+        {
+            id: 'event',
+            label: 'Event',
+            description: 'With a date and a place',
+            fields: [{ name: 'venue', type: 'text', label: 'Venue' }],
+        },
+        {
+            id: 'article',
+            label: 'Article',
+            fields: [{ name: 'summary', type: 'textarea', label: 'Summary' }],
+        },
+    ];
+
+    /** The app with posts of three types: a home page, events and articles. */
+    function renderTypedApp(postTypes: typeof types = types) {
+        const definition = createDefinition({
+            resources: [
+                {
+                    id: 'posts',
+                    label: { singular: 'post', plural: 'posts' },
+                    itemTitle: 'title',
+                    fields: [{ name: 'title', type: 'text', label: 'Title' }],
+                    types: postTypes,
+                },
+                {
+                    id: 'authors',
+                    label: { singular: 'author', plural: 'authors' },
+                    fields: [{ name: 'name', type: 'text' }],
+                },
+            ],
+        });
+        const backend = createMockBackend({
+            definition,
+            items: {
+                posts: [
+                    { id: '1', title: 'Welcome', type: 'home' },
+                    { id: '2', title: 'Concert', type: 'event', venue: 'Hall' },
+                ],
+            },
+        });
+        const result = validateBootConfig(createBootConfig({ definition }));
+        if (!result.success) {
+            throw new Error(JSON.stringify(result.issues));
+        }
+        render(
+            <Panneau
+                config={result.data}
+                adapter={createRestAdapter({ baseUrl: '/panneau/api', fetch: backend.fetch })}
+                queryClient={new QueryClient({ defaultOptions: { queries: { retry: false } } })}
+                iconLoader={null}
+                onUnauthorized={vi.fn()}
+            />,
+        );
+        return { backend, unmount: cleanup };
+    }
+
+    it('creates an item of the type chosen in the menu of the list, with its fields', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/posts');
+        const { backend } = renderTypedApp();
+        await screen.findByRole('table', { name: 'Posts' });
+        await user.click(screen.getByRole('button', { name: 'New post' }));
+        const menu = await screen.findByRole('menu', { name: 'New post' });
+        // The home page is a singleton: it isn't offered
+        expect(
+            within(menu)
+                .getAllByRole('menuitem')
+                .map((item) => item.textContent),
+        ).toEqual(['EventWith a date and a place', 'Article']);
+
+        await user.click(within(menu).getByRole('menuitem', { name: /Event/ }));
+        expect(window.location.pathname).toBe('/panneau/resources/posts/create/event');
+        expect(await screen.findByRole('heading', { name: 'New Event' })).toBeInTheDocument();
+        expect(screen.queryByRole('textbox', { name: 'Summary' })).toBeNull();
+        await user.type(screen.getByRole('textbox', { name: 'Title' }), 'Picnic');
+        await user.type(screen.getByRole('textbox', { name: 'Venue' }), 'Park');
+        await user.click(screen.getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(window.location.pathname).toBe('/panneau/resources/posts'));
+        expect(backend.items('posts').at(-1)).toMatchObject({
+            title: 'Picnic',
+            type: 'event',
+            venue: 'Park',
+        });
+    });
+
+    it('asks for the type on the create route without one', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/posts/create');
+        renderTypedApp();
+        expect(screen.getByRole('heading', { name: 'New post' })).toBeInTheDocument();
+        expect(screen.getByText('Which type of post?')).toBeInTheDocument();
+        expect(screen.queryByRole('link', { name: /Front page/ })).toBeNull();
+        await user.click(screen.getByRole('link', { name: /Article/ }));
+        expect(window.location.pathname).toBe('/panneau/resources/posts/create/article');
+        expect(await screen.findByRole('textbox', { name: 'Summary' })).toBeInTheDocument();
+    });
+
+    it('goes straight to the form of the only type that can be created', async () => {
+        window.history.replaceState(null, '', '/panneau/resources/posts');
+        const { unmount } = renderTypedApp(types.slice(0, 2));
+        await screen.findByRole('table', { name: 'Posts' });
+        expect(screen.getByRole('link', { name: 'New post' })).toHaveAttribute(
+            'href',
+            '/panneau/resources/posts/create/event',
+        );
+        unmount();
+
+        window.history.replaceState(null, '', '/panneau/resources/posts/create');
+        renderTypedApp(types.slice(0, 2));
+        expect(screen.getByRole('heading', { name: 'New Event' })).toBeInTheDocument();
+        expect(screen.getByRole('textbox', { name: 'Venue' })).toBeInTheDocument();
+    });
+
+    it('refuses a type that can’t be created, and doesn’t find one that doesn’t exist', async () => {
+        window.history.replaceState(null, '', '/panneau/resources/posts/create/home');
+        const { unmount } = renderTypedApp();
+        expect(await screen.findByRole('heading', { name: 'Access denied' })).toBeInTheDocument();
+        unmount();
+
+        window.history.replaceState(null, '', '/panneau/resources/posts/create/other');
+        const second = renderTypedApp();
+        expect(screen.getByRole('heading', { name: 'Page not found' })).toBeInTheDocument();
+        second.unmount();
+
+        // A resource without types has no create route per type
+        window.history.replaceState(null, '', '/panneau/resources/authors/create/event');
+        renderTypedApp();
+        expect(screen.getByRole('heading', { name: 'Page not found' })).toBeInTheDocument();
+    });
+
+    it('edits an item with the fields of its type, and shows them in its panel', async () => {
+        window.history.replaceState(null, '', '/panneau/resources/posts/2/edit');
+        const { unmount } = renderTypedApp();
+        expect(await screen.findByRole('textbox', { name: 'Venue' })).toHaveValue('Hall');
+        expect(screen.queryByRole('textbox', { name: 'Summary' })).toBeNull();
+        unmount();
+
+        window.history.replaceState(null, '', '/panneau/resources/posts/2');
+        renderTypedApp();
+        const panel = await screen.findByRole('region', { name: 'Details of the post' });
+        expect(await within(panel).findByText('Venue')).toBeInTheDocument();
+        expect(within(panel).getByText('Hall')).toBeInTheDocument();
+    });
+});
