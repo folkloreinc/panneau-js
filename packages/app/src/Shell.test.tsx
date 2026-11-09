@@ -343,7 +343,7 @@ describe('the app shell', () => {
         ).toHaveAttribute('aria-current', 'page');
     });
 
-    describe('with a dock (decision 0075)', () => {
+    describe('with a dock (decision 0076)', () => {
         const dock = { theme: { navigation: 'dock' as const } };
 
         it('shows the menu in a dock instead of the sidebar, where nothing collapses', async () => {
@@ -1322,5 +1322,34 @@ describe('the app shell', () => {
         await user.click(within(toast).getByRole('button', { name: 'Undo' }));
         await waitFor(() => expect(backend.items('pages')).toHaveLength(before));
         expect(await screen.findByRole('link', { name: 'About us' })).toBeInTheDocument();
+    });
+});
+
+describe('the panels of a form sidebar', () => {
+    it('moves the actions of the item from the header to the actions panel', async () => {
+        window.history.replaceState(null, '', '/panneau/resources/pages/1/edit');
+        renderApp({
+            resources: [
+                {
+                    id: 'pages',
+                    label: { singular: 'page', plural: 'pages' },
+                    itemTitle: 'title',
+                    fields: [{ name: 'title', type: 'text', label: 'Title' }],
+                    form: {
+                        layout: [
+                            { type: 'field', name: 'title' },
+                            { type: 'sidebar', panel: 'actions' },
+                        ],
+                    },
+                },
+            ],
+        });
+        await screen.findByRole('heading', { name: 'About us' });
+        const sidebar = screen.getByRole('region', { name: 'Sidebar' });
+        expect(
+            await within(sidebar).findByRole('button', { name: 'Duplicate' }),
+        ).toBeInTheDocument();
+        // Only once: the header leaves them out
+        expect(screen.getAllByRole('button', { name: 'Duplicate' })).toHaveLength(1);
     });
 });

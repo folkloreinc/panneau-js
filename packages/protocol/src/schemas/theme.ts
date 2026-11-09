@@ -110,7 +110,7 @@ export const DefinitionTheme = z
         density: z.enum(['compact', 'comfortable', 'touch', 'auto']).optional(),
         navigation: z.enum(['sidebar', 'dock']).optional().meta({
             description:
-                'Where the app shows the `main` menu: `sidebar` (the default), a column on the left, or `dock`, a dock at the bottom of the window (decision 0075).',
+                'Where the app shows the `main` menu: `sidebar` (the default), a column on the left, or `dock`, a dock at the bottom of the window (decision 0076).',
         }),
         extends: z
             .union([z.string(), z.array(z.string())])

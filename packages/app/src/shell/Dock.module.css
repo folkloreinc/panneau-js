@@ -1,4 +1,4 @@
-/* The dock (decision 0075): a bar of tabs across the bottom of the window, and from Panneau's `lg`
+/* The dock (decision 0076): a bar of tabs across the bottom of the window, and from Panneau's `lg`
  * breakpoint (64rem of the root) a raised pill, in the middle. Its sizes come from the layout
  * (`--_panneau-dock-*`), which keeps what sticks to the bottom of the page above it. */
 

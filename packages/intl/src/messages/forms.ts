@@ -218,5 +218,13 @@ export const formsMessages = {
             id: 'panneau.forms.publication.scheduledFor',
             defaultMessage: 'Will be published on {date}',
         }),
+        publish: defineMessage({
+            id: 'panneau.forms.publication.publish',
+            defaultMessage: 'Publish',
+        }),
+        unpublish: defineMessage({
+            id: 'panneau.forms.publication.unpublish',
+            defaultMessage: 'Unpublish',
+        }),
     },
 };

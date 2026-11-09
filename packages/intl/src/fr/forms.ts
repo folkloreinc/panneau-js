@@ -69,4 +69,6 @@ export const formsFr: Record<string, string> = {
     'panneau.forms.publication.unpublished': 'Non publié',
     'panneau.forms.publication.publishedOn': 'Publié le {date}',
     'panneau.forms.publication.scheduledFor': 'Sera publié le {date}',
+    'panneau.forms.publication.publish': 'Publier',
+    'panneau.forms.publication.unpublish': 'Dépublier',
 };

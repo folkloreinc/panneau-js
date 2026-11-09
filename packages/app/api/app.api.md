@@ -8,12 +8,14 @@ import { BootConfig } from '@panneau/protocol';
 import type { BootConfigInput } from '@panneau/protocol';
 import { ComponentTokens } from '@panneau/ui';
 import { DataAdapter } from '@panneau/data';
+import type { Item } from '@panneau/protocol';
 import { JSX } from 'react';
 import { MapsConfig } from '@panneau/fields';
 import { NamedIconLoader } from '@panneau/ui';
 import { PanneauPlugin } from '@panneau/core';
 import { QueryClient } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
+import type { ResolvedResource } from '@panneau/core';
 
 // @public
 export const appComponentTokens: Readonly<{
@@ -40,6 +42,14 @@ export interface ErrorPageProps {
     homeHref?: string;
     kind: ErrorPageKind;
     onRetry?: () => void;
+}
+
+// @public
+export interface FormPage {
+    basePath: string;
+    item: Item | undefined;
+    locale: string;
+    resource: ResolvedResource;
 }
 
 // @public
@@ -133,6 +143,9 @@ export const sidebarTokens: ComponentTokens<"sidebar", "panneau-sidebar-border" 
 export interface UnauthorizedContext {
     loginUrl: string | null;
 }
+
+// @public
+export function useFormPage(): FormPage | null;
 
 // (No @packageDocumentation comment for this package)
 

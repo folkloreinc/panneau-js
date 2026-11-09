@@ -1,4 +1,4 @@
-/* The frame of the app with a dock (decision 0075): a bar at the top, the page on a panel inset from
+/* The frame of the app with a dock (decision 0076): a bar at the top, the page on a panel inset from
  * the edges, and the dock stuck to the bottom of the window. The root is a size container, so the
  * dock sticks rather than being fixed: a fixed element would be placed in the root, not in the
  * window. Below Panneau's `lg` breakpoint (64rem of the root), the dock is a bar of tabs. */

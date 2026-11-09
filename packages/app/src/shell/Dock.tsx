@@ -92,7 +92,7 @@ function GroupItem({ group, route }: { group: NavGroup & { label: string }; rout
 }
 
 /**
- * The navigation of the shell at the bottom of the window (decision 0075): the entries of the
+ * The navigation of the shell at the bottom of the window (decision 0076): the entries of the
  * `main` menu, each group as a menu that opens upwards, then "Go to…", the queued action runs and
  * the user's menu. From the `lg` width of the root, a raised pill in the middle; below it, a bar
  * of tabs, with the first entries and "More" for the others, and "Go to…" and the action runs left

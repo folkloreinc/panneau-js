@@ -29,7 +29,7 @@ export interface DockLayoutProps {
 
 /**
  * The frame of the app with the navigation in a dock, when the definition's theme sets
- * `navigation: "dock"` (decision 0075): a bar at the top with the site and the current context,
+ * `navigation: "dock"` (decision 0076): a bar at the top with the site and the current context,
  * the page on a raised panel, and the dock at the bottom of the window, over the page as it
  * scrolls. Below the `lg` width of the root, the dock is a bar of tabs, and "Go to…" and the
  * queued action runs are in the bar at the top. What sticks to the bottom of the page, such as the

@@ -117,6 +117,32 @@
     border-top: var(--panneau-border-width) solid var(--panneau-color-border);
 }
 
+/* Beside the form, the `save` and `errors` panels of its sidebar take the place of the footer and
+   of the summary at the top (decision 0075). The aside goes beside the form from 56rem. */
+@container panneau-form (min-width: 56rem) {
+    /* Twice, over the display of the components it hides */
+    .besideAsideHidden.besideAsideHidden {
+        display: none;
+    }
+}
+
+/* The state of the publication, at the top of its panel. */
+.publicationState {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--panneau-space-2);
+}
+
+/* The state of the form and its Save button, at the top of its sidebar. */
+.savePanel {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--panneau-space-2) var(--panneau-space-3);
+}
+
 /* "Unsaved changes", "Saved" or the failure of the last save, next to the button. */
 .status {
     display: inline-flex;

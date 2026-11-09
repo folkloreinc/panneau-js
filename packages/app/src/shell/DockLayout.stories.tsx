@@ -1,5 +1,5 @@
 /**
- * The frame of the app with a dock (decision 0075): a bar at the top with the site, the page on a
+ * The frame of the app with a dock (decision 0076): a bar at the top with the site, the page on a
  * raised panel, and the `main` menu of a definition in a dock at the bottom of the window. Below
  * the `lg` width, the dock is a bar of tabs, with "More" for the entries that don't fit.
  */

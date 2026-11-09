@@ -17,7 +17,7 @@ const DOCK_ITEMS = 5;
 export interface ShellSkeletonProps {
     /**
      * Where the navigation goes, from the definition's theme when the boot config has it
-     * (decision 0075). Defaults to the sidebar.
+     * (decision 0076). Defaults to the sidebar.
      */
     navigation?: 'sidebar' | 'dock';
 }

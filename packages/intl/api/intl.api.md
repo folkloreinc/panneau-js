@@ -651,6 +651,8 @@ export const formsMessages: {
         scheduledFor: PanneauMessage<    {
         date: string;
         }>;
+        publish: PanneauMessage<Record<never, never>>;
+        unpublish: PanneauMessage<Record<never, never>>;
     };
 };
 

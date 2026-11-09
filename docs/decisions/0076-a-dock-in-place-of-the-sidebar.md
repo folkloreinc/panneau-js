@@ -1,4 +1,4 @@
-# 0075: A dock, in place of the sidebar
+# 0076: A dock, in place of the sidebar
 
 - Status: proposed
 - Date: 2026-11-09

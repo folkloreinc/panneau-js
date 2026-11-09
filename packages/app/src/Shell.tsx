@@ -202,7 +202,7 @@ export function Shell({
     const queryClient = useQueryClient();
     const adapter = useDataAdapter();
     const route = matchRoute(pathname, basePath) ?? { name: 'not-found' };
-    // The navigation in a sidebar, or in a dock at the bottom (decision 0075)
+    // The navigation in a sidebar, or in a dock at the bottom (decision 0076)
     const Layout = definition.theme?.navigation === 'dock' ? DockLayout : AppLayout;
     // Forms with unsaved changes guard leaving their page
     const [guards] = useState(createLeaveGuards);

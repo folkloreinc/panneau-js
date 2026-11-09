@@ -989,6 +989,10 @@
                 "component": {
                     "type": "string"
                 },
+                "panel": {
+                    "type": "string",
+                    "minLength": 1
+                },
                 "props": {
                     "type": "object",
                     "propertyNames": {

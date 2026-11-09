@@ -53,7 +53,7 @@ export const sidebarTokens = defineComponentTokens('sidebar', {
 });
 
 /**
- * Tokens of the dock (decision 0075): the navigation at the bottom of the window, when the
+ * Tokens of the dock (decision 0076): the navigation at the bottom of the window, when the
  * definition's theme sets `navigation: "dock"`. A raised pill from the `lg` width, a bar of tabs
  * below it.
  */
