@@ -43,12 +43,12 @@
 }
 
 .table tbody tr[data-selected] {
-    background-color: var(--panneau-color-accent-subtle);
+    background-color: var(--panneau-selected-subtle, var(--panneau-color-accent-subtle));
 }
 
 /* The item shown next to the list: a bar on its first cell. */
 .table tbody tr[data-current] td:first-child {
-    box-shadow: inset 3px 0 0 var(--panneau-color-accent);
+    box-shadow: inset 3px 0 0 var(--panneau-selected-bg, var(--panneau-color-accent));
 }
 
 .table tbody tr[data-current] {

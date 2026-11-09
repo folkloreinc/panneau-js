@@ -144,13 +144,13 @@
 }
 
 .card[data-selected] {
-    background-color: var(--panneau-color-accent-subtle);
-    border-color: var(--panneau-color-accent);
+    background-color: var(--panneau-selected-subtle, var(--panneau-color-accent-subtle));
+    border-color: var(--panneau-selected-bg, var(--panneau-color-accent));
 }
 
-/* A selected image has an accent ring, outside of it: nothing covers it. */
+/* A selected image has a ring of the selection, outside of it: nothing covers it. */
 .card[data-selected] .thumbnail {
-    box-shadow: 0 0 0 2px var(--panneau-color-accent);
+    box-shadow: 0 0 0 2px var(--panneau-selected-bg, var(--panneau-color-accent));
 }
 
 .card[data-focus-visible] {
@@ -210,9 +210,9 @@
 
 .checkbox[data-selected],
 .radio[data-selected] {
-    color: var(--panneau-color-surface-raised);
-    background-color: var(--panneau-color-accent);
-    border-color: var(--panneau-color-accent);
+    color: var(--panneau-selected-text, var(--panneau-color-accent-text));
+    background-color: var(--panneau-selected-bg, var(--panneau-color-accent));
+    border-color: var(--panneau-selected-bg, var(--panneau-color-accent));
 }
 
 .card[data-disabled] .checkbox,

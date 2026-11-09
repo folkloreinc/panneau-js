@@ -111,7 +111,7 @@
 }
 
 .link {
-    color: var(--panneau-color-accent);
+    color: var(--panneau-color-link);
     font-size: var(--panneau-font-size-sm);
 }
 

@@ -32,6 +32,7 @@ import { tabsTokens } from '../tabs/tokens';
 import { textTokens } from '../text/tokens';
 import { toastTokens } from '../toast/tokens';
 import { tooltipTokens } from '../tooltip/tokens';
+import { selectedTokens } from './selectedTokens';
 
 /**
  * The component tokens of `@panneau/ui` and their defaults, by component: what a theme, a scope or
@@ -63,6 +64,7 @@ export const componentTokens = Object.freeze({
     prose: proseTokens.tokens,
     radio: radioTokens.tokens,
     'segmented-control': segmentedControlTokens.tokens,
+    selected: selectedTokens.tokens,
     skeleton: skeletonTokens.tokens,
     spinner: spinnerTokens.tokens,
     stack: stackTokens.tokens,

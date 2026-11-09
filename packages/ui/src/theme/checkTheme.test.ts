@@ -104,6 +104,63 @@ describe('checkTheme', () => {
         expect(report.unchecked.filter((check) => check.name.startsWith('tone'))).toEqual([]);
     });
 
+    it('checks the values of explicit tones that refer to the palette', () => {
+        const report = checkTheme({
+            palette: { pale: '#ffe866' },
+            tokens: { 'panneau-color-surface': '#ffffff' },
+            tones: {
+                pale: {
+                    text: 'var(--panneau-palette-pale)',
+                    subtle: '#fffbe6',
+                    border: '#ffe866',
+                    outline: '#000000',
+                    solid: 'var(--panneau-palette-pale)',
+                    solidHover: '#ffdd00',
+                    solidText: '#000000',
+                },
+            },
+        });
+        expect(report.unchecked.filter((check) => check.name.startsWith('tone'))).toEqual([]);
+        expect(report.failures.map((check) => `${check.scheme} ${check.name}`)).toContain(
+            'light tone pale: text on surface',
+        );
+    });
+
+    it('checks translucent colors as they show over the surface', () => {
+        const report = checkTheme({
+            tokens: {
+                'panneau-color-surface': '#ffffff',
+                'panneau-color-border-control': 'rgb(0 0 0 / 0.2)',
+            },
+        });
+        const check = report.checks.find(
+            (item) => item.scheme === 'light' && item.name === 'tokens: control border on surface',
+        );
+        // Black at 20% over white is #cccccc: 1.6:1, not the 21:1 of black.
+        expect(check?.ratio).toBeCloseTo(1.6, 1);
+        expect(report.failures).toContain(check);
+    });
+
+    it('checks selections, as the accent when the theme does not set them', () => {
+        const yellow = {
+            'panneau-color-surface': '#ffffff',
+            'panneau-color-accent': '#ffdd00',
+            'panneau-color-accent-text': '#000000',
+        };
+        expect(
+            checkTheme({ tokens: yellow }).failures.map((check) => `${check.scheme} ${check.name}`),
+        ).toEqual(['light tokens: selected on surface', 'dark tokens: selected on surface']);
+        expect(
+            checkTheme({
+                tokens: {
+                    ...yellow,
+                    'panneau-selected-bg': '#000000',
+                    'panneau-selected-text': '#ffffff',
+                },
+            }).failures,
+        ).toEqual([]);
+    });
+
     it('lists colors it can not read as unchecked', () => {
         const report = checkTheme(bootstrapTheme);
         expect(report.failures).toEqual([]);

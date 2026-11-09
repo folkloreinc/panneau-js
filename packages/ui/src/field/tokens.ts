@@ -8,4 +8,6 @@ export const fieldTokens = defineComponentTokens('field', {
     'label-font-size': 'var(--panneau-font-size-md)',
     /** Font weight of the label. */
     'label-font-weight': 'var(--panneau-font-weight-medium)',
+    /** Color of the mark of a required field, after its label. */
+    'required-color': 'var(--panneau-color-danger)',
 });

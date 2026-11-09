@@ -23,8 +23,19 @@
     transition:
         background-color var(--panneau-duration),
         border-color var(--panneau-duration),
-        color var(--panneau-duration);
+        color var(--panneau-duration),
+        scale var(--panneau-duration);
     -webkit-tap-highlight-color: transparent;
+}
+
+.button[data-pressed]:not([data-disabled]) {
+    scale: var(--panneau-button-pressed-scale, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .button[data-pressed]:not([data-disabled]) {
+        scale: none;
+    }
 }
 
 .button[data-focus-visible] {
@@ -56,6 +67,7 @@
 .solid {
     color: var(--panneau-tone-solid-text);
     background-color: var(--panneau-tone-solid);
+    border-color: var(--panneau-button-solid-border-color, transparent);
 }
 
 .solid[data-hovered],

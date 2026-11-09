@@ -17,5 +17,5 @@ export const tabsTokens = defineComponentTokens('tabs', {
     /** Text color of a hovered or selected tab. */
     'tab-color-selected': 'var(--panneau-color-text)',
     /** Color of the indicator under the selected tab. */
-    'indicator-color': 'var(--panneau-color-accent)',
+    'indicator-color': 'var(--panneau-selected-bg, var(--panneau-color-accent))',
 });
