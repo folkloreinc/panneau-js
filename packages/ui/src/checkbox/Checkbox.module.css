@@ -31,7 +31,10 @@
     width: var(--panneau-checkbox-size, 1.125rem);
     height: var(--panneau-checkbox-size, 1.125rem);
     margin-top: 0.125rem;
-    color: var(--panneau-checkbox-checked-color, var(--panneau-color-accent-text));
+    color: var(
+        --panneau-checkbox-checked-color,
+        var(--panneau-selected-text, var(--panneau-color-accent-text))
+    );
     background-color: var(--panneau-checkbox-bg, var(--panneau-color-surface));
     border: var(--panneau-border-width) solid
         var(--panneau-checkbox-border-color, var(--panneau-color-border-control));
@@ -47,8 +50,14 @@
 
 .control[data-selected] .box,
 .control[data-indeterminate] .box {
-    background-color: var(--panneau-checkbox-checked-bg, var(--panneau-color-accent));
-    border-color: var(--panneau-checkbox-checked-bg, var(--panneau-color-accent));
+    background-color: var(
+        --panneau-checkbox-checked-bg,
+        var(--panneau-selected-bg, var(--panneau-color-accent))
+    );
+    border-color: var(
+        --panneau-checkbox-checked-bg,
+        var(--panneau-selected-bg, var(--panneau-color-accent))
+    );
 }
 
 .control[data-invalid] .box {

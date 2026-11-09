@@ -58,7 +58,10 @@
 }
 
 .tab[data-selected]::after {
-    background-color: var(--panneau-tabs-indicator-color, var(--panneau-color-accent));
+    background-color: var(
+        --panneau-tabs-indicator-color,
+        var(--panneau-selected-bg, var(--panneau-color-accent))
+    );
 }
 
 .tab[data-disabled] {

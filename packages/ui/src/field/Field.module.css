@@ -17,7 +17,7 @@
 
 .required {
     margin-inline-start: 0.2em;
-    color: var(--panneau-color-danger);
+    color: var(--panneau-field-required-color, var(--panneau-color-danger));
 }
 
 .description {
@@ -70,9 +70,9 @@
 .control[data-focus-within],
 .control[data-focus-visible],
 .control:focus-within {
-    border-color: var(--panneau-color-focus);
+    border-color: var(--panneau-input-border-color-focus, var(--panneau-color-focus));
     outline: none;
-    box-shadow: 0 0 0 1px var(--panneau-color-focus);
+    box-shadow: var(--panneau-input-focus-ring, 0 0 0 1px var(--panneau-color-focus));
 }
 
 .control[data-invalid] {
@@ -82,7 +82,7 @@
 .control[data-invalid][data-focused],
 .control[data-invalid][data-focus-within],
 .control[data-invalid]:focus-within {
-    box-shadow: 0 0 0 1px var(--panneau-color-danger);
+    box-shadow: var(--panneau-input-focus-ring-invalid, 0 0 0 1px var(--panneau-color-danger));
 }
 
 .control[data-disabled] {

@@ -5,7 +5,7 @@ export const checkboxTokens = defineComponentTokens('checkbox', {
     /** Size of the box. */
     size: '1.125rem',
     /** Color of the check mark. */
-    'checked-color': 'var(--panneau-color-accent-text)',
+    'checked-color': 'var(--panneau-selected-text, var(--panneau-color-accent-text))',
     /** Background of the box. */
     bg: 'var(--panneau-color-surface)',
     /** Border color of the box. */
@@ -13,5 +13,5 @@ export const checkboxTokens = defineComponentTokens('checkbox', {
     /** Corner radius of the box. */
     radius: 'var(--panneau-radius-sm)',
     /** Background and border color of a checked box. */
-    'checked-bg': 'var(--panneau-color-accent)',
+    'checked-bg': 'var(--panneau-selected-bg, var(--panneau-color-accent))',
 });

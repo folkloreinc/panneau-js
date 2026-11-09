@@ -77,8 +77,8 @@
     justify-content: center;
     min-width: 1.5rem;
     height: 1.5rem;
-    color: var(--panneau-color-accent-text);
-    background-color: var(--panneau-color-accent);
+    color: var(--panneau-selected-text, var(--panneau-color-accent-text));
+    background-color: var(--panneau-selected-bg, var(--panneau-color-accent));
     border-radius: 999px;
 }
 
