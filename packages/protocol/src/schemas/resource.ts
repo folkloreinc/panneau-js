@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { Action } from './action';
 import { Abilities } from './common';
-import { BlockType, Field } from './field';
+import { Field } from './field';
 import { LayoutNode } from './layout';
 import { ListDefinition } from './list';
 
@@ -26,6 +26,37 @@ export const ResourceFeatures = z.looseObject({
             'Whether the resource is in the global search. Defaults to whether its list has a search (`list.search`).',
     }),
 });
+
+export const ResourceType = z
+    .looseObject({
+        id: z.string().min(1).meta({
+            description: 'The `type` of the items of this type, which the client sends on create.',
+        }),
+        label: z.string().meta({
+            description:
+                'The name of the type: the title of its create form and of its choice when creating.',
+        }),
+        description: z
+            .string()
+            .optional()
+            .meta({ description: 'A line under the label, in the choice of a type.' }),
+        icon: z.string().optional(),
+        // The return type is written out so that declaration files name `Field`.
+        get fields(): z.ZodArray<typeof Field> {
+            return z.array(Field).meta({
+                description:
+                    "The type's own fields, after those of the resource. The resource's `form.layout` can name them: forms of the other types leave them out.",
+            });
+        },
+        abilities: Abilities.optional().meta({
+            description:
+                '`create: false`: the type is not offered when creating, and the backend refuses to create one (a singleton such as the home page). Its items can still be edited.',
+        }),
+    })
+    .meta({
+        description:
+            'A type of the items of a resource (decision 0077): the items of a type have the fields of the resource and its own.',
+    });
 
 export const Resource = z
     .looseObject({
@@ -66,15 +97,16 @@ export const Resource = z
         actions: z.array(Action).optional(),
         abilities: Abilities.optional(),
         features: ResourceFeatures.optional(),
-        types: z
-            .array(BlockType)
-            .optional()
-            .meta({ description: 'Variants of the resource, each with its own extra fields.' }),
+        types: z.array(ResourceType).optional().meta({
+            description:
+                "The types of the resource's items, each with fields of its own (decision 0077). Each item has a `type`, set when it is created, among their ids.",
+        }),
         settings: z.record(z.string(), z.unknown()).optional(),
     })
     .meta({ description: 'A set of items managed in the admin.' });
 
 export type ResourceFeatures = z.infer<typeof ResourceFeatures>;
+export type ResourceType = z.infer<typeof ResourceType>;
 export type Resource = z.infer<typeof Resource>;
 /** A resource as a backend writes it, before defaults are applied. */
 export type ResourceInput = z.input<typeof Resource>;

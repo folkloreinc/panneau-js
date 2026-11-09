@@ -15,7 +15,13 @@ import {
 import { invalidateActionResult, useDataAdapter } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
 import type { Definition } from '@panneau/protocol';
-import { IDS_FILTER, toSearchParams } from '@panneau/protocol/runtime';
+import {
+    IDS_FILTER,
+    getCreatableTypes,
+    getResourceType,
+    hasResourceTypes,
+    toSearchParams,
+} from '@panneau/protocol/runtime';
 import { Alert, usePanneauIntl, useToast } from '@panneau/ui';
 
 import { Dashboard } from './dashboard/Dashboard';
@@ -28,6 +34,7 @@ import { HomePage } from './pages/HomePage';
 import { PageErrorBoundary } from './pages/PageErrorBoundary';
 import { ResourceFormPage } from './pages/ResourceFormPage';
 import { ResourceListPage } from './pages/ResourceListPage';
+import { ResourceTypesPage } from './pages/ResourceTypesPage';
 import { resolveRoute } from './routeReference';
 import { type AppRoute, matchRoute, routePath } from './routes';
 import { AppLayout } from './shell/AppLayout';
@@ -167,13 +174,45 @@ function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) 
             if (route.name === 'resource.create' && !resolved.abilities.create) {
                 return forbidden;
             }
+            // A new item of a resource with types has the type of its route (decision 0077):
+            // without one, the user chooses it, unless there's a single type to create.
+            let type: string | undefined;
+            if (route.name === 'resource.create' && hasResourceTypes(resource)) {
+                const creatable = getCreatableTypes(resource);
+                const chosen =
+                    route.type !== undefined
+                        ? getResourceType(resource, route.type)
+                        : creatable.length === 1
+                          ? creatable[0]
+                          : undefined;
+                if (route.type === undefined && chosen === undefined) {
+                    return (
+                        <ResourceTypesPage
+                            key={resource.id}
+                            resolved={resolved}
+                            basePath={basePath}
+                            locale={definition.locale}
+                        />
+                    );
+                }
+                if (chosen === undefined) {
+                    return notFound;
+                }
+                if (chosen.abilities?.create === false) {
+                    return forbidden;
+                }
+                type = chosen.id;
+            } else if (route.name === 'resource.create' && route.type !== undefined) {
+                return notFound;
+            }
             return (
                 <ResourceFormPage
-                    key={`${resource.id}/${route.name === 'resource.create' ? '' : route.id}`}
+                    key={`${resource.id}/${route.name === 'resource.create' ? `create/${type ?? ''}` : route.id}`}
                     definition={definition}
                     resolved={resolved}
                     basePath={basePath}
                     id={route.name === 'resource.create' ? null : route.id}
+                    type={type}
                     resolveRoute={(reference) => resolveRoute(definition, basePath, reference)}
                 />
             );

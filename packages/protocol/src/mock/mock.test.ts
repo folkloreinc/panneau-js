@@ -1233,3 +1233,98 @@ describe('createExampleDefinition', () => {
         expect(validateDefinition(createExampleDefinition()).success).toBe(true);
     });
 });
+
+describe('the resource types of the mock backend (decision 0077)', () => {
+    function createTypedBackend() {
+        const definition = createDefinition();
+        definition.resources.push({
+            id: 'posts',
+            label: { singular: 'post', plural: 'posts' },
+            fields: [
+                { name: 'title', type: 'text', rules: [{ rule: 'required' }] },
+                { name: 'type', type: 'select', notInForm: true },
+            ],
+            types: [
+                { id: 'home', label: 'Home', fields: [], abilities: { create: false } },
+                {
+                    id: 'event',
+                    label: 'Event',
+                    fields: [
+                        { name: 'venue', type: 'text', rules: [{ rule: 'required' }] },
+                        { name: 'code', type: 'slug', from: 'title', check: true },
+                    ],
+                },
+            ],
+        });
+        return createMockBackend({
+            definition,
+            items: { posts: [{ id: 'home', title: 'Home', type: 'home' }] },
+        });
+    }
+
+    it('needs the type of a new item, among those that can be created', async () => {
+        const backend = createTypedBackend();
+        const create = (body: Record<string, unknown>) =>
+            backend.fetch('/panneau/api/resources/posts', json(body, { method: 'POST' }));
+
+        const untyped = await create({ title: 'Untyped' });
+        expect(untyped.status).toBe(422);
+        expect(await untyped.json()).toMatchObject({
+            errors: { type: ['The type is not a type of this resource.'] },
+        });
+        expect((await create({ title: 'Other', type: 'other' })).status).toBe(422);
+        // The home page is a singleton
+        expect((await create({ title: 'Home 2', type: 'home' })).status).toBe(403);
+
+        // The fields of the type are checked
+        const invalid = await create({ title: 'Concert', type: 'event' });
+        expect(invalid.status).toBe(422);
+        expect(await invalid.json()).toMatchObject({
+            errors: { venue: ['This field is required.'] },
+        });
+
+        const created = await create({ title: 'Concert', type: 'event', venue: 'Hall' });
+        expect(created.status).toBe(201);
+        expect(await created.json()).toMatchObject({
+            data: { title: 'Concert', type: 'event', venue: 'Hall' },
+        });
+    });
+
+    it('updates an item with the fields of its type, and keeps its type', async () => {
+        const backend = createTypedBackend();
+        const created = await backend.fetch(
+            '/panneau/api/resources/posts',
+            json({ title: 'Concert', type: 'event', venue: 'Hall' }, { method: 'POST' }),
+        );
+        const { data } = (await created.json()) as { data: { id: string } };
+
+        const invalid = await backend.fetch(
+            `/panneau/api/resources/posts/${data.id}`,
+            json({ venue: '' }, { method: 'PATCH' }),
+        );
+        expect(invalid.status).toBe(422);
+
+        const updated = await backend.fetch(
+            `/panneau/api/resources/posts/${data.id}`,
+            json({ venue: 'Park', type: 'home' }, { method: 'PATCH' }),
+        );
+        expect(updated.status).toBe(200);
+        expect(await updated.json()).toMatchObject({
+            data: { title: 'Concert', type: 'event', venue: 'Park' },
+        });
+        // The home page can still be edited
+        const home = await backend.fetch(
+            '/panneau/api/resources/posts/home',
+            json({ title: 'Welcome' }, { method: 'PATCH' }),
+        );
+        expect(home.status).toBe(200);
+    });
+
+    it('checks the fields of the types', async () => {
+        const response = await createTypedBackend().fetch(
+            '/panneau/api/resources/posts/fields/code/check',
+            json({ value: 'concert' }, { method: 'POST' }),
+        );
+        expect(response.status).toBe(200);
+    });
+});

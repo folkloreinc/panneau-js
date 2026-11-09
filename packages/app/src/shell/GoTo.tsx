@@ -24,7 +24,9 @@ import type { Definition, Item, Resource } from '@panneau/protocol';
 import {
     SEARCH_MAX_LIMIT,
     SEARCH_MIN_LENGTH,
+    getCreatableTypes,
     getItemImageField,
+    hasResourceTypes,
     toSearchParams,
 } from '@panneau/protocol/runtime';
 import {
@@ -168,20 +170,36 @@ export function GoTo({
             })),
     ];
 
-    const create: CommandPaletteItem[] = definition.resources.flatMap((resource) =>
-        resolveResource(resource).abilities.create
-            ? [
-                  {
-                      id: resource.id,
-                      label: intl.formatMessage(appMessages.create, {
-                          resource: resource.label.singular,
-                      }),
-                      keywords: [resource.label.plural],
-                      icon: Plus,
-                      href: routePath({ name: 'resource.create', resource: resource.id }, basePath),
-                  },
-              ]
-            : [],
+    // An entry per resource, or per type of a resource with types (decision 0077)
+    const create: CommandPaletteItem[] = definition.resources.flatMap(
+        (resource): CommandPaletteItem[] => {
+            if (!resolveResource(resource).abilities.create) {
+                return [];
+            }
+            if (hasResourceTypes(resource)) {
+                return getCreatableTypes(resource).map((type) => ({
+                    id: `${resource.id}/${type.id}`,
+                    label: intl.formatMessage(appMessages.create, { resource: type.label }),
+                    keywords: [resource.label.singular, resource.label.plural],
+                    icon: type.icon !== undefined ? getNamedIcon(type.icon) : Plus,
+                    href: routePath(
+                        { name: 'resource.create', resource: resource.id, type: type.id },
+                        basePath,
+                    ),
+                }));
+            }
+            return [
+                {
+                    id: resource.id,
+                    label: intl.formatMessage(appMessages.create, {
+                        resource: resource.label.singular,
+                    }),
+                    keywords: [resource.label.plural],
+                    icon: Plus,
+                    href: routePath({ name: 'resource.create', resource: resource.id }, basePath),
+                },
+            ];
+        },
     );
 
     // The commands of plugins, in their own groups or in "Commands".

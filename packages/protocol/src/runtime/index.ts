@@ -38,6 +38,14 @@ export {
     getItemImageField,
     getMediaLibraries,
 } from '../libraries';
+export {
+    ITEM_TYPE_KEY,
+    getCreatableTypes,
+    getItemType,
+    getResourceType,
+    getTypeFields,
+    hasResourceTypes,
+} from '../resourceTypes';
 export { matchesRatio, parseRatio, renderedCropSize } from '../transforms';
 export { lintDefinition } from '../lint';
 export type { ValidationIssue } from '../validate';

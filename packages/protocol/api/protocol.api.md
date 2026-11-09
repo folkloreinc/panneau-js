@@ -1435,8 +1435,10 @@ export const Definition: z.ZodObject<{
         types: z.ZodOptional<z.ZodArray<z.ZodObject<{
             id: z.ZodString;
             label: z.ZodString;
+            description: z.ZodOptional<z.ZodString>;
             icon: z.ZodOptional<z.ZodString>;
             fields: z.ZodArray<Field>;
+            abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
         }, z.core.$loose>>>;
         settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     }, z.core.$loose>>;
@@ -2035,6 +2037,13 @@ export function fromSearchParams(params: URLSearchParams): ListQuery;
 export function getAddressRequiredParts(field: Pick<Field, 'settings'>): AddressPart[];
 
 // @public
+export function getCreatableTypes<T extends {
+    abilities?: Record<string, boolean> | undefined;
+}>(resource: {
+    types?: readonly T[] | undefined;
+}): T[];
+
+// @public
 export function getCurrencyDigits(code: string): number;
 
 // @public
@@ -2042,6 +2051,13 @@ export function getImageUrl(value: unknown): string | null;
 
 // @public
 export function getItemImageField(resource: ItemImageResource): string | undefined;
+
+// @public
+export function getItemType<T extends {
+    id: string;
+}>(resource: {
+    types?: readonly T[] | undefined;
+}, item: Readonly<Record<string, unknown>>): T | undefined;
 
 // @public
 export function getLinkNewTab(field: Pick<Field, 'settings'>): LinkNewTab;
@@ -2058,12 +2074,33 @@ export function getMediaLibraries(definition: MediaLibrariesDefinition | null, f
 export function getNestedShape(field: Pick<Field, 'type' | 'fields' | 'multiple'>): NestedShape | null;
 
 // @public
+export function getResourceType<T extends {
+    id: string;
+}>(resource: {
+    types?: readonly T[] | undefined;
+}, id: unknown): T | undefined;
+
+// @public
+export function getTypeFields<F>(resource: {
+    fields: readonly F[];
+    types?: readonly {
+        id: string;
+        fields: readonly F[];
+    }[] | undefined;
+}, type: unknown): F[];
+
+// @public
 export function getValue(values: unknown, path: string): unknown;
 
 // Warning: (ae-forgotten-export) The symbol "WidgetLike" needs to be exported by the entry point index.d.ts
 //
 // @public
 export function getWidgetResource(widget: WidgetLike): WidgetResource | null;
+
+// @public
+export function hasResourceTypes(resource: {
+    types?: readonly unknown[] | undefined;
+}): boolean;
 
 // @public (undocumented)
 export const Id: z.ZodString;
@@ -2127,6 +2164,7 @@ export const Item: z.ZodObject<{
     id: z.ZodString;
     version: z.ZodNullable<z.ZodString>;
     abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
+    type: z.ZodOptional<z.ZodString>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -2134,6 +2172,9 @@ export type Item = z.infer<typeof Item>;
 
 // @public
 export const ITEM_ACTION_ABILITIES: Readonly<Record<BuiltInItemAction, string>>;
+
+// @public
+export const ITEM_TYPE_KEY = "type";
 
 // @public
 export interface ItemImageResource {
@@ -2149,6 +2190,7 @@ export const ItemResponse: z.ZodObject<{
         id: z.ZodString;
         version: z.ZodNullable<z.ZodString>;
         abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
+        type: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>;
 }, z.core.$loose>;
 
@@ -2342,6 +2384,7 @@ export const ListResponse: z.ZodObject<{
         id: z.ZodString;
         version: z.ZodNullable<z.ZodString>;
         abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
+        type: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>>;
     meta: z.ZodUnion<readonly [z.ZodObject<{
         page: z.ZodNumber;
@@ -2465,6 +2508,7 @@ export const MediaItem: z.ZodObject<{
     id: z.ZodString;
     version: z.ZodNullable<z.ZodString>;
     abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
+    type: z.ZodOptional<z.ZodString>;
     media: z.ZodObject<{
         type: z.ZodString;
         mime: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -3525,6 +3569,14 @@ export const namedSchemas: {
         }, z.core.$loose>]>>;
         search: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>;
+    ResourceType: z.ZodObject<{
+        id: z.ZodString;
+        label: z.ZodString;
+        description: z.ZodOptional<z.ZodString>;
+        icon: z.ZodOptional<z.ZodString>;
+        fields: z.ZodArray<typeof Field>;
+        abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
+    }, z.core.$loose>;
     Resource: z.ZodObject<{
         id: z.ZodString;
         kind: z.ZodOptional<z.ZodString>;
@@ -4064,8 +4116,10 @@ export const namedSchemas: {
         types: z.ZodOptional<z.ZodArray<z.ZodObject<{
             id: z.ZodString;
             label: z.ZodString;
+            description: z.ZodOptional<z.ZodString>;
             icon: z.ZodOptional<z.ZodString>;
             fields: z.ZodArray<typeof Field>;
+            abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
         }, z.core.$loose>>>;
         settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     }, z.core.$loose>;
@@ -4907,8 +4961,10 @@ export const namedSchemas: {
             types: z.ZodOptional<z.ZodArray<z.ZodObject<{
                 id: z.ZodString;
                 label: z.ZodString;
+                description: z.ZodOptional<z.ZodString>;
                 icon: z.ZodOptional<z.ZodString>;
                 fields: z.ZodArray<typeof Field>;
+                abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
             }, z.core.$loose>>>;
             settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         }, z.core.$loose>>;
@@ -5072,6 +5128,7 @@ export const namedSchemas: {
         id: z.ZodString;
         version: z.ZodNullable<z.ZodString>;
         abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
+        type: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>;
     Pagination: z.ZodObject<{
         page: z.ZodNumber;
@@ -5090,6 +5147,7 @@ export const namedSchemas: {
             id: z.ZodString;
             version: z.ZodNullable<z.ZodString>;
             abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
+            type: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>;
     }, z.core.$loose>;
     ListResponse: z.ZodObject<{
@@ -5097,6 +5155,7 @@ export const namedSchemas: {
             id: z.ZodString;
             version: z.ZodNullable<z.ZodString>;
             abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
+            type: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>>;
         meta: z.ZodUnion<readonly [z.ZodObject<{
             page: z.ZodNumber;
@@ -5121,6 +5180,7 @@ export const namedSchemas: {
             id: z.ZodString;
             version: z.ZodNullable<z.ZodString>;
             abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
+            type: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>>;
         param: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>;
@@ -5427,6 +5487,7 @@ export const namedSchemas: {
         id: z.ZodString;
         version: z.ZodNullable<z.ZodString>;
         abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
+        type: z.ZodOptional<z.ZodString>;
         media: z.ZodObject<{
             type: z.ZodString;
             mime: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -5591,6 +5652,7 @@ export const namedSchemas: {
                 id: z.ZodString;
                 version: z.ZodNullable<z.ZodString>;
                 abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
+                type: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>>;
             total: z.ZodOptional<z.ZodNumber>;
         }, z.core.$loose>>;
@@ -5832,6 +5894,7 @@ export const Problem: z.ZodObject<{
         id: z.ZodString;
         version: z.ZodNullable<z.ZodString>;
         abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
+        type: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>>;
     param: z.ZodOptional<z.ZodString>;
 }, z.core.$loose>;
@@ -6085,7 +6148,7 @@ export const Resource: z.ZodObject<{
         check: z.ZodOptional<z.ZodBoolean>;
         display: z.ZodOptional<z.ZodString>;
         fields: z.ZodOptional<z.ZodArray<typeof Field>>;
-        types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
+        types: z.ZodOptional<z.ZodArray<BlockType>>;
         settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     }, z.core.$loose>>;
     form: z.ZodOptional<z.ZodObject<{
@@ -6373,7 +6436,7 @@ export const Resource: z.ZodObject<{
             check: z.ZodOptional<z.ZodBoolean>;
             display: z.ZodOptional<z.ZodString>;
             fields: z.ZodOptional<z.ZodArray<typeof Field>>;
-            types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
+            types: z.ZodOptional<z.ZodArray<BlockType>>;
             settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         }, z.core.$loose>>>;
         layout: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -6423,8 +6486,10 @@ export const Resource: z.ZodObject<{
     types: z.ZodOptional<z.ZodArray<z.ZodObject<{
         id: z.ZodString;
         label: z.ZodString;
+        description: z.ZodOptional<z.ZodString>;
         icon: z.ZodOptional<z.ZodString>;
         fields: z.ZodArray<typeof Field>;
+        abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
     }, z.core.$loose>>>;
     settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
 }, z.core.$loose>;
@@ -6454,6 +6519,19 @@ export type ResourceFeatures = z.infer<typeof ResourceFeatures>;
 
 // @public
 export type ResourceInput = z.input<typeof Resource>;
+
+// @public (undocumented)
+export const ResourceType: z.ZodObject<{
+    id: z.ZodString;
+    label: z.ZodString;
+    description: z.ZodOptional<z.ZodString>;
+    icon: z.ZodOptional<z.ZodString>;
+    fields: z.ZodArray<typeof Field>;
+    abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type ResourceType = z.infer<typeof ResourceType>;
 
 // @public
 export const RICH_TEXT_STYLE_ELEMENTS: readonly ["p", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "ul", "ol", "li"];
@@ -6720,6 +6798,7 @@ export const SearchResponse: z.ZodObject<{
             id: z.ZodString;
             version: z.ZodNullable<z.ZodString>;
             abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
+            type: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>>;
         total: z.ZodOptional<z.ZodNumber>;
     }, z.core.$loose>>;

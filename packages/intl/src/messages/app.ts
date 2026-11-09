@@ -379,6 +379,11 @@ export const appMessages = {
         id: 'panneau.app.create',
         defaultMessage: 'New {resource}',
     }),
+    /** The choice of the type of a new item (decision 0077): its page and its menu. */
+    chooseType: defineMessage<{ resource: string }>({
+        id: 'panneau.app.chooseType',
+        defaultMessage: 'Which type of {resource}?',
+    }),
     edit: defineMessage<{ resource: string }>({
         id: 'panneau.app.edit',
         defaultMessage: 'Edit the {resource}',

@@ -233,7 +233,7 @@
                 "types": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/$defs/BlockType"
+                        "$ref": "#/$defs/ResourceType"
                     }
                 },
                 "settings": {
@@ -1460,6 +1460,39 @@
                     "type": "boolean"
                 }
             },
+            "additionalProperties": {}
+        },
+        "ResourceType": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "label": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "fields": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/Field"
+                    }
+                },
+                "abilities": {
+                    "$ref": "#/$defs/Abilities"
+                }
+            },
+            "required": [
+                "id",
+                "label",
+                "fields"
+            ],
             "additionalProperties": {}
         },
         "Page": {

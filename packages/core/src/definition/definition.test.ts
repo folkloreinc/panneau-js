@@ -106,6 +106,26 @@ describe('resolveForm', () => {
         expect(resolveForm(getResource('authors'), { type: 'other' }).fields).toHaveLength(7);
     });
 
+    it('keeps the layout nodes of the fields of the item type, and removes the others', () => {
+        const resource: Resource = {
+            ...getResource('authors'),
+            types: [
+                { id: 'guest', label: 'Guest', fields: [{ name: 'website', type: 'url' }] },
+                { id: 'staff', label: 'Staff', fields: [{ name: 'office', type: 'text' }] },
+            ],
+            form: {
+                layout: [
+                    { type: 'field', name: 'website' },
+                    { type: 'field', name: 'office' },
+                    { type: 'field', name: 'name' },
+                ],
+            },
+        };
+        const layout = resolveForm(resource, { type: 'guest' }).layout.map((node) => node.name);
+        expect(layout.slice(0, 2)).toEqual(['website', 'name']);
+        expect(layout).not.toContain('office');
+    });
+
     it('leaves out the fields that only items give, even when the layout names them', () => {
         // The URL of a page, shown under its title in relation cards (decision 0071)
         const fields = [
@@ -461,6 +481,19 @@ describe('resolveResource', () => {
         expect(resolved.form.fieldsByName.has('views')).toBe(false);
         expect(resolved.list.columns).toHaveLength(3);
         expect(findResource(definition, 'unknown')).toBeUndefined();
+    });
+
+    it('can create items of a resource with types only when one of its types can be', () => {
+        const authors = getResource('authors');
+        expect(resolveResource(authors).abilities.create).toBe(true);
+        const singletons: Resource = {
+            ...authors,
+            types: (authors.types ?? []).map((type) => ({
+                ...type,
+                abilities: { create: false },
+            })),
+        };
+        expect(resolveResource(singletons).abilities.create).toBe(false);
     });
 });
 

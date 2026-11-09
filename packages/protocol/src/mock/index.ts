@@ -10,6 +10,7 @@ import {
 import { type ContextValues, contextBefore, parseContextHeader } from '../context';
 import { getMediaLibraries } from '../libraries';
 import { type ListQuery, fromSearchParams, isFilterRange, matchesFilterRange } from '../query';
+import { ITEM_TYPE_KEY, getResourceType, getTypeFields, hasResourceTypes } from '../resourceTypes';
 import { type RuleFailure, checkValues } from '../rules';
 import type { ContextOption, DefinitionInput, ResourceInput } from '../schemas';
 import type {
@@ -372,6 +373,16 @@ function fieldsWithout(resource: ResourceInput, ability: 'view' | 'update'): Set
 }
 
 /**
+ * The resource as the items of a type see it (decision 0077): with the fields of the type after its
+ * own. The resource itself without a type.
+ */
+function withTypeFields(resource: ResourceInput, type: unknown): ResourceInput {
+    return hasResourceTypes(resource)
+        ? { ...resource, fields: getTypeFields(resource, type) }
+        : resource;
+}
+
+/**
  * A body without the values of the fields the user can't see or update, and of the fields that
  * forms leave out (`notInForm`, decision 0071), which are ignored.
  */
@@ -393,7 +404,9 @@ function writableValues(resource: ResourceInput, body: Values): Values {
  * `items` gives its own `abilities`. It reads abilities as clients do (decision 0046): a resource
  * without `viewAny` answers `403` on its list, one without `create` on creates, an item without
  * `view`, `update` or `delete` on those requests; items leave out the values of fields with
- * `view: false`, and writes ignore those of fields with `update: false`. Values are checked with
+ * `view: false`, and writes ignore those of fields with `update: false`. A resource with `types`
+ * needs the `type` of a new item, among the types it can create, and its items have the fields of
+ * their type (decision 0077). Values are checked with
  * the portable rules. Used to test the conformance kit, and to develop frontends without a real
  * backend.
  */
@@ -438,7 +451,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
 
     // What the user gets of an item: without the values of the fields they can't see.
     const present = (resource: ResourceInput, item: Item): Item => {
-        const hidden = fieldsWithout(resource, 'view');
+        const hidden = fieldsWithout(withTypeFields(resource, item[ITEM_TYPE_KEY]), 'view');
         return hidden.size === 0
             ? item
             : (Object.fromEntries(
@@ -983,18 +996,36 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                 if (resource.abilities?.create === false) {
                     return problem(403, 'Items of this resource can’t be created.');
                 }
-                const body = writableValues(resource, await readBody());
-                const invalid = validationProblem(resource, body, 'create');
+                const raw = await readBody();
+                // A resource with types: the body says the type of the new item (decision 0077).
+                const typed = hasResourceTypes(resource);
+                const type = typed ? getResourceType(resource, raw[ITEM_TYPE_KEY]) : undefined;
+                if (typed && type === undefined) {
+                    return problem(422, 'The given data was invalid.', {
+                        type: 'urn:panneau:problem:validation',
+                        errors: { [ITEM_TYPE_KEY]: ['The type is not a type of this resource.'] },
+                    });
+                }
+                if (type?.abilities?.create === false) {
+                    return problem(403, 'Items of this type can’t be created.');
+                }
+                const ofType = withTypeFields(resource, type?.id);
+                const body = writableValues(ofType, raw);
+                const invalid = validationProblem(ofType, body, 'create');
                 if (invalid !== null) {
                     return invalid;
                 }
-                const { values, problem: unresolved } = resolveValues(resource, body);
+                const { values, problem: unresolved } = resolveValues(ofType, body);
                 if (unresolved !== null) {
                     return unresolved;
                 }
                 const item = withOwnTransform(
-                    resource,
-                    makeItem(resource, { ...values, id: undefined }),
+                    ofType,
+                    makeItem(resource, {
+                        ...values,
+                        id: undefined,
+                        ...(type !== undefined ? { [ITEM_TYPE_KEY]: type.id } : {}),
+                    }),
                 );
                 list.push(item);
                 return json(201, { data: present(resource, item) }, etag(item));
@@ -1006,9 +1037,11 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             if (method !== 'POST') {
                 return problem(405, 'Method not allowed.');
             }
-            const field = resource.fields.find(
-                (candidate) => candidate.name === segments[3] && candidate.check === true,
-            );
+            // The fields of the resource, then those of its types
+            const field = [
+                ...resource.fields,
+                ...(resource.types ?? []).flatMap((type) => type.fields),
+            ].find((candidate) => candidate.name === segments[3] && candidate.check === true);
             if (field === undefined) {
                 return problem(404, 'Field not found.');
             }
@@ -1244,19 +1277,26 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                     current: present(resource, current),
                 });
             }
-            const body = writableValues(resource, await readBody());
-            const invalid = validationProblem(resource, body, 'update', current);
+            // The fields of the item's type; its type stays the one it was created with.
+            const ofType = withTypeFields(resource, current[ITEM_TYPE_KEY]);
+            const writable = writableValues(ofType, await readBody());
+            const body = hasResourceTypes(resource)
+                ? Object.fromEntries(
+                      Object.entries(writable).filter(([key]) => key !== ITEM_TYPE_KEY),
+                  )
+                : writable;
+            const invalid = validationProblem(ofType, body, 'update', current);
             if (invalid !== null) {
                 return invalid;
             }
-            const { values, problem: unresolved } = resolveValues(resource, body);
+            const { values, problem: unresolved } = resolveValues(ofType, body);
             if (unresolved !== null) {
                 return unresolved;
             }
             const updates = Object.fromEntries(
                 Object.entries(values).filter(([key]) => !RESERVED_KEYS.has(key)),
             );
-            const updated = withOwnTransform(resource, {
+            const updated = withOwnTransform(ofType, {
                 ...current,
                 ...updates,
                 version: current.version === null ? null : String(Number(current.version) + 1),

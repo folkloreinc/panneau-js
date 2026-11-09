@@ -7,7 +7,8 @@ import { AUTH_PAGE_PATHS } from '@panneau/protocol';
 export type AppRoute =
     | { name: 'home' }
     | { name: 'resource.index'; resource: string }
-    | { name: 'resource.create'; resource: string }
+    // `type`: the type of the new item, in a resource with types (decision 0077)
+    | { name: 'resource.create'; resource: string; type?: string }
     | { name: 'resource.show'; resource: string; id: string }
     | { name: 'resource.edit'; resource: string; id: string }
     | { name: 'page'; page: string; segments?: readonly string[] }
@@ -79,8 +80,10 @@ export function matchRoute(pathname: string, basePath: string): AppRoute | null 
     if (third === undefined) {
         return { name: 'resource.index', resource };
     }
-    if (third === 'create' && fourth === undefined) {
-        return { name: 'resource.create', resource };
+    if (third === 'create') {
+        return fourth === undefined
+            ? { name: 'resource.create', resource }
+            : { name: 'resource.create', resource, type: fourth };
     }
     if (fourth === undefined) {
         return { name: 'resource.show', resource, id: third };
@@ -108,7 +111,9 @@ export function routePath(
         case 'resource.index':
             return path('resources', route.resource);
         case 'resource.create':
-            return `${path('resources', route.resource)}/create`;
+            return route.type !== undefined
+                ? path('resources', route.resource, 'create', route.type)
+                : `${path('resources', route.resource)}/create`;
         case 'resource.show':
             return path('resources', route.resource, route.id);
         case 'resource.edit':

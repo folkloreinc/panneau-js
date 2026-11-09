@@ -37,6 +37,10 @@ const routes: [string, Exclude<AppRoute, { name: 'not-found' }>][] = [
     ['/panneau', { name: 'home' }],
     ['/panneau/resources/pages', { name: 'resource.index', resource: 'pages' }],
     ['/panneau/resources/pages/create', { name: 'resource.create', resource: 'pages' }],
+    [
+        '/panneau/resources/pages/create/home',
+        { name: 'resource.create', resource: 'pages', type: 'home' },
+    ],
     ['/panneau/resources/pages/12', { name: 'resource.show', resource: 'pages', id: '12' }],
     ['/panneau/resources/pages/12/edit', { name: 'resource.edit', resource: 'pages', id: '12' }],
     ['/panneau/pages/settings', { name: 'page', page: 'settings' }],
