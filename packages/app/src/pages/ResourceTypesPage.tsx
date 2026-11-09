@@ -19,7 +19,7 @@ export interface ResourceTypesPageProps {
 }
 
 /**
- * The create route of a resource with types (decision 0076): a card for each type the user can
+ * The create route of a resource with types (decision 0077): a card for each type the user can
  * create, which opens its form.
  */
 export function ResourceTypesPage({ resolved, basePath, locale }: ResourceTypesPageProps) {

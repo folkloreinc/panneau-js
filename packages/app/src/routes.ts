@@ -7,7 +7,7 @@ import { AUTH_PAGE_PATHS } from '@panneau/protocol';
 export type AppRoute =
     | { name: 'home' }
     | { name: 'resource.index'; resource: string }
-    // `type`: the type of the new item, in a resource with types (decision 0076)
+    // `type`: the type of the new item, in a resource with types (decision 0077)
     | { name: 'resource.create'; resource: string; type?: string }
     | { name: 'resource.show'; resource: string; id: string }
     | { name: 'resource.edit'; resource: string; id: string }

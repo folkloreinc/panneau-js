@@ -12,7 +12,7 @@ export const Item = z
         abilities: Abilities,
         type: z.string().min(1).optional().meta({
             description:
-                "In a resource with `types`: the id of the item's type (decision 0076). Set when the item is created; updates ignore it.",
+                "In a resource with `types`: the id of the item's type (decision 0077). Set when the item is created; updates ignore it.",
         }),
     })
     .meta({

@@ -27,7 +27,7 @@ export interface ResolveFormOptions {
      */
     mode?: FormMode;
     /**
-     * The type of the item, among the resource's `types` (decision 0076): its fields come after
+     * The type of the item, among the resource's `types` (decision 0077): its fields come after
      * those of the resource. The layout's nodes that name the fields of other types are removed.
      */
     type?: string | undefined;

@@ -458,14 +458,14 @@ function Content({
             ) : status !== 'active' ? (
                 <SessionEnded loginUrl={loginUrl} />
             ) : switched || refusedPath !== null ? (
-                <ShellSkeleton />
+                <ShellSkeleton navigation={definition?.theme?.navigation} />
             ) : definition === undefined ? (
                 <Loading
                     error={definitionQuery.error}
                     onRetry={() => void definitionQuery.refetch()}
                 />
             ) : messages === undefined ? (
-                <ShellSkeleton />
+                <ShellSkeleton navigation={definition.theme?.navigation} />
             ) : (
                 <PanneauProvider plugins={plugins} definition={definition} router={router}>
                     <DataAdapterProvider adapter={scoped}>

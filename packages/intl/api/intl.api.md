@@ -224,6 +224,11 @@ export const appMessages: {
     expandSidebar: PanneauMessage<Record<never, never>>;
     openMenu: PanneauMessage<Record<never, never>>;
     closeMenu: PanneauMessage<Record<never, never>>;
+    more: PanneauMessage<Record<never, never>>;
+    appearance: PanneauMessage<Record<never, never>>;
+    colorSchemeOption: PanneauMessage<    {
+    scheme: string;
+    }>;
     colorScheme: PanneauMessage<    {
     scheme: string;
     }>;

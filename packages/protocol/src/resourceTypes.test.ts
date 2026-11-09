@@ -47,7 +47,7 @@ function withPages(pages: ResourceInput): DefinitionInput {
     return { ...definition, resources: [...definition.resources, pages] };
 }
 
-describe('resource types (decision 0076)', () => {
+describe('resource types (decision 0077)', () => {
     it('finds the type of an item and the types a user can create', () => {
         const pages = createPages();
         expect(hasResourceTypes(pages)).toBe(true);

@@ -107,7 +107,7 @@ describe('the "Go to…" palette', () => {
         expect(window.location.pathname).toBe('/panneau/resources/pages/create');
     });
 
-    it('has a create entry per type of a resource with types (decision 0076)', async () => {
+    it('has a create entry per type of a resource with types (decision 0077)', async () => {
         const user = userEvent.setup();
         renderApp([], {
             types: [

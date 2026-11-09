@@ -34,7 +34,7 @@ export interface ResourceFormPageProps {
     /** The item to edit, or `null` to create one. */
     id: string | null;
     /**
-     * The type of the item to create, in a resource with types (decision 0076). An item to edit
+     * The type of the item to create, in a resource with types (decision 0077). An item to edit
      * has its own.
      */
     type?: string | undefined;
@@ -76,7 +76,7 @@ export function ResourceFormPage({
     // Fields with `check`, such as slugs, check their value with the backend as it is typed
     const checkSource = createFieldCheckSource(adapter, resource.id, id);
     const item = itemQuery.data;
-    // The fields of the item's type after those of the resource (decision 0076)
+    // The fields of the item's type after those of the resource (decision 0077)
     const type =
         mode === 'create'
             ? getResourceType(resource, createType)

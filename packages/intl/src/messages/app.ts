@@ -359,6 +359,12 @@ export const appMessages = {
     }),
     openMenu: defineMessage({ id: 'panneau.app.openMenu', defaultMessage: 'Open the menu' }),
     closeMenu: defineMessage({ id: 'panneau.app.closeMenu', defaultMessage: 'Close the menu' }),
+    more: defineMessage({ id: 'panneau.app.more', defaultMessage: 'More' }),
+    appearance: defineMessage({ id: 'panneau.app.appearance', defaultMessage: 'Appearance' }),
+    colorSchemeOption: defineMessage<{ scheme: string }>({
+        id: 'panneau.app.colorSchemeOption',
+        defaultMessage: '{scheme, select, light {Light} dark {Dark} other {Same as the system}}',
+    }),
     colorScheme: defineMessage<{ scheme: string }>({
         id: 'panneau.app.colorScheme',
         defaultMessage:
@@ -373,7 +379,7 @@ export const appMessages = {
         id: 'panneau.app.create',
         defaultMessage: 'New {resource}',
     }),
-    /** The choice of the type of a new item (decision 0076): its page and its menu. */
+    /** The choice of the type of a new item (decision 0077): its page and its menu. */
     chooseType: defineMessage<{ resource: string }>({
         id: 'panneau.app.chooseType',
         defaultMessage: 'Which type of {resource}?',

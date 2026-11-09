@@ -45,7 +45,7 @@ function checkLayout(
 }
 
 /**
- * The types of a resource (decision 0076): unique ids, fields named apart from those of the
+ * The types of a resource (decision 0077): unique ids, fields named apart from those of the
  * resource, and no field `type` in the form, which holds the item's type.
  */
 function checkTypes(

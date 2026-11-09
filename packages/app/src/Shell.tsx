@@ -38,6 +38,7 @@ import { ResourceTypesPage } from './pages/ResourceTypesPage';
 import { resolveRoute } from './routeReference';
 import { type AppRoute, matchRoute, routePath } from './routes';
 import { AppLayout } from './shell/AppLayout';
+import { DockLayout } from './shell/DockLayout';
 import type { ColorSchemePreference } from './shell/Sidebar';
 
 export interface ShellProps {
@@ -173,7 +174,7 @@ function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) 
             if (route.name === 'resource.create' && !resolved.abilities.create) {
                 return forbidden;
             }
-            // A new item of a resource with types has the type of its route (decision 0076):
+            // A new item of a resource with types has the type of its route (decision 0077):
             // without one, the user chooses it, unless there's a single type to create.
             let type: string | undefined;
             if (route.name === 'resource.create' && hasResourceTypes(resource)) {
@@ -220,7 +221,8 @@ function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) 
 }
 
 /**
- * The app shell: the layout with its sidebar, and the page of the current route. Links go
+ * The app shell: the layout with its sidebar, or its dock when the definition's theme asks for it,
+ * and the page of the current route. Links go
  * through the history of the browser without reloading the page, and actions run through the
  * adapter, refreshing what their result changed. Leaving a page with unsaved changes, by a link
  * or by going back or forward, asks first.
@@ -239,6 +241,8 @@ export function Shell({
     const queryClient = useQueryClient();
     const adapter = useDataAdapter();
     const route = matchRoute(pathname, basePath) ?? { name: 'not-found' };
+    // The navigation in a sidebar, or in a dock at the bottom (decision 0076)
+    const Layout = definition.theme?.navigation === 'dock' ? DockLayout : AppLayout;
     // Forms with unsaved changes guard leaving their page
     const [guards] = useState(createLeaveGuards);
     useEffect(() => setHistoryGuard(guards), [guards]);
@@ -304,7 +308,7 @@ export function Shell({
                         }
                     }}
                 >
-                    <AppLayout
+                    <Layout
                         definition={definition}
                         basePath={basePath}
                         route={route}
@@ -318,7 +322,7 @@ export function Shell({
                         >
                             <Page definition={definition} basePath={basePath} route={route} />
                         </PageErrorBoundary>
-                    </AppLayout>
+                    </Layout>
                 </ActionRunnerProvider>
             </RouterProvider>
         </LeaveGuardsProvider>

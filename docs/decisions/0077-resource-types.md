@@ -1,4 +1,4 @@
-# 0076: Resource types
+# 0077: Resource types
 
 - Status: proposed
 - Date: 2026-11-09

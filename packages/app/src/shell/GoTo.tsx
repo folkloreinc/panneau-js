@@ -58,8 +58,9 @@ export interface GoToProps {
     basePath: string;
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
-    sidebarCollapsed: boolean;
-    onToggleSidebar: () => void;
+    sidebarCollapsed?: boolean;
+    /** Collapses or expands the sidebar. Without it, as with the dock, the palette has no such command. */
+    onToggleSidebar?: () => void;
     colorScheme: ColorSchemePreference;
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
 }
@@ -169,7 +170,7 @@ export function GoTo({
             })),
     ];
 
-    // An entry per resource, or per type of a resource with types (decision 0076)
+    // An entry per resource, or per type of a resource with types (decision 0077)
     const create: CommandPaletteItem[] = definition.resources.flatMap(
         (resource): CommandPaletteItem[] => {
             if (!resolveResource(resource).abilities.create) {
@@ -220,14 +221,20 @@ export function GoTo({
     });
 
     const actions: CommandPaletteItem[] = [
-        {
-            id: 'sidebar',
-            label: intl.formatMessage(
-                sidebarCollapsed ? appMessages.expandSidebar : appMessages.collapseSidebar,
-            ),
-            icon: sidebarCollapsed ? PanelLeftOpen : PanelLeftClose,
-            onAction: onToggleSidebar,
-        },
+        ...(onToggleSidebar !== undefined
+            ? [
+                  {
+                      id: 'sidebar',
+                      label: intl.formatMessage(
+                          sidebarCollapsed === true
+                              ? appMessages.expandSidebar
+                              : appMessages.collapseSidebar,
+                      ),
+                      icon: sidebarCollapsed === true ? PanelLeftOpen : PanelLeftClose,
+                      onAction: onToggleSidebar,
+                  },
+              ]
+            : []),
         ...COLOR_SCHEMES.filter((scheme) => scheme !== colorScheme).map((scheme) => ({
             id: `scheme-${scheme}`,
             label: intl.formatMessage(appMessages.colorScheme, { scheme }),

@@ -52,10 +52,35 @@ export const sidebarTokens = defineComponentTokens('sidebar', {
     'logo-color': 'var(--panneau-color-accent-text)',
 });
 
+/**
+ * Tokens of the dock (decision 0076): the navigation at the bottom of the window, when the
+ * definition's theme sets `navigation: "dock"`. A raised pill from the `lg` width, a bar of tabs
+ * below it.
+ */
+export const dockTokens = defineComponentTokens('dock', {
+    /** Background. */
+    bg: 'var(--panneau-color-surface)',
+    /** Border. */
+    border: 'var(--panneau-border-width) solid var(--panneau-color-border)',
+    /** Corner radius of the pill, from the `lg` width. */
+    radius: 'calc(var(--panneau-radius-lg) * 2)',
+    /** Shadow of the pill, from the `lg` width. */
+    shadow: 'var(--panneau-shadow-lg)',
+    /** Text and icons of the items. */
+    'item-color': 'var(--panneau-color-text-muted)',
+    /** Background of a hovered item. */
+    'item-hover-bg': 'var(--panneau-color-hover)',
+    /** Text and icon of the current item. */
+    'item-current-color': 'var(--panneau-color-text)',
+    /** Background of the current item. */
+    'item-current-bg': 'var(--panneau-color-surface-sunken)',
+});
+
 /** The component tokens of `@panneau/app`, by component (decision 0024). */
 export const appComponentTokens = Object.freeze({
     shell: shellTokens.tokens,
     sidebar: sidebarTokens.tokens,
+    dock: dockTokens.tokens,
 });
 
 type AppTokenName = keyof typeof shellTokens.tokens | keyof typeof sidebarTokens.tokens;
