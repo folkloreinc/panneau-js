@@ -1,7 +1,7 @@
 import type { Editor } from '@tiptap/core';
 import { useEditorState } from '@tiptap/react';
 import { Link } from 'lucide-react';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import {
     Button as AriaButton,
     Toolbar as AriaToolbar,
@@ -45,6 +45,24 @@ function getShownItems(
         return result;
     }, []);
     return shown.at(-1) === SEPARATOR ? shown.slice(0, -1) : shown;
+}
+
+/**
+ * The shown items in groups, between their separators: a group wraps as a whole, so that a narrow
+ * toolbar never leaves one of its buttons alone on a line.
+ */
+function getGroups(shown: readonly string[]): string[][] {
+    return shown.reduce<string[][]>(
+        (groups, name) => {
+            if (name === SEPARATOR) {
+                groups.push([]);
+            } else {
+                groups.at(-1)?.push(name);
+            }
+            return groups;
+        },
+        [[]],
+    );
 }
 
 /** The block of the selection, as the text style select names it: `paragraph`, `h2`. */
@@ -171,113 +189,118 @@ export function Toolbar({
                 aria-label={intl.formatMessage(messages.toolbar)}
                 className={styles.toolbar}
             >
-                {shown.map((name, index) => {
-                    const key = `${name}-${String(index)}`;
-                    if (name === SEPARATOR) {
-                        return (
-                            <Separator
-                                key={key}
-                                orientation="vertical"
-                                className={styles.separator}
-                            />
-                        );
-                    }
-                    if (name === 'heading') {
-                        return (
-                            <Select
-                                key={key}
-                                aria-label={intl.formatMessage(messages.textStyle)}
-                                className={styles.select}
-                                isDisabled={!state.canSetTextStyle}
-                                options={[
-                                    {
-                                        value: 'paragraph',
-                                        label: intl.formatMessage(messages.paragraph),
-                                    },
-                                    ...levels.map((level) => ({
-                                        value: `h${String(level)}`,
-                                        label: intl.formatMessage(messages.heading, { level }),
-                                    })),
-                                ]}
-                                value={textStyle}
-                                onChange={(value) => {
-                                    if (value === 'paragraph') {
-                                        editor.chain().focus().setParagraph().run();
-                                    } else if (typeof value === 'string') {
-                                        const level = Number(value.slice(1));
-                                        if (level >= 1 && level <= 6) {
-                                            editor
-                                                .chain()
-                                                .focus()
-                                                .setHeading({
-                                                    level: level as 1 | 2 | 3 | 4 | 5 | 6,
-                                                })
-                                                .run();
+                {getGroups(shown).map((group, groupIndex) => (
+                    <Fragment key={groupIndex}>
+                        {groupIndex > 0 ? (
+                            <Separator orientation="vertical" className={styles.separator} />
+                        ) : null}
+                        <div className={styles.group}>
+                            {group.map((name, index) => {
+                                const key = `${name}-${String(index)}`;
+                                if (name === 'heading') {
+                                    return (
+                                        <Select
+                                            key={key}
+                                            aria-label={intl.formatMessage(messages.textStyle)}
+                                            className={styles.select}
+                                            isDisabled={!state.canSetTextStyle}
+                                            options={[
+                                                {
+                                                    value: 'paragraph',
+                                                    label: intl.formatMessage(messages.paragraph),
+                                                },
+                                                ...levels.map((level) => ({
+                                                    value: `h${String(level)}`,
+                                                    label: intl.formatMessage(messages.heading, {
+                                                        level,
+                                                    }),
+                                                })),
+                                            ]}
+                                            value={textStyle}
+                                            onChange={(value) => {
+                                                if (value === 'paragraph') {
+                                                    editor.chain().focus().setParagraph().run();
+                                                } else if (typeof value === 'string') {
+                                                    const level = Number(value.slice(1));
+                                                    if (level >= 1 && level <= 6) {
+                                                        editor
+                                                            .chain()
+                                                            .focus()
+                                                            .setHeading({
+                                                                level: level as
+                                                                    1 | 2 | 3 | 4 | 5 | 6,
+                                                            })
+                                                            .run();
+                                                    }
+                                                }
+                                            }}
+                                        />
+                                    );
+                                }
+                                if (name === 'style') {
+                                    const active = state.style;
+                                    return (
+                                        <Select
+                                            key={key}
+                                            aria-label={intl.formatMessage(messages.blockStyle)}
+                                            className={styles.select}
+                                            options={[
+                                                {
+                                                    value: NO_STYLE,
+                                                    label: intl.formatMessage(messages.noStyle),
+                                                },
+                                                ...blockStyles.map((style, styleIndex) => ({
+                                                    value: String(styleIndex),
+                                                    label: style.label,
+                                                    disabled: state.applicable[styleIndex] !== true,
+                                                })),
+                                            ]}
+                                            value={active >= 0 ? String(active) : NO_STYLE}
+                                            onChange={(value) => {
+                                                const style =
+                                                    value === NO_STYLE
+                                                        ? null
+                                                        : blockStyles[Number(value)];
+                                                applyStyle(editor, style ?? null, blockStyles);
+                                            }}
+                                        />
+                                    );
+                                }
+                                if (name === 'link') {
+                                    return (
+                                        <ToolbarButton
+                                            key={key}
+                                            label={intl.formatMessage(messages.link)}
+                                            icon={Link}
+                                            isActive={state.link}
+                                            isDisabled={!state.canLink}
+                                            onPress={() => setLinkOpen(true)}
+                                        />
+                                    );
+                                }
+                                const button = allButtons.get(name);
+                                if (button === undefined) {
+                                    return null;
+                                }
+                                const buttonState = state.buttons[name];
+                                return (
+                                    <ToolbarButton
+                                        key={key}
+                                        label={
+                                            typeof button.label === 'string'
+                                                ? button.label
+                                                : intl.formatMessage(button.label)
                                         }
-                                    }
-                                }}
-                            />
-                        );
-                    }
-                    if (name === 'style') {
-                        const active = state.style;
-                        return (
-                            <Select
-                                key={key}
-                                aria-label={intl.formatMessage(messages.blockStyle)}
-                                className={styles.select}
-                                options={[
-                                    {
-                                        value: NO_STYLE,
-                                        label: intl.formatMessage(messages.noStyle),
-                                    },
-                                    ...blockStyles.map((style, styleIndex) => ({
-                                        value: String(styleIndex),
-                                        label: style.label,
-                                        disabled: state.applicable[styleIndex] !== true,
-                                    })),
-                                ]}
-                                value={active >= 0 ? String(active) : NO_STYLE}
-                                onChange={(value) => {
-                                    const style =
-                                        value === NO_STYLE ? null : blockStyles[Number(value)];
-                                    applyStyle(editor, style ?? null, blockStyles);
-                                }}
-                            />
-                        );
-                    }
-                    if (name === 'link') {
-                        return (
-                            <ToolbarButton
-                                key={key}
-                                label={intl.formatMessage(messages.link)}
-                                icon={Link}
-                                isActive={state.link}
-                                isDisabled={!state.canLink}
-                                onPress={() => setLinkOpen(true)}
-                            />
-                        );
-                    }
-                    const button = allButtons.get(name);
-                    if (button === undefined) {
-                        return null;
-                    }
-                    const buttonState = state.buttons[name];
-                    return (
-                        <ToolbarButton
-                            key={key}
-                            label={
-                                typeof button.label === 'string'
-                                    ? button.label
-                                    : intl.formatMessage(button.label)
-                            }
-                            icon={button.icon}
-                            isActive={buttonState?.active}
-                            isDisabled={buttonState?.disabled === true}
-                            onPress={() => button.run(editor)}
-                        />
-                    );
-                })}
+                                        icon={button.icon}
+                                        isActive={buttonState?.active}
+                                        isDisabled={buttonState?.disabled === true}
+                                        onPress={() => button.run(editor)}
+                                    />
+                                );
+                            })}
+                        </div>
+                    </Fragment>
+                ))}
             </AriaToolbar>
             {shown.includes('link') ? (
                 <LinkDialog

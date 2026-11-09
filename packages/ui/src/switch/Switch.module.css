@@ -2,7 +2,8 @@
     display: inline-flex;
     align-items: center;
     gap: var(--panneau-space-2);
-    min-height: 1.5rem;
+    /* As tall as a target of the density */
+    min-height: var(--panneau-target-size);
     font-size: var(--panneau-font-size-md);
     color: var(--panneau-color-text);
     cursor: pointer;
@@ -69,10 +70,4 @@
 
 .label {
     overflow-wrap: anywhere;
-}
-
-@media (pointer: coarse) {
-    .control {
-        min-height: 2.75rem;
-    }
 }

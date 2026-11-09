@@ -55,6 +55,7 @@
 }
 
 .back {
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: var(--panneau-space-1);
@@ -66,6 +67,14 @@
     font-size: var(--panneau-font-size-sm);
     text-decoration: none;
     outline: none;
+}
+
+/* At least a target of the density hits the link, without moving the title under it. */
+.back::after {
+    position: absolute;
+    inset-block: min(0px, calc((100% - var(--panneau-target-size)) / 2));
+    inset-inline: 0;
+    content: '';
 }
 
 .back[data-hovered] {

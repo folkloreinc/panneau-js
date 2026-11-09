@@ -1,7 +1,8 @@
 /* A track with the part before the thumb filled, and the value next to the label. */
 
 .slider {
-    --slider-thumb-size: 1.125rem;
+    /* Larger with the density's targets: half of one, at least 1.125rem */
+    --slider-thumb-size: max(1.125rem, calc(var(--panneau-target-size) / 2));
 
     width: 100%;
 }
@@ -25,7 +26,7 @@
  */
 .track {
     position: relative;
-    height: var(--panneau-control-height-sm);
+    height: max(var(--panneau-control-height-sm), var(--panneau-target-size));
     margin-inline: calc(var(--slider-thumb-size) / 2);
     cursor: pointer;
 }

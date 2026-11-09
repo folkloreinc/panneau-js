@@ -363,6 +363,7 @@ function Content({
                     : null
             }
             colorScheme={scheme}
+            density={definition?.theme?.density ?? 'auto'}
             locale={locale}
             messages={messages}
             iconLoader={iconLoader}

@@ -29,7 +29,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0021](0021-forms-render-core-state.md)                           | Forms render the form state of the engine                                     | Accepted                          |
 | [0022](0022-lists-render-core-state.md)                           | Lists render the list state of the engine                                     | Accepted                          |
 | [0023](0023-action-runner.md)                                     | An action runner in its own package                                           | Accepted                          |
-| [0024](0024-theme-model.md)                                       | A theme model as extensible as Bootstrap's                                    | Accepted                          |
+| [0024](0024-theme-model.md)                                       | A theme model as extensible as Bootstrap's                                    | Accepted, amended by 0072         |
 | [0025](0025-presigned-uploads.md)                                 | Direct uploads to storage, separate from media                                | Amended by 0026                   |
 | [0026](0026-media-libraries.md)                                   | Media libraries are resources                                                 | Amended by 0027                   |
 | [0027](0027-media-picker.md)                                      | A media picker on a source that products can implement                        | Accepted                          |
@@ -77,3 +77,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0069](0069-show-the-items-an-action-changed.md)                  | "Show" the items an action changed, with a filter of lists on ids             | Proposed                          |
 | [0070](0070-select-mode-in-lists.md)                              | Lists show their checkboxes once "Select" is pressed                          | Proposed                          |
 | [0071](0071-fields-out-of-forms.md)                               | Fields that items give, but that forms leave out                              | Proposed                          |
+| [0072](0072-touch-targets-follow-the-density.md)                  | Touch targets follow the density                                              | Proposed                          |

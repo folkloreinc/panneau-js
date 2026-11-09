@@ -58,6 +58,15 @@
     border-end-end-radius: 0;
 }
 
+/* A group of buttons, between separators: it wraps to the next line as a whole. */
+.group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--panneau-space-1);
+    min-width: 0;
+}
+
 .separator {
     align-self: stretch;
     width: var(--panneau-border-width);

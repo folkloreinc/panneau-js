@@ -2,9 +2,11 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 
 import { Button } from '../button/Button';
+import { Checkbox } from '../checkbox/Checkbox';
 import { Inline } from '../inline/Inline';
 import { Select } from '../select/Select';
 import { Stack } from '../stack/Stack';
+import { TagsInput } from '../tags-input/TagsInput';
 import { TextInput } from '../text-input/TextInput';
 import { Text } from '../text/Text';
 import type { Density } from '../theme/theme';
@@ -36,6 +38,12 @@ export const Densities: Story = {
                             ]}
                             value="draft"
                         />
+                        <Checkbox>{`Featured (${density})`}</Checkbox>
+                        <TagsInput
+                            label={`Topics (${density})`}
+                            value={['culture']}
+                            onChange={() => undefined}
+                        />
                         <Inline gap={2}>
                             <Button size="sm">{`Preview (${density})`}</Button>
                             <Button tone="accent">{`Save (${density})`}</Button>
@@ -55,5 +63,20 @@ export const Densities: Story = {
         await expect(height('Preview (touch)')).toBe(36);
         const input = canvas.getByRole('textbox', { name: 'Title (touch)' });
         await expect(getComputedStyle(input).fontSize).toBe('16px');
+        // Rows of checkboxes are a target of the density tall: 24px, and 44px in touch
+        const row = (name: string) =>
+            canvas.getByRole('checkbox', { name }).closest('label')?.getBoundingClientRect().height;
+        await expect(row('Featured (compact)')).toBe(24);
+        await expect(row('Featured (comfortable)')).toBe(24);
+        await expect(row('Featured (touch)')).toBe(44);
+        // The tags input is as tall as a text input, with its tags inside
+        for (const density of DENSITIES) {
+            const box = (element: HTMLElement) =>
+                (element.parentElement ?? element).getBoundingClientRect().height;
+            await expect(box(canvas.getByRole('textbox', { name: `Topics (${density})` }))).toBe(
+                canvas.getByRole('textbox', { name: `Title (${density})` }).getBoundingClientRect()
+                    .height,
+            );
+        }
     },
 };
