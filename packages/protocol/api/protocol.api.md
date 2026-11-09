@@ -1533,6 +1533,10 @@ export const Definition: z.ZodObject<{
             comfortable: "comfortable";
             touch: "touch";
         }>>;
+        navigation: z.ZodOptional<z.ZodEnum<{
+            sidebar: "sidebar";
+            dock: "dock";
+        }>>;
         extends: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
         label: z.ZodOptional<z.ZodString>;
         dark: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
@@ -1630,6 +1634,10 @@ export const DefinitionTheme: z.ZodObject<{
         compact: "compact";
         comfortable: "comfortable";
         touch: "touch";
+    }>>;
+    navigation: z.ZodOptional<z.ZodEnum<{
+        sidebar: "sidebar";
+        dock: "dock";
     }>>;
     extends: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
     label: z.ZodOptional<z.ZodString>;
@@ -4293,6 +4301,10 @@ export const namedSchemas: {
             comfortable: "comfortable";
             touch: "touch";
         }>>;
+        navigation: z.ZodOptional<z.ZodEnum<{
+            sidebar: "sidebar";
+            dock: "dock";
+        }>>;
         extends: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
         label: z.ZodOptional<z.ZodString>;
         dark: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
@@ -4985,6 +4997,10 @@ export const namedSchemas: {
                 compact: "compact";
                 comfortable: "comfortable";
                 touch: "touch";
+            }>>;
+            navigation: z.ZodOptional<z.ZodEnum<{
+                sidebar: "sidebar";
+                dock: "dock";
             }>>;
             extends: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
             label: z.ZodOptional<z.ZodString>;

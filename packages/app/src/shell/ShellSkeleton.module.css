@@ -1,4 +1,4 @@
-/* The app at boot: the sidebar and a page header, in the layout of the app. */
+/* The app at boot: the sidebar or the dock, and a page header, in the layout of the app. */
 
 .sidebar {
     display: flex;
@@ -40,4 +40,16 @@
 .title {
     font-size: var(--panneau-heading-1-font-size, 1.75rem);
     line-height: var(--panneau-heading-1-line-height, var(--panneau-line-height-tight));
+}
+
+/* The items of the dock: an icon and a label, without a pointer. */
+.dockItems {
+    flex: 1 1 auto;
+    justify-content: space-around;
+}
+
+.dockItem {
+    flex: none;
+    min-width: 3.75rem;
+    cursor: default;
 }

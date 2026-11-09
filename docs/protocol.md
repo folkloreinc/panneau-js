@@ -33,7 +33,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     "auth": {/* Auth */},
     "dashboard": { "widgets": [/* Widget */] },
     "search": { "enabled": true },
-    "theme": { "colorScheme": "auto", "density": "auto" }, // density: "compact", "comfortable", "touch" or "auto" (touch on touch screens)
+    "theme": { "colorScheme": "auto", "density": "auto", "navigation": "sidebar" }, // density: "compact", "comfortable", "touch" or "auto" (touch on touch screens); navigation: "sidebar" or "dock" (decision 0075)
     "user": { "id": "usr_123", "name": "Ada", "abilities": { "panneau.view": true } },
 }
 ```

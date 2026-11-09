@@ -121,6 +121,10 @@ export const appFr: Record<string, string> = {
     'panneau.app.expandSidebar': 'Déployer la barre latérale',
     'panneau.app.openMenu': 'Ouvrir le menu',
     'panneau.app.closeMenu': 'Fermer le menu',
+    'panneau.app.more': 'Plus',
+    'panneau.app.appearance': 'Apparence',
+    'panneau.app.colorSchemeOption':
+        '{scheme, select, light {Claire} dark {Sombre} other {Celle du système}}',
     'panneau.app.colorScheme':
         'Apparence : {scheme, select, light {claire} dark {sombre} other {celle du système}}',
     'panneau.app.home': 'Accueil',

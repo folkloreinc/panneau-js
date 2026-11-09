@@ -2,7 +2,10 @@
    tall enough for a preview. */
 @container panneau-aside-layout (min-width: 56rem) {
     .panel {
-        min-height: min(40rem, calc(100dvh - 2 * var(--panneau-space-4)));
+        min-height: min(
+            40rem,
+            calc(100dvh - 2 * var(--panneau-space-4) - var(--panneau-frame-bottom, 0px))
+        );
     }
 }
 

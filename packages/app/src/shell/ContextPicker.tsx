@@ -8,6 +8,7 @@ import {
     ComboBox,
     type ComboBoxItem,
     IconButton,
+    PillTrigger,
     Popover,
     PopoverTrigger,
     Tooltip,
@@ -136,6 +137,16 @@ export function ContextPicker({ missing = false, className }: ContextPickerProps
     );
 }
 
+/** The value of a param, as the user reads it. */
+function valueText({ value, valueLabel, allLabel }: ContextParam): string {
+    return value !== null && value !== undefined ? (valueLabel ?? value) : (allLabel ?? '—');
+}
+
+/** The params of the context and their values: "Client: Acme, Contest: Spring". */
+function summarize(context: CurrentContextValue): string {
+    return context.params.map((param) => `${param.label}: ${valueText(param)}`).join(', ');
+}
+
 /**
  * The current context in the rail of icons: a button whose tooltip says the values, which opens
  * the picker in a popover.
@@ -146,12 +157,7 @@ export function ContextPickerButton() {
     if (context === null) {
         return null;
     }
-    const summary = context.params
-        .map(
-            ({ label, value, valueLabel, allLabel }) =>
-                `${label}: ${value !== null && value !== undefined ? (valueLabel ?? value) : (allLabel ?? '—')}`,
-        )
-        .join(', ');
+    const summary = summarize(context);
     const label = intl.formatMessage(appMessages.contextChange, { context: summary });
     return (
         <PopoverTrigger>
@@ -160,6 +166,33 @@ export function ContextPickerButton() {
             </Tooltip>
             <Popover
                 placement="end top"
+                aria-label={intl.formatMessage(appMessages.context)}
+                className={styles.popover}
+            >
+                <ContextPicker />
+            </Popover>
+        </PopoverTrigger>
+    );
+}
+
+/**
+ * The current context in the bar at the top of the dock layout: a pill with the values, which
+ * opens the picker in a popover below it.
+ */
+export function ContextPickerPill({ className }: { className?: string }) {
+    const intl = usePanneauIntl();
+    const context = useCurrentContext();
+    if (context === null) {
+        return null;
+    }
+    const label = intl.formatMessage(appMessages.contextChange, { context: summarize(context) });
+    return (
+        <PopoverTrigger>
+            <PillTrigger size="sm" aria-label={label} className={className}>
+                {context.params.map(valueText).join(' · ')}
+            </PillTrigger>
+            <Popover
+                placement="bottom start"
                 aria-label={intl.formatMessage(appMessages.context)}
                 className={styles.popover}
             >

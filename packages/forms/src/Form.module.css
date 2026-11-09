@@ -102,9 +102,10 @@
     scroll-margin: var(--panneau-space-10);
 }
 
+/* Sticks to the bottom of the window, above what the frame of the app puts there (a dock). */
 .footer {
     position: sticky;
-    bottom: 0;
+    bottom: var(--panneau-frame-bottom, 0px);
     z-index: 1;
     display: flex;
     flex-wrap: wrap;

@@ -1891,6 +1891,13 @@
                         "auto"
                     ]
                 },
+                "navigation": {
+                    "type": "string",
+                    "enum": [
+                        "sidebar",
+                        "dock"
+                    ]
+                },
                 "extends": {
                     "anyOf": [
                         {

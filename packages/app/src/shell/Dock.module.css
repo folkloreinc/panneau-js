@@ -1,0 +1,177 @@
+/* The dock (decision 0075): a bar of tabs across the bottom of the window, and from Panneau's `lg`
+ * breakpoint (64rem of the root) a raised pill, in the middle. Its sizes come from the layout
+ * (`--_panneau-dock-*`), which keeps what sticks to the bottom of the page above it. */
+
+.dock {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    width: 100%;
+    min-width: 0;
+    padding: var(--_panneau-dock-padding, var(--panneau-space-1));
+    padding-bottom: calc(
+        var(--_panneau-dock-padding, var(--panneau-space-1)) + env(safe-area-inset-bottom, 0px)
+    );
+    background: var(--panneau-dock-bg, var(--panneau-color-surface));
+    border-top: var(
+        --panneau-dock-border,
+        var(--panneau-border-width) solid var(--panneau-color-border)
+    );
+}
+
+.nav {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.list {
+    display: flex;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.list > li {
+    display: flex;
+    flex: 1 1 0;
+    justify-content: center;
+    min-width: 0;
+}
+
+.item {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-width: 0;
+    height: var(--_panneau-dock-item-size, 3.25rem);
+    padding: var(--panneau-space-1);
+    border: 0;
+    border-radius: var(--panneau-radius-lg);
+    background: transparent;
+    color: var(--panneau-dock-item-color, var(--panneau-color-text-muted));
+    font: inherit;
+    font-size: var(--panneau-font-size-xs);
+    font-weight: var(--panneau-font-weight-medium);
+    line-height: var(--panneau-line-height-tight);
+    text-decoration: none;
+    cursor: pointer;
+    outline: none;
+    transition:
+        background-color var(--panneau-duration),
+        color var(--panneau-duration);
+}
+
+.item[data-hovered],
+.item[data-pressed] {
+    background: var(--panneau-dock-item-hover-bg, var(--panneau-color-hover));
+    color: var(--panneau-dock-item-current-color, var(--panneau-color-text));
+}
+
+.item[aria-current='page'],
+.item[data-current] {
+    background: var(--panneau-dock-item-current-bg, var(--panneau-color-surface-sunken));
+    color: var(--panneau-dock-item-current-color, var(--panneau-color-text));
+}
+
+.item[data-focus-visible] {
+    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+}
+
+/* The user's tab, outside the list of the navigation: as wide as a tab of five. */
+.user {
+    flex: 0 0 20%;
+}
+
+.label {
+    max-width: 100%;
+    overflow: hidden;
+    font-family: inherit;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.avatar {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: 1.375rem;
+    height: 1.375rem;
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+    border-radius: var(--panneau-radius-full);
+    background: var(--panneau-color-surface);
+    color: var(--panneau-color-text);
+    font-size: var(--panneau-font-size-xs);
+    font-weight: var(--panneau-font-weight-bold);
+    line-height: 1;
+    object-fit: cover;
+}
+
+.separator,
+.list > .separator {
+    flex: none;
+    align-self: stretch;
+    width: var(--panneau-border-width);
+    margin: var(--panneau-space-2) var(--panneau-space-1);
+    background: var(--panneau-color-border);
+}
+
+.userMenu {
+    min-width: 14rem;
+}
+
+/* Only in the pill, or only in the bar of tabs. */
+.wideOnly,
+.list > .wideOnly {
+    display: none;
+}
+
+@container panneau-root (min-width: 64rem) {
+    .dock {
+        width: auto;
+        max-width: 100%;
+        padding: var(--_panneau-dock-padding, var(--panneau-space-1));
+        border: var(
+            --panneau-dock-border,
+            var(--panneau-border-width) solid var(--panneau-color-border)
+        );
+        border-radius: var(--panneau-dock-radius, calc(var(--panneau-radius-lg) * 2));
+        box-shadow: var(--panneau-dock-shadow, var(--panneau-shadow-lg));
+    }
+
+    /* Many entries scroll, rather than leave the window. */
+    .nav {
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .list > li {
+        flex: none;
+    }
+
+    .item {
+        flex: none;
+        min-width: 3.75rem;
+        max-width: 6.5rem;
+        padding-inline: var(--panneau-space-2);
+    }
+
+    .wideOnly,
+    .list > .wideOnly {
+        display: flex;
+    }
+
+    .phoneOnly,
+    .list > .phoneOnly {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .item {
+        transition: none;
+    }
+}

@@ -1,4 +1,5 @@
-/* The notification area of the shell: a row of the sidebar, or an icon with a badge. */
+/* The notification area of the shell: a row of the sidebar, an icon with a badge, or an item of
+ * the dock. */
 
 .row {
     display: flex;
@@ -48,6 +49,50 @@
     color: var(--panneau-sidebar-link-color, var(--panneau-color-text-muted));
     cursor: pointer;
     outline: none;
+}
+
+/* An item of the dock: the icon, and the label under it. */
+.tile {
+    display: inline-flex;
+    flex: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-width: 3.5rem;
+    min-height: max(2.75rem, var(--panneau-target-size));
+    padding: var(--panneau-space-1) var(--panneau-space-2);
+    border: 0;
+    border-radius: var(--panneau-radius-lg);
+    background: transparent;
+    color: var(--panneau-dock-item-color, var(--panneau-color-text-muted));
+    font: inherit;
+    font-size: var(--panneau-font-size-xs);
+    font-weight: var(--panneau-font-weight-medium);
+    line-height: var(--panneau-line-height-tight);
+    cursor: pointer;
+    outline: none;
+}
+
+.tile[data-hovered],
+.tile[data-pressed] {
+    background: var(--panneau-dock-item-hover-bg, var(--panneau-color-hover));
+    color: var(--panneau-dock-item-current-color, var(--panneau-color-text));
+}
+
+.tile[data-focus-visible] {
+    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+}
+
+.tileLabel {
+    max-width: 5.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tile .dot {
+    box-shadow: 0 0 0 2px var(--panneau-dock-bg, var(--panneau-color-surface));
 }
 
 .icon {
