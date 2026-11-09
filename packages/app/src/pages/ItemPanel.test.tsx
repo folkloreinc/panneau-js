@@ -220,11 +220,9 @@ describe('ItemPanel', () => {
     it('widens, and remembers it', async () => {
         const user = userEvent.setup();
         const panel = renderPanel(undefined);
-        await user.click(within(panel).getByRole('button', { name: 'Widen the details' }));
+        await user.click(within(panel).getByRole('button', { name: 'Widen the panel' }));
         expect(panel).toHaveAttribute('data-wide');
         expect(window.localStorage.getItem('panneau:item-panel-size')).toBe('wide');
-        expect(
-            within(panel).getByRole('button', { name: 'Narrow the details' }),
-        ).toBeInTheDocument();
+        expect(within(panel).getByRole('button', { name: 'Narrow the panel' })).toBeInTheDocument();
     });
 });

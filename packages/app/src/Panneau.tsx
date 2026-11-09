@@ -33,7 +33,7 @@ import {
     formatContextHeader,
     parseContextHeader,
 } from '@panneau/protocol';
-import { type NamedIconLoader, PanneauRoot, usePanneauIntl } from '@panneau/ui';
+import { type NamedIconLoader, PanneauRoot, usePanneauIntl, usePreference } from '@panneau/ui';
 
 import styles from './Panneau.module.css';
 import { Shell } from './Shell';
@@ -53,7 +53,6 @@ import {
 import { loadPage, navigate, usePathname } from './location';
 import { usePluginMessages } from './messages';
 import { ErrorPage, getErrorPageKind } from './pages/ErrorPage';
-import { usePreference } from './preferences';
 import {
     type AppRoute,
     contextPath,

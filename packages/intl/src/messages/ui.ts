@@ -19,6 +19,11 @@ export const uiMessages = {
     showOptions: defineMessage({ id: 'panneau.ui.showOptions', defaultMessage: 'Show options' }),
     clear: defineMessage({ id: 'panneau.ui.clear', defaultMessage: 'Clear' }),
     moreActions: defineMessage({ id: 'panneau.ui.moreActions', defaultMessage: 'More actions' }),
+    widenAside: defineMessage({ id: 'panneau.ui.widenAside', defaultMessage: 'Widen the panel' }),
+    narrowAside: defineMessage({
+        id: 'panneau.ui.narrowAside',
+        defaultMessage: 'Narrow the panel',
+    }),
     time: defineMessage({ id: 'panneau.ui.time', defaultMessage: 'Time' }),
     rangeStart: defineMessage({ id: 'panneau.ui.rangeStart', defaultMessage: 'Start' }),
     rangeEnd: defineMessage({ id: 'panneau.ui.rangeEnd', defaultMessage: 'End' }),

@@ -1,6 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import { PanneauProvider, definePlugin } from '@panneau/core';
 import type { Field, LayoutNode } from '@panneau/protocol';
@@ -71,6 +71,10 @@ const LAYOUT: LayoutNode[] = [
     },
 ];
 
+afterEach(() => {
+    window.localStorage.clear();
+});
+
 describe('Form layout', () => {
     it('renders rows with widths, tabs, text, a sidebar, and appends unreferenced fields', () => {
         renderForm(<Form fields={FIELDS} layout={LAYOUT} />);
@@ -83,7 +87,7 @@ describe('Form layout', () => {
             (title.closest('[style]') as HTMLElement).style.getPropertyValue('--panneau-span'),
         ).toBe('8');
         expect(screen.getByText('Write for the web.')).toBeInTheDocument();
-        expect(screen.getByRole('complementary')).toBeInTheDocument();
+        expect(screen.getByRole('region', { name: 'Sidebar' })).toBeInTheDocument();
         expect(screen.getByRole('textbox', { name: 'Notes' })).toBeInTheDocument();
     });
 
@@ -124,6 +128,65 @@ describe('Form layout', () => {
         await waitFor(() =>
             expect(screen.getByRole('textbox', { name: /Share text/ })).toHaveFocus(),
         );
+    });
+
+    it('makes panels of the sidebar nodes, collapsed by the user and remembered', async () => {
+        const layout: LayoutNode[] = [
+            { type: 'field', name: 'title' },
+            {
+                type: 'sidebar',
+                label: 'Publication',
+                children: [{ type: 'field', name: 'published_at' }],
+            },
+            {
+                type: 'sidebar',
+                label: 'SEO',
+                collapsed: true,
+                children: [{ type: 'field', name: 'meta_title' }],
+            },
+            { type: 'sidebar', children: [{ type: 'field', name: 'notes' }] },
+        ];
+        renderForm(
+            <Form
+                fields={FIELDS}
+                layout={layout}
+                values={{ status: 'published' }}
+                sidebarStorageKey="form-articles"
+            />,
+        );
+        const sidebar = screen.getByRole('region', { name: 'Sidebar' });
+        const publication = within(sidebar).getByRole('button', { name: 'Publication' });
+        expect(publication).toHaveAttribute('aria-expanded', 'true');
+        expect(within(sidebar).getByRole('button', { name: 'SEO' })).toHaveAttribute(
+            'aria-expanded',
+            'false',
+        );
+        // A node without a label is a panel without a title
+        expect(within(sidebar).getByRole('textbox', { name: 'Notes' })).toBeVisible();
+        expect(within(sidebar).getAllByRole('button', { expanded: true })).toHaveLength(1);
+        await userEvent.click(publication);
+        expect(publication).toHaveAttribute('aria-expanded', 'false');
+        expect(window.localStorage.getItem('panneau:form-articles-panel-Publication')).toBe(
+            'collapsed',
+        );
+    });
+
+    it('opens a collapsed panel of the sidebar to reach its error', async () => {
+        const layout: LayoutNode[] = [
+            { type: 'field', name: 'title' },
+            {
+                type: 'sidebar',
+                label: 'SEO',
+                collapsed: true,
+                children: [{ type: 'field', name: 'meta_title' }],
+            },
+        ];
+        renderForm(<Form fields={FIELDS} layout={layout} values={{ title: 'Hello' }} />);
+        const seo = screen.getByRole('button', { name: 'SEO' });
+        expect(seo).toHaveAttribute('aria-expanded', 'false');
+        await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(seo).toHaveAttribute('aria-expanded', 'true'));
+        expect(within(seo).getByText('1')).toBeInTheDocument();
     });
 
     it('renders component nodes from plugins', () => {

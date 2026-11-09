@@ -12,6 +12,7 @@ export const formsMessages = {
     }),
     saved: defineMessage({ id: 'panneau.forms.saved', defaultMessage: 'Saved' }),
     loading: defineMessage({ id: 'panneau.forms.loading', defaultMessage: 'Loading the form…' }),
+    sidebar: defineMessage({ id: 'panneau.forms.sidebar', defaultMessage: 'Sidebar' }),
     unsaved: defineMessage({ id: 'panneau.forms.unsaved', defaultMessage: 'Unsaved changes' }),
     errorCount: defineMessage<{ count: number }>({
         id: 'panneau.forms.errorCount',

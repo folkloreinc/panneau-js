@@ -17,7 +17,17 @@ import {
 } from '@panneau/core';
 import { NestedField, isWideField } from '@panneau/fields';
 import type { Field, LayoutNode } from '@panneau/protocol';
-import { Badge, Disclosure, Tab, TabList, TabPanel, Tabs, usePanneauIntl } from '@panneau/ui';
+import {
+    AsidePanel,
+    Badge,
+    Disclosure,
+    Tab,
+    TabList,
+    TabPanel,
+    Tabs,
+    usePanneauIntl,
+    usePreference,
+} from '@panneau/ui';
 
 import styles from '../Form.module.css';
 import { ErrorSectionsContext, RevealContext, useFormContext, useFormState } from '../context';
@@ -152,6 +162,73 @@ function SectionNode({ node, fields }: { node: LayoutNode; fields: ReadonlyMap<s
             ) : null}
             {content}
         </section>
+    );
+}
+
+const PANEL_STATES = ['expanded', 'collapsed'] as const;
+
+export interface SidebarNodeProps {
+    node: LayoutNode;
+    fields: ReadonlyMap<string, Field>;
+    /** Where the browser remembers whether the panel is collapsed (`Form`'s `sidebarStorageKey`). */
+    storageKey?: string | undefined;
+}
+
+/**
+ * A `sidebar` node of a form layout: a panel of the form's aside (decision 0074). With a `label`,
+ * the user can collapse it, unless `collapsible: false`, and the browser remembers it. It opens to
+ * reveal a field, and after a failed save when it holds an error, as a section does.
+ */
+export function SidebarNode({ node, fields, storageKey }: SidebarNodeProps) {
+    const form = useFormContext();
+    const registry = use(RevealContext);
+    const errorSections = use(ErrorSectionsContext);
+    const names = getLayoutFieldNames(node.children ?? []);
+    const collapsible = node.label !== undefined && node.collapsible !== false;
+    const [stored, setStored] = usePreference(
+        collapsible && storageKey !== undefined && node.label !== undefined
+            ? `${storageKey}-panel-${node.name ?? node.label}`
+            : null,
+        PANEL_STATES,
+    );
+    const [expanded, setExpanded] = useState(
+        stored !== null ? stored === 'expanded' : node.collapsed !== true,
+    );
+
+    useEffect(() => {
+        const open = (path: string) => {
+            if (containsPath(names, path)) {
+                setExpanded(true);
+            }
+        };
+        const removeRevealer = registry.add(open);
+        const removeOpener = errorSections.add(open);
+        return () => {
+            removeRevealer();
+            removeOpener();
+        };
+    }, [registry, errorSections, names]);
+
+    return (
+        <AsidePanel
+            title={node.label}
+            titleEnd={
+                node.label !== undefined ? <ErrorBadge form={form} names={names} /> : undefined
+            }
+            isCollapsible={collapsible}
+            isExpanded={expanded}
+            onExpandedChange={(next) => {
+                setExpanded(next);
+                setStored(next ? 'expanded' : 'collapsed');
+            }}
+        >
+            <div className={styles.stack}>
+                {node.description !== undefined ? (
+                    <p className={styles.sectionDescription}>{node.description}</p>
+                ) : null}
+                <LayoutNodes nodes={node.children ?? []} fields={fields} />
+            </div>
+        </AsidePanel>
     );
 }
 

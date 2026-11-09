@@ -331,7 +331,7 @@ The form layout is a tree that references fields by name. Fields that no layout 
         ] },
         { "type": "tab", "label": "SEO", "children": [ { "type": "section", "label": "Partage", "collapsible": true, "children": [...] } ] }
     ] },
-    { "type": "sidebar", "children": [ { "type": "field", "name": "published_at" } ] }
+    { "type": "sidebar", "label": "Publication", "children": [ { "type": "field", "name": "published_at" } ] }
 ]
 ```
 
@@ -340,6 +340,7 @@ Node types:
 - **Containers:**
     - `row`, whose children have `width` on a 12-column grid;
     - `column`, `section`, `tabs` and `tab`, `sidebar`.
+    - Each `sidebar` is a panel of the form's aside, next to the form and in view as it scrolls, or below it on narrow screens. Its `label` is the title of the panel, which the user can collapse unless `collapsible: false`; `collapsed: true` starts it collapsed. See [decisions/0074](decisions/0074-asides-next-to-lists-and-forms.md).
 - **Content:** `field`, `text` (a static help paragraph), `component` (rendered by a plugin, with its `children` rendered: a `component` without its plugin renders its children, [0065](decisions/0065-compound-fields.md)).
 
 Any node can have `visibleWhen`.

@@ -114,6 +114,7 @@ export function createExampleDefinition(): DefinitionInput {
                         },
                         {
                             type: 'sidebar',
+                            label: 'Publication',
                             children: [
                                 { type: 'field', name: 'published_at' },
                                 { type: 'field', name: 'attachment' },

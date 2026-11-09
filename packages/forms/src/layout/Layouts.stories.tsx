@@ -127,16 +127,11 @@ const ARTICLE_LAYOUT: LayoutNode[] = [
     },
     {
         type: 'sidebar',
+        label: 'Publication',
         children: [
-            {
-                type: 'section',
-                label: 'Publication',
-                children: [
-                    { type: 'field', name: 'status' },
-                    { type: 'field', name: 'published_at' },
-                    { type: 'field', name: 'featured' },
-                ],
-            },
+            { type: 'field', name: 'status' },
+            { type: 'field', name: 'published_at' },
+            { type: 'field', name: 'featured' },
         ],
     },
 ];
@@ -246,7 +241,8 @@ export const LocalizedFields: Story = {
 
 /**
  * A layout places its fields: rows with widths out of 12, sections, and a sidebar next to the main
- * column. The app gives a form with a sidebar the width of a list.
+ * column, whose panels collapse under their title (decision 0074). The app gives a form with a
+ * sidebar the width of a list.
  */
 export const RowsSectionsAndSidebar: Story = {
     args: {
@@ -260,6 +256,13 @@ export const RowsSectionsAndSidebar: Story = {
         const title = canvas.getByRole('textbox', { name: /Title/ });
         const readingTime = canvas.getByRole('textbox', { name: /Reading time/ });
         await expect(sameRow(readingTime, title)).toBe(true);
-        await expect(canvas.getByRole('complementary')).toHaveTextContent('Publication');
+        const sidebar = canvas.getByRole('region', { name: 'Sidebar' });
+        // Beside the form, in view as it scrolls
+        await expect(getComputedStyle(sidebar).position).toBe('sticky');
+        const publication = within(sidebar).getByRole('button', { name: 'Publication' });
+        await expect(publication).toHaveAttribute('aria-expanded', 'true');
+        await userEvent.click(publication);
+        await expect(publication).toHaveAttribute('aria-expanded', 'false');
+        await userEvent.click(publication);
     },
 };

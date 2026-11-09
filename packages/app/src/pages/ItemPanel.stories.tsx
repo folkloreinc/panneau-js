@@ -14,6 +14,7 @@ import { createRestAdapter } from '@panneau/data';
 import { DataAdapterProvider } from '@panneau/data/query';
 import { type DefinitionInput, validateDefinition } from '@panneau/protocol';
 import { createMockBackend } from '@panneau/protocol/mock';
+import { AsideLayout } from '@panneau/ui';
 
 import { ItemPanel } from './ItemPanel';
 
@@ -188,13 +189,21 @@ function Panel({
                         <PanneauProvider
                             plugins={[{ id: 'site', previews: { article: ArticlePreview } }]}
                         >
-                            <ItemPanel
-                                resolved={resolveResource(resource)}
-                                basePath="/admin"
-                                locale="en"
-                                id="1"
-                                closeHref={`/admin/resources/${resource.id}`}
-                            />
+                            {/* Next to its list, as the list page places it */}
+                            <AsideLayout
+                                narrow="overlay"
+                                aside={
+                                    <ItemPanel
+                                        resolved={resolveResource(resource)}
+                                        basePath="/admin"
+                                        locale="en"
+                                        id="1"
+                                        closeHref={`/admin/resources/${resource.id}`}
+                                    />
+                                }
+                            >
+                                <p>The list</p>
+                            </AsideLayout>
                         </PanneauProvider>
                     </RouterProvider>
                 </ActionRunnerProvider>
@@ -232,6 +241,8 @@ export const Default: Story = {
             'https://example.com/articles/1',
         );
         await expect(within(panel).getAllByRole('term')).toHaveLength(4);
+        // Beside the list, it can be widened
+        await expect(within(panel).getByRole('button', { name: 'Widen the panel' })).toBeVisible();
     },
 };
 

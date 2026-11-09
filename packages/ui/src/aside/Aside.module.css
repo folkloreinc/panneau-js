@@ -1,0 +1,235 @@
+/* The column next to the main content (decision 0074): below it or over it on narrow layouts,
+   beside it from 56rem of the layout, where it stays in view. */
+
+.layout {
+    container: panneau-aside-layout / inline-size;
+    min-width: 0;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: var(--panneau-space-6);
+    min-width: 0;
+}
+
+.main {
+    min-width: 0;
+}
+
+.aside {
+    container: panneau-aside / inline-size;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: var(--panneau-aside-bg, var(--panneau-color-surface));
+    border: var(
+        --panneau-aside-border,
+        var(--panneau-border-width) solid var(--panneau-color-border)
+    );
+    border-radius: var(--panneau-aside-radius, var(--panneau-radius-lg));
+    box-shadow: var(--panneau-aside-shadow, var(--panneau-shadow-sm));
+    outline: none;
+}
+
+.aside:focus-visible {
+    box-shadow:
+        var(--panneau-aside-shadow, var(--panneau-shadow-sm)),
+        0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+}
+
+/* Over the content, on its right: the whole height of the screen, the whole width on a phone. */
+.overlay > .aside {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-end: 0;
+    z-index: var(--panneau-z-overlay);
+    width: min(100%, var(--panneau-aside-width, 22rem));
+    border-block: 0;
+    border-inline-end: 0;
+    border-radius: 0;
+    box-shadow: var(--panneau-shadow-lg);
+}
+
+.overlay > .aside[data-wide] {
+    width: min(100%, var(--panneau-aside-width-wide, 50%));
+}
+
+.overlay > .aside:focus-visible {
+    box-shadow:
+        var(--panneau-shadow-lg),
+        inset 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+}
+
+/* Widening only matters beside the content, or over it. */
+.widen {
+    display: none;
+}
+
+.overlay > .aside .widen {
+    display: inline-flex;
+}
+
+/* On a phone, over the whole width: there is nothing to widen. */
+@container panneau-aside-layout (max-width: 40rem) {
+    .overlay > .aside,
+    .overlay > .aside[data-wide] {
+        width: 100%;
+    }
+
+    .overlay > .aside .widen {
+        display: none;
+    }
+}
+
+@container panneau-aside-layout (min-width: 56rem) {
+    .withAside {
+        grid-template-columns: minmax(0, 1fr) var(--panneau-aside-width, 22rem);
+    }
+
+    .withAside:has(> .aside[data-wide]) {
+        grid-template-columns: minmax(0, 1fr) var(--panneau-aside-width-wide, 50%);
+    }
+
+    .grid > .aside,
+    .grid.overlay > .aside {
+        position: sticky;
+        inset-block: var(--panneau-space-4) auto;
+        z-index: auto;
+        width: auto;
+        max-height: calc(100dvh - 2 * var(--panneau-space-4));
+        border: var(
+            --panneau-aside-border,
+            var(--panneau-border-width) solid var(--panneau-color-border)
+        );
+        border-radius: var(--panneau-aside-radius, var(--panneau-radius-lg));
+        box-shadow: var(--panneau-aside-shadow, var(--panneau-shadow-sm));
+    }
+
+    .grid > .aside:focus-visible,
+    .grid.overlay > .aside:focus-visible {
+        box-shadow:
+            var(--panneau-aside-shadow, var(--panneau-shadow-sm)),
+            0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+    }
+
+    .grid > .aside .widen {
+        display: inline-flex;
+    }
+}
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--panneau-space-2);
+    padding: var(--panneau-aside-padding, var(--panneau-space-4))
+        var(--panneau-aside-padding, var(--panneau-space-4)) var(--panneau-space-2);
+}
+
+.headerButtons {
+    display: flex;
+    flex: none;
+    gap: var(--panneau-space-1);
+}
+
+.title {
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+/* The title while it loads: a line of the heading's size. */
+.titleSkeleton {
+    font-size: var(--panneau-heading-2-font-size, 1.375rem);
+    line-height: var(--panneau-heading-2-line-height, var(--panneau-line-height-tight));
+}
+
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--panneau-space-2);
+    padding: 0 var(--panneau-aside-padding, var(--panneau-space-4)) var(--panneau-space-3);
+    border-bottom: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
+.body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    padding: var(--panneau-aside-padding, var(--panneau-space-4));
+    overflow-y: auto;
+}
+
+/* A block of the aside, under a line when it follows another. */
+.panel {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.panel + .panel {
+    margin-top: var(--panneau-aside-padding, var(--panneau-space-4));
+    padding-top: var(--panneau-aside-padding, var(--panneau-space-4));
+    border-top: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
+.panelHeading {
+    margin: 0;
+    font: inherit;
+}
+
+.panelTitle {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+    font-size: var(--panneau-font-size-md);
+    font-weight: var(--panneau-font-weight-bold);
+    line-height: var(--panneau-line-height-tight);
+    color: var(--panneau-color-text);
+}
+
+.panelTrigger {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    width: 100%;
+    min-height: var(--panneau-target-size, 1.5rem);
+    padding: 0;
+    text-align: start;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    border-radius: var(--panneau-radius-sm);
+}
+
+.panelTrigger[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 2px;
+}
+
+.chevron {
+    flex: none;
+    color: var(--panneau-color-text-muted);
+    transition: transform var(--panneau-duration);
+}
+
+.panel:not([data-expanded]) .chevron {
+    transform: rotate(-90deg);
+}
+
+/* A panel with a title, which can't be collapsed. */
+section.panel > .panelTitle {
+    margin-bottom: var(--panneau-space-3);
+}
+
+.panelContent {
+    min-width: 0;
+}
+
+/* Collapsed, the content is hidden with its space. */
+.panelHeading + .panelContent {
+    padding-top: var(--panneau-space-3);
+}

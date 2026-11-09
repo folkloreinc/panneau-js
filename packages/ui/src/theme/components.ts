@@ -1,4 +1,5 @@
 import { alertTokens } from '../alert/tokens';
+import { asideTokens } from '../aside/tokens';
 import { badgeTokens } from '../badge/tokens';
 import { buttonTokens } from '../button/tokens';
 import { cardTokens } from '../card/tokens';
@@ -40,6 +41,7 @@ import { selectedTokens } from './selectedTokens';
  */
 export const componentTokens = Object.freeze({
     alert: alertTokens.tokens,
+    aside: asideTokens.tokens,
     badge: badgeTokens.tokens,
     button: buttonTokens.tokens,
     calendar: calendarTokens.tokens,

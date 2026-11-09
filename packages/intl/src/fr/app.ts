@@ -141,9 +141,6 @@ export const appFr: Record<string, string> = {
     'panneau.app.previewError': 'L’aperçu n’a pas pu être chargé.',
     'panneau.app.previewMissing': 'Aucun plugin ne fournit l’aperçu « {component} ».',
     'panneau.app.openPreview': 'Ouvrir dans un nouvel onglet',
-    'panneau.app.widenPanel': 'Élargir les détails',
-    'panneau.app.narrowPanel': 'Rétrécir les détails',
-    'panneau.app.closePanel': 'Fermer les détails',
     'panneau.app.goTo': 'Aller à…',
     'panneau.app.actionRuns': 'Actions',
     'panneau.app.actionRunsLabel':

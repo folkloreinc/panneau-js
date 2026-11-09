@@ -424,18 +424,6 @@ export const appMessages = {
         id: 'panneau.app.openPreview',
         defaultMessage: 'Open in a new tab',
     }),
-    widenPanel: defineMessage({
-        id: 'panneau.app.widenPanel',
-        defaultMessage: 'Widen the details',
-    }),
-    narrowPanel: defineMessage({
-        id: 'panneau.app.narrowPanel',
-        defaultMessage: 'Narrow the details',
-    }),
-    closePanel: defineMessage({
-        id: 'panneau.app.closePanel',
-        defaultMessage: 'Close the details',
-    }),
     goTo: defineMessage({ id: 'panneau.app.goTo', defaultMessage: 'Go to…' }),
     actionRuns: defineMessage({ id: 'panneau.app.actionRuns', defaultMessage: 'Actions' }),
     actionRunsLabel: defineMessage<{ count: number }>({
