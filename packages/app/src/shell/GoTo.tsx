@@ -169,7 +169,7 @@ export function GoTo({
             })),
     ];
 
-    // An entry per resource, or per type of a resource with types (decision 0075)
+    // An entry per resource, or per type of a resource with types (decision 0076)
     const create: CommandPaletteItem[] = definition.resources.flatMap(
         (resource): CommandPaletteItem[] => {
             if (!resolveResource(resource).abilities.create) {

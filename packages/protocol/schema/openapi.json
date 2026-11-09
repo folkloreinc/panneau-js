@@ -4284,6 +4284,11 @@
                         "description": "`component`: a component provided by a plugin.",
                         "type": "string"
                     },
+                    "panel": {
+                        "description": "`sidebar`: the panel it is, by name: a built-in panel (`save`, `errors`, `publication`, `actions`) or one provided by a plugin. Without its component, the node renders its children.",
+                        "type": "string",
+                        "minLength": 1
+                    },
                     "props": {
                         "type": "object",
                         "propertyNames": {
@@ -4823,7 +4828,7 @@
                     "fields"
                 ],
                 "additionalProperties": {},
-                "description": "A type of the items of a resource (decision 0075): the items of a type have the fields of the resource and its own."
+                "description": "A type of the items of a resource (decision 0076): the items of a type have the fields of the resource and its own."
             },
             "Resource": {
                 "type": "object",
@@ -4929,7 +4934,7 @@
                         "$ref": "#/components/schemas/ResourceFeatures"
                     },
                     "types": {
-                        "description": "The types of the resource's items, each with fields of its own (decision 0075). Each item has a `type`, set when it is created, among their ids.",
+                        "description": "The types of the resource's items, each with fields of its own (decision 0076). Each item has a `type`, set when it is created, among their ids.",
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/ResourceType"
@@ -5926,7 +5931,7 @@
                         "$ref": "#/components/schemas/Abilities"
                     },
                     "type": {
-                        "description": "In a resource with `types`: the id of the item's type (decision 0075). Set when the item is created; updates ignore it.",
+                        "description": "In a resource with `types`: the id of the item's type (decision 0076). Set when the item is created; updates ignore it.",
                         "type": "string",
                         "minLength": 1
                     }
@@ -6925,7 +6930,7 @@
                         "$ref": "#/components/schemas/Abilities"
                     },
                     "type": {
-                        "description": "In a resource with `types`: the id of the item's type (decision 0075). Set when the item is created; updates ignore it.",
+                        "description": "In a resource with `types`: the id of the item's type (decision 0076). Set when the item is created; updates ignore it.",
                         "type": "string",
                         "minLength": 1
                     },

@@ -1244,7 +1244,7 @@ describe('the app shell', () => {
     });
 });
 
-describe('resource types (decision 0075)', () => {
+describe('resource types (decision 0076)', () => {
     beforeEach(() => {
         window.history.replaceState(null, '', '/panneau');
         window.localStorage.clear();
@@ -1394,5 +1394,34 @@ describe('resource types (decision 0075)', () => {
         const panel = await screen.findByRole('region', { name: 'Details of the post' });
         expect(await within(panel).findByText('Venue')).toBeInTheDocument();
         expect(within(panel).getByText('Hall')).toBeInTheDocument();
+    });
+});
+
+describe('the panels of a form sidebar', () => {
+    it('moves the actions of the item from the header to the actions panel', async () => {
+        window.history.replaceState(null, '', '/panneau/resources/pages/1/edit');
+        renderApp({
+            resources: [
+                {
+                    id: 'pages',
+                    label: { singular: 'page', plural: 'pages' },
+                    itemTitle: 'title',
+                    fields: [{ name: 'title', type: 'text', label: 'Title' }],
+                    form: {
+                        layout: [
+                            { type: 'field', name: 'title' },
+                            { type: 'sidebar', panel: 'actions' },
+                        ],
+                    },
+                },
+            ],
+        });
+        await screen.findByRole('heading', { name: 'About us' });
+        const sidebar = screen.getByRole('region', { name: 'Sidebar' });
+        expect(
+            await within(sidebar).findByRole('button', { name: 'Duplicate' }),
+        ).toBeInTheDocument();
+        // Only once: the header leaves them out
+        expect(screen.getAllByRole('button', { name: 'Duplicate' })).toHaveLength(1);
     });
 });

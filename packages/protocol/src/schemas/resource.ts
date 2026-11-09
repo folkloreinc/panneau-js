@@ -55,7 +55,7 @@ export const ResourceType = z
     })
     .meta({
         description:
-            'A type of the items of a resource (decision 0075): the items of a type have the fields of the resource and its own.',
+            'A type of the items of a resource (decision 0076): the items of a type have the fields of the resource and its own.',
     });
 
 export const Resource = z
@@ -99,7 +99,7 @@ export const Resource = z
         features: ResourceFeatures.optional(),
         types: z.array(ResourceType).optional().meta({
             description:
-                "The types of the resource's items, each with fields of its own (decision 0075). Each item has a `type`, set when it is created, among their ids.",
+                "The types of the resource's items, each with fields of its own (decision 0076). Each item has a `type`, set when it is created, among their ids.",
         }),
         settings: z.record(z.string(), z.unknown()).optional(),
     })

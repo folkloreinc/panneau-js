@@ -7,6 +7,7 @@ export {
     type ErrorPageProps,
     getErrorPageKind,
 } from './pages/ErrorPage';
+export { type FormPage, useFormPage } from './pages/formPage';
 export {
     LinkButton,
     type LinkButtonProps,

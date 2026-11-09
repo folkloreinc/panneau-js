@@ -1,4 +1,3 @@
-import { CircleCheck } from 'lucide-react';
 import { type KeyboardEvent, type ReactNode, useRef, useState } from 'react';
 
 import {
@@ -26,8 +25,6 @@ import {
     Aside,
     AsideLayout,
     Button,
-    Icon,
-    Tooltip,
     isApplePlatform,
     usePanneauIntl,
     useToast,
@@ -49,6 +46,8 @@ import {
 import { cx } from './cx';
 import { FieldFlow, LayoutNodes, SidebarNode } from './layout/Layout';
 import { messages } from './messages';
+import { SaveContext, SaveControls, type SaveState, SummaryContext } from './panels/SaveControls';
+import { type FormPanelComponent, PanelsContext, builtInPanels } from './panels/panels';
 import { useBeforeUnloadGuard, useLeaveConfirmation } from './unsaved';
 
 export interface FormViewProps {
@@ -75,6 +74,11 @@ export interface FormViewProps {
     checkSource?: FieldCheckSource | null;
     /** Field entries by type, over the built-in ones and those of the plugins. */
     components?: Readonly<Record<string, FieldEntry>>;
+    /**
+     * Panels of the sidebar, by name, over the built-in ones and those of plugins: the app gives
+     * its own (decision 0075).
+     */
+    panels?: Readonly<Record<string, FormPanelComponent>>;
     /** Label of the submit button. Defaults to "Save". `null` hides the button. */
     submitLabel?: ReactNode;
     /** Other buttons, next to the submit button. */
@@ -201,6 +205,7 @@ export function FormView({
     uploadSource,
     checkSource,
     components,
+    panels,
     submitLabel,
     actions,
     onSubmitted,
@@ -263,6 +268,14 @@ export function FormView({
         ...getLayoutFieldNames(main),
         ...getLayoutFieldNames(sidebar.flatMap((node) => node.children ?? [])),
     ];
+    const panelEntries = new Map<string, FormPanelComponent>([
+        ...Object.entries(builtInPanels),
+        ...(plugins.panels as ReadonlyMap<string, FormPanelComponent>),
+        ...Object.entries(panels ?? {}),
+    ]);
+    // Beside the form, the `save` and `errors` panels take the place of the footer and of the
+    // summary at the top (decision 0075)
+    const hasPanel = (name: string) => sidebar.some((node) => node.panel === name);
     const entries: Record<string, FieldEntry> = {
         ...builtInFields,
         ...(Object.fromEntries(plugins.fields) as Record<string, FieldEntry>),
@@ -350,6 +363,20 @@ export function FormView({
         problem?.detail ??
         (problem === null && state.error instanceof Error ? state.error.message : undefined);
     const showSummary = state.status === 'invalid' && state.submitCount > 0;
+    const orderedErrors = showSummary ? orderErrors(order, state.errors, formLocales) : {};
+    const save: SaveState = {
+        status:
+            state.status === 'error'
+                ? 'error'
+                : state.dirty
+                  ? 'unsaved'
+                  : savedShown && state.status !== 'submitting'
+                    ? 'saved'
+                    : null,
+        isSubmitting: state.status === 'submitting',
+        actions,
+        submitLabel: submitLabel === undefined ? intl.formatMessage(messages.save) : submitLabel,
+    };
 
     if (isLoading) {
         return (
@@ -369,133 +396,119 @@ export function FormView({
 
     return (
         <FormContext value={form}>
-            <RevealContext value={registry}>
-                <ErrorSectionsContext value={errorSections}>
-                    <FieldsProvider
-                        components={entries}
-                        locales={formLocales}
-                        {...(relationSource !== undefined ? { relationSource } : {})}
-                        {...(uploadSource !== undefined ? { uploadSource } : {})}
-                        {...(checkSource !== undefined ? { checkSource } : {})}
-                        binding={FormBinding}
+            <PanelsContext value={panelEntries}>
+                <SaveContext value={save}>
+                    <SummaryContext
+                        value={{ errors: orderedErrors, fields: resolved.fields, onSelect: goTo }}
                     >
-                        <form
-                            ref={root}
-                            id={id}
-                            aria-label={ariaLabel}
-                            noValidate
-                            className={cx(styles.form, className)}
-                            onSubmit={(event) => {
-                                event.preventDefault();
-                                void form.submit().then(handle);
-                            }}
-                            onKeyDown={onKeyDown}
-                        >
-                            {showSummary ? (
-                                <ErrorSummary
-                                    errors={orderErrors(order, state.errors, formLocales)}
-                                    fields={resolved.fields}
-                                    onSelect={goTo}
-                                    {...(summaryClassName !== undefined
-                                        ? { className: summaryClassName }
-                                        : {})}
-                                />
-                            ) : null}
-                            {state.status === 'error' ? (
-                                <Alert
-                                    tone="danger"
-                                    role="alert"
-                                    title={intl.formatMessage(messages.saveFailed)}
-                                    actions={
-                                        <Button size="sm" type="submit">
-                                            {intl.formatMessage(messages.retry)}
-                                        </Button>
-                                    }
+                        <RevealContext value={registry}>
+                            <ErrorSectionsContext value={errorSections}>
+                                <FieldsProvider
+                                    components={entries}
+                                    locales={formLocales}
+                                    {...(relationSource !== undefined ? { relationSource } : {})}
+                                    {...(uploadSource !== undefined ? { uploadSource } : {})}
+                                    {...(checkSource !== undefined ? { checkSource } : {})}
+                                    binding={FormBinding}
                                 >
-                                    {errorDetail}
-                                </Alert>
-                            ) : null}
-                            <AsideLayout
-                                className={layoutClassName}
-                                mainClassName={styles.stack}
-                                aside={
-                                    sidebar.length > 0 ? (
-                                        <Aside
-                                            label={intl.formatMessage(messages.sidebar)}
-                                            className={sidebarClassName}
-                                        >
-                                            {sidebar.map((node, index) => (
-                                                <SidebarNode
-                                                    key={index}
-                                                    node={node}
-                                                    fields={resolved.fieldsByName}
-                                                    storageKey={sidebarStorageKey}
-                                                />
-                                            ))}
-                                        </Aside>
-                                    ) : null
-                                }
-                            >
-                                <LayoutNodes nodes={laidOut} fields={resolved.fieldsByName} />
-                                {flow.length > 0 ? (
-                                    <FieldFlow nodes={flow} fields={resolved.fieldsByName} />
-                                ) : null}
-                            </AsideLayout>
-                            {hasFooter ? (
-                                <div ref={footer} className={cx(styles.footer, footerClassName)}>
-                                    <span
-                                        className={cx(
-                                            styles.status,
-                                            state.status === 'error' && styles.statusError,
-                                        )}
-                                        role="status"
+                                    <form
+                                        ref={root}
+                                        id={id}
+                                        aria-label={ariaLabel}
+                                        noValidate
+                                        className={cx(styles.form, className)}
+                                        onSubmit={(event) => {
+                                            event.preventDefault();
+                                            void form.submit().then(handle);
+                                        }}
+                                        onKeyDown={onKeyDown}
                                     >
-                                        {state.status === 'error' ? (
-                                            intl.formatMessage(messages.saveFailed)
-                                        ) : state.dirty ? (
-                                            intl.formatMessage(messages.unsaved)
-                                        ) : savedShown && state.status !== 'submitting' ? (
-                                            <>
-                                                <Icon icon={CircleCheck} />
-                                                {intl.formatMessage(messages.saved)}
-                                            </>
+                                        {showSummary ? (
+                                            <ErrorSummary
+                                                errors={orderedErrors}
+                                                fields={resolved.fields}
+                                                onSelect={goTo}
+                                                className={cx(
+                                                    summaryClassName ?? styles.summary,
+                                                    hasPanel('errors') && styles.besideAsideHidden,
+                                                )}
+                                            />
                                         ) : null}
-                                    </span>
-                                    {actions}
-                                    {submitLabel !== null ? (
-                                        <Tooltip
-                                            content={intl.formatMessage(messages.saveShortcut, {
-                                                modifier: apple ? '⌘' : 'Ctrl',
-                                            })}
-                                        >
-                                            <Button
-                                                type="submit"
-                                                variant="primary"
-                                                isPending={state.status === 'submitting'}
-                                                aria-keyshortcuts={
-                                                    apple ? 'Meta+Enter' : 'Control+Enter'
+                                        {state.status === 'error' ? (
+                                            <Alert
+                                                tone="danger"
+                                                role="alert"
+                                                title={intl.formatMessage(messages.saveFailed)}
+                                                actions={
+                                                    <Button size="sm" type="submit">
+                                                        {intl.formatMessage(messages.retry)}
+                                                    </Button>
                                                 }
                                             >
-                                                {submitLabel ?? intl.formatMessage(messages.save)}
-                                            </Button>
-                                        </Tooltip>
-                                    ) : null}
-                                </div>
-                            ) : null}
-                        </form>
-                        <ConflictDialog
-                            isOpen={state.status === 'conflict' || resolving}
-                            fields={resolved.fields}
-                            values={state.values}
-                            current={state.conflict?.current ?? null}
-                            isPending={resolving}
-                            onReload={() => void resolve('reload')}
-                            onOverwrite={() => void resolve('overwrite')}
-                        />
-                        {leave.dialog}
-                    </FieldsProvider>
-                </ErrorSectionsContext>
-            </RevealContext>
+                                                {errorDetail}
+                                            </Alert>
+                                        ) : null}
+                                        <AsideLayout
+                                            className={layoutClassName}
+                                            mainClassName={styles.stack}
+                                            aside={
+                                                sidebar.length > 0 ? (
+                                                    <Aside
+                                                        label={intl.formatMessage(messages.sidebar)}
+                                                        className={sidebarClassName}
+                                                    >
+                                                        {sidebar.map((node, index) => (
+                                                            <SidebarNode
+                                                                key={index}
+                                                                node={node}
+                                                                fields={resolved.fieldsByName}
+                                                                storageKey={sidebarStorageKey}
+                                                            />
+                                                        ))}
+                                                    </Aside>
+                                                ) : null
+                                            }
+                                        >
+                                            <LayoutNodes
+                                                nodes={laidOut}
+                                                fields={resolved.fieldsByName}
+                                            />
+                                            {flow.length > 0 ? (
+                                                <FieldFlow
+                                                    nodes={flow}
+                                                    fields={resolved.fieldsByName}
+                                                />
+                                            ) : null}
+                                        </AsideLayout>
+                                        {hasFooter ? (
+                                            <div
+                                                ref={footer}
+                                                className={cx(
+                                                    styles.footer,
+                                                    hasPanel('save') && styles.besideAsideHidden,
+                                                    footerClassName,
+                                                )}
+                                            >
+                                                <SaveControls {...save} />
+                                            </div>
+                                        ) : null}
+                                    </form>
+                                    <ConflictDialog
+                                        isOpen={state.status === 'conflict' || resolving}
+                                        fields={resolved.fields}
+                                        values={state.values}
+                                        current={state.conflict?.current ?? null}
+                                        isPending={resolving}
+                                        onReload={() => void resolve('reload')}
+                                        onOverwrite={() => void resolve('overwrite')}
+                                    />
+                                    {leave.dialog}
+                                </FieldsProvider>
+                            </ErrorSectionsContext>
+                        </RevealContext>
+                    </SummaryContext>
+                </SaveContext>
+            </PanelsContext>
         </FormContext>
     );
 }

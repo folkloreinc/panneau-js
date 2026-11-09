@@ -80,4 +80,5 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0072](0072-touch-targets-follow-the-density.md)                  | Touch targets follow the density                                              | Proposed                          |
 | [0073](0073-selections-focus-rings-and-outlined-buttons.md)       | Selections apart from the accent, focus rings, and outlined filled buttons    | Proposed                          |
 | [0074](0074-asides-next-to-lists-and-forms.md)                    | One aside, next to lists and forms                                            | Proposed                          |
-| [0075](0075-resource-types.md)                                    | Resource types                                                                | Proposed                          |
+| [0075](0075-panels-of-a-form-sidebar.md)                          | The panels of a form's sidebar, defined by the resource                       | Proposed                          |
+| [0076](0076-resource-types.md)                                    | Resource types                                                                | Proposed                          |

@@ -173,7 +173,7 @@ function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) 
             if (route.name === 'resource.create' && !resolved.abilities.create) {
                 return forbidden;
             }
-            // A new item of a resource with types has the type of its route (decision 0075):
+            // A new item of a resource with types has the type of its route (decision 0076):
             // without one, the user chooses it, unless there's a single type to create.
             let type: string | undefined;
             if (route.name === 'resource.create' && hasResourceTypes(resource)) {

@@ -43,6 +43,11 @@ export interface PanneauPlugin {
     /** Layout node components, for `component` nodes of form layouts. */
     components?: Record<string, PluginComponent>;
     /**
+     * Panels of the sidebar of forms, by name, for `sidebar` nodes with a `panel` (decision 0075).
+     * They get `FormPanelProps` of `@panneau/forms`. A later plugin overrides a built-in panel.
+     */
+    panels?: Record<string, PluginComponent>;
+    /**
      * Previews of items, by name, for resources whose `features.preview` is a `component`
      * (`{ "mode": "component", "component": "page" }`). They get `PreviewProps`.
      */
@@ -64,6 +69,7 @@ export type PluginComponentKind =
     | 'pages'
     | 'widgets'
     | 'components'
+    | 'panels'
     | 'previews';
 
 const COMPONENT_KINDS: PluginComponentKind[] = [
@@ -74,6 +80,7 @@ const COMPONENT_KINDS: PluginComponentKind[] = [
     'pages',
     'widgets',
     'components',
+    'panels',
     'previews',
 ];
 
@@ -88,6 +95,7 @@ export interface PluginRegistry {
     pages: ReadonlyMap<string, PluginComponent>;
     widgets: ReadonlyMap<string, PluginComponent>;
     components: ReadonlyMap<string, PluginComponent>;
+    panels: ReadonlyMap<string, PluginComponent>;
     previews: ReadonlyMap<string, PluginComponent>;
     /** The commands of the plugins, in plugin order: `getCommands()` makes them. */
     commands: readonly CommandSource[];

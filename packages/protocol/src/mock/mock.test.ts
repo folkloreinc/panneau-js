@@ -1234,7 +1234,7 @@ describe('createExampleDefinition', () => {
     });
 });
 
-describe('the resource types of the mock backend (decision 0075)', () => {
+describe('the resource types of the mock backend (decision 0076)', () => {
     function createTypedBackend() {
         const definition = createDefinition();
         definition.resources.push({

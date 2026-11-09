@@ -108,6 +108,7 @@ export interface AsidePanelProps {
     defaultCollapsed?: boolean;
     headingLevel?: 2 | 3 | 4 | 5 | 6;
     id?: string;
+    isBesideOnly?: boolean;
     isCollapsible?: boolean;
     isExpanded?: boolean;
     // (undocumented)

@@ -4,6 +4,7 @@
 
 ```ts
 
+import { ComponentType } from 'react';
 import type { Field } from '@panneau/protocol';
 import type { FieldBindingProps } from '@panneau/fields';
 import { FieldCheckSource } from '@panneau/fields';
@@ -61,6 +62,19 @@ export function Form(input: FormProps): JSX.Element;
 // @public
 export function FormBinding(input: FieldBindingProps): JSX.Element | null;
 
+// @public
+export type FormPanelComponent = ComponentType<FormPanelProps>;
+
+// @public
+export interface FormPanelProps {
+    children: ReactNode;
+    fields: ReadonlyMap<string, Field>;
+    // (undocumented)
+    form: Form_2;
+    // (undocumented)
+    node: LayoutNode;
+}
+
 // @public (undocumented)
 export interface FormProps extends Omit<FormViewProps, 'form' | 'fields' | 'layout'>, Pick<FormOptions, 'values' | 'version' | 'mode' | 'store' | 'formatError' | 'onSubmit'> {
     fields: readonly Field[];
@@ -93,6 +107,7 @@ export interface FormViewProps {
     locales?: readonly string[];
     onReload?: () => void;
     onSubmitted?: (result: unknown) => void;
+    panels?: Readonly<Record<string, FormPanelComponent>>;
     relationSource?: RelationSource | null;
     saved?: boolean;
     showSavedToast?: boolean;

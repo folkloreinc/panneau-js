@@ -186,7 +186,7 @@ export function ResourceListPage({
                 title={title}
                 actions={
                     !abilities.create ? undefined : creatableTypes.length > 1 ? (
-                        // A resource with types: a menu of the types to create (decision 0075)
+                        // A resource with types: a menu of the types to create (decision 0076)
                         <MenuTrigger>
                             <Button variant="primary" icon={Plus} iconEnd={ChevronDown}>
                                 {createLabel}

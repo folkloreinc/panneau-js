@@ -33,6 +33,7 @@ import styles from '../Form.module.css';
 import { ErrorSectionsContext, RevealContext, useFormContext, useFormState } from '../context';
 import { cx } from '../cx';
 import { messages } from '../messages';
+import { BESIDE_ONLY_PANELS, PanelsContext } from '../panels/panels';
 
 export interface LayoutProps {
     nodes: readonly LayoutNode[];
@@ -177,10 +178,12 @@ export interface SidebarNodeProps {
 /**
  * A `sidebar` node of a form layout: a panel of the form's aside (decision 0074). With a `label`,
  * the user can collapse it, unless `collapsible: false`, and the browser remembers it. It opens to
- * reveal a field, and after a failed save when it holds an error, as a section does.
+ * reveal a field, and after a failed save when it holds an error, as a section does. With a
+ * `panel`, its component renders it, with its children (decision 0075).
  */
 export function SidebarNode({ node, fields, storageKey }: SidebarNodeProps) {
     const form = useFormContext();
+    const panels = use(PanelsContext);
     const registry = use(RevealContext);
     const errorSections = use(ErrorSectionsContext);
     const names = getLayoutFieldNames(node.children ?? []);
@@ -209,8 +212,19 @@ export function SidebarNode({ node, fields, storageKey }: SidebarNodeProps) {
         };
     }, [registry, errorSections, names]);
 
+    const content = (
+        <div className={styles.stack}>
+            {node.description !== undefined ? (
+                <p className={styles.sectionDescription}>{node.description}</p>
+            ) : null}
+            <LayoutNodes nodes={node.children ?? []} fields={fields} />
+        </div>
+    );
+    const Panel = node.panel !== undefined ? panels.get(node.panel) : undefined;
+    const children = (node.children ?? []).length > 0 ? content : null;
     return (
         <AsidePanel
+            isBesideOnly={node.panel !== undefined && BESIDE_ONLY_PANELS.has(node.panel)}
             title={node.label}
             titleEnd={
                 node.label !== undefined ? <ErrorBadge form={form} names={names} /> : undefined
@@ -222,12 +236,10 @@ export function SidebarNode({ node, fields, storageKey }: SidebarNodeProps) {
                 setStored(next ? 'expanded' : 'collapsed');
             }}
         >
-            <div className={styles.stack}>
-                {node.description !== undefined ? (
-                    <p className={styles.sectionDescription}>{node.description}</p>
-                ) : null}
-                <LayoutNodes nodes={node.children ?? []} fields={fields} />
-            </div>
+            {Panel !== undefined
+                ? // A panel of the registry, looked up by name: not created during render.
+                  createElement(Panel, { ...node.props, node, form, fields, children })
+                : content}
         </AsidePanel>
     );
 }

@@ -8,7 +8,7 @@ import { type ResolvedList, resolveList } from './list';
 /** What the current user can do with a resource as a whole. */
 export interface ResourceAbilities {
     viewAny: boolean;
-    /** With `types`, only when one of them can be created too (decision 0075). */
+    /** With `types`, only when one of them can be created too (decision 0076). */
     create: boolean;
 }
 

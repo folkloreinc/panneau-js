@@ -1,5 +1,5 @@
 /**
- * The create route of a resource with types (decision 0075), without a type: a card for each type
+ * The create route of a resource with types (decision 0076), without a type: a card for each type
  * the user can create, which opens its form.
  */
 import type { Meta, StoryObj } from '@storybook/react-vite';

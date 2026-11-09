@@ -101,7 +101,7 @@ export function ItemPanel({
         panel.current?.focus();
     }, [id]);
 
-    // The fields of the item's type after those of the resource (decision 0075)
+    // The fields of the item's type after those of the resource (decision 0076)
     const columns = toDetailsColumns(
         getVisibleFields(getTypeFields(resource, item?.[ITEM_TYPE_KEY])),
     );

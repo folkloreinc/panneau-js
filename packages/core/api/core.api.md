@@ -419,6 +419,7 @@ export interface PanneauPlugin {
     listLayouts?: Record<string, PluginComponent>;
     locales?: Record<string, MessagesLoader>;
     pages?: Record<string, PluginComponent>;
+    panels?: Record<string, PluginComponent>;
     previews?: Record<string, PluginComponent>;
     themes?: Record<string, Theme>;
     widgets?: Record<string, PluginComponent>;
@@ -446,7 +447,7 @@ export function partitionByAction(action: Action, items: readonly Item[]): {
 export type PluginComponent = ComponentType<any>;
 
 // @public
-export type PluginComponentKind = 'fields' | 'displays' | 'listLayouts' | 'actions' | 'pages' | 'widgets' | 'components' | 'previews';
+export type PluginComponentKind = 'fields' | 'displays' | 'listLayouts' | 'actions' | 'pages' | 'widgets' | 'components' | 'panels' | 'previews';
 
 // @public
 export interface PluginRegistry {
@@ -464,6 +465,8 @@ export interface PluginRegistry {
     locales: ReadonlyMap<string, readonly MessagesLoader[]>;
     // (undocumented)
     pages: ReadonlyMap<string, PluginComponent>;
+    // (undocumented)
+    panels: ReadonlyMap<string, PluginComponent>;
     plugins: readonly PanneauPlugin[];
     // (undocumented)
     previews: ReadonlyMap<string, PluginComponent>;

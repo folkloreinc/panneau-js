@@ -171,3 +171,10 @@
     margin: 0;
     font-weight: var(--panneau-font-weight-medium);
 }
+
+/* The actions of an item in the sidebar of its form (decision 0075). */
+.panelActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--panneau-space-2);
+}

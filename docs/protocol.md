@@ -72,7 +72,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 }
 ```
 
-- **`types`** ([0075](decisions/0075-resource-types.md)): the types of the items, each with fields of its own (`ResourceType`: `id`, `label`, `description`, `icon`, `fields`, `abilities`). Every item has a `type` among their ids, set when it is created. Its fields are those of the resource, then those of its type, in forms, details and validation; type fields are named apart from the resource's, and none is named `type`. `form.layout` can name the fields of every type: each form leaves out those of the other types.
+- **`types`** ([0076](decisions/0076-resource-types.md)): the types of the items, each with fields of its own (`ResourceType`: `id`, `label`, `description`, `icon`, `fields`, `abilities`). Every item has a `type` among their ids, set when it is created. Its fields are those of the resource, then those of its type, in forms, details and validation; type fields are named apart from the resource's, and none is named `type`. `form.layout` can name the fields of every type: each form leaves out those of the other types.
     - `abilities.create: false` keeps a type out of the choices when creating, and the backend refuses to create one (a singleton such as the home page).
     - To show and filter by type, the backend declares a `select` field `type`, with the types as its options and `notInForm: true`, and a `select` filter `type`.
 
@@ -348,6 +348,7 @@ Node types:
     - `row`, whose children have `width` on a 12-column grid;
     - `column`, `section`, `tabs` and `tab`, `sidebar`.
     - Each `sidebar` is a panel of the form's aside, next to the form and in view as it scrolls, or below it on narrow screens. Its `label` is the title of the panel, which the user can collapse unless `collapsible: false`; `collapsed: true` starts it collapsed. See [decisions/0074](decisions/0074-asides-next-to-lists-and-forms.md).
+    - A `sidebar` with a `panel` is a block of the app or of a plugin, which renders its `children` and takes its `props`: `save` (the state of the form and its Save button), `errors` (the errors after a failed save), `publication` (the state of the publication, with Publish and Unpublish) and `actions` (the actions of the item). `save` and `errors` show beside the form only. A client without the panel renders its children. See [decisions/0075](decisions/0075-panels-of-a-form-sidebar.md).
 - **Content:** `field`, `text` (a static help paragraph), `component` (rendered by a plugin, with its `children` rendered: a `component` without its plugin renders its children, [0065](decisions/0065-compound-fields.md)).
 
 Any node can have `visibleWhen`.
@@ -656,7 +657,7 @@ A field with `"check": true`, at the top of a resource or of one of its types, c
 **Items:**
 
 - Every item has `id`, `version` and `abilities`. `abilities` includes the ids of the actions allowed on that item (`"publish": true`). `view`, `update`, `duplicate` and `delete` show the built-in item actions ([decisions/0040](decisions/0040-row-links-and-open-mode.md)): without them, the client shows none.
-- **Item types.** An item of a resource with `types` has `type`, the id of its type ([0075](decisions/0075-resource-types.md)). A create sends it: no type, or one the resource doesn't have, is a `422` with `errors.type`, and a type with `abilities.create: false` is a `403`. Updates ignore it. The fields of the item's type are validated, saved and serialized with those of the resource.
+- **Item types.** An item of a resource with `types` has `type`, the id of its type ([0076](decisions/0076-resource-types.md)). A create sends it: no type, or one the resource doesn't have, is a `422` with `errors.type`, and a type with `abilities.create: false` is a `403`. Updates ignore it. The fields of the item's type are validated, saved and serialized with those of the resource.
 - **Abilities are enforced.** A resource without `viewAny` answers `403` on its list, one without `create` on creates, and an item without `view`, `update` or `delete` on those requests. Items leave out the values of fields with `view: false` ([0046](decisions/0046-abilities-in-the-ui.md)).
 - **Single items.** Show, create and update return `{ "data": Item }`. They also send `version` as a quoted `ETag` header (`"3"`).
 - **Partial updates.** An update only validates and saves the fields it sends: a list that edits a field in place sends that field alone, with `If-Match` ([decisions/0043](decisions/0043-inline-editing.md)). Its "Undo" saves the previous value the same way, with the version the save just got ([0063](decisions/0063-undo-instead-of-a-confirmation.md)): the backend needs nothing else. Whether a field applies (`visibleWhen`), and rules that read other fields, use the item's values for the fields that aren't sent: a field shown when `status` is `published`, sent alone, is saved on a published item.

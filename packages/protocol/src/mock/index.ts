@@ -373,7 +373,7 @@ function fieldsWithout(resource: ResourceInput, ability: 'view' | 'update'): Set
 }
 
 /**
- * The resource as the items of a type see it (decision 0075): with the fields of the type after its
+ * The resource as the items of a type see it (decision 0076): with the fields of the type after its
  * own. The resource itself without a type.
  */
 function withTypeFields(resource: ResourceInput, type: unknown): ResourceInput {
@@ -406,7 +406,7 @@ function writableValues(resource: ResourceInput, body: Values): Values {
  * `view`, `update` or `delete` on those requests; items leave out the values of fields with
  * `view: false`, and writes ignore those of fields with `update: false`. A resource with `types`
  * needs the `type` of a new item, among the types it can create, and its items have the fields of
- * their type (decision 0075). Values are checked with
+ * their type (decision 0076). Values are checked with
  * the portable rules. Used to test the conformance kit, and to develop frontends without a real
  * backend.
  */
@@ -997,7 +997,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                     return problem(403, 'Items of this resource can’t be created.');
                 }
                 const raw = await readBody();
-                // A resource with types: the body says the type of the new item (decision 0075).
+                // A resource with types: the body says the type of the new item (decision 0076).
                 const typed = hasResourceTypes(resource);
                 const type = typed ? getResourceType(resource, raw[ITEM_TYPE_KEY]) : undefined;
                 if (typed && type === undefined) {
