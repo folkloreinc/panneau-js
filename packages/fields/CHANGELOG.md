@@ -1,5 +1,14 @@
 # @panneau/fields
 
+## 5.0.0-alpha.28
+
+### Patch Changes
+
+- Updated dependencies [041732f]
+  - @panneau/protocol@5.0.0-alpha.28
+  - @panneau/ui@5.0.0-alpha.28
+  - @panneau/intl@5.0.0-alpha.28
+
 ## 5.0.0-alpha.27
 
 ### Patch Changes
