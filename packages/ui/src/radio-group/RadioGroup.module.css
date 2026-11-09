@@ -50,7 +50,10 @@
 }
 
 .radio[data-selected] .circle {
-    border-color: var(--panneau-radio-checked-color, var(--panneau-color-accent));
+    border-color: var(
+        --panneau-radio-checked-color,
+        var(--panneau-selected-bg, var(--panneau-color-accent))
+    );
     border-width: var(--panneau-radio-checked-border-width, 0.3125rem);
 }
 
@@ -145,9 +148,15 @@
 
 /* The selected card: a border of twice the width, drawn inside so that nothing moves. */
 .card[data-selected] {
-    border-color: var(--panneau-radio-card-border-color-selected, var(--panneau-color-accent));
+    border-color: var(
+        --panneau-radio-card-border-color-selected,
+        var(--panneau-selected-bg, var(--panneau-color-accent))
+    );
     box-shadow: inset 0 0 0 var(--panneau-border-width)
-        var(--panneau-radio-card-border-color-selected, var(--panneau-color-accent));
+        var(
+            --panneau-radio-card-border-color-selected,
+            var(--panneau-selected-bg, var(--panneau-color-accent))
+        );
 }
 
 .card[data-invalid] {

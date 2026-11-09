@@ -20,8 +20,8 @@
 }
 
 .editor:has(.content:focus) {
-    border-color: var(--panneau-color-focus);
-    box-shadow: 0 0 0 1px var(--panneau-color-focus);
+    border-color: var(--panneau-input-border-color-focus, var(--panneau-color-focus));
+    box-shadow: var(--panneau-input-focus-ring, 0 0 0 1px var(--panneau-color-focus));
 }
 
 .editor[data-invalid] {
@@ -29,7 +29,7 @@
 }
 
 .editor[data-invalid]:has(.content:focus) {
-    box-shadow: 0 0 0 1px var(--panneau-color-danger);
+    box-shadow: var(--panneau-input-focus-ring-invalid, 0 0 0 1px var(--panneau-color-danger));
 }
 
 .editor[data-disabled] {
@@ -99,9 +99,10 @@
     background-color: color-mix(in srgb, var(--panneau-color-text) 12%, transparent);
 }
 
+/* A format that applies to the selection is on: filled, as a checked box. */
 .button[data-selected] {
-    color: var(--panneau-color-accent-text);
-    background-color: var(--panneau-color-accent-subtle);
+    color: var(--panneau-selected-text, var(--panneau-color-accent-text));
+    background-color: var(--panneau-selected-bg, var(--panneau-color-accent));
 }
 
 .button[data-focus-visible] {

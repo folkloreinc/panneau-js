@@ -6,6 +6,8 @@ import {
     contrastRatio,
     ensureContrast,
     parseColor,
+    parseColorOver,
+    parseColorWithAlpha,
     readableTextColor,
     toHex,
 } from './color';
@@ -41,5 +43,17 @@ describe('colors', () => {
     it('picks white or black text, whichever reads better', () => {
         expect(readableTextColor(parseColor('#1d4ed8') ?? WHITE)).toEqual(WHITE);
         expect(readableTextColor(parseColor('#facc15') ?? WHITE)).toEqual(BLACK);
+    });
+
+    it('reads the opacity of a color, and blends it over another', () => {
+        expect(parseColorWithAlpha('#05f')).toEqual({ color: { r: 0, g: 85, b: 255 }, alpha: 1 });
+        expect(parseColorWithAlpha('rgb(0 0 0 / 0.45)')).toEqual({ color: BLACK, alpha: 0.45 });
+        expect(parseColorWithAlpha('rgba(0, 0, 0, 45%)')).toEqual({ color: BLACK, alpha: 0.45 });
+        expect(parseColorWithAlpha('#00000080')?.alpha).toBeCloseTo(0.5, 2);
+        expect(parseColorWithAlpha('#0008')?.alpha).toBeCloseTo(0.53, 2);
+        expect(parseColorWithAlpha('var(--x)')).toBeNull();
+        expect(parseColorOver('rgb(0 0 0 / 0.5)', WHITE)).toEqual({ r: 127.5, g: 127.5, b: 127.5 });
+        expect(parseColorOver('#ff0000', null)).toEqual({ r: 255, g: 0, b: 0 });
+        expect(parseColorOver('rgb(0 0 0 / 0.5)', null)).toBeNull();
     });
 });

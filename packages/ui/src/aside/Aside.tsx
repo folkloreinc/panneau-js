@@ -39,7 +39,7 @@ export interface AsideLayoutProps {
 }
 
 /**
- * Places an aside next to the main content of a page or a form (decision 0073): beside it from
+ * Places an aside next to the main content of a page or a form (decision 0074): beside it from
  * 56rem of the layout, below it or over it otherwise. Beside the content, the aside stays in view
  * as the page scrolls.
  */
@@ -98,7 +98,7 @@ export interface AsideProps {
 }
 
 /**
- * The column next to the main content of a page or a form, made of panels (decision 0073): the
+ * The column next to the main content of a page or a form, made of panels (decision 0074): the
  * details of an item next to its list, the sidebar of a form. Placed by `AsideLayout`.
  */
 export function Aside({

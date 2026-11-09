@@ -18,12 +18,12 @@
 }
 
 .card[data-current] {
-    border-color: var(--panneau-color-accent);
-    box-shadow: inset 0 0 0 1px var(--panneau-color-accent);
+    border-color: var(--panneau-selected-bg, var(--panneau-color-accent));
+    box-shadow: inset 0 0 0 1px var(--panneau-selected-bg, var(--panneau-color-accent));
 }
 
 .card[data-selected] {
-    background-color: var(--panneau-color-accent-subtle);
+    background-color: var(--panneau-selected-subtle, var(--panneau-color-accent-subtle));
     border-color: var(--panneau-color-border-control);
 }
 

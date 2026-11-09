@@ -1,4 +1,4 @@
-/* The details of an item next to its list, in an aside (decision 0073). Beside the list, it is
+/* The details of an item next to its list, in an aside (decision 0074). Beside the list, it is
    tall enough for a preview. */
 @container panneau-aside-layout (min-width: 56rem) {
     .panel {

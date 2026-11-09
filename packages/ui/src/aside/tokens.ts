@@ -1,6 +1,6 @@
 import { defineComponentTokens } from '../theme/componentTokens';
 
-/** Tokens of Aside: the column next to the main content of a page or a form (decision 0073). */
+/** Tokens of Aside: the column next to the main content of a page or a form (decision 0074). */
 export const asideTokens = defineComponentTokens('aside', {
     /** Width, beside the content or over it. */
     width: '22rem',

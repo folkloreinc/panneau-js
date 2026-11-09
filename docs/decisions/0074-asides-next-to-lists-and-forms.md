@@ -1,4 +1,4 @@
-# 0073: One aside, next to lists and forms
+# 0074: One aside, next to lists and forms
 
 - Status: proposed
 - Date: 2026-11-09

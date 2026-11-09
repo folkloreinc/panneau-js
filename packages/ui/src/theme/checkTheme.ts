@@ -1,7 +1,7 @@
-import { type Rgb, WHITE, contrastRatio, mixColors, parseColor } from './color';
+import { type Rgb, WHITE, contrastRatio, mixColors, parseColor, parseColorOver } from './color';
 import { type ColorDifferenceCheck, checkColorDifferences } from './colorVision';
 import { type Theme, paletteVariables, resolveReference, themeSurfaces } from './theme';
-import { MIN_CONTRAST_RATIO, SUBTLE_AMOUNTS, resolveTone } from './tones';
+import { MIN_CONTRAST_RATIO, SUBTLE_AMOUNTS, type ToneValues, resolveTone } from './tones';
 
 /** A pair of colors that a theme must keep readable. */
 export interface ThemeContrastCheck {
@@ -43,6 +43,12 @@ const CHART_TOKENS = [
     'panneau-chart-diverging-positive',
 ];
 
+/** Component tokens checked here, and the token each one falls back to when a theme omits it. */
+const FALLBACKS: Readonly<Record<string, string>> = {
+    'panneau-selected-bg': 'panneau-color-accent',
+    'panneau-selected-text': 'panneau-color-accent-text',
+};
+
 /** Non-text elements (borders of controls, outlines) need 3:1 (WCAG 2 non-text contrast). */
 const MIN_NON_TEXT_RATIO = 3;
 
@@ -68,6 +74,14 @@ const TOKEN_PAIRS: [name: string, foreground: string, background: string, minimu
         'panneau-color-surface',
         MIN_NON_TEXT_RATIO,
     ],
+    // Checked boxes, selected rows and the current tab: the accent unless the theme sets them.
+    [
+        'selected text on selected',
+        'panneau-selected-text',
+        'panneau-selected-bg',
+        MIN_CONTRAST_RATIO,
+    ],
+    ['selected on surface', 'panneau-selected-bg', 'panneau-color-surface', MIN_NON_TEXT_RATIO],
     // The muted tone has no fill: its text and its outline sit on the surface.
     [
         'muted tone text on surface',
@@ -101,8 +115,10 @@ const TOKEN_PAIRS: [name: string, foreground: string, background: string, minimu
  * on the surface, its solid text on the solid background and its hover), and chart colors (3:1
  * against the surface, and categorical colors distinct with color vision deficiencies). Pairs where a color comes
  * from the default theme and is not set by the theme are skipped, except the surface, which falls
- * back to the default one. Values that refer to the theme's palette or tokens with `var()` are
- * checked as what they refer to; colors Panneau can't read are listed as unchecked.
+ * back to the default one. Selections (`panneau-selected-*`) are checked against the surface, as
+ * the accent when the theme doesn't set them. Values that refer to the theme's palette or tokens
+ * with `var()` are checked as what they refer to, in tokens and in tones, and translucent colors as
+ * they show over what is under them; colors Panneau can't read are listed as unchecked.
  */
 export function checkTheme(theme: Theme): ThemeReport {
     const checks: ThemeContrastCheck[] = [];
@@ -115,12 +131,19 @@ export function checkTheme(theme: Theme): ThemeReport {
             ...theme.tokens,
             ...(scheme === 'dark' ? theme.dark : undefined),
         };
-        const tokens = Object.fromEntries(
+        const tokens: Record<string, string> = Object.fromEntries(
             Object.entries(variables).map(([name, value]) => [
                 name,
                 resolveReference(value, variables),
             ]),
         );
+        // Tokens that default to another one, as their fallback in the CSS does.
+        Object.entries(FALLBACKS).forEach(([name, fallback]) => {
+            const value = tokens[fallback];
+            if (tokens[name] === undefined && value !== undefined) {
+                tokens[name] = value;
+            }
+        });
         const surface = tokens['panneau-color-surface'];
         const surfaceColor = surface !== undefined ? parseColor(surface) : DEFAULT_SURFACES[scheme];
         const add = (
@@ -128,9 +151,11 @@ export function checkTheme(theme: Theme): ThemeReport {
             foreground: string,
             background: string,
             minimum: number,
-            backgroundColor: Rgb | null = parseColor(background),
+            // A translucent background shows the surface through it, and a translucent
+            // foreground shows the background.
+            backgroundColor: Rgb | null = parseColorOver(background, surfaceColor),
         ) => {
-            const foregroundColor = parseColor(foreground);
+            const foregroundColor = parseColorOver(foreground, backgroundColor);
             checks.push({
                 scheme,
                 name,
@@ -173,7 +198,13 @@ export function checkTheme(theme: Theme): ThemeReport {
         Object.entries(theme.tones ?? {}).forEach(([tone, toneInput]) => {
             const input =
                 typeof toneInput === 'string' ? resolveReference(toneInput, palette) : toneInput;
-            const values = resolveTone(input, surfaces)[scheme];
+            // Values given one by one can refer to the palette or to tokens, like tokens can.
+            const values = Object.fromEntries(
+                Object.entries(resolveTone(input, surfaces)[scheme]).map(([key, value]) => [
+                    key,
+                    resolveReference(value, variables),
+                ]),
+            ) as ToneValues;
             add(
                 `tone ${tone}: text on surface`,
                 values.text,
@@ -185,7 +216,7 @@ export function checkTheme(theme: Theme): ThemeReport {
             // against the surface of the scheme when it can't be read directly.
             const color = typeof input === 'string' ? parseColor(input) : null;
             const subtleColor =
-                parseColor(values.subtle) ??
+                parseColorOver(values.subtle, surfaceColor) ??
                 (color !== null && surfaceColor !== null
                     ? mixColors(surfaceColor, color, SUBTLE_AMOUNTS[scheme])
                     : null);

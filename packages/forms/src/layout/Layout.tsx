@@ -175,7 +175,7 @@ export interface SidebarNodeProps {
 }
 
 /**
- * A `sidebar` node of a form layout: a panel of the form's aside (decision 0073). With a `label`,
+ * A `sidebar` node of a form layout: a panel of the form's aside (decision 0074). With a `label`,
  * the user can collapse it, unless `collapsible: false`, and the browser remembers it. It opens to
  * reveal a field, and after a failed save when it holds an error, as a section does.
  */

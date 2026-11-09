@@ -32,6 +32,6 @@
 /* The days between the start and the end. */
 .cell.cell[data-selected]:not([data-selection-start], [data-selection-end]) {
     color: var(--panneau-color-text);
-    background-color: var(--panneau-color-accent-subtle);
+    background-color: var(--panneau-selected-subtle, var(--panneau-color-accent-subtle));
     border-radius: 0;
 }

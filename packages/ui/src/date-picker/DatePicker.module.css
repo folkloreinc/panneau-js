@@ -31,8 +31,8 @@
 }
 
 .segment[data-focused] {
-    color: var(--panneau-color-accent-text);
-    background-color: var(--panneau-color-accent);
+    color: var(--panneau-selected-text, var(--panneau-color-accent-text));
+    background-color: var(--panneau-selected-bg, var(--panneau-color-accent));
 }
 
 .button {
@@ -148,8 +148,14 @@
 }
 
 .cell[data-selected] {
-    color: var(--panneau-calendar-selected-color, var(--panneau-color-accent-text));
-    background-color: var(--panneau-calendar-selected-bg, var(--panneau-color-accent));
+    color: var(
+        --panneau-calendar-selected-color,
+        var(--panneau-selected-text, var(--panneau-color-accent-text))
+    );
+    background-color: var(
+        --panneau-calendar-selected-bg,
+        var(--panneau-selected-bg, var(--panneau-color-accent))
+    );
 }
 
 .cell[data-today]:not([data-selected]) {

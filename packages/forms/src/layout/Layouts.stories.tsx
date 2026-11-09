@@ -241,7 +241,7 @@ export const LocalizedFields: Story = {
 
 /**
  * A layout places its fields: rows with widths out of 12, sections, and a sidebar next to the main
- * column, whose panels collapse under their title (decision 0073). The app gives a form with a
+ * column, whose panels collapse under their title (decision 0074). The app gives a form with a
  * sidebar the width of a list.
  */
 export const RowsSectionsAndSidebar: Story = {

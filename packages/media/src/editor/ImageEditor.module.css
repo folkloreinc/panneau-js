@@ -229,9 +229,9 @@
 }
 
 .ratio[data-selected] {
-    color: var(--panneau-color-accent);
-    background-color: var(--panneau-color-accent-subtle);
-    border-color: var(--panneau-color-accent);
+    color: var(--panneau-selected-bg, var(--panneau-color-accent));
+    background-color: var(--panneau-selected-subtle, var(--panneau-color-accent-subtle));
+    border-color: var(--panneau-selected-bg, var(--panneau-color-accent));
 }
 
 .ratio[data-focus-visible] {

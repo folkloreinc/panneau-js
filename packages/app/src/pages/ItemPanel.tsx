@@ -69,7 +69,7 @@ export interface ItemPanelProps {
 }
 
 /**
- * The details of an item next to its list (the show route), in an aside (decision 0073): its values
+ * The details of an item next to its list (the show route), in an aside (decision 0074): its values
  * with the displays of the lists, a link to edit it, and the `link` actions of the resource, such
  * as its page on the site. A resource with a `features.preview` gets a preview tab first: a
  * component of a plugin, or its page on the site. The panel can be widened, for previews, and

@@ -16,7 +16,11 @@ export const segmentedControlTokens = defineComponentTokens('segmented-control',
     'segment-font-weight': 'var(--panneau-font-weight-medium)',
     /** Text color of a segment. */
     'segment-color': 'var(--panneau-color-text-muted)',
-    /** Text color of the selected segment, and of a hovered one. */
+    /** Text color of a hovered segment. */
+    'segment-color-hover': 'var(--panneau-color-text)',
+    /** Background of a hovered segment. */
+    'segment-bg-hover': 'transparent',
+    /** Text color of the selected segment. */
     'segment-color-selected': 'var(--panneau-color-text)',
     /** Background of the selected segment. */
     'segment-bg-selected': 'var(--panneau-color-surface-raised)',

@@ -59,7 +59,11 @@
     flex: 1 1 0;
 }
 
-.segment[data-hovered],
+.segment[data-hovered] {
+    color: var(--panneau-segmented-control-segment-color-hover, var(--panneau-color-text));
+    background-color: var(--panneau-segmented-control-segment-bg-hover, transparent);
+}
+
 .segment[data-selected] {
     color: var(--panneau-segmented-control-segment-color-selected, var(--panneau-color-text));
 }

@@ -26,7 +26,11 @@
     height: var(--panneau-switch-height, 1.25rem);
     background-color: var(--panneau-switch-track-bg, var(--panneau-color-border-control));
     border-radius: var(--panneau-switch-radius, var(--panneau-radius-full));
-    transition: background-color var(--panneau-duration);
+    box-shadow: inset 0 0 0 var(--panneau-border-width)
+        var(--panneau-switch-track-border-color, transparent);
+    transition:
+        background-color var(--panneau-duration),
+        box-shadow var(--panneau-duration);
 }
 
 .thumb {
@@ -44,11 +48,18 @@
 }
 
 .control[data-selected] .track {
-    background-color: var(--panneau-switch-checked-bg, var(--panneau-color-accent));
+    box-shadow: none;
+    background-color: var(
+        --panneau-switch-checked-bg,
+        var(--panneau-selected-bg, var(--panneau-color-accent))
+    );
 }
 
 .control[data-selected] .thumb {
-    background-color: var(--panneau-switch-checked-thumb-bg, var(--panneau-color-accent-text));
+    background-color: var(
+        --panneau-switch-checked-thumb-bg,
+        var(--panneau-selected-text, var(--panneau-color-accent-text))
+    );
     /* The thumb travels the width of the track minus its height (both ends keep the same inset). */
     transform: translateX(
         calc(var(--panneau-switch-width, 2.25rem) - var(--panneau-switch-height, 1.25rem))

@@ -35,6 +35,51 @@ export function parseColor(value: string): Rgb | null {
     return null;
 }
 
+const HEX_ALPHA = /^#([0-9a-f]{4}|[0-9a-f]{8})$/i;
+const ALPHA = /^rgba?\(.*[,/]\s*([\d.]+)(%?)\s*\)$/i;
+
+/**
+ * Reads a color like `parseColor()`, with its opacity: `rgb(0 0 0 / 0.45)`, `rgba(0, 0, 0, 45%)`,
+ * `#00000073`. The opacity is 1 for opaque colors.
+ */
+export function parseColorWithAlpha(value: string): { color: Rgb; alpha: number } | null {
+    const color = value.trim();
+    const hex = HEX_ALPHA.exec(color);
+    if (hex?.[1] !== undefined) {
+        const digits =
+            hex[1].length === 4 ? [...hex[1]].map((digit) => digit + digit).join('') : hex[1];
+        const rgb = parseColor(`#${digits.slice(0, 6)}`);
+        return rgb !== null
+            ? { color: rgb, alpha: Number.parseInt(digits.slice(6, 8), 16) / 255 }
+            : null;
+    }
+    const rgb = parseColor(color);
+    if (rgb === null) {
+        return null;
+    }
+    const alpha = ALPHA.exec(color);
+    if (alpha?.[1] === undefined) {
+        return { color: rgb, alpha: 1 };
+    }
+    const amount = Number(alpha[1]) / (alpha[2] === '%' ? 100 : 1);
+    return { color: rgb, alpha: Math.min(1, Math.max(0, amount)) };
+}
+
+/**
+ * Reads a color as it shows over another one: a translucent color is blended with what is under
+ * it. Returns `null` for a color Panneau can't read, or a translucent one over an unknown color.
+ */
+export function parseColorOver(value: string, under: Rgb | null): Rgb | null {
+    const parsed = parseColorWithAlpha(value);
+    if (parsed === null) {
+        return null;
+    }
+    if (parsed.alpha >= 1) {
+        return parsed.color;
+    }
+    return under !== null ? mixColors(under, parsed.color, parsed.alpha) : null;
+}
+
 /** A color as `#rrggbb`. */
 export function toHex({ r, g, b }: Rgb): string {
     return `#${[r, g, b]

@@ -174,7 +174,7 @@ export function ResourceFormPage({
             relationSource={relationSource}
             checkSource={checkSource}
             guardUnsavedChanges
-            // The panels of its sidebar that the user collapsed, per resource (decision 0073)
+            // The panels of its sidebar that the user collapsed, per resource (decision 0074)
             sidebarStorageKey={`form-${resource.id}`}
             saved={savedVersion !== null && item?.version === savedVersion}
             onSubmit={(values, { version, changes }) =>

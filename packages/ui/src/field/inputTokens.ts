@@ -14,4 +14,10 @@ export const inputTokens = defineComponentTokens('input', {
     radius: 'var(--panneau-radius-md)',
     /** Border color of a hovered input. */
     'border-color-hover': 'var(--panneau-color-text-muted)',
+    /** Border color of a focused input. */
+    'border-color-focus': 'var(--panneau-color-focus)',
+    /** Ring around a focused input, as a `box-shadow`: thicker, softer, or `none`. */
+    'focus-ring': '0 0 0 1px var(--panneau-color-focus)',
+    /** Ring around a focused input that has errors, as a `box-shadow`. */
+    'focus-ring-invalid': '0 0 0 1px var(--panneau-color-danger)',
 });

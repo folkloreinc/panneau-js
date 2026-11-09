@@ -7,7 +7,7 @@ export const calendarTokens = defineComponentTokens('calendar', {
     /** Corner radius of a day. */
     'cell-radius': 'var(--panneau-radius-md)',
     /** Text color of the selected day. */
-    'selected-color': 'var(--panneau-color-accent-text)',
+    'selected-color': 'var(--panneau-selected-text, var(--panneau-color-accent-text))',
     /** Background of the selected day. */
-    'selected-bg': 'var(--panneau-color-accent)',
+    'selected-bg': 'var(--panneau-selected-bg, var(--panneau-color-accent))',
 });
