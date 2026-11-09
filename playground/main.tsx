@@ -24,6 +24,16 @@ if (theme !== null) {
     sessionStorage.setItem('panneau-playground-theme', theme);
 }
 
+// `?density=touch` (or `compact`, `comfortable`, `auto`) shows the frame in another density.
+const DENSITIES = ['compact', 'comfortable', 'touch', 'auto'] as const;
+const densityParam =
+    new URLSearchParams(window.location.search).get('density') ??
+    sessionStorage.getItem('panneau-playground-density');
+const density = DENSITIES.find((value) => value === densityParam);
+if (density !== undefined) {
+    sessionStorage.setItem('panneau-playground-density', density);
+}
+
 const definition = {
     ...createPlaygroundDefinition(),
     // Panneau's own login, with its password reset, email verification (decision 0048) and
@@ -36,7 +46,14 @@ const definition = {
         account: true,
         passkeys: true,
     },
-    ...(theme === 'flat' ? { theme: { extends: 'flat' } } : {}),
+    ...(theme === 'flat' || density !== undefined
+        ? {
+              theme: {
+                  ...(theme === 'flat' ? { extends: 'flat' } : {}),
+                  ...(density !== undefined ? { density } : {}),
+              },
+          }
+        : {}),
 };
 
 /**

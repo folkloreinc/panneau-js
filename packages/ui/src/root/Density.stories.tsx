@@ -5,6 +5,7 @@ import { Button } from '../button/Button';
 import { Inline } from '../inline/Inline';
 import { Select } from '../select/Select';
 import { Stack } from '../stack/Stack';
+import { TagsInput } from '../tags-input/TagsInput';
 import { TextInput } from '../text-input/TextInput';
 import { Text } from '../text/Text';
 import type { Density } from '../theme/theme';
@@ -36,6 +37,11 @@ export const Densities: Story = {
                             ]}
                             value="draft"
                         />
+                        <TagsInput
+                            label={`Topics (${density})`}
+                            value={['culture']}
+                            onChange={() => undefined}
+                        />
                         <Inline gap={2}>
                             <Button size="sm">{`Preview (${density})`}</Button>
                             <Button tone="accent">{`Save (${density})`}</Button>
@@ -55,5 +61,14 @@ export const Densities: Story = {
         await expect(height('Preview (touch)')).toBe(36);
         const input = canvas.getByRole('textbox', { name: 'Title (touch)' });
         await expect(getComputedStyle(input).fontSize).toBe('16px');
+        // The tags input is as tall as a text input, with its tags inside
+        for (const density of DENSITIES) {
+            const box = (element: HTMLElement) =>
+                (element.parentElement ?? element).getBoundingClientRect().height;
+            await expect(box(canvas.getByRole('textbox', { name: `Topics (${density})` }))).toBe(
+                canvas.getByRole('textbox', { name: `Title (${density})` }).getBoundingClientRect()
+                    .height,
+            );
+        }
     },
 };

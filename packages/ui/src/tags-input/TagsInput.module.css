@@ -1,10 +1,12 @@
 /* The tags as chips in the control, before the input. */
 
 .control.control {
+    --panneau-tags-input-padding-y: 0.1875rem;
+
     flex-wrap: wrap;
     gap: var(--panneau-space-1);
     height: auto;
-    padding-block: var(--panneau-space-1);
+    padding-block: var(--panneau-tags-input-padding-y);
 }
 
 .group {
@@ -54,7 +56,15 @@
     background-color: var(--panneau-color-hover);
 }
 
-.input {
+/*
+ * The input takes what the control's borders and padding leave of its height, so that the control is
+ * as tall as other inputs while its tags fit on one line, in each density.
+ */
+.control .input {
     flex: 1 1 6rem;
     min-width: 6rem;
+    min-height: calc(
+        var(--panneau-control-height) - 2 * var(--panneau-border-width) - 2 *
+            var(--panneau-tags-input-padding-y)
+    );
 }

@@ -82,6 +82,26 @@ describe('Panneau', () => {
         expect(adapter.getDefinition).not.toHaveBeenCalled();
     });
 
+    it('takes the density of the definition’s theme, auto by default', () => {
+        const adapter = createAdapter(() => Promise.reject(new Error('Not called.')));
+        const { container, unmount } = renderPanneau({
+            adapter,
+            config: createBootConfig({
+                definition: { ...createDefinition(), theme: { density: 'touch' } },
+            }),
+        });
+        expect(container.querySelector('.panneau-root')).toHaveAttribute('data-density', 'touch');
+        unmount();
+        const other = renderPanneau({
+            adapter,
+            config: createBootConfig({ definition: createDefinition() }),
+        });
+        expect(other.container.querySelector('.panneau-root')).toHaveAttribute(
+            'data-density',
+            'auto',
+        );
+    });
+
     it('navigates between routes under the base path, in history mode', async () => {
         const user = userEvent.setup();
         renderPanneau({
