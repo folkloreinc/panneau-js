@@ -1,0 +1,179 @@
+/* The frame of the app with a dock (decision 0076): a bar at the top, the page on a panel inset from
+ * the edges, and the dock stuck to the bottom of the window. The root is a size container, so the
+ * dock sticks rather than being fixed: a fixed element would be placed in the root, not in the
+ * window. Below Panneau's `lg` breakpoint (64rem of the root), the dock is a bar of tabs. */
+
+.layout {
+    /* The sizes of the dock, which `Dock` reads, and the space it takes at the bottom of the window,
+     * which what sticks to the bottom of the page keeps free (`--panneau-frame-bottom`). */
+    --_panneau-dock-item-size: 3.25rem;
+    --_panneau-dock-padding: var(--panneau-space-1);
+    --_panneau-dock-gap: var(--panneau-space-3);
+    --panneau-frame-bottom: calc(
+        var(--_panneau-dock-item-size) + 2 * var(--_panneau-dock-padding) +
+            var(--panneau-border-width) + env(safe-area-inset-bottom, 0px)
+    );
+
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 100dvh;
+    background: var(--panneau-shell-bg, var(--panneau-color-surface-sunken));
+}
+
+.topBar {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-2) var(--panneau-space-3);
+    min-width: 0;
+    min-height: 3.25rem;
+    padding: var(--panneau-space-1) var(--panneau-space-3);
+}
+
+.brand {
+    display: flex;
+    flex: 0 1 auto;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    min-width: 0;
+    min-height: max(var(--panneau-control-height-sm), var(--panneau-target-size));
+    padding-inline: var(--panneau-space-1);
+    border-radius: var(--panneau-radius-md);
+    color: var(--panneau-color-text);
+    font-weight: var(--panneau-font-weight-bold);
+    text-decoration: none;
+    outline: none;
+}
+
+.brand[data-focus-visible] {
+    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+}
+
+.logo {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: var(--panneau-radius-md);
+    background: var(--panneau-sidebar-logo-bg, var(--panneau-color-accent));
+    color: var(--panneau-sidebar-logo-color, var(--panneau-color-accent-text));
+    font-size: var(--panneau-font-size-sm);
+    line-height: 1;
+}
+
+.name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.context {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 18rem;
+}
+
+.topBarEnd {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    margin-inline-start: auto;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 0 var(--panneau-shell-inset, var(--panneau-space-2));
+}
+
+.main:focus {
+    outline: none;
+}
+
+.panel {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: var(--panneau-space-5) var(--panneau-space-4) var(--panneau-space-8);
+    background: var(--panneau-shell-panel-bg, var(--panneau-color-surface));
+    border: var(
+        --panneau-shell-panel-border,
+        var(--panneau-border-width) solid var(--panneau-color-border)
+    );
+    border-radius: var(--panneau-shell-panel-radius, calc(var(--panneau-radius-lg) * 1.5));
+    box-shadow: var(--panneau-shell-panel-shadow, var(--panneau-shadow-sm));
+}
+
+/* The dock stays at the bottom of the window while the page scrolls under it. */
+.dockArea {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    min-width: 0;
+    margin-top: var(--panneau-shell-inset, var(--panneau-space-2));
+}
+
+/* Keyboard users jump past the navigation. */
+.skipLink {
+    position: absolute;
+    top: var(--panneau-space-2);
+    left: var(--panneau-space-2);
+    z-index: 100;
+    padding: var(--panneau-space-2) var(--panneau-space-3);
+    border-radius: var(--panneau-radius-md);
+    background: var(--panneau-color-accent);
+    color: var(--panneau-color-accent-text);
+    font-weight: var(--panneau-font-weight-medium);
+    text-decoration: none;
+}
+
+.skipLink:not(:focus) {
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+@container panneau-root (min-width: 64rem) {
+    .layout {
+        --panneau-frame-bottom: calc(
+            var(--_panneau-dock-item-size) + 2 * var(--_panneau-dock-padding) + 2 *
+                var(--panneau-border-width) + var(--_panneau-dock-gap)
+        );
+    }
+
+    .topBar {
+        padding-inline: var(--panneau-space-4);
+    }
+
+    .topBarEnd {
+        display: none;
+    }
+
+    .panel {
+        padding: var(--panneau-space-6) var(--panneau-shell-panel-padding-x, var(--panneau-space-8))
+            var(--panneau-space-10);
+    }
+
+    /* Clicks between the window's edges and the pill reach the page under it. */
+    .dockArea {
+        padding: 0 var(--panneau-space-4) var(--_panneau-dock-gap);
+        margin-top: var(--panneau-space-3);
+        pointer-events: none;
+    }
+
+    .dock {
+        pointer-events: auto;
+    }
+}
+
+/* The title of a page takes focus when the route changes, for screen readers: no ring. */
+.main :global(h1[tabindex='-1']:focus) {
+    outline: none;
+}

@@ -1,18 +1,4 @@
-import {
-    ExternalLink,
-    File,
-    House,
-    Link2,
-    List,
-    LogOut,
-    Monitor,
-    Moon,
-    PanelLeftClose,
-    PanelLeftOpen,
-    Search,
-    Sun,
-    X,
-} from 'lucide-react';
+import { LogOut, Monitor, Moon, PanelLeftClose, PanelLeftOpen, Search, Sun, X } from 'lucide-react';
 import { Button, Link } from 'react-aria-components';
 
 import { appMessages } from '@panneau/intl';
@@ -22,7 +8,6 @@ import {
     IconButton,
     type IconComponent,
     Tooltip,
-    getNamedIcon,
     isApplePlatform,
     usePanneauIntl,
 } from '@panneau/ui';
@@ -31,7 +16,6 @@ import { cx } from '../cx';
 import {
     type NavEntry,
     type NavLink,
-    type NavTarget,
     getNavigation,
     getProfilePath,
     isCurrent,
@@ -40,29 +24,18 @@ import { type AppRoute, routePath } from '../routes';
 import { ActionRunsButton } from './ActionRunsButton';
 import { ContextPicker, ContextPickerButton } from './ContextPicker';
 import styles from './Sidebar.module.css';
+import { getHomeLink, getLinkIcon } from './links';
 
 /** The color schemes the user can pick, in the order of the button. */
 export const COLOR_SCHEMES = ['light', 'dark', 'auto'] as const;
 export type ColorSchemePreference = (typeof COLOR_SCHEMES)[number];
 
-const SCHEME_ICONS: Record<ColorSchemePreference, IconComponent> = {
+/** The icon of each color scheme. */
+export const SCHEME_ICONS: Record<ColorSchemePreference, IconComponent> = {
     light: Sun,
     dark: Moon,
     auto: Monitor,
 };
-
-function defaultIcon(target: NavTarget): IconComponent {
-    switch (target.kind) {
-        case 'home':
-            return House;
-        case 'resource':
-            return List;
-        case 'page':
-            return File;
-        case 'url':
-            return target.external ? ExternalLink : Link2;
-    }
-}
 
 export interface SidebarProps {
     definition: Definition;
@@ -106,14 +79,7 @@ export function Sidebar({
     className,
 }: SidebarProps) {
     const intl = usePanneauIntl();
-    const home: NavLink = {
-        type: 'link',
-        key: 'home',
-        label: intl.formatMessage(appMessages.home),
-        href: routePath({ name: 'home' }, basePath),
-        icon: undefined,
-        target: { kind: 'home' },
-    };
+    const home = getHomeLink(intl.formatMessage(appMessages.home), basePath);
     const entries = getNavigation(definition, basePath);
     // Groups and the links between separators each get their own list.
     const sections: { key: string; label?: string; links: NavLink[] }[] = [
@@ -147,13 +113,7 @@ export function Sidebar({
                 className={styles.link}
                 onPress={onNavigate}
             >
-                <Icon
-                    icon={
-                        link.icon !== undefined ? getNamedIcon(link.icon) : defaultIcon(link.target)
-                    }
-                    size="md"
-                    className={styles.linkIcon}
-                />
+                <Icon icon={getLinkIcon(link)} size="md" className={styles.linkIcon} />
                 <span className={styles.label}>{link.label}</span>
             </Link>
         );

@@ -5722,6 +5722,14 @@
                             "auto"
                         ]
                     },
+                    "navigation": {
+                        "description": "Where the app shows the `main` menu: `sidebar` (the default), a column on the left, or `dock`, a dock at the bottom of the window (decision 0076).",
+                        "type": "string",
+                        "enum": [
+                            "sidebar",
+                            "dock"
+                        ]
+                    },
                     "extends": {
                         "description": "Themes registered by plugins, by id, that this theme builds on, in order: its own values override theirs.",
                         "anyOf": [

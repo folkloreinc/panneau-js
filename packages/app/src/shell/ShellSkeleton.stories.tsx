@@ -37,3 +37,14 @@ export const CollapsedSidebar: Story = {
         await expect(within(canvasElement).getByRole('status')).toBeInTheDocument();
     },
 };
+
+/** The definition in the boot config sets `navigation: "dock"`: the bar at the top and the dock. */
+export const Dock: Story = {
+    args: { navigation: 'dock' },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByRole('status')).toHaveTextContent('Loading…');
+        const region = canvasElement.querySelector('[aria-busy="true"]');
+        await expect(region?.querySelectorAll('.panneau-skeleton').length).toBeGreaterThan(0);
+    },
+};

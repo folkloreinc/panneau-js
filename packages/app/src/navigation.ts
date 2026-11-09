@@ -26,6 +26,8 @@ export interface NavGroup {
     type: 'group';
     key: string;
     label: string | undefined;
+    /** The icon the menu names, for the dock, where a group is a button. */
+    icon: string | undefined;
     children: NavLink[];
 }
 
@@ -166,7 +168,9 @@ export function getNavigation(definition: Definition, basePath: string): NavEntr
         }
         if (item.type === 'group') {
             const children = toLinks(item, definition, basePath, key);
-            return children.length > 0 ? [{ type: 'group', key, label: item.label, children }] : [];
+            return children.length > 0
+                ? [{ type: 'group', key, label: item.label, icon: item.icon, children }]
+                : [];
         }
         return toLinks(item, definition, basePath, key);
     });

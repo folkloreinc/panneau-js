@@ -343,6 +343,87 @@ describe('the app shell', () => {
         ).toHaveAttribute('aria-current', 'page');
     });
 
+    describe('with a dock (decision 0076)', () => {
+        const dock = { theme: { navigation: 'dock' as const } };
+
+        it('shows the menu in a dock instead of the sidebar, where nothing collapses', async () => {
+            const user = userEvent.setup();
+            renderApp(dock);
+            expect(screen.queryByRole('complementary')).not.toBeInTheDocument();
+            expect(
+                screen.queryByRole('button', { name: 'Collapse the sidebar' }),
+            ).not.toBeInTheDocument();
+            expect(navigation().getByRole('link', { name: 'Home' })).toHaveAttribute(
+                'aria-current',
+                'page',
+            );
+
+            await user.click(navigation().getByRole('link', { name: 'Pages' }));
+            expect(window.location.pathname).toBe('/panneau/resources/pages');
+            expect(navigation().getByRole('link', { name: 'Pages' })).toHaveAttribute(
+                'aria-current',
+                'page',
+            );
+            await user.keyboard('{Control>}\\{/Control}');
+            expect(window.localStorage.getItem('panneau:sidebar')).toBeNull();
+        });
+
+        it('opens the links of a group in a menu', async () => {
+            const user = userEvent.setup();
+            renderApp({
+                ...dock,
+                menus: {
+                    main: [
+                        {
+                            type: 'group',
+                            label: 'Content',
+                            children: [
+                                { type: 'resource', resource: 'pages' },
+                                { type: 'resource', resource: 'authors' },
+                            ],
+                        },
+                    ],
+                },
+            });
+            await user.click(navigation().getByRole('button', { name: 'Content' }));
+            const menu = await screen.findByRole('menu', { name: 'Content' });
+            await user.click(within(menu).getByRole('menuitem', { name: 'Authors' }));
+            await waitFor(() =>
+                expect(window.location.pathname).toBe('/panneau/resources/authors'),
+            );
+            expect(navigation().getByRole('button', { name: 'Content' })).toHaveAttribute(
+                'data-current',
+                'true',
+            );
+        });
+
+        it('puts the entries after the first three in "More", for phones', async () => {
+            const user = userEvent.setup();
+            renderApp(dock);
+            await user.click(navigation().getByRole('button', { name: 'More' }));
+            const menu = await screen.findByRole('menu', { name: 'More' });
+            expect(
+                within(menu)
+                    .getAllByRole('menuitem')
+                    .map((item) => item.textContent),
+            ).toEqual(['Site']);
+        });
+
+        it("changes the color scheme from the user's menu", async () => {
+            const user = userEvent.setup();
+            renderApp(dock);
+            await user.click(screen.getByRole('button', { name: 'Ada' }));
+            // The menu is named after its button
+            const menu = await screen.findByRole('menu', { name: 'Ada' });
+            expect(within(menu).getByRole('menuitemradio', { name: 'Light' })).toHaveAttribute(
+                'aria-checked',
+                'true',
+            );
+            await user.click(within(menu).getByRole('menuitemradio', { name: 'Dark' }));
+            expect(window.localStorage.getItem('panneau:color-scheme')).toBe('dark');
+        });
+    });
+
     describe('error pages', () => {
         it('shows the error page of a page that throws, with the sidebar, and renders it again', async () => {
             const user = userEvent.setup();

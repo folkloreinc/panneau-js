@@ -19,6 +19,8 @@
     font-size: var(--panneau-font-size-control);
     line-height: var(--panneau-line-height-tight);
     color: var(--panneau-color-text);
+    /* An item with an `href` is a link, which looks like the other items. */
+    text-decoration: none;
     cursor: default;
     border-radius: var(--panneau-list-box-item-radius, var(--panneau-radius-sm));
     outline: none;

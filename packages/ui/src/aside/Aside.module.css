@@ -98,7 +98,7 @@
         inset-block: var(--panneau-space-4) auto;
         z-index: auto;
         width: auto;
-        max-height: calc(100dvh - 2 * var(--panneau-space-4));
+        max-height: calc(100dvh - 2 * var(--panneau-space-4) - var(--panneau-frame-bottom, 0px));
         border: var(
             --panneau-aside-border,
             var(--panneau-border-width) solid var(--panneau-color-border)

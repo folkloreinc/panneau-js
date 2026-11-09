@@ -19,9 +19,10 @@ import styles from './ActionRunsButton.module.css';
 export interface ActionRunsButtonProps {
     /**
      * `row`: a row of the sidebar, with its label. `icon`: an icon with its badge, for the rail of
-     * icons and the top bar, with the label in a tooltip.
+     * icons and the top bar, with the label in a tooltip. `tile`: an icon with its badge and the
+     * label under it, for the dock.
      */
-    appearance?: 'row' | 'icon';
+    appearance?: 'row' | 'icon' | 'tile';
     /** Where the popover opens. Defaults to the end of the button, as for a sidebar. */
     placement?: PopoverProps['placement'];
     className?: string;
@@ -55,7 +56,7 @@ export function ActionRunsButton({
                 size="md"
                 className={cx(active > 0 && styles.spinning)}
             />
-            {appearance === 'icon' && active > 0 ? (
+            {appearance !== 'row' && active > 0 ? (
                 <span className={styles.dot} aria-hidden="true">
                     {active}
                 </span>
@@ -65,9 +66,17 @@ export function ActionRunsButton({
     const button = (
         <Button
             aria-label={label}
-            className={cx(appearance === 'row' ? styles.row : styles.iconButton, className)}
+            className={cx(
+                appearance === 'row'
+                    ? styles.row
+                    : appearance === 'tile'
+                      ? styles.tile
+                      : styles.iconButton,
+                className,
+            )}
         >
             {icon}
+            {appearance === 'tile' ? <span className={styles.tileLabel}>{title}</span> : null}
             {appearance === 'row' ? (
                 <>
                     <span className={styles.label}>{title}</span>
@@ -85,7 +94,13 @@ export function ActionRunsButton({
             {appearance === 'icon' ? (
                 <Tooltip
                     content={label}
-                    placement={placement.startsWith('bottom') ? 'bottom' : 'end'}
+                    placement={
+                        placement.startsWith('bottom')
+                            ? 'bottom'
+                            : placement.startsWith('top')
+                              ? 'top'
+                              : 'end'
+                    }
                     delay={300}
                 >
                     {button}

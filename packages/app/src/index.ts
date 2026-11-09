@@ -16,4 +16,4 @@ export {
     PageLayout,
     type PageLayoutProps,
 } from './pages/PageHeader';
-export { appComponentTokens, shellTokens, sidebarTokens } from './shell/tokens';
+export { appComponentTokens, dockTokens, shellTokens, sidebarTokens } from './shell/tokens';
