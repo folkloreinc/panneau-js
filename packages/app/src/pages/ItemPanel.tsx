@@ -1,5 +1,4 @@
-import { Maximize2, Minimize2, X } from 'lucide-react';
-import { type KeyboardEvent, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { type ResolvedResource, getItemActions, getVisibleFields } from '@panneau/core';
 import { ForbiddenError, NotFoundError } from '@panneau/data';
@@ -9,20 +8,18 @@ import { ItemDetails, type ItemDetailsColumn, getImageUrl } from '@panneau/lists
 import type { Field, Item, RouteReference } from '@panneau/protocol';
 import {
     Alert,
+    Aside,
     Button,
-    Heading,
-    IconButton,
     Skeleton,
     Tab,
     TabList,
     TabPanel,
     Tabs,
     usePanneauIntl,
+    usePreference,
 } from '@panneau/ui';
 
-import { cx } from '../cx';
 import { navigate } from '../location';
-import { usePreference } from '../preferences';
 import { useRecordRecentItem } from '../recentItems';
 import { ItemActions } from './ItemActions';
 import styles from './ItemPanel.module.css';
@@ -58,7 +55,6 @@ function MediaImage({ item }: { item: Item | undefined }) {
     return url !== null ? <img className={styles.mediaImage} src={url} alt="" /> : null;
 }
 
-const SIZES = ['normal', 'wide'] as const;
 const TABS = ['preview', 'details'] as const;
 
 export interface ItemPanelProps {
@@ -73,10 +69,11 @@ export interface ItemPanelProps {
 }
 
 /**
- * The details of an item next to its list (the show route): its values with the displays of the
- * lists, a link to edit it, and the `link` actions of the resource, such as its page on the site.
- * A resource with a `features.preview` gets a preview tab first: a component of a plugin, or its
- * page on the site. The panel can be widened, for previews, and remembers it. Escape closes it.
+ * The details of an item next to its list (the show route), in an aside (decision 0073): its values
+ * with the displays of the lists, a link to edit it, and the `link` actions of the resource, such
+ * as its page on the site. A resource with a `features.preview` gets a preview tab first: a
+ * component of a plugin, or its page on the site. The panel can be widened, for previews, and
+ * remembers it. Escape closes it.
  */
 export function ItemPanel({
     resolved,
@@ -90,9 +87,7 @@ export function ItemPanel({
     const { resource } = resolved;
     const { data: item, error, isError, refetch } = useResourceItem(resource.id, id);
     const panel = useRef<HTMLElement>(null);
-    const [size, setSize] = usePreference('item-panel-size', SIZES);
     const [tab, setTab] = usePreference('item-panel-tab', TABS);
-    const wide = size === 'wide';
     const hasPreview = (resource.features?.preview ?? null) !== null;
     const singular = resource.label.singular;
     const label = intl.formatMessage(appMessages.itemPanel, { resource: singular });
@@ -115,13 +110,6 @@ export function ItemPanel({
                   filter: isSupported,
               })
             : [];
-
-    const onKeyDown = (event: KeyboardEvent) => {
-        if (event.key === 'Escape' && !event.defaultPrevented) {
-            event.preventDefault();
-            navigate(closeHref);
-        }
-    };
 
     let content;
     if (item === undefined && error instanceof ForbiddenError) {
@@ -181,47 +169,18 @@ export function ItemPanel({
     }
 
     return (
-        <section
+        <Aside
             ref={panel}
             tabIndex={-1}
-            aria-label={label}
-            className={cx(styles.panel, wide && styles.wide)}
-            data-wide={wide || undefined}
-            onKeyDown={onKeyDown}
-        >
-            <header className={styles.header}>
-                {item !== undefined ? (
-                    <Heading level={2} className={styles.title}>
-                        {title}
-                    </Heading>
-                ) : (
-                    <Skeleton className={styles.titleSkeleton} width="60%" />
-                )}
-                <div className={styles.headerButtons}>
-                    <IconButton
-                        icon={wide ? Minimize2 : Maximize2}
-                        label={intl.formatMessage(
-                            wide ? appMessages.narrowPanel : appMessages.widenPanel,
-                        )}
-                        size="sm"
-                        className={styles.widen}
-                        onPress={() => setSize(wide ? 'normal' : 'wide')}
-                    />
-                    <IconButton
-                        icon={X}
-                        label={intl.formatMessage(appMessages.closePanel)}
-                        size="sm"
-                        onPress={() => navigate(closeHref)}
-                    />
-                </div>
-            </header>
-            {item === undefined && !isError ? (
-                <div className={styles.actions}>
-                    <Skeleton shape="rect" width="5rem" height="var(--panneau-control-height-sm)" />
-                </div>
-            ) : null}
-            {item !== undefined ? (
-                <div className={styles.actions}>
+            label={label}
+            title={item !== undefined ? title : undefined}
+            isLoading={item === undefined && !isError}
+            isWidenable
+            storageKey="item-panel"
+            onClose={() => navigate(closeHref)}
+            className={styles.panel}
+            toolbar={
+                item !== undefined ? (
                     <ItemActions
                         resource={resource.id}
                         actions={itemActions}
@@ -239,9 +198,12 @@ export function ItemPanel({
                             });
                         }}
                     />
-                </div>
-            ) : null}
-            <div className={styles.body}>{content}</div>
-        </section>
+                ) : !isError ? (
+                    <Skeleton shape="rect" width="5rem" height="var(--panneau-control-height-sm)" />
+                ) : undefined
+            }
+        >
+            {content}
+        </Aside>
     );
 }

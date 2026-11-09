@@ -265,9 +265,6 @@ export const appMessages: {
     component: string;
     }>;
     openPreview: PanneauMessage<Record<never, never>>;
-    widenPanel: PanneauMessage<Record<never, never>>;
-    narrowPanel: PanneauMessage<Record<never, never>>;
-    closePanel: PanneauMessage<Record<never, never>>;
     goTo: PanneauMessage<Record<never, never>>;
     actionRuns: PanneauMessage<Record<never, never>>;
     actionRunsLabel: PanneauMessage<    {
@@ -554,6 +551,7 @@ export const formsMessages: {
     }>;
     saved: PanneauMessage<Record<never, never>>;
     loading: PanneauMessage<Record<never, never>>;
+    sidebar: PanneauMessage<Record<never, never>>;
     unsaved: PanneauMessage<Record<never, never>>;
     errorCount: PanneauMessage<    {
     count: number;
@@ -1074,6 +1072,8 @@ export const uiMessages: {
     showOptions: PanneauMessage<Record<never, never>>;
     clear: PanneauMessage<Record<never, never>>;
     moreActions: PanneauMessage<Record<never, never>>;
+    widenAside: PanneauMessage<Record<never, never>>;
+    narrowAside: PanneauMessage<Record<never, never>>;
     time: PanneauMessage<Record<never, never>>;
     rangeStart: PanneauMessage<Record<never, never>>;
     rangeEnd: PanneauMessage<Record<never, never>>;

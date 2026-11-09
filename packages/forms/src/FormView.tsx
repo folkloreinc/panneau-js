@@ -23,6 +23,8 @@ import {
 import type { Field, LayoutNode } from '@panneau/protocol';
 import {
     Alert,
+    Aside,
+    AsideLayout,
     Button,
     Icon,
     Tooltip,
@@ -45,7 +47,7 @@ import {
     useFormState,
 } from './context';
 import { cx } from './cx';
-import { FieldFlow, LayoutNodes } from './layout/Layout';
+import { FieldFlow, LayoutNodes, SidebarNode } from './layout/Layout';
 import { messages } from './messages';
 import { useBeforeUnloadGuard, useLeaveConfirmation } from './unsaved';
 
@@ -111,6 +113,12 @@ export interface FormViewProps {
     className?: string;
     layoutClassName?: string;
     sidebarClassName?: string;
+    /**
+     * The key under which the browser remembers the collapsed panels of the sidebar
+     * (`panneau:<key>-panel-<label>`), such as `form-articles`. Without one, they last as long as
+     * the form.
+     */
+    sidebarStorageKey?: string;
     footerClassName?: string;
     summaryClassName?: string;
 }
@@ -206,6 +214,7 @@ export function FormView({
     className,
     layoutClassName,
     sidebarClassName,
+    sidebarStorageKey,
     footerClassName,
     summaryClassName,
 }: FormViewProps) {
@@ -406,32 +415,32 @@ export function FormView({
                                     {errorDetail}
                                 </Alert>
                             ) : null}
-                            <div
-                                className={cx(
-                                    styles.layout,
-                                    sidebar.length > 0 && styles.withSidebar,
-                                    layoutClassName,
-                                )}
-                            >
-                                <div className={styles.stack}>
-                                    <LayoutNodes nodes={laidOut} fields={resolved.fieldsByName} />
-                                    {flow.length > 0 ? (
-                                        <FieldFlow nodes={flow} fields={resolved.fieldsByName} />
-                                    ) : null}
-                                </div>
-                                {sidebar.length > 0 ? (
-                                    <aside className={cx(styles.sidebar, sidebarClassName)}>
-                                        {sidebar.map((node, index) => (
-                                            <div key={index} className={styles.stack}>
-                                                <LayoutNodes
-                                                    nodes={node.children ?? []}
+                            <AsideLayout
+                                className={layoutClassName}
+                                mainClassName={styles.stack}
+                                aside={
+                                    sidebar.length > 0 ? (
+                                        <Aside
+                                            label={intl.formatMessage(messages.sidebar)}
+                                            className={sidebarClassName}
+                                        >
+                                            {sidebar.map((node, index) => (
+                                                <SidebarNode
+                                                    key={index}
+                                                    node={node}
                                                     fields={resolved.fieldsByName}
+                                                    storageKey={sidebarStorageKey}
                                                 />
-                                            </div>
-                                        ))}
-                                    </aside>
+                                            ))}
+                                        </Aside>
+                                    ) : null
+                                }
+                            >
+                                <LayoutNodes nodes={laidOut} fields={resolved.fieldsByName} />
+                                {flow.length > 0 ? (
+                                    <FieldFlow nodes={flow} fields={resolved.fieldsByName} />
                                 ) : null}
-                            </div>
+                            </AsideLayout>
                             {hasFooter ? (
                                 <div ref={footer} className={cx(styles.footer, footerClassName)}>
                                     <span

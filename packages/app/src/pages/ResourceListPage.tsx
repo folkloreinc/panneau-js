@@ -15,7 +15,7 @@ import { appMessages } from '@panneau/intl';
 import { ListView, getPagingProps } from '@panneau/lists';
 import type { RouteReference } from '@panneau/protocol';
 import { getItemImageField } from '@panneau/protocol/runtime';
-import { LinkButton, usePanneauIntl, useToast } from '@panneau/ui';
+import { AsideLayout, LinkButton, usePanneauIntl, useToast } from '@panneau/ui';
 
 import { cx } from '../cx';
 import { useDocumentTitle } from '../documentTitle';
@@ -190,7 +190,22 @@ export function ResourceListPage({
             {resource.description !== undefined ? (
                 <p className={styles.intro}>{resource.description}</p>
             ) : null}
-            <div className={styles.split}>
+            <AsideLayout
+                narrow="overlay"
+                aside={
+                    selectedId !== null ? (
+                        <ItemPanel
+                            key={selectedId}
+                            resolved={resolved}
+                            basePath={basePath}
+                            locale={locale}
+                            id={selectedId}
+                            closeHref={`${indexPath}${search}`}
+                            {...(resolveRoute !== undefined ? { resolveRoute } : {})}
+                        />
+                    ) : null
+                }
+            >
                 <ListView
                     {...definitionList}
                     actions={filterActions(definitionList.actions, isSupported)}
@@ -229,18 +244,7 @@ export function ResourceListPage({
                     }
                     formatError={formatError}
                 />
-                {selectedId !== null ? (
-                    <ItemPanel
-                        key={selectedId}
-                        resolved={resolved}
-                        basePath={basePath}
-                        locale={locale}
-                        id={selectedId}
-                        closeHref={`${indexPath}${search}`}
-                        {...(resolveRoute !== undefined ? { resolveRoute } : {})}
-                    />
-                ) : null}
-            </div>
+            </AsideLayout>
         </div>
     );
 }

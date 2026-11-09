@@ -6,19 +6,6 @@
     min-width: 0;
 }
 
-.layout {
-    display: grid;
-    gap: var(--panneau-space-6);
-    min-width: 0;
-}
-
-@container panneau-form (min-width: 56rem) {
-    .withSidebar {
-        grid-template-columns: minmax(0, 1fr) minmax(16rem, 20rem);
-        align-items: start;
-    }
-}
-
 .stack {
     display: flex;
     flex-direction: column;
@@ -108,13 +95,6 @@
     font-size: var(--panneau-font-size-md);
     color: var(--panneau-color-text-muted);
     margin: 0;
-}
-
-.sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: var(--panneau-space-5);
-    min-width: 0;
 }
 
 .field {

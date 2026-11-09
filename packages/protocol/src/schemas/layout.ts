@@ -9,7 +9,10 @@ export const LayoutNode = z
             .min(1)
             .meta({ description: 'A built-in node type, or a type provided by a plugin.' }),
         name: z.string().min(1).optional().meta({ description: '`field`: the name of the field.' }),
-        label: z.string().optional().meta({ description: '`section`, `tab`: the title.' }),
+        label: z
+            .string()
+            .optional()
+            .meta({ description: '`section`, `tab`, `sidebar`: the title.' }),
         description: z.string().optional(),
         text: z.string().optional().meta({ description: '`text`: a static paragraph.' }),
         component: z

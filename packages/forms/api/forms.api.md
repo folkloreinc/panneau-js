@@ -98,6 +98,7 @@ export interface FormViewProps {
     showSavedToast?: boolean;
     // (undocumented)
     sidebarClassName?: string;
+    sidebarStorageKey?: string;
     submitLabel?: ReactNode;
     // (undocumented)
     summaryClassName?: string;

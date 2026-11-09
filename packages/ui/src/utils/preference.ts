@@ -21,19 +21,22 @@ function write(key: string, value: string) {
 }
 
 /**
- * A choice of the user that the browser remembers (`localStorage`), such as a collapsed sidebar.
- * `null` until the user makes it, and when the stored value isn't allowed or can't be read.
+ * A choice of the user that the browser remembers (`localStorage`, under `panneau:<key>`), such as
+ * a collapsed sidebar or a widened aside. `null` until the user makes it, and when the stored value
+ * isn't allowed or can't be read. Without a key, the choice lasts as long as the component.
  */
 export function usePreference<T extends string>(
-    key: string,
+    key: string | null,
     allowed: readonly T[],
 ): [T | null, (value: T) => void] {
-    const [value, setValue] = useState<T | null>(() => read(key, allowed));
+    const [value, setValue] = useState<T | null>(() => (key !== null ? read(key, allowed) : null));
     return [
         value,
         (next: T) => {
             setValue(next);
-            write(key, next);
+            if (key !== null) {
+                write(key, next);
+            }
         },
     ];
 }

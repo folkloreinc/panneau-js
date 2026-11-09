@@ -6,6 +6,14 @@ export {
     type AlertVariants,
 } from './alert/Alert';
 export {
+    Aside,
+    AsideLayout,
+    type AsideLayoutProps,
+    AsidePanel,
+    type AsidePanelProps,
+    type AsideProps,
+} from './aside/Aside';
+export {
     Badge,
     type BadgeAppearance,
     type BadgeProps,
@@ -51,6 +59,7 @@ export { Icon, type IconComponent, type IconProps, type IconSize } from './icon/
 export { type NamedIconLoader, getNamedIcon, loadNamedIcon } from './icon/namedIcons';
 export { IconButton, type IconButtonProps } from './icon-button/IconButton';
 export { usePanneauIntl } from './intl/usePanneauIntl';
+export { usePreference } from './utils/preference';
 export {
     Menu,
     MenuItem,

@@ -1,8 +1,7 @@
 import { appMessages } from '@panneau/intl';
-import { LoadingRegion, Skeleton, usePanneauIntl } from '@panneau/ui';
+import { LoadingRegion, Skeleton, usePanneauIntl, usePreference } from '@panneau/ui';
 
 import { cx } from '../cx';
-import { usePreference } from '../preferences';
 import { SIDEBAR_STATES } from './AppLayout';
 import layoutStyles from './AppLayout.module.css';
 import styles from './ShellSkeleton.module.css';

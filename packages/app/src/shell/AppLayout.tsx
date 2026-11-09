@@ -4,10 +4,15 @@ import { Dialog, Link, Modal, ModalOverlay } from 'react-aria-components';
 
 import { appMessages } from '@panneau/intl';
 import type { Definition } from '@panneau/protocol';
-import { IconButton, useCommandShortcut, usePanneauIntl, usePortalContainer } from '@panneau/ui';
+import {
+    IconButton,
+    useCommandShortcut,
+    usePanneauIntl,
+    usePortalContainer,
+    usePreference,
+} from '@panneau/ui';
 
 import { cx } from '../cx';
-import { usePreference } from '../preferences';
 import { type AppRoute, routePath } from '../routes';
 import { ActionRunsButton } from './ActionRunsButton';
 import styles from './AppLayout.module.css';

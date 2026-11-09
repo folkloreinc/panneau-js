@@ -8,6 +8,8 @@ export const uiFr: Record<string, string> = {
     'panneau.ui.showOptions': 'Afficher les choix',
     'panneau.ui.clear': 'Effacer',
     'panneau.ui.moreActions': 'Plus d’actions',
+    'panneau.ui.widenAside': 'Élargir le panneau',
+    'panneau.ui.narrowAside': 'Rétrécir le panneau',
     'panneau.ui.time': 'Heure',
     'panneau.ui.tags': 'Étiquettes : {label}',
     'panneau.ui.commandPalette': 'Rechercher',

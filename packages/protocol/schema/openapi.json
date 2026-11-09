@@ -4270,7 +4270,7 @@
                         "minLength": 1
                     },
                     "label": {
-                        "description": "`section`, `tab`: the title.",
+                        "description": "`section`, `tab`, `sidebar`: the title.",
                         "type": "string"
                     },
                     "description": {

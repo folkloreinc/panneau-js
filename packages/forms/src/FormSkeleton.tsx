@@ -2,7 +2,14 @@ import type { CSSProperties, ReactNode } from 'react';
 
 import { isWideField } from '@panneau/fields';
 import type { Field, LayoutNode } from '@panneau/protocol';
-import { LoadingRegion, Skeleton, usePanneauIntl } from '@panneau/ui';
+import {
+    Aside,
+    AsideLayout,
+    AsidePanel,
+    LoadingRegion,
+    Skeleton,
+    usePanneauIntl,
+} from '@panneau/ui';
 
 import styles from './Form.module.css';
 import { cx } from './cx';
@@ -164,48 +171,48 @@ export function FormSkeleton({
             label={intl.formatMessage(messages.loading)}
             className={cx(styles.form, className)}
         >
-            <div
-                className={cx(
-                    styles.layout,
-                    sidebar.length > 0 && styles.withSidebar,
-                    layoutClassName,
-                )}
+            <AsideLayout
+                {...(layoutClassName !== undefined ? { className: layoutClassName } : {})}
+                mainClassName={styles.stack}
+                aside={
+                    sidebar.length > 0 ? (
+                        <Aside
+                            label={intl.formatMessage(messages.sidebar)}
+                            {...(sidebarClassName !== undefined
+                                ? { className: sidebarClassName }
+                                : {})}
+                        >
+                            {sidebar.map((node, index) => (
+                                <AsidePanel key={index} title={node.label} isCollapsible={false}>
+                                    <NodesSkeleton nodes={node.children ?? []} fields={fields} />
+                                </AsidePanel>
+                            ))}
+                        </Aside>
+                    ) : null
+                }
             >
-                <div className={styles.stack}>
-                    <NodesSkeleton nodes={main} fields={fields} />
-                    {flow.length > 0 ? (
-                        <div className={styles.flow}>
-                            {flow.map((node, index) => {
-                                const field =
-                                    node.name !== undefined ? fields.get(node.name) : undefined;
-                                return (
-                                    <div
-                                        key={index}
-                                        className={cx(
-                                            styles.flowCell,
-                                            (field === undefined || isWideField(field)) &&
-                                                styles.flowWide,
-                                        )}
-                                    >
-                                        <NodeSkeleton node={node} fields={fields} />
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    ) : null}
-                </div>
-                {sidebar.length > 0 ? (
-                    <div className={cx(styles.sidebar, sidebarClassName)}>
-                        {sidebar.map((node, index) => (
-                            <NodesSkeleton
-                                key={index}
-                                nodes={node.children ?? []}
-                                fields={fields}
-                            />
-                        ))}
+                <NodesSkeleton nodes={main} fields={fields} />
+                {flow.length > 0 ? (
+                    <div className={styles.flow}>
+                        {flow.map((node, index) => {
+                            const field =
+                                node.name !== undefined ? fields.get(node.name) : undefined;
+                            return (
+                                <div
+                                    key={index}
+                                    className={cx(
+                                        styles.flowCell,
+                                        (field === undefined || isWideField(field)) &&
+                                            styles.flowWide,
+                                    )}
+                                >
+                                    <NodeSkeleton node={node} fields={fields} />
+                                </div>
+                            );
+                        })}
                     </div>
                 ) : null}
-            </div>
+            </AsideLayout>
             {footer ? (
                 <div className={cx(styles.footer, footerClassName)}>
                     <Skeleton shape="rect" width="6rem" height="var(--panneau-control-height)" />
