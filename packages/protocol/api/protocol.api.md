@@ -234,6 +234,7 @@ export const Action: z.ZodObject<{
         description: z.ZodOptional<z.ZodString>;
         text: z.ZodOptional<z.ZodString>;
         component: z.ZodOptional<z.ZodString>;
+        panel: z.ZodOptional<z.ZodString>;
         props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         width: z.ZodOptional<z.ZodNumber>;
         collapsible: z.ZodOptional<z.ZodBoolean>;
@@ -1107,6 +1108,7 @@ export const Definition: z.ZodObject<{
                 description: z.ZodOptional<z.ZodString>;
                 text: z.ZodOptional<z.ZodString>;
                 component: z.ZodOptional<z.ZodString>;
+                panel: z.ZodOptional<z.ZodString>;
                 props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
                 width: z.ZodOptional<z.ZodNumber>;
                 collapsible: z.ZodOptional<z.ZodBoolean>;
@@ -1393,6 +1395,7 @@ export const Definition: z.ZodObject<{
                 description: z.ZodOptional<z.ZodString>;
                 text: z.ZodOptional<z.ZodString>;
                 component: z.ZodOptional<z.ZodString>;
+                panel: z.ZodOptional<z.ZodString>;
                 props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
                 width: z.ZodOptional<z.ZodNumber>;
                 collapsible: z.ZodOptional<z.ZodBoolean>;
@@ -2152,6 +2155,7 @@ export const LayoutNode: z.ZodObject<{
     description: z.ZodOptional<z.ZodString>;
     text: z.ZodOptional<z.ZodString>;
     component: z.ZodOptional<z.ZodString>;
+    panel: z.ZodOptional<z.ZodString>;
     props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     width: z.ZodOptional<z.ZodNumber>;
     collapsible: z.ZodOptional<z.ZodBoolean>;
@@ -3139,6 +3143,7 @@ export const namedSchemas: {
         description: z.ZodOptional<z.ZodString>;
         text: z.ZodOptional<z.ZodString>;
         component: z.ZodOptional<z.ZodString>;
+        panel: z.ZodOptional<z.ZodString>;
         props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         width: z.ZodOptional<z.ZodNumber>;
         collapsible: z.ZodOptional<z.ZodBoolean>;
@@ -3476,6 +3481,7 @@ export const namedSchemas: {
             description: z.ZodOptional<z.ZodString>;
             text: z.ZodOptional<z.ZodString>;
             component: z.ZodOptional<z.ZodString>;
+            panel: z.ZodOptional<z.ZodString>;
             props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
             width: z.ZodOptional<z.ZodNumber>;
             collapsible: z.ZodOptional<z.ZodBoolean>;
@@ -3723,6 +3729,7 @@ export const namedSchemas: {
                 description: z.ZodOptional<z.ZodString>;
                 text: z.ZodOptional<z.ZodString>;
                 component: z.ZodOptional<z.ZodString>;
+                panel: z.ZodOptional<z.ZodString>;
                 props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
                 width: z.ZodOptional<z.ZodNumber>;
                 collapsible: z.ZodOptional<z.ZodBoolean>;
@@ -4009,6 +4016,7 @@ export const namedSchemas: {
                 description: z.ZodOptional<z.ZodString>;
                 text: z.ZodOptional<z.ZodString>;
                 component: z.ZodOptional<z.ZodString>;
+                panel: z.ZodOptional<z.ZodString>;
                 props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
                 width: z.ZodOptional<z.ZodNumber>;
                 collapsible: z.ZodOptional<z.ZodBoolean>;
@@ -4560,6 +4568,7 @@ export const namedSchemas: {
                     description: z.ZodOptional<z.ZodString>;
                     text: z.ZodOptional<z.ZodString>;
                     component: z.ZodOptional<z.ZodString>;
+                    panel: z.ZodOptional<z.ZodString>;
                     props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
                     width: z.ZodOptional<z.ZodNumber>;
                     collapsible: z.ZodOptional<z.ZodBoolean>;
@@ -4846,6 +4855,7 @@ export const namedSchemas: {
                     description: z.ZodOptional<z.ZodString>;
                     text: z.ZodOptional<z.ZodString>;
                     component: z.ZodOptional<z.ZodString>;
+                    panel: z.ZodOptional<z.ZodString>;
                     props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
                     width: z.ZodOptional<z.ZodNumber>;
                     collapsible: z.ZodOptional<z.ZodBoolean>;
@@ -6070,6 +6080,7 @@ export const Resource: z.ZodObject<{
             description: z.ZodOptional<z.ZodString>;
             text: z.ZodOptional<z.ZodString>;
             component: z.ZodOptional<z.ZodString>;
+            panel: z.ZodOptional<z.ZodString>;
             props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
             width: z.ZodOptional<z.ZodNumber>;
             collapsible: z.ZodOptional<z.ZodBoolean>;
@@ -6356,6 +6367,7 @@ export const Resource: z.ZodObject<{
             description: z.ZodOptional<z.ZodString>;
             text: z.ZodOptional<z.ZodString>;
             component: z.ZodOptional<z.ZodString>;
+            panel: z.ZodOptional<z.ZodString>;
             props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
             width: z.ZodOptional<z.ZodNumber>;
             collapsible: z.ZodOptional<z.ZodBoolean>;

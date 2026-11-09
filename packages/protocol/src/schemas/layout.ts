@@ -19,6 +19,10 @@ export const LayoutNode = z
             .string()
             .optional()
             .meta({ description: '`component`: a component provided by a plugin.' }),
+        panel: z.string().min(1).optional().meta({
+            description:
+                '`sidebar`: the panel it is, by name: a built-in panel (`save`, `errors`, `publication`, `actions`) or one provided by a plugin. Without its component, the node renders its children.',
+        }),
         props: z.record(z.string(), z.unknown()).optional(),
         width: z
             .number()

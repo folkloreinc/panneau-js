@@ -100,25 +100,30 @@ export function createExampleDefinition(): DefinitionInput {
                                     type: 'tab',
                                     label: 'Contenu',
                                     children: [
-                                        {
-                                            type: 'row',
-                                            children: [
-                                                { type: 'field', name: 'title', width: 8 },
-                                                { type: 'field', name: 'status', width: 4 },
-                                            ],
-                                        },
+                                        { type: 'field', name: 'title' },
                                         { type: 'field', name: 'blocks' },
                                     ],
                                 },
                             ],
                         },
+                        // The panels of its sidebar (decision 0075): Save, the errors after a
+                        // failed save, the publication with Publish, the actions of the page
+                        { type: 'sidebar', panel: 'save' },
+                        { type: 'sidebar', panel: 'errors' },
                         {
                             type: 'sidebar',
+                            panel: 'publication',
                             label: 'Publication',
                             children: [
+                                { type: 'field', name: 'status' },
                                 { type: 'field', name: 'published_at' },
-                                { type: 'field', name: 'attachment' },
                             ],
+                        },
+                        { type: 'sidebar', panel: 'actions' },
+                        {
+                            type: 'sidebar',
+                            label: 'Pièce jointe',
+                            children: [{ type: 'field', name: 'attachment' }],
                         },
                     ],
                 },
