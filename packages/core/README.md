@@ -36,7 +36,7 @@ function EditPage({ item, onSave }) {
 
 ## Definition engine
 
-- **`resolveForm(resource, { mode, type })`**: the fields of the form and its layout. Field nodes that name unknown fields are dropped, and fields that no node references are appended at the end. `create` drops `updateOnly` fields; `update` makes `createOnly` fields read-only. `type` adds the fields of an item type.
+- **`resolveForm(resource, { mode, type })`**: the fields of the form and its layout. Field nodes that name unknown fields are dropped, and fields that no node references are appended at the end. `notInForm` fields are dropped, even when the layout names them. `create` drops `updateOnly` fields; `update` makes `createOnly` fields read-only. `type` adds the fields of an item type.
 - **`resolveList(resource)`**: columns (label, display and sortability from their field), filters, sorts, default sort, layouts, page size, and the actions the user can run, by placement. Without columns, the list shows the item title and the next fields.
 - **Abilities:** `can(abilities, 'create')`, `isActionAllowedOn(action, item)`, `partitionByAction(action, items)`. Without abilities, everything is allowed and the backend decides; with abilities, only what is `true`.
 - **`useResource(id)`** resolves a resource of the provider's definition.

@@ -568,11 +568,12 @@ describe('checkValues', () => {
         expect(checkValues(fields, { url: '' }, { partial: true })).toEqual({});
     });
 
-    it('skips read-only fields and fields of the other mode', () => {
+    it('skips read-only fields, fields out of forms and fields of the other mode', () => {
         const fields: Field[] = [
             { name: 'password', type: 'text', createOnly: true, rules: [{ rule: 'required' }] },
             { name: 'reason', type: 'text', updateOnly: true, rules: [{ rule: 'required' }] },
             { name: 'computed', type: 'text', readOnly: true, rules: [{ rule: 'required' }] },
+            { name: 'url', type: 'text', notInForm: true, rules: [{ rule: 'required' }] },
         ];
         expect(Object.keys(checkValues(fields, {}, { mode: 'create' }))).toEqual(['password']);
         expect(Object.keys(checkValues(fields, {}, { mode: 'update' }))).toEqual(['reason']);

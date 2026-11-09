@@ -371,11 +371,15 @@ function fieldsWithout(resource: ResourceInput, ability: 'view' | 'update'): Set
     );
 }
 
-/** A body without the values of the fields the user can't see or update, which are ignored. */
+/**
+ * A body without the values of the fields the user can't see or update, and of the fields that
+ * forms leave out (`notInForm`, decision 0071), which are ignored.
+ */
 function writableValues(resource: ResourceInput, body: Values): Values {
     const ignored = new Set([
         ...fieldsWithout(resource, 'view'),
         ...fieldsWithout(resource, 'update'),
+        ...resource.fields.filter((field) => field.notInForm === true).map((field) => field.name),
     ]);
     return Object.fromEntries(Object.entries(body).filter(([key]) => !ignored.has(key)));
 }

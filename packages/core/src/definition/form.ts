@@ -12,8 +12,8 @@ export interface ResolvedForm {
     /** The fields, by name. */
     fieldsByName: ReadonlyMap<string, Field>;
     /**
-     * The layout tree. Field nodes that name an unknown field are removed, and fields that no
-     * node references are appended at the end, as `field` nodes.
+     * The layout tree. Field nodes that name an unknown field, or a field left out of the form,
+     * are removed, and fields that no node references are appended at the end, as `field` nodes.
      */
     layout: LayoutNode[];
 }
@@ -89,7 +89,8 @@ function resolveFieldRules(field: Field, mode: FormMode): Field {
 /**
  * Resolves fields and a layout into a form. Fields the current user can't see
  * (`abilities.view: false`) are left out, and those they can't edit (`abilities.update: false`)
- * are read-only (decision 0046).
+ * are read-only (decision 0046). Fields that only items give (`notInForm`) are left out too, even
+ * when the layout names them (decision 0071).
  */
 export function resolveFields(
     fields: readonly Field[],
@@ -97,7 +98,7 @@ export function resolveFields(
     { mode }: Pick<ResolveFormOptions, 'mode'> = {},
 ): ResolvedForm {
     const resolved = fields.flatMap((declared): Field[] => {
-        if (!canViewField(declared)) {
+        if (!canViewField(declared) || declared.notInForm === true) {
             return [];
         }
         const field = canUpdateField(declared) ? declared : { ...declared, readOnly: true };

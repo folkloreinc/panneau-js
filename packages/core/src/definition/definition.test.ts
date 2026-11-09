@@ -106,6 +106,26 @@ describe('resolveForm', () => {
         expect(resolveForm(getResource('authors'), { type: 'other' }).fields).toHaveLength(7);
     });
 
+    it('leaves out the fields that only items give, even when the layout names them', () => {
+        // The URL of a page, shown under its title in relation cards (decision 0071)
+        const fields = [
+            { name: 'title', type: 'text' },
+            { name: 'url', type: 'text', readOnly: true, notInForm: true },
+        ];
+        const layout = [
+            { type: 'row' as const, children: [{ type: 'field' as const, name: 'url' }] },
+        ];
+        for (const mode of [undefined, 'create', 'update'] as const) {
+            const form = resolveFields(fields, layout, mode !== undefined ? { mode } : {});
+            expect(form.fields.map((field) => field.name)).toEqual(['title']);
+            expect(form.fieldsByName.has('url')).toBe(false);
+            expect(form.layout).toEqual([
+                { type: 'row', children: [] },
+                { type: 'field', name: 'title' },
+            ]);
+        }
+    });
+
     it('works without a layout', () => {
         const form = resolveFields([{ name: 'a', type: 'text' }]);
         expect(form.layout).toEqual([{ type: 'field', name: 'a' }]);
