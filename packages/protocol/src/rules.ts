@@ -531,7 +531,7 @@ function checkFields(
     context: Context,
 ) {
     fields.forEach((field) => {
-        if (field.readOnly === true) {
+        if (field.readOnly === true || field.notInForm === true) {
             return;
         }
         if (context.mode === 'create' && field.updateOnly === true) {
@@ -556,7 +556,8 @@ function checkFields(
 /**
  * Checks form values against the portable rules of their fields. Returns the failures keyed by
  * the dot path of the value (`title.fr`, `blocks.2.image`), the same keys as validation errors.
- * Hidden and read-only fields are skipped. Rules this version doesn't know are ignored.
+ * Hidden and read-only fields, and fields that forms leave out (`notInForm`), are skipped. Rules
+ * this version doesn't know are ignored.
  */
 export function checkValues(
     fields: Field[],

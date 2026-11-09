@@ -52,6 +52,7 @@ export const Action: z.ZodObject<{
         abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
         createOnly: z.ZodOptional<z.ZodBoolean>;
         updateOnly: z.ZodOptional<z.ZodBoolean>;
+        notInForm: z.ZodOptional<z.ZodBoolean>;
         rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
             rule: z.ZodLiteral<"required">;
             message: z.ZodOptional<z.ZodString>;
@@ -923,6 +924,7 @@ export const Definition: z.ZodObject<{
             abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
             createOnly: z.ZodOptional<z.ZodBoolean>;
             updateOnly: z.ZodOptional<z.ZodBoolean>;
+            notInForm: z.ZodOptional<z.ZodBoolean>;
             rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
                 rule: z.ZodLiteral<"required">;
                 message: z.ZodOptional<z.ZodString>;
@@ -1209,6 +1211,7 @@ export const Definition: z.ZodObject<{
                 abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
                 createOnly: z.ZodOptional<z.ZodBoolean>;
                 updateOnly: z.ZodOptional<z.ZodBoolean>;
+                notInForm: z.ZodOptional<z.ZodBoolean>;
                 rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
                     rule: z.ZodLiteral<"required">;
                     message: z.ZodOptional<z.ZodString>;
@@ -1775,6 +1778,7 @@ export const Field: z.ZodObject<{
     abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
     createOnly: z.ZodOptional<z.ZodBoolean>;
     updateOnly: z.ZodOptional<z.ZodBoolean>;
+    notInForm: z.ZodOptional<z.ZodBoolean>;
     rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
         rule: z.ZodLiteral<"required">;
         message: z.ZodOptional<z.ZodString>;
@@ -2828,6 +2832,7 @@ export const namedSchemas: {
         abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
         createOnly: z.ZodOptional<z.ZodBoolean>;
         updateOnly: z.ZodOptional<z.ZodBoolean>;
+        notInForm: z.ZodOptional<z.ZodBoolean>;
         rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
             rule: z.ZodLiteral<"required">;
             message: z.ZodOptional<z.ZodString>;
@@ -3289,6 +3294,7 @@ export const namedSchemas: {
             abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
             createOnly: z.ZodOptional<z.ZodBoolean>;
             updateOnly: z.ZodOptional<z.ZodBoolean>;
+            notInForm: z.ZodOptional<z.ZodBoolean>;
             rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
                 rule: z.ZodLiteral<"required">;
                 message: z.ZodOptional<z.ZodString>;
@@ -3534,6 +3540,7 @@ export const namedSchemas: {
             abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
             createOnly: z.ZodOptional<z.ZodBoolean>;
             updateOnly: z.ZodOptional<z.ZodBoolean>;
+            notInForm: z.ZodOptional<z.ZodBoolean>;
             rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
                 rule: z.ZodLiteral<"required">;
                 message: z.ZodOptional<z.ZodString>;
@@ -3820,6 +3827,7 @@ export const namedSchemas: {
                 abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
                 createOnly: z.ZodOptional<z.ZodBoolean>;
                 updateOnly: z.ZodOptional<z.ZodBoolean>;
+                notInForm: z.ZodOptional<z.ZodBoolean>;
                 rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
                     rule: z.ZodLiteral<"required">;
                     message: z.ZodOptional<z.ZodString>;
@@ -4369,6 +4377,7 @@ export const namedSchemas: {
                 abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
                 createOnly: z.ZodOptional<z.ZodBoolean>;
                 updateOnly: z.ZodOptional<z.ZodBoolean>;
+                notInForm: z.ZodOptional<z.ZodBoolean>;
                 rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
                     rule: z.ZodLiteral<"required">;
                     message: z.ZodOptional<z.ZodString>;
@@ -4655,6 +4664,7 @@ export const namedSchemas: {
                     abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
                     createOnly: z.ZodOptional<z.ZodBoolean>;
                     updateOnly: z.ZodOptional<z.ZodBoolean>;
+                    notInForm: z.ZodOptional<z.ZodBoolean>;
                     rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
                         rule: z.ZodLiteral<"required">;
                         message: z.ZodOptional<z.ZodString>;
@@ -5877,6 +5887,7 @@ export const Resource: z.ZodObject<{
         abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
         createOnly: z.ZodOptional<z.ZodBoolean>;
         updateOnly: z.ZodOptional<z.ZodBoolean>;
+        notInForm: z.ZodOptional<z.ZodBoolean>;
         rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
             rule: z.ZodLiteral<"required">;
             message: z.ZodOptional<z.ZodString>;
@@ -6163,6 +6174,7 @@ export const Resource: z.ZodObject<{
             abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
             createOnly: z.ZodOptional<z.ZodBoolean>;
             updateOnly: z.ZodOptional<z.ZodBoolean>;
+            notInForm: z.ZodOptional<z.ZodBoolean>;
             rules: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
                 rule: z.ZodLiteral<"required">;
                 message: z.ZodOptional<z.ZodString>;

@@ -76,3 +76,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0068](0068-collapsed-items-and-lighter-controls.md)              | Collapsed repeater items, permalink slugs, and controls shown when needed     | Proposed, amended by 0070         |
 | [0069](0069-show-the-items-an-action-changed.md)                  | "Show" the items an action changed, with a filter of lists on ids             | Proposed                          |
 | [0070](0070-select-mode-in-lists.md)                              | Lists show their checkboxes once "Select" is pressed                          | Proposed                          |
+| [0071](0071-fields-out-of-forms.md)                               | Fields that items give, but that forms leave out                              | Proposed                          |

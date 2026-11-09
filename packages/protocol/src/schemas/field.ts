@@ -193,6 +193,10 @@ export const Field = z
         }),
         createOnly: z.boolean().optional(),
         updateOnly: z.boolean().optional(),
+        notInForm: z.boolean().optional().meta({
+            description:
+                'Forms leave the field out, even when their layout names it, and never add it at the end. Items still give its value, which lists, details, item panels and references read: the URL of a page, shown under its title (decision 0071). The backend ignores its value on create and update, as it ignores `readOnly` fields, and the field is not edited inline. For the fields at the top of a resource and of its types.',
+        }),
         rules: z.array(Rule).optional(),
         visibleWhen: Condition.optional(),
         options: z.array(Option).optional().meta({ description: '`select`: the choices.' }),

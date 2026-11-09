@@ -12,7 +12,7 @@ export const INLINE_TYPES: ReadonlySet<string> = new Set([
     'date',
 ]);
 
-/** Whether a field can be edited in place: a simple type, one value, not read-only. */
+/** Whether a field can be edited in place: a simple type, one value, not read-only, in forms. */
 export function isInlineField(field: Field | null | undefined): field is Field {
     return (
         field !== null &&
@@ -21,6 +21,7 @@ export function isInlineField(field: Field | null | undefined): field is Field {
         field.localized !== true &&
         field.multiple !== true &&
         field.readOnly !== true &&
+        field.notInForm !== true &&
         field.createOnly !== true
     );
 }

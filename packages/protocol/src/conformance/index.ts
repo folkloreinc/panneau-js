@@ -1385,7 +1385,11 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
             }
             // Values that only the rules implied by their type refuse (decision 0053).
             const cases = resource.fields.flatMap((field): [string, unknown, string][] => {
-                if (field.localized === true || field.readOnly === true) {
+                if (
+                    field.localized === true ||
+                    field.readOnly === true ||
+                    field.notInForm === true
+                ) {
                     return [];
                 }
                 if (field.type === 'daterange') {
@@ -1489,6 +1493,7 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                 .filter(
                     (field) =>
                         field.readOnly !== true &&
+                        field.notInForm !== true &&
                         field.createOnly !== true &&
                         (field.rules ?? []).some(
                             (rule) => rule.rule === 'required' && rule.mode === 'create',
@@ -1522,6 +1527,7 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
             const editable = resource.fields.filter(
                 (field) =>
                     field.readOnly !== true &&
+                    field.notInForm !== true &&
                     field.createOnly !== true &&
                     field.localized !== true &&
                     field.abilities?.update !== false &&
@@ -1643,6 +1649,7 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                     (field) =>
                         field.name !== name &&
                         field.readOnly !== true &&
+                        field.notInForm !== true &&
                         field.settings?.secret !== true &&
                         !isEqual(before.data[field.name], after.data[field.name]),
                 )
@@ -1650,6 +1657,53 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
             check.expect(
                 changed.length === 0,
                 `An update of ${name} alone also changed ${changed.join(', ')}.`,
+            );
+            updatedVersion = after.data.version;
+        },
+    );
+
+    await run(
+        'update.not-in-form',
+        'An update ignores the values of the fields that forms leave out',
+        async (check) => {
+            if (createdId === null || writes === undefined || resource === null) {
+                check.skip('No item was created.');
+                return;
+            }
+            // A field that only items give, such as the URL of a page (decision 0071).
+            const names = resource.fields
+                .filter((field) => field.notInForm === true && field.abilities?.view !== false)
+                .map((field) => field.name);
+            if (names.length === 0) {
+                check.skip('The resource has no field with `notInForm`.');
+                return;
+            }
+            const current = await request(itemPath());
+            const before = check.expectStatus(current, 200)
+                ? check.expectSchema(ItemResponse, current.body, 'The item')
+                : null;
+            if (before === null) {
+                return;
+            }
+            const version = before.data.version;
+            const reply = await request(itemPath(), {
+                method: 'PATCH',
+                body: JSON.stringify(
+                    Object.fromEntries(names.map((name) => [name, '__panneau_conformance__'])),
+                ),
+                headers: version !== null ? { 'If-Match': `"${version}"` } : {},
+            });
+            if (!check.expectStatus(reply, 200)) {
+                return;
+            }
+            const after = check.expectSchema(ItemResponse, reply.body, 'The updated item');
+            if (after === null) {
+                return;
+            }
+            const changed = names.filter((name) => !isEqual(before.data[name], after.data[name]));
+            check.expect(
+                changed.length === 0,
+                `An update changed ${changed.join(', ')}, which forms leave out.`,
             );
             updatedVersion = after.data.version;
         },

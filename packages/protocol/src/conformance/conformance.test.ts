@@ -29,6 +29,8 @@ function createBackend() {
         type: 'textarea',
         abilities: { view: false },
     });
+    // A field that only items give, which forms leave out (decision 0071).
+    definition.resources[0]?.fields.push({ name: 'url', type: 'text', notInForm: true });
     // Types whose rules are implied (decision 0053).
     definition.resources[0]?.fields.push(
         { name: 'dates', type: 'daterange', settings: { open: 'end' } },
@@ -441,6 +443,7 @@ describe('runConformance', () => {
             'update.create-rules',
             'update.parts',
             'update.single-field',
+            'update.not-in-form',
             'update.conflict',
             'duplicate',
             'action.undo',
@@ -559,6 +562,43 @@ describe('runConformance', () => {
         const check = report.checks.find((candidate) => candidate.id === 'update.single-field');
         expect(check?.status).toBe('failed');
         expect(check?.issues).toEqual(['An update of status alone also changed slug.']);
+    });
+
+    it('reports a backend that saves the value of a field that forms leave out', async () => {
+        const backend = createBackend();
+        const passing = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: backend.fetch,
+            writes,
+        });
+        expect(passing.checks.find((check) => check.id === 'update.not-in-form')?.status).toBe(
+            'passed',
+        );
+        // A backend that saves every value it gets.
+        const saving = async (input: string, init?: RequestInit): Promise<Response> => {
+            const response = await backend.fetch(input, init);
+            const sent =
+                init?.method === 'PATCH' && typeof init.body === 'string'
+                    ? (JSON.parse(init.body) as Record<string, unknown>)
+                    : null;
+            if (sent === null || !('url' in sent) || response.status !== 200) {
+                return response;
+            }
+            const body = (await response.json()) as { data: Record<string, unknown> };
+            body.data.url = sent.url;
+            return new Response(JSON.stringify(body), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' },
+            });
+        };
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: saving,
+            writes,
+        });
+        const check = report.checks.find((candidate) => candidate.id === 'update.not-in-form');
+        expect(check?.status).toBe('failed');
+        expect(check?.issues).toEqual(['An update changed url, which forms leave out.']);
     });
 
     it('reports a backend that ignores the filter on ids', async () => {

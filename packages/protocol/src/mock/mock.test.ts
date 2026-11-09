@@ -872,6 +872,30 @@ describe('createMockBackend', () => {
         expect((await api('pages/2', { method: 'DELETE' })).status).toBe(403);
     });
 
+    it('ignores the values of the fields that forms leave out (decision 0071)', async () => {
+        const definition = createDefinition();
+        definition.resources[0]?.fields.push({ name: 'url', type: 'text', notInForm: true });
+        const backend = createMockBackend({
+            definition,
+            items: { pages: [{ title: { fr: 'Accueil' }, url: '/accueil' }] },
+        });
+        const updated = await backend.fetch(
+            '/panneau/api/resources/pages/1',
+            json({ status: 'draft', url: '/autre' }, { method: 'PATCH' }),
+        );
+        expect(updated.status).toBe(200);
+        expect(backend.items('pages')[0]).toMatchObject({ status: 'draft', url: '/accueil' });
+        const created = await backend.fetch(
+            '/panneau/api/resources/pages',
+            json(
+                { title: { fr: 'Contact', en: 'Contact' }, status: 'draft', url: '/contact' },
+                { method: 'POST' },
+            ),
+        );
+        expect(created.status).toBe(201);
+        expect(backend.items('pages')[1]).not.toHaveProperty('url');
+    });
+
     it('answers unknown routes with a 404 problem', async () => {
         const response = await createBackend().fetch('/panneau/api/resources/unknown');
         expect(response.status).toBe(404);
