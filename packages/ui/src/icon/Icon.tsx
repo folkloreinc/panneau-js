@@ -35,14 +35,17 @@ export interface IconProps {
     className?: string;
 }
 
-/** Renders an icon of the icon set (Lucide) at a size of the scale, decorative by default. */
+/**
+ * Renders an icon of the icon set (Lucide) at a size of the scale, decorative by default. Its stroke
+ * scales with it (`--panneau-icon-stroke-width`, in units of the 24-unit grid), so that every size
+ * has the same weight.
+ */
 export function Icon({ icon: Component, size = 'md', label, className }: IconProps) {
     const pixels = typeof size === 'number' ? size : SIZES[size];
     return (
         <Component
             size={pixels}
             strokeWidth={2}
-            absoluteStrokeWidth={pixels < 16}
             className={cx('panneau-icon', styles.icon, className)}
             aria-hidden={label === undefined ? 'true' : undefined}
             aria-label={label}
