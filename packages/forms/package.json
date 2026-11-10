@@ -1,6 +1,6 @@
 {
     "name": "@panneau/forms",
-    "version": "4.1.1",
+    "version": "4.1.2",
     "description": "",
     "keywords": [
         "javascript"
@@ -60,12 +60,12 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.28.6",
-        "@panneau/core": "^4.1.1",
-        "@panneau/form-auth": "^4.1.1",
-        "@panneau/form-horizontal": "^4.1.1",
-        "@panneau/form-inline": "^4.1.1",
-        "@panneau/form-normal": "^4.1.1",
-        "@panneau/form-two-pane": "^4.1.1",
+        "@panneau/core": "^4.1.2",
+        "@panneau/form-auth": "^4.1.2",
+        "@panneau/form-horizontal": "^4.1.2",
+        "@panneau/form-inline": "^4.1.2",
+        "@panneau/form-normal": "^4.1.2",
+        "@panneau/form-two-pane": "^4.1.2",
         "lodash-es": "^4.17.21"
     },
     "devDependencies": {
