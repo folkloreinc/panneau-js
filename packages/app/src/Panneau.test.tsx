@@ -75,6 +75,25 @@ describe('Panneau', () => {
         expect(adapter.getDefinition).toHaveBeenCalledTimes(1);
     });
 
+    it('owns its page: no margin around it, and its background under it', () => {
+        document.body.style.margin = '8px';
+        const { unmount } = renderPanneau({
+            adapter: createAdapter(() => Promise.reject(new Error('Not called.'))),
+            config: createBootConfig({ definition: createDefinition() }),
+        });
+        expect(document.body.style.margin).toBe('0px');
+        const background = getComputedStyle(
+            document.querySelector('.panneau-root') as HTMLElement,
+        ).backgroundColor;
+        expect(document.body.style.backgroundColor).toBe(background);
+        expect(document.documentElement.style.backgroundColor).toBe(background);
+        // The page gets its own back.
+        unmount();
+        expect(document.body.style.margin).toBe('8px');
+        expect(document.documentElement.style.backgroundColor).toBe('');
+        document.body.style.margin = '';
+    });
+
     it('uses the inlined definition without fetching it', () => {
         const adapter = createAdapter(() => Promise.reject(new Error('Not called.')));
         renderPanneau({ adapter, config: createBootConfig({ definition: createDefinition() }) });

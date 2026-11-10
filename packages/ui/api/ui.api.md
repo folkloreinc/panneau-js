@@ -897,6 +897,7 @@ export interface PanneauRootProps extends HTMLAttributes<HTMLDivElement> {
     locale?: string;
     messages?: Readonly<Record<string, string>> | null;
     nonce?: string;
+    ref?: Ref<HTMLDivElement>;
     theme?: Theme | null;
     toastPlacement?: ToastPlacement;
 }
