@@ -1,5 +1,15 @@
 # @panneau/data
 
+## 5.0.0-alpha.29
+
+### Patch Changes
+
+- Updated dependencies [b9c9189]
+- Updated dependencies [d417492]
+- Updated dependencies [51599d6]
+- Updated dependencies [ef36326]
+  - @panneau/protocol@5.0.0-alpha.29
+
 ## 5.0.0-alpha.28
 
 ### Patch Changes

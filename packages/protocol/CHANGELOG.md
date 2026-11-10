@@ -1,5 +1,27 @@
 # @panneau/protocol
 
+## 5.0.0-alpha.29
+
+### Patch Changes
+
+- b9c9189: One aside next to lists and forms (decision 0074). `@panneau/ui` has `Aside`, the column next to the main content of a page or a form, made of `AsidePanel`s, and `AsideLayout`, which places it: beside the content from 56rem of the layout, where it stays in view as the page scrolls, and below the content or over it on narrower layouts. A button widens it, panels with a title collapse, and the browser remembers both under a key (`usePreference`, which moves from the app to `@panneau/ui`). Its look comes from the new `aside` component tokens.
+  
+  The item panel of lists is an `Aside`: it goes beside the list from 56rem of the list's column, and its close button is labelled "Close". The `--panneau-item-panel-*` tokens and `itemPanelTokens` of `@panneau/app` are gone: set `--panneau-aside-*` instead. The classes of the panel's header, toolbar and body are now those of `.panneau-aside`, and `.panneau-form-layout`, `.panneau-form-sidebar` and `.panneau-form-with-sidebar` give way to `.panneau-aside-layout` and `.panneau-aside`.
+  
+  The `sidebar` nodes of form layouts are panels of an `Aside`: a card that stays in view as the form scrolls. A `sidebar` with a `label` has a title, which the user can collapse unless `collapsible: false`, and `collapsed: true` starts it collapsed. It opens to show an error. `Form` takes `sidebarStorageKey`, under which the browser remembers its collapsed panels; the app sets it per resource.
+- d417492: A dock, in place of the sidebar (decision 0076). With `theme.navigation: "dock"` in the definition, the app shows the `main` menu in a dock at the bottom of the window instead of the sidebar: a raised pill from the `lg` width, where groups open their links in a menu, then "Go to…", the queued action runs and the user's menu (profile, color scheme, log out). On phones, it is a bar of tabs with the first entries and "More" for the others. A bar at the top keeps the site and the current context. `@panneau/protocol` adds `navigation` (`sidebar`, the default, or `dock`) to the definition's theme, and `@panneau/app` exports `dockTokens` (`--panneau-dock-*`). The footer of forms, asides beside the content and toasts stay above the dock (`--panneau-frame-bottom`). Menu items that are links are no longer underlined.
+- 51599d6: The panels of a form's sidebar, defined by the resource (decision 0075). A `sidebar` node of a form layout with a `panel` is a block of the app or of a plugin, which gets the node, the form, its fields and its children rendered (`FormPanelProps`), with the node's `props`. A panel that no component provides renders its children.
+  
+  - Plugins register panels under `panels`, a new kind of `@panneau/core`, and `Form` takes `panels`. In the app, `useFormPage()` gives a panel the resource and the item of its form.
+  - Built-in panels: `save` (the state of the form and its Save button) and `errors` (the errors after a failed save) in `@panneau/forms`, which show beside the form only, where the form then has no footer nor summary at the top; `publication` in `@panneau/forms/publication`, with Publish and Unpublish buttons that set the publication and save; `actions` in `@panneau/app`, which takes the actions of the item out of the page header.
+  - `AsidePanel` takes `isBesideOnly`, and an aside hides its empty panels.
+  - The `pages` of the protocol's example have a sidebar with these panels.
+- ef36326: Resource types (decision 0077). A resource's `types` are now `ResourceType`s, with a `description`, an `icon` and `abilities`: `abilities.create: false` keeps a type out of the choices when creating (a singleton such as the home page). Items of a resource with types have a `type`, which a create sends and updates ignore, and their fields are those of the resource, then those of their type. `lintDefinition()` lets `form.layout` name the fields of the types, checks their references, and reports duplicate type ids, type fields named as a field of the resource or `type`, and a field `type` that isn't `notInForm`. `@panneau/protocol/runtime` has `getResourceType()`, `getItemType()`, `getCreatableTypes()`, `getTypeFields()`, `hasResourceTypes()` and `ITEM_TYPE_KEY`, and the mock backend checks and saves the type of items.
+  
+  `resolveResource()` of `@panneau/core` allows creating in a resource with types only when one of its types can be created.
+  
+  In the app, the create button of a list with several types to create is a menu of them, and the "Go to…" palette has a create entry per type. The create route takes the type, `/resources/{resource}/create/{type}`; without one, it shows a card per type, or the form of the only type that can be created. Forms and the item panel show the fields of the item's type, and a new item is saved with its type.
+
 ## 5.0.0-alpha.28
 
 ### Patch Changes
