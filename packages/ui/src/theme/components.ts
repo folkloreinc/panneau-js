@@ -14,6 +14,7 @@ import { inputTokens } from '../field/inputTokens';
 import { fieldTokens } from '../field/tokens';
 import { gridTokens } from '../grid/tokens';
 import { headingTokens } from '../heading/tokens';
+import { iconTokens } from '../icon/tokens';
 import { inlineTokens } from '../inline/tokens';
 import { lineChartTokens } from '../line-chart/tokens';
 import { menuTokens } from '../menu/tokens';
@@ -55,6 +56,7 @@ export const componentTokens = Object.freeze({
     field: fieldTokens.tokens,
     grid: gridTokens.tokens,
     heading: headingTokens.tokens,
+    icon: iconTokens.tokens,
     inline: inlineTokens.tokens,
     input: inputTokens.tokens,
     'line-chart': lineChartTokens.tokens,

@@ -423,6 +423,8 @@ toasts.show(
 
 Components take icons as components: any Lucide icon (`icon={Pencil}`), or a component with the same props.
 
+The stroke of icons scales with them, so every size has the same weight: `--panneau-icon-stroke-width` is in units of Lucide's 24-unit grid (`2` by default, about 1.33px at 16px). A theme sets it for a lighter or a bolder icon set.
+
 Definitions name their icons (`"icon": "send"`, a name of [lucide.dev/icons](https://lucide.dev/icons)). `getNamedIcon(name)` turns a name into an icon component that goes wherever an icon component goes, and loads it with the `iconLoader` of `PanneauRoot`:
 
 ```tsx

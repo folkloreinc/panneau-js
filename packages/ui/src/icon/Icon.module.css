@@ -1,5 +1,10 @@
+/*
+ * The stroke is in units of the icon's grid, so it scales with the icon: every size has the same
+ * weight. It overrides the `stroke-width` attribute that Lucide sets.
+ */
 .icon {
     display: inline-block;
     flex: 0 0 auto;
     vertical-align: middle;
+    stroke-width: var(--panneau-icon-stroke-width, 2);
 }

@@ -24,4 +24,12 @@ describe('Icon', () => {
         expect(container.querySelector('svg')).toHaveAttribute('width', '32');
         expect(container.querySelector('svg')).toHaveClass('custom');
     });
+
+    it.each(['xs', 'sm', 'md', 'lg', 'xl'] as const)(
+        'keeps a stroke of 2 units of the grid at the %s size, so it scales with the icon',
+        (size) => {
+            const { container } = render(<Icon icon={Pencil} size={size} />);
+            expect(container.querySelector('svg')).toHaveAttribute('stroke-width', '2');
+        },
+    );
 });
