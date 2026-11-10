@@ -1,5 +1,24 @@
 # @panneau/editor
 
+## 5.0.0-alpha.29
+
+### Patch Changes
+
+- 179efeb: Themes can set selections apart from the accent, and style focus rings and filled buttons (decision 0073). New component tokens: `--panneau-selected-bg`, `--panneau-selected-text` and `--panneau-selected-subtle`, read by checkboxes, radios, switches, the slider, tabs, calendars, selected rows, cards and media, and the rich text toolbar (they default to the accent, so nothing changes without them); `--panneau-input-border-color-focus`, `--panneau-input-focus-ring` and `--panneau-input-focus-ring-invalid`; `--panneau-button-solid-border-color` and `--panneau-button-pressed-scale`; `--panneau-field-required-color`; `--panneau-switch-track-border-color`; `--panneau-segmented-control-segment-color-hover` and `-segment-bg-hover`, so a hovered segment no longer takes the text color of the selected one. `checkTheme()` checks translucent colors over what is under them, explicit tone values that refer to the palette, and the selection against the surface. The active formats of the rich text toolbar are visible again, and the links of the login page use the link color.
+- e3465c2: Touch targets follow the density (decision 0072). A new density token, `--panneau-target-size` (1.5rem, and 2.75rem in the touch density), sets the smallest size of what a pointer or a finger hits: rows of checkboxes, radios and switches, the slider, the remove button of tags, the sidebar's links, sortable table headers and the "back" link of pages. Checkboxes, radios and switches read it instead of their `pointer: coarse` rules, so the `touch` density makes them larger on any device, and touch screens see no change. The rich text toolbar wraps by groups, never leaving one button alone on a line.
+- Updated dependencies [b9c9189]
+- Updated dependencies [d417492]
+- Updated dependencies [51599d6]
+- Updated dependencies [44a0ede]
+- Updated dependencies [ef36326]
+- Updated dependencies [179efeb]
+- Updated dependencies [d6800eb]
+- Updated dependencies [e3465c2]
+  - @panneau/ui@5.0.0-alpha.29
+  - @panneau/intl@5.0.0-alpha.29
+  - @panneau/protocol@5.0.0-alpha.29
+  - @panneau/fields@5.0.0-alpha.29
+
 ## 5.0.0-alpha.28
 
 ### Patch Changes
