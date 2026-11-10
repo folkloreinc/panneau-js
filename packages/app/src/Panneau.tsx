@@ -52,6 +52,7 @@ import {
 } from './currentContext';
 import { loadPage, navigate, usePathname } from './location';
 import { usePluginMessages } from './messages';
+import { usePageStyles } from './pageStyles';
 import { ErrorPage, getErrorPageKind } from './pages/ErrorPage';
 import {
     type AppRoute,
@@ -354,13 +355,17 @@ function Content({
               : undefined;
 
     const scheme = colorScheme ?? definition?.theme?.colorScheme ?? 'light';
+    const theme =
+        definition !== undefined
+            ? resolveTheme(definition.theme, createPluginRegistry(plugins).themes)
+            : null;
+    // The app owns its page: no margin around it, and its background under it (decision 0078).
+    const [rootElement, setRootElement] = useState<HTMLDivElement | null>(null);
+    usePageStyles(rootElement, `${scheme} ${JSON.stringify(definition?.theme ?? null)}`);
     return (
         <PanneauRoot
-            theme={
-                definition !== undefined
-                    ? resolveTheme(definition.theme, createPluginRegistry(plugins).themes)
-                    : null
-            }
+            ref={setRootElement}
+            theme={theme}
             colorScheme={scheme}
             density={definition?.theme?.density ?? 'auto'}
             locale={locale}

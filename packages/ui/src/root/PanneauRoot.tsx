@@ -1,4 +1,4 @@
-import { type HTMLAttributes, type ReactNode, createContext, use, useState } from 'react';
+import { type HTMLAttributes, type ReactNode, type Ref, createContext, use, useState } from 'react';
 import { I18nProvider } from 'react-aria-components';
 import { IntlContext, IntlProvider, type IntlShape } from 'react-intl';
 
@@ -64,6 +64,8 @@ export interface PanneauRootProps extends HTMLAttributes<HTMLDivElement> {
      * (`useToastOffset()`). On a phone, they take the whole width.
      */
     toastPlacement?: ToastPlacement;
+    /** The root element: the app reads its background for the page (decision 0078). */
+    ref?: Ref<HTMLDivElement>;
     children?: ReactNode;
 }
 
