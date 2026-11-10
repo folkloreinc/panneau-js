@@ -1,5 +1,20 @@
 # @panneau/app
 
+## 5.0.0-alpha.31
+
+### Patch Changes
+
+- Updated dependencies [3044946]
+  - @panneau/ui@5.0.0-alpha.31
+  - @panneau/actions@5.0.0-alpha.31
+  - @panneau/fields@5.0.0-alpha.31
+  - @panneau/forms@5.0.0-alpha.31
+  - @panneau/lists@5.0.0-alpha.31
+  - @panneau/core@5.0.0-alpha.31
+  - @panneau/data@5.0.0-alpha.31
+  - @panneau/intl@5.0.0-alpha.31
+  - @panneau/protocol@5.0.0-alpha.31
+
 ## 5.0.0-alpha.30
 
 ### Patch Changes
