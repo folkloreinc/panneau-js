@@ -20,7 +20,7 @@ jobs:
         name: Format, lint and changeset
         runs-on: ubuntu-24.04
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
               with:
                   fetch-depth: 0
 
@@ -46,7 +46,7 @@ jobs:
         name: Typecheck
         runs-on: ubuntu-24.04
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 
             - uses: ./.github/actions/setup
 
@@ -59,7 +59,7 @@ jobs:
         name: Test
         runs-on: ubuntu-24.04
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 
             - uses: ./.github/actions/setup
 
@@ -70,7 +70,7 @@ jobs:
         name: Build and API reports
         runs-on: ubuntu-24.04
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 
             - uses: ./.github/actions/setup
 
@@ -86,7 +86,7 @@ jobs:
         name: Package template
         runs-on: ubuntu-24.04
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 
             - uses: ./.github/actions/setup
 
@@ -97,7 +97,7 @@ jobs:
         name: Storybook (interactions and accessibility)
         runs-on: ubuntu-24.04
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 
             - uses: ./.github/actions/setup
               with:
@@ -113,7 +113,7 @@ jobs:
         name: Smoke tests (webpack app, types under NodeNext, icons in Vite bundles)
         runs-on: ubuntu-24.04
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 
             - uses: ./.github/actions/setup
               with:
