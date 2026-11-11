@@ -36,7 +36,7 @@ jobs:
                   registry-url: https://registry.npmjs.org
 
             - name: Install dependencies
-              run: npm ci
+              run: npm ci --ignore-scripts
 
             # Checks that npm accepts the OIDC token of this workflow for trusted publishing. When it
             # doesn't, npm only logs the reason at the verbose level, falls back to the placeholder
