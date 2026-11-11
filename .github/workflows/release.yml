@@ -4,9 +4,15 @@ name: Release
 # - with pending changesets, it opens (or updates) the "Version packages" pull request, and
 #   publishes nothing;
 # - without pending changesets, which is the case right after that pull request is merged, it
-#   publishes the versions that are not on npm yet (dist-tag `alpha` while v5.x is in pre-release
-#   mode) and tags them. When everything is already published, it does nothing.
+#   builds and packs the versions that are not on npm yet, then publishes them (dist-tag `alpha`
+#   while v5.x is in pre-release mode) with trusted publishing (no npm token) and tags them. When
+#   everything is already published, it does nothing.
 # Merging the "Version packages" pull request is what releases.
+#
+# Each job gets only the permissions it needs, and the code of the dependencies never runs where
+# the OIDC token is: the build runs in `pack`, which can only read, and `publish` only uploads the
+# tarballs of `pack`, from the `npm` environment. npm trusts this file by name: renaming it breaks
+# publishing.
 on:
     push:
         branches: [v5.x]
@@ -16,59 +22,122 @@ concurrency:
     group: ${{ github.workflow }}
     cancel-in-progress: false
 
-permissions:
-    contents: write
-    pull-requests: write
-    id-token: write
+permissions: {}
 
 jobs:
-    release:
-        name: Version or publish
+    select-mode:
+        name: Select mode
         if: github.repository == 'folkloreinc/panneau-js' && github.ref == 'refs/heads/v5.x'
         runs-on: ubuntu-24.04
+        outputs:
+            mode: ${{ steps.select-mode.outputs.mode }}
+            publish-plan-artifact-id: ${{ steps.select-mode.outputs.publish-plan-artifact-id }}
+        permissions:
+            contents: read
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
 
-            - uses: actions/setup-node@v5
+            - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
               with:
                   node-version-file: .nvmrc
-                  cache: npm
-                  registry-url: https://registry.npmjs.org
+                  package-manager-cache: false
 
             - name: Install dependencies
               run: npm ci --ignore-scripts
 
-            # Checks that npm accepts the OIDC token of this workflow for trusted publishing. When it
-            # doesn't, npm only logs the reason at the verbose level, falls back to the placeholder
-            # token of setup-node and fails with a 404, and changesets doesn't show npm's logs. This
-            # step prints the claims npm matches against the trusted publisher, and npm's answer
-            # without the token it may return.
-            - name: Check npm trusted publishing
-              continue-on-error: true
-              run: |
-                  id_token=$(curl -sS -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-                      "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=npm:registry.npmjs.org" | jq -r '.value')
-                  echo "::add-mask::$id_token"
-                  ID_TOKEN="$id_token" node -e '
-                      const claims = JSON.parse(Buffer.from(process.env.ID_TOKEN.split(".")[1], "base64url"));
-                      const { repository, ref, workflow_ref, job_workflow_ref, environment, event_name } = claims;
-                      console.log("Claims:", JSON.stringify({ repository, ref, workflow_ref, job_workflow_ref, environment, event_name }));'
-                  status=$(curl -sS -o exchange.json -w '%{http_code}' -X POST \
-                      -H "Authorization: Bearer $id_token" \
-                      https://registry.npmjs.org/-/npm/v1/oidc/token/exchange/package/@panneau%2fintl)
-                  token=$(jq -r '.token // empty' exchange.json)
-                  if [ -n "$token" ]; then echo "::add-mask::$token"; fi
-                  echo "Token exchange for @panneau/intl: HTTP $status $(jq -c 'del(.token)' exchange.json)"
-                  rm exchange.json
+            - name: Select mode
+              id: select-mode
+              uses: changesets/action/select-mode@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
+
+    version:
+        name: Version packages
+        if: needs.select-mode.outputs.mode == 'version'
+        needs: select-mode
+        runs-on: ubuntu-24.04
+        permissions:
+            contents: write
+            pull-requests: write
+        steps:
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+
+            - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+              with:
+                  node-version-file: .nvmrc
+                  package-manager-cache: false
+
+            - name: Install dependencies
+              run: npm ci --ignore-scripts
 
             # v2 is the first version that reads changesets 3 (its pre-release state lives in
-            # .changeset/pre/). npm authenticates through trusted publishing (id-token).
-            - uses: changesets/action@v2
+            # .changeset/pre/).
+            - name: Open or update the "Version packages" pull request
+              uses: changesets/action/version@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
               with:
-                  version-script: npm run version-packages
-                  publish-script: npm run release
-                  pr-title: Version packages
+                  script: npm run version-packages
                   commit-message: Version packages
-                  github-token: ${{ secrets.GITHUB_TOKEN }}
-              env:
-                  NPM_CONFIG_PROVENANCE: true
+                  pr-title: Version packages
+
+    pack:
+        name: Build and pack
+        if: needs.select-mode.outputs.mode == 'publish'
+        needs: select-mode
+        runs-on: ubuntu-24.04
+        outputs:
+            pack-dir-artifact-id: ${{ steps.pack.outputs.pack-dir-artifact-id }}
+        permissions:
+            contents: read
+        steps:
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+
+            - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+              with:
+                  node-version-file: .nvmrc
+                  package-manager-cache: false
+
+            - name: Install dependencies
+              run: npm ci --ignore-scripts
+
+            # changeset pack runs npm pack, which doesn't run the prepublishOnly scripts
+            - name: Build packages
+              run: npm run build
+
+            # The publish plan of select-mode keeps the dist-tag of the pre-release mode (`alpha`)
+            - name: Pack packages
+              id: pack
+              uses: changesets/action/pack@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
+              with:
+                  publish-plan-artifact-id: ${{ needs.select-mode.outputs.publish-plan-artifact-id }}
+
+    publish:
+        name: Publish to npm
+        # The `npm` environment only accepts v5.x (Settings → Environments). Once the trusted publisher
+        # of each package on npmjs.com names it, no other job or branch can publish.
+        environment: npm
+        needs: pack
+        runs-on: ubuntu-24.04
+        permissions:
+            contents: write
+            id-token: write
+        steps:
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+
+            - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+              with:
+                  node-version-file: .nvmrc
+                  package-manager-cache: false
+
+            - name: Install dependencies
+              run: npm ci --ignore-scripts
+
+            - name: Publish packages
+              uses: changesets/action/publish@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
+              with:
+                  pack-dir-artifact-id: ${{ needs.pack.outputs.pack-dir-artifact-id }}

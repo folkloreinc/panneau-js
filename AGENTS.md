@@ -83,8 +83,8 @@ npm run test:create-package                  # check the template: create, lint,
 - **CI** (`.github/workflows/ci.yml`) runs every check on every pull request and on every push to `v5.x`, in parallel jobs: format, lint and changeset; typecheck; tests; build and API reports; package template; Storybook; smoke tests (webpack, the types of the packed packages under NodeNext, Lucide icons in Vite bundles). The shared setup (Node, `npm ci`, Chromium) is in `.github/actions/setup`. Keep each job short: the wait is the longest job. A new check gets its own job, or goes in the job it fits, and in `scripts/verify.js`.
 - **Releases** are only published by the Release workflow (`.github/workflows/release.yml`), which runs on every push to `v5.x`:
     - while changesets are pending, it opens or updates the "Version packages" pull request, and publishes nothing;
-    - **merging that pull request releases**: the next run publishes the new versions to npm and tags them.
+    - **merging that pull request releases**: the next run builds and packs the new versions in a read-only job, then a separate job publishes the tarballs to npm, from the `npm` environment (the only job with `id-token: write`), and tags them.
 
     `v5.x` is in pre-release mode (`alpha`) until 5.0.0.
     - Never change a package version by hand: it would be published on the next push.
-    - A new package needs a first manual publish, then trusted publishing configured on npm for this repository and `release.yml`, before the workflow can publish it.
+    - A new package needs a first manual publish, then trusted publishing configured on npm for this repository, `release.yml` and the `npm` environment, before the workflow can publish it.
