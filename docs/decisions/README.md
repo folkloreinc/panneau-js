@@ -42,7 +42,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0034](0034-skeletons-while-content-loads.md)                     | Skeletons while content loads                                                 | Accepted                          |
 | [0035](0035-rich-text-kept-html.md)                               | Rich text keeps HTML it doesn't edit, inert in the admin                      | Accepted                          |
 | [0036](0036-default-icon-loader.md)                               | Lucide's icon loader is the default of `createPanneauApp()` only              | Accepted                          |
-| [0037](0037-login-page-token-and-logout.md)                       | The login page of the app, a login with a token, and the logout               | Accepted                          |
+| [0037](0037-login-page-token-and-logout.md)                       | The login page of the app, a login with a token, and the logout               | Amended by 0086                   |
 | [0038](0038-pages-with-params.md)                                 | Pages with params                                                             | Accepted                          |
 | [0039](0039-cursor-pagination.md)                                 | Lists paged with cursors                                                      | Accepted                          |
 | [0040](0040-row-links-and-open-mode.md)                           | Built-in item actions by abilities, and what opens an item                    | Amended by 0060, 0082             |
@@ -55,7 +55,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0047](0047-countries-regions-and-phone-numbers.md)               | Countries, regions and phone numbers                                          | Amended by 0057                   |
 | [0048](0048-password-reset-and-email-verification.md)             | Password reset and email verification                                         | Proposed                          |
 | [0049](0049-two-factor-authentication.md)                         | Two-factor authentication, required for some users, and password confirmation | Proposed                          |
-| [0050](0050-account-page.md)                                      | The account page                                                              | Proposed                          |
+| [0050](0050-account-page.md)                                      | The account page                                                              | Amended by 0086                   |
 | [0051](0051-passkeys.md)                                          | Passkeys                                                                      | Proposed                          |
 | [0052](0052-oauth-providers.md)                                   | OAuth providers on the login page                                             | Proposed                          |
 | [0053](0053-date-ranges-and-money.md)                             | Date ranges and money                                                         | Proposed                          |
@@ -81,11 +81,12 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0073](0073-selections-focus-rings-and-outlined-buttons.md)       | Selections apart from the accent, focus rings, and outlined filled buttons    | Proposed                          |
 | [0074](0074-asides-next-to-lists-and-forms.md)                    | One aside, next to lists and forms                                            | Proposed                          |
 | [0075](0075-panels-of-a-form-sidebar.md)                          | The panels of a form's sidebar, defined by the resource                       | Proposed                          |
-| [0076](0076-a-dock-in-place-of-the-sidebar.md)                    | A dock, in place of the sidebar                                               | Proposed                          |
+| [0076](0076-a-dock-in-place-of-the-sidebar.md)                    | A dock, in place of the sidebar                                               | Amended by 0086                   |
 | [0077](0077-resource-types.md)                                    | Resource types                                                                | Proposed                          |
 | [0078](0078-the-app-owns-its-page.md)                             | The app owns its page                                                         | Proposed                          |
 | [0079](0079-collapsible-groups-and-emphasized-entries.md)         | Collapsible groups and emphasized entries in menus                            | Proposed                          |
 | [0080](0080-a-media-library-page.md)                              | A media library page, the picker's library outside a dialog                   | Proposed                          |
 | [0081](0081-motion-tokens-and-leaving-items.md)                   | Motion tokens, and items that fade out of a list                              | Proposed                          |
 | [0082](0082-items-open-in-their-form.md)                          | Items open in their form, and the panel is a choice of the resource           | Proposed                          |
-| [0083](0083-a-language-switcher-in-the-shell.md)                  | A language switcher in the shell                                              | Proposed                          |
+| [0083](0083-a-language-switcher-in-the-shell.md)                  | A language switcher in the shell                                              | Amended by 0086                   |
+| [0086](0086-one-user-menu.md)                                     | One user's menu, at the bottom of the sidebar and in the dock                 | Proposed                          |
