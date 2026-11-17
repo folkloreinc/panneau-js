@@ -1,4 +1,4 @@
-import { Ellipsis, LogOut, Search, UserRound } from 'lucide-react';
+import { Ellipsis, Search, UserRound } from 'lucide-react';
 import { Button, Link } from 'react-aria-components';
 
 import { appMessages } from '@panneau/intl';
@@ -8,14 +8,12 @@ import {
     Menu,
     MenuItem,
     MenuSection,
-    MenuSeparator,
     MenuTrigger,
     isApplePlatform,
     usePanneauIntl,
 } from '@panneau/ui';
 
 import { cx } from '../cx';
-import { getInterfaceLocales } from '../interfaceLocales';
 import {
     type NavEntry,
     type NavGroup,
@@ -27,7 +25,7 @@ import {
 import { type AppRoute, routePath } from '../routes';
 import { ActionRunsButton } from './ActionRunsButton';
 import styles from './Dock.module.css';
-import { COLOR_SCHEMES, type ColorSchemePreference, SCHEME_ICONS } from './Sidebar';
+import { type ColorSchemePreference, UserAvatar, UserMenu, getUserMenuLabel } from './UserMenu';
 import { getGroupIcon, getHomeLink, getLinkIcon } from './links';
 
 /** The entries of the menu that a phone shows in the dock, before "More". */
@@ -107,7 +105,7 @@ function GroupItem({ group, route }: { group: NavGroup & { label: string }; rout
 /**
  * The navigation of the shell at the bottom of the window (decision 0076): the entries of the
  * `main` menu, each group as a menu that opens upwards, then "Go to…", the queued action runs and
- * the user's menu, with the appearance and the language (decision 0083). From the `lg` width of
+ * the user's menu, the same as the sidebar's (decision 0086). From the `lg` width of
  * the root, a raised pill in the middle; below it, a bar of tabs, with the first entries and "More"
  * for the others, and "Go to…" and the action runs left to the bar at the top. It renders inside an
  * `ActionRunnerProvider`.
@@ -146,22 +144,11 @@ export function Dock({
         }
     }
 
-    const locales = onLocaleChange !== undefined ? getInterfaceLocales(definition) : [];
     const user = definition.user ?? null;
     const profilePath = getProfilePath(definition, basePath);
     const currentPath = route.name !== 'not-found' ? routePath(route, basePath) : null;
     const shortcut = isApplePlatform() ? '⌘K' : 'Ctrl+K';
     const keyShortcuts = isApplePlatform() ? 'Meta+K' : 'Control+K';
-    const avatar =
-        user?.avatarUrl !== undefined ? (
-            <img src={user.avatarUrl} alt="" className={styles.avatar} />
-        ) : user !== null ? (
-            <span className={styles.avatar} aria-hidden="true">
-                {user.name.charAt(0).toLocaleUpperCase(definition.locale)}
-            </span>
-        ) : (
-            <Icon icon={UserRound} size="md" />
-        );
 
     return (
         <div className={cx(styles.dock, className)}>
@@ -250,89 +237,36 @@ export function Dock({
             <span className={styles.wideOnly}>
                 <ActionRunsButton appearance="tile" placement="top end" />
             </span>
-            <MenuTrigger>
+            <UserMenu
+                definition={definition}
+                basePath={basePath}
+                colorScheme={colorScheme}
+                onColorSchemeChange={onColorSchemeChange}
+                onLogOut={onLogOut}
+                onLocaleChange={onLocaleChange}
+                placement="top end"
+            >
                 <Button
+                    aria-label={getUserMenuLabel(definition, intl)}
                     className={cx(styles.item, styles.user)}
                     data-current={
                         (profilePath !== null && currentPath === profilePath) || undefined
                     }
                 >
-                    {avatar}
+                    {user !== null ? (
+                        <UserAvatar
+                            user={user}
+                            locale={definition.locale}
+                            className={styles.avatar}
+                        />
+                    ) : (
+                        <Icon icon={UserRound} size="md" />
+                    )}
                     <span className={styles.label}>
                         {user?.name ?? intl.formatMessage(appMessages.account)}
                     </span>
                 </Button>
-                <Menu
-                    placement="top end"
-                    aria-label={intl.formatMessage(appMessages.account)}
-                    popoverClassName={styles.userMenu}
-                >
-                    {user !== null && profilePath !== null ? (
-                        <MenuSection aria-label={user.name}>
-                            <MenuItem
-                                id="profile"
-                                href={profilePath}
-                                media={avatar}
-                                {...(user.email !== undefined ? { description: user.email } : {})}
-                                textValue={intl.formatMessage(appMessages.profile, {
-                                    name: user.name,
-                                })}
-                            >
-                                {user.name}
-                            </MenuItem>
-                        </MenuSection>
-                    ) : null}
-                    {user !== null && profilePath !== null ? <MenuSeparator /> : null}
-                    <MenuSection
-                        title={intl.formatMessage(appMessages.appearance)}
-                        selectionMode="single"
-                        disallowEmptySelection
-                        selectedKeys={[colorScheme]}
-                        onSelectionChange={(keys) => {
-                            const [key] = keys === 'all' ? [] : [...keys];
-                            const scheme = COLOR_SCHEMES.find((value) => value === key);
-                            if (scheme !== undefined) {
-                                onColorSchemeChange(scheme);
-                            }
-                        }}
-                    >
-                        {COLOR_SCHEMES.map((scheme) => (
-                            <MenuItem key={scheme} id={scheme} icon={SCHEME_ICONS[scheme]}>
-                                {intl.formatMessage(appMessages.colorSchemeOption, { scheme })}
-                            </MenuItem>
-                        ))}
-                    </MenuSection>
-                    {locales.length > 0 ? (
-                        <MenuSection
-                            title={intl.formatMessage(appMessages.language)}
-                            selectionMode="single"
-                            disallowEmptySelection
-                            // Prefixed: the ids of a menu are unique, and a locale could be "dark"
-                            selectedKeys={[`locale-${definition.locale}`]}
-                            onSelectionChange={(keys) => {
-                                const [key] = keys === 'all' ? [] : [...keys];
-                                if (typeof key === 'string' && key.startsWith('locale-')) {
-                                    onLocaleChange?.(key.slice('locale-'.length));
-                                }
-                            }}
-                        >
-                            {locales.map(({ locale, label }) => (
-                                <MenuItem key={locale} id={`locale-${locale}`} textValue={label}>
-                                    <span lang={locale}>{label}</span>
-                                </MenuItem>
-                            ))}
-                        </MenuSection>
-                    ) : null}
-                    {onLogOut !== undefined ? <MenuSeparator /> : null}
-                    {onLogOut !== undefined ? (
-                        <MenuSection aria-label={intl.formatMessage(appMessages.logOut)}>
-                            <MenuItem id="logout" icon={LogOut} onAction={onLogOut}>
-                                {intl.formatMessage(appMessages.logOut)}
-                            </MenuItem>
-                        </MenuSection>
-                    ) : null}
-                </Menu>
-            </MenuTrigger>
+            </UserMenu>
         </div>
     );
 }

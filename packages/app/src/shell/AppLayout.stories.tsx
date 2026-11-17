@@ -16,7 +16,7 @@ import { createMockBackend } from '@panneau/protocol/mock';
 import { Heading, Text } from '@panneau/ui';
 
 import { AppLayout } from './AppLayout';
-import type { ColorSchemePreference } from './Sidebar';
+import type { ColorSchemePreference } from './UserMenu';
 
 const input: DefinitionInput = {
     protocol: 1,
@@ -29,11 +29,14 @@ const input: DefinitionInput = {
         { locale: 'fr', label: 'Français', url: '/admin/api/locale/fr' },
     ],
     api: { baseUrl: '/api' },
-    resources: ['pages', 'articles', 'categories', 'authors', 'tags', 'redirects'].map((id) => ({
-        id,
-        label: { singular: id.slice(0, -1), plural: id },
-        fields: [],
-    })),
+    // With the users, the user's menu links to their profile
+    resources: ['pages', 'articles', 'categories', 'authors', 'tags', 'redirects', 'users'].map(
+        (id) => ({
+            id,
+            label: { singular: id.slice(0, -1), plural: id },
+            fields: [],
+        }),
+    ),
     menus: {
         main: [
             {
@@ -66,7 +69,8 @@ const input: DefinitionInput = {
             { type: 'link', label: 'View the site', url: 'https://example.com', external: true },
         ],
     },
-    user: { id: '1', name: 'Ada Lovelace', email: 'ada@example.com' },
+    // A long email, whole in the user's menu
+    user: { id: '1', name: 'Ada Lovelace', email: 'ada.lovelace@northwind-journal.example.com' },
 };
 
 function getDefinition() {
@@ -186,39 +190,63 @@ export const CollapsibleGroups: Story = {
     },
 };
 
-/** The button next to the appearance's logs the user out. */
-export const LogOut: Story = {
+/**
+ * The user's menu (decision 0086), the only button of the footer: who is logged in, their profile,
+ * the appearance and the language (decision 0083) with a check on the current one, and "Log out".
+ */
+export const UserMenu: Story = {
     play: async ({ args, canvasElement }) => {
         const canvas = within(canvasElement);
-        await userEvent.click(canvas.getByRole('button', { name: 'Log out' }));
+        const body = within(canvasElement.ownerDocument.body);
+        const account = canvas.getByRole('button', { name: 'Your account (Ada Lovelace)' });
+        await userEvent.click(account);
+        const menu = within(await body.findByRole('menu', { name: 'Your account (Ada Lovelace)' }));
+        await expect(menu.getByRole('menuitem', { name: 'Profile' })).toHaveAttribute(
+            'href',
+            '/admin/resources/users/1/edit',
+        );
+        await expect(menu.getByRole('menuitemradio', { name: 'Light' })).toHaveAttribute(
+            'aria-checked',
+            'true',
+        );
+        await userEvent.click(menu.getByRole('menuitemradio', { name: 'Dark' }));
+
+        await userEvent.click(account);
+        const reopened = within(await body.findByRole('menu'));
+        await expect(reopened.getByRole('menuitemradio', { name: 'Dark' })).toHaveAttribute(
+            'aria-checked',
+            'true',
+        );
+        const language = within(reopened.getByRole('group', { name: 'Language' }));
+        await expect(language.getByRole('menuitemradio', { name: 'English' })).toHaveAttribute(
+            'aria-checked',
+            'true',
+        );
+        await userEvent.click(language.getByRole('menuitemradio', { name: 'Français' }));
+        await expect(args.onLocaleChange).toHaveBeenCalledWith('fr');
+
+        await userEvent.click(account);
+        await userEvent.click(
+            within(await body.findByRole('menu')).getByRole('menuitem', { name: 'Log out' }),
+        );
         await expect(args.onLogOut).toHaveBeenCalledTimes(1);
     },
 };
 
-/** The language button, next to the appearance's, switches the interface (decision 0083). */
-export const Languages: Story = {
-    play: async ({ args, canvasElement }) => {
-        const canvas = within(canvasElement);
-        const body = within(canvasElement.ownerDocument.body);
-        await userEvent.click(canvas.getByRole('button', { name: 'Language: English' }));
-        const menu = await body.findByRole('menu', { name: 'Language: English' });
-        await expect(within(menu).getByRole('menuitemradio', { name: 'English' })).toHaveAttribute(
-            'aria-checked',
-            'true',
-        );
-        await userEvent.click(within(menu).getByRole('menuitemradio', { name: 'Français' }));
-        await expect(args.onLocaleChange).toHaveBeenCalledWith('fr');
-    },
-};
-
+/** The rail: the user's avatar alone opens the same menu. */
 export const Collapsed: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
         await userEvent.click(canvas.getByRole('button', { name: 'Collapse the sidebar' }));
         await expect(canvas.getByRole('button', { name: 'Expand the sidebar' })).toHaveAttribute(
             'aria-expanded',
             'false',
         );
+        await userEvent.click(canvas.getByRole('button', { name: 'Your account (Ada Lovelace)' }));
+        const menu = within(await body.findByRole('menu', { name: 'Your account (Ada Lovelace)' }));
+        await expect(menu.getByRole('menuitem', { name: 'Log out' })).toBeInTheDocument();
+        await userEvent.keyboard('{Escape}');
     },
 };
 

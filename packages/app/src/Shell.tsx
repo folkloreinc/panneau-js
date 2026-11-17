@@ -40,7 +40,7 @@ import { resolveRoute } from './routeReference';
 import { type AppRoute, matchRoute, routePath } from './routes';
 import { AppLayout } from './shell/AppLayout';
 import { DockLayout } from './shell/DockLayout';
-import type { ColorSchemePreference } from './shell/Sidebar';
+import type { ColorSchemePreference } from './shell/UserMenu';
 
 export interface ShellProps {
     definition: Definition;

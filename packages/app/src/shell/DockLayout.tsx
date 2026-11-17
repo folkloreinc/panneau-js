@@ -13,7 +13,7 @@ import { ContextPickerPill } from './ContextPicker';
 import { Dock } from './Dock';
 import styles from './DockLayout.module.css';
 import { GoTo } from './GoTo';
-import type { ColorSchemePreference } from './Sidebar';
+import type { ColorSchemePreference } from './UserMenu';
 import { useRouteFocus } from './useRouteFocus';
 
 export interface DockLayoutProps {

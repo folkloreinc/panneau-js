@@ -176,6 +176,9 @@ export const appMessages: {
     name: string;
     }>;
     account: PanneauMessage<Record<never, never>>;
+    userMenu: PanneauMessage<    {
+    name: string;
+    }>;
     accountProfile: PanneauMessage<Record<never, never>>;
     name: PanneauMessage<Record<never, never>>;
     saveAccount: PanneauMessage<Record<never, never>>;

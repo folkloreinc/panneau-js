@@ -17,7 +17,8 @@ import { type AppRoute, routePath } from '../routes';
 import { ActionRunsButton } from './ActionRunsButton';
 import styles from './AppLayout.module.css';
 import { GoTo } from './GoTo';
-import { type ColorSchemePreference, Sidebar } from './Sidebar';
+import { Sidebar } from './Sidebar';
+import type { ColorSchemePreference } from './UserMenu';
 import { useRouteFocus } from './useRouteFocus';
 
 export const CONTENT_ID = 'panneau-content';

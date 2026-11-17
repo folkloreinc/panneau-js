@@ -65,6 +65,7 @@ export const appFr: Record<string, string> = {
     'panneau.app.passkeyUsed': 'utilisée le {date}',
     'panneau.app.removePasskeyNamed': 'Retirer la clé d’accès {name}',
     'panneau.app.account': 'Votre compte',
+    'panneau.app.userMenu': 'Votre compte ({name})',
     'panneau.app.accountProfile': 'Profil',
     'panneau.app.name': 'Nom',
     'panneau.app.saveAccount': 'Enregistrer',

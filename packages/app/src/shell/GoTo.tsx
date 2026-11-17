@@ -44,7 +44,7 @@ import { type NavLink, capitalize, getNavigation } from '../navigation';
 import { getItemTitle } from '../pages/itemTitle';
 import { readRecentItems, useRecentScope } from '../recentItems';
 import { routePath } from '../routes';
-import { COLOR_SCHEMES, type ColorSchemePreference } from './Sidebar';
+import { COLOR_SCHEMES, type ColorSchemePreference } from './UserMenu';
 
 /** The pause after typing before the palette searches the server. */
 const SEARCH_DELAY = 300;
