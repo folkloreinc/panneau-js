@@ -86,11 +86,23 @@ function createBackend() {
             { id: 'map', type: 'map' },
         ],
     };
+    // A dashboard page of its own (decision 0084).
+    definition.pages = {
+        activity: {
+            component: 'dashboard',
+            label: 'Activity',
+            widgets: [
+                { id: 'signups', type: 'stat' },
+                { id: 'published', type: 'list', settings: { resource: 'pages' } },
+            ],
+        },
+    };
     return createMockBackend({
         definition,
         widgets: {
             visits: { period: 'week', points: [{ date: '2026-10-05', value: 4 }], total: 4 },
             map: { pins: [] },
+            signups: { value: 3 },
         },
         auth: { users: [{ email: 'ada@example.com', password: 'secret' }] },
         context: {
@@ -203,6 +215,41 @@ describe('runConformance', () => {
         const check = report.checks.find(({ id }) => id === 'dashboard.widgets');
         expect(check?.status).toBe('failed');
         expect(check?.issues.join('\n')).toContain('The data of the series "visits"');
+    });
+
+    it('asks for the widgets of each dashboard page with its page, and only there', async () => {
+        const backend = createBackend();
+        const requested: string[] = [];
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: (input, init) => {
+                requested.push(input);
+                return backend.fetch(input, init);
+            },
+        });
+        expect(report.checks.find(({ id }) => id === 'dashboard.widgets')?.status).toBe('passed');
+        expect(requested).toContain(
+            'http://panneau.test/panneau/api/dashboard/widgets/signups?page=activity',
+        );
+        expect(requested).toContain('http://panneau.test/panneau/api/dashboard/widgets/visits');
+    });
+
+    it('fails a backend that answers a widget on a page it is not on', async () => {
+        const backend = createBackend();
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            // A backend that ignores `page`
+            fetch: (input, init) =>
+                backend.fetch(
+                    input.includes('/dashboard/widgets/') ? input.replace(/\?page=.*$/, '') : input,
+                    init,
+                ),
+        });
+        const check = report.checks.find(({ id }) => id === 'dashboard.widgets.unknown');
+        expect(check?.status).toBe('failed');
+        expect(check?.issues).toContain(
+            'Widget "visits" on the page "activity": expected status 404, got 200.',
+        );
     });
 
     it('checks a list paged with cursors: the next page, and an invalid cursor', async () => {

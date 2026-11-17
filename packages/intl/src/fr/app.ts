@@ -190,6 +190,7 @@ export const appFr: Record<string, string> = {
     'panneau.app.unreachableText':
         'Il est peut-être arrêté ou en train de redémarrer. Réessayez dans un instant.',
     'panneau.app.missingPage': 'Aucun plugin ne fournit la page « {component} ».',
+    'panneau.app.dashboardEmpty': 'Ce tableau de bord n’a pas encore de widgets.',
     'panneau.app.missingWidget': 'Aucun plugin ne fournit le widget « {type} ».',
     'panneau.app.widgetLoading': 'Chargement de {label}…',
     'panneau.app.widgetError': 'Ce widget n’a pas pu se charger.',

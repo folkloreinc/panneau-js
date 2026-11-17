@@ -25,8 +25,26 @@ export const DASHBOARD_WIDGETS: Widget[] = [
     { id: 'closed', type: 'list', label: 'Closed contests' },
 ];
 
-/** A definition with a resource of entries, whose status is a `select` with tones. */
-export function createDashboardDefinition(widgets: Widget[] = DASHBOARD_WIDGETS): DefinitionInput {
+/** The widgets of "Activity", a dashboard page of its own (decision 0084). */
+export const ACTIVITY_WIDGETS: Widget[] = [
+    {
+        id: 'accepted',
+        type: 'stat',
+        label: 'Accepted entries',
+        settings: { resource: 'entries', query: { 'filter[status]': 'accepted' } },
+    },
+    { id: 'signups', type: 'stat', label: 'Sign-ups this week' },
+    { id: 'per-week', type: 'series', label: 'Entries per week', width: 12 },
+];
+
+/**
+ * A definition with a resource of entries, whose status is a `select` with tones: the widgets of
+ * the home page, and those of the dashboard page "Activity".
+ */
+export function createDashboardDefinition(
+    widgets: Widget[] = DASHBOARD_WIDGETS,
+    activity: Widget[] = ACTIVITY_WIDGETS,
+): DefinitionInput {
     return createDefinition({
         resources: [
             {
@@ -53,7 +71,10 @@ export function createDashboardDefinition(widgets: Widget[] = DASHBOARD_WIDGETS)
                 abilities: { viewAny: true },
             },
         ],
-        pages: { home: { component: 'dashboard' } },
+        pages: {
+            home: { component: 'dashboard' },
+            activity: { component: 'dashboard', label: 'Activity', widgets: activity },
+        },
         dashboard: { widgets },
     });
 }
@@ -102,4 +123,15 @@ export const DASHBOARD_DATA: Record<string, MockWidget> = {
         url: '/panneau/resources/entries',
     },
     closed: { items: [], empty: 'No closed contests.' },
+    // On "Activity"
+    signups: { value: 42, help: '6 more than last week', tone: 'success' },
+    'per-week': {
+        period: 'week',
+        // Mondays, from August 31
+        points: PER_DAY.slice(0, 8).map((value, index) => ({
+            date: new Date(Date.UTC(2026, 7, 31 + index * 7)).toISOString().slice(0, 10),
+            value: value * 5,
+        })),
+        total: PER_DAY.slice(0, 8).reduce((sum, value) => sum + value * 5, 0),
+    },
 };

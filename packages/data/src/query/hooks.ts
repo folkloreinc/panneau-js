@@ -21,7 +21,7 @@ import type {
 
 import type { ActionResponse, Values } from '../adapter';
 import { useDataAdapter } from './context';
-import { type SearchKeyOptions, queryKeys } from './keys';
+import { type SearchKeyOptions, type WidgetKeyOptions, queryKeys } from './keys';
 import {
     definitionQueryOptions,
     itemPreviewQueryOptions,
@@ -103,16 +103,20 @@ export function useSearch(
 }
 
 /**
- * The data of a widget of the dashboard with data of its own (decision 0064), unchecked: check it
- * with `checkWidgetData()` of `@panneau/protocol/runtime`. A `403` fails with a `ForbiddenError`:
- * the widget is hidden.
+ * The data of a widget of a dashboard with data of its own (decision 0064), unchecked: check it
+ * with `checkWidgetData()` of `@panneau/protocol/runtime`. `page` is the dashboard page of the
+ * widget (decision 0084), the home page without it. A `403` fails with a `ForbiddenError`: the
+ * widget is hidden.
  */
 export function useWidgetData(
     widget: string,
-    options: QueryHookOptions<unknown, ReturnType<typeof queryKeys.widget>> = {},
+    {
+        page,
+        ...options
+    }: QueryHookOptions<unknown, ReturnType<typeof queryKeys.widget>> & WidgetKeyOptions = {},
 ): UseQueryResult<unknown> {
     const adapter = useDataAdapter();
-    return useQuery({ ...widgetDataQueryOptions(adapter, widget), ...options });
+    return useQuery({ ...widgetDataQueryOptions(adapter, widget, { page }), ...options });
 }
 
 /** Creates an item, then refetches the lists of the resource. */

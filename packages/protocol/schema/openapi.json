@@ -3129,7 +3129,19 @@
             ],
             "get": {
                 "operationId": "getWidgetData",
-                "description": "The data of a widget of the dashboard of the user, read as the user (decision 0064). The built-in `stat` and `list` on a resource (`settings.resource`) have none: clients read the list of the resource. A widget that is not in the dashboard of the user is a `404`; a `403` hides the widget.",
+                "description": "The data of a widget of a dashboard of the user, read as the user (decision 0064): the home page, or the dashboard page of `page` (decision 0084). The built-in `stat` and `list` on a resource (`settings.resource`) have none: clients read the list of the resource. A widget that is not on that page of the user is a `404`; a `403` hides the widget.",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "description": "The id of the dashboard page of the widget, in `pages`. Defaults to `home`, the home page, whose widgets are `pages.home.widgets` or `dashboard.widgets`.",
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "The widget's data, in the shape of its type: `StatWidgetData`, `SeriesWidgetData` and `ListWidgetData` for the built-in types, the plugin's own object for others.",
@@ -5267,6 +5279,13 @@
                     "abilities": {
                         "description": "What the current user can do with the page (decision 0046). `view: false` leaves it out of menus, and its route shows a forbidden state; `pages.home` falls back to the built-in home. Without it, the page is allowed.",
                         "$ref": "#/components/schemas/Abilities"
+                    },
+                    "widgets": {
+                        "description": "A page whose component is the built-in `dashboard`: its widgets for the user, in order (decision 0084), fed by `GET /dashboard/widgets/{widget}?page={page}`. On `pages.home`, they replace `dashboard.widgets`.",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Widget"
+                        }
                     }
                 },
                 "required": [
@@ -5320,7 +5339,7 @@
                     "id": {
                         "type": "string",
                         "minLength": 1,
-                        "description": "Unique in the dashboard: the `{widget}` of its route."
+                        "description": "Unique in its dashboard: the `{widget}` of its route."
                     },
                     "type": {
                         "type": "string",
@@ -5978,7 +5997,7 @@
                         "$ref": "#/components/schemas/Auth"
                     },
                     "dashboard": {
-                        "description": "The widgets of the home page for the user, in order, when `pages.home` is the `dashboard` (decision 0064).",
+                        "description": "The widgets of the home page for the user, in order, when `pages.home` is the `dashboard` (decision 0064): the shorthand of `pages.home.widgets`, which wins when set.",
                         "type": "object",
                         "properties": {
                             "widgets": {

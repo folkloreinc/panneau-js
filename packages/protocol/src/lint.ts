@@ -1,5 +1,6 @@
+import { DASHBOARD_COMPONENT, HOME_PAGE } from './dashboards';
 import { ITEM_TYPE_KEY } from './resourceTypes';
-import type { DefinitionInput, Field, LayoutNode, ResourceInput } from './schemas';
+import type { DefinitionInput, Field, LayoutNode, ResourceInput, Widget } from './schemas';
 import type { ValidationIssue } from './validate';
 import {
     RESOURCE_WIDGET_TYPES,
@@ -243,21 +244,61 @@ export function lintDefinition(definition: DefinitionInput): ValidationIssue[] {
             }
         });
     });
-    checkWidgets(definition, issues);
+    checkDashboards(definition, issues);
     return issues;
+}
+
+/**
+ * The dashboards (decision 0084): the widgets of each page whose component is the built-in
+ * `dashboard`, and those of `dashboard`, the shorthand of the home page, unless `pages.home` has
+ * its own, which can't come with them. Only a `dashboard` page has widgets.
+ */
+function checkDashboards(definition: DefinitionInput, issues: ValidationIssue[]) {
+    Object.entries(definition.pages ?? {}).forEach(([id, page]) => {
+        if (page.widgets === undefined) {
+            return;
+        }
+        if (page.component !== DASHBOARD_COMPONENT) {
+            issues.push({
+                path: `pages.${id}.widgets`,
+                message: `Only a \`${DASHBOARD_COMPONENT}\` page has widgets.`,
+            });
+            return;
+        }
+        checkWidgets(definition, page.widgets, `pages.${id}.widgets`, issues);
+    });
+    if (definition.dashboard === undefined) {
+        return;
+    }
+    const home = definition.pages?.[HOME_PAGE];
+    if (home?.component === DASHBOARD_COMPONENT && home.widgets !== undefined) {
+        if (definition.dashboard.widgets.length > 0) {
+            issues.push({
+                path: 'dashboard.widgets',
+                message: `\`pages.${HOME_PAGE}.widgets\` replaces them: set only one.`,
+            });
+        }
+        return;
+    }
+    checkWidgets(definition, definition.dashboard.widgets, 'dashboard.widgets', issues);
 }
 
 const FILTER_PARAM = /^filter\[([^\]]+)\]/;
 
 /**
- * The widgets of the dashboard (decision 0064): unique ids, and the built-in `stat` and `list` on
+ * The widgets of a dashboard (decision 0064): unique ids, and the built-in `stat` and `list` on
  * a resource that exists, with filters of its list. A `stat` counts the items of the list, so the
  * list can't be paged with cursors, which give no total.
  */
-function checkWidgets(definition: DefinitionInput, issues: ValidationIssue[]) {
+function checkWidgets(
+    definition: DefinitionInput,
+    widgets: Widget[],
+    widgetsPath: string,
+    issues: ValidationIssue[],
+) {
     const ids = new Set<string>();
-    (definition.dashboard?.widgets ?? []).forEach((widget, index) => {
-        const path = `dashboard.widgets.${index}`;
+    widgets.forEach((widget, index) => {
+        const path = `${widgetsPath}.${index}`;
         if (ids.has(widget.id)) {
             issues.push({ path: `${path}.id`, message: `Duplicate widget id \`${widget.id}\`.` });
         }

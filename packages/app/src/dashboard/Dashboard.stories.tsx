@@ -1,6 +1,6 @@
 /**
  * The dashboard of the home page (decision 0064): the built-in widgets, on a resource or with data
- * of their own, on the mock backend.
+ * of their own, on the mock backend. And a dashboard page of its own (decision 0084).
  */
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -13,6 +13,7 @@ import { type Widget, validateDefinition } from '@panneau/protocol';
 import { type MockWidget, createMockBackend } from '@panneau/protocol/mock';
 
 import {
+    ACTIVITY_WIDGETS,
     DASHBOARD_DATA,
     DASHBOARD_ITEMS,
     DASHBOARD_WIDGETS,
@@ -22,6 +23,10 @@ import { Dashboard } from './Dashboard';
 
 interface DashboardStoryProps {
     widgets?: Widget[];
+    /** The widgets of the dashboard page "Activity". */
+    activity?: Widget[];
+    /** The page of the dashboard: the home page without it. */
+    page?: string;
     data?: Record<string, MockWidget>;
     /** Requests never answer: every widget loads. */
     pending?: boolean;
@@ -29,11 +34,13 @@ interface DashboardStoryProps {
 
 function DashboardStory({
     widgets = DASHBOARD_WIDGETS,
+    activity = ACTIVITY_WIDGETS,
+    page,
     data = DASHBOARD_DATA,
     pending = false,
 }: DashboardStoryProps) {
     const [state] = useState(() => {
-        const definition = createDashboardDefinition(widgets);
+        const definition = createDashboardDefinition(widgets, activity);
         const backend = createMockBackend({ definition, items: DASHBOARD_ITEMS, widgets: data });
         const parsed = validateDefinition(definition);
         if (!parsed.success) {
@@ -51,7 +58,11 @@ function DashboardStory({
     return (
         <QueryClientProvider client={state.queryClient}>
             <DataAdapterProvider adapter={state.adapter}>
-                <Dashboard definition={state.definition} basePath="/panneau" />
+                <Dashboard
+                    definition={state.definition}
+                    basePath="/panneau"
+                    {...(page !== undefined && { page })}
+                />
             </DataAdapterProvider>
         </QueryClientProvider>
     );
@@ -173,6 +184,38 @@ export const NoWidgets: Story = {
     args: { widgets: [] },
     play: async ({ canvasElement }) => {
         await expect(within(canvasElement).getByRole('link', { name: 'Entries' })).toBeVisible();
+    },
+};
+
+/**
+ * A dashboard page of its own, "Activity" (decision 0084): its label above its widgets, without the
+ * welcome of the home page. A menu links to it as to any page.
+ */
+export const DashboardPage: Story = {
+    args: { page: 'activity' },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByRole('heading', { level: 1, name: 'Activity' })).toBeVisible();
+        await expect(canvas.queryByText(/^Welcome/)).toBeNull();
+        await expect(
+            await widgetOf(canvasElement, 'accepted').findByRole('link'),
+        ).toHaveAccessibleName('Accepted entries 3');
+        await expect(await widgetOf(canvasElement, 'signups').findByText('42')).toBeVisible();
+        await expect(
+            await widgetOf(canvasElement, 'per-week').findByRole('table', {
+                name: 'Entries per week',
+            }),
+        ).toBeInTheDocument();
+    },
+};
+
+/** A dashboard page without widgets says so, without the cards of the resources. */
+export const EmptyDashboardPage: Story = {
+    args: { page: 'activity', activity: [] },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByText('This dashboard has no widgets yet.')).toBeVisible();
+        await expect(canvas.queryByRole('link', { name: 'Entries' })).toBeNull();
     },
 };
 

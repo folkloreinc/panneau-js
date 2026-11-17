@@ -15,6 +15,7 @@ export type {
     TwoFactorAnswer,
     UpdateOptions,
     WebAuthnCredential,
+    WidgetDataOptions,
     Values,
 } from './adapter';
 export {

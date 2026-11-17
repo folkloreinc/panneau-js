@@ -543,6 +543,10 @@ export const appMessages = {
         id: 'panneau.app.missingPage',
         defaultMessage: 'No plugin provides the page “{component}”.',
     }),
+    dashboardEmpty: defineMessage({
+        id: 'panneau.app.dashboardEmpty',
+        defaultMessage: 'This dashboard has no widgets yet.',
+    }),
     missingWidget: defineMessage<{ type: string }>({
         id: 'panneau.app.missingWidget',
         defaultMessage: 'No plugin provides the widget “{type}”.',

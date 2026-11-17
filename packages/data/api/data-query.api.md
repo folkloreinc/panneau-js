@@ -16,7 +16,7 @@ import type { FieldCheckRequest } from '@panneau/protocol';
 import type { FieldCheckResponse } from '@panneau/protocol';
 import type { Item } from '@panneau/protocol';
 import { JSX } from 'react';
-import type { ListQuery } from '@panneau/protocol';
+import { ListQuery } from '@panneau/protocol';
 import type { ListResponse } from '@panneau/protocol';
 import type { Passkey } from '@panneau/protocol';
 import type { PreviewResponse } from '@panneau/protocol';
@@ -85,7 +85,9 @@ export const queryKeys: {
     account: () => readonly ["panneau", "account"];
     twoFactor: () => readonly ["panneau", "account", "two-factor"];
     passkeys: () => readonly ["panneau", "account", "passkeys"];
-    widget: (widget: string) => readonly ["panneau", "dashboard", "widgets", string];
+    widget: (widget: string, input?: WidgetKeyOptions) => readonly ["panneau", "dashboard", "widgets", string, {
+        readonly page: string;
+    }];
     actionRuns: () => readonly ["panneau", "actions", "runs"];
     actionRun: (id: string) => readonly ["panneau", "actions", "runs", string];
 };
@@ -166,10 +168,15 @@ export function useSearch(q: string, input?: QueryHookOptions<SearchResponse, Re
 export function useUpdateItem(resource: string): UseMutationResult<Item, Error, UpdateItemVariables>;
 
 // @public
-export function useWidgetData(widget: string, options?: QueryHookOptions<unknown, ReturnType<typeof queryKeys.widget>>): UseQueryResult<unknown>;
+export function useWidgetData(widget: string, input?: QueryHookOptions<unknown, ReturnType<typeof queryKeys.widget>> & WidgetKeyOptions): UseQueryResult<unknown>;
 
 // @public
-export function widgetDataQueryOptions(adapter: DataAdapter, widget: string): DataQueryOptions<unknown, ReturnType<typeof queryKeys.widget>>;
+export function widgetDataQueryOptions(adapter: DataAdapter, widget: string, input?: WidgetKeyOptions): DataQueryOptions<unknown, ReturnType<typeof queryKeys.widget>>;
+
+// @public
+export interface WidgetKeyOptions {
+    page?: string;
+}
 
 // (No @packageDocumentation comment for this package)
 

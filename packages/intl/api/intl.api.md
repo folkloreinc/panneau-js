@@ -327,6 +327,7 @@ export const appMessages: {
     missingPage: PanneauMessage<    {
     component: string;
     }>;
+    dashboardEmpty: PanneauMessage<Record<never, never>>;
     missingWidget: PanneauMessage<    {
     type: string;
     }>;
