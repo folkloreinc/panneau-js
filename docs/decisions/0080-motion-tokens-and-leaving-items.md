@@ -2,7 +2,7 @@
 
 - Status: proposed
 - Date: 2026-11-17
-- Changes: the motion token of [0020](0020-default-theme-and-icons.md), and the highlight of lists ([0066](0066-a-create-goes-back-to-the-list.md))
+- Changes: the toasts of [0062](0062-toasts.md), the motion token of [0020](0020-default-theme-and-icons.md), and the highlight of lists ([0066](0066-a-create-goes-back-to-the-list.md))
 
 ## Context
 
@@ -25,6 +25,11 @@ In a list, an item that appeared was highlighted (0066), but an item that left, 
 - **Only while the query stays the same**: after a new page, search, sort or filter, the first items that come replace the others at once. A change of query isn't the departure of an item.
 - **Leaving items don't count**: the total, the selection and the actions only know the items the list was given.
 - With reduced motion, the item goes at once.
+
+### The status of a form, and toasts that close
+
+- **The status of a form's footer** ("Unsaved changes", "Saved", the failure of a save) fades in and rises a little each time it changes (`--panneau-duration-slow`), as a toast does.
+- **A toast that closes fades out** and drops a little, and the others move into its place, in a view transition of the document (typed `panneau-toast`), where the browser has them. Only the toasts are captured: the page doesn't cross-fade, and stays as it is. Without view transitions, or with reduced motion, the toast goes at once, as before. The durations of the transition are written in the stylesheet of the toasts: its pseudo-elements belong to the document, outside the root and its tokens.
 
 ## Consequences
 
