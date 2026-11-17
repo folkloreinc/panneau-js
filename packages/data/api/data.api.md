@@ -31,6 +31,7 @@ import type { UploadSignRequest } from '@panneau/protocol';
 import type { User } from '@panneau/protocol';
 import type { ValidationIssue } from '@panneau/protocol';
 import type { WebAuthnOptions } from '@panneau/protocol';
+import type { WidgetDataRequest } from '@panneau/protocol';
 
 // @public
 export interface AccountValues {
@@ -308,8 +309,7 @@ export type Values = Record<string, unknown>;
 export type WebAuthnCredential = Record<string, unknown>;
 
 // @public
-export interface WidgetDataOptions extends RequestOptions {
-    page?: string;
+export interface WidgetDataOptions extends RequestOptions, WidgetDataRequest {
 }
 
 // (No @packageDocumentation comment for this package)

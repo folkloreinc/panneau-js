@@ -8,7 +8,14 @@ import {
 } from '../aggregates';
 import { CONTEXT_HEADER, CONTEXT_PROBLEM_TYPE, IDS_FILTER } from '../constants';
 import { formatContextHeader } from '../context';
-import { HOME_PAGE, getDashboardPages, getDashboardWidgets } from '../dashboards';
+import {
+    HOME_PAGE,
+    getDashboardPages,
+    getDashboardWidgets,
+    getSummaryResources,
+    getSummaryWidgets,
+    toWidgetDataParams,
+} from '../dashboards';
 import { getLinkTypes } from '../links';
 import { type FilterRange, isCursorPage, toSearchParams } from '../query';
 import {
@@ -18,6 +25,7 @@ import {
     SeriesWidgetData,
     StatWidgetData,
     User,
+    type Widget,
     widgetDataSchemas,
 } from '../schemas';
 import {
@@ -1359,25 +1367,49 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
         },
     );
 
-    // The dashboards (decisions 0064 and 0084): the data of the widgets with data of their own on
-    // each dashboard page, the lists that feed the widgets on a resource, and a widget that isn't
-    // on a page.
+    // The dashboards and the summaries (decisions 0064 and 0084): the data of the widgets with data
+    // of their own on each dashboard page and in the summary of each resource, the lists that feed
+    // the widgets on a resource, and a widget that isn't on a page or in a summary.
     const dashboardPages = () => {
         const current = definition as Definition | null;
         return current !== null ? getDashboardPages(current) : [];
     };
-    const widgets = () =>
-        dashboardPages().flatMap((page) =>
+    const summaryResources = () => {
+        const current = definition as Definition | null;
+        return current !== null ? getSummaryResources(current) : [];
+    };
+    /** Where a widget is: a dashboard page, or the summary of a resource. */
+    type WidgetPlace =
+        { page: string; resource?: undefined } | { resource: string; page?: undefined };
+    const widgets = (): { place: WidgetPlace; widget: Widget }[] => [
+        ...dashboardPages().flatMap((page) =>
             getDashboardWidgets(definition as Definition, page).map((widget) => ({
-                page,
+                place: { page },
                 widget,
             })),
-        );
+        ),
+        ...summaryResources().flatMap((resource) =>
+            getSummaryWidgets(definition as Definition, resource).map((widget) => ({
+                place: { resource },
+                widget,
+            })),
+        ),
+    ];
     // The home page's widgets without `page`, as clients ask for them
-    const widgetPath = (id: string, page: string) =>
-        `/dashboard/widgets/${encodeURIComponent(id)}${page !== HOME_PAGE ? `?page=${encodeURIComponent(page)}` : ''}`;
-    const widgetName = (id: string, page: string) =>
-        page !== HOME_PAGE ? `"${id}" of the page "${page}"` : `"${id}"`;
+    const widgetPath = (id: string, place: WidgetPlace) => {
+        const search = toWidgetDataParams(place).toString();
+        return `/dashboard/widgets/${encodeURIComponent(id)}${search !== '' ? `?${search}` : ''}`;
+    };
+    const placeName = (place: WidgetPlace) =>
+        place.resource !== undefined
+            ? `the summary of "${place.resource}"`
+            : place.page !== HOME_PAGE
+              ? `the page "${place.page}"`
+              : 'the home page';
+    const widgetName = (id: string, place: WidgetPlace) =>
+        place.resource !== undefined || place.page !== HOME_PAGE
+            ? `"${id}" of ${placeName(place)}`
+            : `"${id}"`;
 
     await run(
         'dashboard.widgets',
@@ -1385,12 +1417,12 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
         async (check) => {
             const own = widgets().filter(({ widget }) => getWidgetResource(widget) === null);
             if (own.length === 0) {
-                check.skip('No dashboard has a widget with data of its own.');
+                check.skip('No dashboard or summary has a widget with data of its own.');
                 return;
             }
-            for (const { page, widget } of own) {
-                const name = widgetName(widget.id, page);
-                const reply = await request(widgetPath(widget.id, page));
+            for (const { place, widget } of own) {
+                const name = widgetName(widget.id, place);
+                const reply = await request(widgetPath(widget.id, place));
                 // A widget the user can't see right now: the client hides it
                 if (reply.status === 403) {
                     check.expectProblem(reply, 403);
@@ -1426,16 +1458,16 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
         'dashboard.widgets.resource',
         'The lists and the aggregates of the widgets on a resource answer their query, with a total for a stat',
         async (check) => {
-            const onResource = widgets().flatMap(({ page, widget }) => {
+            const onResource = widgets().flatMap(({ place, widget }) => {
                 const read = getWidgetResource(widget);
-                return read !== null ? [{ page, widget, read }] : [];
+                return read !== null ? [{ place, widget, read }] : [];
             });
             if (onResource.length === 0) {
-                check.skip('No dashboard has a widget on a resource.');
+                check.skip('No dashboard or summary has a widget on a resource.');
                 return;
             }
-            for (const { page, widget, read } of onResource) {
-                const name = widgetName(widget.id, page);
+            for (const { place, widget, read } of onResource) {
+                const name = widgetName(widget.id, place);
                 const reads = read.aggregate !== null ? 'aggregate' : 'list';
                 const params =
                     read.aggregate !== null
@@ -1497,54 +1529,79 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
 
     await run(
         'dashboard.widgets.unknown',
-        'A widget that is not on a dashboard page of the user is a 404 problem',
+        'A widget that is not on a dashboard page or in a summary of the user is a 404 problem',
         async (check) => {
             const pages = dashboardPages();
-            if (pages.length === 0) {
-                check.skip('The definition has no dashboard.');
+            const summaries = summaryResources();
+            if (pages.length === 0 && summaries.length === 0) {
+                check.skip('The definition has no dashboard and no summary.');
                 return;
             }
-            const expectMissing = async (path: string, what: string) => {
+            const expectStatus = async (path: string, what: string, status: 404 | 422) => {
                 const reply = await request(path);
                 if (
                     check.expect(
-                        reply.status === 404,
-                        `${what}: expected status 404, got ${reply.status}.`,
+                        reply.status === status,
+                        `${what}: expected status ${status}, got ${reply.status}.`,
                     )
                 ) {
-                    check.expectProblem(reply, 404);
+                    check.expectProblem(reply, status);
                 }
             };
-            for (const page of pages) {
+            const expectMissing = (path: string, what: string) => expectStatus(path, what, 404);
+            const places: WidgetPlace[] = [
+                ...pages.map((page) => ({ page })),
+                ...summaries.map((resource) => ({ resource })),
+            ];
+            for (const place of places) {
                 await expectMissing(
-                    widgetPath(UNKNOWN, page),
-                    `An unknown widget ${page !== HOME_PAGE ? `of the page "${page}"` : 'of the home page'}`,
+                    widgetPath(UNKNOWN, place),
+                    `An unknown widget of ${placeName(place)}`,
                 );
             }
-            // Page by page (decision 0084): a widget asked for on a page that doesn't exist, or on
-            // another dashboard page than its own. Widgets with data of their own first: the others
-            // are a 404 on any page.
+            // Page by page and summary by summary (decision 0084): a widget asked for on a page that
+            // doesn't exist, or on another dashboard page or summary than its own. Widgets with
+            // data of their own first: the others are a 404 anywhere.
             const all = widgets().sort(
                 (a, b) =>
                     Number(getWidgetResource(a.widget) !== null) -
                     Number(getWidgetResource(b.widget) !== null),
             );
-            if (pages.every((page) => page === HOME_PAGE) || all[0] === undefined) {
+            const first = all[0];
+            if (first === undefined) {
+                return;
+            }
+            // A widget is on a page or in a summary: both are a 422
+            const summarized = all.find(
+                ({ place, widget }) =>
+                    place.resource !== undefined && getWidgetResource(widget) === null,
+            );
+            if (summarized?.place.resource !== undefined) {
+                await expectStatus(
+                    `${widgetPath(summarized.widget.id, summarized.place)}&page=${HOME_PAGE}`,
+                    `Widget ${widgetName(summarized.widget.id, summarized.place)} with both a page and a resource`,
+                    422,
+                );
+            }
+            if (places.length === 1 && first.place.page === HOME_PAGE) {
                 return;
             }
             await expectMissing(
-                `/dashboard/widgets/${encodeURIComponent(all[0].widget.id)}?page=${UNKNOWN}`,
-                `Widget ${widgetName(all[0].widget.id, all[0].page)} on an unknown page`,
+                `/dashboard/widgets/${encodeURIComponent(first.widget.id)}?page=${UNKNOWN}`,
+                `Widget ${widgetName(first.widget.id, first.place)} on an unknown page`,
             );
-            for (const page of pages) {
+            for (const place of places) {
                 const ids = new Set(
-                    getDashboardWidgets(definition as Definition, page).map(({ id }) => id),
+                    (place.resource !== undefined
+                        ? getSummaryWidgets(definition as Definition, place.resource)
+                        : getDashboardWidgets(definition as Definition, place.page)
+                    ).map(({ id }) => id),
                 );
                 const elsewhere = all.find(({ widget }) => !ids.has(widget.id));
                 if (elsewhere !== undefined) {
                     await expectMissing(
-                        widgetPath(elsewhere.widget.id, page),
-                        `Widget ${widgetName(elsewhere.widget.id, elsewhere.page)} on ${page !== HOME_PAGE ? `the page "${page}"` : 'the home page'}`,
+                        widgetPath(elsewhere.widget.id, place),
+                        `Widget ${widgetName(elsewhere.widget.id, elsewhere.place)} on ${placeName(place)}`,
                     );
                 }
             }

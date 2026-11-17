@@ -7,6 +7,7 @@ import {
     GROUPED_WIDGET_TYPES,
     RESOURCE_WIDGET_TYPES,
     WIDGET_RESERVED_QUERY_PARAMS,
+    getWidgetResource,
     isBuiltInWidgetType,
 } from './widgets';
 
@@ -275,6 +276,15 @@ export function lintDefinition(definition: DefinitionInput): ValidationIssue[] {
         .map((resource) => resource.id);
     definition.resources.forEach((resource, index) => {
         checkResource(resource, `resources.${index}`, issues);
+        if (resource.summary !== undefined) {
+            checkWidgets(
+                definition,
+                resource.summary.widgets,
+                `resources.${index}.summary.widgets`,
+                issues,
+                resource.id,
+            );
+        }
         allFields(resource, `resources.${index}`).forEach(({ field, path }) => {
             if (
                 field.type === 'relation' &&
@@ -437,15 +447,18 @@ function checkAggregateSettings(
 }
 
 /**
- * The widgets of a dashboard (decisions 0064 and 0084): unique ids, and the built-in types on a
- * resource that exists, with filters of its list and aggregates it declares. A `stat` that counts
- * reads the total of the list, so the list can't be paged with cursors, which give no total.
+ * The widgets of a dashboard or of the summary of a resource (decisions 0064 and 0084): unique ids,
+ * and the built-in types on a resource that exists, with filters of its list and aggregates it
+ * declares. A `stat` that counts reads the total of the list, so the list can't be paged with
+ * cursors, which give no total. Only the widgets of a summary follow its list (`followsList`): those
+ * on its resource, and those with data of their own.
  */
 function checkWidgets(
     definition: DefinitionInput,
     widgets: Widget[],
     widgetsPath: string,
     issues: ValidationIssue[],
+    summaryOf?: string,
 ) {
     const ids = new Set<string>();
     widgets.forEach((widget, index) => {
@@ -454,6 +467,21 @@ function checkWidgets(
             issues.push({ path: `${path}.id`, message: `Duplicate widget id \`${widget.id}\`.` });
         }
         ids.add(widget.id);
+        const follows = widget.settings?.followsList;
+        if (follows !== undefined) {
+            const other = getWidgetResource(widget)?.resource;
+            if (summaryOf === undefined) {
+                issues.push({
+                    path: `${path}.settings.followsList`,
+                    message: 'Only the widgets of the summary of a resource follow its list.',
+                });
+            } else if (other !== undefined && other !== summaryOf) {
+                issues.push({
+                    path: `${path}.settings.followsList`,
+                    message: `A widget on \`${other}\` doesn't follow the list of \`${summaryOf}\`.`,
+                });
+            }
+        }
         if (!isBuiltInWidgetType(widget.type)) {
             return;
         }

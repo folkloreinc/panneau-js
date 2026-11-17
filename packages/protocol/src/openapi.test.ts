@@ -101,6 +101,23 @@ describe('OpenAPI document', () => {
         expect(document.components.schemas).toHaveProperty('ListAggregates');
     });
 
+    it('asks for the widgets of a summary with the query of the list (decision 0084)', () => {
+        const widget = (
+            document.paths as Record<
+                string,
+                { get?: { parameters?: { name: string }[]; responses?: object } }
+            >
+        )['/dashboard/widgets/{widget}'];
+        expect(widget?.get?.parameters?.map((parameter) => parameter.name)).toEqual([
+            'page',
+            'resource',
+            'filter',
+            'q',
+        ]);
+        expect(Object.keys(widget?.get?.responses ?? {})).toContain('422');
+        expect(document.components.schemas).toHaveProperty('ResourceSummary');
+    });
+
     it('only references schemas and parameters it defines', () => {
         const missing = [...collectRefs(document)].filter((ref) => {
             const [, , kind = '', name = ''] = ref.split('/');

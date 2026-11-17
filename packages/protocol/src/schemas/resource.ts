@@ -5,6 +5,7 @@ import { Abilities } from './common';
 import { Field } from './field';
 import { LayoutNode } from './layout';
 import { ListDefinition } from './list';
+import { Widget } from './widget';
 
 export const ResourceFeatures = z.looseObject({
     drafts: z.boolean().optional(),
@@ -58,6 +59,22 @@ export const ResourceType = z
             'A type of the items of a resource (decision 0077): the items of a type have the fields of the resource and its own.',
     });
 
+export const ResourceSummary = z
+    .looseObject({
+        widgets: z.array(Widget).meta({
+            description:
+                "The widgets of the summary for the user, in order, drawn above the list in the grid of a dashboard. Widgets on this resource get the list's current filters and search, unless `settings.followsList` is `false`. Widgets with data of their own are fed by `GET /dashboard/widgets/{widget}?resource={resource}`, with the filters and the search of the list.",
+        }),
+        list: z.enum(['collapsed']).optional().meta({
+            description:
+                '`collapsed`: the resource opens on its summary, with its list folded under it behind "Show the N items". Without it, the list is shown under the summary.',
+        }),
+    })
+    .meta({
+        description:
+            'Widgets above the list of a resource, which follow its filters and its search (decision 0084).',
+    });
+
 export const Resource = z
     .looseObject({
         id: z.string().min(1),
@@ -101,12 +118,17 @@ export const Resource = z
             description:
                 "The types of the resource's items, each with fields of its own (decision 0077). Each item has a `type`, set when it is created, among their ids.",
         }),
+        summary: ResourceSummary.optional().meta({
+            description:
+                'Widgets above the list, which follow its filters and its search (decision 0084).',
+        }),
         settings: z.record(z.string(), z.unknown()).optional(),
     })
     .meta({ description: 'A set of items managed in the admin.' });
 
 export type ResourceFeatures = z.infer<typeof ResourceFeatures>;
 export type ResourceType = z.infer<typeof ResourceType>;
+export type ResourceSummary = z.infer<typeof ResourceSummary>;
 export type Resource = z.infer<typeof Resource>;
 /** A resource as a backend writes it, before defaults are applied. */
 export type ResourceInput = z.input<typeof Resource>;

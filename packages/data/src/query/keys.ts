@@ -1,10 +1,15 @@
-import { type AggregateRequest, HOME_PAGE, type ListQuery } from '@panneau/protocol';
+import {
+    type AggregateRequest,
+    HOME_PAGE,
+    type ListQuery,
+    type WidgetDataRequest,
+} from '@panneau/protocol';
 
-/** What the data of a widget is keyed by besides its id: its dashboard page. */
-export interface WidgetKeyOptions {
-    /** The dashboard page of the widget. Defaults to `home`. */
-    page?: string;
-}
+/**
+ * What the data of a widget is keyed by besides its id: its dashboard page, or the resource whose
+ * summary holds it, with the filters and the search of the list (decision 0084).
+ */
+export type WidgetKeyOptions = WidgetDataRequest;
 
 /** What a search is keyed by besides its query: its `limit` and `resources`. */
 export interface SearchKeyOptions {
@@ -40,11 +45,26 @@ export const queryKeys = {
     twoFactor: () => ['panneau', 'account', 'two-factor'] as const,
     passkeys: () => ['panneau', 'account', 'passkeys'] as const,
     /**
-     * Under `['panneau', 'dashboard']`: invalidating it refreshes every widget, of every page.
-     * Without a page, the widget of the home page.
+     * Under `['panneau', 'dashboard']`: invalidating it refreshes every widget, of every page and
+     * summary. Without a page, the widget of the home page. In a summary, keyed by its resource
+     * and the filters and the search of the list, without the page.
      */
-    widget: (widget: string, { page = HOME_PAGE }: WidgetKeyOptions = {}) =>
-        ['panneau', 'dashboard', 'widgets', widget, { page }] as const,
+    widget: (widget: string, { page = HOME_PAGE, resource, query = {} }: WidgetKeyOptions = {}) =>
+        [
+            'panneau',
+            'dashboard',
+            'widgets',
+            widget,
+            resource !== undefined
+                ? {
+                      resource,
+                      query: {
+                          ...(query.filter !== undefined && { filter: query.filter }),
+                          ...(query.q !== undefined && { q: query.q }),
+                      },
+                  }
+                : { page },
+        ] as const,
     actionRuns: () => ['panneau', 'actions', 'runs'] as const,
     actionRun: (id: string) => ['panneau', 'actions', 'runs', id] as const,
 };

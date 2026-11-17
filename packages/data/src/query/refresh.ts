@@ -4,11 +4,25 @@ import type { ActionResult, Selection } from '@panneau/protocol';
 
 import { queryKeys } from './keys';
 
-/** Invalidates the lists of a resource, and its aggregates, which count the same items. */
+/**
+ * Invalidates the lists of a resource, its aggregates, which count the same items, and the widgets
+ * of its summary with data of their own (decision 0084).
+ */
 export async function invalidateLists(client: QueryClient, resource: string): Promise<void> {
     await Promise.all([
         client.invalidateQueries({ queryKey: queryKeys.lists(resource) }),
         client.invalidateQueries({ queryKey: queryKeys.aggregates(resource) }),
+        client.invalidateQueries({
+            queryKey: ['panneau', 'dashboard', 'widgets'],
+            predicate: ({ queryKey }) => {
+                const place = queryKey[4];
+                return (
+                    typeof place === 'object' &&
+                    place !== null &&
+                    (place as { resource?: unknown }).resource === resource
+                );
+            },
+        }),
     ]);
 }
 

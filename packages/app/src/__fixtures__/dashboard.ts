@@ -180,3 +180,55 @@ export const DASHBOARD_DATA: Record<string, MockWidget> = {
         total: PER_DAY.slice(0, 8).reduce((sum, value) => sum + value * 5, 0),
     },
 };
+
+/**
+ * The widgets of the summary above the list of entries (decision 0084): a count and a sum that
+ * follow the list, a count of every entry that doesn't, a breakdown by status, and a widget with
+ * data of its own.
+ */
+export const SUMMARY_WIDGETS: Widget[] = [
+    { id: 'shown', type: 'stat', label: 'Entries', settings: { resource: 'entries' } },
+    {
+        id: 'everything',
+        type: 'stat',
+        label: 'All entries',
+        settings: { resource: 'entries', followsList: false },
+    },
+    {
+        id: 'fees-shown',
+        type: 'stat',
+        label: 'Entry fees',
+        settings: { resource: 'entries', measure: 'sum:fee' },
+    },
+    { id: 'queue', type: 'stat', label: 'In the queue' },
+    {
+        id: 'status',
+        type: 'breakdown',
+        label: 'Entries by status',
+        width: 12,
+        settings: { resource: 'entries', group: 'status' },
+    },
+];
+
+/** The data of the widget of the summary with data of its own: it follows the list too. */
+export const SUMMARY_DATA: Record<string, MockWidget> = {
+    queue: ({ query }) => ({
+        value: query.filter?.status === 'accepted' ? 0 : 4,
+        help: query.filter?.status !== undefined ? 'Of the shown entries' : 'Of every entry',
+    }),
+};
+
+/** The dashboard definition, with a summary above the list of entries (decision 0084). */
+export function createSummaryDefinition(
+    widgets: Widget[] = SUMMARY_WIDGETS,
+    list?: 'collapsed',
+): DefinitionInput {
+    const definition = createDashboardDefinition();
+    return {
+        ...definition,
+        resources: definition.resources.map((resource) => ({
+            ...resource,
+            summary: { widgets, ...(list !== undefined && { list }) },
+        })),
+    };
+}

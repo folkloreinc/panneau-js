@@ -932,12 +932,20 @@ export function createOpenApiDocument(): JsonObject {
                 get: {
                     operationId: 'getWidgetData',
                     description:
-                        'The data of a widget of a dashboard of the user, read as the user (decision 0064): the home page, or the dashboard page of `page` (decision 0084). The built-in widgets on a resource (`settings.resource`) have none: clients read the list or the aggregates of the resource. A widget that is not on that page of the user is a `404`; a `403` hides the widget.',
+                        'The data of a widget of a dashboard of the user, read as the user (decision 0064): the home page, the dashboard page of `page`, or the summary above the list of `resource`, with the filters and the search of the list (decision 0084). The built-in widgets on a resource (`settings.resource`) have none: clients read the list or the aggregates of the resource. A widget that is not on that page or in that summary of the user is a `404`; a `403` hides the widget. `page` and `resource` together are a `422`.',
                     parameters: [
                         queryParameter(
                             'page',
-                            'The id of the dashboard page of the widget, in `pages`. Defaults to `home`, the home page, whose widgets are `pages.home.widgets` or `dashboard.widgets`.',
+                            'The id of the dashboard page of the widget, in `pages`. Defaults to `home`, the home page, whose widgets are `pages.home.widgets` or `dashboard.widgets`. Not with `resource`.',
                             { type: 'string', minLength: 1 },
+                        ),
+                        queryParameter(
+                            'resource',
+                            "The id of the resource whose summary (`summary.widgets`) holds the widget, instead of a page. The request then has the list's current filters and search (`filter`, `q`), unless the widget has `settings.followsList: false`; never its sort or paging.",
+                            { type: 'string', minLength: 1 },
+                        ),
+                        ...listParameters.filter((parameter) =>
+                            ['filter', 'q'].includes(String(parameter.name)),
                         ),
                     ],
                     responses: {
@@ -953,7 +961,7 @@ export function createOpenApiDocument(): JsonObject {
                                 ],
                             },
                         ),
-                        ...problems(401, 403, 404, 500),
+                        ...problems(401, 403, 404, 422, 500),
                     },
                 },
             },

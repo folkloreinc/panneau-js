@@ -163,6 +163,43 @@ describe('query hooks', () => {
         );
     });
 
+    it('get the data of a widget of a summary with its list query, refetched when its items change', async () => {
+        const backend = createBackend();
+        const adapter = createRestAdapter({ baseUrl: BASE_URL, fetch: backend.fetch });
+        let calls = 0;
+        const getWidgetData = vi.fn(() => Promise.resolve({ value: ++calls }));
+        adapter.getWidgetData = getWidgetData;
+        const { wrapper, client } = setup(adapter);
+        const query = { filter: { status: 'draft' }, q: 'about' };
+        const { result } = renderHook(
+            () => ({
+                summary: useWidgetData('health', { resource: 'pages', query }),
+                home: useWidgetData('visits'),
+                remove: useDeleteItem('pages'),
+            }),
+            { wrapper },
+        );
+        await waitFor(() => expect(result.current.summary.isSuccess).toBe(true));
+        await waitFor(() => expect(result.current.home.isSuccess).toBe(true));
+        expect(getWidgetData).toHaveBeenCalledWith('health', {
+            signal: expect.any(AbortSignal) as AbortSignal,
+            resource: 'pages',
+            query,
+        });
+        expect(
+            client.getQueryData(queryKeys.widget('health', { resource: 'pages', query })),
+        ).toBeDefined();
+        // Another query of the list is another key
+        expect(
+            client.getQueryData(queryKeys.widget('health', { resource: 'pages' })),
+        ).toBeUndefined();
+        const home = result.current.home.data;
+        const before = result.current.summary.data;
+        await act(() => result.current.remove.mutateAsync('2'));
+        await waitFor(() => expect(result.current.summary.data).not.toEqual(before));
+        expect(result.current.home.data).toBe(home);
+    });
+
     it('get an item, and wait for an id', async () => {
         const { wrapper, backend } = setup();
         const { result, rerender } = renderHook(

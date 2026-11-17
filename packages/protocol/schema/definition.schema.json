@@ -264,6 +264,9 @@
                         "$ref": "#/$defs/ResourceType"
                     }
                 },
+                "summary": {
+                    "$ref": "#/$defs/ResourceSummary"
+                },
                 "settings": {
                     "type": "object",
                     "propertyNames": {
@@ -1553,45 +1556,24 @@
             ],
             "additionalProperties": {}
         },
-        "Page": {
+        "ResourceSummary": {
             "type": "object",
             "properties": {
-                "component": {
-                    "type": "string",
-                    "minLength": 1
-                },
-                "path": {
-                    "type": "string"
-                },
-                "label": {
-                    "type": "string"
-                },
-                "props": {
-                    "type": "object",
-                    "propertyNames": {
-                        "type": "string"
-                    },
-                    "additionalProperties": {}
-                },
-                "params": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
-                    }
-                },
-                "abilities": {
-                    "$ref": "#/$defs/Abilities"
-                },
                 "widgets": {
                     "type": "array",
                     "items": {
                         "$ref": "#/$defs/Widget"
                     }
+                },
+                "list": {
+                    "type": "string",
+                    "enum": [
+                        "collapsed"
+                    ]
                 }
             },
             "required": [
-                "component"
+                "widgets"
             ],
             "additionalProperties": {}
         },
@@ -1669,8 +1651,53 @@
                 "target": {
                     "type": "number",
                     "exclusiveMinimum": 0
+                },
+                "followsList": {
+                    "type": "boolean"
                 }
             },
+            "additionalProperties": {}
+        },
+        "Page": {
+            "type": "object",
+            "properties": {
+                "component": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "path": {
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
+                },
+                "props": {
+                    "type": "object",
+                    "propertyNames": {
+                        "type": "string"
+                    },
+                    "additionalProperties": {}
+                },
+                "params": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+                    }
+                },
+                "abilities": {
+                    "$ref": "#/$defs/Abilities"
+                },
+                "widgets": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/Widget"
+                    }
+                }
+            },
+            "required": [
+                "component"
+            ],
             "additionalProperties": {}
         },
         "MenuItem": {

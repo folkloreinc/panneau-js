@@ -70,6 +70,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
         "inlineEdit": [ "title", "status" ],
         "aggregates": { "sum": [ "price" ], "groupBy": [ "status" ], "dates": [ "published_at" ] }
     },
+    "summary": { "widgets": [ /* Widget */ ], "list": "collapsed" }, // widgets above the list (decision 0084)
     "actions": [ /* Action */ ],
     "abilities": { "viewAny": true, "create": true },
     "features": { "drafts": false, "revisions": false, "preview": null, "search": true },
@@ -516,6 +517,33 @@ A page whose component is the built-in `dashboard` is a dashboard: its `widgets`
 | `breakdown` | `{ "items": [{ "label": "Failed", "value": 3, "tone": "danger", "url": "…" }], "total": 42, "other": 5 }`: the parts of a total, at most 10, drawn as horizontal bars, the largest first, and the rest, `other`, last as "Other". An item of the aggregate endpoint also has its `key` |
 
 - **Errors.** A widget that isn't on that page of the user's (an unknown page, a page that isn't a dashboard, or the widget of another page), or a widget on a resource, is a `404`. A `403` hides the widget. Data that doesn't have the shape of its type is a `500` problem: clients show the widget's error, with a retry, and the other widgets stay. `checkWidgetData()` of `@panneau/protocol/runtime` checks a shape and names the wrong keys.
+
+### Summary
+
+A resource can have a **summary**: widgets drawn above its list, between the header of the list page and the list, in the grid of a dashboard ([decisions/0084](decisions/0084-overviews.md)). Its widgets have the types, layout, states and checks of those of a dashboard, at `resources.<i>.summary.widgets.<j>`:
+
+```jsonc
+"summary": {
+    "widgets": [
+        // On the resource: they follow the list
+        { "id": "failed", "type": "stat", "label": "Failed",
+          "settings": { "resource": "emails", "query": { "filter[status]": "failed" } } },
+        { "id": "per-day", "type": "series", "label": "Emails per day",
+          "settings": { "resource": "emails", "group": "day:sent_at" } },
+        // The whole resource, whatever the list shows
+        { "id": "all", "type": "stat", "label": "All emails",
+          "settings": { "resource": "emails", "followsList": false } },
+        // Data of its own, from GET /dashboard/widgets/{widget}?resource=emails
+        { "id": "bounces", "type": "stat", "label": "Bounce rate" }
+    ],
+    "list": "collapsed" // optional: the resource opens on its summary
+}
+```
+
+- **It follows the list.** The widgets on the resource of the summary get the list's current filters and search, so filtering the list redraws them. The filters of their own `settings.query` stay theirs: on the same filter, the widget's value wins, so a stat of the failed items stays one. A widget keeps the whole resource with `settings.followsList: false`. A widget on another resource doesn't follow the list. `followsList` is only for the widgets of a summary, and `lintDefinition()` checks it. A widget on a resource names it in `settings.resource`, as on a dashboard: without it, a built-in widget has data of its own.
+- **Data of its own.** A widget with data of its own gets it from `GET /dashboard/widgets/{widget}?resource={resource}`, with the filters and the search of the list (`filter[…]`, `q`) as the list sends them, unless it has `settings.followsList: false`. The request never has the sort or the paging of the list: `page` is the page of a dashboard, and `page` and `resource` together are a `422`. A widget that isn't in the summary of that resource for the user is a `404`, and the summary of a resource the user can't list (`viewAny: false`) a `403`. `toWidgetDataParams()` and `readWidgetDataQuery()` of `@panneau/protocol/runtime` write and read these parameters.
+- **Collapsible.** The user hides or shows the summary, and the browser remembers it per resource.
+- **The list can come second.** With `"list": "collapsed"`, the resource opens on its summary, its list folded under it behind "Show the N items" (its `meta.total`). A URL that asks for some items (filters, a search, a page or a sort, as the links of the widgets give), or an item, shows the list at once, and so does hiding the summary.
 
 ### Menus and the forbidden state
 
@@ -1006,13 +1034,14 @@ With `auth.mode = "external"`, the frontend only calls `GET /auth/session` and s
 
 ### Search, dashboard, preview
 
-| Endpoint                                  | Purpose                                                                                             |
-| ----------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `GET /search?q=&limit=&resources=`        | results grouped by resource: `{ "data": [ { "resource": "pages", "items": [...], "total": 34 } ] }` |
-| `GET /embeds?url=`                        | what a URL embeds, for `embed` fields: `{ "data": EmbedValue }`, or a `422` when it can't embed it  |
-| `GET /dashboard/widgets/{widget}?page=`   | the data of a widget of a [dashboard](#dashboard) page of the user, `home` without `page`           |
-| `GET /locale/{locale}?next=`              | optional: switches the interface to a locale of `interfaceLocales`, then redirects to `next`        |
-| `POST /resources/{resource}/{id}/preview` | sends the unsaved values; returns `{ "url": "…", "expiresAt": "…" }` for iframe previews            |
+| Endpoint                                    | Purpose                                                                                             |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `GET /search?q=&limit=&resources=`          | results grouped by resource: `{ "data": [ { "resource": "pages", "items": [...], "total": 34 } ] }` |
+| `GET /embeds?url=`                          | what a URL embeds, for `embed` fields: `{ "data": EmbedValue }`, or a `422` when it can't embed it  |
+| `GET /dashboard/widgets/{widget}?page=`     | the data of a widget of a [dashboard](#dashboard) page of the user, `home` without `page`           |
+| `GET /dashboard/widgets/{widget}?resource=` | the data of a widget of the [summary](#summary) of a resource, with the list's `filter[…]` and `q`  |
+| `GET /locale/{locale}?next=`                | optional: switches the interface to a locale of `interfaceLocales`, then redirects to `next`        |
+| `POST /resources/{resource}/{id}/preview`   | sends the unsaved values; returns `{ "url": "…", "expiresAt": "…" }` for iframe previews            |
 
 Global search ([decisions/0029](decisions/0029-go-to-palette.md)):
 
@@ -1034,14 +1063,14 @@ Global search ([decisions/0029](decisions/0029-go-to-palette.md)):
 - **schemas and TypeScript types**. `Definition` is a definition after parsing, with defaults applied; `DefinitionInput` is a definition as a backend writes it.
 - **validation helpers**:
     - `validateDefinition()` checks the schema, then the references between parts;
-    - `lintDefinition()` checks those references alone: layout nodes and columns that name a field, relations that name a resource, unique names, the aggregates of lists, and the widgets of the dashboard on a resource;
+    - `lintDefinition()` checks those references alone: layout nodes and columns that name a field, relations that name a resource, unique names, the aggregates of lists, and the widgets of the dashboards and the summaries on a resource;
     - `validateBootConfig()` checks a [boot config](#boot-config).
 - **the portable rules**: `checkValues()` is the reference implementation.
 - **range filters**: `matchesFilterRange()` is the reference of how a backend reads the bounds of a range.
 - **a light entry point for browsers** (`@panneau/protocol/runtime`): the constants and the helpers above that don't need the schemas (`checkValues()`, `evaluateCondition()`, `lintDefinition()`, the list query helpers, `isProblem()`), without loading zod. UI packages import them from there, and only types from the main entry point.
 - **generated files**: `@panneau/protocol/definition.schema.json` and `@panneau/protocol/boot.schema.json` (JSON Schema 2020-12), and `@panneau/protocol/openapi.json` (OpenAPI 3.1).
 - **a mock backend** (`@panneau/protocol/mock`): an in-memory implementation of the resource routes, and of the widgets of the dashboard with the data of its `widgets` option.
-- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. For a list paged with cursors, it also follows `nextCursor`, and checks that an invalid cursor is a `422`. With `writes`, it also checks that rules limited to `create` don't apply to updates: an update with those fields set to `null` succeeds. It also checks that an update of a single field, with `If-Match`, changes that field alone, and that an update ignores the values of fields with `notInForm` ([0071](decisions/0071-fields-out-of-forms.md)). It also checks that the built-in `delete` answers a dry run without being declared and, with `writes`, that an item that allows `duplicate` is copied under a new id, with its `ETag`. It also checks that the API agrees with the abilities it announces ([0046](decisions/0046-abilities-in-the-ui.md)): resources without `viewAny` answer `403` on their list, items leave out the values of fields with `view: false`, and a dry run of `delete` skips an item without `delete`; with `writes`, an empty create of a resource without `create`, and an empty update of an item without `update`, answer `403`. It also checks that the backend reads the bounds of the resource's first `date-range` filter, if it has one, and that `GET /search` finds an item by a word of its title, reads `limit` and `resources`, and refuses invalid parameters with a `422`. With a `dashboard`, it checks that each widget with data of its own answers in the shape of its type (or a `403`), that the lists and the aggregates of the widgets on a resource answer their query, with a total for a `stat`, and that a widget that isn't in the dashboard is a `404`. For each resource with aggregates, it checks that `GET /resources/{resource}/aggregate` counts the items of the list, answers each declared sum, group and period in the shape of a widget, with a point per period and the range of the `date-range` filter on the date, and refuses what isn't declared with a `422`; a resource without aggregates is a `404`. With a `context` in the definition, it checks the choices of each param, a definition built for a value of the first param, and a value that doesn't exist refused with a `403` context problem. `context` sends values with every request, for a backend whose resources need one.
+- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. For a list paged with cursors, it also follows `nextCursor`, and checks that an invalid cursor is a `422`. With `writes`, it also checks that rules limited to `create` don't apply to updates: an update with those fields set to `null` succeeds. It also checks that an update of a single field, with `If-Match`, changes that field alone, and that an update ignores the values of fields with `notInForm` ([0071](decisions/0071-fields-out-of-forms.md)). It also checks that the built-in `delete` answers a dry run without being declared and, with `writes`, that an item that allows `duplicate` is copied under a new id, with its `ETag`. It also checks that the API agrees with the abilities it announces ([0046](decisions/0046-abilities-in-the-ui.md)): resources without `viewAny` answer `403` on their list, items leave out the values of fields with `view: false`, and a dry run of `delete` skips an item without `delete`; with `writes`, an empty create of a resource without `create`, and an empty update of an item without `update`, answer `403`. It also checks that the backend reads the bounds of the resource's first `date-range` filter, if it has one, and that `GET /search` finds an item by a word of its title, reads `limit` and `resources`, and refuses invalid parameters with a `422`. With a `dashboard`, it checks that each widget with data of its own answers in the shape of its type (or a `403`), that the lists and the aggregates of the widgets on a resource answer their query, with a total for a `stat`, and that a widget that isn't in the dashboard is a `404`. It checks the widgets of each dashboard page and of the summary of each resource the same way (`?page=`, `?resource=`), and that a widget with both is a `422`. For each resource with aggregates, it checks that `GET /resources/{resource}/aggregate` counts the items of the list, answers each declared sum, group and period in the shape of a widget, with a point per period and the range of the `date-range` filter on the date, and refuses what isn't declared with a `422`; a resource without aggregates is a `404`. With a `context` in the definition, it checks the choices of each param, a definition built for a value of the first param, and a value that doesn't exist refused with a `403` context problem. `context` sends values with every request, for a backend whose resources need one.
 
 ```ts
 import { formatReport, runConformance } from '@panneau/protocol/conformance';

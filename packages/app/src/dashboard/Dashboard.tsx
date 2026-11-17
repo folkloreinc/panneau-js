@@ -32,7 +32,7 @@ import { HomePage } from '../pages/HomePage';
 import { PageHeader, PageLayout } from '../pages/PageHeader';
 import pageStyles from '../pages/pages.module.css';
 import styles from './Dashboard.module.css';
-import { type WidgetContent, useWidgetContent } from './widgetContent';
+import { type WidgetContent, type WidgetSummary, useWidgetContent } from './widgetContent';
 
 export interface DashboardProps {
     definition: Definition;
@@ -335,6 +335,7 @@ function WidgetBody({
 function DashboardWidget({
     widget,
     page,
+    summary,
     definition,
     basePath,
 }: Omit<DashboardGridProps, 'widgets'> & { widget: Widget }) {
@@ -344,6 +345,7 @@ function DashboardWidget({
     const content = useWidgetContent({
         widget,
         page,
+        summary,
         definition,
         basePath,
         untitled: (id) => intl.formatMessage(appMessages.widgetUntitled, { id }),
@@ -378,6 +380,11 @@ export interface DashboardGridProps {
     widgets: Widget[];
     /** The page whose dashboard holds them, for the data of their own: the home page without it. */
     page?: string | undefined;
+    /**
+     * The summary of a resource that holds them, instead of a page (decision 0084): the widgets on
+     * that resource and those with data of their own get the current query of its list.
+     */
+    summary?: WidgetSummary | undefined;
     definition: Definition;
     basePath: string;
 }
@@ -387,7 +394,13 @@ export interface DashboardGridProps {
  * column on a phone. Each widget draws its skeleton while it loads, its error with "Try again", and
  * nothing when the user can't see it, without touching the others.
  */
-export function DashboardGrid({ widgets, page, definition, basePath }: DashboardGridProps) {
+export function DashboardGrid({
+    widgets,
+    page,
+    summary,
+    definition,
+    basePath,
+}: DashboardGridProps) {
     return (
         <div className={styles.grid}>
             {widgets.map((widget) => (
@@ -395,6 +408,7 @@ export function DashboardGrid({ widgets, page, definition, basePath }: Dashboard
                     key={widget.id}
                     widget={widget}
                     page={page}
+                    summary={summary}
                     definition={definition}
                     basePath={basePath}
                 />

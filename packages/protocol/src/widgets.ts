@@ -118,6 +118,19 @@ export function getWidgetResource(widget: WidgetLike): WidgetResource | null {
     return { resource, params, query: fromSearchParams(params), aggregate: aggregateOf(widget) };
 }
 
+/**
+ * Whether a widget of the summary of a resource follows its list (decision 0084), and gets its
+ * current filters and search: a widget on that resource, or with data of its own, unless its
+ * `settings.followsList` is `false`. A widget on another resource doesn't.
+ */
+export function followsList(widget: WidgetLike, resource: string): boolean {
+    if (widget.settings?.followsList === false) {
+        return false;
+    }
+    const read = getWidgetResource(widget);
+    return read === null || read.resource === resource;
+}
+
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const TONE = /^[a-z0-9-]+$/;
 

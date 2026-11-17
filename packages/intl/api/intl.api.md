@@ -341,6 +341,13 @@ export const appMessages: {
     widgetUntitled: PanneauMessage<    {
     id: string;
     }>;
+    summary: PanneauMessage<Record<never, never>>;
+    showList: PanneauMessage<Record<never, never>>;
+    showListItems: PanneauMessage<    {
+    count: number;
+    singular: string;
+    plural: string;
+    }>;
 };
 
 // @public

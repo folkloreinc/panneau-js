@@ -35,10 +35,14 @@ export const WidgetSettings = z
             description:
                 'With `resource`, for a `stat`: its `target` (a budget, a quota), in the unit of the value: minor units for a sum of `money`.',
         }),
+        followsList: z.boolean().optional().meta({
+            description:
+                "In the summary of a resource (decision 0084): `false` keeps the widget on the whole resource, without the list's current filters and search. Widgets on that resource, and widgets with data of their own, follow the list by default.",
+        }),
     })
     .meta({
         description:
-            'The settings of a widget: `resource`, `query`, `measure`, `group` and `target` for the built-in types on a resource, anything else for widgets of plugins.',
+            'The settings of a widget: `resource`, `query`, `measure`, `group` and `target` for the built-in types on a resource, `followsList` in a summary, anything else for widgets of plugins.',
     });
 
 export const Widget = z.looseObject({

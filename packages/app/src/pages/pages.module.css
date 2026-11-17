@@ -178,3 +178,8 @@
     flex-wrap: wrap;
     gap: var(--panneau-space-2);
 }
+
+/* The list folded under the summary of its resource (decision 0084): the button that shows it. */
+.showList {
+    align-self: flex-start;
+}

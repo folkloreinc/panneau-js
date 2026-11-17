@@ -1,3 +1,5 @@
+import { keepPreviousData } from '@tanstack/react-query';
+
 import { can } from '@panneau/core';
 import { ForbiddenError } from '@panneau/data';
 import { useResourceAggregate, useResourceList, useWidgetData } from '@panneau/data/query';
@@ -5,6 +7,7 @@ import type {
     BreakdownWidgetData,
     Definition,
     Item,
+    ListQuery,
     ListResponse,
     ListWidgetData,
     ListWidgetItem,
@@ -15,13 +18,16 @@ import type {
 } from '@panneau/protocol';
 import {
     WIDGET_LIST_MAX_ITEMS,
+    type WidgetListQuery,
     type WidgetResource,
     checkWidgetData,
+    followsList,
     fromMinorUnits,
     getWidgetResource,
     isBuiltInWidgetType,
     parseAggregateGroup,
     parseAggregateMeasure,
+    toSearchParams,
 } from '@panneau/protocol/runtime';
 
 import { getItemPath } from '../pages/itemLinks';
@@ -201,10 +207,34 @@ function fromAggregate(
     });
 }
 
+/**
+ * A widget on a resource that follows its list (decision 0084): the list's filters and search, under
+ * those of the widget's own query, which keep their meaning (a stat of the failed items stays one).
+ */
+function withListQuery(read: WidgetResource, list: WidgetListQuery): WidgetResource {
+    const filter = { ...list.filter, ...read.query.filter };
+    const q = read.query.q ?? list.q;
+    const query: ListQuery = {
+        ...read.query,
+        ...(Object.keys(filter).length > 0 && { filter }),
+        ...(q !== undefined && q !== '' && { q }),
+    };
+    return { ...read, query, params: toSearchParams(query) };
+}
+
+/** The summary of a resource that holds a widget, with the current query of its list. */
+export interface WidgetSummary {
+    resource: string;
+    /** The filters and the search of the list, which the widgets that follow it get. */
+    query: WidgetListQuery;
+}
+
 interface UseWidgetContentOptions {
     widget: Widget;
-    /** The dashboard page of the widget: the home page without it. */
+    /** The dashboard page of the widget: the home page without it, or a summary. */
     page?: string | undefined;
+    /** The summary of a resource that holds the widget, instead of a page (decision 0084). */
+    summary?: WidgetSummary | undefined;
     definition: Definition;
     basePath: string;
     /** The title of an item without one. */
@@ -222,12 +252,15 @@ interface UseWidgetContentOptions {
 export function useWidgetContent({
     widget,
     page,
+    summary,
     definition,
     basePath,
     untitled,
     enabled = true,
 }: UseWidgetContentOptions): WidgetContent {
-    const read = getWidgetResource(widget);
+    const follows = summary !== undefined && followsList(widget, summary.resource);
+    const own = getWidgetResource(widget);
+    const read = own !== null && follows ? withListQuery(own, summary.query) : own;
     const resource =
         read !== null
             ? definition.resources.find((candidate) => candidate.id === read.resource)
@@ -240,7 +273,11 @@ export function useWidgetContent({
             ...read?.query,
             perPage: widget.type === 'stat' ? 1 : WIDGET_LIST_MAX_ITEMS,
         },
-        { enabled: enabled && read !== null && aggregate === null && canList },
+        {
+            enabled: enabled && read !== null && aggregate === null && canList,
+            // A widget that follows its list keeps its data while the next query loads
+            placeholderData: keepPreviousData,
+        },
     );
     const totals = useResourceAggregate(
         read?.resource ?? '',
@@ -251,8 +288,14 @@ export function useWidgetContent({
         },
         { enabled: enabled && aggregate !== null && canList },
     );
-    const own = useWidgetData(widget.id, { page, enabled: enabled && read === null });
-    const query = read === null ? own : aggregate !== null ? totals : list;
+    const data = useWidgetData(widget.id, {
+        ...(summary !== undefined
+            ? { resource: summary.resource, ...(follows && { query: summary.query }) }
+            : { page }),
+        enabled: enabled && read === null,
+        placeholderData: keepPreviousData,
+    });
+    const query = read === null ? data : aggregate !== null ? totals : list;
     if (read !== null && !canList) {
         return { status: 'hidden' };
     }
@@ -280,8 +323,8 @@ export function useWidgetContent({
         return data !== null ? { status: 'ready', data } : { status: 'error', retry };
     }
     // Data in the wrong shape draws the error, not a broken widget
-    if (isBuiltInWidgetType(widget.type) && checkWidgetData(widget.type, own.data).length > 0) {
+    if (isBuiltInWidgetType(widget.type) && checkWidgetData(widget.type, data.data).length > 0) {
         return { status: 'error', retry };
     }
-    return { status: 'ready', data: own.data };
+    return { status: 'ready', data: data.data };
 }
