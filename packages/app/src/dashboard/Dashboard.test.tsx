@@ -10,6 +10,7 @@ import { type DefinitionInput, type Widget, validateDefinition } from '@panneau/
 import { type MockWidget, createMockBackend } from '@panneau/protocol/mock';
 
 import {
+    AGGREGATE_WIDGETS,
     DASHBOARD_DATA,
     DASHBOARD_ITEMS,
     createDashboardDefinition,
@@ -22,6 +23,7 @@ function renderDashboard({
     plugins = [],
     page,
     requests = [],
+    answer = () => undefined,
 }: {
     definition?: DefinitionInput;
     widgets?: Record<string, MockWidget>;
@@ -29,13 +31,15 @@ function renderDashboard({
     page?: string;
     /** The URLs of the requests, as they are sent. */
     requests?: string[];
+    /** Answers a request in place of the mock backend, unless it returns `undefined`. */
+    answer?: (url: string) => Response | undefined;
 } = {}) {
     const backend = createMockBackend({ definition, items: DASHBOARD_ITEMS, widgets });
     const adapter = createRestAdapter({
         baseUrl: '/panneau/api',
         fetch: (input, init) => {
             requests.push(String(input));
-            return backend.fetch(input, init);
+            return Promise.resolve(answer(input) ?? backend.fetch(input, init));
         },
     });
     const parsed = validateDefinition(definition);
@@ -202,6 +206,64 @@ describe('Dashboard', () => {
         expect(widget('map').getByText('No plugin provides the widget “map”.')).toBeVisible();
     });
 
+    it('draws a skeleton of the widgets on aggregates while they load', () => {
+        renderDashboard({ definition: createDashboardDefinition(AGGREGATE_WIDGETS) });
+        expect(document.querySelectorAll('[aria-busy="true"]')).toHaveLength(3);
+        expect(widget('by-status').getByRole('status')).toHaveTextContent(
+            'Loading Entries by status…',
+        );
+    });
+
+    it('sums money in its currency, links to the list, and draws the meter of its target', async () => {
+        renderDashboard({ definition: createDashboardDefinition(AGGREGATE_WIDGETS) });
+        const fees = await widget('fees').findByRole('link');
+        expect(fees).toHaveAttribute('href', '/panneau/resources/entries');
+        expect(fees).toHaveTextContent('CA$120.00');
+        const meter = widget('fees').getByRole('meter', { name: 'Entry fees' });
+        expect(meter).toHaveAttribute('aria-valuetext', 'CA$120.00 of CA$100.00');
+        expect(meter).toHaveClass('panneau-tone-danger');
+    });
+
+    it('draws a series of the entries per day, at 0 on the days without', async () => {
+        renderDashboard({ definition: createDashboardDefinition(AGGREGATE_WIDGETS) });
+        const table = await widget('submitted').findByRole('table', { name: 'Entries per day' });
+        expect(
+            within(table)
+                .getAllByRole('row')
+                .map((row) => row.textContent),
+        ).toEqual(['Oct 12', 'Oct 20', 'Oct 31', 'Oct 42', 'Oct 50', 'Oct 61', 'Oct 70']);
+        expect(widget('submitted').getAllByText('6').length).toBeGreaterThan(0);
+    });
+
+    it('breaks down the entries by status, with the labels and the links of the options', async () => {
+        renderDashboard({ definition: createDashboardDefinition(AGGREGATE_WIDGETS) });
+        const list = await widget('by-status').findByRole('list', { name: 'Entries by status' });
+        expect(
+            within(list)
+                .getAllByRole('listitem')
+                .map((item) => item.textContent),
+        ).toEqual(['Accepted3', 'To judge2', 'Refused1']);
+        expect(within(list).getByRole('link', { name: 'To judge' })).toHaveAttribute(
+            'href',
+            '/panneau/resources/entries?filter%5Bstatus%5D=to-judge',
+        );
+        expect(within(list).getAllByRole('listitem')[0]).toHaveClass('panneau-tone-success');
+    });
+
+    it('shows the error of aggregates in the wrong shape', async () => {
+        renderDashboard({
+            definition: createDashboardDefinition(AGGREGATE_WIDGETS),
+            answer: (url) =>
+                url.includes('/aggregate?')
+                    ? new Response(JSON.stringify({ items: [{ label: 'No value' }] }), {
+                          headers: { 'Content-Type': 'application/json' },
+                      })
+                    : undefined,
+        });
+        expect(await widget('by-status').findByText('This widget couldn’t load.')).toBeVisible();
+        expect(await widget('fees').findByText('This widget couldn’t load.')).toBeVisible();
+    });
+
     it('shows the cards of the resources without widgets', () => {
         renderDashboard({ definition: createDashboardDefinition([]) });
         expect(screen.getByRole('link', { name: 'Entries' })).toHaveAttribute(
@@ -228,6 +290,33 @@ describe('Dashboard', () => {
             expect(document.querySelector('[data-widget="overdue"]')).toBeNull();
             expect(requests).toContain('/panneau/api/dashboard/widgets/signups?page=activity');
             expect(requests.some((url) => url.includes('/dashboard/widgets/overdue'))).toBe(false);
+        });
+
+        it('draws the widgets on the aggregates of a resource, as the home page does', async () => {
+            const requests: string[] = [];
+            renderDashboard({
+                definition: createDashboardDefinition(undefined, AGGREGATE_WIDGETS),
+                page: 'activity',
+                requests,
+            });
+            const list = await widget('by-status').findByRole('list', {
+                name: 'Entries by status',
+            });
+            expect(within(list).getByRole('link', { name: 'To judge' })).toHaveAttribute(
+                'href',
+                '/panneau/resources/entries?filter%5Bstatus%5D=to-judge',
+            );
+            expect(
+                await widget('fees').findByRole('meter', { name: 'Entry fees' }),
+            ).toHaveAttribute('aria-valuetext', 'CA$120.00 of CA$100.00');
+            expect(
+                await widget('submitted').findByRole('table', { name: 'Entries per day' }),
+            ).toBeInTheDocument();
+            // From the aggregates of the resource, never from the endpoint of the widgets
+            expect(requests).toContain(
+                '/panneau/api/resources/entries/aggregate?measure=count&group=status',
+            );
+            expect(requests.some((url) => url.includes('/dashboard/widgets/'))).toBe(false);
         });
 
         it('says it has no widgets, without the cards of the resources', () => {

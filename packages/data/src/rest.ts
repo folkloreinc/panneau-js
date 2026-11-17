@@ -8,6 +8,7 @@ import {
     PROBLEM_CONTENT_TYPE,
     type Problem,
     formatContextHeader,
+    toAggregateParams,
     toSearchParams,
     toSearchQueryParams,
     validate,
@@ -438,6 +439,13 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
                 path: `/dashboard/widgets/${encode(widget)}`,
                 // The home page's widgets are asked for without `page`, as before decision 0084
                 ...(page !== HOME_PAGE && { query: new URLSearchParams({ page }) }),
+                signal,
+            });
+        },
+        getResourceAggregate(resource, request, { signal } = {}) {
+            return json<unknown>({
+                path: `/resources/${encode(resource)}/aggregate`,
+                query: toAggregateParams(request),
                 signal,
             });
         },

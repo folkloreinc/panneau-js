@@ -16,6 +16,7 @@ import {
     useDefinition,
     useDeleteItem,
     useDuplicateItem,
+    useResourceAggregate,
     useResourceItem,
     useResourceList,
     useRunAction,
@@ -261,6 +262,41 @@ describe('query hooks', () => {
             }),
         );
         await waitFor(() => expect(result.current.list.data?.meta.total).toBe(4));
+    });
+
+    it('get the aggregates of a resource, refetched when its items change', async () => {
+        const { wrapper, backend } = setup();
+        const { result } = renderHook(
+            () => ({
+                aggregate: useResourceAggregate('pages', {
+                    filter: { status: 'draft' },
+                    group: 'status',
+                }),
+                remove: useDeleteItem('pages'),
+            }),
+            { wrapper },
+        );
+        await waitFor(() => expect(result.current.aggregate.isSuccess).toBe(true));
+        expect(result.current.aggregate.data).toEqual({
+            items: [{ label: 'Draft', value: 2, key: 'draft' }],
+            total: 2,
+        });
+        expect(new URL(backend.requests[0]?.url ?? '').search).toBe(
+            '?filter%5Bstatus%5D=draft&measure=count&group=status',
+        );
+        await act(() => result.current.remove.mutateAsync('2'));
+        await waitFor(() => expect(result.current.aggregate.data).toMatchObject({ total: 1 }));
+    });
+
+    it('fail the aggregates without getResourceAggregate()', async () => {
+        const adapter = createRestAdapter({ baseUrl: BASE_URL, fetch: createBackend().fetch });
+        delete adapter.getResourceAggregate;
+        const { wrapper } = setup(adapter);
+        const { result } = renderHook(() => useResourceAggregate('pages'), { wrapper });
+        await waitFor(() => expect(result.current.isError).toBe(true));
+        expect(result.current.error?.message).toBe(
+            'The data adapter has no getResourceAggregate().',
+        );
     });
 
     it('delete an item and refetch the lists', async () => {

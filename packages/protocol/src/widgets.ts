@@ -1,8 +1,11 @@
 import { type ListQuery, fromSearchParams } from './query';
 import { isRecord } from './values';
 
-/** The widget types that every client draws (decision 0064). Other types are widgets of plugins. */
-export const BUILT_IN_WIDGET_TYPES = ['stat', 'series', 'list'] as const;
+/**
+ * The widget types that every client draws (decisions 0064 and 0084). Other types are widgets of
+ * plugins.
+ */
+export const BUILT_IN_WIDGET_TYPES = ['stat', 'series', 'list', 'breakdown'] as const;
 
 export type BuiltInWidgetType = (typeof BUILT_IN_WIDGET_TYPES)[number];
 
@@ -14,8 +17,17 @@ export type WidgetSeriesPeriod = (typeof WIDGET_SERIES_PERIODS)[number];
 /** The most items a `list` widget shows: the backend sends the most useful first. */
 export const WIDGET_LIST_MAX_ITEMS = 5;
 
-/** The built-in types that can read the list of a resource (`settings.resource`). */
-export const RESOURCE_WIDGET_TYPES = ['stat', 'list'] as const;
+/** The most items of a `breakdown` widget: the rest is its `other`. */
+export const WIDGET_BREAKDOWN_MAX_ITEMS = 10;
+
+/**
+ * The built-in types that can read a resource (`settings.resource`): `stat` and `list` read its
+ * list, `series` and `breakdown` its aggregates, and a `stat` with a `sum:` measure too.
+ */
+export const RESOURCE_WIDGET_TYPES = ['stat', 'series', 'list', 'breakdown'] as const;
+
+/** The built-in types that read the aggregates of a resource, grouped by `settings.group`. */
+export const GROUPED_WIDGET_TYPES = ['series', 'breakdown'] as const;
 
 /** Query parameters that the client sets on the list of a widget on a resource, never `query`. */
 export const WIDGET_RESERVED_QUERY_PARAMS = ['page', 'perPage', 'cursor'] as const;
@@ -30,7 +42,18 @@ interface WidgetLike {
     settings?: Record<string, unknown> | undefined;
 }
 
-/** A built-in widget that reads the list of a resource, with no data of its own (decision 0064). */
+/** What a widget reads of `GET /resources/{resource}/aggregate` (decision 0084). */
+export interface WidgetAggregate {
+    /** `count`, or `sum:{field}`. */
+    measure: string;
+    /** `{period}:{date field}` or a field of `groupBy`, for a `series` or a `breakdown`. */
+    group: string | null;
+}
+
+/**
+ * A built-in widget that reads a resource, with no data of its own (decisions 0064 and 0084): its
+ * list, or its aggregates.
+ */
 export interface WidgetResource {
     /** The id of the resource. */
     resource: string;
@@ -38,10 +61,31 @@ export interface WidgetResource {
     params: URLSearchParams;
     /** The same query, parsed: the query of the list request, and of the link to the list. */
     query: ListQuery;
+    /**
+     * The measure and the group of the aggregates the widget reads: a `series`, a `breakdown`, and
+     * a `stat` with a `sum:` measure. `null` for a `list`, and a `stat` that counts the items of
+     * the list (`meta.total`).
+     */
+    aggregate: WidgetAggregate | null;
+}
+
+/** The measure of a widget on a resource that reads its aggregates, or `null` for its list. */
+function aggregateOf(widget: WidgetLike): WidgetAggregate | null {
+    const measure = widget.settings?.measure;
+    const group = widget.settings?.group;
+    const grouped = (GROUPED_WIDGET_TYPES as readonly string[]).includes(widget.type);
+    const sums = typeof measure === 'string' && measure.startsWith('sum:');
+    if (!grouped && !(widget.type === 'stat' && sums)) {
+        return null;
+    }
+    return {
+        measure: typeof measure === 'string' && measure !== '' ? measure : 'count',
+        group: grouped && typeof group === 'string' && group !== '' ? group : null,
+    };
 }
 
 /**
- * The resource whose list feeds a built-in `stat` or `list` widget, and its query: `null` for a
+ * The resource that feeds a built-in widget, its query, and the aggregates it reads: `null` for a
  * widget with data of its own at `GET /dashboard/widgets/{widget}`, and for widgets of plugins.
  */
 export function getWidgetResource(widget: WidgetLike): WidgetResource | null {
@@ -71,7 +115,7 @@ export function getWidgetResource(widget: WidgetLike): WidgetResource | null {
             });
         });
     }
-    return { resource, params, query: fromSearchParams(params) };
+    return { resource, params, query: fromSearchParams(params), aggregate: aggregateOf(widget) };
 }
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -91,6 +135,8 @@ function optional(
 
 const isString = (value: unknown): value is string => typeof value === 'string';
 const isTone = (value: unknown): boolean => isString(value) && TONE.test(value);
+const isKey = (value: unknown): boolean =>
+    isString(value) || isNumber(value) || typeof value === 'boolean';
 
 function checkStat(data: Record<string, unknown>): string[] {
     const wrong: string[] = [];
@@ -105,6 +151,9 @@ function checkStat(data: Record<string, unknown>): string[] {
     }
     if (!optional(data, 'url', isString)) {
         wrong.push('url');
+    }
+    if (!optional(data, 'target', (value) => isNumber(value) && value > 0)) {
+        wrong.push('target');
     }
     return wrong;
 }
@@ -176,10 +225,46 @@ function checkList(data: Record<string, unknown>): string[] {
     return wrong;
 }
 
+function checkBreakdown(data: Record<string, unknown>): string[] {
+    const wrong: string[] = [];
+    if (!Array.isArray(data.items) || data.items.length > WIDGET_BREAKDOWN_MAX_ITEMS) {
+        wrong.push('items');
+    } else {
+        data.items.forEach((item: unknown, index) => {
+            if (!isRecord(item)) {
+                wrong.push(`items.${index}`);
+                return;
+            }
+            if (!isString(item.label)) {
+                wrong.push(`items.${index}.label`);
+            }
+            if (!isNumber(item.value)) {
+                wrong.push(`items.${index}.value`);
+            }
+            if (!optional(item, 'tone', isTone)) {
+                wrong.push(`items.${index}.tone`);
+            }
+            if (!optional(item, 'url', isString)) {
+                wrong.push(`items.${index}.url`);
+            }
+            if (!optional(item, 'key', isKey)) {
+                wrong.push(`items.${index}.key`);
+            }
+        });
+    }
+    if (!optional(data, 'total', isNumber)) {
+        wrong.push('total');
+    }
+    if (!optional(data, 'other', isNumber)) {
+        wrong.push('other');
+    }
+    return wrong;
+}
+
 /**
- * Checks the data of a widget against the shape of its type (decision 0064), without the schemas:
- * the paths of the wrong keys (`value`, `points.2.date`), empty when it is right. The data of a
- * widget of a plugin only has to be an object. The dates of a series must go up, one point per
+ * Checks the data of a widget against the shape of its type (decisions 0064 and 0084), without the
+ * schemas: the paths of the wrong keys (`value`, `points.2.date`), empty when it is right. The data
+ * of a widget of a plugin only has to be an object. The dates of a series must go up, one point per
  * period.
  */
 export function checkWidgetData(type: string, data: unknown): string[] {
@@ -193,6 +278,8 @@ export function checkWidgetData(type: string, data: unknown): string[] {
             return checkSeries(data);
         case 'list':
             return checkList(data);
+        case 'breakdown':
+            return checkBreakdown(data);
         default:
             return [];
     }

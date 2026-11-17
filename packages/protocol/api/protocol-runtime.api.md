@@ -13,6 +13,79 @@ export const ADDRESS_PARTS: readonly ["country", "street", "unit", "city", "regi
 export type AddressPart = (typeof ADDRESS_PARTS)[number];
 
 // @public
+export const AGGREGATE_COUNT = "count";
+
+// @public
+export const AGGREGATE_MAX_POINTS = 366;
+
+// @public
+export interface AggregateField {
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    options?: readonly {
+        value: unknown;
+        label: string;
+        tone?: string | undefined;
+    }[] | undefined;
+    // (undocumented)
+    type: string;
+}
+
+// @public
+export type AggregateGroup = {
+    type: 'period';
+    period: WidgetSeriesPeriod;
+    field: string;
+} | {
+    type: 'field';
+    field: string;
+};
+
+// Warning: (ae-forgotten-export) The symbol "StatWidgetData" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "SeriesWidgetData" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "BreakdownWidgetData" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function aggregateItems(items: readonly Record<string, unknown>[], query: AggregateQuery, options: AggregateItemsOptions): StatWidgetData | SeriesWidgetData | BreakdownWidgetData;
+
+// @public (undocumented)
+export interface AggregateItemsOptions {
+    emptyLabel?: string;
+    fields: readonly AggregateField[];
+    range?: FilterRange | undefined;
+}
+
+// @public
+export type AggregateMeasure = {
+    type: 'count';
+} | {
+    type: 'sum';
+    field: string;
+};
+
+// @public
+export interface AggregateQuery {
+    // (undocumented)
+    group: AggregateGroup | null;
+    // (undocumented)
+    measure: AggregateMeasure;
+}
+
+// @public
+export interface AggregateRequest {
+    // (undocumented)
+    filter?: ListQuery['filter'];
+    group?: string | null | undefined;
+    measure?: string | undefined;
+    // (undocumented)
+    q?: string | undefined;
+}
+
+// @public
+export type AggregateWidgetType = 'stat' | 'series' | 'breakdown';
+
+// @public
 export const AUTH_ERROR_CODES: readonly ["provider", "email", "domain", "access"];
 
 // @public
@@ -52,7 +125,7 @@ export const BUILT_IN_LINK_TYPES: readonly ["url", "page", "email", "tel", "file
 export const BUILT_IN_LIST_LAYOUTS: readonly ["table", "cards", "gallery", "calendar"];
 
 // @public
-export const BUILT_IN_WIDGET_TYPES: readonly ["stat", "series", "list"];
+export const BUILT_IN_WIDGET_TYPES: readonly ["stat", "series", "list", "breakdown"];
 
 // @public (undocumented)
 export type BuiltInAction = (typeof BUILT_IN_ACTIONS)[number];
@@ -179,6 +252,9 @@ export function fromSearchParams(params: URLSearchParams): ListQuery;
 export function getAddressRequiredParts(field: Pick<Field, 'settings'>): AddressPart[];
 
 // @public
+export function getAggregateWidgetType(group: AggregateGroup | null): AggregateWidgetType;
+
+// @public
 export function getCreatableTypes<T extends {
     abilities?: Record<string, boolean> | undefined;
 }>(resource: {
@@ -197,6 +273,9 @@ export function getDashboardPages(definition: DashboardsOf): string[];
 //
 // @public
 export function getDashboardWidgets(definition: DashboardsOf, page?: string): Widget[];
+
+// @public
+export function getFilterRange(query: Pick<ListQuery, 'filter'>, field: string): FilterRange | undefined;
 
 // @public
 export function getImageUrl(value: unknown): string | null;
@@ -248,6 +327,9 @@ export function getValue(values: unknown, path: string): unknown;
 //
 // @public
 export function getWidgetResource(widget: WidgetLike): WidgetResource | null;
+
+// @public
+export const GROUPED_WIDGET_TYPES: readonly ["series", "breakdown"];
 
 // @public
 export function hasResourceTypes(resource: {
@@ -341,6 +423,16 @@ export interface LinkType {
 export function lintDefinition(definition: DefinitionInput): ValidationIssue[];
 
 // @public
+export interface ListAggregatesLike {
+    dates?: readonly string[] | undefined;
+    groupBy?: readonly string[] | undefined;
+    sum?: readonly string[] | undefined;
+}
+
+// @public
+export function listPeriods(from: string, to: string, period: WidgetSeriesPeriod, max?: number): string[];
+
+// @public
 export interface ListQuery {
     cursor?: string;
     fields?: string[];
@@ -379,7 +471,16 @@ export function mergeThemes(...themes: readonly PartialTheme[]): Theme;
 export type NestedShape = 'group' | 'repeater';
 
 // @public
+export function nextPeriod(start: string, period: WidgetSeriesPeriod): string;
+
+// @public
 export function normalizePostalCode(code: string, country?: string | null): string;
+
+// @public
+export function parseAggregateGroup(value: string): AggregateGroup | null;
+
+// @public
+export function parseAggregateMeasure(value: string): AggregateMeasure | null;
 
 // @public
 export function parseContextHeader(header: string | null | undefined): ContextValues;
@@ -407,6 +508,18 @@ export const PROBLEM_CONTENT_TYPE = "application/problem+json";
 
 // @public
 export const PROTOCOL_VERSION = 1;
+
+// @public
+export function readAggregateQuery(params: URLSearchParams, aggregates: ListAggregatesLike): ReadAggregateQueryResult;
+
+// @public
+export type ReadAggregateQueryResult = {
+    query: AggregateQuery;
+    errors?: undefined;
+} | {
+    query?: undefined;
+    errors: Record<string, string[]>;
+};
 
 // @public
 export function readSearchQuery(params: URLSearchParams, definition: {
@@ -441,7 +554,7 @@ export function resolveLinkNewTab(newTab: LinkNewTab, link: {
 }): boolean;
 
 // @public
-export const RESOURCE_WIDGET_TYPES: readonly ["stat", "list"];
+export const RESOURCE_WIDGET_TYPES: readonly ["stat", "series", "list", "breakdown"];
 
 // @public
 export const RICH_TEXT_STYLE_ELEMENTS: readonly ["p", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "ul", "ol", "li"];
@@ -492,6 +605,12 @@ export interface SearchQuery {
 }
 
 // @public
+export function startOfPeriod(day: string, period: WidgetSeriesPeriod): string;
+
+// @public
+export function toAggregateParams(request: AggregateRequest): URLSearchParams;
+
+// @public
 export function toMinorUnits(amount: number, currency: string): number;
 
 // @public
@@ -514,6 +633,9 @@ export interface ValidationIssue {
 }
 
 // @public
+export const WIDGET_BREAKDOWN_MAX_ITEMS = 10;
+
+// @public
 export const WIDGET_LIST_MAX_ITEMS = 5;
 
 // @public
@@ -523,7 +645,14 @@ export const WIDGET_RESERVED_QUERY_PARAMS: readonly ["page", "perPage", "cursor"
 export const WIDGET_SERIES_PERIODS: readonly ["day", "week", "month"];
 
 // @public
+export interface WidgetAggregate {
+    group: string | null;
+    measure: string;
+}
+
+// @public
 export interface WidgetResource {
+    aggregate: WidgetAggregate | null;
     params: URLSearchParams;
     query: ListQuery;
     resource: string;

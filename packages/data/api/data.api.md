@@ -7,6 +7,7 @@
 import type { ActionRequest } from '@panneau/protocol';
 import type { ActionResult } from '@panneau/protocol';
 import type { ActionRun } from '@panneau/protocol';
+import type { AggregateRequest } from '@panneau/protocol';
 import type { ContextOption } from '@panneau/protocol';
 import type { ContextValues } from '@panneau/protocol';
 import type { Definition } from '@panneau/protocol';
@@ -97,6 +98,7 @@ export interface DataAdapter {
         q?: string;
     }): Promise<ContextOption[]>;
     getDefinition(options?: RequestOptions): Promise<Definition>;
+    getResourceAggregate?(resource: string, request: AggregateRequest, options?: RequestOptions): Promise<unknown>;
     getSession(options?: RequestOptions): Promise<Session>;
     getTwoFactor?(options?: RequestOptions): Promise<TwoFactorStatus>;
     getWidgetData(widget: string, options?: WidgetDataOptions): Promise<unknown>;

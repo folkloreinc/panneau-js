@@ -1,6 +1,7 @@
 import { alertTokens } from '../alert/tokens';
 import { asideTokens } from '../aside/tokens';
 import { badgeTokens } from '../badge/tokens';
+import { barChartTokens } from '../bar-chart/tokens';
 import { buttonTokens } from '../button/tokens';
 import { cardTokens } from '../card/tokens';
 import { checkboxTokens } from '../checkbox/tokens';
@@ -18,6 +19,7 @@ import { iconTokens } from '../icon/tokens';
 import { inlineTokens } from '../inline/tokens';
 import { lineChartTokens } from '../line-chart/tokens';
 import { menuTokens } from '../menu/tokens';
+import { meterTokens } from '../meter/tokens';
 import { numberInputTokens } from '../number-input/tokens';
 import { pillTriggerTokens } from '../pill-trigger/tokens';
 import { popoverTokens } from '../popover/tokens';
@@ -44,6 +46,7 @@ export const componentTokens = Object.freeze({
     alert: alertTokens.tokens,
     aside: asideTokens.tokens,
     badge: badgeTokens.tokens,
+    'bar-chart': barChartTokens.tokens,
     button: buttonTokens.tokens,
     calendar: calendarTokens.tokens,
     card: cardTokens.tokens,
@@ -62,6 +65,7 @@ export const componentTokens = Object.freeze({
     'line-chart': lineChartTokens.tokens,
     'list-box': listBoxTokens.tokens,
     menu: menuTokens.tokens,
+    meter: meterTokens.tokens,
     'number-input': numberInputTokens.tokens,
     'pill-trigger': pillTriggerTokens.tokens,
     popover: popoverTokens.tokens,

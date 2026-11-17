@@ -43,6 +43,7 @@ export function createDefinition(): DefinitionInput {
                     defaultSort: 'title',
                     perPage: 2,
                     search: true,
+                    aggregates: { groupBy: ['status'] },
                 },
                 actions: [
                     {

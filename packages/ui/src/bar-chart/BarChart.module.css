@@ -1,0 +1,76 @@
+.chart {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-bar-chart-gap, var(--panneau-space-3));
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--panneau-bar-chart-font-size, var(--panneau-font-size-sm));
+}
+
+.row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-1);
+    min-width: 0;
+}
+
+.text {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--panneau-space-3);
+    min-width: 0;
+}
+
+.label {
+    overflow: hidden;
+    color: var(--panneau-color-text);
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+a.label:hover,
+a.label[data-hovered] {
+    text-decoration: underline;
+}
+
+.label[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 2px;
+    border-radius: var(--panneau-radius-sm);
+}
+
+.value {
+    flex-shrink: 0;
+    font-variant-numeric: var(--panneau-font-numeric);
+    font-weight: var(--panneau-font-weight-medium);
+    color: var(--panneau-color-text);
+}
+
+.track {
+    height: var(--panneau-bar-chart-bar-height, 0.5rem);
+}
+
+/* A bar on the categorical chart color of the chart, or the solid color of its tone. */
+.bar {
+    height: 100%;
+    min-width: 2px;
+    background-color: var(--_panneau-bar-chart-color);
+    border-radius: var(--panneau-bar-chart-bar-radius, var(--panneau-radius-full));
+}
+
+.toned .bar {
+    background-color: var(--panneau-tone-solid);
+}
+
+/* The rest, after the parts: it steps back. */
+.other .label {
+    color: var(--panneau-color-text-muted);
+}
+
+.other .bar {
+    background-color: var(--panneau-color-border-control);
+}

@@ -1,3 +1,4 @@
+import { aggregateItems, getFilterRange, readAggregateQuery } from '../aggregates';
 import {
     CONTEXT_HEADER,
     CONTEXT_PROBLEM_TYPE,
@@ -411,9 +412,10 @@ function writableValues(resource: ResourceInput, body: Values): Values {
  * `view`, `update` or `delete` on those requests; items leave out the values of fields with
  * `view: false`, and writes ignore those of fields with `update: false`. A resource with `types`
  * needs the `type` of a new item, among the types it can create, and its items have the fields of
- * their type (decision 0077). Values are checked with
- * the portable rules. Used to test the conformance kit, and to develop frontends without a real
- * backend.
+ * their type (decision 0077). A list with `aggregates` answers
+ * `GET /resources/{resource}/aggregate` with `aggregateItems()` (decision 0084). Values are checked
+ * with the portable rules. Used to test the conformance kit, and to develop frontends without a
+ * real backend.
  */
 export function createMockBackend(options: MockBackendOptions): MockBackend {
     const { definition, items = {} } = options;
@@ -958,6 +960,38 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
         }
         // The items in the context: those that requests read and act on
         const scoped = inScope(resource.id, list);
+
+        // The aggregates of the list (decision 0084): the items the user can list, filtered as the
+        // list filters them, counted or summed, and grouped by a period or a field.
+        if (segments.length === 3 && segments[2] === 'aggregate' && method === 'GET') {
+            if (resource.abilities?.viewAny === false) {
+                return problem(403, 'This resource can’t be listed.');
+            }
+            const aggregates = resource.list?.aggregates;
+            if (aggregates === undefined) {
+                return problem(404, 'This resource has no aggregates.');
+            }
+            const read = readAggregateQuery(url.searchParams, aggregates);
+            if (read.errors !== undefined) {
+                return problem(422, 'The given data was invalid.', {
+                    type: 'urn:panneau:problem:validation',
+                    errors: read.errors,
+                });
+            }
+            const query = fromSearchParams(url.searchParams);
+            const group = read.query.group;
+            return json(
+                200,
+                aggregateItems(applyQuery(scoped, { ...query, sort: [] }), read.query, {
+                    fields: [
+                        ...resource.fields,
+                        ...(resource.types ?? []).flatMap((type) => type.fields),
+                    ],
+                    range:
+                        group?.type === 'period' ? getFilterRange(query, group.field) : undefined,
+                }),
+            );
+        }
 
         if (segments.length === 2) {
             if (method === 'GET') {

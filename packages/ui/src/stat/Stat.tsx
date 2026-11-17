@@ -1,8 +1,9 @@
-import type { ReactNode } from 'react';
+import { type ReactNode, useId } from 'react';
 import { Link } from 'react-aria-components';
 import type { FormatNumberOptions } from 'react-intl';
 
 import { usePanneauIntl } from '../intl/usePanneauIntl';
+import { Meter } from '../meter/Meter';
 import { Skeleton } from '../skeleton/Skeleton';
 import { toneClass } from '../theme/toneClass';
 import type { Tone } from '../theme/tones';
@@ -28,17 +29,29 @@ export interface StatProps {
     tone?: Tone | undefined;
     /** Makes the stat a link: to the list of what it counts. */
     href?: string | undefined;
+    /**
+     * A target for the number (a budget, a quota), above 0: a meter under the number. Past the
+     * target, the meter takes the `tone`, or `danger` without one.
+     */
+    target?: number | null | undefined;
     className?: string;
 }
 
-/** A number in large type, with what it counts and a line of help: a stat of a dashboard. */
-export function Stat({ label, value, format, help, tone, href, className }: StatProps) {
+/**
+ * A number in large type, with what it counts and a line of help, and a meter of its target when it
+ * has one: a stat of a dashboard.
+ */
+export function Stat({ label, value, format, help, tone, href, target, className }: StatProps) {
     const intl = usePanneauIntl();
+    const labelId = useId();
     const isLoading = value === undefined;
+    const hasLabel = label !== undefined && label !== null;
     const content = (
         <>
-            {label !== undefined && label !== null ? (
-                <div className={styles.label}>{label}</div>
+            {hasLabel ? (
+                <div id={labelId} className={styles.label}>
+                    {label}
+                </div>
             ) : null}
             {isLoading ? (
                 <>
@@ -56,6 +69,19 @@ export function Stat({ label, value, format, help, tone, href, className }: Stat
                     <div className={styles.value}>
                         {typeof value === 'number' ? intl.formatNumber(value, format) : value}
                     </div>
+                    {typeof value === 'number' &&
+                    target !== undefined &&
+                    target !== null &&
+                    target > 0 ? (
+                        <Meter
+                            value={value}
+                            target={target}
+                            tone={value > target ? (tone ?? 'danger') : undefined}
+                            formatValue={(number) => intl.formatNumber(number, format)}
+                            {...(hasLabel && { 'aria-labelledby': labelId })}
+                            className={styles.meter}
+                        />
+                    ) : null}
                     {help !== undefined && help !== null ? (
                         <div className={styles.help}>{help}</div>
                     ) : null}

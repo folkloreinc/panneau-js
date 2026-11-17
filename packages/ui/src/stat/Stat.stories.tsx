@@ -66,6 +66,43 @@ export const Currency: Story = {
     },
 };
 
+/** A target: a meter under the number, in the tone of the stat or `danger` past it. */
+export const Target: Story = {
+    render: () => (
+        <Grid columns={{ base: 1, md: 2 }}>
+            <Card>
+                <Stat
+                    label="Spent this month"
+                    value={620}
+                    target={1000}
+                    format={{ style: 'currency', currency: 'CAD', maximumFractionDigits: 0 }}
+                    help="Of a budget of CA$1,000"
+                />
+            </Card>
+            <Card>
+                <Stat
+                    label="Spent last month"
+                    value={1250}
+                    target={1000}
+                    format={{ style: 'currency', currency: 'CAD', maximumFractionDigits: 0 }}
+                    help="Over budget"
+                    href="#"
+                />
+            </Card>
+        </Grid>
+    ),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByRole('meter', { name: 'Spent this month' })).toHaveAttribute(
+            'aria-valuetext',
+            'CA$620 of CA$1,000',
+        );
+        await expect(canvas.getByRole('meter', { name: 'Spent last month' })).toHaveClass(
+            'panneau-tone-danger',
+        );
+    },
+};
+
 /** A skeleton of the number while it loads, in the region that loads. */
 export const Loading: Story = {
     args: { value: undefined },

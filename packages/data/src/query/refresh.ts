@@ -4,12 +4,20 @@ import type { ActionResult, Selection } from '@panneau/protocol';
 
 import { queryKeys } from './keys';
 
+/** Invalidates the lists of a resource, and its aggregates, which count the same items. */
+export async function invalidateLists(client: QueryClient, resource: string): Promise<void> {
+    await Promise.all([
+        client.invalidateQueries({ queryKey: queryKeys.lists(resource) }),
+        client.invalidateQueries({ queryKey: queryKeys.aggregates(resource) }),
+    ]);
+}
+
 /**
  * Invalidates the cached data that an action result asks to refresh:
  *
  * - `none`: nothing;
  * - `items`: the affected items (every item of the resource for a query selection), and the
- *   lists, which show them;
+ *   lists, which show them, with the aggregates;
  * - `list` (the default): every list and item of the resource.
  */
 export async function invalidateActionResult(
@@ -28,7 +36,7 @@ export async function invalidateActionResult(
     }
     const ids = selection !== undefined && 'ids' in selection ? (selection.ids as string[]) : null;
     await Promise.all([
-        client.invalidateQueries({ queryKey: queryKeys.lists(resource) }),
+        invalidateLists(client, resource),
         ...(ids === null
             ? [client.invalidateQueries({ queryKey: queryKeys.items(resource) })]
             : ids.map((id) =>

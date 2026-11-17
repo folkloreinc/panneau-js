@@ -1,9 +1,11 @@
 import { type CSSProperties, Component, type ReactNode, createElement } from 'react';
 import { Link } from 'react-aria-components';
+import type { FormatNumberOptions } from 'react-intl';
 
 import { usePlugins } from '@panneau/core';
 import { appMessages } from '@panneau/intl';
 import type {
+    BreakdownWidgetData,
     Definition,
     ListWidgetData,
     SeriesWidgetData,
@@ -14,6 +16,7 @@ import { HOME_PAGE, getDashboardWidgets, isBuiltInWidgetType } from '@panneau/pr
 import {
     Alert,
     Badge,
+    BarChart,
     Button,
     Card,
     LineChart,
@@ -99,6 +102,8 @@ function WidgetSkeleton({ widget }: { widget: Widget }) {
                         <Stat label={intl.formatMessage(appMessages.widgetTotal)} />
                         <LineChart label={widget.label ?? ''} />
                     </div>
+                ) : widget.type === 'breakdown' ? (
+                    <BarChart label={widget.label ?? ''} />
                 ) : widget.type === 'list' ? (
                     <ul className={styles.items}>
                         {[0, 1, 2].map((index) => (
@@ -127,27 +132,46 @@ function formatPointDate(
         : intl.formatDate(value, { month: 'short', day: 'numeric', timeZone: 'UTC' });
 }
 
-function StatBody({ widget, data }: { widget: Widget; data: StatWidgetData }) {
+/** The options of the numbers of a widget: amounts in a currency, for a sum of `money`. */
+function formatOf(currency: string | undefined): FormatNumberOptions | undefined {
+    return currency !== undefined ? { style: 'currency', currency } : undefined;
+}
+
+interface BodyProps<Data> {
+    widget: Widget;
+    data: Data;
+    /** The currency of the values, for a sum of `money`. */
+    currency?: string | undefined;
+}
+
+function StatBody({ widget, data, currency }: BodyProps<StatWidgetData>) {
     return (
         <Card className={styles.widget}>
             <Stat
                 label={widget.label}
                 value={data.value}
+                format={formatOf(currency)}
                 help={data.help ?? undefined}
                 tone={(data.tone ?? undefined) as Tone | undefined}
                 href={data.url ?? undefined}
+                target={data.target}
             />
         </Card>
     );
 }
 
-function SeriesBody({ widget, data }: { widget: Widget; data: SeriesWidgetData }) {
+function SeriesBody({ widget, data, currency }: BodyProps<SeriesWidgetData>) {
     const intl = usePanneauIntl();
+    const format = formatOf(currency);
     return (
         <Card title={widget.label} className={styles.widget}>
             <div className={styles.series}>
                 {data.total !== undefined && data.total !== null ? (
-                    <Stat label={intl.formatMessage(appMessages.widgetTotal)} value={data.total} />
+                    <Stat
+                        label={intl.formatMessage(appMessages.widgetTotal)}
+                        value={data.total}
+                        format={format}
+                    />
                 ) : null}
                 <LineChart
                     label={widget.label ?? intl.formatMessage(appMessages.widgetTotal)}
@@ -155,8 +179,43 @@ function SeriesBody({ widget, data }: { widget: Widget; data: SeriesWidgetData }
                         label: formatPointDate(intl, point.date, data.period),
                         value: point.value,
                     }))}
+                    formatValue={(value) => intl.formatNumber(value, format)}
                 />
             </div>
+        </Card>
+    );
+}
+
+function BreakdownBody({ widget, data, currency }: BodyProps<BreakdownWidgetData>) {
+    const intl = usePanneauIntl();
+    const format = formatOf(currency);
+    const other = data.other ?? null;
+    return (
+        <Card title={widget.label} className={styles.widget}>
+            {data.items.length === 0 && (other === null || other <= 0) ? (
+                <p className={styles.empty}>{intl.formatMessage(appMessages.widgetEmpty)}</p>
+            ) : (
+                <div className={styles.series}>
+                    {data.total !== undefined && data.total !== null ? (
+                        <Stat
+                            label={intl.formatMessage(appMessages.widgetTotal)}
+                            value={data.total}
+                            format={format}
+                        />
+                    ) : null}
+                    <BarChart
+                        label={widget.label ?? intl.formatMessage(appMessages.widgetTotal)}
+                        items={data.items.map((item) => ({
+                            label: item.label,
+                            value: item.value,
+                            tone: (item.tone ?? undefined) as Tone | undefined,
+                            href: item.url ?? undefined,
+                        }))}
+                        other={other}
+                        formatValue={(value) => intl.formatNumber(value, format)}
+                    />
+                </div>
+            )}
         </Card>
     );
 }
@@ -235,11 +294,31 @@ function WidgetBody({
     }
     switch (widget.type) {
         case 'stat':
-            return <StatBody widget={widget} data={content.data as StatWidgetData} />;
+            return (
+                <StatBody
+                    widget={widget}
+                    data={content.data as StatWidgetData}
+                    currency={content.currency}
+                />
+            );
         case 'series':
-            return <SeriesBody widget={widget} data={content.data as SeriesWidgetData} />;
+            return (
+                <SeriesBody
+                    widget={widget}
+                    data={content.data as SeriesWidgetData}
+                    currency={content.currency}
+                />
+            );
         case 'list':
             return <ListBody widget={widget} data={content.data as ListWidgetData} />;
+        case 'breakdown':
+            return (
+                <BreakdownBody
+                    widget={widget}
+                    data={content.data as BreakdownWidgetData}
+                    currency={content.currency}
+                />
+            );
         default: {
             const Plugin = plugins.widgets.get(widget.type);
             return (

@@ -530,6 +530,75 @@ export const AddressValue: z.ZodObject<{
 // @public (undocumented)
 export type AddressValue = z.infer<typeof AddressValue>;
 
+// @public
+export const AGGREGATE_COUNT = "count";
+
+// @public
+export const AGGREGATE_MAX_POINTS = 366;
+
+// @public
+export interface AggregateField {
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    options?: readonly {
+        value: unknown;
+        label: string;
+        tone?: string | undefined;
+    }[] | undefined;
+    // (undocumented)
+    type: string;
+}
+
+// @public
+export type AggregateGroup = {
+    type: 'period';
+    period: WidgetSeriesPeriod;
+    field: string;
+} | {
+    type: 'field';
+    field: string;
+};
+
+// @public
+export function aggregateItems(items: readonly Record<string, unknown>[], query: AggregateQuery, options: AggregateItemsOptions): StatWidgetData | SeriesWidgetData | BreakdownWidgetData;
+
+// @public (undocumented)
+export interface AggregateItemsOptions {
+    emptyLabel?: string;
+    fields: readonly AggregateField[];
+    range?: FilterRange | undefined;
+}
+
+// @public
+export type AggregateMeasure = {
+    type: 'count';
+} | {
+    type: 'sum';
+    field: string;
+};
+
+// @public
+export interface AggregateQuery {
+    // (undocumented)
+    group: AggregateGroup | null;
+    // (undocumented)
+    measure: AggregateMeasure;
+}
+
+// @public
+export interface AggregateRequest {
+    // (undocumented)
+    filter?: ListQuery['filter'];
+    group?: string | null | undefined;
+    measure?: string | undefined;
+    // (undocumented)
+    q?: string | undefined;
+}
+
+// @public
+export type AggregateWidgetType = 'stat' | 'series' | 'breakdown';
+
 // @public (undocumented)
 export const Auth: z.ZodObject<{
     mode: z.ZodEnum<{
@@ -648,6 +717,34 @@ export type BootConfig = z.infer<typeof BootConfig>;
 // @public
 export type BootConfigInput = z.input<typeof BootConfig>;
 
+// @public (undocumented)
+export const BreakdownWidgetData: z.ZodObject<{
+    items: z.ZodArray<z.ZodObject<{
+        label: z.ZodString;
+        value: z.ZodNumber;
+        tone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        key: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>>;
+    }, z.core.$loose>>;
+    total: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    other: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type BreakdownWidgetData = z.infer<typeof BreakdownWidgetData>;
+
+// @public (undocumented)
+export const BreakdownWidgetItem: z.ZodObject<{
+    label: z.ZodString;
+    value: z.ZodNumber;
+    tone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    key: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type BreakdownWidgetItem = z.infer<typeof BreakdownWidgetItem>;
+
 // @public
 export const BUILT_IN_ACTIONS: readonly ["show", "edit", "duplicate", "delete", "restore", "export", "import"];
 
@@ -670,7 +767,7 @@ export const BUILT_IN_LINK_TYPES: readonly ["url", "page", "email", "tel", "file
 export const BUILT_IN_LIST_LAYOUTS: readonly ["table", "cards", "gallery", "calendar"];
 
 // @public
-export const BUILT_IN_WIDGET_TYPES: readonly ["stat", "series", "list"];
+export const BUILT_IN_WIDGET_TYPES: readonly ["stat", "series", "list", "breakdown"];
 
 // @public (undocumented)
 export type BuiltInAction = (typeof BUILT_IN_ACTIONS)[number];
@@ -1181,6 +1278,11 @@ export const Definition: z.ZodObject<{
                 filter: z.ZodOptional<z.ZodString>;
                 perPage: z.ZodOptional<z.ZodNumber>;
             }, z.core.$loose>>;
+            aggregates: z.ZodOptional<z.ZodObject<{
+                sum: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                groupBy: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                dates: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            }, z.core.$loose>>;
         }, z.core.$loose>>;
         actions: z.ZodOptional<z.ZodArray<z.ZodObject<{
             id: z.ZodString;
@@ -1465,6 +1567,9 @@ export const Definition: z.ZodObject<{
             settings: z.ZodOptional<z.ZodObject<{
                 resource: z.ZodOptional<z.ZodString>;
                 query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                measure: z.ZodOptional<z.ZodString>;
+                group: z.ZodOptional<z.ZodString>;
+                target: z.ZodOptional<z.ZodNumber>;
             }, z.core.$loose>>;
         }, z.core.$loose>>>;
     }, z.core.$loose>>>;
@@ -1515,6 +1620,9 @@ export const Definition: z.ZodObject<{
             settings: z.ZodOptional<z.ZodObject<{
                 resource: z.ZodOptional<z.ZodString>;
                 query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                measure: z.ZodOptional<z.ZodString>;
+                group: z.ZodOptional<z.ZodString>;
+                target: z.ZodOptional<z.ZodNumber>;
             }, z.core.$loose>>;
         }, z.core.$loose>>;
     }, z.core.$loose>>;
@@ -2058,6 +2166,9 @@ export function fromSearchParams(params: URLSearchParams): ListQuery;
 export function getAddressRequiredParts(field: Pick<Field, 'settings'>): AddressPart[];
 
 // @public
+export function getAggregateWidgetType(group: AggregateGroup | null): AggregateWidgetType;
+
+// @public
 export function getCreatableTypes<T extends {
     abilities?: Record<string, boolean> | undefined;
 }>(resource: {
@@ -2074,6 +2185,9 @@ export function getDashboardPages(definition: DashboardsOf): string[];
 
 // @public
 export function getDashboardWidgets(definition: DashboardsOf, page?: string): Widget[];
+
+// @public
+export function getFilterRange(query: Pick<ListQuery, 'filter'>, field: string): FilterRange | undefined;
 
 // @public
 export function getImageUrl(value: unknown): string | null;
@@ -2125,6 +2239,9 @@ export function getValue(values: unknown, path: string): unknown;
 //
 // @public
 export function getWidgetResource(widget: WidgetLike): WidgetResource | null;
+
+// @public
+export const GROUPED_WIDGET_TYPES: readonly ["series", "breakdown"];
 
 // @public
 export function hasResourceTypes(resource: {
@@ -2342,6 +2459,23 @@ export type LinkValue = z.infer<typeof LinkValue>;
 export function lintDefinition(definition: DefinitionInput): ValidationIssue[];
 
 // @public (undocumented)
+export const ListAggregates: z.ZodObject<{
+    sum: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    groupBy: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    dates: z.ZodOptional<z.ZodArray<z.ZodString>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type ListAggregates = z.infer<typeof ListAggregates>;
+
+// @public
+export interface ListAggregatesLike {
+    dates?: readonly string[] | undefined;
+    groupBy?: readonly string[] | undefined;
+    sum?: readonly string[] | undefined;
+}
+
+// @public (undocumented)
 export const ListCalendar: z.ZodObject<{
     field: z.ZodString;
     filter: z.ZodOptional<z.ZodString>;
@@ -2400,10 +2534,18 @@ export const ListDefinition: z.ZodObject<{
         filter: z.ZodOptional<z.ZodString>;
         perPage: z.ZodOptional<z.ZodNumber>;
     }, z.core.$loose>>;
+    aggregates: z.ZodOptional<z.ZodObject<{
+        sum: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        groupBy: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        dates: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    }, z.core.$loose>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
 export type ListDefinition = z.infer<typeof ListDefinition>;
+
+// @public
+export function listPeriods(from: string, to: string, period: WidgetSeriesPeriod, max?: number): string[];
 
 // @public
 export interface ListQuery {
@@ -3291,6 +3433,11 @@ export const namedSchemas: {
         filter: z.ZodOptional<z.ZodString>;
         perPage: z.ZodOptional<z.ZodNumber>;
     }, z.core.$loose>;
+    ListAggregates: z.ZodObject<{
+        sum: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        groupBy: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        dates: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    }, z.core.$loose>;
     ListDefinition: z.ZodObject<{
         columns: z.ZodOptional<z.ZodArray<z.ZodObject<{
             field: z.ZodOptional<z.ZodString>;
@@ -3338,6 +3485,11 @@ export const namedSchemas: {
             field: z.ZodString;
             filter: z.ZodOptional<z.ZodString>;
             perPage: z.ZodOptional<z.ZodNumber>;
+        }, z.core.$loose>>;
+        aggregates: z.ZodOptional<z.ZodObject<{
+            sum: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            groupBy: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            dates: z.ZodOptional<z.ZodArray<z.ZodString>>;
         }, z.core.$loose>>;
     }, z.core.$loose>;
     ActionScope: z.ZodEnum<{
@@ -3899,6 +4051,11 @@ export const namedSchemas: {
                 filter: z.ZodOptional<z.ZodString>;
                 perPage: z.ZodOptional<z.ZodNumber>;
             }, z.core.$loose>>;
+            aggregates: z.ZodOptional<z.ZodObject<{
+                sum: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                groupBy: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                dates: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            }, z.core.$loose>>;
         }, z.core.$loose>>;
         actions: z.ZodOptional<z.ZodArray<z.ZodObject<{
             id: z.ZodString;
@@ -4243,12 +4400,18 @@ export const namedSchemas: {
             settings: z.ZodOptional<z.ZodObject<{
                 resource: z.ZodOptional<z.ZodString>;
                 query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                measure: z.ZodOptional<z.ZodString>;
+                group: z.ZodOptional<z.ZodString>;
+                target: z.ZodOptional<z.ZodNumber>;
             }, z.core.$loose>>;
         }, z.core.$loose>>>;
     }, z.core.$loose>;
     WidgetSettings: z.ZodObject<{
         resource: z.ZodOptional<z.ZodString>;
         query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+        measure: z.ZodOptional<z.ZodString>;
+        group: z.ZodOptional<z.ZodString>;
+        target: z.ZodOptional<z.ZodNumber>;
     }, z.core.$loose>;
     Widget: z.ZodObject<{
         id: z.ZodString;
@@ -4258,6 +4421,9 @@ export const namedSchemas: {
         settings: z.ZodOptional<z.ZodObject<{
             resource: z.ZodOptional<z.ZodString>;
             query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+            measure: z.ZodOptional<z.ZodString>;
+            group: z.ZodOptional<z.ZodString>;
+            target: z.ZodOptional<z.ZodNumber>;
         }, z.core.$loose>>;
     }, z.core.$loose>;
     Uploads: z.ZodObject<{
@@ -4767,6 +4933,11 @@ export const namedSchemas: {
                     filter: z.ZodOptional<z.ZodString>;
                     perPage: z.ZodOptional<z.ZodNumber>;
                 }, z.core.$loose>>;
+                aggregates: z.ZodOptional<z.ZodObject<{
+                    sum: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                    groupBy: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                    dates: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                }, z.core.$loose>>;
             }, z.core.$loose>>;
             actions: z.ZodOptional<z.ZodArray<z.ZodObject<{
                 id: z.ZodString;
@@ -5051,6 +5222,9 @@ export const namedSchemas: {
                 settings: z.ZodOptional<z.ZodObject<{
                     resource: z.ZodOptional<z.ZodString>;
                     query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                    measure: z.ZodOptional<z.ZodString>;
+                    group: z.ZodOptional<z.ZodString>;
+                    target: z.ZodOptional<z.ZodNumber>;
                 }, z.core.$loose>>;
             }, z.core.$loose>>>;
         }, z.core.$loose>>>;
@@ -5101,6 +5275,9 @@ export const namedSchemas: {
                 settings: z.ZodOptional<z.ZodObject<{
                     resource: z.ZodOptional<z.ZodString>;
                     query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                    measure: z.ZodOptional<z.ZodString>;
+                    group: z.ZodOptional<z.ZodString>;
+                    target: z.ZodOptional<z.ZodNumber>;
                 }, z.core.$loose>>;
             }, z.core.$loose>>;
         }, z.core.$loose>>;
@@ -5835,6 +6012,7 @@ export const namedSchemas: {
         help: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         tone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        target: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
     }, z.core.$loose>;
     SeriesPoint: z.ZodObject<{
         date: z.ZodString;
@@ -5876,10 +6054,31 @@ export const namedSchemas: {
         empty: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     }, z.core.$loose>;
+    BreakdownWidgetItem: z.ZodObject<{
+        label: z.ZodString;
+        value: z.ZodNumber;
+        tone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        key: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>>;
+    }, z.core.$loose>;
+    BreakdownWidgetData: z.ZodObject<{
+        items: z.ZodArray<z.ZodObject<{
+            label: z.ZodString;
+            value: z.ZodNumber;
+            tone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            key: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>>;
+        }, z.core.$loose>>;
+        total: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        other: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    }, z.core.$loose>;
 };
 
 // @public
 export type NestedShape = 'group' | 'repeater';
+
+// @public
+export function nextPeriod(start: string, period: WidgetSeriesPeriod): string;
 
 // @public
 export function normalizePostalCode(code: string, country?: string | null): string;
@@ -5913,6 +6112,9 @@ export const Page: z.ZodObject<{
         settings: z.ZodOptional<z.ZodObject<{
             resource: z.ZodOptional<z.ZodString>;
             query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+            measure: z.ZodOptional<z.ZodString>;
+            group: z.ZodOptional<z.ZodString>;
+            target: z.ZodOptional<z.ZodNumber>;
         }, z.core.$loose>>;
     }, z.core.$loose>>>;
 }, z.core.$loose>;
@@ -5930,6 +6132,12 @@ export const Pagination: z.ZodObject<{
 
 // @public (undocumented)
 export type Pagination = z.infer<typeof Pagination>;
+
+// @public
+export function parseAggregateGroup(value: string): AggregateGroup | null;
+
+// @public
+export function parseAggregateMeasure(value: string): AggregateMeasure | null;
 
 // @public
 export function parseContextHeader(header: string | null | undefined): ContextValues;
@@ -5998,6 +6206,18 @@ export const PROBLEM_CONTENT_TYPE = "application/problem+json";
 
 // @public
 export const PROTOCOL_VERSION = 1;
+
+// @public
+export function readAggregateQuery(params: URLSearchParams, aggregates: ListAggregatesLike): ReadAggregateQueryResult;
+
+// @public
+export type ReadAggregateQueryResult = {
+    query: AggregateQuery;
+    errors?: undefined;
+} | {
+    query?: undefined;
+    errors: Record<string, string[]>;
+};
 
 // @public
 export function readSearchQuery(params: URLSearchParams, definition: {
@@ -6315,6 +6535,11 @@ export const Resource: z.ZodObject<{
             filter: z.ZodOptional<z.ZodString>;
             perPage: z.ZodOptional<z.ZodNumber>;
         }, z.core.$loose>>;
+        aggregates: z.ZodOptional<z.ZodObject<{
+            sum: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            groupBy: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            dates: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        }, z.core.$loose>>;
     }, z.core.$loose>>;
     actions: z.ZodOptional<z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -6589,7 +6814,7 @@ export const Resource: z.ZodObject<{
 export type Resource = z.infer<typeof Resource>;
 
 // @public
-export const RESOURCE_WIDGET_TYPES: readonly ["stat", "list"];
+export const RESOURCE_WIDGET_TYPES: readonly ["stat", "series", "list", "breakdown"];
 
 // @public (undocumented)
 export const ResourceFeatures: z.ZodObject<{
@@ -6954,12 +7179,16 @@ export const Session: z.ZodObject<{
 // @public (undocumented)
 export type Session = z.infer<typeof Session>;
 
+// @public
+export function startOfPeriod(day: string, period: WidgetSeriesPeriod): string;
+
 // @public (undocumented)
 export const StatWidgetData: z.ZodObject<{
     value: z.ZodNumber;
     help: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     tone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    target: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -7083,6 +7312,9 @@ export const ThemeTokens: z.ZodRecord<z.ZodString, z.ZodString>;
 
 // @public (undocumented)
 export type ThemeTokens = z.infer<typeof ThemeTokens>;
+
+// @public
+export function toAggregateParams(request: AggregateRequest): URLSearchParams;
 
 // @public
 export function toMinorUnits(amount: number, currency: string): number;
@@ -7299,11 +7531,17 @@ export const Widget: z.ZodObject<{
     settings: z.ZodOptional<z.ZodObject<{
         resource: z.ZodOptional<z.ZodString>;
         query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+        measure: z.ZodOptional<z.ZodString>;
+        group: z.ZodOptional<z.ZodString>;
+        target: z.ZodOptional<z.ZodNumber>;
     }, z.core.$loose>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
 export type Widget = z.infer<typeof Widget>;
+
+// @public
+export const WIDGET_BREAKDOWN_MAX_ITEMS = 10;
 
 // @public
 export const WIDGET_LIST_MAX_ITEMS = 5;
@@ -7313,6 +7551,12 @@ export const WIDGET_RESERVED_QUERY_PARAMS: readonly ["page", "perPage", "cursor"
 
 // @public
 export const WIDGET_SERIES_PERIODS: readonly ["day", "week", "month"];
+
+// @public
+export interface WidgetAggregate {
+    group: string | null;
+    measure: string;
+}
 
 // @public (undocumented)
 export const WidgetBadge: z.ZodObject<{
@@ -7330,6 +7574,7 @@ export const widgetDataSchemas: {
         help: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         tone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        target: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
     }, z.core.$loose>;
     readonly series: z.ZodObject<{
         period: z.ZodEnum<{
@@ -7357,10 +7602,22 @@ export const widgetDataSchemas: {
         empty: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     }, z.core.$loose>;
+    readonly breakdown: z.ZodObject<{
+        items: z.ZodArray<z.ZodObject<{
+            label: z.ZodString;
+            value: z.ZodNumber;
+            tone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            key: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>>;
+        }, z.core.$loose>>;
+        total: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        other: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    }, z.core.$loose>;
 };
 
 // @public
 export interface WidgetResource {
+    aggregate: WidgetAggregate | null;
     params: URLSearchParams;
     query: ListQuery;
     resource: string;
@@ -7373,6 +7630,9 @@ export type WidgetSeriesPeriod = (typeof WIDGET_SERIES_PERIODS)[number];
 export const WidgetSettings: z.ZodObject<{
     resource: z.ZodOptional<z.ZodString>;
     query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+    measure: z.ZodOptional<z.ZodString>;
+    group: z.ZodOptional<z.ZodString>;
+    target: z.ZodOptional<z.ZodNumber>;
 }, z.core.$loose>;
 
 // @public (undocumented)

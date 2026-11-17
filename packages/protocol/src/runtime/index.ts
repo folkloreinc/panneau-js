@@ -1,5 +1,5 @@
 // `@panneau/protocol/runtime`: the constants of the protocol and the helpers that run in the
-// browser (conditions, portable rules, values, list and search queries, problems, image transforms), without the schemas. It
+// browser (conditions, portable rules, values, list, search and aggregate queries, problems, image transforms), without the schemas. It
 // never imports zod, so that UI packages don't bundle it: `index.test.ts` checks it. Its types are
 // those of the main entry point.
 export { PROBLEM_CONTENT_TYPE, PROTOCOL_VERSION } from '../version';
@@ -89,10 +89,13 @@ export {
 } from '../dashboards';
 export {
     type BuiltInWidgetType,
+    type WidgetAggregate,
     type WidgetResource,
     type WidgetSeriesPeriod,
     BUILT_IN_WIDGET_TYPES,
+    GROUPED_WIDGET_TYPES,
     RESOURCE_WIDGET_TYPES,
+    WIDGET_BREAKDOWN_MAX_ITEMS,
     WIDGET_LIST_MAX_ITEMS,
     WIDGET_RESERVED_QUERY_PARAMS,
     WIDGET_SERIES_PERIODS,
@@ -100,3 +103,26 @@ export {
     getWidgetResource,
     isBuiltInWidgetType,
 } from '../widgets';
+export {
+    type AggregateField,
+    type AggregateGroup,
+    type AggregateItemsOptions,
+    type AggregateMeasure,
+    type AggregateQuery,
+    type AggregateRequest,
+    type AggregateWidgetType,
+    type ListAggregatesLike,
+    type ReadAggregateQueryResult,
+    AGGREGATE_COUNT,
+    AGGREGATE_MAX_POINTS,
+    aggregateItems,
+    getAggregateWidgetType,
+    getFilterRange,
+    listPeriods,
+    nextPeriod,
+    parseAggregateGroup,
+    parseAggregateMeasure,
+    readAggregateQuery,
+    startOfPeriod,
+    toAggregateParams,
+} from '../aggregates';

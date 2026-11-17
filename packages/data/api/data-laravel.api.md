@@ -7,6 +7,7 @@
 import type { ActionRequest } from '@panneau/protocol';
 import type { ActionResult } from '@panneau/protocol';
 import type { ActionRun } from '@panneau/protocol';
+import type { AggregateRequest } from '@panneau/protocol';
 import type { ContextOption } from '@panneau/protocol';
 import type { ContextValues } from '@panneau/protocol';
 import type { Definition } from '@panneau/protocol';

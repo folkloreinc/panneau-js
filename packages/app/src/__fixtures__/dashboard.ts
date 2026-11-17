@@ -25,6 +25,40 @@ export const DASHBOARD_WIDGETS: Widget[] = [
     { id: 'closed', type: 'list', label: 'Closed contests' },
 ];
 
+/**
+ * Widgets on the aggregates of the entries (decision 0084): a count per day, the entries per
+ * status, and the sum of their fees against a budget.
+ */
+export const AGGREGATE_WIDGETS: Widget[] = [
+    {
+        id: 'fees',
+        type: 'stat',
+        label: 'Entry fees',
+        settings: { resource: 'entries', measure: 'sum:fee', target: 10000 },
+    },
+    {
+        id: 'submitted',
+        type: 'series',
+        label: 'Entries per day',
+        width: 8,
+        settings: {
+            resource: 'entries',
+            group: 'day:submitted_at',
+            query: {
+                'filter[submitted_at][from]': '2026-10-01',
+                'filter[submitted_at][to]': '2026-10-07',
+            },
+        },
+    },
+    {
+        id: 'by-status',
+        type: 'breakdown',
+        label: 'Entries by status',
+        width: 4,
+        settings: { resource: 'entries', group: 'status' },
+    },
+];
+
 /** The widgets of "Activity", a dashboard page of its own (decision 0084). */
 export const ACTIVITY_WIDGETS: Widget[] = [
     {
@@ -62,11 +96,17 @@ export function createDashboardDefinition(
                             { value: 'refused', label: 'Refused' },
                         ],
                     },
+                    { name: 'submitted_at', type: 'datetime' },
+                    { name: 'fee', type: 'money', settings: { currency: 'CAD' } },
                 ],
                 list: {
                     columns: [{ field: 'title' }, { field: 'status' }],
-                    filters: [{ id: 'status', type: 'select' }],
+                    filters: [
+                        { id: 'status', type: 'select' },
+                        { id: 'submitted_at', type: 'date-range' },
+                    ],
                     sorts: ['title'],
+                    aggregates: { sum: ['fee'], groupBy: ['status'], dates: ['submitted_at'] },
                 },
                 abilities: { viewAny: true },
             },
@@ -79,15 +119,20 @@ export function createDashboardDefinition(
     });
 }
 
+/** The date an entry was submitted, and its fee in cents. */
+function entry(day: string, fee: number) {
+    return { submitted_at: `${day}T14:00:00Z`, fee: { amount: fee, currency: 'CAD' } };
+}
+
 /** The items of the entries. */
 export const DASHBOARD_ITEMS = {
     entries: [
-        { id: '1', title: 'A garden in winter', status: 'to-judge' },
-        { id: '2', title: 'Bridges at night', status: 'accepted' },
-        { id: '3', title: 'City lights', status: 'to-judge' },
-        { id: '4', title: 'Dunes', status: 'refused' },
-        { id: '5', title: 'Early frost', status: 'accepted' },
-        { id: '6', title: 'Fog on the river', status: 'accepted' },
+        { id: '1', title: 'A garden in winter', status: 'to-judge', ...entry('2026-10-01', 2500) },
+        { id: '2', title: 'Bridges at night', status: 'accepted', ...entry('2026-10-01', 2500) },
+        { id: '3', title: 'City lights', status: 'to-judge', ...entry('2026-10-03', 2500) },
+        { id: '4', title: 'Dunes', status: 'refused', ...entry('2026-10-04', 1500) },
+        { id: '5', title: 'Early frost', status: 'accepted', ...entry('2026-10-04', 1500) },
+        { id: '6', title: 'Fog on the river', status: 'accepted', ...entry('2026-10-06', 1500) },
     ],
 };
 

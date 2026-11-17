@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { AGGREGATE_MAX_POINTS } from './aggregates';
 import {
     AUTH_PAGE_PATHS,
     CONTEXT_HEADER,
@@ -19,6 +20,7 @@ import {
     SEARCH_MIN_LENGTH,
 } from './search';
 import { PROBLEM_CONTENT_TYPE, PROTOCOL_VERSION } from './version';
+import { WIDGET_BREAKDOWN_MAX_ITEMS } from './widgets';
 
 type JsonObject = Record<string, unknown>;
 
@@ -98,6 +100,21 @@ const listParameters = [
     },
     queryParameter('q', 'Search.', { type: 'string' }),
     queryParameter('fields', 'Comma-separated fields to include in each item.', { type: 'string' }),
+];
+
+/** The parameters of `GET /resources/{resource}/aggregate`: the filters and search of the list. */
+const aggregateParameters = [
+    ...listParameters.filter((parameter) => ['filter', 'q'].includes(String(parameter.name))),
+    queryParameter(
+        'measure',
+        'What is measured of the items: `count` (the default), or `sum:{field}` of a field of the `sum` of the aggregates of the list. A sum of `money` adds the amounts, in minor units.',
+        { type: 'string', pattern: '^(count|sum:.+)$', default: 'count' },
+    ),
+    queryParameter(
+        'group',
+        'How the items are grouped: `{period}:{date field}`, where the period is `day`, `week` (from Monday) or `month` and the field is in the `dates` of the aggregates, or a field of their `groupBy`. Without it, the answer is a stat.',
+        { type: 'string', pattern: '^((day|week|month):.+|[^:]+)$' },
+    ),
 ];
 
 const resource = pathParameter('resource', 'Resource id.');
@@ -268,6 +285,24 @@ export function createOpenApiDocument(): JsonObject {
                     responses: {
                         201: ok('The created item.', ref('ItemResponse'), etag),
                         ...problems(401, 403, 404, 409, 422),
+                    },
+                },
+            },
+            '/resources/{resource}/aggregate': {
+                parameters: [resource],
+                get: {
+                    operationId: 'getResourceAggregate',
+                    description: `The count or the sum of the items of the list that the user can list, with the filters and the search of the list, in the shape of a widget (decision 0084). Only what \`list.aggregates\` declares is aggregated: a resource without it is a \`404\`, and an undeclared field, or a measure or a group in the wrong format, a \`422\` with \`errors\` keyed by \`measure\` or \`group\`. Without a group, a \`StatWidgetData\`. By a period, a \`SeriesWidgetData\`: a point per period, at 0 without items, from the period of the \`from\` bound of the \`date-range\` filter whose id is the date field to the period of its \`to\` bound, or without a bound, of the first or the last item; at most ${AGGREGATE_MAX_POINTS} points, the latest, and their sum in \`total\`. By a field, a \`BreakdownWidgetData\`: a part per value, the largest first, at most ${WIDGET_BREAKDOWN_MAX_ITEMS}, the rest in \`other\`, each with its \`key\` (\`null\` for the items without a value), the label and the tone of its option for a \`select\`, and the measure of every item in \`total\`.`,
+                    parameters: aggregateParameters,
+                    responses: {
+                        200: ok('The aggregate, in the shape of a widget.', {
+                            anyOf: [
+                                ref('StatWidgetData'),
+                                ref('SeriesWidgetData'),
+                                ref('BreakdownWidgetData'),
+                            ],
+                        }),
+                        ...problems(401, 403, 404, 422),
                     },
                 },
             },
@@ -897,7 +932,7 @@ export function createOpenApiDocument(): JsonObject {
                 get: {
                     operationId: 'getWidgetData',
                     description:
-                        'The data of a widget of a dashboard of the user, read as the user (decision 0064): the home page, or the dashboard page of `page` (decision 0084). The built-in `stat` and `list` on a resource (`settings.resource`) have none: clients read the list of the resource. A widget that is not on that page of the user is a `404`; a `403` hides the widget.',
+                        'The data of a widget of a dashboard of the user, read as the user (decision 0064): the home page, or the dashboard page of `page` (decision 0084). The built-in widgets on a resource (`settings.resource`) have none: clients read the list or the aggregates of the resource. A widget that is not on that page of the user is a `404`; a `403` hides the widget.',
                     parameters: [
                         queryParameter(
                             'page',
@@ -907,12 +942,13 @@ export function createOpenApiDocument(): JsonObject {
                     ],
                     responses: {
                         200: ok(
-                            "The widget's data, in the shape of its type: `StatWidgetData`, `SeriesWidgetData` and `ListWidgetData` for the built-in types, the plugin's own object for others.",
+                            "The widget's data, in the shape of its type: `StatWidgetData`, `SeriesWidgetData`, `ListWidgetData` and `BreakdownWidgetData` for the built-in types, the plugin's own object for others.",
                             {
                                 anyOf: [
                                     ref('StatWidgetData'),
                                     ref('SeriesWidgetData'),
                                     ref('ListWidgetData'),
+                                    ref('BreakdownWidgetData'),
                                     { type: 'object', additionalProperties: true },
                                 ],
                             },
