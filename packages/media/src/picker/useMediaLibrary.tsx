@@ -570,6 +570,7 @@ export function useMediaLibrary({
                     error={saveError}
                     onSave={() => void save()}
                     onBack={() => setDetailsOpen(false)}
+                    showLink={!selectable}
                 />
             </div>
         );

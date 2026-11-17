@@ -75,6 +75,7 @@ export const mediaFr: Record<string, string> = {
     'panneau.media.picker.unsavedText':
         'Vous avez modifié les détails de ce média sans les enregistrer.',
     'panneau.media.picker.discard': 'Abandonner',
+    'panneau.media.picker.openPage': 'Ouvrir la fiche du média',
     'panneau.media.picker.stillProcessing':
         'Traitement en cours : vous pouvez déjà l’utiliser, ses versions suivront.',
     'panneau.media.picker.file': 'Fichier',

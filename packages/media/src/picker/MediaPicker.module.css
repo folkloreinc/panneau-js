@@ -375,6 +375,10 @@
     overflow-wrap: anywhere;
 }
 
+.detailsLink {
+    align-self: flex-start;
+}
+
 .detailsTitle > h3 {
     margin: 0;
 }

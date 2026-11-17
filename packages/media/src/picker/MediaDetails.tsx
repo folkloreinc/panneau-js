@@ -1,9 +1,9 @@
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 import { NestedField, formatSize } from '@panneau/fields';
 import { mediaMessages as messages } from '@panneau/intl';
 import type { Field } from '@panneau/protocol';
-import { Alert, Button, Heading, Text, usePanneauIntl } from '@panneau/ui';
+import { Alert, Button, Heading, LinkButton, Text, usePanneauIntl } from '@panneau/ui';
 
 import { StatusBadge, Thumbnail } from './MediaGrid';
 import styles from './MediaPicker.module.css';
@@ -23,6 +23,8 @@ export interface MediaDetailsProps {
     onSave: () => void;
     /** On phones and tablets, where the details are shown over the grid. */
     onBack: () => void;
+    /** Links to the page of the media in the product, when it has one (`MediaLibrary`). */
+    showLink?: boolean;
 }
 
 /**
@@ -39,6 +41,7 @@ export function MediaDetails({
     error,
     onSave,
     onBack,
+    showLink = false,
 }: MediaDetailsProps) {
     const intl = usePanneauIntl();
     const label = intl.formatMessage(messages.pickerDetails);
@@ -109,6 +112,17 @@ export function MediaDetails({
                 </Heading>
                 <StatusBadge item={item} />
             </div>
+            {showLink && typeof item.href === 'string' && item.href !== '' ? (
+                <LinkButton
+                    href={item.href}
+                    size="sm"
+                    appearance="outline"
+                    iconEnd={ArrowRight}
+                    className={styles.detailsLink}
+                >
+                    {intl.formatMessage(messages.pickerOpenPage)}
+                </LinkButton>
+            ) : null}
             {isProcessingMedia(item) ? (
                 <Text size="sm" muted>
                     {intl.formatMessage(messages.pickerStillProcessing)}

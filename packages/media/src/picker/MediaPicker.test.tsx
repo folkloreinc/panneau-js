@@ -251,6 +251,15 @@ describe('MediaPicker', () => {
         ).toBeInTheDocument();
     });
 
+    it('does not link to the page of a media, so as not to leave the dialog', async () => {
+        const items = libraryMedia.map((item) => ({ ...item, href: `/media/${item.id}` }));
+        open({ sources: [createMemorySource({ id: 'media', label: 'Media', items })] });
+
+        await userEvent.click(await card('harbour at dawn'));
+        const details = screen.getByRole('complementary', { name: 'Details of harbour at dawn' });
+        expect(within(details).queryByRole('link')).toBeNull();
+    });
+
     it('marks the media of the value, and keeps a single pick of it disabled', async () => {
         open({ value: [{ id: 'med_03', resource: 'media' }] });
 

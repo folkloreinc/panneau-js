@@ -105,6 +105,18 @@ describe('MediaLibrary', () => {
         expect(media.media[0]?.label).toBe('poster');
     });
 
+    it('links the details to the page of the media in the product', async () => {
+        const items = libraryMedia.map((item) => ({ ...item, href: `/media/${item.id}` }));
+        show({ sources: [createMemorySource({ id: 'media', label: 'Media', items })] });
+
+        await userEvent.click(await card('harbour at dawn'));
+        const details = screen.getByRole('complementary', { name: 'Details of harbour at dawn' });
+        expect(within(details).getByRole('link', { name: 'Open the media page' })).toHaveAttribute(
+            'href',
+            '/media/med_01',
+        );
+    });
+
     it('switches between its libraries', async () => {
         const documents = createMemorySource({
             id: 'documents',

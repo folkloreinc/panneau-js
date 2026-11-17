@@ -277,6 +277,10 @@ export const mediaMessages = {
         id: 'panneau.media.picker.discard',
         defaultMessage: 'Discard',
     }),
+    pickerOpenPage: defineMessage({
+        id: 'panneau.media.picker.openPage',
+        defaultMessage: 'Open the media page',
+    }),
     pickerStillProcessing: defineMessage({
         id: 'panneau.media.picker.stillProcessing',
         defaultMessage:

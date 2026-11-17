@@ -151,6 +151,7 @@ export interface MultipleMediaFieldProps extends MediaFieldBaseProps {
 export interface PickerMedia {
     createdAt?: string | null;
     fileName?: string | null;
+    href?: string | null;
     // (undocumented)
     id: string;
     label: string;

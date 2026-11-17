@@ -65,6 +65,27 @@ export const Page: Story = {
     },
 };
 
+/** Media with a page in the product: the details link to it. */
+export const WithMediaPages: Story = {
+    args: {
+        sources: [
+            createMemorySource({
+                id: 'media',
+                label: 'Media',
+                items: libraryMedia.map((item) => ({ ...item, href: `#/media/${item.id}` })),
+                fields,
+            }),
+        ],
+    },
+    play: async ({ canvasElement }) => {
+        const library = within(canvasElement).getByRole('region', { name: 'Media' });
+        await userEvent.click(await within(library).findByRole('row', { name: 'autumn forest' }));
+        await expect(
+            within(canvasElement).getByRole('link', { name: 'Open the media page' }),
+        ).toHaveAttribute('href', '#/media/med_03');
+    },
+};
+
 /** Two libraries, switched from the header. */
 export const TwoLibraries: Story = {
     args: { sources: [media(), documents()], 'aria-label': 'Library' },

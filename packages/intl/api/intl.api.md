@@ -937,6 +937,7 @@ export const mediaMessages: {
     }>;
     pickerUnsavedText: PanneauMessage<Record<never, never>>;
     pickerDiscard: PanneauMessage<Record<never, never>>;
+    pickerOpenPage: PanneauMessage<Record<never, never>>;
     pickerStillProcessing: PanneauMessage<Record<never, never>>;
     pickerFile: PanneauMessage<Record<never, never>>;
     pickerFileType: PanneauMessage<Record<never, never>>;

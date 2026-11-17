@@ -16,6 +16,11 @@ export interface PickerMedia {
     media: MediaInfo;
     /** The values of the source's `fields`, which the details edit. */
     values?: Record<string, unknown>;
+    /**
+     * The page of the media in the product, where it does more than the details: `MediaLibrary`
+     * links to it from the details. The picker doesn't, so as not to leave its dialog.
+     */
+    href?: string | null;
 }
 
 /** A way to sort a source. */
