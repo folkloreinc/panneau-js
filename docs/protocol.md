@@ -67,7 +67,8 @@ The protocol is the only contract between a Panneau frontend and its backend. It
         "defaultSort": "-published_at",
         "layouts": [ "table", "cards" ],
         "perPage": 20,
-        "inlineEdit": [ "title", "status" ]
+        "inlineEdit": [ "title", "status" ],
+        "aggregates": { "sum": [ "price" ], "groupBy": [ "status" ], "dates": [ "published_at" ] }
     },
     "actions": [ /* Action */ ],
     "abilities": { "viewAny": true, "create": true },
@@ -443,6 +444,14 @@ Built-in actions use reserved ids:
 - `gallery` shows the image of each item, its `itemImage` field (a media reference, a media, a file or a URL), and is offered when the resource has one: a media library has one, the `media` of its items. The `table` starts the title of each item with a thumbnail of the same image ([decisions/0061](decisions/0061-item-images-in-lists.md)).
 - `calendar` shows the items of a month on the days of a `date`, `datetime` or `daterange` field (a range on each day it covers, [0053](decisions/0053-date-ranges-and-money.md)), set by `calendar`: `{ "field": "starts_at", "filter": "starts_at", "perPage": 100 }`. `filter` is the list's `date-range` filter on that field (the field's name by default), and `perPage` how many items it asks for a month (100 by default). Instead of a page, the calendar asks for the list's query with that filter set to the days around the month, from 6 days before its first day to 6 days after its last, without `page` or `cursor`: `filter[starts_at][from]=2026-10-26&filter[starts_at][to]=2026-12-06&perPage=100`. When the answer has more items than it gives, the calendar says so. A backend needs nothing else.
 
+**Aggregates** ([decisions/0084](decisions/0084-overviews.md)). `aggregates` declares what [`GET /resources/{resource}/aggregate`](#aggregates) can sum and group the items of the list by. Nothing else is aggregated, and a list without it has no aggregates:
+
+- `sum`: fields whose values add up: `number`, `range` and `duration` fields, and `money` fields with one `settings.currency` (amounts of different currencies don't add up);
+- `groupBy`: fields whose values the items are grouped by, in a `breakdown`: not the fields whose values are structures (`richtext`, `media`, `image`, `file`, `group`, `repeater`, `json`, `embed`, `location`, `address`, `link`, `daterange`, `money`);
+- `dates`: `date` and `datetime` fields whose days, weeks or months the items are grouped by, in a `series`.
+
+`lintDefinition()` checks that each one names a field of the resource, of the right type. A backend leaves out of them the fields the user can't view.
+
 **Columns users choose.** The user of a list shows, hides and orders its columns. A column with `"hidden": true` isn't shown until the user shows it; one with `"hideable": false` is always shown. The chosen columns and the layout are the view of the list: clients keep them in the URL with the query, and may remember them for the user. They are never sent to the backend ([decisions/0042](decisions/0042-list-view-columns-and-remembered-view.md)).
 
 ### Pages
@@ -473,6 +482,13 @@ With `pages.home` set to the built-in `dashboard`, the home page is the widgets 
           "settings": { "resource": "entries", "query": { "filter[status]": "to-judge" } } },
         { "id": "latest", "type": "list", "label": "Latest entries", "width": 4,
           "settings": { "resource": "entries", "query": { "sort": "-created_at" } } },
+        // On the aggregates of a resource: the client reads GET /resources/{resource}/aggregate
+        { "id": "fees", "type": "stat", "label": "Entry fees",
+          "settings": { "resource": "entries", "measure": "sum:fee", "target": 100000 } },
+        { "id": "submitted", "type": "series", "label": "Entries per day",
+          "settings": { "resource": "entries", "group": "day:created_at" } },
+        { "id": "by-status", "type": "breakdown", "label": "Entries by status",
+          "settings": { "resource": "entries", "group": "status" } },
         // Data of its own, from GET /dashboard/widgets/{widget}
         { "id": "per-day", "type": "series", "label": "Entries per day", "width": 8 },
         { "id": "weather", "type": "weather", "settings": { "city": "Montréal" } } // a plugin's
@@ -480,16 +496,22 @@ With `pages.home` set to the built-in `dashboard`, the home page is the widgets 
 }
 ```
 
-- **Types.** `stat`, `series` and `list` are built in. Any other type is a widget of a plugin, drawn by its component from the data of the endpoint, with its own `settings`.
+- **Types.** `stat`, `series`, `list` and `breakdown` are built in. Any other type is a widget of a plugin, drawn by its component from the data of the endpoint, with its own `settings`.
 - **`width`**: the columns of a grid of 12, 3 for a `stat` and 6 for the others by default. One column on a phone.
-- **On a resource.** A `stat` or a `list` with `settings.resource` reads the list of that resource, with `settings.query` written as its query parameters: a `stat` reads `perPage=1` and shows `meta.total`, a `list` reads `perPage=5` and shows the title of each item (`itemTitle`) and the badge of its value of the first `select` column. Both link to the list with that query. The resource must exist, the filters of `query` must be filters of its list, and `query` leaves out `page`, `perPage` and `cursor`. A list paged with cursors has no total: it can't feed a `stat`. A `series` has data of its own.
+- **On a resource.** A `stat` or a `list` with `settings.resource` reads the list of that resource, with `settings.query` written as its query parameters: a `stat` reads `perPage=1` and shows `meta.total`, a `list` reads `perPage=5` and shows the title of each item (`itemTitle`) and the badge of its value of the first `select` column. Both link to the list with that query. The resource must exist, the filters of `query` must be filters of its list, and `query` leaves out `page`, `perPage` and `cursor`. A list paged with cursors has no total: it can't feed a `stat` that counts.
+- **On the aggregates of a resource** ([decisions/0084](decisions/0084-overviews.md)). A `series`, a `breakdown`, and a `stat` whose `settings.measure` is a `sum:`, read [`GET /resources/{resource}/aggregate`](#aggregates) instead, with the filters and the search of `settings.query`, its `measure` (`settings.measure`, `count` by default), and for a `series` and a `breakdown`, its `group` (`settings.group`). The answer has the shape of the widget. A `stat` that counts (no `measure`, or `count`) keeps reading `meta.total` of the list.
+    - A `series` needs a `group` on a period of a field of `dates` (`day:created_at`), a `breakdown` a field of `groupBy`, and a `sum:` a field of `sum`, in the aggregates of the list. A `list` has no `measure` or `group`. `lintDefinition()` checks them.
+    - A `stat` links to the list with its query. Each bar of a `breakdown` links to the list filtered by its value (`key`), when the list has a filter whose id is the field; a breakdown of a `select` takes the labels and the tones of its options.
+    - A sum of `money` is shown in its currency.
+    - `settings.target` gives a `stat` on a resource its `target`, in the unit of its value: minor units for a sum of `money`.
 - **Data.** The other widgets get theirs from `GET /dashboard/widgets/{widget}`, in the shape of their type, as is. Texts are translated by the backend:
 
-| Type     | Data                                                                                                                                                                                                        |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `stat`   | `{ "value": 12, "help": "3 more than last week", "tone": "warning", "url": "…" }`: `value` only is required. `tone` only when the number calls for attention                                                |
-| `series` | `{ "period": "day", "points": [{ "date": "2026-10-05", "value": 4 }], "total": 12 }`: `period` is `day`, `week` or `month`, each `date` the first day of its period, going up                               |
-| `list`   | `{ "items": [{ "title": "…", "description": null, "meta": "12 answers", "url": "…", "badge": { "label": "Open", "tone": "success" } }], "empty": "…", "url": "…" }`: at most 5 items, the most useful first |
+| Type        | Data                                                                                                                                                                                                                                                                                   |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `stat`      | `{ "value": 12, "help": "3 more than last week", "tone": "warning", "url": "…", "target": 20 }`: `value` only is required. `tone` only when the number calls for attention. `target`, above 0, draws a meter under the number: past it, the meter takes `tone`, or `danger`            |
+| `series`    | `{ "period": "day", "points": [{ "date": "2026-10-05", "value": 4 }], "total": 12 }`: `period` is `day`, `week` or `month`, each `date` the first day of its period, going up                                                                                                          |
+| `list`      | `{ "items": [{ "title": "…", "description": null, "meta": "12 answers", "url": "…", "badge": { "label": "Open", "tone": "success" } }], "empty": "…", "url": "…" }`: at most 5 items, the most useful first                                                                            |
+| `breakdown` | `{ "items": [{ "label": "Failed", "value": 3, "tone": "danger", "url": "…" }], "total": 42, "other": 5 }`: the parts of a total, at most 10, drawn as horizontal bars, the largest first, and the rest, `other`, last as "Other". An item of the aggregate endpoint also has its `key` |
 
 - **Errors.** A widget that isn't in the user's dashboard, or a widget on a resource, is a `404`. A `403` hides the widget. Data that doesn't have the shape of its type is a `500` problem: clients show the widget's error, with a retry, and the other widgets stay. `checkWidgetData()` of `@panneau/protocol/runtime` checks a shape and names the wrong keys.
 
@@ -593,6 +615,7 @@ All paths are relative to `api.baseUrl`.
 | Action      | `POST /resources/{resource}/actions/{action}` (see [Actions](#actions-1))                                                                                         |
 | Inline edit | `PATCH /resources/{resource}/{id}` with a single field                                                                                                            |
 | Check       | `POST /resources/{resource}/fields/{field}/check` (see [Checking a field](#checking-a-field))                                                                     |
+| Aggregate   | `GET /resources/{resource}/aggregate` (see [Aggregates](#aggregates))                                                                                             |
 
 **List query parameters:**
 
@@ -610,6 +633,31 @@ All paths are relative to `api.baseUrl`.
 
 - `q`: search
 - `fields`: requested fields, so lists can ask for less
+
+#### Aggregates
+
+`GET /resources/{resource}/aggregate` counts or sums the items of a list that declares `list.aggregates`, grouped by a period or a field, and answers in the shape of a widget ([decisions/0084](decisions/0084-overviews.md)). It counts the items the user can list, through the same policies and scope as the list: a resource without `viewAny` is a `403`, and a resource without aggregates a `404`. (`aggregate` is a path segment of its own: a backend routes it before `{id}`.)
+
+- **Parameters:**
+    - the filters (`filter[{id}]`) and the search (`q`) of the list, read as the list reads them; `page`, `perPage`, `cursor`, `sort` and `fields` are ignored;
+    - `measure`: `count` (the default), or `sum:{field}` of a field of `sum`. A sum of `money` adds the amounts, in minor units;
+    - `group` (optional): `{period}:{field}`, where the period is `day`, `week` or `month` and the field is in `dates`, or a field of `groupBy`.
+
+    A measure or a group in another format, or that names a field the aggregates don't declare, is a `422` problem, with `errors` keyed by `measure` or `group`.
+
+- **Without a group,** a `stat`: `{ "value": 12 }`.
+- **By a period,** a `series`: `{ "period": "day", "points": [{ "date": "2026-10-05", "value": 4 }], "total": 12 }`.
+    - One point per period, at 0 when it has no items, each `date` the first day of its period: the day, the Monday of the week (ISO 8601), the first day of the month.
+    - The day of a value is its date as the backend writes it, as the bounds of a `date-range` filter read it (`2026-10-05T23:30:00-04:00` is on `2026-10-05`). Items without a date are left out.
+    - The points go from the period of the `from` bound to the period of the `to` bound of the `date-range` filter whose id is the date field, when the query has them. Without a bound, they start on the period of the first item, or end on the period of the last; without items or bounds, there are none.
+    - At most 366 points: a longer range keeps the latest.
+    - `total` is the sum of the points.
+- **By a field,** a `breakdown`: `{ "items": [{ "key": "failed", "label": "Failed", "value": 3, "tone": "danger" }], "total": 42, "other": 5 }`.
+    - A part per value, the largest first (equal parts in the order of the options of a `select`), at most 10: the sum of the others is `other`, left out when there are none.
+    - `key` is the value, as the list filters by it: the `id` of a `relation`, `null` for the items without a value, labeled by the backend ("None").
+    - `label` is the label of the value, translated: the label of its option for a `select`, with its `tone`, the `label` of a reference for a `relation`.
+    - An item with several values (`multiple`, `tags`) counts in the part of each one. `total` is the measure of all the items, each counted once.
+- **Reference.** `readAggregateQuery()` of `@panneau/protocol/runtime` reads and validates the parameters, `aggregateItems()` computes the answer over items a list query filtered, and `toAggregateParams()` writes the parameters. The mock backend answers with them.
 
 #### Checking a field
 
@@ -984,14 +1032,14 @@ Global search ([decisions/0029](decisions/0029-go-to-palette.md)):
 - **schemas and TypeScript types**. `Definition` is a definition after parsing, with defaults applied; `DefinitionInput` is a definition as a backend writes it.
 - **validation helpers**:
     - `validateDefinition()` checks the schema, then the references between parts;
-    - `lintDefinition()` checks those references alone: layout nodes and columns that name a field, relations that name a resource, unique names, and the widgets of the dashboard on a resource;
+    - `lintDefinition()` checks those references alone: layout nodes and columns that name a field, relations that name a resource, unique names, the aggregates of lists, and the widgets of the dashboard on a resource;
     - `validateBootConfig()` checks a [boot config](#boot-config).
 - **the portable rules**: `checkValues()` is the reference implementation.
 - **range filters**: `matchesFilterRange()` is the reference of how a backend reads the bounds of a range.
 - **a light entry point for browsers** (`@panneau/protocol/runtime`): the constants and the helpers above that don't need the schemas (`checkValues()`, `evaluateCondition()`, `lintDefinition()`, the list query helpers, `isProblem()`), without loading zod. UI packages import them from there, and only types from the main entry point.
 - **generated files**: `@panneau/protocol/definition.schema.json` and `@panneau/protocol/boot.schema.json` (JSON Schema 2020-12), and `@panneau/protocol/openapi.json` (OpenAPI 3.1).
 - **a mock backend** (`@panneau/protocol/mock`): an in-memory implementation of the resource routes, and of the widgets of the dashboard with the data of its `widgets` option.
-- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. For a list paged with cursors, it also follows `nextCursor`, and checks that an invalid cursor is a `422`. With `writes`, it also checks that rules limited to `create` don't apply to updates: an update with those fields set to `null` succeeds. It also checks that an update of a single field, with `If-Match`, changes that field alone, and that an update ignores the values of fields with `notInForm` ([0071](decisions/0071-fields-out-of-forms.md)). It also checks that the built-in `delete` answers a dry run without being declared and, with `writes`, that an item that allows `duplicate` is copied under a new id, with its `ETag`. It also checks that the API agrees with the abilities it announces ([0046](decisions/0046-abilities-in-the-ui.md)): resources without `viewAny` answer `403` on their list, items leave out the values of fields with `view: false`, and a dry run of `delete` skips an item without `delete`; with `writes`, an empty create of a resource without `create`, and an empty update of an item without `update`, answer `403`. It also checks that the backend reads the bounds of the resource's first `date-range` filter, if it has one, and that `GET /search` finds an item by a word of its title, reads `limit` and `resources`, and refuses invalid parameters with a `422`. With a `dashboard`, it checks that each widget with data of its own answers in the shape of its type (or a `403`), that the lists of the widgets on a resource answer their query, with a total for a `stat`, and that a widget that isn't in the dashboard is a `404`. With a `context` in the definition, it checks the choices of each param, a definition built for a value of the first param, and a value that doesn't exist refused with a `403` context problem. `context` sends values with every request, for a backend whose resources need one.
+- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. For a list paged with cursors, it also follows `nextCursor`, and checks that an invalid cursor is a `422`. With `writes`, it also checks that rules limited to `create` don't apply to updates: an update with those fields set to `null` succeeds. It also checks that an update of a single field, with `If-Match`, changes that field alone, and that an update ignores the values of fields with `notInForm` ([0071](decisions/0071-fields-out-of-forms.md)). It also checks that the built-in `delete` answers a dry run without being declared and, with `writes`, that an item that allows `duplicate` is copied under a new id, with its `ETag`. It also checks that the API agrees with the abilities it announces ([0046](decisions/0046-abilities-in-the-ui.md)): resources without `viewAny` answer `403` on their list, items leave out the values of fields with `view: false`, and a dry run of `delete` skips an item without `delete`; with `writes`, an empty create of a resource without `create`, and an empty update of an item without `update`, answer `403`. It also checks that the backend reads the bounds of the resource's first `date-range` filter, if it has one, and that `GET /search` finds an item by a word of its title, reads `limit` and `resources`, and refuses invalid parameters with a `422`. With a `dashboard`, it checks that each widget with data of its own answers in the shape of its type (or a `403`), that the lists and the aggregates of the widgets on a resource answer their query, with a total for a `stat`, and that a widget that isn't in the dashboard is a `404`. For each resource with aggregates, it checks that `GET /resources/{resource}/aggregate` counts the items of the list, answers each declared sum, group and period in the shape of a widget, with a point per period and the range of the `date-range` filter on the date, and refuses what isn't declared with a `422`; a resource without aggregates is a `404`. With a `context` in the definition, it checks the choices of each param, a definition built for a value of the first param, and a value that doesn't exist refused with a `403` context problem. `context` sends values with every request, for a backend whose resources need one.
 
 ```ts
 import { formatReport, runConformance } from '@panneau/protocol/conformance';
