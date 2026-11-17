@@ -87,6 +87,8 @@ function fromList(
 
 interface UseWidgetContentOptions {
     widget: Widget;
+    /** The dashboard page of the widget: the home page without it. */
+    page?: string | undefined;
     definition: Definition;
     basePath: string;
     /** The title of an item without one. */
@@ -102,6 +104,7 @@ interface UseWidgetContentOptions {
  */
 export function useWidgetContent({
     widget,
+    page,
     definition,
     basePath,
     untitled,
@@ -121,7 +124,7 @@ export function useWidgetContent({
         },
         { enabled: enabled && read !== null && canList },
     );
-    const own = useWidgetData(widget.id, { enabled: enabled && read === null });
+    const own = useWidgetData(widget.id, { page, enabled: enabled && read === null });
     const query = read !== null ? list : own;
     if (read !== null && !canList) {
         return { status: 'hidden' };

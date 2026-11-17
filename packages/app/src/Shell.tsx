@@ -58,15 +58,18 @@ interface PageProps {
 /**
  * A page of the definition's `pages`: a plugin's component, with the page's props, the definition,
  * and the values of its `params` from the path. The built-in `dashboard`, which plugins can
- * replace, is the widgets of `definition.dashboard`, or the cards of the resources without any
- * (decision 0064).
+ * replace, is the widgets of the page (decisions 0064 and 0082): on the home page, those of
+ * `definition.dashboard` without its own, or the cards of the resources without any.
  */
 function DefinitionPage({
+    id,
     page,
     definition,
     basePath,
     params = {},
 }: PageProps & {
+    /** The id of the page in `pages`. */
+    id: string;
     page: NonNullable<Definition['pages']>[string];
     /** The values of the page's `params`, from its path. */
     params?: Record<string, string>;
@@ -81,7 +84,7 @@ function DefinitionPage({
             {Component !== undefined ? (
                 createElement(Component, { ...page.props, definition, params })
             ) : page.component === 'dashboard' ? (
-                <Dashboard definition={definition} basePath={basePath} />
+                <Dashboard definition={definition} basePath={basePath} page={id} />
             ) : (
                 <Alert tone="warning">
                     {intl.formatMessage(appMessages.missingPage, {
@@ -113,7 +116,7 @@ function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) 
             // when the user can't open `pages.home` (decision 0046)
             const page = definition.pages?.home;
             return page !== undefined && canViewPage(page) ? (
-                <DefinitionPage page={page} definition={definition} basePath={basePath} />
+                <DefinitionPage id="home" page={page} definition={definition} basePath={basePath} />
             ) : (
                 <HomePage definition={definition} basePath={basePath} />
             );
@@ -140,6 +143,7 @@ function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) 
             return (
                 <DefinitionPage
                     key={segments.join('/')}
+                    id={route.page}
                     page={page}
                     definition={definition}
                     basePath={basePath}

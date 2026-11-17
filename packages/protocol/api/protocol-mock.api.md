@@ -95,6 +95,7 @@ export type MockWidget = Response | Record<string, unknown> | ((context: MockWid
 export interface MockWidgetContext {
     context: ContextValues;
     items: (resource: string) => Item[];
+    page: string;
 }
 
 // (No @packageDocumentation comment for this package)

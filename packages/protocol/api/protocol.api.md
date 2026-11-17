@@ -852,6 +852,9 @@ export const CursorPagination: z.ZodObject<{
 export type CursorPagination = z.infer<typeof CursorPagination>;
 
 // @public
+export const DASHBOARD_COMPONENT = "dashboard";
+
+// @public
 export const DATE_RANGE_OPEN_BOUNDS: readonly ["start", "end", "both"];
 
 // @public (undocumented)
@@ -1449,6 +1452,16 @@ export const Definition: z.ZodObject<{
         props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         params: z.ZodOptional<z.ZodArray<z.ZodString>>;
         abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
+        widgets: z.ZodOptional<z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            type: z.ZodString;
+            label: z.ZodOptional<z.ZodString>;
+            width: z.ZodOptional<z.ZodNumber>;
+            settings: z.ZodOptional<z.ZodObject<{
+                resource: z.ZodOptional<z.ZodString>;
+                query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+            }, z.core.$loose>>;
+        }, z.core.$loose>>>;
     }, z.core.$loose>>>;
     menus: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodArray<z.ZodObject<{
         type: z.ZodString;
@@ -2049,6 +2062,14 @@ export function getCreatableTypes<T extends {
 // @public
 export function getCurrencyDigits(code: string): number;
 
+// Warning: (ae-forgotten-export) The symbol "DashboardsOf" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function getDashboardPages(definition: DashboardsOf): string[];
+
+// @public
+export function getDashboardWidgets(definition: DashboardsOf, page?: string): Widget[];
+
 // @public
 export function getImageUrl(value: unknown): string | null;
 
@@ -2104,6 +2125,9 @@ export function getWidgetResource(widget: WidgetLike): WidgetResource | null;
 export function hasResourceTypes(resource: {
     types?: readonly unknown[] | undefined;
 }): boolean;
+
+// @public
+export const HOME_PAGE = "home";
 
 // @public (undocumented)
 export const Id: z.ZodString;
@@ -4191,6 +4215,16 @@ export const namedSchemas: {
         props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         params: z.ZodOptional<z.ZodArray<z.ZodString>>;
         abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
+        widgets: z.ZodOptional<z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            type: z.ZodString;
+            label: z.ZodOptional<z.ZodString>;
+            width: z.ZodOptional<z.ZodNumber>;
+            settings: z.ZodOptional<z.ZodObject<{
+                resource: z.ZodOptional<z.ZodString>;
+                query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+            }, z.core.$loose>>;
+        }, z.core.$loose>>>;
     }, z.core.$loose>;
     WidgetSettings: z.ZodObject<{
         resource: z.ZodOptional<z.ZodString>;
@@ -4984,6 +5018,16 @@ export const namedSchemas: {
             props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
             params: z.ZodOptional<z.ZodArray<z.ZodString>>;
             abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
+            widgets: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                type: z.ZodString;
+                label: z.ZodOptional<z.ZodString>;
+                width: z.ZodOptional<z.ZodNumber>;
+                settings: z.ZodOptional<z.ZodObject<{
+                    resource: z.ZodOptional<z.ZodString>;
+                    query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                }, z.core.$loose>>;
+            }, z.core.$loose>>>;
         }, z.core.$loose>>>;
         menus: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodArray<z.ZodObject<{
             type: z.ZodString;
@@ -5836,6 +5880,16 @@ export const Page: z.ZodObject<{
     props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     params: z.ZodOptional<z.ZodArray<z.ZodString>>;
     abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
+    widgets: z.ZodOptional<z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        type: z.ZodString;
+        label: z.ZodOptional<z.ZodString>;
+        width: z.ZodOptional<z.ZodNumber>;
+        settings: z.ZodOptional<z.ZodObject<{
+            resource: z.ZodOptional<z.ZodString>;
+            query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+        }, z.core.$loose>>;
+    }, z.core.$loose>>>;
 }, z.core.$loose>;
 
 // @public (undocumented)

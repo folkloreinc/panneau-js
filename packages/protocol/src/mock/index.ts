@@ -8,6 +8,7 @@ import {
     isBuiltInItemAction,
 } from '../constants';
 import { type ContextValues, contextBefore, parseContextHeader } from '../context';
+import { HOME_PAGE, getDashboardWidgets } from '../dashboards';
 import { getMediaLibraries } from '../libraries';
 import { type ListQuery, fromSearchParams, isFilterRange, matchesFilterRange } from '../query';
 import { ITEM_TYPE_KEY, getResourceType, getTypeFields, hasResourceTypes } from '../resourceTypes';
@@ -66,11 +67,13 @@ export interface MockBackendOptions {
      */
     auth?: MockAuthOptions;
     /**
-     * The data of `GET /dashboard/widgets/{widget}`, per widget id (decision 0064): the data, a
-     * function that returns it for the current context, or a `Response` to answer as is (a `403`,
-     * a slow or failing widget). Data that doesn't have the shape of a built-in type is a `500`
-     * problem that names the wrong keys, as a backend answers it. Widgets of the dashboard without
-     * data, and built-in `stat` and `list` on a resource, are a `404`.
+     * The data of `GET /dashboard/widgets/{widget}?page={page}`, per widget id (decision 0064): the
+     * data, a function that returns it for the current context and page, or a `Response` to answer
+     * as is (a `403`, a slow or failing widget). It answers the widgets of every dashboard page
+     * (decision 0082), and those of the home page without `page`. Data that doesn't have the shape
+     * of a built-in type is a `500` problem that names the wrong keys, as a backend answers it.
+     * Widgets without data, built-in `stat` and `list` on a resource, and widgets that aren't on
+     * the page are a `404`.
      */
     widgets?: Record<string, MockWidget>;
     /**
@@ -92,6 +95,8 @@ export type MockWidget =
 export interface MockWidgetContext {
     /** The values of the context of the request. */
     context: ContextValues;
+    /** The page of the dashboard of the widget: `home` without `page` in the request. */
+    page: string;
     /** The current items of a resource, in the context. */
     items: (resource: string) => Item[];
 }
@@ -788,10 +793,11 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
     // A widget of the dashboard with data of its own (decision 0064)
     const answerWidget = async (
         id: string,
+        page: string,
         values: ContextValues,
         inScope: (resource: string, list: Item[]) => Item[],
     ): Promise<Response> => {
-        const widget = definitionFor(values).dashboard?.widgets.find(
+        const widget = getDashboardWidgets(definitionFor(values), page).find(
             (candidate) => candidate.id === id,
         );
         const data = options.widgets?.[id];
@@ -802,6 +808,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             typeof data === 'function'
                 ? await data({
                       context: values,
+                      page,
                       items: (resource) => inScope(resource, store.get(resource) ?? []),
                   })
                 : data;
@@ -927,7 +934,12 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             segments[1] === 'widgets' &&
             method === 'GET'
         ) {
-            return answerWidget(segments[2] ?? '', context, inScope);
+            return answerWidget(
+                segments[2] ?? '',
+                url.searchParams.get('page') ?? HOME_PAGE,
+                context,
+                inScope,
+            );
         }
         if (segments.length === 1 && segments[0] === 'search' && method === 'GET') {
             return search(url.searchParams, inScope);

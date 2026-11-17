@@ -10,7 +10,7 @@ import type {
     StatWidgetData,
     Widget,
 } from '@panneau/protocol';
-import { isBuiltInWidgetType } from '@panneau/protocol/runtime';
+import { HOME_PAGE, getDashboardWidgets, isBuiltInWidgetType } from '@panneau/protocol/runtime';
 import {
     Alert,
     Badge,
@@ -34,6 +34,8 @@ import { type WidgetContent, useWidgetContent } from './widgetContent';
 export interface DashboardProps {
     definition: Definition;
     basePath: string;
+    /** The id of the page in `pages` (decision 0082): `home`, the home page, by default. */
+    page?: string;
 }
 
 /** Columns of the grid of 12 a widget takes, without a `width`. */
@@ -251,12 +253,18 @@ function WidgetBody({
     }
 }
 
-function DashboardWidget({ widget, definition, basePath }: DashboardProps & { widget: Widget }) {
+function DashboardWidget({
+    widget,
+    page,
+    definition,
+    basePath,
+}: Omit<DashboardGridProps, 'widgets'> & { widget: Widget }) {
     const intl = usePanneauIntl();
     const plugins = usePlugins();
     const drawn = isBuiltInWidgetType(widget.type) || plugins.widgets.has(widget.type);
     const content = useWidgetContent({
         widget,
+        page,
         definition,
         basePath,
         untitled: (id) => intl.formatMessage(appMessages.widgetUntitled, { id }),
@@ -286,7 +294,38 @@ function DashboardWidget({ widget, definition, basePath }: DashboardProps & { wi
     );
 }
 
-function Widgets({ definition, basePath }: DashboardProps) {
+export interface DashboardGridProps {
+    /** The widgets, in order. */
+    widgets: Widget[];
+    /** The page whose dashboard holds them, for the data of their own: the home page without it. */
+    page?: string | undefined;
+    definition: Definition;
+    basePath: string;
+}
+
+/**
+ * The widgets of a dashboard (decision 0064), in a grid of 12 columns from their `width`, one
+ * column on a phone. Each widget draws its skeleton while it loads, its error with "Try again", and
+ * nothing when the user can't see it, without touching the others.
+ */
+export function DashboardGrid({ widgets, page, definition, basePath }: DashboardGridProps) {
+    return (
+        <div className={styles.grid}>
+            {widgets.map((widget) => (
+                <DashboardWidget
+                    key={widget.id}
+                    widget={widget}
+                    page={page}
+                    definition={definition}
+                    basePath={basePath}
+                />
+            ))}
+        </div>
+    );
+}
+
+/** The home page with widgets: the name of the app and a welcome above them. */
+function HomeDashboard({ widgets, definition, basePath }: DashboardGridProps) {
     const intl = usePanneauIntl();
     const user = definition.user ?? null;
     useDocumentTitle([]);
@@ -298,29 +337,58 @@ function Widgets({ definition, basePath }: DashboardProps) {
                     {intl.formatMessage(appMessages.welcome, { name: user.name })}
                 </p>
             ) : null}
-            <div className={styles.grid}>
-                {(definition.dashboard?.widgets ?? []).map((widget) => (
-                    <DashboardWidget
-                        key={widget.id}
-                        widget={widget}
-                        definition={definition}
-                        basePath={basePath}
-                    />
-                ))}
-            </div>
+            <DashboardGrid widgets={widgets} definition={definition} basePath={basePath} />
+        </PageLayout>
+    );
+}
+
+/** Another dashboard page: its label, then its widgets, or a message without any. */
+function PageDashboard({
+    widgets,
+    page,
+    definition,
+    basePath,
+}: DashboardGridProps & { page: string }) {
+    const intl = usePanneauIntl();
+    const title = definition.pages?.[page]?.label ?? page;
+    useDocumentTitle([title]);
+    return (
+        <PageLayout>
+            <PageHeader title={title} />
+            {widgets.length > 0 ? (
+                <DashboardGrid
+                    widgets={widgets}
+                    page={page}
+                    definition={definition}
+                    basePath={basePath}
+                />
+            ) : (
+                <p className={pageStyles.intro}>{intl.formatMessage(appMessages.dashboardEmpty)}</p>
+            )}
         </PageLayout>
     );
 }
 
 /**
- * The built-in `dashboard` page (decision 0064): the widgets of `definition.dashboard`, in a grid of
- * 12 columns from their `width`, one column on a phone. Each widget draws its skeleton while it
- * loads, its error with "Try again", and nothing when the user can't see it, without touching the
- * others. Without widgets, the cards of the resources.
+ * The built-in `dashboard` page (decisions 0064 and 0082): the widgets of its page, in a grid.
+ * The home page has the name of the app and a welcome above them, and the cards of the resources
+ * without widgets. Another page has its label above them, and says when it has none.
  */
-export function Dashboard({ definition, basePath }: DashboardProps) {
-    return (definition.dashboard?.widgets.length ?? 0) > 0 ? (
-        <Widgets definition={definition} basePath={basePath} />
+export function Dashboard({ definition, basePath, page = HOME_PAGE }: DashboardProps) {
+    const widgets = getDashboardWidgets(definition, page);
+    if (page !== HOME_PAGE) {
+        return (
+            <PageDashboard
+                key={page}
+                widgets={widgets}
+                page={page}
+                definition={definition}
+                basePath={basePath}
+            />
+        );
+    }
+    return widgets.length > 0 ? (
+        <HomeDashboard widgets={widgets} definition={definition} basePath={basePath} />
     ) : (
         <HomePage definition={definition} basePath={basePath} />
     );

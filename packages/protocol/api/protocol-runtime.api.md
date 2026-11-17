@@ -130,6 +130,9 @@ export interface CursorPageMeta {
 }
 
 // @public
+export const DASHBOARD_COMPONENT = "dashboard";
+
+// @public
 export const DATE_RANGE_OPEN_BOUNDS: readonly ["start", "end", "both"];
 
 // @public (undocumented)
@@ -184,6 +187,16 @@ export function getCreatableTypes<T extends {
 
 // @public
 export function getCurrencyDigits(code: string): number;
+
+// Warning: (ae-forgotten-export) The symbol "DashboardsOf" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function getDashboardPages(definition: DashboardsOf): string[];
+
+// Warning: (ae-forgotten-export) The symbol "Widget" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function getDashboardWidgets(definition: DashboardsOf, page?: string): Widget[];
 
 // @public
 export function getImageUrl(value: unknown): string | null;
@@ -240,6 +253,9 @@ export function getWidgetResource(widget: WidgetLike): WidgetResource | null;
 export function hasResourceTypes(resource: {
     types?: readonly unknown[] | undefined;
 }): boolean;
+
+// @public
+export const HOME_PAGE = "home";
 
 // @public
 export const IDS_FILTER = "ids";

@@ -29,7 +29,7 @@ export const Widget = z.looseObject({
     id: z
         .string()
         .min(1)
-        .meta({ description: 'Unique in the dashboard: the `{widget}` of its route.' }),
+        .meta({ description: 'Unique in its dashboard: the `{widget}` of its route.' }),
     type: z.string().min(1).meta({
         description:
             'Built-in: `stat` (a number), `series` (a line over days, weeks or months) and `list` (a few items). Other types are widgets of plugins.',

@@ -82,6 +82,12 @@ export {
 export { isProblem } from '../problem';
 export { type PartialTheme, mergeThemes } from '../themes';
 export {
+    DASHBOARD_COMPONENT,
+    HOME_PAGE,
+    getDashboardPages,
+    getDashboardWidgets,
+} from '../dashboards';
+export {
     type BuiltInWidgetType,
     type WidgetResource,
     type WidgetSeriesPeriod,

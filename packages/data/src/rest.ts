@@ -3,6 +3,7 @@ import {
     ActionRun,
     CONTEXT_HEADER,
     Definition,
+    HOME_PAGE,
     type ListQuery,
     PROBLEM_CONTENT_TYPE,
     type Problem,
@@ -432,8 +433,13 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
             });
             return response.data;
         },
-        getWidgetData(widget, { signal } = {}) {
-            return json<unknown>({ path: `/dashboard/widgets/${encode(widget)}`, signal });
+        getWidgetData(widget, { signal, page = HOME_PAGE } = {}) {
+            return json<unknown>({
+                path: `/dashboard/widgets/${encode(widget)}`,
+                // The home page's widgets are asked for without `page`, as before decision 0082
+                ...(page !== HOME_PAGE && { query: new URLSearchParams({ page }) }),
+                signal,
+            });
         },
 
         withContext(values) {
