@@ -1595,7 +1595,7 @@ export const Definition: z.ZodObject<{
         email: z.ZodOptional<z.ZodString>;
         avatarUrl: z.ZodOptional<z.ZodString>;
         abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
-        resource: z.ZodOptional<z.ZodString>;
+        resource: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     }, z.core.$loose>>>;
 }, z.core.$loose>;
 
@@ -4129,7 +4129,7 @@ export const namedSchemas: {
         email: z.ZodOptional<z.ZodString>;
         avatarUrl: z.ZodOptional<z.ZodString>;
         abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
-        resource: z.ZodOptional<z.ZodString>;
+        resource: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     }, z.core.$loose>;
     AuthProvider: z.ZodObject<{
         id: z.ZodString;
@@ -5121,7 +5121,7 @@ export const namedSchemas: {
             email: z.ZodOptional<z.ZodString>;
             avatarUrl: z.ZodOptional<z.ZodString>;
             abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
-            resource: z.ZodOptional<z.ZodString>;
+            resource: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         }, z.core.$loose>>>;
     }, z.core.$loose>;
     Item: z.ZodObject<{
@@ -5613,7 +5613,7 @@ export const namedSchemas: {
             email: z.ZodOptional<z.ZodString>;
             avatarUrl: z.ZodOptional<z.ZodString>;
             abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
-            resource: z.ZodOptional<z.ZodString>;
+            resource: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         }, z.core.$loose>;
     }, z.core.$loose>;
     TwoFactorChallenge: z.ZodObject<{
@@ -6856,7 +6856,7 @@ export const Session: z.ZodObject<{
         email: z.ZodOptional<z.ZodString>;
         avatarUrl: z.ZodOptional<z.ZodString>;
         abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
-        resource: z.ZodOptional<z.ZodString>;
+        resource: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     }, z.core.$loose>;
 }, z.core.$loose>;
 
@@ -7160,7 +7160,7 @@ export const User: z.ZodObject<{
     email: z.ZodOptional<z.ZodString>;
     avatarUrl: z.ZodOptional<z.ZodString>;
     abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
-    resource: z.ZodOptional<z.ZodString>;
+    resource: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 }, z.core.$loose>;
 
 // @public (undocumented)

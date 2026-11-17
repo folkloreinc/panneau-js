@@ -38,6 +38,8 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 }
 ```
 
+- **The user's profile.** Without `auth.account`, the user's name links to their item in the resource of users: `user.resource`, or the resource `users` without it. A backend sets `user.resource` to `null` when the user has no item they can edit there, such as a user outside the resource's scope: the app then shows no link to a profile, instead of a page that isn't found.
+
 ### Resource
 
 ```jsonc

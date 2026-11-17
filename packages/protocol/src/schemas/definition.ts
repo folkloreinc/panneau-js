@@ -13,9 +13,9 @@ export const User = z.looseObject({
     email: z.string().optional(),
     avatarUrl: z.string().optional(),
     abilities: Abilities.optional(),
-    resource: z.string().optional().meta({
+    resource: z.string().nullable().optional().meta({
         description:
-            'The resource of users: its item with this `id` is the profile of the user. Without it, clients look for a resource `users`.',
+            'The resource of users: its item with this `id` is the profile of the user. Without it, clients look for a resource `users`. `null` when the user has no item they can edit in a resource: clients show no link to a profile.',
     }),
 });
 

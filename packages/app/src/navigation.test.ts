@@ -197,6 +197,16 @@ describe('getProfilePath', () => {
         expect(getProfilePath(definition, '/panneau')).toBe('/panneau/resources/authors/7/edit');
     });
 
+    it('is null when the user has no item in a resource', () => {
+        const definition = parse(
+            createDefinition({
+                resources: [...createDefinition().resources, users],
+                user: { id: 'usr_1', name: 'Ada', resource: null },
+            }),
+        );
+        expect(getProfilePath(definition, '/panneau')).toBeNull();
+    });
+
     it('is null without a resource of users', () => {
         expect(getProfilePath(parse(createDefinition()), '/panneau')).toBeNull();
     });
