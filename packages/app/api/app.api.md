@@ -20,7 +20,7 @@ import type { ResolvedResource } from '@panneau/core';
 // @public
 export const appComponentTokens: Readonly<{
     shell: Readonly<Record<"panneau-shell-bg" | "panneau-shell-inset" | "panneau-shell-panel-bg" | "panneau-shell-panel-border" | "panneau-shell-panel-radius" | "panneau-shell-panel-shadow" | "panneau-shell-panel-padding-x", string>>;
-    sidebar: Readonly<Record<"panneau-sidebar-border" | "panneau-sidebar-width" | "panneau-sidebar-bg" | "panneau-sidebar-width-collapsed" | "panneau-sidebar-link-color" | "panneau-sidebar-link-hover-bg" | "panneau-sidebar-link-radius" | "panneau-sidebar-link-current-color" | "panneau-sidebar-link-current-bg" | "panneau-sidebar-link-current-border" | "panneau-sidebar-link-current-shadow" | "panneau-sidebar-link-emphasis-color" | "panneau-sidebar-link-emphasis-weight" | "panneau-sidebar-logo-bg" | "panneau-sidebar-logo-color", string>>;
+    sidebar: Readonly<Record<"panneau-sidebar-width" | "panneau-sidebar-border" | "panneau-sidebar-bg" | "panneau-sidebar-width-collapsed" | "panneau-sidebar-link-color" | "panneau-sidebar-link-hover-bg" | "panneau-sidebar-link-radius" | "panneau-sidebar-link-current-color" | "panneau-sidebar-link-current-bg" | "panneau-sidebar-link-current-border" | "panneau-sidebar-link-current-shadow" | "panneau-sidebar-link-emphasis-color" | "panneau-sidebar-link-emphasis-weight" | "panneau-sidebar-logo-bg" | "panneau-sidebar-logo-color", string>>;
     dock: Readonly<Record<"panneau-dock-border" | "panneau-dock-radius" | "panneau-dock-bg" | "panneau-dock-shadow" | "panneau-dock-item-color" | "panneau-dock-item-hover-bg" | "panneau-dock-item-current-color" | "panneau-dock-item-current-bg", string>>;
 }>;
 
@@ -137,7 +137,7 @@ export function readBootConfig(target?: Document): BootConfig;
 export const shellTokens: ComponentTokens<"shell", "panneau-shell-bg" | "panneau-shell-inset" | "panneau-shell-panel-bg" | "panneau-shell-panel-border" | "panneau-shell-panel-radius" | "panneau-shell-panel-shadow" | "panneau-shell-panel-padding-x">;
 
 // @public
-export const sidebarTokens: ComponentTokens<"sidebar", "panneau-sidebar-border" | "panneau-sidebar-width" | "panneau-sidebar-bg" | "panneau-sidebar-width-collapsed" | "panneau-sidebar-link-color" | "panneau-sidebar-link-hover-bg" | "panneau-sidebar-link-radius" | "panneau-sidebar-link-current-color" | "panneau-sidebar-link-current-bg" | "panneau-sidebar-link-current-border" | "panneau-sidebar-link-current-shadow" | "panneau-sidebar-link-emphasis-color" | "panneau-sidebar-link-emphasis-weight" | "panneau-sidebar-logo-bg" | "panneau-sidebar-logo-color">;
+export const sidebarTokens: ComponentTokens<"sidebar", "panneau-sidebar-width" | "panneau-sidebar-border" | "panneau-sidebar-bg" | "panneau-sidebar-width-collapsed" | "panneau-sidebar-link-color" | "panneau-sidebar-link-hover-bg" | "panneau-sidebar-link-radius" | "panneau-sidebar-link-current-color" | "panneau-sidebar-link-current-bg" | "panneau-sidebar-link-current-border" | "panneau-sidebar-link-current-shadow" | "panneau-sidebar-link-emphasis-color" | "panneau-sidebar-link-emphasis-weight" | "panneau-sidebar-logo-bg" | "panneau-sidebar-logo-color">;
 
 // @public
 export interface UnauthorizedContext {
