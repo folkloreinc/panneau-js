@@ -61,9 +61,13 @@ An **overview** is a set of widgets that answers questions about one or more res
     - grouped by a period, a `series`, with one point per period and 0 when a period is empty, as 0064 says;
     - grouped by a field, a `breakdown`.
 
-    The answer counts only the items the user can list, through the same policies and scope as the list.
+    The answer counts only the items the user can list, through the same policies and scope as the list. A resource without `aggregates` answers `404`, and an undeclared field or a malformed `measure` or `group` a `422`.
 
-- **A new built-in type, `breakdown`:** `{ "items": [{ "label": "Failed", "value": 3, "tone": "danger", "url": "…" }], "total": 42, "other": 5 }`.
+    - A series covers the periods from the `from` bound to the `to` bound of the list's `date-range` filter on that date, else from the first item to the last, with at most 366 points (the latest). The day of a value is its date as the backend writes it.
+    - A breakdown has at most 10 parts, the largest first, and the rest in `other`. An item with several values counts in each of its parts, and once in `total`.
+    - A sum of `money` adds the amounts in minor units, and the client shows it in the field's currency.
+
+- **A new built-in type, `breakdown`:** `{ "items": [{ "key": "failed", "label": "Failed", "value": 3, "tone": "danger", "url": "…" }], "total": 42, "other": 5 }`. `key` is the raw value of the part (the id of a relation, `null` for items without a value), from which the client links to the filtered list.
     - It is drawn as horizontal bars, the largest first, with the remainder in `other`.
     - On a resource, each bar links to the list filtered by its value. A breakdown of a `select` field takes the labels and tones of its options.
 - **`stat`, `series` and `breakdown` on a resource.** With `settings.resource` and `settings.query` as in 0064, plus `settings.measure`, and `settings.group` for the last two. A `stat` with `sum:` shows the sum. A `stat` with `count` keeps reading `meta.total` of the list, as today.
@@ -71,18 +75,22 @@ An **overview** is a set of widgets that answers questions about one or more res
 
 **A summary above a list** ([#300](https://github.com/folkloreinc/panneau-js/issues/300)).
 
-- **Declared by the resource.** A resource declares `summary: { "widgets": [ … ] }`. Its widgets are drawn between the header of the list page and the list, in the grid of a dashboard.
+- **Declared by the resource.** A resource declares `summary: { "widgets": [ … ] }`. Its widgets are drawn between the header of the list page and the list, in the grid of a dashboard. A widget on a resource names it in `settings.resource`, as on a dashboard.
 - **Collapsible.** The summary can be collapsed, and the browser remembers it per resource.
-- **It follows the list.** Its widgets on the resource get the list's current filters and search, so filtering the list by an owner redraws the charts for that owner. A widget can keep the whole resource with `settings.followsList: false`.
+- **It follows the list.** Its widgets on the resource get the list's current filters and search, so filtering the list by an owner redraws the charts for that owner. A widget's own `settings.query` wins over the list on the same filter, so a stat of failures stays one. A widget can keep the whole resource with `settings.followsList: false`. A widget on another resource doesn't follow the list.
 - **The list can come second.** `summary.list: "collapsed"` opens the resource on its summary, with its list folded under it behind "Show the N items". A log is then read through its charts first.
-- **Widgets with their own endpoint** get `GET /dashboard/widgets/{widget}?resource={resource}`, with the query of the list.
+- **Widgets with their own endpoint** get `GET /dashboard/widgets/{widget}?resource={resource}`, with the filters and search of the list (never its sort or page). `page` and `resource` together are a `422`. A widget that isn't in the summary of that resource for the user is a `404`.
 
 **One period** ([#301](https://github.com/folkloreinc/panneau-js/issues/301)).
 
-- **Declared by the overview.** A dashboard page or a summary can declare `period: { "options": ["7d", "30d", "90d", "month", "year"], "default": "30d" }`.
+- **Declared by the overview.** A dashboard page or a summary can declare `period: { "options": ["7d", "30d", "90d", "month", "year"], "default": "30d" }`. `default` is the first option when left out. A summary's period also names the list's `date-range` filter it sets (`filter`, the first one by default).
+- **Its bounds** are inclusive days, ending today in the user's timezone:
+    - `7d`, `30d` and `90d` are the last N days;
+    - `month` runs from the first day of the month;
+    - `year` covers the last 12 months, from the first day of the month 11 months ago, which is never almost empty in January and gives 12 points to a series by month.
 - **Chosen in the header.** A segmented control in its header chooses the period, and the URL keeps it.
 - **Widgets on a resource** get the period as the list's `date-range` filter that they name (`settings.period: "created_at"`). The backend needs nothing new.
-- **Widgets with an endpoint** get `period` and its bounds (`period[from]`, `period[to]`, inclusive days, as a `date-range`). A widget that doesn't follow the period says so with `settings.period: false`, and the control lists the widgets it changes.
+- **Widgets with an endpoint** get `period[option]`, `period[from]` and `period[to]` (the bounds, as a `date-range`). The option has a key of its own because PHP can't read `period=30d` and `period[from]` together. An unknown option or invalid bounds are a `422`. A widget that doesn't follow the period says so with `settings.period: false`, and the control lists the widgets it changes.
 - **On a summary**, the period is the list's own `date-range` filter: choosing it filters the rows too.
 
 **Logs need no new kind of resource.** A read-only resource is already one whose abilities forbid creating and editing (0046), and an admin with an overview can leave its logs out of the menus: their widgets link to their lists ("See all", a bar of a breakdown). A list reached that way keeps its filters in the URL. Its page says where it was opened from, through the history of the browser, as any page.
