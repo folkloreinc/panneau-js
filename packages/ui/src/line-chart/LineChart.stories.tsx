@@ -155,8 +155,8 @@ export const AllZero: Story = {
         }
         await expect(wrapper.getBoundingClientRect().width).toBeLessThanOrEqual(1);
         await expect(getComputedStyle(wrapper).overflow).toBe('hidden');
-        // The 0s of the table, the graduation and the last value
-        await expect(canvas.getAllByText('0')).toHaveLength(DAYS.length + 2);
+        // The 0s of the table, the graduation (and its hidden copy that sizes the scale), and the last value
+        await expect(canvas.getAllByText('0')).toHaveLength(DAYS.length + 3);
     },
 };
 
