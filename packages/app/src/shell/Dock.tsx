@@ -59,7 +59,7 @@ function LinkItem({ link, route }: { link: NavLink; route: AppRoute }) {
         <Link
             {...linkProps(link)}
             aria-current={isCurrent(link.target, route) ? 'page' : undefined}
-            className={styles.item}
+            className={cx(styles.item, link.emphasis === true && styles.emphasis)}
         >
             <Icon icon={getLinkIcon(link)} size="md" />
             <span className={styles.label}>{link.label}</span>
@@ -69,7 +69,14 @@ function LinkItem({ link, route }: { link: NavLink; route: AppRoute }) {
 
 function linkItems(links: NavLink[]) {
     return links.map((link) => (
-        <MenuItem key={link.key} id={link.key} {...linkProps(link)} icon={getLinkIcon(link)}>
+        <MenuItem
+            key={link.key}
+            id={link.key}
+            {...linkProps(link)}
+            icon={getLinkIcon(link)}
+            textValue={link.label}
+            className={cx(link.emphasis === true && styles.emphasis)}
+        >
             {link.label}
         </MenuItem>
     ));

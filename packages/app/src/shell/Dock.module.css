@@ -175,3 +175,8 @@
         transition: none;
     }
 }
+
+/* A main entry (decision 0079), in the dock and in the menus of its groups */
+.emphasis {
+    font-weight: var(--panneau-sidebar-link-emphasis-weight, var(--panneau-font-weight-bold));
+}

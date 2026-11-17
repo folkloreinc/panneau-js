@@ -491,6 +491,7 @@ With `pages.home` set to the built-in `dashboard`, the home page is the widgets 
 ### Menus and the forbidden state
 
 - **Menus** show an entry when the user can reach its target: a resource with `viewAny`, a page without `view: false`. Groups left empty and extra separators are left out. A `link` entry has no abilities: a backend leaves it out of the definition of a user who can't follow it.
+- **Collapsible groups and emphasized entries** ([0079](decisions/0079-collapsible-groups-and-emphasized-entries.md)): a `group` with a label and `"collapsible": true` can be shown or hidden by the user, who the browser remembers; `"collapsed": true` starts it closed, unless it holds the current page. `"emphasis": true` on a `resource`, `page` or `link` shows its label in bold.
 - **The forbidden state** ([0046](decisions/0046-abilities-in-the-ui.md)) is a page of the app, in the shell, with a link to the home page. It shows on the list and show routes of a resource without `viewAny`, the create route of a resource without `create`, the route of a page with `view: false`, and when the request of a page answers `403`. The edit route of an item without `update: true` goes to its show route, or shows the forbidden state when the item can't be viewed either. `401` still goes to the login.
 
 ### Context

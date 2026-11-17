@@ -19,6 +19,8 @@ export interface NavLink {
     /** A Lucide icon name from the definition (`"icon": "file-text"`). */
     icon: string | undefined;
     target: NavTarget;
+    /** A main entry, shown in bold (`"emphasis": true`, decision 0079). Left out when false. */
+    emphasis?: true;
 }
 
 /** A titled group of links. */
@@ -29,6 +31,12 @@ export interface NavGroup {
     /** The icon the menu names, for the dock, where a group is a button. */
     icon: string | undefined;
     children: NavLink[];
+    /**
+     * The user can show or hide its links (decision 0079): only a group with a label. `collapsed`
+     * starts it closed. Both are left out when false.
+     */
+    collapsible?: true;
+    collapsed?: true;
 }
 
 export interface NavSeparator {
@@ -67,6 +75,11 @@ export function capitalize(label: string, locale?: string): string {
     return label.charAt(0).toLocaleUpperCase(locale) + label.slice(1);
 }
 
+/** `emphasis` of an entry, left out when false. */
+function emphasisOf(item: MenuItem): { emphasis?: true } {
+    return item.emphasis === true ? { emphasis: true } : {};
+}
+
 function toLinks(item: MenuItem, definition: Definition, basePath: string, key: string): NavLink[] {
     const resourceLink = (id: string, label?: string, icon?: string): NavLink[] => {
         const resource = definition.resources.find((candidate) => candidate.id === id);
@@ -81,6 +94,7 @@ function toLinks(item: MenuItem, definition: Definition, basePath: string, key: 
                 href: routePath({ name: 'resource.index', resource: id }, basePath),
                 icon: icon ?? resource.icon,
                 target: { kind: 'resource', resource: id },
+                ...(item.type === 'resource' ? emphasisOf(item) : {}),
             },
         ];
     };
@@ -111,6 +125,7 @@ function toLinks(item: MenuItem, definition: Definition, basePath: string, key: 
                     href: routePath({ name: 'page', page: item.page }, basePath),
                     icon: item.icon,
                     target: { kind: 'page', page: item.page },
+                    ...emphasisOf(item),
                 },
             ];
         }
@@ -124,6 +139,7 @@ function toLinks(item: MenuItem, definition: Definition, basePath: string, key: 
                           href: item.url,
                           icon: item.icon,
                           target: { kind: 'url', external: item.external === true },
+                          ...emphasisOf(item),
                       },
                   ]
                 : [];
@@ -155,7 +171,7 @@ function withoutExtraSeparators(entries: NavEntry[]): NavEntry[] {
  * page without one, but `home`, which the shell links to already. Resources the user can't list (`abilities.viewAny`), pages they can't open
  * (`abilities.view: false`) and entries of unknown types are left out, and so are the groups and
  * separators they leave empty (decision 0046). Groups keep one level: the links of nested groups
- * join their parent.
+ * join their parent. Groups can be collapsible and entries emphasized (decision 0079).
  */
 export function getNavigation(definition: Definition, basePath: string): NavEntry[] {
     const menu: MenuItem[] = definition.menus?.main ?? [
@@ -172,8 +188,21 @@ export function getNavigation(definition: Definition, basePath: string): NavEntr
         }
         if (item.type === 'group') {
             const children = toLinks(item, definition, basePath, key);
+            // A group without a label has no title to press: it can't be collapsed
+            const collapsible =
+                item.label !== undefined && (item.collapsible === true || item.collapsed === true);
             return children.length > 0
-                ? [{ type: 'group', key, label: item.label, icon: item.icon, children }]
+                ? [
+                      {
+                          type: 'group',
+                          key,
+                          label: item.label,
+                          icon: item.icon,
+                          children,
+                          ...(collapsible ? { collapsible: true } : {}),
+                          ...(collapsible && item.collapsed === true ? { collapsed: true } : {}),
+                      },
+                  ]
                 : [];
         }
         return toLinks(item, definition, basePath, key);

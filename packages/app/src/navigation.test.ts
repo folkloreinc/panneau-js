@@ -104,6 +104,52 @@ describe('getNavigation', () => {
         ]);
     });
 
+    it('keeps the collapsible groups and the emphasized entries (decision 0079)', () => {
+        const definition = parse(
+            createDefinition({
+                menus: {
+                    main: [
+                        { type: 'resource', resource: 'pages', emphasis: true },
+                        {
+                            type: 'group',
+                            label: 'Logs',
+                            collapsed: true,
+                            children: [{ type: 'resource', resource: 'authors' }],
+                        },
+                        {
+                            type: 'group',
+                            label: 'Links',
+                            collapsible: true,
+                            children: [
+                                { type: 'link', label: 'Site', url: '/', emphasis: true },
+                                { type: 'link', label: 'Docs', url: '/docs', emphasis: false },
+                            ],
+                        },
+                        // Without a label, there is no title to press
+                        {
+                            type: 'group',
+                            collapsible: true,
+                            children: [{ type: 'link', label: 'Help', url: '/help' }],
+                        },
+                    ],
+                },
+            }),
+        );
+        const entries = getNavigation(definition, '/');
+        expect(entries[0]).toMatchObject({ type: 'link', label: 'Pages', emphasis: true });
+        expect(entries[1]).toMatchObject({
+            type: 'group',
+            label: 'Logs',
+            collapsible: true,
+            collapsed: true,
+        });
+        expect(entries[2]).toMatchObject({ type: 'group', label: 'Links', collapsible: true });
+        expect(entries[2]).not.toHaveProperty('collapsed');
+        const links = entries[2]?.type === 'group' ? entries[2].children : [];
+        expect(links.map((link) => link.emphasis)).toEqual([true, undefined]);
+        expect(entries[3]).not.toHaveProperty('collapsible');
+    });
+
     it('leaves out the resources the user can’t list', () => {
         const input = createDefinition();
         input.resources = input.resources.map((resource) =>

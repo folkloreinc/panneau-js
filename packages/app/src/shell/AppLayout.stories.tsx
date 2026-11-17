@@ -24,7 +24,7 @@ const input: DefinitionInput = {
     locale: 'en',
     locales: ['en'],
     api: { baseUrl: '/api' },
-    resources: ['pages', 'articles', 'categories', 'authors'].map((id) => ({
+    resources: ['pages', 'articles', 'categories', 'authors', 'tags', 'redirects'].map((id) => ({
         id,
         label: { singular: id.slice(0, -1), plural: id },
         fields: [],
@@ -32,11 +32,13 @@ const input: DefinitionInput = {
     menus: {
         main: [
             {
+                // Collapsible, open: it holds the current page (decision 0079)
                 type: 'group',
                 label: 'Content',
+                collapsible: true,
                 children: [
                     { type: 'resource', resource: 'pages' },
-                    { type: 'resource', resource: 'articles' },
+                    { type: 'resource', resource: 'articles', emphasis: true },
                     { type: 'resource', resource: 'categories' },
                 ],
             },
@@ -44,6 +46,16 @@ const input: DefinitionInput = {
                 type: 'group',
                 label: 'People',
                 children: [{ type: 'resource', resource: 'authors' }],
+            },
+            {
+                // Rarely opened: closed until the user opens it
+                type: 'group',
+                label: 'Settings',
+                collapsed: true,
+                children: [
+                    { type: 'resource', resource: 'tags' },
+                    { type: 'resource', resource: 'redirects' },
+                ],
             },
             { type: 'separator' },
             { type: 'link', label: 'View the site', url: 'https://example.com', external: true },
@@ -102,6 +114,8 @@ const meta = {
     args: { onLogOut: fn() },
     beforeEach: () => {
         window.localStorage.removeItem('panneau:sidebar');
+        window.localStorage.removeItem('panneau:nav-group:Content');
+        window.localStorage.removeItem('panneau:nav-group:Settings');
     },
 } satisfies Meta<typeof Layout>;
 
@@ -115,6 +129,47 @@ export const Default: Story = {
         await expect(navigation.getByRole('link', { name: 'Articles' })).toHaveAttribute(
             'aria-current',
             'page',
+        );
+    },
+};
+
+/**
+ * Collapsible groups and an emphasized entry (decision 0079): "Settings" starts closed, "Content"
+ * starts open as it holds the current page, and "Articles" is bold. The browser remembers the
+ * groups the user opens or closes.
+ */
+export const CollapsibleGroups: Story = {
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const navigation = within(canvas.getByRole('navigation', { name: 'Main navigation' }));
+        const settings = navigation.getByRole('button', { name: 'Settings' });
+        await expect(settings).toHaveAttribute('aria-expanded', 'false');
+        // Hidden on screen too, not only for assistive technologies
+        const settingsLinks = navigation
+            .getByRole('link', { name: 'Tags', hidden: true })
+            .closest('ul');
+        await expect(settingsLinks).toHaveStyle({ display: 'none' });
+        await expect(navigation.getByRole('button', { name: 'Content' })).toHaveAttribute(
+            'aria-expanded',
+            'true',
+        );
+        // A group without `collapsible` keeps a plain title
+        await expect(navigation.queryByRole('button', { name: 'People' })).toBeNull();
+
+        await userEvent.click(settings);
+        await expect(settings).toHaveAttribute('aria-expanded', 'true');
+        await expect(navigation.getByRole('link', { name: 'Tags' })).toBeVisible();
+        await expect(window.localStorage.getItem('panneau:nav-group:Settings')).toBe('open');
+
+        // Closed again by the user, even though it was open
+        await userEvent.click(settings);
+        await expect(settings).toHaveAttribute('aria-expanded', 'false');
+        await expect(settingsLinks).toHaveStyle({ display: 'none' });
+        await expect(window.localStorage.getItem('panneau:nav-group:Settings')).toBe('closed');
+
+        const articles = navigation.getByRole('link', { name: 'Articles' });
+        await expect(Number(getComputedStyle(articles).fontWeight)).toBeGreaterThan(
+            Number(getComputedStyle(navigation.getByRole('link', { name: 'Pages' })).fontWeight),
         );
     },
 };
