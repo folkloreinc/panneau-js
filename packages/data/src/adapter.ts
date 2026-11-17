@@ -22,6 +22,7 @@ import type {
     TwoFactorStatus,
     User,
     WebAuthnOptions,
+    WidgetDataRequest,
 } from '@panneau/protocol';
 
 import type { PresignedUploads } from './uploads';
@@ -42,14 +43,11 @@ export interface SearchOptions extends RequestOptions {
     resources?: readonly string[];
 }
 
-/** Options of the data of a widget (`GET /dashboard/widgets/{widget}`). */
-export interface WidgetDataOptions extends RequestOptions {
-    /**
-     * The dashboard page of the widget, an id of `pages` (decision 0084). Defaults to `home`, the
-     * home page, whose request has no `page`.
-     */
-    page?: string;
-}
+/**
+ * Options of the data of a widget (`GET /dashboard/widgets/{widget}`): where it is, a dashboard
+ * page or the summary of a resource with the query of its list (decision 0084).
+ */
+export interface WidgetDataOptions extends RequestOptions, WidgetDataRequest {}
 
 export interface UpdateOptions extends RequestOptions {
     /**
@@ -291,7 +289,10 @@ export interface DataAdapter {
      * Optional: without it, `embed` fields keep the URL alone.
      */
     resolveEmbed?(url: string, options?: RequestOptions): Promise<EmbedValue>;
-    /** Data of a widget of a dashboard page, in the shape its type defines. */
+    /**
+     * Data of a widget of a dashboard page or of the summary of a resource, in the shape its type
+     * defines.
+     */
     getWidgetData(widget: string, options?: WidgetDataOptions): Promise<unknown>;
     /**
      * The count or the sum of the items of a list, with its filters and search, grouped by a

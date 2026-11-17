@@ -3255,16 +3255,47 @@
             ],
             "get": {
                 "operationId": "getWidgetData",
-                "description": "The data of a widget of a dashboard of the user, read as the user (decision 0064): the home page, or the dashboard page of `page` (decision 0084). The built-in widgets on a resource (`settings.resource`) have none: clients read the list or the aggregates of the resource. A widget that is not on that page of the user is a `404`; a `403` hides the widget.",
+                "description": "The data of a widget of a dashboard of the user, read as the user (decision 0064): the home page, the dashboard page of `page`, or the summary above the list of `resource`, with the filters and the search of the list (decision 0084). The built-in widgets on a resource (`settings.resource`) have none: clients read the list or the aggregates of the resource. A widget that is not on that page or in that summary of the user is a `404`; a `403` hides the widget. `page` and `resource` together are a `422`.",
                 "parameters": [
                     {
                         "name": "page",
                         "in": "query",
                         "required": false,
-                        "description": "The id of the dashboard page of the widget, in `pages`. Defaults to `home`, the home page, whose widgets are `pages.home.widgets` or `dashboard.widgets`.",
+                        "description": "The id of the dashboard page of the widget, in `pages`. Defaults to `home`, the home page, whose widgets are `pages.home.widgets` or `dashboard.widgets`. Not with `resource`.",
                         "schema": {
                             "type": "string",
                             "minLength": 1
+                        }
+                    },
+                    {
+                        "name": "resource",
+                        "in": "query",
+                        "required": false,
+                        "description": "The id of the resource whose summary (`summary.widgets`) holds the widget, instead of a page. The request then has the list's current filters and search (`filter`, `q`), unless the widget has `settings.followsList: false`; never its sort or paging.",
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    },
+                    {
+                        "name": "filter",
+                        "in": "query",
+                        "required": false,
+                        "style": "deepObject",
+                        "explode": true,
+                        "description": "`filter[status]=published`; `filter[tags][]=a&filter[tags][]=b` for any of several values; `filter[published_at][from]=2026-01-01&filter[published_at][to]=2026-01-31` for the inclusive bounds of a range filter (`date-range`), without the open end.",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "required": false,
+                        "description": "Search.",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 ],
@@ -3318,6 +3349,16 @@
                     },
                     "404": {
                         "description": "Not found.",
+                        "content": {
+                            "application/problem+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Problem"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid values: messages are in `errors`, keyed by dot path.",
                         "content": {
                             "application/problem+json": {
                                 "schema": {
@@ -5072,6 +5113,30 @@
                 "additionalProperties": {},
                 "description": "A type of the items of a resource (decision 0077): the items of a type have the fields of the resource and its own."
             },
+            "ResourceSummary": {
+                "type": "object",
+                "properties": {
+                    "widgets": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Widget"
+                        },
+                        "description": "The widgets of the summary for the user, in order, drawn above the list in the grid of a dashboard. Widgets on this resource get the list's current filters and search, unless `settings.followsList` is `false`. Widgets with data of their own are fed by `GET /dashboard/widgets/{widget}?resource={resource}`, with the filters and the search of the list."
+                    },
+                    "list": {
+                        "description": "`collapsed`: the resource opens on its summary, with its list folded under it behind \"Show the N items\". Without it, the list is shown under the summary.",
+                        "type": "string",
+                        "enum": [
+                            "collapsed"
+                        ]
+                    }
+                },
+                "required": [
+                    "widgets"
+                ],
+                "additionalProperties": {},
+                "description": "Widgets above the list of a resource, which follow its filters and its search (decision 0084)."
+            },
             "Resource": {
                 "type": "object",
                 "properties": {
@@ -5181,6 +5246,10 @@
                         "items": {
                             "$ref": "#/components/schemas/ResourceType"
                         }
+                    },
+                    "summary": {
+                        "description": "Widgets above the list, which follow its filters and its search (decision 0084).",
+                        "$ref": "#/components/schemas/ResourceSummary"
                     },
                     "settings": {
                         "type": "object",
@@ -5507,10 +5576,14 @@
                         "description": "With `resource`, for a `stat`: its `target` (a budget, a quota), in the unit of the value: minor units for a sum of `money`.",
                         "type": "number",
                         "exclusiveMinimum": 0
+                    },
+                    "followsList": {
+                        "description": "In the summary of a resource (decision 0084): `false` keeps the widget on the whole resource, without the list's current filters and search. Widgets on that resource, and widgets with data of their own, follow the list by default.",
+                        "type": "boolean"
                     }
                 },
                 "additionalProperties": {},
-                "description": "The settings of a widget: `resource`, `query`, `measure`, `group` and `target` for the built-in types on a resource, anything else for widgets of plugins."
+                "description": "The settings of a widget: `resource`, `query`, `measure`, `group` and `target` for the built-in types on a resource, `followsList` in a summary, anything else for widgets of plugins."
             },
             "Widget": {
                 "type": "object",

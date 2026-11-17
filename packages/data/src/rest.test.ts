@@ -377,6 +377,10 @@ describe('createRestAdapter', () => {
         await adapter.getWidgetData('pages-count');
         await adapter.getWidgetData('pages-count', { page: 'home' });
         await adapter.getWidgetData('sign ups', { page: 'activity log' });
+        await adapter.getWidgetData('health', {
+            resource: 'pages',
+            query: { filter: { status: 'draft' }, q: 'été' },
+        });
         await adapter.getResourceAggregate?.('pages', {
             filter: { status: 'draft', published_at: { from: '2026-10-01' } },
             q: 'été',
@@ -400,6 +404,7 @@ describe('createRestAdapter', () => {
             'GET /panneau/api/dashboard/widgets/pages-count',
             'GET /panneau/api/dashboard/widgets/pages-count',
             'GET /panneau/api/dashboard/widgets/sign%20ups?page=activity+log',
+            'GET /panneau/api/dashboard/widgets/health?resource=pages&filter%5Bstatus%5D=draft&q=%C3%A9t%C3%A9',
             'GET /panneau/api/resources/pages/aggregate?filter%5Bstatus%5D=draft&filter%5Bpublished_at%5D%5Bfrom%5D=2026-10-01&q=%C3%A9t%C3%A9&measure=sum%3Aprice&group=week%3Apublished_at',
         ]);
         expect(await requests[3]?.json()).toEqual({

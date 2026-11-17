@@ -239,6 +239,11 @@ export interface FilterRange {
 // @public
 export type FilterValue = string | number | boolean | Array<string | number | boolean> | FilterRange;
 
+// Warning: (ae-forgotten-export) The symbol "WidgetLike" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function followsList(widget: WidgetLike, resource: string): boolean;
+
 // @public
 export function formatContextHeader(values: Readonly<Record<string, string | null | undefined>>, names?: readonly string[]): string;
 
@@ -311,6 +316,14 @@ export function getResourceType<T extends {
     types?: readonly T[] | undefined;
 }, id: unknown): T | undefined;
 
+// Warning: (ae-forgotten-export) The symbol "SummariesOf" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function getSummaryResources(definition: SummariesOf): string[];
+
+// @public
+export function getSummaryWidgets(definition: SummariesOf, resource: string): Widget[];
+
 // @public
 export function getTypeFields<F>(resource: {
     fields: readonly F[];
@@ -323,8 +336,6 @@ export function getTypeFields<F>(resource: {
 // @public
 export function getValue(values: unknown, path: string): unknown;
 
-// Warning: (ae-forgotten-export) The symbol "WidgetLike" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function getWidgetResource(widget: WidgetLike): WidgetResource | null;
 
@@ -535,6 +546,26 @@ export type ReadSearchQueryResult = {
     errors: Record<string, string[]>;
 };
 
+// @public
+export function readWidgetDataQuery(params: URLSearchParams): ReadWidgetDataQueryResult;
+
+// @public
+export type ReadWidgetDataQueryResult = {
+    page: string;
+    resource?: undefined;
+    query?: undefined;
+    errors?: undefined;
+} | {
+    resource: string;
+    query: WidgetListQuery;
+    page?: undefined;
+    errors?: undefined;
+} | {
+    errors: Record<string, string[]>;
+    page?: undefined;
+    resource?: undefined;
+};
+
 // Warning: (ae-forgotten-export) The symbol "MediaTransform" needs to be exported by the entry point index.d.ts
 //
 // @public
@@ -620,6 +651,9 @@ export function toSearchParams(query: ListQuery): URLSearchParams;
 export function toSearchQueryParams(query: SearchQuery): URLSearchParams;
 
 // @public
+export function toWidgetDataParams(request?: WidgetDataRequest): URLSearchParams;
+
+// @public
 export const TWO_FACTOR_REQUIRED_PROBLEM_TYPE = "urn:panneau:problem:two-factor-required";
 
 // @public
@@ -649,6 +683,16 @@ export interface WidgetAggregate {
     group: string | null;
     measure: string;
 }
+
+// @public
+export interface WidgetDataRequest {
+    page?: string;
+    query?: WidgetListQuery;
+    resource?: string;
+}
+
+// @public
+export type WidgetListQuery = Pick<ListQuery, 'filter' | 'q'>;
 
 // @public
 export interface WidgetResource {

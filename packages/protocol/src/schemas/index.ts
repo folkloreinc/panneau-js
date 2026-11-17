@@ -75,7 +75,7 @@ import {
 import { actionJsonRules } from './jsonRules';
 import { LayoutNode } from './layout';
 import { Column, Filter, ListAggregates, ListCalendar, ListDefinition } from './list';
-import { Resource, ResourceFeatures, ResourceType } from './resource';
+import { Resource, ResourceFeatures, ResourceSummary, ResourceType } from './resource';
 import {
     DefinitionTheme,
     Theme,
@@ -141,6 +141,7 @@ export const namedSchemas = {
     Action,
     ResourceFeatures,
     ResourceType,
+    ResourceSummary,
     Resource,
     User,
     AuthProvider,

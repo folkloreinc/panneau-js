@@ -9,7 +9,12 @@ import {
     isBuiltInItemAction,
 } from '../constants';
 import { type ContextValues, contextBefore, parseContextHeader } from '../context';
-import { HOME_PAGE, getDashboardWidgets } from '../dashboards';
+import {
+    type WidgetListQuery,
+    getDashboardWidgets,
+    getSummaryWidgets,
+    readWidgetDataQuery,
+} from '../dashboards';
 import { getMediaLibraries } from '../libraries';
 import { type ListQuery, fromSearchParams, isFilterRange, matchesFilterRange } from '../query';
 import { ITEM_TYPE_KEY, getResourceType, getTypeFields, hasResourceTypes } from '../resourceTypes';
@@ -71,10 +76,12 @@ export interface MockBackendOptions {
      * The data of `GET /dashboard/widgets/{widget}?page={page}`, per widget id (decision 0064): the
      * data, a function that returns it for the current context and page, or a `Response` to answer
      * as is (a `403`, a slow or failing widget). It answers the widgets of every dashboard page
-     * (decision 0084), and those of the home page without `page`. Data that doesn't have the shape
-     * of a built-in type is a `500` problem that names the wrong keys, as a backend answers it.
-     * Widgets without data, built-in `stat` and `list` on a resource, and widgets that aren't on
-     * the page are a `404`.
+     * (decision 0084), and those of the home page without `page`, and with `?resource={resource}`,
+     * those of the summary of a resource, whose functions get the filters and the search of the
+     * list. Data that doesn't have the shape of a built-in type is a `500` problem that names the
+     * wrong keys, as a backend answers it. Widgets without data, built-in widgets on a resource, and
+     * widgets that aren't on the page or in the summary are a `404`; `page` and `resource` together
+     * are a `422`, and the summary of a resource that can't be listed a `403`.
      */
     widgets?: Record<string, MockWidget>;
     /**
@@ -96,8 +103,15 @@ export type MockWidget =
 export interface MockWidgetContext {
     /** The values of the context of the request. */
     context: ContextValues;
-    /** The page of the dashboard of the widget: `home` without `page` in the request. */
-    page: string;
+    /**
+     * The page of the dashboard of the widget: `home` without `page` in the request, `null` for a
+     * widget of a summary.
+     */
+    page: string | null;
+    /** The resource whose summary holds the widget, or `null` for a widget of a dashboard page. */
+    resource: string | null;
+    /** In a summary: the filters and the search of the list (`filter[…]`, `q`). Empty otherwise. */
+    query: WidgetListQuery;
     /** The current items of a resource, in the context. */
     items: (resource: string) => Item[];
 }
@@ -792,16 +806,35 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
         return values;
     };
     /** The definition for the values of the context: the `value` and `valueLabel` of each param. */
-    // A widget of the dashboard with data of its own (decision 0064)
+    // A widget with data of its own, of a dashboard page (decisions 0064 and 0084) or of the
+    // summary of a resource
     const answerWidget = async (
         id: string,
-        page: string,
+        params: URLSearchParams,
         values: ContextValues,
         inScope: (resource: string, list: Item[]) => Item[],
     ): Promise<Response> => {
-        const widget = getDashboardWidgets(definitionFor(values), page).find(
-            (candidate) => candidate.id === id,
-        );
+        const read = readWidgetDataQuery(params);
+        if (read.errors !== undefined) {
+            return problem(422, 'The given data was invalid.', {
+                type: 'urn:panneau:problem:validation',
+                errors: read.errors,
+            });
+        }
+        const current = definitionFor(values);
+        if (read.resource !== undefined) {
+            const summarized = current.resources.find(
+                (candidate) => candidate.id === read.resource,
+            );
+            if (summarized?.summary !== undefined && summarized.abilities?.viewAny === false) {
+                return problem(403, 'This resource can’t be listed.');
+            }
+        }
+        const widget = (
+            read.resource !== undefined
+                ? getSummaryWidgets(current, read.resource)
+                : getDashboardWidgets(current, read.page)
+        ).find((candidate) => candidate.id === id);
         const data = options.widgets?.[id];
         if (widget === undefined || getWidgetResource(widget) !== null || data === undefined) {
             return problem(404, 'Widget not found.');
@@ -810,7 +843,9 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             typeof data === 'function'
                 ? await data({
                       context: values,
-                      page,
+                      page: read.page ?? null,
+                      resource: read.resource ?? null,
+                      query: read.query ?? {},
                       items: (resource) => inScope(resource, store.get(resource) ?? []),
                   })
                 : data;
@@ -936,12 +971,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             segments[1] === 'widgets' &&
             method === 'GET'
         ) {
-            return answerWidget(
-                segments[2] ?? '',
-                url.searchParams.get('page') ?? HOME_PAGE,
-                context,
-                inScope,
-            );
+            return answerWidget(segments[2] ?? '', url.searchParams, context, inScope);
         }
         if (segments.length === 1 && segments[0] === 'search' && method === 'GET') {
             return search(url.searchParams, inScope);

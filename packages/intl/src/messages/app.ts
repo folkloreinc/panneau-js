@@ -569,4 +569,11 @@ export const appMessages = {
         id: 'panneau.app.widgetUntitled',
         defaultMessage: 'Item {id}',
     }),
+    summary: defineMessage({ id: 'panneau.app.summary', defaultMessage: 'Summary' }),
+    showList: defineMessage({ id: 'panneau.app.showList', defaultMessage: 'Show the list' }),
+    showListItems: defineMessage<{ count: number; singular: string; plural: string }>({
+        id: 'panneau.app.showListItems',
+        defaultMessage:
+            '{count, plural, =0 {Show the list} one {Show # {singular}} other {Show the # {plural}}}',
+    }),
 };

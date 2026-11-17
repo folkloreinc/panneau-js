@@ -82,10 +82,17 @@ export {
 export { isProblem } from '../problem';
 export { type PartialTheme, mergeThemes } from '../themes';
 export {
+    type ReadWidgetDataQueryResult,
+    type WidgetDataRequest,
+    type WidgetListQuery,
     DASHBOARD_COMPONENT,
     HOME_PAGE,
     getDashboardPages,
     getDashboardWidgets,
+    getSummaryResources,
+    getSummaryWidgets,
+    readWidgetDataQuery,
+    toWidgetDataParams,
 } from '../dashboards';
 export {
     type BuiltInWidgetType,
@@ -100,6 +107,7 @@ export {
     WIDGET_RESERVED_QUERY_PARAMS,
     WIDGET_SERIES_PERIODS,
     checkWidgetData,
+    followsList,
     getWidgetResource,
     isBuiltInWidgetType,
 } from '../widgets';

@@ -129,6 +129,7 @@ describe('@panneau/protocol/runtime', () => {
             'checkWidgetData',
             'contextBefore',
             'evaluateCondition',
+            'followsList',
             'formatContextHeader',
             'fromMinorUnits',
             'fromSearchParams',
@@ -147,6 +148,8 @@ describe('@panneau/protocol/runtime', () => {
             'getMediaLibraries',
             'getNestedShape',
             'getResourceType',
+            'getSummaryResources',
+            'getSummaryWidgets',
             'getTypeFields',
             'getValue',
             'getWidgetResource',
@@ -179,6 +182,7 @@ describe('@panneau/protocol/runtime', () => {
             'parseRatio',
             'readAggregateQuery',
             'readSearchQuery',
+            'readWidgetDataQuery',
             'renderedCropSize',
             'resolveLinkNewTab',
             'startOfPeriod',
@@ -186,6 +190,7 @@ describe('@panneau/protocol/runtime', () => {
             'toMinorUnits',
             'toSearchParams',
             'toSearchQueryParams',
+            'toWidgetDataParams',
         ]);
     });
 

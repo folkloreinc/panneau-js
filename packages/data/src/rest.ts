@@ -3,7 +3,6 @@ import {
     ActionRun,
     CONTEXT_HEADER,
     Definition,
-    HOME_PAGE,
     type ListQuery,
     PROBLEM_CONTENT_TYPE,
     type Problem,
@@ -11,6 +10,7 @@ import {
     toAggregateParams,
     toSearchParams,
     toSearchQueryParams,
+    toWidgetDataParams,
     validate,
 } from '@panneau/protocol';
 import type {
@@ -434,11 +434,12 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
             });
             return response.data;
         },
-        getWidgetData(widget, { signal, page = HOME_PAGE } = {}) {
+        getWidgetData(widget, { signal, ...request } = {}) {
+            // The home page's widgets are asked for without `page`, as before decision 0084
+            const query = toWidgetDataParams(request);
             return json<unknown>({
                 path: `/dashboard/widgets/${encode(widget)}`,
-                // The home page's widgets are asked for without `page`, as before decision 0084
-                ...(page !== HOME_PAGE && { query: new URLSearchParams({ page }) }),
+                ...(query.toString() !== '' && { query }),
                 signal,
             });
         },

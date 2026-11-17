@@ -1550,6 +1550,25 @@ export const Definition: z.ZodObject<{
             fields: z.ZodArray<Field>;
             abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
         }, z.core.$loose>>>;
+        summary: z.ZodOptional<z.ZodObject<{
+            widgets: z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                type: z.ZodString;
+                label: z.ZodOptional<z.ZodString>;
+                width: z.ZodOptional<z.ZodNumber>;
+                settings: z.ZodOptional<z.ZodObject<{
+                    resource: z.ZodOptional<z.ZodString>;
+                    query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                    measure: z.ZodOptional<z.ZodString>;
+                    group: z.ZodOptional<z.ZodString>;
+                    target: z.ZodOptional<z.ZodNumber>;
+                    followsList: z.ZodOptional<z.ZodBoolean>;
+                }, z.core.$loose>>;
+            }, z.core.$loose>>;
+            list: z.ZodOptional<z.ZodEnum<{
+                collapsed: "collapsed";
+            }>>;
+        }, z.core.$loose>>;
         settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     }, z.core.$loose>>;
     pages: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
@@ -1570,6 +1589,7 @@ export const Definition: z.ZodObject<{
                 measure: z.ZodOptional<z.ZodString>;
                 group: z.ZodOptional<z.ZodString>;
                 target: z.ZodOptional<z.ZodNumber>;
+                followsList: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>>;
         }, z.core.$loose>>>;
     }, z.core.$loose>>>;
@@ -1623,6 +1643,7 @@ export const Definition: z.ZodObject<{
                 measure: z.ZodOptional<z.ZodString>;
                 group: z.ZodOptional<z.ZodString>;
                 target: z.ZodOptional<z.ZodNumber>;
+                followsList: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>>;
         }, z.core.$loose>>;
     }, z.core.$loose>>;
@@ -2153,6 +2174,11 @@ export interface FilterRange {
 // @public
 export type FilterValue = string | number | boolean | Array<string | number | boolean> | FilterRange;
 
+// Warning: (ae-forgotten-export) The symbol "WidgetLike" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function followsList(widget: WidgetLike, resource: string): boolean;
+
 // @public
 export function formatContextHeader(values: Readonly<Record<string, string | null | undefined>>, names?: readonly string[]): string;
 
@@ -2223,6 +2249,14 @@ export function getResourceType<T extends {
     types?: readonly T[] | undefined;
 }, id: unknown): T | undefined;
 
+// Warning: (ae-forgotten-export) The symbol "SummariesOf" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function getSummaryResources(definition: SummariesOf): string[];
+
+// @public
+export function getSummaryWidgets(definition: SummariesOf, resource: string): Widget[];
+
 // @public
 export function getTypeFields<F>(resource: {
     fields: readonly F[];
@@ -2235,8 +2269,6 @@ export function getTypeFields<F>(resource: {
 // @public
 export function getValue(values: unknown, path: string): unknown;
 
-// Warning: (ae-forgotten-export) The symbol "WidgetLike" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function getWidgetResource(widget: WidgetLike): WidgetResource | null;
 
@@ -3774,6 +3806,25 @@ export const namedSchemas: {
         fields: z.ZodArray<typeof Field>;
         abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
     }, z.core.$loose>;
+    ResourceSummary: z.ZodObject<{
+        widgets: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            type: z.ZodString;
+            label: z.ZodOptional<z.ZodString>;
+            width: z.ZodOptional<z.ZodNumber>;
+            settings: z.ZodOptional<z.ZodObject<{
+                resource: z.ZodOptional<z.ZodString>;
+                query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                measure: z.ZodOptional<z.ZodString>;
+                group: z.ZodOptional<z.ZodString>;
+                target: z.ZodOptional<z.ZodNumber>;
+                followsList: z.ZodOptional<z.ZodBoolean>;
+            }, z.core.$loose>>;
+        }, z.core.$loose>>;
+        list: z.ZodOptional<z.ZodEnum<{
+            collapsed: "collapsed";
+        }>>;
+    }, z.core.$loose>;
     Resource: z.ZodObject<{
         id: z.ZodString;
         kind: z.ZodOptional<z.ZodString>;
@@ -4323,6 +4374,25 @@ export const namedSchemas: {
             fields: z.ZodArray<typeof Field>;
             abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
         }, z.core.$loose>>>;
+        summary: z.ZodOptional<z.ZodObject<{
+            widgets: z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                type: z.ZodString;
+                label: z.ZodOptional<z.ZodString>;
+                width: z.ZodOptional<z.ZodNumber>;
+                settings: z.ZodOptional<z.ZodObject<{
+                    resource: z.ZodOptional<z.ZodString>;
+                    query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                    measure: z.ZodOptional<z.ZodString>;
+                    group: z.ZodOptional<z.ZodString>;
+                    target: z.ZodOptional<z.ZodNumber>;
+                    followsList: z.ZodOptional<z.ZodBoolean>;
+                }, z.core.$loose>>;
+            }, z.core.$loose>>;
+            list: z.ZodOptional<z.ZodEnum<{
+                collapsed: "collapsed";
+            }>>;
+        }, z.core.$loose>>;
         settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     }, z.core.$loose>;
     User: z.ZodObject<{
@@ -4403,6 +4473,7 @@ export const namedSchemas: {
                 measure: z.ZodOptional<z.ZodString>;
                 group: z.ZodOptional<z.ZodString>;
                 target: z.ZodOptional<z.ZodNumber>;
+                followsList: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>>;
         }, z.core.$loose>>>;
     }, z.core.$loose>;
@@ -4412,6 +4483,7 @@ export const namedSchemas: {
         measure: z.ZodOptional<z.ZodString>;
         group: z.ZodOptional<z.ZodString>;
         target: z.ZodOptional<z.ZodNumber>;
+        followsList: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>;
     Widget: z.ZodObject<{
         id: z.ZodString;
@@ -4424,6 +4496,7 @@ export const namedSchemas: {
             measure: z.ZodOptional<z.ZodString>;
             group: z.ZodOptional<z.ZodString>;
             target: z.ZodOptional<z.ZodNumber>;
+            followsList: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>>;
     }, z.core.$loose>;
     Uploads: z.ZodObject<{
@@ -5205,6 +5278,25 @@ export const namedSchemas: {
                 fields: z.ZodArray<typeof Field>;
                 abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
             }, z.core.$loose>>>;
+            summary: z.ZodOptional<z.ZodObject<{
+                widgets: z.ZodArray<z.ZodObject<{
+                    id: z.ZodString;
+                    type: z.ZodString;
+                    label: z.ZodOptional<z.ZodString>;
+                    width: z.ZodOptional<z.ZodNumber>;
+                    settings: z.ZodOptional<z.ZodObject<{
+                        resource: z.ZodOptional<z.ZodString>;
+                        query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                        measure: z.ZodOptional<z.ZodString>;
+                        group: z.ZodOptional<z.ZodString>;
+                        target: z.ZodOptional<z.ZodNumber>;
+                        followsList: z.ZodOptional<z.ZodBoolean>;
+                    }, z.core.$loose>>;
+                }, z.core.$loose>>;
+                list: z.ZodOptional<z.ZodEnum<{
+                    collapsed: "collapsed";
+                }>>;
+            }, z.core.$loose>>;
             settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         }, z.core.$loose>>;
         pages: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
@@ -5225,6 +5317,7 @@ export const namedSchemas: {
                     measure: z.ZodOptional<z.ZodString>;
                     group: z.ZodOptional<z.ZodString>;
                     target: z.ZodOptional<z.ZodNumber>;
+                    followsList: z.ZodOptional<z.ZodBoolean>;
                 }, z.core.$loose>>;
             }, z.core.$loose>>>;
         }, z.core.$loose>>>;
@@ -5278,6 +5371,7 @@ export const namedSchemas: {
                     measure: z.ZodOptional<z.ZodString>;
                     group: z.ZodOptional<z.ZodString>;
                     target: z.ZodOptional<z.ZodNumber>;
+                    followsList: z.ZodOptional<z.ZodBoolean>;
                 }, z.core.$loose>>;
             }, z.core.$loose>>;
         }, z.core.$loose>>;
@@ -6115,6 +6209,7 @@ export const Page: z.ZodObject<{
             measure: z.ZodOptional<z.ZodString>;
             group: z.ZodOptional<z.ZodString>;
             target: z.ZodOptional<z.ZodNumber>;
+            followsList: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>>;
     }, z.core.$loose>>>;
 }, z.core.$loose>;
@@ -6231,6 +6326,26 @@ export type ReadSearchQueryResult = {
 } | {
     query?: undefined;
     errors: Record<string, string[]>;
+};
+
+// @public
+export function readWidgetDataQuery(params: URLSearchParams): ReadWidgetDataQueryResult;
+
+// @public
+export type ReadWidgetDataQueryResult = {
+    page: string;
+    resource?: undefined;
+    query?: undefined;
+    errors?: undefined;
+} | {
+    resource: string;
+    query: WidgetListQuery;
+    page?: undefined;
+    errors?: undefined;
+} | {
+    errors: Record<string, string[]>;
+    page?: undefined;
+    resource?: undefined;
 };
 
 // @public (undocumented)
@@ -6807,6 +6922,25 @@ export const Resource: z.ZodObject<{
         fields: z.ZodArray<typeof Field>;
         abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
     }, z.core.$loose>>>;
+    summary: z.ZodOptional<z.ZodObject<{
+        widgets: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            type: z.ZodString;
+            label: z.ZodOptional<z.ZodString>;
+            width: z.ZodOptional<z.ZodNumber>;
+            settings: z.ZodOptional<z.ZodObject<{
+                resource: z.ZodOptional<z.ZodString>;
+                query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                measure: z.ZodOptional<z.ZodString>;
+                group: z.ZodOptional<z.ZodString>;
+                target: z.ZodOptional<z.ZodNumber>;
+                followsList: z.ZodOptional<z.ZodBoolean>;
+            }, z.core.$loose>>;
+        }, z.core.$loose>>;
+        list: z.ZodOptional<z.ZodEnum<{
+            collapsed: "collapsed";
+        }>>;
+    }, z.core.$loose>>;
     settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
 }, z.core.$loose>;
 
@@ -6835,6 +6969,30 @@ export type ResourceFeatures = z.infer<typeof ResourceFeatures>;
 
 // @public
 export type ResourceInput = z.input<typeof Resource>;
+
+// @public (undocumented)
+export const ResourceSummary: z.ZodObject<{
+    widgets: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        type: z.ZodString;
+        label: z.ZodOptional<z.ZodString>;
+        width: z.ZodOptional<z.ZodNumber>;
+        settings: z.ZodOptional<z.ZodObject<{
+            resource: z.ZodOptional<z.ZodString>;
+            query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+            measure: z.ZodOptional<z.ZodString>;
+            group: z.ZodOptional<z.ZodString>;
+            target: z.ZodOptional<z.ZodNumber>;
+            followsList: z.ZodOptional<z.ZodBoolean>;
+        }, z.core.$loose>>;
+    }, z.core.$loose>>;
+    list: z.ZodOptional<z.ZodEnum<{
+        collapsed: "collapsed";
+    }>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type ResourceSummary = z.infer<typeof ResourceSummary>;
 
 // @public (undocumented)
 export const ResourceType: z.ZodObject<{
@@ -7363,6 +7521,9 @@ export function toSearchParams(query: ListQuery): URLSearchParams;
 export function toSearchQueryParams(query: SearchQuery): URLSearchParams;
 
 // @public
+export function toWidgetDataParams(request?: WidgetDataRequest): URLSearchParams;
+
+// @public
 export const TWO_FACTOR_REQUIRED_PROBLEM_TYPE = "urn:panneau:problem:two-factor-required";
 
 // @public (undocumented)
@@ -7534,6 +7695,7 @@ export const Widget: z.ZodObject<{
         measure: z.ZodOptional<z.ZodString>;
         group: z.ZodOptional<z.ZodString>;
         target: z.ZodOptional<z.ZodNumber>;
+        followsList: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>>;
 }, z.core.$loose>;
 
@@ -7566,6 +7728,13 @@ export const WidgetBadge: z.ZodObject<{
 
 // @public (undocumented)
 export type WidgetBadge = z.infer<typeof WidgetBadge>;
+
+// @public
+export interface WidgetDataRequest {
+    page?: string;
+    query?: WidgetListQuery;
+    resource?: string;
+}
 
 // @public
 export const widgetDataSchemas: {
@@ -7616,6 +7785,9 @@ export const widgetDataSchemas: {
 };
 
 // @public
+export type WidgetListQuery = Pick<ListQuery, 'filter' | 'q'>;
+
+// @public
 export interface WidgetResource {
     aggregate: WidgetAggregate | null;
     params: URLSearchParams;
@@ -7633,6 +7805,7 @@ export const WidgetSettings: z.ZodObject<{
     measure: z.ZodOptional<z.ZodString>;
     group: z.ZodOptional<z.ZodString>;
     target: z.ZodOptional<z.ZodNumber>;
+    followsList: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$loose>;
 
 // @public (undocumented)

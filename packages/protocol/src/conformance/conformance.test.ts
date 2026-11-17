@@ -41,6 +41,20 @@ function createBackend() {
     if (list !== undefined) {
         list.aggregates = { sum: ['price'], groupBy: ['status'], dates: ['published_at'] };
     }
+    // A summary above the list (decision 0084): a widget on the resource, one with data of its own.
+    const pages = definition.resources[0];
+    if (pages !== undefined) {
+        pages.summary = {
+            widgets: [
+                {
+                    id: 'pages-by-status',
+                    type: 'breakdown',
+                    settings: { resource: 'pages', group: 'status' },
+                },
+                { id: 'health', type: 'stat' },
+            ],
+        };
+    }
     definition.resources.push({
         id: 'settings',
         label: { singular: 'setting', plural: 'settings' },
@@ -134,6 +148,7 @@ function createBackend() {
             visits: { period: 'week', points: [{ date: '2026-10-05', value: 4 }], total: 4 },
             map: { pins: [] },
             signups: { value: 3 },
+            health: ({ query }) => ({ value: query.q !== undefined ? 0 : 1 }),
         },
         auth: { users: [{ email: 'ada@example.com', password: 'secret' }] },
         context: {
@@ -326,6 +341,51 @@ describe('runConformance', () => {
         expect(check?.status).toBe('failed');
         expect(check?.issues).toContain(
             'Widget "visits" on the page "activity": expected status 404, got 200.',
+        );
+    });
+
+    it('asks for the widgets of a summary with its resource, and only there', async () => {
+        const backend = createBackend();
+        const requested: string[] = [];
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: (input, init) => {
+                requested.push(input);
+                return backend.fetch(input, init);
+            },
+        });
+        expect(report.checks.find(({ id }) => id === 'dashboard.widgets')?.status).toBe('passed');
+        expect(report.checks.find(({ id }) => id === 'dashboard.widgets.unknown')?.status).toBe(
+            'passed',
+        );
+        expect(requested).toContain(
+            'http://panneau.test/panneau/api/dashboard/widgets/health?resource=pages',
+        );
+        expect(requested).toContain(
+            'http://panneau.test/panneau/api/dashboard/widgets/health?resource=pages&page=home',
+        );
+    });
+
+    it('fails a backend that ignores the resource of a summary', async () => {
+        const backend = createBackend();
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            // A backend that reads every widget as one of the home page
+            fetch: (input, init) =>
+                backend.fetch(
+                    input.includes('/dashboard/widgets/')
+                        ? input.replace(/\?resource=.*$/, '')
+                        : input,
+                    init,
+                ),
+        });
+        expect(report.checks.find(({ id }) => id === 'dashboard.widgets')?.issues).toContain(
+            'Widget "health" of the summary of "pages": expected status 200, got 404.',
+        );
+        expect(
+            report.checks.find(({ id }) => id === 'dashboard.widgets.unknown')?.issues,
+        ).toContain(
+            'Widget "health" of the summary of "pages" with both a page and a resource: expected status 422, got 404.',
         );
     });
 

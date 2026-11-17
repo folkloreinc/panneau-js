@@ -15,6 +15,7 @@ import type { Definition } from '@panneau/protocol';
 import type { EmbedValue } from '@panneau/protocol';
 import type { FieldCheckRequest } from '@panneau/protocol';
 import type { FieldCheckResponse } from '@panneau/protocol';
+import { FilterValue } from '@panneau/protocol';
 import type { Item } from '@panneau/protocol';
 import { JSX } from 'react';
 import { ListQuery } from '@panneau/protocol';
@@ -38,6 +39,7 @@ import { UseQueryOptions } from '@tanstack/react-query';
 import { UseQueryResult } from '@tanstack/react-query';
 import type { User } from '@panneau/protocol';
 import type { WebAuthnOptions } from '@panneau/protocol';
+import { WidgetDataRequest } from '@panneau/protocol';
 
 // @public
 export function DataAdapterProvider(input: DataAdapterProviderProps): JSX.Element;
@@ -89,7 +91,16 @@ export const queryKeys: {
     twoFactor: () => readonly ["panneau", "account", "two-factor"];
     passkeys: () => readonly ["panneau", "account", "passkeys"];
     widget: (widget: string, input?: WidgetKeyOptions) => readonly ["panneau", "dashboard", "widgets", string, {
-        readonly page: string;
+        resource: string;
+        query: {
+            q?: string | undefined;
+            filter?: Record<string, FilterValue> | undefined;
+        };
+        page?: undefined;
+    } | {
+        page: string;
+        resource?: undefined;
+        query?: undefined;
     }];
     actionRuns: () => readonly ["panneau", "actions", "runs"];
     actionRun: (id: string) => readonly ["panneau", "actions", "runs", string];
@@ -183,9 +194,7 @@ export function useWidgetData(widget: string, input?: QueryHookOptions<unknown, 
 export function widgetDataQueryOptions(adapter: DataAdapter, widget: string, input?: WidgetKeyOptions): DataQueryOptions<unknown, ReturnType<typeof queryKeys.widget>>;
 
 // @public
-export interface WidgetKeyOptions {
-    page?: string;
-}
+export type WidgetKeyOptions = WidgetDataRequest;
 
 // (No @packageDocumentation comment for this package)
 

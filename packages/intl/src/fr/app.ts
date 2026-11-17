@@ -198,4 +198,8 @@ export const appFr: Record<string, string> = {
     'panneau.app.widgetSeeAll': 'Tout voir',
     'panneau.app.widgetTotal': 'Total',
     'panneau.app.widgetUntitled': 'Élément {id}',
+    'panneau.app.summary': 'Synthèse',
+    'panneau.app.showList': 'Afficher la liste',
+    'panneau.app.showListItems':
+        '{count, plural, =0 {Afficher la liste} one {Afficher # {singular}} other {Afficher les # {plural}}}',
 };
