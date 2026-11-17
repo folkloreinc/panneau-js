@@ -67,6 +67,11 @@ export interface MediaGridProps {
     onDetails: (id: string) => void;
     accept: readonly string[] | null;
     maxSize: number | null;
+    /**
+     * Whether the grid picks: a checkbox or a radio in each caption. `MediaLibrary` picks nothing,
+     * and its selected card only has the outline of the media whose details are shown.
+     */
+    pickable?: boolean;
 }
 
 /**
@@ -84,6 +89,7 @@ export function MediaGrid({
     onDetails,
     accept,
     maxSize,
+    pickable = true,
 }: MediaGridProps) {
     const intl = usePanneauIntl();
     const refusals = new Map(
@@ -137,13 +143,17 @@ export function MediaGrid({
                                 {/* The checkbox is in the caption, off the image. The item itself
                                     is announced as selected: the checkbox is only seen. */}
                                 <span className={styles.cardTitle}>
-                                    <span
-                                        className={multiple ? styles.checkbox : styles.radio}
-                                        data-selected={isSelected || undefined}
-                                        aria-hidden
-                                    >
-                                        {isSelected ? <Check size={12} strokeWidth={3} /> : null}
-                                    </span>
+                                    {pickable ? (
+                                        <span
+                                            className={multiple ? styles.checkbox : styles.radio}
+                                            data-selected={isSelected || undefined}
+                                            aria-hidden
+                                        >
+                                            {isSelected ? (
+                                                <Check size={12} strokeWidth={3} />
+                                            ) : null}
+                                        </span>
+                                    ) : null}
                                     <span className={styles.cardName}>{item.label}</span>
                                 </span>
                                 {/* On phones, where the badges don't fit on the thumbnail. */}

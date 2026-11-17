@@ -451,6 +451,7 @@ export function useMediaLibrary({
             }}
             accept={accept}
             maxSize={maxSize}
+            pickable={selectable}
         />
     );
 

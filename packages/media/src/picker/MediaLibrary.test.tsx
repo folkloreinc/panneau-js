@@ -38,6 +38,11 @@ describe('MediaLibrary', () => {
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
         expect(within(library()).queryByRole('button', { name: 'Select' })).toBeNull();
         expect(within(library()).queryByText('No media selected')).toBeNull();
+        // Nothing to pick: no checkbox or radio in the captions, even on the media shown.
+        const autumn = await card('autumn forest');
+        await userEvent.click(autumn);
+        const caption = within(autumn).getByText('autumn forest').parentElement;
+        expect(caption?.querySelector('svg, [aria-hidden]')).toBeNull();
     });
 
     it('draws the cards of its skeleton while the library loads', () => {
