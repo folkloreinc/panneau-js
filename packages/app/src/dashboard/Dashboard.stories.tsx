@@ -152,6 +152,10 @@ export const SeriesByMonth: Story = {
     },
     play: async ({ canvasElement }) => {
         await expect(await within(canvasElement).findAllByText('Oct 2026')).not.toHaveLength(0);
+        // The full month in the table
+        await expect(
+            within(canvasElement).getByRole('row', { name: 'October 2026 280' }),
+        ).toBeInTheDocument();
     },
 };
 

@@ -1128,6 +1128,10 @@ export const uiMessages: {
     commandHintMove: PanneauMessage<Record<never, never>>;
     commandHintOpen: PanneauMessage<Record<never, never>>;
     commandHintClose: PanneauMessage<Record<never, never>>;
+    chartPoint: PanneauMessage<    {
+    label: string;
+    value: string;
+    }>;
 };
 
 // @public

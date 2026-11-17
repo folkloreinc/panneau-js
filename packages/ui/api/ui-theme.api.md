@@ -90,7 +90,7 @@ export const componentTokens: Readonly<{
     icon: Readonly<Record<"panneau-icon-stroke-width", string>>;
     inline: Readonly<Record<"panneau-inline-gap", string>>;
     input: Readonly<Record<"panneau-input-radius" | "panneau-input-padding-x" | "panneau-input-border-width" | "panneau-input-bg" | "panneau-input-border-color" | "panneau-input-border-color-hover" | "panneau-input-border-color-focus" | "panneau-input-focus-ring" | "panneau-input-focus-ring-invalid", string>>;
-    'line-chart': Readonly<Record<"panneau-line-chart-height" | "panneau-line-chart-label-font-size" | "panneau-line-chart-line-width" | "panneau-line-chart-dot-size" | "panneau-line-chart-area-opacity", string>>;
+    'line-chart': Readonly<Record<"panneau-line-chart-height" | "panneau-line-chart-label-font-size" | "panneau-line-chart-line-width" | "panneau-line-chart-dot-size" | "panneau-line-chart-area-opacity" | "panneau-line-chart-grid-color" | "panneau-line-chart-reveal-duration", string>>;
     'list-box': Readonly<Record<"panneau-list-box-padding" | "panneau-list-box-item-radius" | "panneau-list-box-item-padding-y" | "panneau-list-box-item-padding-y-described" | "panneau-list-box-item-padding-x" | "panneau-list-box-item-bg-hover", string>>;
     menu: Readonly<Record<"panneau-menu-header-font-size" | "panneau-menu-header-font-weight" | "panneau-menu-header-color" | "panneau-menu-header-text-transform" | "panneau-menu-header-letter-spacing" | "panneau-menu-footer-font-size" | "panneau-menu-footer-color" | "panneau-menu-media-size" | "panneau-menu-media-size-described" | "panneau-menu-media-radius" | "panneau-menu-item-bg-selected", string>>;
     meter: Readonly<Record<"panneau-meter-height" | "panneau-meter-radius" | "panneau-meter-track-bg", string>>;

@@ -134,12 +134,21 @@ function formatPointDate(
     intl: ReturnType<typeof usePanneauIntl>,
     date: string,
     period: SeriesWidgetData['period'],
+    length: 'long' | 'short',
 ): string {
     const value = new Date(`${date}T00:00:00Z`);
     return period === 'month'
-        ? intl.formatDate(value, { month: 'short', year: 'numeric', timeZone: 'UTC' })
-        : intl.formatDate(value, { month: 'short', day: 'numeric', timeZone: 'UTC' });
+        ? intl.formatDate(value, { month: length, year: 'numeric', timeZone: 'UTC' })
+        : intl.formatDate(value, {
+              month: length,
+              day: 'numeric',
+              ...(length === 'long' && { year: 'numeric' }),
+              timeZone: 'UTC',
+          });
 }
+
+/** Past this number of points, a series shows the value under the pointer: its days can't be read from the scale. */
+const SERIES_INTERACTIVE_POINTS = 31;
 
 /** The options of the numbers of a widget: amounts in a currency, for a sum of `money`. */
 function formatOf(currency: string | undefined): FormatNumberOptions | undefined {
@@ -185,10 +194,12 @@ function SeriesBody({ widget, data, currency }: BodyProps<SeriesWidgetData>) {
                 <LineChart
                     label={widget.label ?? intl.formatMessage(appMessages.widgetTotal)}
                     points={data.points.map((point) => ({
-                        label: formatPointDate(intl, point.date, data.period),
+                        label: formatPointDate(intl, point.date, data.period, 'long'),
+                        shortLabel: formatPointDate(intl, point.date, data.period, 'short'),
                         value: point.value,
                     }))}
                     formatValue={(value) => intl.formatNumber(value, format)}
+                    isInteractive={data.points.length > SERIES_INTERACTIVE_POINTS}
                 />
             </div>
         </Card>
