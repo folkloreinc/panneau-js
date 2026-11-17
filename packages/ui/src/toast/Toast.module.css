@@ -70,9 +70,9 @@
     box-shadow: var(--panneau-toast-shadow, var(--panneau-shadow-lg));
     outline: none;
     transition:
-        transform var(--panneau-duration) ease-out,
-        opacity var(--panneau-duration) ease-out;
-    animation: rise calc(2 * var(--panneau-duration)) ease-out;
+        transform var(--panneau-duration) var(--panneau-ease-out),
+        opacity var(--panneau-duration) var(--panneau-ease-out);
+    animation: rise calc(2 * var(--panneau-duration)) var(--panneau-ease-out);
 }
 
 .region[data-placement='top-end'] .toast {
@@ -114,7 +114,7 @@
 
 .region li:nth-child(n + 2) > .toast > * {
     opacity: 0;
-    transition: opacity var(--panneau-duration) ease-out;
+    transition: opacity var(--panneau-duration) var(--panneau-ease-out);
 }
 
 .region:is(:hover, :focus-within, [data-hovered], [data-focused]) {

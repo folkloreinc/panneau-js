@@ -137,7 +137,12 @@
     --panneau-focus-width: 2px;
 
     /* Motion and layers */
+    /* Durations: quick for controls and overlays, slow for panels that move across the page. */
     --panneau-duration: 150ms;
+    --panneau-duration-slow: 200ms;
+    /* Easings: things that appear decelerate into place, things that leave accelerate away. */
+    --panneau-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --panneau-ease-in: cubic-bezier(0.55, 0, 1, 0.45);
     --panneau-z-overlay: 1000;
     --panneau-z-toast: 1100;
 
@@ -383,6 +388,7 @@
 @media (prefers-reduced-motion: reduce) {
     :where(.root) {
         --panneau-duration: 0ms;
+        --panneau-duration-slow: 0ms;
     }
 }
 

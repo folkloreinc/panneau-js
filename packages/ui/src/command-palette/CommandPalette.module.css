@@ -14,7 +14,7 @@
 }
 
 .overlay[data-entering] {
-    animation: fade var(--panneau-duration) ease-out;
+    animation: fade var(--panneau-duration) var(--panneau-ease-out);
 }
 
 .modal {
@@ -25,7 +25,7 @@
 }
 
 .modal[data-entering] {
-    animation: rise var(--panneau-duration) ease-out;
+    animation: rise var(--panneau-duration) var(--panneau-ease-out);
 }
 
 .dialog {

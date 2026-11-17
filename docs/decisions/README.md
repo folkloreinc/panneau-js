@@ -85,3 +85,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0077](0077-resource-types.md)                                    | Resource types                                                                | Proposed                          |
 | [0078](0078-the-app-owns-its-page.md)                             | The app owns its page                                                         | Proposed                          |
 | [0079](0079-collapsible-groups-and-emphasized-entries.md)         | Collapsible groups and emphasized entries in menus                            | Proposed                          |
+| [0080](0080-motion-tokens-and-leaving-items.md)                   | Motion tokens, and items that fade out of a list                              | Proposed                          |

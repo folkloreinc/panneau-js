@@ -35,6 +35,7 @@ import { InlineCell } from './inline/InlineCell';
 import { getInlineField } from './inline/editable';
 import { builtInLayouts } from './layouts/builtIn';
 import { getCalendarTimeZone } from './layouts/calendarDays';
+import { useLeavingItems, withLeavingItems } from './leaving';
 import { messages } from './messages';
 import { countSelected, getPageSelection, isItemSelected } from './selection';
 import { ColumnMenu } from './toolbar/ColumnMenu';
@@ -272,6 +273,8 @@ export function ListView({
     const pageItems = (items ?? []).map((item) =>
         saved[item.id]?.base === item ? (saved[item.id]?.item ?? item) : item,
     );
+    // Items that left the list (deleted, or out of its filters) fade out before they go.
+    const leaving = useLeavingItems(items, JSON.stringify(query));
     const count = total ?? pageItems.length;
     const sort = query.sort ?? [];
 
@@ -592,7 +595,7 @@ export function ListView({
         }
         return (
             <Layout
-                items={pageItems}
+                items={withLeavingItems(pageItems, leaving.leaving)}
                 columns={columns}
                 renderValue={renderValue}
                 getItemLabel={getItemLabel}
@@ -625,6 +628,7 @@ export function ListView({
                 }
                 isCurrent={(item) => item.id === currentItemId}
                 isHighlighted={(item) => item.id === highlightedItemId}
+                isLeaving={leaving.isLeaving}
                 selectable={showsChecks}
                 isSelected={(item) => isItemSelected(selection, item.id)}
                 onToggle={(item) => list.toggle(item.id)}

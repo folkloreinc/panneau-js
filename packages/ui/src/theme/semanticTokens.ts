@@ -107,6 +107,9 @@ export const SEMANTIC_TOKENS = [
     'panneau-target-size',
     'panneau-focus-width',
     'panneau-duration',
+    'panneau-duration-slow',
+    'panneau-ease-out',
+    'panneau-ease-in',
     'panneau-z-overlay',
     'panneau-z-toast',
 ] as const;
