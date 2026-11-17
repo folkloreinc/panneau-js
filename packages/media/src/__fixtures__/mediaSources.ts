@@ -246,7 +246,7 @@ function sortValue(item: PickerMedia, key: string): number | string {
 }
 
 export interface MemorySourceOptions extends Partial<
-    Pick<MediaSource, 'accept' | 'maxSize' | 'filters' | 'sorts' | 'fields' | 'canCreate'>
+    Pick<MediaSource, 'accept' | 'maxSize' | 'types' | 'filters' | 'sorts' | 'fields' | 'canCreate'>
 > {
     id: string;
     label: string;
