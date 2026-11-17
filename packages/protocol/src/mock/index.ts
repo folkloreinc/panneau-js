@@ -70,7 +70,7 @@ export interface MockBackendOptions {
      * The data of `GET /dashboard/widgets/{widget}?page={page}`, per widget id (decision 0064): the
      * data, a function that returns it for the current context and page, or a `Response` to answer
      * as is (a `403`, a slow or failing widget). It answers the widgets of every dashboard page
-     * (decision 0082), and those of the home page without `page`. Data that doesn't have the shape
+     * (decision 0084), and those of the home page without `page`. Data that doesn't have the shape
      * of a built-in type is a `500` problem that names the wrong keys, as a backend answers it.
      * Widgets without data, built-in `stat` and `list` on a resource, and widgets that aren't on
      * the page are a `404`.

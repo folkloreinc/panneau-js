@@ -86,7 +86,7 @@ function createBackend() {
             { id: 'map', type: 'map' },
         ],
     };
-    // A dashboard page of its own (decision 0082).
+    // A dashboard page of its own (decision 0084).
     definition.pages = {
         activity: {
             component: 'dashboard',

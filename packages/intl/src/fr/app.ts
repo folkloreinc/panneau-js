@@ -127,6 +127,8 @@ export const appFr: Record<string, string> = {
         '{scheme, select, light {Claire} dark {Sombre} other {Celle du système}}',
     'panneau.app.colorScheme':
         'Apparence : {scheme, select, light {claire} dark {sombre} other {celle du système}}',
+    'panneau.app.language': 'Langue',
+    'panneau.app.languageButton': 'Langue : {language}',
     'panneau.app.home': 'Accueil',
     'panneau.app.welcome': 'Bienvenue, {name}.',
     'panneau.app.create': 'Créer : {resource}',

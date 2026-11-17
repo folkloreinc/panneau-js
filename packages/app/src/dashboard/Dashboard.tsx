@@ -34,7 +34,7 @@ import { type WidgetContent, useWidgetContent } from './widgetContent';
 export interface DashboardProps {
     definition: Definition;
     basePath: string;
-    /** The id of the page in `pages` (decision 0082): `home`, the home page, by default. */
+    /** The id of the page in `pages` (decision 0084): `home`, the home page, by default. */
     page?: string;
 }
 
@@ -370,7 +370,7 @@ function PageDashboard({
 }
 
 /**
- * The built-in `dashboard` page (decisions 0064 and 0082): the widgets of its page, in a grid.
+ * The built-in `dashboard` page (decisions 0064 and 0084): the widgets of its page, in a grid.
  * The home page has the name of the app and a welcome above them, and the cards of the resources
  * without widgets. Another page has its label above them, and says when it has none.
  */

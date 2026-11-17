@@ -273,13 +273,8 @@ describe('the app shell', () => {
         const user = userEvent.setup();
         window.history.replaceState(null, '', '/panneau/resources/authors');
         renderApp();
+        // The title of an item opens its form (decision 0082)
         await user.click(await screen.findByRole('link', { name: 'Ada' }));
-        await user.click(
-            within(await screen.findByRole('region', { name: 'Details of the author' })).getByRole(
-                'link',
-                { name: 'Edit' },
-            ),
-        );
         await waitFor(() =>
             expect(window.location.pathname).toBe('/panneau/resources/authors/1/edit'),
         );
@@ -292,8 +287,8 @@ describe('the app shell', () => {
             expect(window.location.pathname).toBe('/panneau/resources/authors/1/edit'),
         );
         await user.click(within(dialog).getByRole('button', { name: 'Leave' }));
-        // Back on the panel the form was opened from
-        await waitFor(() => expect(window.location.pathname).toBe('/panneau/resources/authors/1'));
+        // Back on the list the form was opened from
+        await waitFor(() => expect(window.location.pathname).toBe('/panneau/resources/authors'));
     });
 
     it('names the tab after the page, and moves focus to its title', async () => {
@@ -567,7 +562,7 @@ describe('the app shell', () => {
         });
     });
 
-    it('opens a dashboard page from a menu, with its own widgets (decision 0082)', async () => {
+    it('opens a dashboard page from a menu, with its own widgets (decision 0084)', async () => {
         const user = userEvent.setup();
         renderApp({
             pages: {
@@ -671,6 +666,7 @@ describe('the app shell', () => {
                     id: 'pages',
                     label: { singular: 'page', plural: 'pages' },
                     itemTitle: 'title',
+                    open: 'panel',
                     fields: [{ name: 'title', type: 'text', label: 'Title' }],
                     actions: [
                         { id: 'show', kind: 'link', scope: ['item'] },
@@ -702,13 +698,12 @@ describe('the app shell', () => {
         ).not.toBeInTheDocument();
     });
 
-    it('opens the items of a resource with `"open": "edit"` in their form, and redirects its show route', async () => {
+    it('opens the items of a resource in their form by default (decision 0082)', async () => {
         const user = userEvent.setup();
         const authors = {
             id: 'authors',
             label: { singular: 'author', plural: 'authors' },
             itemTitle: 'name',
-            open: 'edit',
             fields: [{ name: 'name', type: 'text', label: 'Name' }],
             actions: [
                 { id: 'show', kind: 'link', scope: ['item'] },
@@ -731,7 +726,7 @@ describe('the app shell', () => {
         expect(await screen.findByRole('textbox', { name: 'Name' })).toHaveValue('Ada');
     });
 
-    it('opens an item that can’t be updated in its panel, even with `"open": "edit"`', async () => {
+    it('opens an item that can’t be updated in its panel, even when items open in their form', async () => {
         const user = userEvent.setup();
         window.history.replaceState(null, '', '/panneau/resources/authors');
         renderApp(
@@ -741,7 +736,6 @@ describe('the app shell', () => {
                         id: 'authors',
                         label: { singular: 'author', plural: 'authors' },
                         itemTitle: 'name',
-                        open: 'edit',
                         fields: [{ name: 'name', type: 'text', label: 'Name' }],
                         actions: [{ id: 'edit', kind: 'link', scope: ['item'] }],
                     },
@@ -776,6 +770,7 @@ describe('the app shell', () => {
                 {
                     id: 'pages',
                     label: { singular: 'page', plural: 'pages' },
+                    open: 'panel',
                     fields: [{ name: 'title', type: 'text' }],
                     actions: [
                         { id: 'edit', kind: 'link', route: 'editor', scope: ['item'] },
@@ -875,6 +870,7 @@ describe('the app shell', () => {
                         id: 'pages',
                         label: { singular: 'page', plural: 'pages' },
                         itemTitle: 'title',
+                        open: 'panel',
                         fields: [{ name: 'title', type: 'text', label: 'Title' }],
                         actions: [
                             {
@@ -1145,9 +1141,10 @@ describe('the app shell', () => {
             renderApp({}, [], (backend) => {
                 const [ada] = backend.items('authors');
                 if (ada !== undefined) {
-                    ada.abilities = { ...ada.abilities, view: false };
+                    ada.abilities = { ...ada.abilities, view: false, update: false };
                 }
             });
+            // It can't be updated: no redirect, and the error of its panel doesn't hide the page
             const panel = await screen.findByRole('region', { name: 'Details of the author' });
             expect(
                 await within(panel).findByText('You can’t view this author.'),
@@ -1164,6 +1161,7 @@ describe('the app shell', () => {
                         id: 'authors',
                         label: { singular: 'author', plural: 'authors' },
                         itemTitle: 'name',
+                        open: 'panel',
                         fields: [
                             {
                                 name: 'name',
@@ -1392,6 +1390,7 @@ describe('resource types (decision 0077)', () => {
                     id: 'posts',
                     label: { singular: 'post', plural: 'posts' },
                     itemTitle: 'title',
+                    open: 'panel',
                     fields: [{ name: 'title', type: 'text', label: 'Title' }],
                     types: postTypes,
                 },

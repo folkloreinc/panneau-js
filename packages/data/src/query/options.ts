@@ -116,7 +116,7 @@ export function searchQueryOptions(
 /**
  * Query options of the data of a widget of a dashboard, with data of its own (decision 0064): the
  * shape of its type, unchecked. Widgets on a resource read its list instead. `page` is the
- * dashboard page of the widget (decision 0082), the home page without it.
+ * dashboard page of the widget (decision 0084), the home page without it.
  */
 export function widgetDataQueryOptions(
     adapter: DataAdapter,

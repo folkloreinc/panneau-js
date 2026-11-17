@@ -1,6 +1,6 @@
 /**
  * The dashboard of the home page (decision 0064): the built-in widgets, on a resource or with data
- * of their own, on the mock backend. And a dashboard page of its own (decision 0082).
+ * of their own, on the mock backend. And a dashboard page of its own (decision 0084).
  */
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -188,7 +188,7 @@ export const NoWidgets: Story = {
 };
 
 /**
- * A dashboard page of its own, "Activity" (decision 0082): its label above its widgets, without the
+ * A dashboard page of its own, "Activity" (decision 0084): its label above its widgets, without the
  * welcome of the home page. A menu links to it as to any page.
  */
 export const DashboardPage: Story = {

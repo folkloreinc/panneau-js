@@ -44,7 +44,7 @@ export interface SearchOptions extends RequestOptions {
 /** Options of the data of a widget (`GET /dashboard/widgets/{widget}`). */
 export interface WidgetDataOptions extends RequestOptions {
     /**
-     * The dashboard page of the widget, an id of `pages` (decision 0082). Defaults to `home`, the
+     * The dashboard page of the widget, an id of `pages` (decision 0084). Defaults to `home`, the
      * home page, whose request has no `page`.
      */
     page?: string;

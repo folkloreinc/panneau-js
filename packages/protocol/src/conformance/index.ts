@@ -1179,7 +1179,7 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
         },
     );
 
-    // The dashboards (decisions 0064 and 0082): the data of the widgets with data of their own on
+    // The dashboards (decisions 0064 and 0084): the data of the widgets with data of their own on
     // each dashboard page, the lists that feed the widgets on a resource, and a widget that isn't
     // on a page.
     const dashboardPages = () => {
@@ -1315,7 +1315,7 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                     `An unknown widget ${page !== HOME_PAGE ? `of the page "${page}"` : 'of the home page'}`,
                 );
             }
-            // Page by page (decision 0082): a widget asked for on a page that doesn't exist, or on
+            // Page by page (decision 0084): a widget asked for on a page that doesn't exist, or on
             // another dashboard page than its own. Widgets with data of their own first: the others
             // are a 404 on any page.
             const all = widgets().sort(

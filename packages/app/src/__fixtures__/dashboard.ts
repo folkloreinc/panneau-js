@@ -25,7 +25,7 @@ export const DASHBOARD_WIDGETS: Widget[] = [
     { id: 'closed', type: 'list', label: 'Closed contests' },
 ];
 
-/** The widgets of "Activity", a dashboard page of its own (decision 0082). */
+/** The widgets of "Activity", a dashboard page of its own (decision 0084). */
 export const ACTIVITY_WIDGETS: Widget[] = [
     {
         id: 'accepted',
@@ -51,7 +51,6 @@ export function createDashboardDefinition(
                 id: 'entries',
                 label: { singular: 'entry', plural: 'entries' },
                 itemTitle: 'title',
-                open: 'edit',
                 fields: [
                     { name: 'title', type: 'text' },
                     {

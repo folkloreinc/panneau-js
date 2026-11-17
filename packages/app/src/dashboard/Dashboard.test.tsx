@@ -210,7 +210,7 @@ describe('Dashboard', () => {
         );
     });
 
-    describe('a dashboard page (decision 0082)', () => {
+    describe('a dashboard page (decision 0084)', () => {
         it('draws the widgets of its page under its label, without the welcome', async () => {
             const requests: string[] = [];
             renderDashboard({ page: 'activity', requests });

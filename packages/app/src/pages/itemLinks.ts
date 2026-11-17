@@ -5,8 +5,9 @@ import type { Abilities, Action, Resource, RouteReference } from '@panneau/proto
 import { routePath } from '../routes';
 
 /**
- * Whether an item opens in its form (`"open": "edit"` of its resource, decision 0040). An item
- * that can't be updated (without `abilities.update: true`) still opens in the panel of its details.
+ * Whether an item opens in its form (`open` of its resource, `edit` by default, decision 0082). An
+ * item that can't be updated (without `abilities.update: true`) still opens in the panel of its
+ * details.
  */
 export function opensInForm(resource: Resource, abilities: Abilities | undefined): boolean {
     return getOpenMode(resource) === 'edit' && abilities?.update === true;

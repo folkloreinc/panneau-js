@@ -216,6 +216,25 @@ export function createOpenApiDocument(): JsonObject {
                     },
                 },
             },
+            '/locale/{locale}': {
+                parameters: [pathParameter('locale', 'A `locale` of `interfaceLocales`.')],
+                get: {
+                    operationId: 'switchLocale',
+                    summary:
+                        'Optional: switches the interface to a locale of `interfaceLocales`, when their `url` is here (decision 0083). The app comes with a full navigation, and the next page load gets the definition in that locale.',
+                    parameters: [
+                        queryParameter(
+                            'next',
+                            'Where to go next: a local path under the base path of the app. Another one is ignored.',
+                            { type: 'string' },
+                        ),
+                    ],
+                    responses: {
+                        302: { description: 'To `next`, or to the base path of the app.' },
+                        ...problems(401, 404),
+                    },
+                },
+            },
             '/context/{param}/options': {
                 parameters: [pathParameter('param', 'The name of a param of the context.')],
                 get: {
@@ -878,7 +897,7 @@ export function createOpenApiDocument(): JsonObject {
                 get: {
                     operationId: 'getWidgetData',
                     description:
-                        'The data of a widget of a dashboard of the user, read as the user (decision 0064): the home page, or the dashboard page of `page` (decision 0082). The built-in `stat` and `list` on a resource (`settings.resource`) have none: clients read the list of the resource. A widget that is not on that page of the user is a `404`; a `403` hides the widget.',
+                        'The data of a widget of a dashboard of the user, read as the user (decision 0064): the home page, or the dashboard page of `page` (decision 0084). The built-in `stat` and `list` on a resource (`settings.resource`) have none: clients read the list of the resource. A widget that is not on that page of the user is a `404`; a `403` hides the widget.',
                     parameters: [
                         queryParameter(
                             'page',

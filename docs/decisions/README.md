@@ -33,7 +33,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0025](0025-presigned-uploads.md)                                 | Direct uploads to storage, separate from media                                | Amended by 0026                   |
 | [0026](0026-media-libraries.md)                                   | Media libraries are resources                                                 | Amended by 0027                   |
 | [0027](0027-media-picker.md)                                      | A media picker on a source that products can implement                        | Amended by 0080                   |
-| [0028](0028-item-panel.md)                                        | The show route opens an item's details in a panel next to its list            | Amended by 0040, 0041, 0074       |
+| [0028](0028-item-panel.md)                                        | The show route opens an item's details in a panel next to its list            | Amended by 0040, 0041, 0074, 0082 |
 | [0029](0029-go-to-palette.md)                                     | A "Go to…" command palette that products can use without the app              | Accepted                          |
 | [0030](0030-search-parameters-and-scope.md)                       | The parameters of the global search, its errors, a scope per resource         | Accepted                          |
 | [0031](0031-image-editor-and-image-field.md)                      | An image editor with tools, and an `image` field                              | Accepted                          |
@@ -45,7 +45,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0037](0037-login-page-token-and-logout.md)                       | The login page of the app, a login with a token, and the logout               | Accepted                          |
 | [0038](0038-pages-with-params.md)                                 | Pages with params                                                             | Accepted                          |
 | [0039](0039-cursor-pagination.md)                                 | Lists paged with cursors                                                      | Accepted                          |
-| [0040](0040-row-links-and-open-mode.md)                           | Built-in item actions by abilities, and what opens an item                    | Amended by 0060                   |
+| [0040](0040-row-links-and-open-mode.md)                           | Built-in item actions by abilities, and what opens an item                    | Amended by 0060, 0082             |
 | [0041](0041-groups-in-item-details.md)                            | The panel of an item shows the values of its groups                           | Accepted                          |
 | [0042](0042-list-view-columns-and-remembered-view.md)             | The view of a list: chosen columns, and the view the browser remembers        | Accepted                          |
 | [0043](0043-inline-editing.md)                                    | Inline editing in lists, one field at a time                                  | Accepted                          |
@@ -87,3 +87,5 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0079](0079-collapsible-groups-and-emphasized-entries.md)         | Collapsible groups and emphasized entries in menus                            | Proposed                          |
 | [0080](0080-a-media-library-page.md)                              | A media library page, the picker's library outside a dialog                   | Proposed                          |
 | [0081](0081-motion-tokens-and-leaving-items.md)                   | Motion tokens, and items that fade out of a list                              | Proposed                          |
+| [0082](0082-items-open-in-their-form.md)                          | Items open in their form, and the panel is a choice of the resource           | Proposed                          |
+| [0083](0083-a-language-switcher-in-the-shell.md)                  | A language switcher in the shell                                              | Proposed                          |

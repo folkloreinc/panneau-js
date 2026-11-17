@@ -249,7 +249,7 @@ export function lintDefinition(definition: DefinitionInput): ValidationIssue[] {
 }
 
 /**
- * The dashboards (decision 0082): the widgets of each page whose component is the built-in
+ * The dashboards (decision 0084): the widgets of each page whose component is the built-in
  * `dashboard`, and those of `dashboard`, the shorthand of the home page, unless `pages.home` has
  * its own, which can't come with them. Only a `dashboard` page has widgets.
  */

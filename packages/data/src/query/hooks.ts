@@ -105,7 +105,7 @@ export function useSearch(
 /**
  * The data of a widget of a dashboard with data of its own (decision 0064), unchecked: check it
  * with `checkWidgetData()` of `@panneau/protocol/runtime`. `page` is the dashboard page of the
- * widget (decision 0082), the home page without it. A `403` fails with a `ForbiddenError`: the
+ * widget (decision 0084), the home page without it. A `403` fails with a `ForbiddenError`: the
  * widget is hidden.
  */
 export function useWidgetData(

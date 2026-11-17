@@ -10,7 +10,7 @@ export const DASHBOARD_COMPONENT = 'dashboard';
 type DashboardsOf = Pick<DefinitionInput, 'pages' | 'dashboard'>;
 
 /**
- * The widgets of the dashboard of a page, in order (decisions 0064 and 0082): the `widgets` of a
+ * The widgets of the dashboard of a page, in order (decisions 0064 and 0084): the `widgets` of a
  * page whose component is the built-in `dashboard`. The home page is the dashboard of `pages.home`,
  * and `definition.dashboard` is its shorthand: its widgets are `pages.home.widgets` when set, else
  * those of `definition.dashboard`. Empty for any other page.

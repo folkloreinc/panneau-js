@@ -232,6 +232,10 @@ export const appMessages: {
     colorScheme: PanneauMessage<    {
     scheme: string;
     }>;
+    language: PanneauMessage<Record<never, never>>;
+    languageButton: PanneauMessage<    {
+    language: string;
+    }>;
     home: PanneauMessage<Record<never, never>>;
     welcome: PanneauMessage<    {
     name: string;

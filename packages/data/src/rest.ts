@@ -436,7 +436,7 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
         getWidgetData(widget, { signal, page = HOME_PAGE } = {}) {
             return json<unknown>({
                 path: `/dashboard/widgets/${encode(widget)}`,
-                // The home page's widgets are asked for without `page`, as before decision 0082
+                // The home page's widgets are asked for without `page`, as before decision 0084
                 ...(page !== HOME_PAGE && { query: new URLSearchParams({ page }) }),
                 signal,
             });

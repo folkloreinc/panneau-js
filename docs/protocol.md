@@ -26,6 +26,10 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     "name": "Mon site",
     "locale": "fr",
     "locales": ["fr", "en"],
+    "interfaceLocales": [
+        { "locale": "fr", "label": "Français", "url": "/panneau/api/locale/fr" },
+        { "locale": "en", "label": "English", "url": "/panneau/api/locale/en" },
+    ],
     "api": { "baseUrl": "/panneau/api" },
     "resources": [/* Resource */],
     "pages": { "home": { "component": "dashboard" } },
@@ -38,6 +42,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 }
 ```
 
+- **Languages.** `locales` are the languages of the content, those of localized fields. `interfaceLocales`, optional, are the languages the user can switch the interface to, `locale` among them, each with its `label` in its own language. With two or more, the shell has a language switcher, with the user's settings ([0083](decisions/0083-a-language-switcher-in-the-shell.md)): choosing one is a full navigation to its `url`, with `next` (the path and query of the page), and the backend comes back to it, the definition then in the new locale. `GET /locale/{locale}` is an optional endpoint for that `url`: it redirects to `next`, a local path under the base path, and answers `404` for a locale it doesn't offer.
 - **The user's profile.** Without `auth.account`, the user's name links to their item in the resource of users: `user.resource`, or the resource `users` without it. A backend sets `user.resource` to `null` when the user has no item they can edit there, such as a user outside the resource's scope: the app then shows no link to a profile, instead of a page that isn't found.
 
 ### Resource
@@ -47,7 +52,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     "id": "pages",
     "kind": null, // "media" for a media library
     "label": { "singular": "page", "plural": "pages" },
-    "open": "panel", // where an item's title goes: "panel" (the default) or "edit"
+    "open": "edit", // where an item's title goes: "edit" (the default) or "panel"
     "itemActions": ["show", "edit", "duplicate", "delete"], // the built-in item actions shown, the default
     "fields": [ /* Field */ ],
     "form": { "layout": [ /* LayoutNode */ ] },
@@ -416,7 +421,7 @@ Built-in actions use reserved ids:
 
 | Action      | Ability     | What it does                                                     |
 | ----------- | ----------- | ---------------------------------------------------------------- |
-| `show`      | `view`      | links to the item: its panel, or its form with `"open": "edit"`  |
+| `show`      | `view`      | links to the item: its form, or its panel with `"open": "panel"` |
 | `edit`      | `update`    | links to the item's form                                         |
 | `duplicate` | `duplicate` | `POST /resources/{resource}/{id}/duplicate`, then opens the copy |
 | `delete`    | `delete`    | the `delete` action, after a confirmation, also on selections    |
@@ -431,7 +436,7 @@ Built-in actions use reserved ids:
 - The ids `show` and `edit` are only for `link` actions. Every other action needs a `label`. The JSON Schema checks both.
 - Other declared actions are for the resource's own operations, and keep their rules: a `link` is shown unless the item says `false`, other actions when the item lists their id.
 
-**What opens an item.** `open` on a resource says where an item's title goes, in its list and wherever the app links to the item: `panel` (the default), the show route with its details next to the list ([decisions/0028](decisions/0028-item-panel.md)); `edit`, its form. With `edit`, the show route redirects to the edit route, and `show` is left out. An item without `abilities.update: true` still opens in the panel. Clients treat a value they don't know as `panel`.
+**What opens an item.** `open` on a resource says where an item's title goes, in its list and wherever the app links to the item ([decisions/0082](decisions/0082-items-open-in-their-form.md)): `edit` (the default), its form; `panel`, the show route with its details next to the list ([decisions/0028](decisions/0028-item-panel.md)), for items read more than edited, or shown with their preview. With `edit`, the show route redirects to the edit route, and `show` is left out. An item without `abilities.update: true` still opens in the panel. Clients treat a value they don't know as `edit`.
 
 **Layouts.** `layouts` lists those a list offers, the first being the default. Clients build in `table`, `cards`, `gallery` and `calendar`, and leave out those they can't show ([decisions/0044](decisions/0044-gallery-and-calendar.md)):
 
@@ -459,7 +464,7 @@ Built-in actions use reserved ids:
 
 ### Dashboard
 
-A page whose component is the built-in `dashboard` is a dashboard: its `widgets`, the user's, in order ([decisions/0064](decisions/0064-dashboard-widgets.md), [0082](decisions/0082-overviews.md)). Only a `dashboard` page has `widgets`. With `pages.home` set to the built-in `dashboard`, the home page is the widgets of `pages.home.widgets`, or of `dashboard.widgets`, its shorthand, which existing definitions use:
+A page whose component is the built-in `dashboard` is a dashboard: its `widgets`, the user's, in order ([decisions/0064](decisions/0064-dashboard-widgets.md), [0084](decisions/0084-overviews.md)). Only a `dashboard` page has `widgets`. With `pages.home` set to the built-in `dashboard`, the home page is the widgets of `pages.home.widgets`, or of `dashboard.widgets`, its shorthand, which existing definitions use:
 
 ```jsonc
 "dashboard": {
@@ -958,6 +963,7 @@ With `auth.mode = "external"`, the frontend only calls `GET /auth/session` and s
 | `GET /search?q=&limit=&resources=`        | results grouped by resource: `{ "data": [ { "resource": "pages", "items": [...], "total": 34 } ] }` |
 | `GET /embeds?url=`                        | what a URL embeds, for `embed` fields: `{ "data": EmbedValue }`, or a `422` when it can't embed it  |
 | `GET /dashboard/widgets/{widget}?page=`   | the data of a widget of a [dashboard](#dashboard) page of the user, `home` without `page`           |
+| `GET /locale/{locale}?next=`              | optional: switches the interface to a locale of `interfaceLocales`, then redirects to `next`        |
 | `POST /resources/{resource}/{id}/preview` | sends the unsaved values; returns `{ "url": "…", "expiresAt": "…" }` for iframe previews            |
 
 Global search ([decisions/0029](decisions/0029-go-to-palette.md)):

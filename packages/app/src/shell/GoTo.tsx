@@ -2,6 +2,7 @@ import {
     Clock,
     File,
     House,
+    Languages,
     Link2,
     List,
     Monitor,
@@ -38,6 +39,7 @@ import {
     usePanneauIntl,
 } from '@panneau/ui';
 
+import { getInterfaceLocales } from '../interfaceLocales';
 import { type NavLink, capitalize, getNavigation } from '../navigation';
 import { getItemTitle } from '../pages/itemTitle';
 import { readRecentItems, useRecentScope } from '../recentItems';
@@ -63,6 +65,8 @@ export interface GoToProps {
     onToggleSidebar?: () => void;
     colorScheme: ColorSchemePreference;
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
+    /** Switches the interface to a locale of `interfaceLocales` (decision 0083). */
+    onLocaleChange?: ((locale: string) => void) | undefined;
 }
 
 function navIcon(link: NavLink): IconComponent {
@@ -102,6 +106,7 @@ export function GoTo({
     onToggleSidebar,
     colorScheme,
     onColorSchemeChange,
+    onLocaleChange,
 }: GoToProps) {
     const intl = usePanneauIntl();
     const plugins = usePlugins();
@@ -241,6 +246,14 @@ export function GoTo({
             icon: SCHEME_ICONS[scheme],
             onAction: () => onColorSchemeChange(scheme),
         })),
+        ...(onLocaleChange !== undefined ? getInterfaceLocales(definition) : [])
+            .filter(({ locale: other }) => other !== locale)
+            .map(({ locale: other, label }) => ({
+                id: `locale-${other}`,
+                label: intl.formatMessage(appMessages.languageButton, { language: label }),
+                icon: Languages,
+                onAction: () => onLocaleChange?.(other),
+            })),
     ];
 
     const searchIn: CommandPaletteItem[] = searchEnabled
