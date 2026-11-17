@@ -78,6 +78,19 @@ export const Auth = z.looseObject({
     }),
 });
 
+export const InterfaceLocale = z
+    .looseObject({
+        locale: z.string().min(2).meta({ description: 'BCP 47 locale of the interface.' }),
+        label: z.string().meta({
+            description: 'The name of the language in that language, such as "Français".',
+        }),
+        url: z.string().min(1).meta({
+            description:
+                'Where the browser goes to switch to this locale, with a full navigation. The app adds `next`, the path and query to come back to (decision 0083).',
+        }),
+    })
+    .meta({ description: 'A language the user can switch the interface to.' });
+
 export const MenuItem = z
     .looseObject({
         type: z.string().min(1).meta({
@@ -211,6 +224,10 @@ export const Definition = z
             .array(z.string().min(2))
             .min(1)
             .meta({ description: 'Locales of localized content fields.' }),
+        interfaceLocales: z.array(InterfaceLocale).optional().meta({
+            description:
+                'The languages of the interface, `locale` among them: with two or more, the shell has a switcher (decision 0083). Not the locales of the content, which are `locales`.',
+        }),
         api: z.looseObject({ baseUrl: z.string() }),
         resources: z.array(Resource),
         pages: z.record(z.string(), Page).optional(),
@@ -269,6 +286,7 @@ export type User = z.infer<typeof User>;
 export type AuthProvider = z.infer<typeof AuthProvider>;
 export type AuthToken = z.infer<typeof AuthToken>;
 export type Auth = z.infer<typeof Auth>;
+export type InterfaceLocale = z.infer<typeof InterfaceLocale>;
 export type MenuItem = z.infer<typeof MenuItem>;
 export type Page = z.infer<typeof Page>;
 export type ContextOption = z.infer<typeof ContextOption>;

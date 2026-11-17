@@ -24,6 +24,8 @@ export interface DockLayoutProps {
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
     /** Logs the user out. Without it, the user's menu has no "Log out". */
     onLogOut?: () => void;
+    /** Switches the interface to a locale of `interfaceLocales` (decision 0083). */
+    onLocaleChange?: ((locale: string) => void) | undefined;
     children?: ReactNode;
 }
 
@@ -43,6 +45,7 @@ export function DockLayout({
     colorScheme,
     onColorSchemeChange,
     onLogOut,
+    onLocaleChange,
     children,
 }: DockLayoutProps) {
     const intl = usePanneauIntl();
@@ -89,6 +92,7 @@ export function DockLayout({
                     colorScheme={colorScheme}
                     onColorSchemeChange={onColorSchemeChange}
                     onLogOut={onLogOut}
+                    onLocaleChange={onLocaleChange}
                     onGoTo={openGoTo}
                     className={styles.dock}
                 />
@@ -100,6 +104,7 @@ export function DockLayout({
                 onOpenChange={setGoToOpen}
                 colorScheme={colorScheme}
                 onColorSchemeChange={onColorSchemeChange}
+                onLocaleChange={onLocaleChange}
             />
         </div>
     );

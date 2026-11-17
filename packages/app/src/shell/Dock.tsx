@@ -15,6 +15,7 @@ import {
 } from '@panneau/ui';
 
 import { cx } from '../cx';
+import { getInterfaceLocales } from '../interfaceLocales';
 import {
     type NavEntry,
     type NavGroup,
@@ -40,6 +41,11 @@ export interface DockProps {
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
     /** Logs the user out. Without it, the user's menu has no "Log out". */
     onLogOut?: () => void;
+    /**
+     * Switches the interface to a locale of `interfaceLocales` (decision 0083). Without it, or
+     * with fewer than two, the user's menu has no "Language".
+     */
+    onLocaleChange?: ((locale: string) => void) | undefined;
     /** Opens the "Go to…" palette. Without it, the dock has no such button. */
     onGoTo?: () => void;
     className?: string;
@@ -101,9 +107,10 @@ function GroupItem({ group, route }: { group: NavGroup & { label: string }; rout
 /**
  * The navigation of the shell at the bottom of the window (decision 0076): the entries of the
  * `main` menu, each group as a menu that opens upwards, then "Go to…", the queued action runs and
- * the user's menu. From the `lg` width of the root, a raised pill in the middle; below it, a bar
- * of tabs, with the first entries and "More" for the others, and "Go to…" and the action runs left
- * to the bar at the top. It renders inside an `ActionRunnerProvider`.
+ * the user's menu, with the appearance and the language (decision 0083). From the `lg` width of
+ * the root, a raised pill in the middle; below it, a bar of tabs, with the first entries and "More"
+ * for the others, and "Go to…" and the action runs left to the bar at the top. It renders inside an
+ * `ActionRunnerProvider`.
  */
 export function Dock({
     definition,
@@ -112,6 +119,7 @@ export function Dock({
     colorScheme,
     onColorSchemeChange,
     onLogOut,
+    onLocaleChange,
     onGoTo,
     className,
 }: DockProps) {
@@ -138,6 +146,7 @@ export function Dock({
         }
     }
 
+    const locales = onLocaleChange !== undefined ? getInterfaceLocales(definition) : [];
     const user = definition.user ?? null;
     const profilePath = getProfilePath(definition, basePath);
     const currentPath = route.name !== 'not-found' ? routePath(route, basePath) : null;
@@ -293,6 +302,27 @@ export function Dock({
                             </MenuItem>
                         ))}
                     </MenuSection>
+                    {locales.length > 0 ? (
+                        <MenuSection
+                            title={intl.formatMessage(appMessages.language)}
+                            selectionMode="single"
+                            disallowEmptySelection
+                            // Prefixed: the ids of a menu are unique, and a locale could be "dark"
+                            selectedKeys={[`locale-${definition.locale}`]}
+                            onSelectionChange={(keys) => {
+                                const [key] = keys === 'all' ? [] : [...keys];
+                                if (typeof key === 'string' && key.startsWith('locale-')) {
+                                    onLocaleChange?.(key.slice('locale-'.length));
+                                }
+                            }}
+                        >
+                            {locales.map(({ locale, label }) => (
+                                <MenuItem key={locale} id={`locale-${locale}`} textValue={label}>
+                                    <span lang={locale}>{label}</span>
+                                </MenuItem>
+                            ))}
+                        </MenuSection>
+                    ) : null}
                     {onLogOut !== undefined ? <MenuSeparator /> : null}
                     {onLogOut !== undefined ? (
                         <MenuSection aria-label={intl.formatMessage(appMessages.logOut)}>
