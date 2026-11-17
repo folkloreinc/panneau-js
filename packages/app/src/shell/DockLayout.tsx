@@ -24,7 +24,7 @@ export interface DockLayoutProps {
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
     /** Logs the user out. Without it, the user's menu has no "Log out". */
     onLogOut?: () => void;
-    /** Switches the interface to a locale of `interfaceLocales` (decision 0082). */
+    /** Switches the interface to a locale of `interfaceLocales` (decision 0083). */
     onLocaleChange?: ((locale: string) => void) | undefined;
     children?: ReactNode;
 }

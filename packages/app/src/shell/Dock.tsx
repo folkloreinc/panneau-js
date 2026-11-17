@@ -42,7 +42,7 @@ export interface DockProps {
     /** Logs the user out. Without it, the user's menu has no "Log out". */
     onLogOut?: () => void;
     /**
-     * Switches the interface to a locale of `interfaceLocales` (decision 0082). Without it, or
+     * Switches the interface to a locale of `interfaceLocales` (decision 0083). Without it, or
      * with fewer than two, the user's menu has no "Language".
      */
     onLocaleChange?: ((locale: string) => void) | undefined;
@@ -107,9 +107,10 @@ function GroupItem({ group, route }: { group: NavGroup & { label: string }; rout
 /**
  * The navigation of the shell at the bottom of the window (decision 0076): the entries of the
  * `main` menu, each group as a menu that opens upwards, then "Go to…", the queued action runs and
- * the user's menu, with the appearance and the language (decision 0082). From the `lg` width of the root, a raised pill in the middle; below it, a bar
- * of tabs, with the first entries and "More" for the others, and "Go to…" and the action runs left
- * to the bar at the top. It renders inside an `ActionRunnerProvider`.
+ * the user's menu, with the appearance and the language (decision 0083). From the `lg` width of
+ * the root, a raised pill in the middle; below it, a bar of tabs, with the first entries and "More"
+ * for the others, and "Go to…" and the action runs left to the bar at the top. It renders inside an
+ * `ActionRunnerProvider`.
  */
 export function Dock({
     definition,

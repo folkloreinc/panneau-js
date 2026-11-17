@@ -12,6 +12,7 @@ export function createDefinitionInput(): DefinitionInput {
                 id: 'pages',
                 label: { singular: 'page', plural: 'pages' },
                 itemTitle: 'title',
+                open: 'panel',
                 fields: [
                     { name: 'slug', type: 'slug', createOnly: true },
                     {

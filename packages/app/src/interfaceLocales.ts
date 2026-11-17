@@ -1,7 +1,7 @@
 import type { Definition, InterfaceLocale } from '@panneau/protocol';
 
 /**
- * The languages of the switcher of the shell (decision 0082): the definition's `interfaceLocales`,
+ * The languages of the switcher of the shell (decision 0083): the definition's `interfaceLocales`,
  * or none when there's only one.
  */
 export function getInterfaceLocales(definition: Definition): InterfaceLocale[] {

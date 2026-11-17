@@ -138,7 +138,7 @@ export interface SidebarProps {
     /** Logs the user out. Without it, the sidebar has no "Log out" button. */
     onLogOut?: () => void;
     /**
-     * Switches the interface to a locale of `interfaceLocales` (decision 0082). Without it, or
+     * Switches the interface to a locale of `interfaceLocales` (decision 0083). Without it, or
      * with fewer than two, the sidebar has no language button.
      */
     onLocaleChange?: ((locale: string) => void) | undefined;
@@ -150,8 +150,9 @@ export interface SidebarProps {
 /**
  * The main navigation, as a column: the site, the current context (decision 0045), the links of
  * the `main` menu of the definition, the notification area of queued action runs, and the user,
- * with the buttons of the appearance, of the language (decision 0082) and of the logout. Collapsed, it is a rail of icons, as in
- * the sidebars of recent browsers. It renders inside an `ActionRunnerProvider`.
+ * with the buttons of the appearance, of the language (decision 0083) and of the logout. Collapsed,
+ * it is a rail of icons, as in the sidebars of recent browsers. It renders inside an
+ * `ActionRunnerProvider`.
  */
 export function Sidebar({
     definition,

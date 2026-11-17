@@ -65,7 +65,7 @@ describe('withNext()', () => {
     });
 });
 
-describe('the language switcher (decision 0082)', () => {
+describe('the language switcher (decision 0083)', () => {
     beforeEach(() => {
         window.history.replaceState(null, '', '/panneau/resources/pages?q=news');
         window.localStorage.clear();

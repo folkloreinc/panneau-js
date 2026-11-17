@@ -65,7 +65,7 @@ export interface GoToProps {
     onToggleSidebar?: () => void;
     colorScheme: ColorSchemePreference;
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
-    /** Switches the interface to a locale of `interfaceLocales` (decision 0082). */
+    /** Switches the interface to a locale of `interfaceLocales` (decision 0083). */
     onLocaleChange?: ((locale: string) => void) | undefined;
 }
 

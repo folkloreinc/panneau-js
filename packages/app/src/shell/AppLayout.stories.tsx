@@ -23,7 +23,7 @@ const input: DefinitionInput = {
     name: 'Northwind Journal',
     locale: 'en',
     locales: ['en'],
-    // The languages of the interface, with a switcher (decision 0082)
+    // The languages of the interface, with a switcher (decision 0083)
     interfaceLocales: [
         { locale: 'en', label: 'English', url: '/admin/api/locale/en' },
         { locale: 'fr', label: 'Français', url: '/admin/api/locale/fr' },
@@ -195,7 +195,7 @@ export const LogOut: Story = {
     },
 };
 
-/** The language button, next to the appearance's, switches the interface (decision 0082). */
+/** The language button, next to the appearance's, switches the interface (decision 0083). */
 export const Languages: Story = {
     play: async ({ args, canvasElement }) => {
         const canvas = within(canvasElement);

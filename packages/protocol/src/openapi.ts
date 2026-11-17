@@ -221,7 +221,7 @@ export function createOpenApiDocument(): JsonObject {
                 get: {
                     operationId: 'switchLocale',
                     summary:
-                        'Optional: switches the interface to a locale of `interfaceLocales`, when their `url` is here (decision 0082). The app comes with a full navigation, and the next page load gets the definition in that locale.',
+                        'Optional: switches the interface to a locale of `interfaceLocales`, when their `url` is here (decision 0083). The app comes with a full navigation, and the next page load gets the definition in that locale.',
                     parameters: [
                         queryParameter(
                             'next',

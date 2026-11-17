@@ -31,7 +31,7 @@ export interface AppLayoutProps {
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
     /** Logs the user out. Without it, the sidebar has no "Log out" button. */
     onLogOut?: () => void;
-    /** Switches the interface to a locale of `interfaceLocales` (decision 0082). */
+    /** Switches the interface to a locale of `interfaceLocales` (decision 0083). */
     onLocaleChange?: ((locale: string) => void) | undefined;
     children?: ReactNode;
 }

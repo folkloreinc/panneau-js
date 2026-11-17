@@ -137,7 +137,11 @@ export function ResourceListPage({
         return () => clearTimeout(timer);
     }, [createdSettled]);
     // The item of the panel, which the panel fetches too
-    const { data: selected, isError: selectedError } = useResourceItem(resource.id, selectedId);
+    const {
+        data: selected,
+        isError: selectedError,
+        errorUpdateCount: selectedErrors,
+    } = useResourceItem(resource.id, selectedId);
     useDocumentTitle([
         selectedId !== null
             ? (getItemTitle(selected, resource.itemTitle, locale) ?? selectedId)
@@ -147,8 +151,8 @@ export function ResourceListPage({
     // The list keeps its query in the URL: the panel opens and closes without losing it.
     const search = window.location.search;
     const indexPath = routePath({ name: 'resource.index', resource: resource.id }, basePath);
-    // With `"open": "edit"`, the show route of an item that can be updated goes to its form
-    // (decision 0040), with the hash of the link. One that can't stays in the panel.
+    // Unless the resource opens items in the panel, the show route of an item that can be updated
+    // goes to its form (decision 0082), with the hash of the link. One that can't stays in the panel.
     const redirect =
         selectedId !== null && selected !== undefined && opensInForm(resource, selected.abilities)
             ? `${routePath({ name: 'resource.edit', resource: resource.id, id: selectedId }, basePath)}${window.location.hash}`
@@ -159,13 +163,15 @@ export function ResourceListPage({
         }
     }, [redirect]);
     // Until the item says whether it opens in its form, the page waits, rather than showing the
-    // list and its panel for an instant.
+    // list and its panel for an instant. Once it failed, the panel shows the error: its refetch
+    // doesn't make the page wait again.
     if (
         redirect !== null ||
         (getOpenMode(resource) === 'edit' &&
             selectedId !== null &&
             selected === undefined &&
-            !selectedError)
+            !selectedError &&
+            selectedErrors === 0)
     ) {
         return null;
     }

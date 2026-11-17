@@ -279,7 +279,7 @@ export function Shell({
                   });
               }
             : undefined;
-    // A full navigation to the backend's switch, which comes back here (decision 0082). The
+    // A full navigation to the backend's switch, which comes back here (decision 0083). The
     // browser guards unsaved changes, as for other pages outside the app.
     const switchLocale =
         getInterfaceLocales(definition).length > 0

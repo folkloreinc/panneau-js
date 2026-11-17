@@ -1,5 +1,18 @@
 # @panneau/media
 
+## 5.0.0-alpha.35
+
+### Patch Changes
+
+- Updated dependencies [60b8651]
+- Updated dependencies [1ecdaa8]
+  - @panneau/ui@5.0.0-alpha.35
+  - @panneau/fields@5.0.0-alpha.35
+  - @panneau/core@5.0.0-alpha.35
+  - @panneau/data@5.0.0-alpha.35
+  - @panneau/intl@5.0.0-alpha.35
+  - @panneau/protocol@5.0.0-alpha.35
+
 ## 5.0.0-alpha.34
 
 ### Minor Changes

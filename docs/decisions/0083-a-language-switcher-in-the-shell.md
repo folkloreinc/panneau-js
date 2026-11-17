@@ -1,4 +1,4 @@
-# 0082: A language switcher in the shell
+# 0083: A language switcher in the shell
 
 - Status: proposed
 - Date: 2026-11-17

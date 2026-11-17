@@ -86,7 +86,7 @@ export const InterfaceLocale = z
         }),
         url: z.string().min(1).meta({
             description:
-                'Where the browser goes to switch to this locale, with a full navigation. The app adds `next`, the path and query to come back to (decision 0082).',
+                'Where the browser goes to switch to this locale, with a full navigation. The app adds `next`, the path and query to come back to (decision 0083).',
         }),
     })
     .meta({ description: 'A language the user can switch the interface to.' });
@@ -226,7 +226,7 @@ export const Definition = z
             .meta({ description: 'Locales of localized content fields.' }),
         interfaceLocales: z.array(InterfaceLocale).optional().meta({
             description:
-                'The languages of the interface, `locale` among them: with two or more, the shell has a switcher (decision 0082). Not the locales of the content, which are `locales`.',
+                'The languages of the interface, `locale` among them: with two or more, the shell has a switcher (decision 0083). Not the locales of the content, which are `locales`.',
         }),
         api: z.looseObject({ baseUrl: z.string() }),
         resources: z.array(Resource),

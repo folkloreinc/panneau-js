@@ -32,7 +32,7 @@ describe('Definition', () => {
         expect(parsed).toHaveProperty('futureOption', { enabled: true });
     });
 
-    it('takes the languages of the interface, each with its label and URL (decision 0082)', () => {
+    it('takes the languages of the interface, each with its label and URL (decision 0083)', () => {
         const interfaceLocales = [
             { locale: 'fr', label: 'Français', url: '/panneau/api/locale/fr' },
             { locale: 'en', label: 'English', url: '/panneau/api/locale/en' },
