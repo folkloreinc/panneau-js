@@ -128,6 +128,7 @@ interface MediaSource_2 {
     // (undocumented)
     maxSize?: number | null;
     sorts?: readonly MediaSort[];
+    types?: readonly MediaType[];
     update?(id: string, values: Record<string, unknown>, options?: MediaRequestOptions): Promise<PickerMedia>;
 }
 export { MediaSource_2 as MediaSource }

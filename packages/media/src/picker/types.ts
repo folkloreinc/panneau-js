@@ -68,6 +68,11 @@ export interface MediaSource {
     /** What the library takes: media that don't match are greyed out. */
     accept?: readonly string[] | null;
     maxSize?: number | null;
+    /**
+     * The types of media the library has, which the type filter offers. Defaults to every type;
+     * a single type hides the filter.
+     */
+    types?: readonly MediaType[];
     /** The library's filters, after the type filter. `select`, `toggle` and `text` are shown. */
     filters?: readonly Filter[];
     /** The library's sorts. The first one is the default. */

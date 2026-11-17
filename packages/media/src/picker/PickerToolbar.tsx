@@ -27,6 +27,8 @@ export interface PickerToolbarProps {
     query: BrowseQuery;
     onQueryChange: (query: BrowseQuery) => void;
     sorts: readonly MediaSort[];
+    /** The types the type filter offers: the source's. */
+    types?: readonly MediaType[];
     /** The filters the user can change: the source's and the opener's. */
     filters: readonly Filter[];
     /** The opener's filters, which the user can't change, with the filters that name them. */
@@ -42,6 +44,7 @@ export function PickerToolbar({
     query,
     onQueryChange,
     sorts,
+    types = MEDIA_TYPES,
     filters,
     locked,
     lockedFilters,
@@ -90,13 +93,13 @@ export function PickerToolbar({
                     onChange={(q) => set({ q })}
                     className={styles.search}
                 />
-                {!lockedType ? (
+                {!lockedType && types.length > 1 ? (
                     <Select
                         aria-label={intl.formatMessage(messages.pickerType)}
                         isRequired
                         options={[
                             { value: 'all', label: intl.formatMessage(messages.pickerTypeAll) },
-                            ...MEDIA_TYPES.map((type) => ({
+                            ...types.map((type) => ({
                                 value: type,
                                 label: typeLabel(type, intl),
                             })),

@@ -117,6 +117,27 @@ describe('MediaLibrary', () => {
         );
     });
 
+    it('offers the types its source has in the type filter', async () => {
+        show({
+            sources: [
+                createMemorySource({
+                    id: 'media',
+                    label: 'Media',
+                    items: libraryMedia,
+                    types: ['video', 'image'],
+                }),
+            ],
+        });
+
+        await card('autumn forest');
+        await userEvent.click(within(library()).getByRole('button', { name: /All types/ }));
+        expect(screen.getAllByRole('option').map((option) => option.textContent)).toEqual([
+            'All types',
+            'Videos',
+            'Images',
+        ]);
+    });
+
     it('switches between its libraries', async () => {
         const documents = createMemorySource({
             id: 'documents',

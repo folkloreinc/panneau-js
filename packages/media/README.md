@@ -84,7 +84,7 @@ const sources = definition.resources
 
 ## The media library
 
-`MediaLibrary` (`@panneau/media/picker`, [decision 0080](../../docs/decisions/0080-a-media-library-page.md)) is the same library as a page: the same sources, search, filters, sorts, upload and details as `MediaPicker`, without the dialog and without picking. A click on a media opens its details, where its fields are edited; the grid scrolls with the page and the details stay in view. It takes the options of the picker that are about the library (`sources`, `source`, `accept`, `maxSize`, `filter`, `filters`, `sorts`, `sort`, `stateKey`, `uploadSource`, `refreshInterval`), plus `aria-label` and `className`. A media with an `href` (its page in the product) gets a link to it in the details of the library; the picker shows none, so as not to leave its dialog.
+`MediaLibrary` (`@panneau/media/picker`, [decision 0080](../../docs/decisions/0080-a-media-library-page.md)) is the same library as a page: the same sources, search, filters, sorts, upload and details as `MediaPicker`, without the dialog and without picking. A click on a media opens its details, where its fields are edited; the grid scrolls with the page and the details stay in view. It takes the options of the picker that are about the library (`sources`, `source`, `accept`, `maxSize`, `filter`, `filters`, `sorts`, `sort`, `stateKey`, `uploadSource`, `refreshInterval`), plus `aria-label` and `className`. A media with an `href` (its page in the product) gets a link to it in the details of the library; the picker shows none, so as not to leave its dialog. A source with `types` (`['video', 'image']`) offers only those in the type filter.
 
 ```tsx
 import { MediaLibrary } from '@panneau/media/picker';

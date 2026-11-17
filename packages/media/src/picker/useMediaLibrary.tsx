@@ -632,6 +632,7 @@ export function useMediaLibrary({
                         query={state.query}
                         onQueryChange={browser.setQuery}
                         sorts={sortsOf(source)}
+                        {...(source.types !== undefined ? { types: source.types } : {})}
                         filters={filters}
                         locked={locked}
                         lockedFilters={filters}
