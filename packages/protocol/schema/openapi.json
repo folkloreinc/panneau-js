@@ -4877,7 +4877,7 @@
                         "type": "string"
                     },
                     "open": {
-                        "description": "Where an item's title goes, in its list and wherever the app links to the item (decision 0040). `panel`, the default: the show route, with the item's details in a panel next to the list. `edit`: its edit form, and the show route redirects there. Clients treat a value they don't know as `panel`.",
+                        "description": "Where an item's title goes, in its list and wherever the app links to the item (decision 0082). `edit`, the default: its edit form, and the show route redirects there. An item the user can't update still opens in the panel. `panel`: the show route, with the item's details in a panel next to the list, for items read more than edited, or shown with their preview. Clients treat a value they don't know as `edit`.",
                         "anyOf": [
                             {
                                 "type": "string",
