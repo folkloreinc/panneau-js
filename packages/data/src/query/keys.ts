@@ -1,4 +1,10 @@
-import type { AggregateRequest, ListQuery } from '@panneau/protocol';
+import { type AggregateRequest, HOME_PAGE, type ListQuery } from '@panneau/protocol';
+
+/** What the data of a widget is keyed by besides its id: its dashboard page. */
+export interface WidgetKeyOptions {
+    /** The dashboard page of the widget. Defaults to `home`. */
+    page?: string;
+}
 
 /** What a search is keyed by besides its query: its `limit` and `resources`. */
 export interface SearchKeyOptions {
@@ -33,8 +39,12 @@ export const queryKeys = {
     account: () => ['panneau', 'account'] as const,
     twoFactor: () => ['panneau', 'account', 'two-factor'] as const,
     passkeys: () => ['panneau', 'account', 'passkeys'] as const,
-    /** Under `['panneau', 'dashboard']`: invalidating it refreshes every widget. */
-    widget: (widget: string) => ['panneau', 'dashboard', 'widgets', widget] as const,
+    /**
+     * Under `['panneau', 'dashboard']`: invalidating it refreshes every widget, of every page.
+     * Without a page, the widget of the home page.
+     */
+    widget: (widget: string, { page = HOME_PAGE }: WidgetKeyOptions = {}) =>
+        ['panneau', 'dashboard', 'widgets', widget, { page }] as const,
     actionRuns: () => ['panneau', 'actions', 'runs'] as const,
     actionRun: (id: string) => ['panneau', 'actions', 'runs', id] as const,
 };

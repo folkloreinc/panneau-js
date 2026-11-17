@@ -21,18 +21,26 @@ function renderDashboard({
     definition = createDashboardDefinition(),
     widgets = DASHBOARD_DATA,
     plugins = [],
+    page,
+    requests = [],
     answer = () => undefined,
 }: {
     definition?: DefinitionInput;
     widgets?: Record<string, MockWidget>;
     plugins?: PanneauPlugin[];
+    page?: string;
+    /** The URLs of the requests, as they are sent. */
+    requests?: string[];
     /** Answers a request in place of the mock backend, unless it returns `undefined`. */
     answer?: (url: string) => Response | undefined;
 } = {}) {
     const backend = createMockBackend({ definition, items: DASHBOARD_ITEMS, widgets });
     const adapter = createRestAdapter({
         baseUrl: '/panneau/api',
-        fetch: (input, init) => Promise.resolve(answer(input) ?? backend.fetch(input, init)),
+        fetch: (input, init) => {
+            requests.push(String(input));
+            return Promise.resolve(answer(input) ?? backend.fetch(input, init));
+        },
     });
     const parsed = validateDefinition(definition);
     if (!parsed.success) {
@@ -43,7 +51,11 @@ function renderDashboard({
         <QueryClientProvider client={client}>
             <DataAdapterProvider adapter={adapter}>
                 <PanneauProvider plugins={plugins}>
-                    <Dashboard definition={parsed.data} basePath="/panneau" />
+                    <Dashboard
+                        definition={parsed.data}
+                        basePath="/panneau"
+                        {...(page !== undefined && { page })}
+                    />
                 </PanneauProvider>
             </DataAdapterProvider>
         </QueryClientProvider>,
@@ -258,5 +270,75 @@ describe('Dashboard', () => {
             'href',
             '/panneau/resources/entries',
         );
+    });
+
+    describe('a dashboard page (decision 0084)', () => {
+        it('draws the widgets of its page under its label, without the welcome', async () => {
+            const requests: string[] = [];
+            renderDashboard({ page: 'activity', requests });
+            expect(screen.getByRole('heading', { level: 1, name: 'Activity' })).toBeVisible();
+            expect(screen.queryByText('Welcome, Ada.')).toBeNull();
+            expect(document.title).toBe('Activity');
+            expect(await widget('signups').findByText('42')).toBeInTheDocument();
+            expect(await widget('accepted').findByRole('link')).toHaveAccessibleName(
+                'Accepted entries 3',
+            );
+            expect(
+                await widget('per-week').findByRole('table', { name: 'Entries per week' }),
+            ).toBeInTheDocument();
+            // Only its own widgets, whose data it asks for with its page
+            expect(document.querySelector('[data-widget="overdue"]')).toBeNull();
+            expect(requests).toContain('/panneau/api/dashboard/widgets/signups?page=activity');
+            expect(requests.some((url) => url.includes('/dashboard/widgets/overdue'))).toBe(false);
+        });
+
+        it('draws the widgets on the aggregates of a resource, as the home page does', async () => {
+            const requests: string[] = [];
+            renderDashboard({
+                definition: createDashboardDefinition(undefined, AGGREGATE_WIDGETS),
+                page: 'activity',
+                requests,
+            });
+            const list = await widget('by-status').findByRole('list', {
+                name: 'Entries by status',
+            });
+            expect(within(list).getByRole('link', { name: 'To judge' })).toHaveAttribute(
+                'href',
+                '/panneau/resources/entries?filter%5Bstatus%5D=to-judge',
+            );
+            expect(
+                await widget('fees').findByRole('meter', { name: 'Entry fees' }),
+            ).toHaveAttribute('aria-valuetext', 'CA$120.00 of CA$100.00');
+            expect(
+                await widget('submitted').findByRole('table', { name: 'Entries per day' }),
+            ).toBeInTheDocument();
+            // From the aggregates of the resource, never from the endpoint of the widgets
+            expect(requests).toContain(
+                '/panneau/api/resources/entries/aggregate?measure=count&group=status',
+            );
+            expect(requests.some((url) => url.includes('/dashboard/widgets/'))).toBe(false);
+        });
+
+        it('says it has no widgets, without the cards of the resources', () => {
+            renderDashboard({
+                definition: createDashboardDefinition(undefined, []),
+                page: 'activity',
+            });
+            expect(screen.getByRole('heading', { level: 1, name: 'Activity' })).toBeVisible();
+            expect(screen.getByText('This dashboard has no widgets yet.')).toBeVisible();
+            expect(screen.queryByRole('link', { name: 'Entries' })).toBeNull();
+        });
+
+        it('draws the widgets of `pages.home` on the home page, rather than `dashboard`', async () => {
+            const definition = createDashboardDefinition();
+            definition.pages = {
+                home: { component: 'dashboard', widgets: [{ id: 'answers', type: 'stat' }] },
+            };
+            delete definition.dashboard;
+            renderDashboard({ definition });
+            expect(screen.getByText('Welcome, Ada.')).toBeVisible();
+            expect(await widget('answers').findByText('128')).toBeInTheDocument();
+            expect(document.querySelector('[data-widget="overdue"]')).toBeNull();
+        });
     });
 });

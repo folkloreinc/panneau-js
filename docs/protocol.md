@@ -461,6 +461,7 @@ Built-in actions use reserved ids:
 ```jsonc
 "pages": {
     "home": { "component": "dashboard" }, // the home route
+    "activity": { "component": "dashboard", "label": "Activity", "widgets": [ … ] }, // a dashboard page
     "usage": { "component": "usage", "label": "Usage", "props": { "period": "month" } },
     "job": { "component": "job", "label": "Job", "params": ["id"] }, // {basePath}/pages/job/{id}
 }
@@ -472,7 +473,7 @@ Built-in actions use reserved ids:
 
 ### Dashboard
 
-With `pages.home` set to the built-in `dashboard`, the home page is the widgets of `dashboard.widgets`, the user's, in order ([decisions/0064](decisions/0064-dashboard-widgets.md)):
+A page whose component is the built-in `dashboard` is a dashboard: its `widgets`, the user's, in order ([decisions/0064](decisions/0064-dashboard-widgets.md), [0084](decisions/0084-overviews.md)). Only a `dashboard` page has `widgets`. With `pages.home` set to the built-in `dashboard`, the home page is the widgets of `pages.home.widgets`, or of `dashboard.widgets`, its shorthand, which existing definitions use:
 
 ```jsonc
 "dashboard": {
@@ -496,6 +497,7 @@ With `pages.home` set to the built-in `dashboard`, the home page is the widgets 
 }
 ```
 
+- **Dashboard pages.** `pages.activity = { "component": "dashboard", "label": "Activity", "widgets": [ … ] }` is a page of widgets at `{basePath}/pages/activity`, with its label above them, and that menus link to as to any page (`{ "type": "page", "page": "activity" }`). Its widgets have the same types, layout, states and checks as those of the home page. Without widgets, it says it has none. The home page keeps the welcome above its widgets, and the cards of the resources without any. Set the widgets of the home page in `pages.home.widgets` or in `dashboard.widgets`, not both. `getDashboardWidgets(definition, page)` of `@panneau/protocol/runtime` reads the widgets of a page.
 - **Types.** `stat`, `series`, `list` and `breakdown` are built in. Any other type is a widget of a plugin, drawn by its component from the data of the endpoint, with its own `settings`.
 - **`width`**: the columns of a grid of 12, 3 for a `stat` and 6 for the others by default. One column on a phone.
 - **On a resource.** A `stat` or a `list` with `settings.resource` reads the list of that resource, with `settings.query` written as its query parameters: a `stat` reads `perPage=1` and shows `meta.total`, a `list` reads `perPage=5` and shows the title of each item (`itemTitle`) and the badge of its value of the first `select` column. Both link to the list with that query. The resource must exist, the filters of `query` must be filters of its list, and `query` leaves out `page`, `perPage` and `cursor`. A list paged with cursors has no total: it can't feed a `stat` that counts.
@@ -504,7 +506,7 @@ With `pages.home` set to the built-in `dashboard`, the home page is the widgets 
     - A `stat` links to the list with its query. Each bar of a `breakdown` links to the list filtered by its value (`key`), when the list has a filter whose id is the field; a breakdown of a `select` takes the labels and the tones of its options.
     - A sum of `money` is shown in its currency.
     - `settings.target` gives a `stat` on a resource its `target`, in the unit of its value: minor units for a sum of `money`.
-- **Data.** The other widgets get theirs from `GET /dashboard/widgets/{widget}`, in the shape of their type, as is. Texts are translated by the backend:
+- **Data.** The other widgets get theirs from `GET /dashboard/widgets/{widget}?page={page}`, in the shape of their type, as is. `page` is the id of their page in `pages`: without it, it means `home`, and the widgets of the home page are asked for without it. Texts are translated by the backend:
 
 | Type        | Data                                                                                                                                                                                                                                                                                   |
 | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -513,7 +515,7 @@ With `pages.home` set to the built-in `dashboard`, the home page is the widgets 
 | `list`      | `{ "items": [{ "title": "…", "description": null, "meta": "12 answers", "url": "…", "badge": { "label": "Open", "tone": "success" } }], "empty": "…", "url": "…" }`: at most 5 items, the most useful first                                                                            |
 | `breakdown` | `{ "items": [{ "label": "Failed", "value": 3, "tone": "danger", "url": "…" }], "total": 42, "other": 5 }`: the parts of a total, at most 10, drawn as horizontal bars, the largest first, and the rest, `other`, last as "Other". An item of the aggregate endpoint also has its `key` |
 
-- **Errors.** A widget that isn't in the user's dashboard, or a widget on a resource, is a `404`. A `403` hides the widget. Data that doesn't have the shape of its type is a `500` problem: clients show the widget's error, with a retry, and the other widgets stay. `checkWidgetData()` of `@panneau/protocol/runtime` checks a shape and names the wrong keys.
+- **Errors.** A widget that isn't on that page of the user's (an unknown page, a page that isn't a dashboard, or the widget of another page), or a widget on a resource, is a `404`. A `403` hides the widget. Data that doesn't have the shape of its type is a `500` problem: clients show the widget's error, with a retry, and the other widgets stay. `checkWidgetData()` of `@panneau/protocol/runtime` checks a shape and names the wrong keys.
 
 ### Menus and the forbidden state
 
@@ -1008,7 +1010,7 @@ With `auth.mode = "external"`, the frontend only calls `GET /auth/session` and s
 | ----------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | `GET /search?q=&limit=&resources=`        | results grouped by resource: `{ "data": [ { "resource": "pages", "items": [...], "total": 34 } ] }` |
 | `GET /embeds?url=`                        | what a URL embeds, for `embed` fields: `{ "data": EmbedValue }`, or a `422` when it can't embed it  |
-| `GET /dashboard/widgets/{widget}`         | the data of a widget of the user's [dashboard](#dashboard), in the shape of its type                |
+| `GET /dashboard/widgets/{widget}?page=`   | the data of a widget of a [dashboard](#dashboard) page of the user, `home` without `page`           |
 | `GET /locale/{locale}?next=`              | optional: switches the interface to a locale of `interfaceLocales`, then redirects to `next`        |
 | `POST /resources/{resource}/{id}/preview` | sends the unsaved values; returns `{ "url": "…", "expiresAt": "…" }` for iframe previews            |
 

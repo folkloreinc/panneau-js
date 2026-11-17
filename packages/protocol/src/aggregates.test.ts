@@ -418,6 +418,31 @@ describe('the aggregates of a list in the definition', () => {
             'dashboard.widgets.6.settings.group: `group` goes with a `resource`.',
         ]);
     });
+
+    it('checks the widgets on aggregates of every dashboard page', () => {
+        const definition = withRuns({ list: { aggregates: { groupBy: ['status'] } } });
+        definition.pages = {
+            costs: {
+                component: 'dashboard',
+                label: 'Costs',
+                widgets: [
+                    {
+                        id: 'by-status',
+                        type: 'breakdown',
+                        settings: { resource: 'runs', group: 'status' },
+                    },
+                    {
+                        id: 'cost',
+                        type: 'stat',
+                        settings: { resource: 'runs', measure: 'sum:cost' },
+                    },
+                ],
+            },
+        };
+        expect(messages(definition)).toEqual([
+            "pages.costs.widgets.1.settings.measure: The list of `runs` can't sum `cost`: it isn't in the `sum` of its aggregates.",
+        ]);
+    });
 });
 
 describe('the aggregate endpoint of the mock backend', () => {

@@ -8,6 +8,7 @@ import {
 } from '../aggregates';
 import { CONTEXT_HEADER, CONTEXT_PROBLEM_TYPE, IDS_FILTER } from '../constants';
 import { formatContextHeader } from '../context';
+import { HOME_PAGE, getDashboardPages, getDashboardWidgets } from '../dashboards';
 import { getLinkTypes } from '../links';
 import { type FilterRange, isCursorPage, toSearchParams } from '../query';
 import {
@@ -1358,21 +1359,38 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
         },
     );
 
-    // The dashboard (decision 0064): the data of the widgets with data of their own, the lists
-    // that feed the widgets on a resource, and a widget that isn't in the dashboard.
-    const widgets = () => (definition as Definition | null)?.dashboard?.widgets ?? [];
+    // The dashboards (decisions 0064 and 0084): the data of the widgets with data of their own on
+    // each dashboard page, the lists that feed the widgets on a resource, and a widget that isn't
+    // on a page.
+    const dashboardPages = () => {
+        const current = definition as Definition | null;
+        return current !== null ? getDashboardPages(current) : [];
+    };
+    const widgets = () =>
+        dashboardPages().flatMap((page) =>
+            getDashboardWidgets(definition as Definition, page).map((widget) => ({
+                page,
+                widget,
+            })),
+        );
+    // The home page's widgets without `page`, as clients ask for them
+    const widgetPath = (id: string, page: string) =>
+        `/dashboard/widgets/${encodeURIComponent(id)}${page !== HOME_PAGE ? `?page=${encodeURIComponent(page)}` : ''}`;
+    const widgetName = (id: string, page: string) =>
+        page !== HOME_PAGE ? `"${id}" of the page "${page}"` : `"${id}"`;
 
     await run(
         'dashboard.widgets',
         'GET /dashboard/widgets/{widget} answers each widget in the shape of its type',
         async (check) => {
-            const own = widgets().filter((widget) => getWidgetResource(widget) === null);
+            const own = widgets().filter(({ widget }) => getWidgetResource(widget) === null);
             if (own.length === 0) {
-                check.skip('The dashboard has no widget with data of its own.');
+                check.skip('No dashboard has a widget with data of its own.');
                 return;
             }
-            for (const widget of own) {
-                const reply = await request(`/dashboard/widgets/${encodeURIComponent(widget.id)}`);
+            for (const { page, widget } of own) {
+                const name = widgetName(widget.id, page);
+                const reply = await request(widgetPath(widget.id, page));
                 // A widget the user can't see right now: the client hides it
                 if (reply.status === 403) {
                     check.expectProblem(reply, 403);
@@ -1381,7 +1399,7 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                 if (
                     !check.expect(
                         reply.status === 200,
-                        `Widget "${widget.id}": expected status 200, got ${reply.status}.`,
+                        `Widget ${name}: expected status 200, got ${reply.status}.`,
                     )
                 ) {
                     continue;
@@ -1390,14 +1408,14 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                     check.expectSchema(
                         widgetDataSchemas[widget.type],
                         reply.body,
-                        `The data of the ${widget.type} "${widget.id}"`,
+                        `The data of the ${widget.type} ${name}`,
                     );
                 } else {
                     check.expect(
                         reply.body !== null &&
                             typeof reply.body === 'object' &&
                             !Array.isArray(reply.body),
-                        `The data of the widget "${widget.id}" must be an object.`,
+                        `The data of the widget ${name} must be an object.`,
                     );
                 }
             }
@@ -1408,15 +1426,16 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
         'dashboard.widgets.resource',
         'The lists and the aggregates of the widgets on a resource answer their query, with a total for a stat',
         async (check) => {
-            const onResource = widgets().flatMap((widget) => {
+            const onResource = widgets().flatMap(({ page, widget }) => {
                 const read = getWidgetResource(widget);
-                return read !== null ? [{ widget, read }] : [];
+                return read !== null ? [{ page, widget, read }] : [];
             });
             if (onResource.length === 0) {
-                check.skip('The dashboard has no widget on a resource.');
+                check.skip('No dashboard has a widget on a resource.');
                 return;
             }
-            for (const { widget, read } of onResource) {
+            for (const { page, widget, read } of onResource) {
+                const name = widgetName(widget.id, page);
                 const reads = read.aggregate !== null ? 'aggregate' : 'list';
                 const params =
                     read.aggregate !== null
@@ -1439,7 +1458,7 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                 if (
                     !check.expect(
                         reply.status === 200,
-                        `Widget "${widget.id}": expected status 200 from its ${reads}, got ${reply.status}.`,
+                        `Widget ${name}: expected status 200 from its ${reads}, got ${reply.status}.`,
                     )
                 ) {
                     continue;
@@ -1452,24 +1471,24 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                     );
                     check.expect(
                         type === widget.type,
-                        `The ${widget.type} "${widget.id}" reads aggregates in the shape of a ${type}.`,
+                        `The ${widget.type} ${name} reads aggregates in the shape of a ${type}.`,
                     );
                     check.expectSchema(
                         widgetDataSchemas[type],
                         reply.body,
-                        `The aggregate of the widget "${widget.id}"`,
+                        `The aggregate of the widget ${name}`,
                     );
                     continue;
                 }
                 const list = check.expectSchema(
                     ListResponse,
                     reply.body,
-                    `The list of the widget "${widget.id}"`,
+                    `The list of the widget ${name}`,
                 );
                 if (list !== null && widget.type === 'stat') {
                     check.expect(
                         typeof (list.meta as { total?: unknown }).total === 'number',
-                        `The list of the stat "${widget.id}" has no meta.total to count.`,
+                        `The list of the stat ${name} has no meta.total to count.`,
                     );
                 }
             }
@@ -1478,14 +1497,57 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
 
     await run(
         'dashboard.widgets.unknown',
-        'A widget that is not in the dashboard of the user is a 404 problem',
+        'A widget that is not on a dashboard page of the user is a 404 problem',
         async (check) => {
-            const current = definition as Definition | null;
-            if (current?.dashboard === undefined) {
+            const pages = dashboardPages();
+            if (pages.length === 0) {
                 check.skip('The definition has no dashboard.');
                 return;
             }
-            check.expectProblem(await request(`/dashboard/widgets/${UNKNOWN}`), 404);
+            const expectMissing = async (path: string, what: string) => {
+                const reply = await request(path);
+                if (
+                    check.expect(
+                        reply.status === 404,
+                        `${what}: expected status 404, got ${reply.status}.`,
+                    )
+                ) {
+                    check.expectProblem(reply, 404);
+                }
+            };
+            for (const page of pages) {
+                await expectMissing(
+                    widgetPath(UNKNOWN, page),
+                    `An unknown widget ${page !== HOME_PAGE ? `of the page "${page}"` : 'of the home page'}`,
+                );
+            }
+            // Page by page (decision 0084): a widget asked for on a page that doesn't exist, or on
+            // another dashboard page than its own. Widgets with data of their own first: the others
+            // are a 404 on any page.
+            const all = widgets().sort(
+                (a, b) =>
+                    Number(getWidgetResource(a.widget) !== null) -
+                    Number(getWidgetResource(b.widget) !== null),
+            );
+            if (pages.every((page) => page === HOME_PAGE) || all[0] === undefined) {
+                return;
+            }
+            await expectMissing(
+                `/dashboard/widgets/${encodeURIComponent(all[0].widget.id)}?page=${UNKNOWN}`,
+                `Widget ${widgetName(all[0].widget.id, all[0].page)} on an unknown page`,
+            );
+            for (const page of pages) {
+                const ids = new Set(
+                    getDashboardWidgets(definition as Definition, page).map(({ id }) => id),
+                );
+                const elsewhere = all.find(({ widget }) => !ids.has(widget.id));
+                if (elsewhere !== undefined) {
+                    await expectMissing(
+                        widgetPath(elsewhere.widget.id, page),
+                        `Widget ${widgetName(elsewhere.widget.id, elsewhere.page)} on ${page !== HOME_PAGE ? `the page "${page}"` : 'the home page'}`,
+                    );
+                }
+            }
         },
     );
 

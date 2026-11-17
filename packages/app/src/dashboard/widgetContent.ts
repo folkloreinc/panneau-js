@@ -203,6 +203,8 @@ function fromAggregate(
 
 interface UseWidgetContentOptions {
     widget: Widget;
+    /** The dashboard page of the widget: the home page without it. */
+    page?: string | undefined;
     definition: Definition;
     basePath: string;
     /** The title of an item without one. */
@@ -219,6 +221,7 @@ interface UseWidgetContentOptions {
  */
 export function useWidgetContent({
     widget,
+    page,
     definition,
     basePath,
     untitled,
@@ -248,7 +251,7 @@ export function useWidgetContent({
         },
         { enabled: enabled && aggregate !== null && canList },
     );
-    const own = useWidgetData(widget.id, { enabled: enabled && read === null });
+    const own = useWidgetData(widget.id, { page, enabled: enabled && read === null });
     const query = read === null ? own : aggregate !== null ? totals : list;
     if (read !== null && !canList) {
         return { status: 'hidden' };

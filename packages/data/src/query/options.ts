@@ -17,7 +17,7 @@ import type {
 } from '@panneau/protocol';
 
 import type { DataAdapter, Values } from '../adapter';
-import { type SearchKeyOptions, queryKeys } from './keys';
+import { type SearchKeyOptions, type WidgetKeyOptions, queryKeys } from './keys';
 
 /**
  * Query options made by the `*QueryOptions()` functions. Their key is tagged with the type of the
@@ -115,16 +115,18 @@ export function searchQueryOptions(
 }
 
 /**
- * Query options of the data of a widget of the dashboard, with data of its own (decision 0064):
- * the shape of its type, unchecked. Widgets on a resource read its list instead.
+ * Query options of the data of a widget of a dashboard, with data of its own (decision 0064): the
+ * shape of its type, unchecked. Widgets on a resource read its list instead. `page` is the
+ * dashboard page of the widget (decision 0084), the home page without it.
  */
 export function widgetDataQueryOptions(
     adapter: DataAdapter,
     widget: string,
+    { page }: WidgetKeyOptions = {},
 ): DataQueryOptions<unknown, ReturnType<typeof queryKeys.widget>> {
     return queryOptions({
-        queryKey: queryKeys.widget(widget),
-        queryFn: ({ signal }) => adapter.getWidgetData(widget, { signal }),
+        queryKey: queryKeys.widget(widget, { page }),
+        queryFn: ({ signal }) => adapter.getWidgetData(widget, { signal, page }),
         // The dashboard is a glance: a minute old is fresh enough when the user comes back to it.
         staleTime: 60_000,
     });

@@ -101,7 +101,7 @@ export interface DataAdapter {
     getResourceAggregate?(resource: string, request: AggregateRequest, options?: RequestOptions): Promise<unknown>;
     getSession(options?: RequestOptions): Promise<Session>;
     getTwoFactor?(options?: RequestOptions): Promise<TwoFactorStatus>;
-    getWidgetData(widget: string, options?: RequestOptions): Promise<unknown>;
+    getWidgetData(widget: string, options?: WidgetDataOptions): Promise<unknown>;
     list(resource: string, query?: ListQuery, options?: RequestOptions): Promise<ListResponse>;
     listActionRuns(options?: RequestOptions): Promise<ActionRun[]>;
     listPasskeys?(options?: RequestOptions): Promise<Passkey[]>;
@@ -306,6 +306,11 @@ export type Values = Record<string, unknown>;
 
 // @public
 export type WebAuthnCredential = Record<string, unknown>;
+
+// @public
+export interface WidgetDataOptions extends RequestOptions {
+    page?: string;
+}
 
 // (No @packageDocumentation comment for this package)
 

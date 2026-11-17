@@ -24,7 +24,7 @@ export {
     useUpdateItem,
     useWidgetData,
 } from './hooks';
-export { type SearchKeyOptions, queryKeys } from './keys';
+export { type SearchKeyOptions, type WidgetKeyOptions, queryKeys } from './keys';
 export {
     type DataQueryOptions,
     definitionQueryOptions,

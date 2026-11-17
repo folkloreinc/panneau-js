@@ -144,6 +144,23 @@ describe('query hooks', () => {
         const secret = renderHook(() => useWidgetData('secret'), { wrapper });
         await waitFor(() => expect(secret.result.current.isError).toBe(true));
         expect(secret.result.current.error).toBeInstanceOf(ForbiddenError);
+
+        // The same widget on another dashboard page: its own request and its own data
+        const activity = renderHook(() => useWidgetData('to judge', { page: 'activity' }), {
+            wrapper,
+        });
+        await waitFor(() => expect(activity.result.current.isSuccess).toBe(true));
+        expect(urls.at(-1)).toBe(`${BASE_URL}/dashboard/widgets/to%20judge?page=activity`);
+        expect(client.getQueryData(queryKeys.widget('to judge', { page: 'home' }))).toEqual({
+            value: 12,
+        });
+        expect(client.getQueryData(queryKeys.widget('to judge', { page: 'activity' }))).toEqual({
+            value: 12,
+        });
+        // Every widget of every page is under the dashboard
+        expect(client.getQueryCache().findAll({ queryKey: ['panneau', 'dashboard'] })).toHaveLength(
+            3,
+        );
     });
 
     it('get an item, and wait for an id', async () => {

@@ -42,6 +42,15 @@ export interface SearchOptions extends RequestOptions {
     resources?: readonly string[];
 }
 
+/** Options of the data of a widget (`GET /dashboard/widgets/{widget}`). */
+export interface WidgetDataOptions extends RequestOptions {
+    /**
+     * The dashboard page of the widget, an id of `pages` (decision 0084). Defaults to `home`, the
+     * home page, whose request has no `page`.
+     */
+    page?: string;
+}
+
 export interface UpdateOptions extends RequestOptions {
     /**
      * The version of the item the values were edited from. The update fails with a
@@ -282,8 +291,8 @@ export interface DataAdapter {
      * Optional: without it, `embed` fields keep the URL alone.
      */
     resolveEmbed?(url: string, options?: RequestOptions): Promise<EmbedValue>;
-    /** Data of a dashboard widget, in the shape its type defines. */
-    getWidgetData(widget: string, options?: RequestOptions): Promise<unknown>;
+    /** Data of a widget of a dashboard page, in the shape its type defines. */
+    getWidgetData(widget: string, options?: WidgetDataOptions): Promise<unknown>;
     /**
      * The count or the sum of the items of a list, with its filters and search, grouped by a
      * period or a field (`GET /resources/{resource}/aggregate`, decision 0084): in the shape of a

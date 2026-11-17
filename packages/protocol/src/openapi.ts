@@ -932,7 +932,14 @@ export function createOpenApiDocument(): JsonObject {
                 get: {
                     operationId: 'getWidgetData',
                     description:
-                        'The data of a widget of the dashboard of the user, read as the user (decision 0064). The built-in widgets on a resource (`settings.resource`) have none: clients read the list or the aggregates of the resource. A widget that is not in the dashboard of the user is a `404`; a `403` hides the widget.',
+                        'The data of a widget of a dashboard of the user, read as the user (decision 0064): the home page, or the dashboard page of `page` (decision 0084). The built-in widgets on a resource (`settings.resource`) have none: clients read the list or the aggregates of the resource. A widget that is not on that page of the user is a `404`; a `403` hides the widget.',
+                    parameters: [
+                        queryParameter(
+                            'page',
+                            'The id of the dashboard page of the widget, in `pages`. Defaults to `home`, the home page, whose widgets are `pages.home.widgets` or `dashboard.widgets`.',
+                            { type: 'string', minLength: 1 },
+                        ),
+                    ],
                     responses: {
                         200: ok(
                             "The widget's data, in the shape of its type: `StatWidgetData`, `SeriesWidgetData`, `ListWidgetData` and `BreakdownWidgetData` for the built-in types, the plugin's own object for others.",
