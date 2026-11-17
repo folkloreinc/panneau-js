@@ -1,5 +1,22 @@
 # @panneau/ui
 
+## 5.0.0-alpha.37
+
+### Minor Changes
+
+- 94074cc: `LineChart` reads without a pointer: a monotone curve with an area that fades out, a scale of round graduations with lines across the plot, dates at regular steps under it, and the last value at the end of the line. New props: `axisLabel`, `showMax`, `showLast`, `showAxis`, `domain`, `formatTick`, `curve`, and `isInteractive`, which shows the value of the point under the pointer or chosen with the arrow keys. A point can have a `shortLabel` for under the plot. The line draws itself when the chart appears. New tokens `grid-color` and `reveal-duration`; `dot-size` is now 8px and `area-opacity` 0.2. The `series` widget gives full dates to the table and short ones to the axis, is interactive past 31 points, and writes the amounts of a sum of money on its scale too.
+- 7d7408d: Widgets can count and sum a resource (decision 0084). A list declares its `aggregates` (`sum`, `groupBy`, `dates`), and `GET /resources/{resource}/aggregate` answers their count or sum, by period or by field, in the shape of a widget, with its schemas, checks, OpenAPI path, mock backend and conformance checks. `breakdown` is a new built-in widget type, drawn by the new `BarChart` of `@panneau/ui`, and a `stat` can have a `target`, drawn by the new `Meter`. On the dashboard, a `series`, a `breakdown` and a `stat` that sums read the aggregates of a resource, through `getResourceAggregate()` and `useResourceAggregate()` of `@panneau/data`.
+
+### Patch Changes
+
+- Updated dependencies [0d49d7d]
+- Updated dependencies [757b4fb]
+- Updated dependencies [ddb93fe]
+- Updated dependencies [94074cc]
+- Updated dependencies [7d7408d]
+- Updated dependencies [a339007]
+  - @panneau/intl@5.0.0-alpha.37
+
 ## 5.0.0-alpha.36
 
 ### Patch Changes

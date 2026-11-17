@@ -1,5 +1,48 @@
 # @panneau/app
 
+## 5.0.0-alpha.37
+
+### Minor Changes
+
+- 0d49d7d: Dashboards as pages (decision 0084). A page whose component is the built-in `dashboard` carries its own `widgets`, and the app draws them under the page's label, or says it has none. The home page is the dashboard of `pages.home`: its widgets are `pages.home.widgets`, or `dashboard.widgets`, which stays as the shorthand, so existing definitions don't change.
+  
+  - `@panneau/protocol`: `widgets` on a `Page`, `getDashboardWidgets(definition, page)`, `getDashboardPages(definition)`, `HOME_PAGE` and `DASHBOARD_COMPONENT` in `@panneau/protocol/runtime`. `validateDefinition()` checks the widgets of every dashboard page, and refuses `widgets` on another page. `GET /dashboard/widgets/{widget}` takes `page` (`home` without it) in the OpenAPI document, the mock backend answers the widgets of every dashboard page (its widget functions get the `page`), and conformance checks each dashboard page, and that a widget is a `404` on a page it isn't on.
+  - `@panneau/data`: `getWidgetData(widget, { page })`, `widgetDataQueryOptions(adapter, widget, { page })` and `useWidgetData(widget, { page })`. The key of a widget, `queryKeys.widget(widget, { page })`, now ends with its page, still under `['panneau', 'dashboard']`.
+  - `@panneau/app`: the built-in `dashboard` page draws the widgets of its own page, and a menu links to it as to any page. `@panneau/intl`: the message of a dashboard page without widgets.
+- 757b4fb: One user's menu at the bottom of the sidebar (decision 0086). The footer only shows the user's avatar, name and email, as one button that opens a menu: who is logged in with their whole email, "Profile", "Appearance" and "Language" as choices with a check on the current one, then "Log out". In the rail, the avatar alone opens it. The dock's user's menu is the same menu. The buttons of the appearance and of the language and the "Log out" button leave the footer, and `@panneau/intl` gains `panneau.app.userMenu` ("Your account ({name})"), the label of the button.
+  
+  The classes `.panneau-sidebar-user-link` and `.panneau-dock-user-menu` are gone: the user's button is `.panneau-sidebar-user` (with `[data-current]` on the profile), and the menu's popover `.panneau-user-menu-popover`.
+- ddb93fe: One period for a dashboard page or a summary (decision 0084). A dashboard page (`pages.<id>.period`, or `dashboard.period` for the home page) or a summary (`summary.period`) declares `period: { options, default }`, among `7d`, `30d`, `90d`, `month` and `year`. A segmented control in its header chooses it, and the URL keeps it (`?period=90d`). Widgets on a resource get its days in the `date-range` filter that `settings.period` names, widgets with data of their own get `period[option]`, `period[from]` and `period[to]` unless `settings.period` is `false`, and on a summary the period is the list's own `date-range` filter, so it filters the rows too.
+  
+  - `@panneau/protocol`: `OverviewPeriod` and `SummaryPeriod`, on `Page`, `dashboard` and `ResourceSummary`, and `settings.period` of widgets, checked by `validateDefinition()`. The `period` parameter of `GET /dashboard/widgets/{widget}` in OpenAPI. `OVERVIEW_PERIODS`, `getPeriodRange()`, `getDefaultPeriod()`, `readPeriodOption()`, `findPeriodOption()`, `localDay()`, `isDay()`, `getDashboardPeriod()`, `getSummaryPeriodFilter()` and `followsPeriod()` in `@panneau/protocol/runtime`; `toWidgetDataParams()` and `readWidgetDataQuery()` write and read the period. The mock backend gives widget functions the `period`, and refuses a wrong one with a `422`; conformance checks the widgets that follow a period.
+  - `@panneau/data`: `getWidgetData()`, `widgetDataQueryOptions()` and `useWidgetData()` take a `period`, which keys the data.
+  - `@panneau/app`: the period control of dashboard pages and summaries. `@panneau/intl`: the names of the periods.
+- 7d7408d: Widgets can count and sum a resource (decision 0084). A list declares its `aggregates` (`sum`, `groupBy`, `dates`), and `GET /resources/{resource}/aggregate` answers their count or sum, by period or by field, in the shape of a widget, with its schemas, checks, OpenAPI path, mock backend and conformance checks. `breakdown` is a new built-in widget type, drawn by the new `BarChart` of `@panneau/ui`, and a `stat` can have a `target`, drawn by the new `Meter`. On the dashboard, a `series`, a `breakdown` and a `stat` that sums read the aggregates of a resource, through `getResourceAggregate()` and `useResourceAggregate()` of `@panneau/data`.
+- a339007: A summary above the list of a resource (decision 0084). A resource declares `summary: { widgets, list? }`: widgets drawn between the header of its list page and the list, in the grid of a dashboard, which the user can hide (the browser remembers it per resource). The widgets on the resource and those with data of their own follow the list's current filters and search, unless `settings.followsList` is `false`. With `list: "collapsed"`, the resource opens on its summary, its list folded under it behind "Show the N items".
+  
+  - `@panneau/protocol`: `Resource.summary` (`ResourceSummary`) and `settings.followsList`, checked by `validateDefinition()` at `resources.<i>.summary.widgets.<j>`. `GET /dashboard/widgets/{widget}` takes `resource`, with the list's `filter[…]` and `q`, for the widgets of a summary; `page` and `resource` together are a `422`. `getSummaryWidgets()`, `getSummaryResources()`, `followsList()`, `toWidgetDataParams()` and `readWidgetDataQuery()` in `@panneau/protocol/runtime`. The mock backend answers the widgets of summaries, whose functions get the `resource` and the `query` of the list (their `page` is `null` there), and conformance checks them.
+  - `@panneau/data`: `getWidgetData()`, `widgetDataQueryOptions()` and `useWidgetData()` take `resource` and `query`, keyed apart from the widgets of pages. Changes to the items of a resource refetch the widgets of its summary.
+  - `@panneau/app`: the summary on the list page. `@panneau/intl`: "Summary", "Show the list" and "Show the N items".
+
+### Patch Changes
+
+- 94074cc: `LineChart` reads without a pointer: a monotone curve with an area that fades out, a scale of round graduations with lines across the plot, dates at regular steps under it, and the last value at the end of the line. New props: `axisLabel`, `showMax`, `showLast`, `showAxis`, `domain`, `formatTick`, `curve`, and `isInteractive`, which shows the value of the point under the pointer or chosen with the arrow keys. A point can have a `shortLabel` for under the plot. The line draws itself when the chart appears. New tokens `grid-color` and `reveal-duration`; `dot-size` is now 8px and `area-opacity` 0.2. The `series` widget gives full dates to the table and short ones to the axis, is interactive past 31 points, and writes the amounts of a sum of money on its scale too.
+- Updated dependencies [0d49d7d]
+- Updated dependencies [757b4fb]
+- Updated dependencies [ddb93fe]
+- Updated dependencies [94074cc]
+- Updated dependencies [7d7408d]
+- Updated dependencies [a339007]
+  - @panneau/protocol@5.0.0-alpha.37
+  - @panneau/data@5.0.0-alpha.37
+  - @panneau/intl@5.0.0-alpha.37
+  - @panneau/ui@5.0.0-alpha.37
+  - @panneau/actions@5.0.0-alpha.37
+  - @panneau/core@5.0.0-alpha.37
+  - @panneau/fields@5.0.0-alpha.37
+  - @panneau/forms@5.0.0-alpha.37
+  - @panneau/lists@5.0.0-alpha.37
+
 ## 5.0.0-alpha.36
 
 ### Minor Changes

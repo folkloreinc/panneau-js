@@ -1,5 +1,15 @@
 # @panneau/core
 
+## 5.0.0-alpha.37
+
+### Patch Changes
+
+- Updated dependencies [0d49d7d]
+- Updated dependencies [ddb93fe]
+- Updated dependencies [7d7408d]
+- Updated dependencies [a339007]
+  - @panneau/protocol@5.0.0-alpha.37
+
 ## 5.0.0-alpha.36
 
 ### Minor Changes
