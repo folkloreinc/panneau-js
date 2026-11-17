@@ -1,5 +1,16 @@
 # @panneau/ui
 
+## 5.0.0-alpha.35
+
+### Minor Changes
+
+- 1ecdaa8: Add the motion tokens `--panneau-duration-slow`, `--panneau-ease-out` and `--panneau-ease-in`, used by every component in place of easings written by hand. An item that leaves a list (deleted, or out of its filters) now fades out at its place before it goes, in the table, the cards and the gallery (`isLeaving` in the props of a layout).
+
+### Patch Changes
+
+- 60b8651: The status of a form's footer fades in when it changes, and a toast that closes fades out while the others move into its place, in a view transition where the browser has them.
+- @panneau/intl@5.0.0-alpha.35
+
 ## 5.0.0-alpha.34
 
 ### Patch Changes
