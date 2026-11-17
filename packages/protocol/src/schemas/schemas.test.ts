@@ -32,6 +32,21 @@ describe('Definition', () => {
         expect(parsed).toHaveProperty('futureOption', { enabled: true });
     });
 
+    it('takes the languages of the interface, each with its label and URL (decision 0083)', () => {
+        const interfaceLocales = [
+            { locale: 'fr', label: 'Français', url: '/panneau/api/locale/fr' },
+            { locale: 'en', label: 'English', url: '/panneau/api/locale/en' },
+        ];
+        const parsed = Definition.parse({ ...createDefinition(), interfaceLocales });
+        expect(parsed.interfaceLocales).toEqual(interfaceLocales);
+        expect(
+            validateDefinition({
+                ...createDefinition(),
+                interfaceLocales: [{ locale: 'fr', label: 'Français' }],
+            }).success,
+        ).toBe(false);
+    });
+
     it('requires version 1 of the protocol', () => {
         const result = validateDefinition({ ...createDefinition(), protocol: 2 });
         expect(result.success).toBe(false);

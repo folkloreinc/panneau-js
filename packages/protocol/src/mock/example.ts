@@ -158,8 +158,8 @@ export function createExampleDefinition(): DefinitionInput {
             {
                 id: 'authors',
                 label: { singular: 'auteur', plural: 'auteurs' },
-                // Titles open the form, without the panel of the details.
-                open: 'edit',
+                // Titles open the panel of the details, rather than the form.
+                open: 'panel',
                 fields: [
                     { name: 'name', type: 'text', rules: [{ rule: 'required' }] },
                     { name: 'photo', type: 'media', accept: ['image/*'] },

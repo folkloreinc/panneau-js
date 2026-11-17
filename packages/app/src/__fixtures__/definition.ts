@@ -12,6 +12,8 @@ export function createDefinition(overrides: Partial<DefinitionInput> = {}): Defi
             {
                 id: 'pages',
                 label: { singular: 'page', plural: 'pages' },
+                // Titles open the panel of the details, rather than the form
+                open: 'panel',
                 fields: [{ name: 'title', type: 'text' }],
             },
             {

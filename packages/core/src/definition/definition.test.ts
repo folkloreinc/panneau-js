@@ -328,7 +328,8 @@ describe('abilities', () => {
     });
 
     it('shows each built-in item action on the items whose ability allows it', () => {
-        const [show, edit, duplicate, remove] = getResourceActions(getResource('authors')) as [
+        const authors = { ...getResource('authors'), open: 'panel' };
+        const [show, edit, duplicate, remove] = getResourceActions(authors) as [
             Action,
             Action,
             Action,
@@ -403,13 +404,9 @@ describe('getResourceActions', () => {
     const ids = (actions: Action[]) => actions.map((action) => action.id);
 
     it('gives every resource the built-in item actions, then those it declares', () => {
-        expect(ids(getResourceActions(getResource('authors')))).toEqual([
-            'show',
-            'edit',
-            'duplicate',
-            'delete',
-        ]);
-        const remove = getResourceActions(getResource('authors'))[3];
+        const authors = { ...getResource('authors'), open: 'panel' };
+        expect(ids(getResourceActions(authors))).toEqual(['show', 'edit', 'duplicate', 'delete']);
+        const remove = getResourceActions(authors)[3];
         expect(remove).toMatchObject({ kind: 'server', destructive: true, confirm: true });
     });
 
@@ -436,6 +433,7 @@ describe('getResourceActions', () => {
         // As laravel-panneau's `DeleteAction` declares it
         const resource = {
             ...getResource('authors'),
+            open: 'panel',
             actions: [
                 {
                     id: 'delete',
@@ -458,14 +456,17 @@ describe('getResourceActions', () => {
         });
     });
 
-    it('leaves out `show` when items open in their form', () => {
+    it('opens items in their form by default, and leaves out `show` there', () => {
         const resource = getResource('authors');
-        expect(getOpenMode(resource)).toBe('panel');
-        expect(getOpenMode({ ...resource, open: 'site' })).toBe('panel');
-        const opened = { ...resource, open: 'edit' };
-        expect(getOpenMode(opened)).toBe('edit');
-        expect(ids(getResourceActions(opened))).toEqual(['edit', 'duplicate', 'delete']);
-        expect(ids(resolveList(opened).actions.row)).toEqual(['edit']);
+        expect(getOpenMode(resource)).toBe('edit');
+        expect(getOpenMode({ ...resource, open: 'edit' })).toBe('edit');
+        expect(getOpenMode({ ...resource, open: 'site' })).toBe('edit');
+        expect(ids(getResourceActions(resource))).toEqual(['edit', 'duplicate', 'delete']);
+        expect(ids(resolveList(resource).actions.row)).toEqual(['edit']);
+        // The panel only when the resource asks for it
+        const panel = { ...resource, open: 'panel' };
+        expect(getOpenMode(panel)).toBe('panel');
+        expect(ids(resolveList(panel).actions.row)).toEqual(['show', 'edit']);
     });
 });
 

@@ -132,8 +132,8 @@ const BUILT_IN_ITEM_ACTION_DEFINITIONS: Readonly<Record<BuiltInItemAction, Actio
  * `duplicate`, `delete`, or those of its `itemActions`, in their order), then the actions it
  * declares. A declared action with the id of a built-in one replaces it, at its place, with the
  * built-in one's placement, confirmation, `destructive` and `dryRun` when it doesn't set them, and
- * is left out with it when `itemActions` doesn't list it. With `"open": "edit"`, `show` is left out: it
- * would go to the edit form too. Abilities of the items then hide what they don't allow.
+ * is left out with it when `itemActions` doesn't list it. Unless items open in the panel
+ * (`"open": "panel"`), `show` is left out: it would go to the edit form too. Abilities of the items then hide what they don't allow.
  */
 export function getResourceActions(resource: Resource): Action[] {
     const declared = resource.actions ?? [];
@@ -162,11 +162,12 @@ export function getResourceActions(resource: Resource): Action[] {
 }
 
 /**
- * Where the title of an item goes (`open` of the resource, decision 0040): `panel`, the show route
- * with the item's details next to the list, or `edit`, its form. A value it doesn't know is `panel`.
+ * Where the title of an item goes (`open` of the resource, decision 0082): `edit`, its form, the
+ * default, or `panel`, the show route with the item's details next to the list. A value it doesn't
+ * know is `edit`.
  */
 export function getOpenMode(resource: Resource): 'panel' | 'edit' {
-    return resource.open === 'edit' ? 'edit' : 'panel';
+    return resource.open === 'panel' ? 'panel' : 'edit';
 }
 
 /**

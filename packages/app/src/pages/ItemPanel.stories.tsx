@@ -31,6 +31,8 @@ const input: DefinitionInput = {
             id: 'articles',
             label: { singular: 'article', plural: 'articles' },
             itemTitle: 'title',
+            // Titles open the panel, which shows the preview (decision 0082)
+            open: 'panel',
             fields: [
                 { name: 'title', type: 'text', label: 'Title' },
                 {
@@ -73,6 +75,7 @@ const library: DefinitionInput['resources'][number] = {
     id: 'images',
     kind: 'media',
     label: { singular: 'image', plural: 'images' },
+    open: 'panel',
     itemTitle: 'name',
     fields: [
         { name: 'file', type: 'file', label: 'File' },

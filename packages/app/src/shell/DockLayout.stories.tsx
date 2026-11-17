@@ -24,6 +24,11 @@ const input: DefinitionInput = {
     name: 'Northwind Journal',
     locale: 'en',
     locales: ['en'],
+    // The languages of the interface, with a switcher (decision 0083)
+    interfaceLocales: [
+        { locale: 'en', label: 'English', url: '/admin/api/locale/en' },
+        { locale: 'fr', label: 'Français', url: '/admin/api/locale/fr' },
+    ],
     api: { baseUrl: '/api' },
     resources: ['pages', 'articles', 'categories', 'authors', 'media'].map((id) => ({
         id,
@@ -68,7 +73,13 @@ function createData() {
     };
 }
 
-function Layout({ onLogOut }: { onLogOut?: () => void }) {
+function Layout({
+    onLogOut,
+    onLocaleChange,
+}: {
+    onLogOut?: () => void;
+    onLocaleChange?: (locale: string) => void;
+}) {
     const [colorScheme, setColorScheme] = useState<ColorSchemePreference>('light');
     // The "Go to…" palette searches through the data adapter.
     const [{ adapter, client }] = useState(createData);
@@ -84,6 +95,7 @@ function Layout({ onLogOut }: { onLogOut?: () => void }) {
                             colorScheme={colorScheme}
                             onColorSchemeChange={setColorScheme}
                             onLogOut={onLogOut}
+                            onLocaleChange={onLocaleChange}
                         >
                             <Stack gap={4}>
                                 <Heading level={1}>Articles</Heading>
@@ -105,7 +117,7 @@ const meta = {
     title: 'App/Dock layout',
     component: Layout,
     parameters: { layout: 'fullscreen' },
-    args: { onLogOut: fn() },
+    args: { onLogOut: fn(), onLocaleChange: fn() },
 } satisfies Meta<typeof Layout>;
 
 export default meta;
@@ -141,7 +153,7 @@ export const Group: Story = {
     },
 };
 
-/** The user's menu: the color scheme, and "Log out". */
+/** The user's menu: the color scheme, the language (decision 0083), and "Log out". */
 export const UserMenu: Story = {
     play: async ({ args, canvasElement }) => {
         const canvas = within(canvasElement);
@@ -152,8 +164,19 @@ export const UserMenu: Story = {
             'aria-checked',
             'true',
         );
+        await expect(
+            within(within(menu).getByRole('group', { name: 'Language' })).getByRole(
+                'menuitemradio',
+                { name: 'English' },
+            ),
+        ).toHaveAttribute('aria-checked', 'true');
         await userEvent.click(within(menu).getByRole('menuitem', { name: 'Log out' }));
         await expect(args.onLogOut).toHaveBeenCalledTimes(1);
+
+        await userEvent.click(canvas.getByRole('button', { name: 'Ada Lovelace' }));
+        const reopened = await body.findByRole('menu', { name: 'Ada Lovelace' });
+        await userEvent.click(within(reopened).getByRole('menuitemradio', { name: 'Français' }));
+        await expect(args.onLocaleChange).toHaveBeenCalledWith('fr');
     },
 };
 
