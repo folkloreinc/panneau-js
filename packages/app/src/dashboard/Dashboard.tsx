@@ -392,10 +392,10 @@ function Widgets({ definition, basePath }: DashboardProps) {
 }
 
 /**
- * The built-in `dashboard` page (decisions 0064 and 0084): the widgets of `definition.dashboard`, in a grid of
- * 12 columns from their `width`, one column on a phone. Each widget draws its skeleton while it
- * loads, its error with "Try again", and nothing when the user can't see it, without touching the
- * others. Without widgets, the cards of the resources.
+ * The built-in `dashboard` page (decisions 0064 and 0084): the widgets of `definition.dashboard`,
+ * in a grid of 12 columns from their `width`, one column on a phone. Each widget draws its skeleton
+ * while it loads, its error with "Try again", and nothing when the user can't see it, without
+ * touching the others. Without widgets, the cards of the resources.
  */
 export function Dashboard({ definition, basePath }: DashboardProps) {
     return (definition.dashboard?.widgets.length ?? 0) > 0 ? (

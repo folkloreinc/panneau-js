@@ -407,9 +407,10 @@ function writableValues(resource: ResourceInput, body: Values): Values {
  * `view`, `update` or `delete` on those requests; items leave out the values of fields with
  * `view: false`, and writes ignore those of fields with `update: false`. A resource with `types`
  * needs the `type` of a new item, among the types it can create, and its items have the fields of
- * their type (decision 0077). A list with `aggregates` answers `GET /resources/{resource}/aggregate`
- * with `aggregateItems()` (decision 0084). Values are checked with the portable rules. Used to test the conformance kit, and to develop frontends without a real
- * backend.
+ * their type (decision 0077). A list with `aggregates` answers
+ * `GET /resources/{resource}/aggregate` with `aggregateItems()` (decision 0084). Values are checked
+ * with the portable rules. Used to test the conformance kit, and to develop frontends without a
+ * real backend.
  */
 export function createMockBackend(options: MockBackendOptions): MockBackend {
     const { definition, items = {} } = options;
