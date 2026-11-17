@@ -176,6 +176,11 @@
     list-style: none;
 }
 
+/* The links of a closed group: `display: flex` would show them despite `hidden` */
+.list[hidden] {
+    display: none;
+}
+
 .separator {
     width: 100%;
     margin: 0;

@@ -144,7 +144,11 @@ export const CollapsibleGroups: Story = {
         const navigation = within(canvas.getByRole('navigation', { name: 'Main navigation' }));
         const settings = navigation.getByRole('button', { name: 'Settings' });
         await expect(settings).toHaveAttribute('aria-expanded', 'false');
-        await expect(navigation.queryByRole('link', { name: 'Tags' })).toBeNull();
+        // Hidden on screen too, not only for assistive technologies
+        const settingsLinks = navigation
+            .getByRole('link', { name: 'Tags', hidden: true })
+            .closest('ul');
+        await expect(settingsLinks).toHaveStyle({ display: 'none' });
         await expect(navigation.getByRole('button', { name: 'Content' })).toHaveAttribute(
             'aria-expanded',
             'true',
@@ -156,6 +160,12 @@ export const CollapsibleGroups: Story = {
         await expect(settings).toHaveAttribute('aria-expanded', 'true');
         await expect(navigation.getByRole('link', { name: 'Tags' })).toBeVisible();
         await expect(window.localStorage.getItem('panneau:nav-group:Settings')).toBe('open');
+
+        // Closed again by the user, even though it was open
+        await userEvent.click(settings);
+        await expect(settings).toHaveAttribute('aria-expanded', 'false');
+        await expect(settingsLinks).toHaveStyle({ display: 'none' });
+        await expect(window.localStorage.getItem('panneau:nav-group:Settings')).toBe('closed');
 
         const articles = navigation.getByRole('link', { name: 'Articles' });
         await expect(Number(getComputedStyle(articles).fontWeight)).toBeGreaterThan(
