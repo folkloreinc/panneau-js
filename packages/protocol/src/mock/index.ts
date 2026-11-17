@@ -1,3 +1,4 @@
+import { aggregateItems, getFilterRange, readAggregateQuery } from '../aggregates';
 import {
     CONTEXT_HEADER,
     CONTEXT_PROBLEM_TYPE,
@@ -8,7 +9,14 @@ import {
     isBuiltInItemAction,
 } from '../constants';
 import { type ContextValues, contextBefore, parseContextHeader } from '../context';
+import {
+    type WidgetListQuery,
+    getDashboardWidgets,
+    getSummaryWidgets,
+    readWidgetDataQuery,
+} from '../dashboards';
 import { getMediaLibraries } from '../libraries';
+import type { WidgetPeriod } from '../periods';
 import { type ListQuery, fromSearchParams, isFilterRange, matchesFilterRange } from '../query';
 import { ITEM_TYPE_KEY, getResourceType, getTypeFields, hasResourceTypes } from '../resourceTypes';
 import { type RuleFailure, checkValues } from '../rules';
@@ -66,11 +74,16 @@ export interface MockBackendOptions {
      */
     auth?: MockAuthOptions;
     /**
-     * The data of `GET /dashboard/widgets/{widget}`, per widget id (decision 0064): the data, a
-     * function that returns it for the current context, or a `Response` to answer as is (a `403`,
-     * a slow or failing widget). Data that doesn't have the shape of a built-in type is a `500`
-     * problem that names the wrong keys, as a backend answers it. Widgets of the dashboard without
-     * data, and built-in `stat` and `list` on a resource, are a `404`.
+     * The data of `GET /dashboard/widgets/{widget}?page={page}`, per widget id (decision 0064): the
+     * data, a function that returns it for the current context and page, or a `Response` to answer
+     * as is (a `403`, a slow or failing widget). It answers the widgets of every dashboard page
+     * (decision 0084), and those of the home page without `page`, and with `?resource={resource}`,
+     * those of the summary of a resource, whose functions get the filters and the search of the
+     * list. Data that doesn't have the shape of a built-in type is a `500` problem that names the
+     * wrong keys, as a backend answers it. Widgets without data, built-in widgets on a resource, and
+     * widgets that aren't on the page or in the summary are a `404`; `page` and `resource` together,
+     * or a wrong period, are a `422`, and the summary of a resource that can't be listed a `403`.
+     * Functions get the period of the overview (decision 0084).
      */
     widgets?: Record<string, MockWidget>;
     /**
@@ -92,6 +105,17 @@ export type MockWidget =
 export interface MockWidgetContext {
     /** The values of the context of the request. */
     context: ContextValues;
+    /**
+     * The page of the dashboard of the widget: `home` without `page` in the request, `null` for a
+     * widget of a summary.
+     */
+    page: string | null;
+    /** The resource whose summary holds the widget, or `null` for a widget of a dashboard page. */
+    resource: string | null;
+    /** In a summary: the filters and the search of the list (`filter[…]`, `q`). Empty otherwise. */
+    query: WidgetListQuery;
+    /** The period of the overview (`period[option]`, `period[from]`, `period[to]`), or `null`. */
+    period: WidgetPeriod | null;
     /** The current items of a resource, in the context. */
     items: (resource: string) => Item[];
 }
@@ -406,9 +430,10 @@ function writableValues(resource: ResourceInput, body: Values): Values {
  * `view`, `update` or `delete` on those requests; items leave out the values of fields with
  * `view: false`, and writes ignore those of fields with `update: false`. A resource with `types`
  * needs the `type` of a new item, among the types it can create, and its items have the fields of
- * their type (decision 0077). Values are checked with
- * the portable rules. Used to test the conformance kit, and to develop frontends without a real
- * backend.
+ * their type (decision 0077). A list with `aggregates` answers
+ * `GET /resources/{resource}/aggregate` with `aggregateItems()` (decision 0084). Values are checked
+ * with the portable rules. Used to test the conformance kit, and to develop frontends without a
+ * real backend.
  */
 export function createMockBackend(options: MockBackendOptions): MockBackend {
     const { definition, items = {} } = options;
@@ -785,15 +810,35 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
         return values;
     };
     /** The definition for the values of the context: the `value` and `valueLabel` of each param. */
-    // A widget of the dashboard with data of its own (decision 0064)
+    // A widget with data of its own, of a dashboard page (decisions 0064 and 0084) or of the
+    // summary of a resource
     const answerWidget = async (
         id: string,
+        params: URLSearchParams,
         values: ContextValues,
         inScope: (resource: string, list: Item[]) => Item[],
     ): Promise<Response> => {
-        const widget = definitionFor(values).dashboard?.widgets.find(
-            (candidate) => candidate.id === id,
-        );
+        const read = readWidgetDataQuery(params);
+        if (read.errors !== undefined) {
+            return problem(422, 'The given data was invalid.', {
+                type: 'urn:panneau:problem:validation',
+                errors: read.errors,
+            });
+        }
+        const current = definitionFor(values);
+        if (read.resource !== undefined) {
+            const summarized = current.resources.find(
+                (candidate) => candidate.id === read.resource,
+            );
+            if (summarized?.summary !== undefined && summarized.abilities?.viewAny === false) {
+                return problem(403, 'This resource can’t be listed.');
+            }
+        }
+        const widget = (
+            read.resource !== undefined
+                ? getSummaryWidgets(current, read.resource)
+                : getDashboardWidgets(current, read.page)
+        ).find((candidate) => candidate.id === id);
         const data = options.widgets?.[id];
         if (widget === undefined || getWidgetResource(widget) !== null || data === undefined) {
             return problem(404, 'Widget not found.');
@@ -802,6 +847,10 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             typeof data === 'function'
                 ? await data({
                       context: values,
+                      page: read.page ?? null,
+                      resource: read.resource ?? null,
+                      query: read.query ?? {},
+                      period: read.period,
                       items: (resource) => inScope(resource, store.get(resource) ?? []),
                   })
                 : data;
@@ -927,7 +976,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
             segments[1] === 'widgets' &&
             method === 'GET'
         ) {
-            return answerWidget(segments[2] ?? '', context, inScope);
+            return answerWidget(segments[2] ?? '', url.searchParams, context, inScope);
         }
         if (segments.length === 1 && segments[0] === 'search' && method === 'GET') {
             return search(url.searchParams, inScope);
@@ -946,6 +995,38 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
         }
         // The items in the context: those that requests read and act on
         const scoped = inScope(resource.id, list);
+
+        // The aggregates of the list (decision 0084): the items the user can list, filtered as the
+        // list filters them, counted or summed, and grouped by a period or a field.
+        if (segments.length === 3 && segments[2] === 'aggregate' && method === 'GET') {
+            if (resource.abilities?.viewAny === false) {
+                return problem(403, 'This resource can’t be listed.');
+            }
+            const aggregates = resource.list?.aggregates;
+            if (aggregates === undefined) {
+                return problem(404, 'This resource has no aggregates.');
+            }
+            const read = readAggregateQuery(url.searchParams, aggregates);
+            if (read.errors !== undefined) {
+                return problem(422, 'The given data was invalid.', {
+                    type: 'urn:panneau:problem:validation',
+                    errors: read.errors,
+                });
+            }
+            const query = fromSearchParams(url.searchParams);
+            const group = read.query.group;
+            return json(
+                200,
+                aggregateItems(applyQuery(scoped, { ...query, sort: [] }), read.query, {
+                    fields: [
+                        ...resource.fields,
+                        ...(resource.types ?? []).flatMap((type) => type.fields),
+                    ],
+                    range:
+                        group?.type === 'period' ? getFilterRange(query, group.field) : undefined,
+                }),
+            );
+        }
 
         if (segments.length === 2) {
             if (method === 'GET') {

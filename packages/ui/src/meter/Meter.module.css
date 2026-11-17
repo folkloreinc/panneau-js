@@ -1,0 +1,23 @@
+.meter {
+    display: block;
+    min-width: 0;
+}
+
+.track {
+    position: relative;
+    height: var(--panneau-meter-height, 0.375rem);
+    overflow: hidden;
+    background-color: var(--panneau-meter-track-bg, var(--panneau-color-surface-sunken));
+    border-radius: var(--panneau-meter-radius, var(--panneau-radius-full));
+}
+
+/* The fill: the first categorical chart color, or the solid color of a tone past the target. */
+.fill {
+    height: 100%;
+    background-color: var(--_panneau-meter-color);
+    border-radius: inherit;
+}
+
+.toned .fill {
+    background-color: var(--panneau-tone-solid);
+}

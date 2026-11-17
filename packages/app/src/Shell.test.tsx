@@ -651,6 +651,44 @@ describe('the app shell', () => {
         });
     });
 
+    it('opens a dashboard page from a menu, with its own widgets (decision 0084)', async () => {
+        const user = userEvent.setup();
+        renderApp({
+            pages: {
+                home: { component: 'dashboard' },
+                activity: {
+                    component: 'dashboard',
+                    label: 'Activity',
+                    widgets: [
+                        {
+                            id: 'pages-count',
+                            type: 'stat',
+                            label: 'All pages',
+                            settings: { resource: 'pages' },
+                        },
+                    ],
+                },
+            },
+            menus: { main: [{ type: 'resources' }, { type: 'page', page: 'activity' }] },
+        });
+        // The home page without widgets keeps the cards of the resources
+        expect(screen.getByText('Welcome, Ada.')).toBeInTheDocument();
+
+        await user.click(navigation().getByRole('link', { name: 'Activity' }));
+        expect(window.location.pathname).toBe('/panneau/pages/activity');
+        expect(screen.getByRole('heading', { level: 1, name: 'Activity' })).toBeInTheDocument();
+        expect(screen.queryByText('Welcome, Ada.')).toBeNull();
+        await waitFor(() => expect(document.title).toBe('Activity · Test site'));
+        expect(await screen.findByRole('link', { name: 'All pages 2' })).toHaveAttribute(
+            'href',
+            '/panneau/resources/pages',
+        );
+        expect(navigation().getByRole('link', { name: 'Activity' })).toHaveAttribute(
+            'aria-current',
+            'page',
+        );
+    });
+
     it('shows the actions placed in form on the edit page of an item, runs them, and leaves the page of a deleted item', async () => {
         const user = userEvent.setup();
         window.history.replaceState(null, '', '/panneau/resources/pages/1/edit');

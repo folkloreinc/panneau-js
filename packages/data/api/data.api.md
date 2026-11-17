@@ -7,6 +7,7 @@
 import type { ActionRequest } from '@panneau/protocol';
 import type { ActionResult } from '@panneau/protocol';
 import type { ActionRun } from '@panneau/protocol';
+import type { AggregateRequest } from '@panneau/protocol';
 import type { ContextOption } from '@panneau/protocol';
 import type { ContextValues } from '@panneau/protocol';
 import type { Definition } from '@panneau/protocol';
@@ -30,6 +31,7 @@ import type { UploadSignRequest } from '@panneau/protocol';
 import type { User } from '@panneau/protocol';
 import type { ValidationIssue } from '@panneau/protocol';
 import type { WebAuthnOptions } from '@panneau/protocol';
+import type { WidgetDataRequest } from '@panneau/protocol';
 
 // @public
 export interface AccountValues {
@@ -97,9 +99,10 @@ export interface DataAdapter {
         q?: string;
     }): Promise<ContextOption[]>;
     getDefinition(options?: RequestOptions): Promise<Definition>;
+    getResourceAggregate?(resource: string, request: AggregateRequest, options?: RequestOptions): Promise<unknown>;
     getSession(options?: RequestOptions): Promise<Session>;
     getTwoFactor?(options?: RequestOptions): Promise<TwoFactorStatus>;
-    getWidgetData(widget: string, options?: RequestOptions): Promise<unknown>;
+    getWidgetData(widget: string, options?: WidgetDataOptions): Promise<unknown>;
     list(resource: string, query?: ListQuery, options?: RequestOptions): Promise<ListResponse>;
     listActionRuns(options?: RequestOptions): Promise<ActionRun[]>;
     listPasskeys?(options?: RequestOptions): Promise<Passkey[]>;
@@ -304,6 +307,10 @@ export type Values = Record<string, unknown>;
 
 // @public
 export type WebAuthnCredential = Record<string, unknown>;
+
+// @public
+export interface WidgetDataOptions extends RequestOptions, WidgetDataRequest {
+}
 
 // (No @packageDocumentation comment for this package)
 

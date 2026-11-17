@@ -11,6 +11,7 @@ import {
 import type {
     ActionRequest,
     ActionRun,
+    AggregateRequest,
     Definition,
     Item,
     ListQuery,
@@ -21,16 +22,17 @@ import type {
 
 import type { ActionResponse, Values } from '../adapter';
 import { useDataAdapter } from './context';
-import { type SearchKeyOptions, queryKeys } from './keys';
+import { type SearchKeyOptions, type WidgetKeyOptions, queryKeys } from './keys';
 import {
     definitionQueryOptions,
     itemPreviewQueryOptions,
+    resourceAggregateQueryOptions,
     resourceItemQueryOptions,
     resourceListQueryOptions,
     searchQueryOptions,
     widgetDataQueryOptions,
 } from './options';
-import { invalidateActionResult } from './refresh';
+import { invalidateActionResult, invalidateLists } from './refresh';
 
 /** Options of a query hook: TanStack Query's options, without the key and the function. */
 export type QueryHookOptions<TData, TKey extends readonly unknown[]> = Omit<
@@ -103,16 +105,43 @@ export function useSearch(
 }
 
 /**
- * The data of a widget of the dashboard with data of its own (decision 0064), unchecked: check it
- * with `checkWidgetData()` of `@panneau/protocol/runtime`. A `403` fails with a `ForbiddenError`:
- * the widget is hidden.
+ * The data of a widget of a dashboard with data of its own (decision 0064), unchecked: check it
+ * with `checkWidgetData()` of `@panneau/protocol/runtime`. `page` is the dashboard page of the
+ * widget (decision 0084), the home page without it; `resource` the resource whose summary holds
+ * it, with `query`, the filters and the search of its list; `period` the period of its overview
+ * (`period[option]`, `period[from]`, `period[to]`). Changes to the items of that resource
+ * refetch the widgets of its summary. A `403` fails with a `ForbiddenError`: the widget is hidden.
  */
 export function useWidgetData(
     widget: string,
-    options: QueryHookOptions<unknown, ReturnType<typeof queryKeys.widget>> = {},
+    {
+        page,
+        resource,
+        query,
+        period,
+        ...options
+    }: QueryHookOptions<unknown, ReturnType<typeof queryKeys.widget>> & WidgetKeyOptions = {},
 ): UseQueryResult<unknown> {
     const adapter = useDataAdapter();
-    return useQuery({ ...widgetDataQueryOptions(adapter, widget), ...options });
+    return useQuery({
+        ...widgetDataQueryOptions(adapter, widget, { page, resource, query, period }),
+        ...options,
+    });
+}
+
+/**
+ * The aggregates of a resource (`GET /resources/{resource}/aggregate`, decision 0084): the count
+ * or the sum of its list with the filters and the search of `request`, grouped by its `group`, in
+ * the shape of a widget, unchecked: check it with `checkWidgetData()` of
+ * `@panneau/protocol/runtime`. Changes to the items of the resource refetch it.
+ */
+export function useResourceAggregate(
+    resource: string,
+    request: AggregateRequest = {},
+    options: QueryHookOptions<unknown, ReturnType<typeof queryKeys.aggregate>> = {},
+): UseQueryResult<unknown> {
+    const adapter = useDataAdapter();
+    return useQuery({ ...resourceAggregateQueryOptions(adapter, resource, request), ...options });
 }
 
 /** Creates an item, then refetches the lists of the resource. */
@@ -123,7 +152,7 @@ export function useCreateItem(resource: string): UseMutationResult<Item, Error, 
         mutationFn: (values: Values) => adapter.create(resource, values),
         onSuccess: (item) => {
             client.setQueryData(queryKeys.item(resource, item.id), item);
-            return client.invalidateQueries({ queryKey: queryKeys.lists(resource) });
+            return invalidateLists(client, resource);
         },
     });
 }
@@ -162,7 +191,7 @@ export function useUpdateItem(
                       }
                     : list,
             );
-            return client.invalidateQueries({ queryKey: queryKeys.lists(resource) });
+            return invalidateLists(client, resource);
         },
     });
 }
@@ -175,7 +204,7 @@ export function useDeleteItem(resource: string): UseMutationResult<void, Error, 
         mutationFn: (id: string) => adapter.delete(resource, id),
         onSuccess: (_result, id) => {
             client.removeQueries({ queryKey: queryKeys.item(resource, id) });
-            return client.invalidateQueries({ queryKey: queryKeys.lists(resource) });
+            return invalidateLists(client, resource);
         },
     });
 }
@@ -196,7 +225,7 @@ export function useDuplicateItem(resource: string): UseMutationResult<Item, Erro
         },
         onSuccess: (item) => {
             client.setQueryData(queryKeys.item(resource, item.id), item);
-            return client.invalidateQueries({ queryKey: queryKeys.lists(resource) });
+            return invalidateLists(client, resource);
         },
     });
 }

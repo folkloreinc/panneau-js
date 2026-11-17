@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-query';
 
 import type {
+    AggregateRequest,
     Definition,
     Item,
     ListQuery,
@@ -16,7 +17,7 @@ import type {
 } from '@panneau/protocol';
 
 import type { DataAdapter, Values } from '../adapter';
-import { type SearchKeyOptions, queryKeys } from './keys';
+import { type SearchKeyOptions, type WidgetKeyOptions, queryKeys } from './keys';
 
 /**
  * Query options made by the `*QueryOptions()` functions. Their key is tagged with the type of the
@@ -114,17 +115,49 @@ export function searchQueryOptions(
 }
 
 /**
- * Query options of the data of a widget of the dashboard, with data of its own (decision 0064):
- * the shape of its type, unchecked. Widgets on a resource read its list instead.
+ * Query options of the data of a widget of a dashboard, with data of its own (decision 0064): the
+ * shape of its type, unchecked. Widgets on a resource read its list instead. `page` is the
+ * dashboard page of the widget (decision 0084), the home page without it; `resource` the resource
+ * whose summary holds it, with `query`, the filters and the search of its list; `period` the
+ * period of its overview.
  */
 export function widgetDataQueryOptions(
     adapter: DataAdapter,
     widget: string,
+    { page, resource, query, period }: WidgetKeyOptions = {},
 ): DataQueryOptions<unknown, ReturnType<typeof queryKeys.widget>> {
+    const request = {
+        ...(page !== undefined && { page }),
+        ...(resource !== undefined && { resource }),
+        ...(query !== undefined && { query }),
+        ...(period !== undefined && { period }),
+    };
     return queryOptions({
-        queryKey: queryKeys.widget(widget),
-        queryFn: ({ signal }) => adapter.getWidgetData(widget, { signal }),
+        queryKey: queryKeys.widget(widget, request),
+        queryFn: ({ signal }) => adapter.getWidgetData(widget, { signal, ...request }),
         // The dashboard is a glance: a minute old is fresh enough when the user comes back to it.
         staleTime: 60_000,
+    });
+}
+
+/**
+ * Query options of the aggregates of a resource (decision 0084): a count or a sum of its list, in
+ * the shape of a `stat`, a `series` or a `breakdown`, unchecked. The previous answer stays while
+ * the next one loads. Fails when the adapter has no `getResourceAggregate()`.
+ */
+export function resourceAggregateQueryOptions(
+    adapter: DataAdapter,
+    resource: string,
+    request: AggregateRequest = {},
+): DataQueryOptions<unknown, ReturnType<typeof queryKeys.aggregate>> {
+    return queryOptions({
+        queryKey: queryKeys.aggregate(resource, request),
+        queryFn: ({ signal }) => {
+            if (adapter.getResourceAggregate === undefined) {
+                throw new Error('The data adapter has no getResourceAggregate().');
+            }
+            return adapter.getResourceAggregate(resource, request, { signal });
+        },
+        placeholderData: keepPreviousData,
     });
 }

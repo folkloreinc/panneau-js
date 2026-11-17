@@ -1,19 +1,29 @@
 import { type CSSProperties, Component, type ReactNode, createElement } from 'react';
 import { Link } from 'react-aria-components';
+import type { FormatNumberOptions } from 'react-intl';
 
-import { usePlugins } from '@panneau/core';
+import { usePanneau, usePlugins } from '@panneau/core';
 import { appMessages } from '@panneau/intl';
 import type {
+    BreakdownWidgetData,
     Definition,
     ListWidgetData,
     SeriesWidgetData,
     StatWidgetData,
     Widget,
 } from '@panneau/protocol';
-import { isBuiltInWidgetType } from '@panneau/protocol/runtime';
+import {
+    HOME_PAGE,
+    type WidgetPeriod,
+    followsPeriod,
+    getDashboardPeriod,
+    getDashboardWidgets,
+    isBuiltInWidgetType,
+} from '@panneau/protocol/runtime';
 import {
     Alert,
     Badge,
+    BarChart,
     Button,
     Card,
     LineChart,
@@ -29,11 +39,15 @@ import { HomePage } from '../pages/HomePage';
 import { PageHeader, PageLayout } from '../pages/PageHeader';
 import pageStyles from '../pages/pages.module.css';
 import styles from './Dashboard.module.css';
-import { type WidgetContent, useWidgetContent } from './widgetContent';
+import { PeriodControl } from './PeriodControl';
+import { type PeriodState, useDashboardPeriod } from './period';
+import { type WidgetContent, type WidgetSummary, useWidgetContent } from './widgetContent';
 
 export interface DashboardProps {
     definition: Definition;
     basePath: string;
+    /** The id of the page in `pages` (decision 0084): `home`, the home page, by default. */
+    page?: string;
 }
 
 /** Columns of the grid of 12 a widget takes, without a `width`. */
@@ -97,6 +111,8 @@ function WidgetSkeleton({ widget }: { widget: Widget }) {
                         <Stat label={intl.formatMessage(appMessages.widgetTotal)} />
                         <LineChart label={widget.label ?? ''} />
                     </div>
+                ) : widget.type === 'breakdown' ? (
+                    <BarChart label={widget.label ?? ''} />
                 ) : widget.type === 'list' ? (
                     <ul className={styles.items}>
                         {[0, 1, 2].map((index) => (
@@ -125,27 +141,46 @@ function formatPointDate(
         : intl.formatDate(value, { month: 'short', day: 'numeric', timeZone: 'UTC' });
 }
 
-function StatBody({ widget, data }: { widget: Widget; data: StatWidgetData }) {
+/** The options of the numbers of a widget: amounts in a currency, for a sum of `money`. */
+function formatOf(currency: string | undefined): FormatNumberOptions | undefined {
+    return currency !== undefined ? { style: 'currency', currency } : undefined;
+}
+
+interface BodyProps<Data> {
+    widget: Widget;
+    data: Data;
+    /** The currency of the values, for a sum of `money`. */
+    currency?: string | undefined;
+}
+
+function StatBody({ widget, data, currency }: BodyProps<StatWidgetData>) {
     return (
         <Card className={styles.widget}>
             <Stat
                 label={widget.label}
                 value={data.value}
+                format={formatOf(currency)}
                 help={data.help ?? undefined}
                 tone={(data.tone ?? undefined) as Tone | undefined}
                 href={data.url ?? undefined}
+                target={data.target}
             />
         </Card>
     );
 }
 
-function SeriesBody({ widget, data }: { widget: Widget; data: SeriesWidgetData }) {
+function SeriesBody({ widget, data, currency }: BodyProps<SeriesWidgetData>) {
     const intl = usePanneauIntl();
+    const format = formatOf(currency);
     return (
         <Card title={widget.label} className={styles.widget}>
             <div className={styles.series}>
                 {data.total !== undefined && data.total !== null ? (
-                    <Stat label={intl.formatMessage(appMessages.widgetTotal)} value={data.total} />
+                    <Stat
+                        label={intl.formatMessage(appMessages.widgetTotal)}
+                        value={data.total}
+                        format={format}
+                    />
                 ) : null}
                 <LineChart
                     label={widget.label ?? intl.formatMessage(appMessages.widgetTotal)}
@@ -153,8 +188,43 @@ function SeriesBody({ widget, data }: { widget: Widget; data: SeriesWidgetData }
                         label: formatPointDate(intl, point.date, data.period),
                         value: point.value,
                     }))}
+                    formatValue={(value) => intl.formatNumber(value, format)}
                 />
             </div>
+        </Card>
+    );
+}
+
+function BreakdownBody({ widget, data, currency }: BodyProps<BreakdownWidgetData>) {
+    const intl = usePanneauIntl();
+    const format = formatOf(currency);
+    const other = data.other ?? null;
+    return (
+        <Card title={widget.label} className={styles.widget}>
+            {data.items.length === 0 && (other === null || other <= 0) ? (
+                <p className={styles.empty}>{intl.formatMessage(appMessages.widgetEmpty)}</p>
+            ) : (
+                <div className={styles.series}>
+                    {data.total !== undefined && data.total !== null ? (
+                        <Stat
+                            label={intl.formatMessage(appMessages.widgetTotal)}
+                            value={data.total}
+                            format={format}
+                        />
+                    ) : null}
+                    <BarChart
+                        label={widget.label ?? intl.formatMessage(appMessages.widgetTotal)}
+                        items={data.items.map((item) => ({
+                            label: item.label,
+                            value: item.value,
+                            tone: (item.tone ?? undefined) as Tone | undefined,
+                            href: item.url ?? undefined,
+                        }))}
+                        other={other}
+                        formatValue={(value) => intl.formatNumber(value, format)}
+                    />
+                </div>
+            )}
         </Card>
     );
 }
@@ -233,11 +303,31 @@ function WidgetBody({
     }
     switch (widget.type) {
         case 'stat':
-            return <StatBody widget={widget} data={content.data as StatWidgetData} />;
+            return (
+                <StatBody
+                    widget={widget}
+                    data={content.data as StatWidgetData}
+                    currency={content.currency}
+                />
+            );
         case 'series':
-            return <SeriesBody widget={widget} data={content.data as SeriesWidgetData} />;
+            return (
+                <SeriesBody
+                    widget={widget}
+                    data={content.data as SeriesWidgetData}
+                    currency={content.currency}
+                />
+            );
         case 'list':
             return <ListBody widget={widget} data={content.data as ListWidgetData} />;
+        case 'breakdown':
+            return (
+                <BreakdownBody
+                    widget={widget}
+                    data={content.data as BreakdownWidgetData}
+                    currency={content.currency}
+                />
+            );
         default: {
             const Plugin = plugins.widgets.get(widget.type);
             return (
@@ -251,12 +341,22 @@ function WidgetBody({
     }
 }
 
-function DashboardWidget({ widget, definition, basePath }: DashboardProps & { widget: Widget }) {
+function DashboardWidget({
+    widget,
+    page,
+    summary,
+    period,
+    definition,
+    basePath,
+}: Omit<DashboardGridProps, 'widgets'> & { widget: Widget }) {
     const intl = usePanneauIntl();
     const plugins = usePlugins();
     const drawn = isBuiltInWidgetType(widget.type) || plugins.widgets.has(widget.type);
     const content = useWidgetContent({
         widget,
+        page,
+        summary,
+        period,
         definition,
         basePath,
         untitled: (id) => intl.formatMessage(appMessages.widgetUntitled, { id }),
@@ -286,41 +386,144 @@ function DashboardWidget({ widget, definition, basePath }: DashboardProps & { wi
     );
 }
 
-function Widgets({ definition, basePath }: DashboardProps) {
+export interface DashboardGridProps {
+    /** The widgets, in order. */
+    widgets: Widget[];
+    /** The page whose dashboard holds them, for the data of their own: the home page without it. */
+    page?: string | undefined;
+    /**
+     * The summary of a resource that holds them, instead of a page (decision 0084): the widgets on
+     * that resource and those with data of their own get the current query of its list.
+     */
+    summary?: WidgetSummary | undefined;
+    /** The period chosen in the overview: the widgets that follow it get it (decision 0084). */
+    period?: WidgetPeriod | null | undefined;
+    definition: Definition;
+    basePath: string;
+}
+
+/**
+ * The widgets of a dashboard (decision 0064), in a grid of 12 columns from their `width`, one
+ * column on a phone. Each widget draws its skeleton while it loads, its error with "Try again", and
+ * nothing when the user can't see it, without touching the others.
+ */
+export function DashboardGrid({
+    widgets,
+    page,
+    summary,
+    period,
+    definition,
+    basePath,
+}: DashboardGridProps) {
+    return (
+        <div className={styles.grid}>
+            {widgets.map((widget) => (
+                <DashboardWidget
+                    key={widget.id}
+                    widget={widget}
+                    page={page}
+                    summary={summary}
+                    period={period}
+                    definition={definition}
+                    basePath={basePath}
+                />
+            ))}
+        </div>
+    );
+}
+
+/** The period of a dashboard page in its header, with the widgets it changes (decision 0084). */
+function periodControl(
+    state: PeriodState,
+    options: readonly string[] | undefined,
+    widgets: Widget[],
+) {
+    return options !== undefined && widgets.length > 0 ? (
+        <PeriodControl
+            options={options}
+            value={state.option}
+            onChange={state.choose}
+            widgets={widgets}
+            following={widgets.filter((widget) => followsPeriod(widget))}
+        />
+    ) : undefined;
+}
+
+/** The home page with widgets: the name of the app and a welcome above them. */
+function HomeDashboard({ widgets, definition, basePath }: DashboardGridProps) {
     const intl = usePanneauIntl();
     const user = definition.user ?? null;
+    const options = getDashboardPeriod(definition)?.options;
+    const period = useDashboardPeriod(getDashboardPeriod(definition), usePanneau().router);
     useDocumentTitle([]);
     return (
         <PageLayout>
-            <PageHeader title={definition.name} />
+            <PageHeader title={definition.name} actions={periodControl(period, options, widgets)} />
             {user !== null ? (
                 <p className={pageStyles.intro}>
                     {intl.formatMessage(appMessages.welcome, { name: user.name })}
                 </p>
             ) : null}
-            <div className={styles.grid}>
-                {(definition.dashboard?.widgets ?? []).map((widget) => (
-                    <DashboardWidget
-                        key={widget.id}
-                        widget={widget}
-                        definition={definition}
-                        basePath={basePath}
-                    />
-                ))}
-            </div>
+            <DashboardGrid
+                widgets={widgets}
+                period={period.period}
+                definition={definition}
+                basePath={basePath}
+            />
+        </PageLayout>
+    );
+}
+
+/** Another dashboard page: its label, then its widgets, or a message without any. */
+function PageDashboard({
+    widgets,
+    page,
+    definition,
+    basePath,
+}: DashboardGridProps & { page: string }) {
+    const intl = usePanneauIntl();
+    const title = definition.pages?.[page]?.label ?? page;
+    const options = getDashboardPeriod(definition, page)?.options;
+    const period = useDashboardPeriod(getDashboardPeriod(definition, page), usePanneau().router);
+    useDocumentTitle([title]);
+    return (
+        <PageLayout>
+            <PageHeader title={title} actions={periodControl(period, options, widgets)} />
+            {widgets.length > 0 ? (
+                <DashboardGrid
+                    widgets={widgets}
+                    page={page}
+                    period={period.period}
+                    definition={definition}
+                    basePath={basePath}
+                />
+            ) : (
+                <p className={pageStyles.intro}>{intl.formatMessage(appMessages.dashboardEmpty)}</p>
+            )}
         </PageLayout>
     );
 }
 
 /**
- * The built-in `dashboard` page (decision 0064): the widgets of `definition.dashboard`, in a grid of
- * 12 columns from their `width`, one column on a phone. Each widget draws its skeleton while it
- * loads, its error with "Try again", and nothing when the user can't see it, without touching the
- * others. Without widgets, the cards of the resources.
+ * The built-in `dashboard` page (decisions 0064 and 0084): the widgets of its page, in a grid.
+ * The home page has the name of the app and a welcome above them, and the cards of the resources
+ * without widgets. Another page has its label above them, and says when it has none.
  */
-export function Dashboard({ definition, basePath }: DashboardProps) {
-    return (definition.dashboard?.widgets.length ?? 0) > 0 ? (
-        <Widgets definition={definition} basePath={basePath} />
+export function Dashboard({ definition, basePath, page = HOME_PAGE }: DashboardProps) {
+    const widgets = getDashboardWidgets(definition, page);
+    if (page !== HOME_PAGE) {
+        return (
+            <PageDashboard
+                key={page}
+                widgets={widgets}
+                page={page}
+                definition={definition}
+                basePath={basePath}
+            />
+        );
+    }
+    return widgets.length > 0 ? (
+        <HomeDashboard widgets={widgets} definition={definition} basePath={basePath} />
     ) : (
         <HomePage definition={definition} basePath={basePath} />
     );

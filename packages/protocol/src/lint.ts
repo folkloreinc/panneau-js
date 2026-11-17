@@ -1,9 +1,20 @@
+import { parseAggregateGroup, parseAggregateMeasure } from './aggregates';
+import { DASHBOARD_COMPONENT, HOME_PAGE, getSummaryPeriodFilter } from './dashboards';
 import { ITEM_TYPE_KEY } from './resourceTypes';
-import type { DefinitionInput, Field, LayoutNode, ResourceInput } from './schemas';
+import type {
+    DefinitionInput,
+    Field,
+    LayoutNode,
+    OverviewPeriod,
+    ResourceInput,
+    Widget,
+} from './schemas';
 import type { ValidationIssue } from './validate';
 import {
+    GROUPED_WIDGET_TYPES,
     RESOURCE_WIDGET_TYPES,
     WIDGET_RESERVED_QUERY_PARAMS,
+    getWidgetResource,
     isBuiltInWidgetType,
 } from './widgets';
 
@@ -101,6 +112,73 @@ function allFields(resource: ResourceInput, path: string): { field: Field; path:
     ];
 }
 
+/** Field types whose values can be summed: numbers, and amounts of `money` of one currency. */
+const SUMMABLE_TYPES = ['number', 'range', 'duration', 'money'];
+/** Field types whose days can be grouped by. */
+const DATE_TYPES = ['date', 'datetime'];
+/** Field types whose values are structures that can't be grouped by. */
+const UNGROUPABLE_TYPES = [
+    'richtext',
+    'media',
+    'image',
+    'file',
+    'group',
+    'repeater',
+    'json',
+    'embed',
+    'location',
+    'address',
+    'link',
+    'daterange',
+    'money',
+];
+
+/**
+ * The aggregates of a list (decision 0084): each one names a field of the resource that the user
+ * can view, `sum` a number or `money` of one currency, `dates` a date, `groupBy` a value.
+ */
+function checkAggregates(resource: ResourceInput, path: string, issues: ValidationIssue[]) {
+    const aggregates = resource.list?.aggregates;
+    if (aggregates === undefined) {
+        return;
+    }
+    const fields = allFields(resource, path).map(({ field }) => field);
+    const check = (key: 'sum' | 'groupBy' | 'dates', accepts: (field: Field) => string | null) => {
+        (aggregates[key] ?? []).forEach((name, index) => {
+            const issuePath = `${path}.list.aggregates.${key}.${index}`;
+            const field = fields.find((candidate) => candidate.name === name);
+            const message =
+                field === undefined
+                    ? `No field named \`${name}\`.`
+                    : field.abilities?.view === false
+                      ? `The user can't view \`${name}\`: it can't be aggregated.`
+                      : accepts(field);
+            if (message !== null) {
+                issues.push({ path: issuePath, message });
+            }
+        });
+    };
+    check('sum', (field) => {
+        if (!SUMMABLE_TYPES.includes(field.type)) {
+            return `\`${field.name}\` can't be summed: only \`number\`, \`range\`, \`duration\` and \`money\` fields can.`;
+        }
+        const currency = (field.settings as { currency?: unknown } | undefined)?.currency;
+        return field.type === 'money' && typeof currency !== 'string'
+            ? `\`${field.name}\` can't be summed: amounts add up only in one \`currency\`.`
+            : null;
+    });
+    check('dates', (field) =>
+        DATE_TYPES.includes(field.type)
+            ? null
+            : `\`${field.name}\` must be a \`date\` or a \`datetime\` to be grouped by period.`,
+    );
+    check('groupBy', (field) =>
+        UNGROUPABLE_TYPES.includes(field.type)
+            ? `The items can't be grouped by a \`${field.type}\` field.`
+            : null,
+    );
+}
+
 function checkResource(resource: ResourceInput, path: string, issues: ValidationIssue[]) {
     const names = fieldNames(resource.fields);
     if (names.size !== resource.fields.length) {
@@ -151,6 +229,7 @@ function checkResource(resource: ResourceInput, path: string, issues: Validation
             });
         }
     }
+    checkAggregates(resource, path, issues);
     (resource.actions ?? []).forEach((action, index) => {
         if (action.layout !== undefined) {
             checkLayout(
@@ -204,6 +283,26 @@ export function lintDefinition(definition: DefinitionInput): ValidationIssue[] {
         .map((resource) => resource.id);
     definition.resources.forEach((resource, index) => {
         checkResource(resource, `resources.${index}`, issues);
+        if (resource.summary !== undefined) {
+            const summaryPath = `resources.${index}.summary`;
+            const period = resource.summary.period;
+            if (period !== undefined) {
+                checkPeriod(period, `${summaryPath}.period`, issues);
+                if (getSummaryPeriodFilter(resource) === null) {
+                    issues.push({
+                        path: `${summaryPath}.period${period.filter !== undefined ? '.filter' : ''}`,
+                        message:
+                            period.filter !== undefined
+                                ? `The list of \`${resource.id}\` has no \`date-range\` filter \`${period.filter}\`.`
+                                : `The period of a summary is a \`date-range\` filter of the list of \`${resource.id}\`: it has none.`,
+                    });
+                }
+            }
+            checkWidgets(definition, resource.summary.widgets, `${summaryPath}.widgets`, issues, {
+                summaryOf: resource.id,
+                hasPeriod: period !== undefined,
+            });
+        }
         allFields(resource, `resources.${index}`).forEach(({ field, path }) => {
             if (
                 field.type === 'relation' &&
@@ -243,43 +342,237 @@ export function lintDefinition(definition: DefinitionInput): ValidationIssue[] {
             }
         });
     });
-    checkWidgets(definition, issues);
+    checkDashboards(definition, issues);
     return issues;
+}
+
+/**
+ * The dashboards (decision 0084): the widgets of each page whose component is the built-in
+ * `dashboard`, and those of `dashboard`, the shorthand of the home page, unless `pages.home` has
+ * its own, which can't come with them. Only a `dashboard` page has widgets.
+ */
+function checkDashboards(definition: DefinitionInput, issues: ValidationIssue[]) {
+    const home = definition.pages?.[HOME_PAGE];
+    const homePeriod =
+        (home?.component === DASHBOARD_COMPONENT ? home.period : undefined) ??
+        definition.dashboard?.period;
+    Object.entries(definition.pages ?? {}).forEach(([id, page]) => {
+        if (page.period !== undefined) {
+            if (page.component !== DASHBOARD_COMPONENT) {
+                issues.push({
+                    path: `pages.${id}.period`,
+                    message: `Only a \`${DASHBOARD_COMPONENT}\` page has a period.`,
+                });
+            } else {
+                checkPeriod(page.period, `pages.${id}.period`, issues);
+            }
+        }
+        if (page.widgets === undefined) {
+            return;
+        }
+        if (page.component !== DASHBOARD_COMPONENT) {
+            issues.push({
+                path: `pages.${id}.widgets`,
+                message: `Only a \`${DASHBOARD_COMPONENT}\` page has widgets.`,
+            });
+            return;
+        }
+        checkWidgets(definition, page.widgets, `pages.${id}.widgets`, issues, {
+            hasPeriod: (id === HOME_PAGE ? homePeriod : page.period) !== undefined,
+        });
+    });
+    if (definition.dashboard === undefined) {
+        return;
+    }
+    if (definition.dashboard.period !== undefined) {
+        if (home?.component === DASHBOARD_COMPONENT && home.period !== undefined) {
+            issues.push({
+                path: 'dashboard.period',
+                message: `\`pages.${HOME_PAGE}.period\` replaces it: set only one.`,
+            });
+        } else {
+            checkPeriod(definition.dashboard.period, 'dashboard.period', issues);
+        }
+    }
+    if (home?.component === DASHBOARD_COMPONENT && home.widgets !== undefined) {
+        if (definition.dashboard.widgets.length > 0) {
+            issues.push({
+                path: 'dashboard.widgets',
+                message: `\`pages.${HOME_PAGE}.widgets\` replaces them: set only one.`,
+            });
+        }
+        return;
+    }
+    checkWidgets(definition, definition.dashboard.widgets, 'dashboard.widgets', issues, {
+        hasPeriod: homePeriod !== undefined,
+    });
+}
+
+/** A period (decision 0084): its options once each, and its default among them. */
+function checkPeriod(period: OverviewPeriod, path: string, issues: ValidationIssue[]) {
+    if (new Set(period.options).size !== period.options.length) {
+        issues.push({ path: `${path}.options`, message: 'Each period is offered once.' });
+    }
+    if (period.default !== undefined && !period.options.includes(period.default)) {
+        issues.push({
+            path: `${path}.default`,
+            message: `\`${period.default}\` isn't one of the options.`,
+        });
+    }
 }
 
 const FILTER_PARAM = /^filter\[([^\]]+)\]/;
 
+/** The settings of a widget that go with a `resource`. */
+const RESOURCE_SETTINGS = ['query', 'measure', 'group', 'target'] as const;
+
 /**
- * The widgets of the dashboard (decision 0064): unique ids, and the built-in `stat` and `list` on
- * a resource that exists, with filters of its list. A `stat` counts the items of the list, so the
- * list can't be paged with cursors, which give no total.
+ * The measure and the group of a widget on a resource (decision 0084): a `sum:` and a group name
+ * aggregates of its list, a `series` needs a period of a date, a `breakdown` a field of `groupBy`,
+ * and a `list` has neither.
  */
-function checkWidgets(definition: DefinitionInput, issues: ValidationIssue[]) {
+function checkAggregateSettings(
+    widget: { type: string; settings?: Record<string, unknown> | undefined },
+    resource: ResourceInput,
+    path: string,
+    issues: ValidationIssue[],
+) {
+    const settings = widget.settings ?? {};
+    const aggregates = resource.list?.aggregates ?? {};
+    const grouped = (GROUPED_WIDGET_TYPES as readonly string[]).includes(widget.type);
+    if (widget.type === 'list') {
+        ['measure', 'group'].forEach((key) => {
+            if (settings[key] !== undefined) {
+                issues.push({
+                    path: `${path}.settings.${key}`,
+                    message: `A \`list\` shows items: it has no \`${key}\`.`,
+                });
+            }
+        });
+        return;
+    }
+    if (settings.measure !== undefined) {
+        const measure =
+            typeof settings.measure === 'string' ? parseAggregateMeasure(settings.measure) : null;
+        if (measure === null) {
+            issues.push({
+                path: `${path}.settings.measure`,
+                message: 'The measure must be `count` or `sum:{field}`.',
+            });
+        } else if (measure.type === 'sum' && !(aggregates.sum ?? []).includes(measure.field)) {
+            issues.push({
+                path: `${path}.settings.measure`,
+                message: `The list of \`${resource.id}\` can't sum \`${measure.field}\`: it isn't in the \`sum\` of its aggregates.`,
+            });
+        }
+    }
+    if (!grouped) {
+        if (settings.group !== undefined) {
+            issues.push({
+                path: `${path}.settings.group`,
+                message: `A \`${widget.type}\` isn't grouped: only a \`series\` and a \`breakdown\` are.`,
+            });
+        }
+        return;
+    }
+    const group = typeof settings.group === 'string' ? parseAggregateGroup(settings.group) : null;
+    if (widget.type === 'series') {
+        if (group?.type !== 'period') {
+            issues.push({
+                path: `${path}.settings.group`,
+                message:
+                    'A `series` on a resource needs a `group` on the period of a date: `day:created_at`.',
+            });
+        } else if (!(aggregates.dates ?? []).includes(group.field)) {
+            issues.push({
+                path: `${path}.settings.group`,
+                message: `The list of \`${resource.id}\` can't group by \`${group.field}\`: it isn't in the \`dates\` of its aggregates.`,
+            });
+        }
+        return;
+    }
+    if (group?.type !== 'field') {
+        issues.push({
+            path: `${path}.settings.group`,
+            message: 'A `breakdown` on a resource needs a `group` on a field: `status`.',
+        });
+    } else if (!(aggregates.groupBy ?? []).includes(group.field)) {
+        issues.push({
+            path: `${path}.settings.group`,
+            message: `The list of \`${resource.id}\` can't group by \`${group.field}\`: it isn't in the \`groupBy\` of its aggregates.`,
+        });
+    }
+}
+
+/**
+ * The widgets of a dashboard or of the summary of a resource (decisions 0064 and 0084): unique ids,
+ * and the built-in types on a resource that exists, with filters of its list and aggregates it
+ * declares. A `stat` that counts reads the total of the list, so the list can't be paged with
+ * cursors, which give no total. Only the widgets of a summary follow its list (`followsList`): those
+ * on its resource, and those with data of their own.
+ */
+function checkWidgets(
+    definition: DefinitionInput,
+    widgets: Widget[],
+    widgetsPath: string,
+    issues: ValidationIssue[],
+    { summaryOf, hasPeriod = false }: { summaryOf?: string; hasPeriod?: boolean } = {},
+) {
     const ids = new Set<string>();
-    (definition.dashboard?.widgets ?? []).forEach((widget, index) => {
-        const path = `dashboard.widgets.${index}`;
+    widgets.forEach((widget, index) => {
+        const path = `${widgetsPath}.${index}`;
         if (ids.has(widget.id)) {
             issues.push({ path: `${path}.id`, message: `Duplicate widget id \`${widget.id}\`.` });
         }
         ids.add(widget.id);
+        const follows = widget.settings?.followsList;
+        if (follows !== undefined) {
+            const other = getWidgetResource(widget)?.resource;
+            if (summaryOf === undefined) {
+                issues.push({
+                    path: `${path}.settings.followsList`,
+                    message: 'Only the widgets of the summary of a resource follow its list.',
+                });
+            } else if (other !== undefined && other !== summaryOf) {
+                issues.push({
+                    path: `${path}.settings.followsList`,
+                    message: `A widget on \`${other}\` doesn't follow the list of \`${summaryOf}\`.`,
+                });
+            }
+        }
         if (!isBuiltInWidgetType(widget.type)) {
             return;
         }
         const settings = widget.settings ?? {};
         const onResource = typeof settings.resource === 'string';
+        if (settings.period !== undefined && !hasPeriod) {
+            issues.push({
+                path: `${path}.settings.period`,
+                message: `Its ${summaryOf !== undefined ? 'summary' : 'dashboard'} has no \`period\`.`,
+            });
+        }
         if (!onResource) {
-            if (settings.query !== undefined) {
+            if (typeof settings.period === 'string') {
                 issues.push({
-                    path: `${path}.settings.query`,
-                    message: '`query` goes with a `resource`.',
+                    path: `${path}.settings.period`,
+                    message:
+                        '`period` names a `date-range` filter of the list of its `resource`: without one, it can only be `false`.',
                 });
             }
+            RESOURCE_SETTINGS.forEach((key) => {
+                if (settings[key] !== undefined) {
+                    issues.push({
+                        path: `${path}.settings.${key}`,
+                        message: `\`${key}\` goes with a \`resource\`.`,
+                    });
+                }
+            });
             return;
         }
         if (!(RESOURCE_WIDGET_TYPES as readonly string[]).includes(widget.type)) {
             issues.push({
                 path: `${path}.settings.resource`,
-                message: `A \`${widget.type}\` widget has data of its own: only \`stat\` and \`list\` read a resource.`,
+                message: `A \`${widget.type}\` widget has data of its own: it can't read a resource.`,
             });
             return;
         }
@@ -293,10 +586,29 @@ function checkWidgets(definition: DefinitionInput, issues: ValidationIssue[]) {
             });
             return;
         }
-        if (widget.type === 'stat' && resource.list?.pagination === 'cursor') {
+        if (settings.target !== undefined && widget.type !== 'stat') {
+            issues.push({
+                path: `${path}.settings.target`,
+                message: 'Only a `stat` has a `target`.',
+            });
+        }
+        checkAggregateSettings(widget, resource, path, issues);
+        const sums = typeof settings.measure === 'string' && settings.measure.startsWith('sum:');
+        if (widget.type === 'stat' && !sums && resource.list?.pagination === 'cursor') {
             issues.push({
                 path: `${path}.settings.resource`,
-                message: `The list of \`${resource.id}\` is paged with cursors and has no total: it can't feed a \`stat\`.`,
+                message: `The list of \`${resource.id}\` is paged with cursors and has no total: it can't feed a \`stat\` that counts.`,
+            });
+        }
+        if (
+            typeof settings.period === 'string' &&
+            !(resource.list?.filters ?? []).some(
+                (filter) => filter.id === settings.period && filter.type === 'date-range',
+            )
+        ) {
+            issues.push({
+                path: `${path}.settings.period`,
+                message: `The list of \`${resource.id}\` has no \`date-range\` filter \`${settings.period}\`.`,
             });
         }
         const filters = new Set((resource.list?.filters ?? []).map((filter) => filter.id));

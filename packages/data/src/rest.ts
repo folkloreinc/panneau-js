@@ -7,8 +7,10 @@ import {
     PROBLEM_CONTENT_TYPE,
     type Problem,
     formatContextHeader,
+    toAggregateParams,
     toSearchParams,
     toSearchQueryParams,
+    toWidgetDataParams,
     validate,
 } from '@panneau/protocol';
 import type {
@@ -432,8 +434,21 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
             });
             return response.data;
         },
-        getWidgetData(widget, { signal } = {}) {
-            return json<unknown>({ path: `/dashboard/widgets/${encode(widget)}`, signal });
+        getWidgetData(widget, { signal, ...request } = {}) {
+            // The home page's widgets are asked for without `page`, as before decision 0084
+            const query = toWidgetDataParams(request);
+            return json<unknown>({
+                path: `/dashboard/widgets/${encode(widget)}`,
+                ...(query.toString() !== '' && { query }),
+                signal,
+            });
+        },
+        getResourceAggregate(resource, request, { signal } = {}) {
+            return json<unknown>({
+                path: `/resources/${encode(resource)}/aggregate`,
+                query: toAggregateParams(request),
+                signal,
+            });
         },
 
         withContext(values) {

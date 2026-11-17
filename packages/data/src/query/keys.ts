@@ -1,4 +1,15 @@
-import type { ListQuery } from '@panneau/protocol';
+import {
+    type AggregateRequest,
+    HOME_PAGE,
+    type ListQuery,
+    type WidgetDataRequest,
+} from '@panneau/protocol';
+
+/**
+ * What the data of a widget is keyed by besides its id: its dashboard page, or the resource whose
+ * summary holds it, with the filters and the search of the list (decision 0084).
+ */
+export type WidgetKeyOptions = WidgetDataRequest;
 
 /** What a search is keyed by besides its query: its `limit` and `resources`. */
 export interface SearchKeyOptions {
@@ -17,6 +28,10 @@ export const queryKeys = {
     lists: (resource: string) => ['panneau', 'resources', resource, 'list'] as const,
     list: (resource: string, query: ListQuery = {}) =>
         ['panneau', 'resources', resource, 'list', query] as const,
+    /** The aggregates of a resource: its lists invalidate them too, when its items change. */
+    aggregates: (resource: string) => ['panneau', 'resources', resource, 'aggregate'] as const,
+    aggregate: (resource: string, request: AggregateRequest = {}) =>
+        ['panneau', 'resources', resource, 'aggregate', request] as const,
     items: (resource: string) => ['panneau', 'resources', resource, 'item'] as const,
     item: (resource: string, id: string) => ['panneau', 'resources', resource, 'item', id] as const,
     /** Under the item's key: refetching or invalidating the item refreshes its preview. */
@@ -29,8 +44,33 @@ export const queryKeys = {
     account: () => ['panneau', 'account'] as const,
     twoFactor: () => ['panneau', 'account', 'two-factor'] as const,
     passkeys: () => ['panneau', 'account', 'passkeys'] as const,
-    /** Under `['panneau', 'dashboard']`: invalidating it refreshes every widget. */
-    widget: (widget: string) => ['panneau', 'dashboard', 'widgets', widget] as const,
+    /**
+     * Under `['panneau', 'dashboard']`: invalidating it refreshes every widget, of every page and
+     * summary. Without a page, the widget of the home page. In a summary, keyed by its resource
+     * and the filters and the search of the list, without the page. With a period, by it too.
+     */
+    widget: (
+        widget: string,
+        { page = HOME_PAGE, resource, query = {}, period }: WidgetKeyOptions = {},
+    ) =>
+        [
+            'panneau',
+            'dashboard',
+            'widgets',
+            widget,
+            {
+                ...(resource !== undefined
+                    ? {
+                          resource,
+                          query: {
+                              ...(query.filter !== undefined && { filter: query.filter }),
+                              ...(query.q !== undefined && { q: query.q }),
+                          },
+                      }
+                    : { page }),
+                ...(period !== undefined && { period }),
+            },
+        ] as const,
     actionRuns: () => ['panneau', 'actions', 'runs'] as const,
     actionRun: (id: string) => ['panneau', 'actions', 'runs', id] as const,
 };

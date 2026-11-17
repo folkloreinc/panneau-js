@@ -7,6 +7,7 @@
 import type { ActionRequest } from '@panneau/protocol';
 import type { ActionResult } from '@panneau/protocol';
 import type { ActionRun } from '@panneau/protocol';
+import type { AggregateRequest } from '@panneau/protocol';
 import type { ContextOption } from '@panneau/protocol';
 import type { ContextValues } from '@panneau/protocol';
 import type { Definition } from '@panneau/protocol';
@@ -29,6 +30,7 @@ import type { Upload } from '@panneau/protocol';
 import type { UploadSignRequest } from '@panneau/protocol';
 import type { User } from '@panneau/protocol';
 import type { WebAuthnOptions } from '@panneau/protocol';
+import type { WidgetDataRequest } from '@panneau/protocol';
 
 // Warning: (ae-forgotten-export) The symbol "DataAdapter" needs to be exported by the entry point index.d.ts
 //

@@ -7,6 +7,7 @@
 import type { ActionRequest } from '@panneau/protocol';
 import type { ActionResult } from '@panneau/protocol';
 import type { ActionRun } from '@panneau/protocol';
+import { AggregateRequest } from '@panneau/protocol';
 import type { ContextOption } from '@panneau/protocol';
 import type { ContextValues } from '@panneau/protocol';
 import { DataTag } from '@tanstack/react-query';
@@ -14,9 +15,10 @@ import type { Definition } from '@panneau/protocol';
 import type { EmbedValue } from '@panneau/protocol';
 import type { FieldCheckRequest } from '@panneau/protocol';
 import type { FieldCheckResponse } from '@panneau/protocol';
+import { FilterValue } from '@panneau/protocol';
 import type { Item } from '@panneau/protocol';
 import { JSX } from 'react';
-import type { ListQuery } from '@panneau/protocol';
+import { ListQuery } from '@panneau/protocol';
 import type { ListResponse } from '@panneau/protocol';
 import type { Passkey } from '@panneau/protocol';
 import type { PreviewResponse } from '@panneau/protocol';
@@ -37,6 +39,8 @@ import { UseQueryOptions } from '@tanstack/react-query';
 import { UseQueryResult } from '@tanstack/react-query';
 import type { User } from '@panneau/protocol';
 import type { WebAuthnOptions } from '@panneau/protocol';
+import { WidgetDataRequest } from '@panneau/protocol';
+import { WidgetPeriod } from '@panneau/protocol';
 
 // @public
 export function DataAdapterProvider(input: DataAdapterProviderProps): JSX.Element;
@@ -78,6 +82,8 @@ export const queryKeys: {
     resource: (resource: string) => readonly ["panneau", "resources", string];
     lists: (resource: string) => readonly ["panneau", "resources", string, "list"];
     list: (resource: string, query?: ListQuery) => readonly ["panneau", "resources", string, "list", ListQuery];
+    aggregates: (resource: string) => readonly ["panneau", "resources", string, "aggregate"];
+    aggregate: (resource: string, request?: AggregateRequest) => readonly ["panneau", "resources", string, "aggregate", AggregateRequest];
     items: (resource: string) => readonly ["panneau", "resources", string, "item"];
     item: (resource: string, id: string) => readonly ["panneau", "resources", string, "item", string];
     itemPreview: (resource: string, id: string, values?: Record<string, unknown>) => readonly ["panneau", "resources", string, "item", string, "preview", Record<string, unknown>];
@@ -85,10 +91,23 @@ export const queryKeys: {
     account: () => readonly ["panneau", "account"];
     twoFactor: () => readonly ["panneau", "account", "two-factor"];
     passkeys: () => readonly ["panneau", "account", "passkeys"];
-    widget: (widget: string) => readonly ["panneau", "dashboard", "widgets", string];
+    widget: (widget: string, input?: WidgetKeyOptions) => readonly ["panneau", "dashboard", "widgets", string, {
+        readonly period?: WidgetPeriod | undefined;
+        readonly resource: string;
+        readonly query: {
+            q?: string | undefined;
+            filter?: Record<string, FilterValue> | undefined;
+        };
+    } | {
+        readonly period?: WidgetPeriod | undefined;
+        readonly page: string;
+    }];
     actionRuns: () => readonly ["panneau", "actions", "runs"];
     actionRun: (id: string) => readonly ["panneau", "actions", "runs", string];
 };
+
+// @public
+export function resourceAggregateQueryOptions(adapter: DataAdapter, resource: string, request?: AggregateRequest): DataQueryOptions<unknown, ReturnType<typeof queryKeys.aggregate>>;
 
 // @public
 export function resourceItemQueryOptions(adapter: DataAdapter, resource: string, id: string): DataQueryOptions<Item, ReturnType<typeof queryKeys.item>>;
@@ -149,6 +168,9 @@ export function useItemPreview(resource: string, id: string, values?: Values, op
 export function useOptionalDataAdapter(): DataAdapter | null;
 
 // @public
+export function useResourceAggregate(resource: string, request?: AggregateRequest, options?: QueryHookOptions<unknown, ReturnType<typeof queryKeys.aggregate>>): UseQueryResult<unknown>;
+
+// @public
 export function useResourceItem(resource: string, id: string | null | undefined, options?: QueryHookOptions<Item, ReturnType<typeof queryKeys.item>>): UseQueryResult<Item>;
 
 // @public
@@ -166,10 +188,13 @@ export function useSearch(q: string, input?: QueryHookOptions<SearchResponse, Re
 export function useUpdateItem(resource: string): UseMutationResult<Item, Error, UpdateItemVariables>;
 
 // @public
-export function useWidgetData(widget: string, options?: QueryHookOptions<unknown, ReturnType<typeof queryKeys.widget>>): UseQueryResult<unknown>;
+export function useWidgetData(widget: string, input?: QueryHookOptions<unknown, ReturnType<typeof queryKeys.widget>> & WidgetKeyOptions): UseQueryResult<unknown>;
 
 // @public
-export function widgetDataQueryOptions(adapter: DataAdapter, widget: string): DataQueryOptions<unknown, ReturnType<typeof queryKeys.widget>>;
+export function widgetDataQueryOptions(adapter: DataAdapter, widget: string, input?: WidgetKeyOptions): DataQueryOptions<unknown, ReturnType<typeof queryKeys.widget>>;
+
+// @public
+export type WidgetKeyOptions = WidgetDataRequest;
 
 // (No @packageDocumentation comment for this package)
 

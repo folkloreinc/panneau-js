@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { createDefinition } from '../__fixtures__/definition';
 import { createMockBackend } from '../mock';
+import { getPeriodRange } from '../periods';
 import { formatReport, runConformance } from './index';
 
 function createBackend() {
@@ -36,6 +37,27 @@ function createBackend() {
         { name: 'dates', type: 'daterange', settings: { open: 'end' } },
         { name: 'price', type: 'money', settings: { currency: 'CAD' } },
     );
+    // What the list can sum and group by (decision 0084).
+    const list = definition.resources[0]?.list;
+    if (list !== undefined) {
+        list.aggregates = { sum: ['price'], groupBy: ['status'], dates: ['published_at'] };
+    }
+    // A summary above the list (decision 0084): a widget on the resource, one with data of its own.
+    const pages = definition.resources[0];
+    if (pages !== undefined) {
+        pages.summary = {
+            widgets: [
+                {
+                    id: 'pages-by-status',
+                    type: 'breakdown',
+                    settings: { resource: 'pages', group: 'status' },
+                },
+                { id: 'health', type: 'stat' },
+            ],
+            // The period of the summary is the list's date-range filter (decision 0084)
+            period: { options: ['30d', 'year'] },
+        };
+    }
     definition.resources.push({
         id: 'settings',
         label: { singular: 'setting', plural: 'settings' },
@@ -84,13 +106,53 @@ function createBackend() {
             },
             { id: 'visits', type: 'series' },
             { id: 'map', type: 'map' },
+            // On the aggregates of a resource (decision 0084)
+            {
+                id: 'per-week',
+                type: 'series',
+                settings: { resource: 'pages', group: 'week:published_at' },
+            },
+            {
+                id: 'by-status',
+                type: 'breakdown',
+                settings: { resource: 'pages', group: 'status' },
+            },
+            {
+                id: 'revenue',
+                type: 'stat',
+                settings: { resource: 'pages', measure: 'sum:price', target: 100000 },
+            },
         ],
+    };
+    // A dashboard page of its own (decision 0084).
+    definition.pages = {
+        activity: {
+            component: 'dashboard',
+            label: 'Activity',
+            period: { options: ['7d', '30d', 'month'], default: '30d' },
+            widgets: [
+                { id: 'signups', type: 'stat' },
+                { id: 'published', type: 'list', settings: { resource: 'pages' } },
+                // On the aggregates of a resource, on a page other than home
+                {
+                    id: 'published-per-month',
+                    type: 'series',
+                    settings: {
+                        resource: 'pages',
+                        query: { 'filter[status]': 'published' },
+                        group: 'month:published_at',
+                    },
+                },
+            ],
+        },
     };
     return createMockBackend({
         definition,
         widgets: {
             visits: { period: 'week', points: [{ date: '2026-10-05', value: 4 }], total: 4 },
             map: { pins: [] },
+            signups: { value: 3 },
+            health: ({ query }) => ({ value: query.q !== undefined ? 0 : 1 }),
         },
         auth: { users: [{ email: 'ada@example.com', password: 'secret' }] },
         context: {
@@ -106,6 +168,7 @@ function createBackend() {
                     status: 'published',
                     published_at: '2026-10-01T12:00:00Z',
                     notes: 'Internal',
+                    price: { amount: 1250, currency: 'CAD' },
                 },
                 { title: { fr: 'Contact', en: 'Contact' }, status: 'draft', published_at: null },
                 {
@@ -203,6 +266,165 @@ describe('runConformance', () => {
         const check = report.checks.find(({ id }) => id === 'dashboard.widgets');
         expect(check?.status).toBe('failed');
         expect(check?.issues.join('\n')).toContain('The data of the series "visits"');
+    });
+
+    it('fails aggregates that skip empty periods, ignore the range, or accept what is not declared', async () => {
+        const backend = createBackend();
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: async (input, init) => {
+                const url = new URL(input);
+                if (!url.pathname.endsWith('/aggregate')) {
+                    return backend.fetch(input, init);
+                }
+                const group = url.searchParams.get('group');
+                const answer = group?.startsWith('day:')
+                    ? // Only the periods with items, and none of the range
+                      { period: 'day', points: [{ date: '2026-10-01', value: 1 }], total: 1 }
+                    : group?.startsWith('week:')
+                      ? {
+                            period: 'week',
+                            points: [
+                                { date: '2026-09-28', value: 1 },
+                                { date: '2026-10-12', value: 1 },
+                            ],
+                        }
+                      : group === null
+                        ? { value: 0 }
+                        : { items: [] };
+                return new Response(JSON.stringify(answer), {
+                    headers: { 'Content-Type': 'application/json' },
+                });
+            },
+        });
+        const aggregate = report.checks.find(({ id }) => id === 'list.aggregate');
+        expect(aggregate?.status).toBe('failed');
+        expect(aggregate?.issues.join('\n')).toContain(
+            'after 2026-09-28, expected a point on 2026-10-05, got 2026-10-12.',
+        );
+        expect(aggregate?.issues.join('\n')).toContain(
+            'expected a point per day from 2026-01-01 to 2026-01-07, got 2026-10-01 to 2026-10-01.',
+        );
+        expect(aggregate?.issues.join('\n')).toContain(
+            'The count of "pages" is 0; its list has 3 items.',
+        );
+        const invalid = report.checks.find(({ id }) => id === 'list.aggregate.invalid');
+        expect(invalid?.status).toBe('failed');
+        expect(invalid?.issues[0]).toBe('Expected status 422, got 200.');
+    });
+
+    it('asks for the widgets of each dashboard page with its page, and only there', async () => {
+        const backend = createBackend();
+        const requested: string[] = [];
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: (input, init) => {
+                requested.push(input);
+                return backend.fetch(input, init);
+            },
+        });
+        expect(report.checks.find(({ id }) => id === 'dashboard.widgets')?.status).toBe('passed');
+        expect(requested).toContain(
+            'http://panneau.test/panneau/api/dashboard/widgets/signups?page=activity',
+        );
+        expect(requested).toContain('http://panneau.test/panneau/api/dashboard/widgets/visits');
+    });
+
+    it('fails a backend that answers a widget on a page it is not on', async () => {
+        const backend = createBackend();
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            // A backend that ignores `page`
+            fetch: (input, init) =>
+                backend.fetch(
+                    input.includes('/dashboard/widgets/') ? input.replace(/\?page=.*$/, '') : input,
+                    init,
+                ),
+        });
+        const check = report.checks.find(({ id }) => id === 'dashboard.widgets.unknown');
+        expect(check?.status).toBe('failed');
+        expect(check?.issues).toContain(
+            'Widget "visits" on the page "activity": expected status 404, got 200.',
+        );
+    });
+
+    it('asks for the widgets of a summary with its resource, and only there', async () => {
+        const backend = createBackend();
+        const requested: string[] = [];
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: (input, init) => {
+                requested.push(input);
+                return backend.fetch(input, init);
+            },
+        });
+        expect(report.checks.find(({ id }) => id === 'dashboard.widgets')?.status).toBe('passed');
+        expect(report.checks.find(({ id }) => id === 'dashboard.widgets.unknown')?.status).toBe(
+            'passed',
+        );
+        expect(requested).toContain(
+            'http://panneau.test/panneau/api/dashboard/widgets/health?resource=pages',
+        );
+        expect(requested).toContain(
+            'http://panneau.test/panneau/api/dashboard/widgets/health?resource=pages&page=home',
+        );
+    });
+
+    it('fails a backend that ignores the resource of a summary', async () => {
+        const backend = createBackend();
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            // A backend that reads every widget as one of the home page
+            fetch: (input, init) =>
+                backend.fetch(
+                    input.includes('/dashboard/widgets/')
+                        ? input.replace(/\?resource=.*$/, '')
+                        : input,
+                    init,
+                ),
+        });
+        expect(report.checks.find(({ id }) => id === 'dashboard.widgets')?.issues).toContain(
+            'Widget "health" of the summary of "pages": expected status 200, got 404.',
+        );
+        expect(
+            report.checks.find(({ id }) => id === 'dashboard.widgets.unknown')?.issues,
+        ).toContain(
+            'Widget "health" of the summary of "pages" with both a page and a resource: expected status 422, got 404.',
+        );
+    });
+
+    it('asks for the widgets that follow a period with its parameters (decision 0084)', async () => {
+        const backend = createBackend();
+        const requested: string[] = [];
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: (input, init) => {
+                requested.push(decodeURIComponent(input));
+                return backend.fetch(input, init);
+            },
+        });
+        expect(report.checks.find(({ id }) => id === 'dashboard.widgets.period')?.status).toBe(
+            'passed',
+        );
+        const { from, to } = getPeriodRange('30d');
+        expect(requested).toContain(
+            `http://panneau.test/panneau/api/dashboard/widgets/signups?page=activity&period[option]=30d&period[from]=${from}&period[to]=${to}`,
+        );
+        expect(requested).toContain(
+            `http://panneau.test/panneau/api/dashboard/widgets/health?resource=pages&period[option]=30d&period[from]=${from}&period[to]=${to}`,
+        );
+    });
+
+    it('fails a backend that accepts a wrong period', async () => {
+        const backend = createBackend();
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            // A backend that ignores the period
+            fetch: (input, init) => backend.fetch(input.replace(/[?&]period%5B.*$/, ''), init),
+        });
+        const check = report.checks.find(({ id }) => id === 'dashboard.widgets.period');
+        expect(check?.status).toBe('failed');
+        expect(check?.issues[0]).toMatch(/for the period "decade": expected status 422, got 200/);
     });
 
     it('checks a list paged with cursors: the next page, and an invalid cursor', async () => {
@@ -489,6 +711,8 @@ describe('runConformance', () => {
             'item',
             'item.missing',
             'search.invalid',
+            'list.aggregate.invalid',
+            'dashboard.widgets.period',
             'dashboard.widgets.unknown',
             'create.invalid',
             'create.implied-rules',

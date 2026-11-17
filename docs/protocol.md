@@ -67,8 +67,10 @@ The protocol is the only contract between a Panneau frontend and its backend. It
         "defaultSort": "-published_at",
         "layouts": [ "table", "cards" ],
         "perPage": 20,
-        "inlineEdit": [ "title", "status" ]
+        "inlineEdit": [ "title", "status" ],
+        "aggregates": { "sum": [ "price" ], "groupBy": [ "status" ], "dates": [ "published_at" ] }
     },
+    "summary": { "widgets": [ /* Widget */ ], "list": "collapsed", "period": { "options": ["7d", "30d"] } }, // widgets above the list (decision 0084)
     "actions": [ /* Action */ ],
     "abilities": { "viewAny": true, "create": true },
     "features": { "drafts": false, "revisions": false, "preview": null, "search": true },
@@ -443,6 +445,14 @@ Built-in actions use reserved ids:
 - `gallery` shows the image of each item, its `itemImage` field (a media reference, a media, a file or a URL), and is offered when the resource has one: a media library has one, the `media` of its items. The `table` starts the title of each item with a thumbnail of the same image ([decisions/0061](decisions/0061-item-images-in-lists.md)).
 - `calendar` shows the items of a month on the days of a `date`, `datetime` or `daterange` field (a range on each day it covers, [0053](decisions/0053-date-ranges-and-money.md)), set by `calendar`: `{ "field": "starts_at", "filter": "starts_at", "perPage": 100 }`. `filter` is the list's `date-range` filter on that field (the field's name by default), and `perPage` how many items it asks for a month (100 by default). Instead of a page, the calendar asks for the list's query with that filter set to the days around the month, from 6 days before its first day to 6 days after its last, without `page` or `cursor`: `filter[starts_at][from]=2026-10-26&filter[starts_at][to]=2026-12-06&perPage=100`. When the answer has more items than it gives, the calendar says so. A backend needs nothing else.
 
+**Aggregates** ([decisions/0084](decisions/0084-overviews.md)). `aggregates` declares what [`GET /resources/{resource}/aggregate`](#aggregates) can sum and group the items of the list by. Nothing else is aggregated, and a list without it has no aggregates:
+
+- `sum`: fields whose values add up: `number`, `range` and `duration` fields, and `money` fields with one `settings.currency` (amounts of different currencies don't add up);
+- `groupBy`: fields whose values the items are grouped by, in a `breakdown`: not the fields whose values are structures (`richtext`, `media`, `image`, `file`, `group`, `repeater`, `json`, `embed`, `location`, `address`, `link`, `daterange`, `money`);
+- `dates`: `date` and `datetime` fields whose days, weeks or months the items are grouped by, in a `series`.
+
+`lintDefinition()` checks that each one names a field of the resource, of the right type. A backend leaves out of them the fields the user can't view.
+
 **Columns users choose.** The user of a list shows, hides and orders its columns. A column with `"hidden": true` isn't shown until the user shows it; one with `"hideable": false` is always shown. The chosen columns and the layout are the view of the list: clients keep them in the URL with the query, and may remember them for the user. They are never sent to the backend ([decisions/0042](decisions/0042-list-view-columns-and-remembered-view.md)).
 
 ### Pages
@@ -452,6 +462,7 @@ Built-in actions use reserved ids:
 ```jsonc
 "pages": {
     "home": { "component": "dashboard" }, // the home route
+    "activity": { "component": "dashboard", "label": "Activity", "widgets": [ … ] }, // a dashboard page
     "usage": { "component": "usage", "label": "Usage", "props": { "period": "month" } },
     "job": { "component": "job", "label": "Job", "params": ["id"] }, // {basePath}/pages/job/{id}
 }
@@ -463,7 +474,7 @@ Built-in actions use reserved ids:
 
 ### Dashboard
 
-With `pages.home` set to the built-in `dashboard`, the home page is the widgets of `dashboard.widgets`, the user's, in order ([decisions/0064](decisions/0064-dashboard-widgets.md)):
+A page whose component is the built-in `dashboard` is a dashboard: its `widgets`, the user's, in order ([decisions/0064](decisions/0064-dashboard-widgets.md), [0084](decisions/0084-overviews.md)). Only a `dashboard` page has `widgets`. With `pages.home` set to the built-in `dashboard`, the home page is the widgets of `pages.home.widgets`, or of `dashboard.widgets`, its shorthand, which existing definitions use:
 
 ```jsonc
 "dashboard": {
@@ -473,6 +484,13 @@ With `pages.home` set to the built-in `dashboard`, the home page is the widgets 
           "settings": { "resource": "entries", "query": { "filter[status]": "to-judge" } } },
         { "id": "latest", "type": "list", "label": "Latest entries", "width": 4,
           "settings": { "resource": "entries", "query": { "sort": "-created_at" } } },
+        // On the aggregates of a resource: the client reads GET /resources/{resource}/aggregate
+        { "id": "fees", "type": "stat", "label": "Entry fees",
+          "settings": { "resource": "entries", "measure": "sum:fee", "target": 100000 } },
+        { "id": "submitted", "type": "series", "label": "Entries per day",
+          "settings": { "resource": "entries", "group": "day:created_at" } },
+        { "id": "by-status", "type": "breakdown", "label": "Entries by status",
+          "settings": { "resource": "entries", "group": "status" } },
         // Data of its own, from GET /dashboard/widgets/{widget}
         { "id": "per-day", "type": "series", "label": "Entries per day", "width": 8 },
         { "id": "weather", "type": "weather", "settings": { "city": "Montréal" } } // a plugin's
@@ -480,18 +498,74 @@ With `pages.home` set to the built-in `dashboard`, the home page is the widgets 
 }
 ```
 
-- **Types.** `stat`, `series` and `list` are built in. Any other type is a widget of a plugin, drawn by its component from the data of the endpoint, with its own `settings`.
+- **Dashboard pages.** `pages.activity = { "component": "dashboard", "label": "Activity", "widgets": [ … ] }` is a page of widgets at `{basePath}/pages/activity`, with its label above them, and that menus link to as to any page (`{ "type": "page", "page": "activity" }`). Its widgets have the same types, layout, states and checks as those of the home page. Without widgets, it says it has none. The home page keeps the welcome above its widgets, and the cards of the resources without any. Set the widgets of the home page in `pages.home.widgets` or in `dashboard.widgets`, not both. `getDashboardWidgets(definition, page)` of `@panneau/protocol/runtime` reads the widgets of a page.
+- **Types.** `stat`, `series`, `list` and `breakdown` are built in. Any other type is a widget of a plugin, drawn by its component from the data of the endpoint, with its own `settings`.
 - **`width`**: the columns of a grid of 12, 3 for a `stat` and 6 for the others by default. One column on a phone.
-- **On a resource.** A `stat` or a `list` with `settings.resource` reads the list of that resource, with `settings.query` written as its query parameters: a `stat` reads `perPage=1` and shows `meta.total`, a `list` reads `perPage=5` and shows the title of each item (`itemTitle`) and the badge of its value of the first `select` column. Both link to the list with that query. The resource must exist, the filters of `query` must be filters of its list, and `query` leaves out `page`, `perPage` and `cursor`. A list paged with cursors has no total: it can't feed a `stat`. A `series` has data of its own.
-- **Data.** The other widgets get theirs from `GET /dashboard/widgets/{widget}`, in the shape of their type, as is. Texts are translated by the backend:
+- **On a resource.** A `stat` or a `list` with `settings.resource` reads the list of that resource, with `settings.query` written as its query parameters: a `stat` reads `perPage=1` and shows `meta.total`, a `list` reads `perPage=5` and shows the title of each item (`itemTitle`) and the badge of its value of the first `select` column. Both link to the list with that query. The resource must exist, the filters of `query` must be filters of its list, and `query` leaves out `page`, `perPage` and `cursor`. A list paged with cursors has no total: it can't feed a `stat` that counts.
+- **On the aggregates of a resource** ([decisions/0084](decisions/0084-overviews.md)). A `series`, a `breakdown`, and a `stat` whose `settings.measure` is a `sum:`, read [`GET /resources/{resource}/aggregate`](#aggregates) instead, with the filters and the search of `settings.query`, its `measure` (`settings.measure`, `count` by default), and for a `series` and a `breakdown`, its `group` (`settings.group`). The answer has the shape of the widget. A `stat` that counts (no `measure`, or `count`) keeps reading `meta.total` of the list.
+    - A `series` needs a `group` on a period of a field of `dates` (`day:created_at`), a `breakdown` a field of `groupBy`, and a `sum:` a field of `sum`, in the aggregates of the list. A `list` has no `measure` or `group`. `lintDefinition()` checks them.
+    - A `stat` links to the list with its query. Each bar of a `breakdown` links to the list filtered by its value (`key`), when the list has a filter whose id is the field; a breakdown of a `select` takes the labels and the tones of its options.
+    - A sum of `money` is shown in its currency.
+    - `settings.target` gives a `stat` on a resource its `target`, in the unit of its value: minor units for a sum of `money`.
+- **Data.** The other widgets get theirs from `GET /dashboard/widgets/{widget}?page={page}`, in the shape of their type, as is. `page` is the id of their page in `pages`: without it, it means `home`, and the widgets of the home page are asked for without it. Texts are translated by the backend:
 
-| Type     | Data                                                                                                                                                                                                        |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `stat`   | `{ "value": 12, "help": "3 more than last week", "tone": "warning", "url": "…" }`: `value` only is required. `tone` only when the number calls for attention                                                |
-| `series` | `{ "period": "day", "points": [{ "date": "2026-10-05", "value": 4 }], "total": 12 }`: `period` is `day`, `week` or `month`, each `date` the first day of its period, going up                               |
-| `list`   | `{ "items": [{ "title": "…", "description": null, "meta": "12 answers", "url": "…", "badge": { "label": "Open", "tone": "success" } }], "empty": "…", "url": "…" }`: at most 5 items, the most useful first |
+| Type        | Data                                                                                                                                                                                                                                                                                   |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `stat`      | `{ "value": 12, "help": "3 more than last week", "tone": "warning", "url": "…", "target": 20 }`: `value` only is required. `tone` only when the number calls for attention. `target`, above 0, draws a meter under the number: past it, the meter takes `tone`, or `danger`            |
+| `series`    | `{ "period": "day", "points": [{ "date": "2026-10-05", "value": 4 }], "total": 12 }`: `period` is `day`, `week` or `month`, each `date` the first day of its period, going up                                                                                                          |
+| `list`      | `{ "items": [{ "title": "…", "description": null, "meta": "12 answers", "url": "…", "badge": { "label": "Open", "tone": "success" } }], "empty": "…", "url": "…" }`: at most 5 items, the most useful first                                                                            |
+| `breakdown` | `{ "items": [{ "label": "Failed", "value": 3, "tone": "danger", "url": "…" }], "total": 42, "other": 5 }`: the parts of a total, at most 10, drawn as horizontal bars, the largest first, and the rest, `other`, last as "Other". An item of the aggregate endpoint also has its `key` |
 
-- **Errors.** A widget that isn't in the user's dashboard, or a widget on a resource, is a `404`. A `403` hides the widget. Data that doesn't have the shape of its type is a `500` problem: clients show the widget's error, with a retry, and the other widgets stay. `checkWidgetData()` of `@panneau/protocol/runtime` checks a shape and names the wrong keys.
+- **Errors.** A widget that isn't on that page of the user's (an unknown page, a page that isn't a dashboard, or the widget of another page), or a widget on a resource, is a `404`. A `403` hides the widget. Data that doesn't have the shape of its type is a `500` problem: clients show the widget's error, with a retry, and the other widgets stay. `checkWidgetData()` of `@panneau/protocol/runtime` checks a shape and names the wrong keys.
+
+### Summary
+
+A resource can have a **summary**: widgets drawn above its list, between the header of the list page and the list, in the grid of a dashboard ([decisions/0084](decisions/0084-overviews.md)). Its widgets have the types, layout, states and checks of those of a dashboard, at `resources.<i>.summary.widgets.<j>`:
+
+```jsonc
+"summary": {
+    "widgets": [
+        // On the resource: they follow the list
+        { "id": "failed", "type": "stat", "label": "Failed",
+          "settings": { "resource": "emails", "query": { "filter[status]": "failed" } } },
+        { "id": "per-day", "type": "series", "label": "Emails per day",
+          "settings": { "resource": "emails", "group": "day:sent_at" } },
+        // The whole resource, whatever the list shows
+        { "id": "all", "type": "stat", "label": "All emails",
+          "settings": { "resource": "emails", "followsList": false } },
+        // Data of its own, from GET /dashboard/widgets/{widget}?resource=emails
+        { "id": "bounces", "type": "stat", "label": "Bounce rate" }
+    ],
+    "list": "collapsed" // optional: the resource opens on its summary
+}
+```
+
+- **It follows the list.** The widgets on the resource of the summary get the list's current filters and search, so filtering the list redraws them. The filters of their own `settings.query` stay theirs: on the same filter, the widget's value wins, so a stat of the failed items stays one. A widget keeps the whole resource with `settings.followsList: false`. A widget on another resource doesn't follow the list. `followsList` is only for the widgets of a summary, and `lintDefinition()` checks it. A widget on a resource names it in `settings.resource`, as on a dashboard: without it, a built-in widget has data of its own.
+- **Data of its own.** A widget with data of its own gets it from `GET /dashboard/widgets/{widget}?resource={resource}`, with the filters and the search of the list (`filter[…]`, `q`) as the list sends them, unless it has `settings.followsList: false`. The request never has the sort or the paging of the list: `page` is the page of a dashboard, and `page` and `resource` together are a `422`. A widget that isn't in the summary of that resource for the user is a `404`, and the summary of a resource the user can't list (`viewAny: false`) a `403`. `toWidgetDataParams()` and `readWidgetDataQuery()` of `@panneau/protocol/runtime` write and read these parameters.
+- **Collapsible.** The user hides or shows the summary, and the browser remembers it per resource.
+- **The list can come second.** With `"list": "collapsed"`, the resource opens on its summary, its list folded under it behind "Show the N items" (its `meta.total`). A URL that asks for some items (filters, a search, a page or a sort, as the links of the widgets give), or an item, shows the list at once, and so does hiding the summary.
+
+### Period
+
+A dashboard page or a summary can declare one **period** for its widgets ([decisions/0084](decisions/0084-overviews.md)): `pages.<id>.period` on a page whose component is the built-in `dashboard`, `pages.home.period` or `dashboard.period` for the home page (not both), and `summary.period`:
+
+```jsonc
+"period": { "options": ["7d", "30d", "90d", "month", "year"], "default": "30d" }
+```
+
+- **Options.** `options` lists the periods the user chooses from, in order, each once; `default`, among them, is the one the overview opens on (the first option without it). A segmented control in the header of the dashboard page or of the summary chooses it, and the URL keeps it: `?period=90d`. An option that the overview doesn't offer is its default.
+- **Days.** A period is a range of days, both inclusive, ending today, in the time zone of the browser:
+    - `7d`, `30d` and `90d`: the 7, 30 or 90 days ending today, today included (on 2026-11-17, `7d` is 2026-11-11 to 2026-11-17);
+    - `month`: the current calendar month, from its first day to today (2026-11-01 to 2026-11-17);
+    - `year`: the last 12 months, the current month and the 11 before it, from the first day of the month 11 months ago to today (2025-12-01 to 2026-11-17).
+
+    `getPeriodRange(option, today)` of `@panneau/protocol/runtime` computes them.
+
+- **Widgets on a resource** follow the period when `settings.period` names a `date-range` filter of the list of their resource (`"period": "created_at"`): the client sets that filter to the days of the period, `filter[created_at][from]=…&filter[created_at][to]=…`, in its request and its links. The backend needs nothing new. A widget on a resource without `settings.period` doesn't follow the period, except in a summary (below).
+- **Widgets with data of their own** get the period from `GET /dashboard/widgets/{widget}` as `period[option]`, `period[from]` and `period[to]`: `?page=activity&period[option]=30d&period[from]=2026-10-19&period[to]=2026-11-17`. A widget that doesn't follow the period says so with `settings.period: false`, and gets none. A period whose option isn't one of the five, whose days are missing or aren't days, or whose `from` is after `to`, is a `422` with `errors` keyed by `period`. The option is `period[option]`, not `period` itself, so that the three parameters read as one object in every backend: PHP drops `period=30d` next to `period[from]`.
+- **On a summary**, the period is the list's own `date-range` filter: `summary.period.filter`, or the first `date-range` filter of the list, which it needs. Choosing a period sets that filter, so it filters the rows too, and the widgets that follow the list. The URL keeps the option and the days: `?period=30d&filter[sent_at][from]=…&filter[sent_at][to]=…`, and the days are those of today when the page opens with an option. A range set otherwise (a link, the list's own filter) stays: the option with those days is chosen, or none, and the widgets with data of their own then get no `period` parameters, only the filters of the list.
+- **What it changes.** The widgets on a resource with `settings.period`, the widgets with data of their own without `settings.period: false`, and in a summary the widgets that follow the list. When some widgets don't follow it, the control lists those it changes. `followsPeriod(widget, summaryResource)` of `@panneau/protocol/runtime` says whether a widget does.
+- `lintDefinition()` checks the options and the default, a period only on a `dashboard` page, the filter of a summary, and that `settings.period` names a `date-range` filter of the list of a widget on a resource (without a resource, it can only be `false`), in an overview with a period.
 
 ### Menus and the forbidden state
 
@@ -593,6 +667,7 @@ All paths are relative to `api.baseUrl`.
 | Action      | `POST /resources/{resource}/actions/{action}` (see [Actions](#actions-1))                                                                                         |
 | Inline edit | `PATCH /resources/{resource}/{id}` with a single field                                                                                                            |
 | Check       | `POST /resources/{resource}/fields/{field}/check` (see [Checking a field](#checking-a-field))                                                                     |
+| Aggregate   | `GET /resources/{resource}/aggregate` (see [Aggregates](#aggregates))                                                                                             |
 
 **List query parameters:**
 
@@ -610,6 +685,31 @@ All paths are relative to `api.baseUrl`.
 
 - `q`: search
 - `fields`: requested fields, so lists can ask for less
+
+#### Aggregates
+
+`GET /resources/{resource}/aggregate` counts or sums the items of a list that declares `list.aggregates`, grouped by a period or a field, and answers in the shape of a widget ([decisions/0084](decisions/0084-overviews.md)). It counts the items the user can list, through the same policies and scope as the list: a resource without `viewAny` is a `403`, and a resource without aggregates a `404`. (`aggregate` is a path segment of its own: a backend routes it before `{id}`.)
+
+- **Parameters:**
+    - the filters (`filter[{id}]`) and the search (`q`) of the list, read as the list reads them; `page`, `perPage`, `cursor`, `sort` and `fields` are ignored;
+    - `measure`: `count` (the default), or `sum:{field}` of a field of `sum`. A sum of `money` adds the amounts, in minor units;
+    - `group` (optional): `{period}:{field}`, where the period is `day`, `week` or `month` and the field is in `dates`, or a field of `groupBy`.
+
+    A measure or a group in another format, or that names a field the aggregates don't declare, is a `422` problem, with `errors` keyed by `measure` or `group`.
+
+- **Without a group,** a `stat`: `{ "value": 12 }`.
+- **By a period,** a `series`: `{ "period": "day", "points": [{ "date": "2026-10-05", "value": 4 }], "total": 12 }`.
+    - One point per period, at 0 when it has no items, each `date` the first day of its period: the day, the Monday of the week (ISO 8601), the first day of the month.
+    - The day of a value is its date as the backend writes it, as the bounds of a `date-range` filter read it (`2026-10-05T23:30:00-04:00` is on `2026-10-05`). Items without a date are left out.
+    - The points go from the period of the `from` bound to the period of the `to` bound of the `date-range` filter whose id is the date field, when the query has them. Without a bound, they start on the period of the first item, or end on the period of the last; without items or bounds, there are none.
+    - At most 366 points: a longer range keeps the latest.
+    - `total` is the sum of the points.
+- **By a field,** a `breakdown`: `{ "items": [{ "key": "failed", "label": "Failed", "value": 3, "tone": "danger" }], "total": 42, "other": 5 }`.
+    - A part per value, the largest first (equal parts in the order of the options of a `select`), at most 10: the sum of the others is `other`, left out when there are none.
+    - `key` is the value, as the list filters by it: the `id` of a `relation`, `null` for the items without a value, labeled by the backend ("None").
+    - `label` is the label of the value, translated: the label of its option for a `select`, with its `tone`, the `label` of a reference for a `relation`.
+    - An item with several values (`multiple`, `tags`) counts in the part of each one. `total` is the measure of all the items, each counted once.
+- **Reference.** `readAggregateQuery()` of `@panneau/protocol/runtime` reads and validates the parameters, `aggregateItems()` computes the answer over items a list query filtered, and `toAggregateParams()` writes the parameters. The mock backend answers with them.
 
 #### Checking a field
 
@@ -956,13 +1056,15 @@ With `auth.mode = "external"`, the frontend only calls `GET /auth/session` and s
 
 ### Search, dashboard, preview
 
-| Endpoint                                  | Purpose                                                                                             |
-| ----------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `GET /search?q=&limit=&resources=`        | results grouped by resource: `{ "data": [ { "resource": "pages", "items": [...], "total": 34 } ] }` |
-| `GET /embeds?url=`                        | what a URL embeds, for `embed` fields: `{ "data": EmbedValue }`, or a `422` when it can't embed it  |
-| `GET /dashboard/widgets/{widget}`         | the data of a widget of the user's [dashboard](#dashboard), in the shape of its type                |
-| `GET /locale/{locale}?next=`              | optional: switches the interface to a locale of `interfaceLocales`, then redirects to `next`        |
-| `POST /resources/{resource}/{id}/preview` | sends the unsaved values; returns `{ "url": "…", "expiresAt": "…" }` for iframe previews            |
+| Endpoint                                                                    | Purpose                                                                                             |
+| --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `GET /search?q=&limit=&resources=`                                          | results grouped by resource: `{ "data": [ { "resource": "pages", "items": [...], "total": 34 } ] }` |
+| `GET /embeds?url=`                                                          | what a URL embeds, for `embed` fields: `{ "data": EmbedValue }`, or a `422` when it can't embed it  |
+| `GET /dashboard/widgets/{widget}?page=`                                     | the data of a widget of a [dashboard](#dashboard) page of the user, `home` without `page`           |
+| `GET /dashboard/widgets/{widget}?resource=`                                 | the data of a widget of the [summary](#summary) of a resource, with the list's `filter[…]` and `q`  |
+| `GET /dashboard/widgets/{widget}?period[option]=&period[from]=&period[to]=` | with `page` or `resource`: the [period](#period) of its overview                                    |
+| `GET /locale/{locale}?next=`                                                | optional: switches the interface to a locale of `interfaceLocales`, then redirects to `next`        |
+| `POST /resources/{resource}/{id}/preview`                                   | sends the unsaved values; returns `{ "url": "…", "expiresAt": "…" }` for iframe previews            |
 
 Global search ([decisions/0029](decisions/0029-go-to-palette.md)):
 
@@ -984,14 +1086,14 @@ Global search ([decisions/0029](decisions/0029-go-to-palette.md)):
 - **schemas and TypeScript types**. `Definition` is a definition after parsing, with defaults applied; `DefinitionInput` is a definition as a backend writes it.
 - **validation helpers**:
     - `validateDefinition()` checks the schema, then the references between parts;
-    - `lintDefinition()` checks those references alone: layout nodes and columns that name a field, relations that name a resource, unique names, and the widgets of the dashboard on a resource;
+    - `lintDefinition()` checks those references alone: layout nodes and columns that name a field, relations that name a resource, unique names, the aggregates of lists, and the widgets of the dashboards and the summaries on a resource;
     - `validateBootConfig()` checks a [boot config](#boot-config).
 - **the portable rules**: `checkValues()` is the reference implementation.
 - **range filters**: `matchesFilterRange()` is the reference of how a backend reads the bounds of a range.
 - **a light entry point for browsers** (`@panneau/protocol/runtime`): the constants and the helpers above that don't need the schemas (`checkValues()`, `evaluateCondition()`, `lintDefinition()`, the list query helpers, `isProblem()`), without loading zod. UI packages import them from there, and only types from the main entry point.
 - **generated files**: `@panneau/protocol/definition.schema.json` and `@panneau/protocol/boot.schema.json` (JSON Schema 2020-12), and `@panneau/protocol/openapi.json` (OpenAPI 3.1).
 - **a mock backend** (`@panneau/protocol/mock`): an in-memory implementation of the resource routes, and of the widgets of the dashboard with the data of its `widgets` option.
-- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. For a list paged with cursors, it also follows `nextCursor`, and checks that an invalid cursor is a `422`. With `writes`, it also checks that rules limited to `create` don't apply to updates: an update with those fields set to `null` succeeds. It also checks that an update of a single field, with `If-Match`, changes that field alone, and that an update ignores the values of fields with `notInForm` ([0071](decisions/0071-fields-out-of-forms.md)). It also checks that the built-in `delete` answers a dry run without being declared and, with `writes`, that an item that allows `duplicate` is copied under a new id, with its `ETag`. It also checks that the API agrees with the abilities it announces ([0046](decisions/0046-abilities-in-the-ui.md)): resources without `viewAny` answer `403` on their list, items leave out the values of fields with `view: false`, and a dry run of `delete` skips an item without `delete`; with `writes`, an empty create of a resource without `create`, and an empty update of an item without `update`, answer `403`. It also checks that the backend reads the bounds of the resource's first `date-range` filter, if it has one, and that `GET /search` finds an item by a word of its title, reads `limit` and `resources`, and refuses invalid parameters with a `422`. With a `dashboard`, it checks that each widget with data of its own answers in the shape of its type (or a `403`), that the lists of the widgets on a resource answer their query, with a total for a `stat`, and that a widget that isn't in the dashboard is a `404`. With a `context` in the definition, it checks the choices of each param, a definition built for a value of the first param, and a value that doesn't exist refused with a `403` context problem. `context` sends values with every request, for a backend whose resources need one.
+- **a conformance kit** (`@panneau/protocol/conformance`): `runConformance()` calls a live backend and checks its responses against the schemas. For a list paged with cursors, it also follows `nextCursor`, and checks that an invalid cursor is a `422`. With `writes`, it also checks that rules limited to `create` don't apply to updates: an update with those fields set to `null` succeeds. It also checks that an update of a single field, with `If-Match`, changes that field alone, and that an update ignores the values of fields with `notInForm` ([0071](decisions/0071-fields-out-of-forms.md)). It also checks that the built-in `delete` answers a dry run without being declared and, with `writes`, that an item that allows `duplicate` is copied under a new id, with its `ETag`. It also checks that the API agrees with the abilities it announces ([0046](decisions/0046-abilities-in-the-ui.md)): resources without `viewAny` answer `403` on their list, items leave out the values of fields with `view: false`, and a dry run of `delete` skips an item without `delete`; with `writes`, an empty create of a resource without `create`, and an empty update of an item without `update`, answer `403`. It also checks that the backend reads the bounds of the resource's first `date-range` filter, if it has one, and that `GET /search` finds an item by a word of its title, reads `limit` and `resources`, and refuses invalid parameters with a `422`. With a `dashboard`, it checks that each widget with data of its own answers in the shape of its type (or a `403`), that the lists and the aggregates of the widgets on a resource answer their query, with a total for a `stat`, and that a widget that isn't in the dashboard is a `404`. It checks the widgets of each dashboard page and of the summary of each resource the same way (`?page=`, `?resource=`), and that a widget with both is a `422`. For each overview with a period, it checks that the widgets with data of their own that follow it answer with the parameters of its default period, and that a wrong period is a `422`. For each resource with aggregates, it checks that `GET /resources/{resource}/aggregate` counts the items of the list, answers each declared sum, group and period in the shape of a widget, with a point per period and the range of the `date-range` filter on the date, and refuses what isn't declared with a `422`; a resource without aggregates is a `404`. With a `context` in the definition, it checks the choices of each param, a definition built for a value of the first param, and a value that doesn't exist refused with a `403` context problem. `context` sends values with every request, for a backend whose resources need one.
 
 ```ts
 import { formatReport, runConformance } from '@panneau/protocol/conformance';

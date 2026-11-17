@@ -63,6 +63,26 @@ export const ListCalendar = z.looseObject({
     }),
 });
 
+export const ListAggregates = z
+    .looseObject({
+        sum: z.array(z.string().min(1)).optional().meta({
+            description:
+                'Fields that can be summed (`measure=sum:{field}`): `number`, `range` and `duration` fields, and `money` fields of one `currency`.',
+        }),
+        groupBy: z.array(z.string().min(1)).optional().meta({
+            description:
+                'Fields whose values the items can be grouped by, in a `breakdown` (`group={field}`).',
+        }),
+        dates: z.array(z.string().min(1)).optional().meta({
+            description:
+                '`date` and `datetime` fields whose days, weeks or months the items can be grouped by, in a `series` (`group={period}:{field}`).',
+        }),
+    })
+    .meta({
+        description:
+            'What `GET /resources/{resource}/aggregate` can count, sum and group by (decision 0084): nothing that is not declared.',
+    });
+
 export const ListDefinition = z.looseObject({
     columns: z.array(Column).optional(),
     filters: z.array(Filter).optional(),
@@ -94,9 +114,14 @@ export const ListDefinition = z.looseObject({
         description:
             'The calendar of the list: the items of a month on the days of a date field, asked for through a `date-range` filter instead of pages (decision 0044).',
     }),
+    aggregates: ListAggregates.optional().meta({
+        description:
+            'The fields that `GET /resources/{resource}/aggregate` sums and groups by (decision 0084). Without it, the resource has no aggregates.',
+    }),
 });
 
 export type Column = z.infer<typeof Column>;
 export type Filter = z.infer<typeof Filter>;
 export type ListDefinition = z.infer<typeof ListDefinition>;
 export type ListCalendar = z.infer<typeof ListCalendar>;
+export type ListAggregates = z.infer<typeof ListAggregates>;

@@ -1,10 +1,35 @@
 import { z } from 'zod';
 
+import {
+    getAggregateWidgetType,
+    nextPeriod,
+    parseAggregateGroup,
+    toAggregateParams,
+} from '../aggregates';
 import { CONTEXT_HEADER, CONTEXT_PROBLEM_TYPE, IDS_FILTER } from '../constants';
 import { formatContextHeader } from '../context';
+import {
+    HOME_PAGE,
+    getDashboardPages,
+    getDashboardPeriod,
+    getDashboardWidgets,
+    getSummaryResources,
+    getSummaryWidgets,
+    toWidgetDataParams,
+} from '../dashboards';
 import { getLinkTypes } from '../links';
+import { type WidgetPeriod, getDefaultPeriod, getPeriodRange } from '../periods';
 import { type FilterRange, isCursorPage, toSearchParams } from '../query';
-import { Definition, type Resource, User, widgetDataSchemas } from '../schemas';
+import {
+    BreakdownWidgetData,
+    Definition,
+    type Resource,
+    SeriesWidgetData,
+    StatWidgetData,
+    User,
+    type Widget,
+    widgetDataSchemas,
+} from '../schemas';
 import {
     ActionResult,
     ContextOptionsResponse,
@@ -28,7 +53,13 @@ import {
 } from '../search';
 import { isEqual, isFilled } from '../values';
 import { PROBLEM_CONTENT_TYPE } from '../version';
-import { WIDGET_LIST_MAX_ITEMS, getWidgetResource, isBuiltInWidgetType } from '../widgets';
+import {
+    WIDGET_LIST_MAX_ITEMS,
+    type WidgetSeriesPeriod,
+    followsPeriod,
+    getWidgetResource,
+    isBuiltInWidgetType,
+} from '../widgets';
 
 export interface ConformanceOptions {
     /** Base URL of the API, the same as `api.baseUrl` of the definition, but absolute. */
@@ -156,6 +187,25 @@ class Check {
     skip(reason: string) {
         this.skippedBecause = reason;
     }
+}
+
+/** The points of a series: one per period, each on the first day of its period, going up. */
+function expectPeriods(
+    check: Check,
+    points: { date: string }[],
+    period: WidgetSeriesPeriod,
+    label: string,
+) {
+    points.forEach((point, index) => {
+        const previous = points[index - 1];
+        if (previous !== undefined) {
+            const expected = nextPeriod(previous.date, period);
+            check.expect(
+                point.date === expected,
+                `${label}: after ${previous.date}, expected a point on ${expected}, got ${point.date}.`,
+            );
+        }
+    });
 }
 
 /**
@@ -1178,21 +1228,204 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
         },
     );
 
-    // The dashboard (decision 0064): the data of the widgets with data of their own, the lists
-    // that feed the widgets on a resource, and a widget that isn't in the dashboard.
-    const widgets = () => (definition as Definition | null)?.dashboard?.widgets ?? [];
+    // The aggregates of the lists (decision 0084): each declared measure and group answers in the
+    // shape of a widget, and what isn't declared is a 422.
+    const aggregated = () =>
+        ((definition as Definition | null)?.resources ?? []).filter(
+            (candidate) =>
+                candidate.list?.aggregates !== undefined && candidate.abilities?.viewAny !== false,
+        );
+    const aggregate = (id: string, params: URLSearchParams) =>
+        request(`/resources/${encodeURIComponent(id)}/aggregate?${params.toString()}`);
+
+    await run(
+        'list.aggregate',
+        'GET /resources/{resource}/aggregate answers the declared aggregates in the shape of a widget',
+        async (check) => {
+            const resources = aggregated();
+            if (resources.length === 0) {
+                check.skip('No resource declares aggregates.');
+                return;
+            }
+            for (const current of resources) {
+                const aggregates = current.list?.aggregates ?? {};
+                const label = (params: URLSearchParams) =>
+                    `The aggregate of "${current.id}" (${decodeURIComponent(params.toString())})`;
+                const fetchShape = async <T extends z.ZodType>(
+                    params: URLSearchParams,
+                    schema: T,
+                ) => {
+                    const reply = await aggregate(current.id, params);
+                    if (
+                        !check.expect(
+                            reply.status === 200,
+                            `${label(params)}: expected status 200, got ${reply.status}.`,
+                        )
+                    ) {
+                        return null;
+                    }
+                    return check.expectSchema(schema, reply.body, label(params));
+                };
+                // The count is the total of the list
+                const count = await fetchShape(toAggregateParams({}), StatWidgetData);
+                const list = await request(
+                    `/resources/${encodeURIComponent(current.id)}?perPage=1`,
+                );
+                const total =
+                    list.status === 200 && ListResponse.safeParse(list.body).success
+                        ? (list.body as ListResponse).meta.total
+                        : undefined;
+                if (count !== null && typeof total === 'number') {
+                    check.expect(
+                        count.value === total,
+                        `The count of "${current.id}" is ${count.value}; its list has ${total} items.`,
+                    );
+                }
+                for (const field of aggregates.sum ?? []) {
+                    await fetchShape(
+                        toAggregateParams({ measure: `sum:${field}` }),
+                        StatWidgetData,
+                    );
+                }
+                for (const field of aggregates.groupBy ?? []) {
+                    await fetchShape(toAggregateParams({ group: field }), BreakdownWidgetData);
+                }
+                for (const field of aggregates.dates ?? []) {
+                    for (const period of ['day', 'week', 'month'] as const) {
+                        const params = toAggregateParams({ group: `${period}:${field}` });
+                        const series = await fetchShape(params, SeriesWidgetData);
+                        if (series === null) {
+                            continue;
+                        }
+                        check.expect(
+                            series.period === period,
+                            `${label(params)}: expected the period ${period}, got ${series.period}.`,
+                        );
+                        expectPeriods(check, series.points, period, label(params));
+                    }
+                    // The bounds of the date-range filter on the date are the range of the series
+                    const filter = current.list?.filters?.find(
+                        (candidate) => candidate.id === field && candidate.type === 'date-range',
+                    );
+                    if (filter === undefined) {
+                        continue;
+                    }
+                    const params = toAggregateParams({
+                        filter: { [field]: { from: '2026-01-01', to: '2026-01-07' } },
+                        group: `day:${field}`,
+                    });
+                    const series = await fetchShape(params, SeriesWidgetData);
+                    if (series !== null) {
+                        const dates = series.points.map((point) => point.date);
+                        check.expect(
+                            dates.length === 7 &&
+                                dates[0] === '2026-01-01' &&
+                                dates[6] === '2026-01-07',
+                            `${label(params)}: expected a point per day from 2026-01-01 to 2026-01-07, got ${dates.length > 0 ? `${dates[0]} to ${dates.at(-1)}` : 'none'}.`,
+                        );
+                    }
+                }
+            }
+        },
+    );
+
+    await run(
+        'list.aggregate.invalid',
+        'GET /resources/{resource}/aggregate refuses undeclared fields and bad measures or groups with a 422',
+        async (check) => {
+            const resources = aggregated();
+            if (resources.length === 0) {
+                check.skip('No resource declares aggregates.');
+                return;
+            }
+            for (const current of resources) {
+                const date = current.list?.aggregates?.dates?.[0] ?? 'created_at';
+                const invalid: [Record<string, string>, string][] = [
+                    [{ measure: 'average' }, 'measure'],
+                    [{ measure: `sum:${UNKNOWN}` }, 'measure'],
+                    [{ group: UNKNOWN }, 'group'],
+                    [{ group: `day:${UNKNOWN}` }, 'group'],
+                    [{ group: `year:${date}` }, 'group'],
+                ];
+                for (const [params, key] of invalid) {
+                    const reply = await aggregate(current.id, new URLSearchParams(params));
+                    const refused = check.expectProblem(reply, 422);
+                    if (refused !== null) {
+                        check.expect(
+                            refused.errors?.[key] !== undefined,
+                            `The aggregate of "${current.id}" with ${new URLSearchParams(params).toString()}: expected errors on "${key}".`,
+                        );
+                    }
+                }
+            }
+            // A resource without aggregates has none
+            const without = ((definition as Definition | null)?.resources ?? []).find(
+                (candidate) =>
+                    candidate.list?.aggregates === undefined &&
+                    candidate.abilities?.viewAny !== false,
+            );
+            if (without !== undefined) {
+                check.expectProblem(await aggregate(without.id, toAggregateParams({})), 404);
+            }
+        },
+    );
+
+    // The dashboards and the summaries (decisions 0064 and 0084): the data of the widgets with data
+    // of their own on each dashboard page and in the summary of each resource, the lists that feed
+    // the widgets on a resource, and a widget that isn't on a page or in a summary.
+    const dashboardPages = () => {
+        const current = definition as Definition | null;
+        return current !== null ? getDashboardPages(current) : [];
+    };
+    const summaryResources = () => {
+        const current = definition as Definition | null;
+        return current !== null ? getSummaryResources(current) : [];
+    };
+    /** Where a widget is: a dashboard page, or the summary of a resource. */
+    type WidgetPlace =
+        { page: string; resource?: undefined } | { resource: string; page?: undefined };
+    const widgets = (): { place: WidgetPlace; widget: Widget }[] => [
+        ...dashboardPages().flatMap((page) =>
+            getDashboardWidgets(definition as Definition, page).map((widget) => ({
+                place: { page },
+                widget,
+            })),
+        ),
+        ...summaryResources().flatMap((resource) =>
+            getSummaryWidgets(definition as Definition, resource).map((widget) => ({
+                place: { resource },
+                widget,
+            })),
+        ),
+    ];
+    // The home page's widgets without `page`, as clients ask for them
+    const widgetPath = (id: string, place: WidgetPlace & { period?: WidgetPeriod }) => {
+        const search = toWidgetDataParams(place).toString();
+        return `/dashboard/widgets/${encodeURIComponent(id)}${search !== '' ? `?${search}` : ''}`;
+    };
+    const placeName = (place: WidgetPlace) =>
+        place.resource !== undefined
+            ? `the summary of "${place.resource}"`
+            : place.page !== HOME_PAGE
+              ? `the page "${place.page}"`
+              : 'the home page';
+    const widgetName = (id: string, place: WidgetPlace) =>
+        place.resource !== undefined || place.page !== HOME_PAGE
+            ? `"${id}" of ${placeName(place)}`
+            : `"${id}"`;
 
     await run(
         'dashboard.widgets',
         'GET /dashboard/widgets/{widget} answers each widget in the shape of its type',
         async (check) => {
-            const own = widgets().filter((widget) => getWidgetResource(widget) === null);
+            const own = widgets().filter(({ widget }) => getWidgetResource(widget) === null);
             if (own.length === 0) {
-                check.skip('The dashboard has no widget with data of its own.');
+                check.skip('No dashboard or summary has a widget with data of its own.');
                 return;
             }
-            for (const widget of own) {
-                const reply = await request(`/dashboard/widgets/${encodeURIComponent(widget.id)}`);
+            for (const { place, widget } of own) {
+                const name = widgetName(widget.id, place);
+                const reply = await request(widgetPath(widget.id, place));
                 // A widget the user can't see right now: the client hides it
                 if (reply.status === 403) {
                     check.expectProblem(reply, 403);
@@ -1201,7 +1434,7 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                 if (
                     !check.expect(
                         reply.status === 200,
-                        `Widget "${widget.id}": expected status 200, got ${reply.status}.`,
+                        `Widget ${name}: expected status 200, got ${reply.status}.`,
                     )
                 ) {
                     continue;
@@ -1210,14 +1443,14 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                     check.expectSchema(
                         widgetDataSchemas[widget.type],
                         reply.body,
-                        `The data of the ${widget.type} "${widget.id}"`,
+                        `The data of the ${widget.type} ${name}`,
                     );
                 } else {
                     check.expect(
                         reply.body !== null &&
                             typeof reply.body === 'object' &&
                             !Array.isArray(reply.body),
-                        `The data of the widget "${widget.id}" must be an object.`,
+                        `The data of the widget ${name} must be an object.`,
                     );
                 }
             }
@@ -1226,23 +1459,33 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
 
     await run(
         'dashboard.widgets.resource',
-        'The lists of the widgets on a resource answer their query, with a total for a stat',
+        'The lists and the aggregates of the widgets on a resource answer their query, with a total for a stat',
         async (check) => {
-            const onResource = widgets().flatMap((widget) => {
+            const onResource = widgets().flatMap(({ place, widget }) => {
                 const read = getWidgetResource(widget);
-                return read !== null ? [{ widget, read }] : [];
+                return read !== null ? [{ place, widget, read }] : [];
             });
             if (onResource.length === 0) {
-                check.skip('The dashboard has no widget on a resource.');
+                check.skip('No dashboard or summary has a widget on a resource.');
                 return;
             }
-            for (const { widget, read } of onResource) {
-                const params = new URLSearchParams(read.params);
-                params.set('perPage', widget.type === 'stat' ? '1' : String(WIDGET_LIST_MAX_ITEMS));
+            for (const { place, widget, read } of onResource) {
+                const name = widgetName(widget.id, place);
+                const reads = read.aggregate !== null ? 'aggregate' : 'list';
+                const params =
+                    read.aggregate !== null
+                        ? toAggregateParams({ ...read.query, ...read.aggregate })
+                        : new URLSearchParams(read.params);
+                if (read.aggregate === null) {
+                    params.set(
+                        'perPage',
+                        widget.type === 'stat' ? '1' : String(WIDGET_LIST_MAX_ITEMS),
+                    );
+                }
                 const reply = await request(
-                    `/resources/${encodeURIComponent(read.resource)}?${params.toString()}`,
+                    `/resources/${encodeURIComponent(read.resource)}${read.aggregate !== null ? '/aggregate' : ''}?${params.toString()}`,
                 );
-                // A list the user can't read: the client hides the widget
+                // A resource the user can't read: the client hides the widget
                 if (reply.status === 403) {
                     check.expectProblem(reply, 403);
                     continue;
@@ -1250,36 +1493,184 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                 if (
                     !check.expect(
                         reply.status === 200,
-                        `Widget "${widget.id}": expected status 200, got ${reply.status}.`,
+                        `Widget ${name}: expected status 200 from its ${reads}, got ${reply.status}.`,
                     )
                 ) {
+                    continue;
+                }
+                if (read.aggregate !== null) {
+                    const type = getAggregateWidgetType(
+                        read.aggregate.group !== null
+                            ? parseAggregateGroup(read.aggregate.group)
+                            : null,
+                    );
+                    check.expect(
+                        type === widget.type,
+                        `The ${widget.type} ${name} reads aggregates in the shape of a ${type}.`,
+                    );
+                    check.expectSchema(
+                        widgetDataSchemas[type],
+                        reply.body,
+                        `The aggregate of the widget ${name}`,
+                    );
                     continue;
                 }
                 const list = check.expectSchema(
                     ListResponse,
                     reply.body,
-                    `The list of the widget "${widget.id}"`,
+                    `The list of the widget ${name}`,
                 );
                 if (list !== null && widget.type === 'stat') {
                     check.expect(
                         typeof (list.meta as { total?: unknown }).total === 'number',
-                        `The list of the stat "${widget.id}" has no meta.total to count.`,
+                        `The list of the stat ${name} has no meta.total to count.`,
                     );
                 }
             }
         },
     );
 
+    // The period of an overview (decision 0084): the widgets with data of their own that follow it
+    // answer with its parameters, and a wrong period is a 422.
+    const placePeriod = (place: WidgetPlace) => {
+        const current = definition as Definition;
+        return place.resource !== undefined
+            ? current.resources.find(({ id }) => id === place.resource)?.summary?.period
+            : getDashboardPeriod(current, place.page);
+    };
     await run(
-        'dashboard.widgets.unknown',
-        'A widget that is not in the dashboard of the user is a 404 problem',
+        'dashboard.widgets.period',
+        'GET /dashboard/widgets/{widget} answers the widgets that follow the period of their overview with its parameters',
         async (check) => {
-            const current = definition as Definition | null;
-            if (current?.dashboard === undefined) {
-                check.skip('The definition has no dashboard.');
+            const following = widgets().flatMap(({ place, widget }) => {
+                const period = placePeriod(place);
+                const option = period !== undefined ? getDefaultPeriod(period) : null;
+                return getWidgetResource(widget) === null &&
+                    option !== null &&
+                    followsPeriod(widget, place.resource)
+                    ? [{ place, widget, period: { option, ...getPeriodRange(option) } }]
+                    : [];
+            });
+            const first = following[0];
+            if (first === undefined) {
+                check.skip(
+                    'No dashboard or summary with a period has a widget with data of its own that follows it.',
+                );
                 return;
             }
-            check.expectProblem(await request(`/dashboard/widgets/${UNKNOWN}`), 404);
+            for (const { place, widget, period } of following) {
+                const name = widgetName(widget.id, place);
+                const reply = await request(widgetPath(widget.id, { ...place, period }));
+                if (reply.status === 403) {
+                    check.expectProblem(reply, 403);
+                    continue;
+                }
+                if (
+                    check.expect(
+                        reply.status === 200,
+                        `Widget ${name} for the period ${period.option}: expected status 200, got ${reply.status}.`,
+                    ) &&
+                    isBuiltInWidgetType(widget.type)
+                ) {
+                    check.expectSchema(
+                        widgetDataSchemas[widget.type],
+                        reply.body,
+                        `The data of the ${widget.type} ${name} for the period ${period.option}`,
+                    );
+                }
+            }
+            const wrong = await request(
+                `${widgetPath(first.widget.id, first.place)}${first.place.resource !== undefined || first.place.page !== HOME_PAGE ? '&' : '?'}period%5Boption%5D=decade&period%5Bfrom%5D=2026-01-01&period%5Bto%5D=2026-12-31`,
+            );
+            if (
+                check.expect(
+                    wrong.status === 422,
+                    `Widget ${widgetName(first.widget.id, first.place)} for the period "decade": expected status 422, got ${wrong.status}.`,
+                )
+            ) {
+                check.expectProblem(wrong, 422);
+            }
+        },
+    );
+
+    await run(
+        'dashboard.widgets.unknown',
+        'A widget that is not on a dashboard page or in a summary of the user is a 404 problem',
+        async (check) => {
+            const pages = dashboardPages();
+            const summaries = summaryResources();
+            if (pages.length === 0 && summaries.length === 0) {
+                check.skip('The definition has no dashboard and no summary.');
+                return;
+            }
+            const expectStatus = async (path: string, what: string, status: 404 | 422) => {
+                const reply = await request(path);
+                if (
+                    check.expect(
+                        reply.status === status,
+                        `${what}: expected status ${status}, got ${reply.status}.`,
+                    )
+                ) {
+                    check.expectProblem(reply, status);
+                }
+            };
+            const expectMissing = (path: string, what: string) => expectStatus(path, what, 404);
+            const places: WidgetPlace[] = [
+                ...pages.map((page) => ({ page })),
+                ...summaries.map((resource) => ({ resource })),
+            ];
+            for (const place of places) {
+                await expectMissing(
+                    widgetPath(UNKNOWN, place),
+                    `An unknown widget of ${placeName(place)}`,
+                );
+            }
+            // Page by page and summary by summary (decision 0084): a widget asked for on a page that
+            // doesn't exist, or on another dashboard page or summary than its own. Widgets with
+            // data of their own first: the others are a 404 anywhere.
+            const all = widgets().sort(
+                (a, b) =>
+                    Number(getWidgetResource(a.widget) !== null) -
+                    Number(getWidgetResource(b.widget) !== null),
+            );
+            const first = all[0];
+            if (first === undefined) {
+                return;
+            }
+            // A widget is on a page or in a summary: both are a 422
+            const summarized = all.find(
+                ({ place, widget }) =>
+                    place.resource !== undefined && getWidgetResource(widget) === null,
+            );
+            if (summarized?.place.resource !== undefined) {
+                await expectStatus(
+                    `${widgetPath(summarized.widget.id, summarized.place)}&page=${HOME_PAGE}`,
+                    `Widget ${widgetName(summarized.widget.id, summarized.place)} with both a page and a resource`,
+                    422,
+                );
+            }
+            if (places.length === 1 && first.place.page === HOME_PAGE) {
+                return;
+            }
+            await expectMissing(
+                `/dashboard/widgets/${encodeURIComponent(first.widget.id)}?page=${UNKNOWN}`,
+                `Widget ${widgetName(first.widget.id, first.place)} on an unknown page`,
+            );
+            for (const place of places) {
+                const ids = new Set(
+                    (place.resource !== undefined
+                        ? getSummaryWidgets(definition as Definition, place.resource)
+                        : getDashboardWidgets(definition as Definition, place.page)
+                    ).map(({ id }) => id),
+                );
+                const elsewhere = all.find(({ widget }) => !ids.has(widget.id));
+                if (elsewhere !== undefined) {
+                    await expectMissing(
+                        widgetPath(elsewhere.widget.id, place),
+                        `Widget ${widgetName(elsewhere.widget.id, elsewhere.place)} on ${placeName(place)}`,
+                    );
+                }
+            }
         },
     );
 

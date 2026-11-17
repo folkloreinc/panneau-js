@@ -20,6 +20,7 @@ export {
     type BadgeTone,
     type BadgeVariants,
 } from './badge/Badge';
+export { BarChart, type BarChartItem, type BarChartProps } from './bar-chart/BarChart';
 export {
     Button,
     type ButtonAppearance,
@@ -99,6 +100,7 @@ export {
 } from './select/Select';
 export { Inline, type InlineProps } from './inline/Inline';
 export { LineChart, type LineChartPoint, type LineChartProps } from './line-chart/LineChart';
+export { Meter, type MeterProps } from './meter/Meter';
 export {
     BREAKPOINTS,
     type Breakpoint,

@@ -74,8 +74,14 @@ import {
 } from './field';
 import { actionJsonRules } from './jsonRules';
 import { LayoutNode } from './layout';
-import { Column, Filter, ListCalendar, ListDefinition } from './list';
-import { Resource, ResourceFeatures, ResourceType } from './resource';
+import { Column, Filter, ListAggregates, ListCalendar, ListDefinition } from './list';
+import {
+    Resource,
+    ResourceFeatures,
+    ResourceSummary,
+    ResourceType,
+    SummaryPeriod,
+} from './resource';
 import {
     DefinitionTheme,
     Theme,
@@ -87,8 +93,11 @@ import {
     ToneValues,
 } from './theme';
 import {
+    BreakdownWidgetData,
+    BreakdownWidgetItem,
     ListWidgetData,
     ListWidgetItem,
+    OverviewPeriod,
     SeriesPoint,
     SeriesWidgetData,
     StatWidgetData,
@@ -131,6 +140,7 @@ export const namedSchemas = {
     Column,
     Filter,
     ListCalendar,
+    ListAggregates,
     ListDefinition,
     ActionScope,
     ActionPlacement,
@@ -138,6 +148,8 @@ export const namedSchemas = {
     Action,
     ResourceFeatures,
     ResourceType,
+    SummaryPeriod,
+    ResourceSummary,
     Resource,
     User,
     AuthProvider,
@@ -147,6 +159,7 @@ export const namedSchemas = {
     MenuItem,
     Page,
     WidgetSettings,
+    OverviewPeriod,
     Widget,
     Uploads,
     ContextOption,
@@ -208,6 +221,8 @@ export const namedSchemas = {
     SeriesWidgetData,
     ListWidgetItem,
     ListWidgetData,
+    BreakdownWidgetItem,
+    BreakdownWidgetData,
 } satisfies Record<string, z.ZodType>;
 
 /** A registry of the named schemas, used to reference them by name in generated files. */

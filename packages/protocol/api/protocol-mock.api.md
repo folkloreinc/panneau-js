@@ -95,6 +95,12 @@ export type MockWidget = Response | Record<string, unknown> | ((context: MockWid
 export interface MockWidgetContext {
     context: ContextValues;
     items: (resource: string) => Item[];
+    page: string | null;
+    // Warning: (ae-forgotten-export) The symbol "WidgetPeriod" needs to be exported by the entry point index.d.ts
+    period: WidgetPeriod | null;
+    // Warning: (ae-forgotten-export) The symbol "WidgetListQuery" needs to be exported by the entry point index.d.ts
+    query: WidgetListQuery;
+    resource: string | null;
 }
 
 // (No @packageDocumentation comment for this package)

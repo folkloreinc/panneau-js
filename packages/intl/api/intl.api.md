@@ -330,6 +330,7 @@ export const appMessages: {
     missingPage: PanneauMessage<    {
     component: string;
     }>;
+    dashboardEmpty: PanneauMessage<Record<never, never>>;
     missingWidget: PanneauMessage<    {
     type: string;
     }>;
@@ -342,6 +343,22 @@ export const appMessages: {
     widgetTotal: PanneauMessage<Record<never, never>>;
     widgetUntitled: PanneauMessage<    {
     id: string;
+    }>;
+    summary: PanneauMessage<Record<never, never>>;
+    period: PanneauMessage<Record<never, never>>;
+    period7d: PanneauMessage<Record<never, never>>;
+    period30d: PanneauMessage<Record<never, never>>;
+    period90d: PanneauMessage<Record<never, never>>;
+    periodMonth: PanneauMessage<Record<never, never>>;
+    periodYear: PanneauMessage<Record<never, never>>;
+    periodAppliesTo: PanneauMessage<    {
+    widgets: string;
+    }>;
+    showList: PanneauMessage<Record<never, never>>;
+    showListItems: PanneauMessage<    {
+    count: number;
+    singular: string;
+    plural: string;
     }>;
 };
 
@@ -1095,6 +1112,12 @@ export const uiMessages: {
     rangeStart: PanneauMessage<Record<never, never>>;
     rangeEnd: PanneauMessage<Record<never, never>>;
     calendar: PanneauMessage<Record<never, never>>;
+    barChartOther: PanneauMessage<Record<never, never>>;
+    meterTarget: PanneauMessage<Record<never, never>>;
+    meterValue: PanneauMessage<    {
+    value: string;
+    target: string;
+    }>;
     tags: PanneauMessage<    {
     label: string;
     }>;

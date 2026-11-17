@@ -14,7 +14,11 @@ import { useFormatRuleFailure } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
 import { ListView, getPagingProps } from '@panneau/lists';
 import type { RouteReference } from '@panneau/protocol';
-import { getCreatableTypes, getItemImageField } from '@panneau/protocol/runtime';
+import {
+    getCreatableTypes,
+    getItemImageField,
+    getSummaryPeriodFilter,
+} from '@panneau/protocol/runtime';
 import {
     AsideLayout,
     Button,
@@ -28,6 +32,7 @@ import {
 } from '@panneau/ui';
 
 import { cx } from '../cx';
+import { useSummaryPeriod } from '../dashboard/period';
 import { useDocumentTitle } from '../documentTitle';
 import { navigate } from '../location';
 import { capitalize } from '../navigation';
@@ -35,6 +40,7 @@ import { routePath } from '../routes';
 import { ErrorPage, getErrorPageKind } from './ErrorPage';
 import { ItemPanel } from './ItemPanel';
 import { PageHeader } from './PageHeader';
+import { ResourceSummary, useSummaryOpen } from './ResourceSummary';
 import { clearCreatedItem, peekCreatedItem } from './createdItem';
 import { filterActions, useItemActionRunner } from './itemActionRunner';
 import { createLinkResolver, getItemPath, opensInForm } from './itemLinks';
@@ -43,6 +49,21 @@ import styles from './pages.module.css';
 
 /** How long the item just created stays highlighted: its fade, with some room. */
 const HIGHLIGHT_DURATION = 4000;
+
+/** The parameters of a URL that say which items of a list to show: a link to some of them. */
+const LIST_QUERY_PARAM = /^(page|cursor|sort|q|filter\[.+)$/;
+
+/**
+ * Whether a URL opens a list on some of its items: its filters, its search, a page or a sort. The
+ * filter of the period of its summary isn't one: the summary sets it.
+ */
+function hasListQuery(search: string, periodFilter: string | null): boolean {
+    return [...new URLSearchParams(search).keys()].some(
+        (key) =>
+            LIST_QUERY_PARAM.test(key) &&
+            (periodFilter === null || !key.startsWith(`filter[${periodFilter}]`)),
+    );
+}
 
 export interface ResourceListPageProps {
     resolved: ResolvedResource;
@@ -73,7 +94,7 @@ export function ResourceListPage({
         resource: resource.label.singular,
     });
     const creatableTypes = getCreatableTypes(resource);
-    const { definition } = usePanneau();
+    const { definition, router } = usePanneau();
     // The view of the list (filters, sort, layout, columns) is remembered for the user, in this
     // browser (decision 0042).
     const { query, list } = useList({
@@ -83,6 +104,28 @@ export function ResourceListPage({
     const { data, error, isFetching, refetch } = useResourceList(resource.id, query, {
         placeholderData: (previous) => previous,
     });
+    // The summary above the list (decision 0084), which the user can hide. A resource whose list
+    // comes second opens on its summary, its list folded under it, unless the URL asks for some
+    // items (a link of a widget, a filtered list) or an item.
+    const summary = resource.summary;
+    const [summaryOpen, setSummaryOpen] = useSummaryOpen(resource.id);
+    const periodFilter = getSummaryPeriodFilter(resource);
+    const [listRequested, setListRequested] = useState(
+        () =>
+            summary?.list !== 'collapsed' ||
+            selectedId !== null ||
+            hasListQuery(router?.getSearch() ?? window.location.search, periodFilter),
+    );
+    // The period of the summary is the list's own date-range filter (decision 0084)
+    const period = useSummaryPeriod({
+        period: summary?.period,
+        filter: periodFilter,
+        list,
+        value: periodFilter !== null ? query.filter?.[periodFilter] : undefined,
+        router,
+    });
+    const listShown = summary === undefined || !summaryOpen || listRequested;
+    const total = (data?.meta as { total?: unknown } | undefined)?.total;
     const { run: runAction, isSupported } = useItemActionRunner(resource, { basePath, locale });
     const previewAction = useActionPreview(resource.id);
     // Fields edited in place are saved alone, with the version of the item (decision 0043).
@@ -245,6 +288,32 @@ export function ResourceListPage({
             {resource.description !== undefined ? (
                 <p className={styles.intro}>{resource.description}</p>
             ) : null}
+            {summary !== undefined && definition !== null ? (
+                <ResourceSummary
+                    resource={resource}
+                    summary={summary}
+                    definition={definition}
+                    basePath={basePath}
+                    query={{
+                        ...(query.filter !== undefined && { filter: query.filter }),
+                        ...(query.q !== undefined && { q: query.q }),
+                    }}
+                    isOpen={summaryOpen}
+                    onOpenChange={setSummaryOpen}
+                    period={period}
+                />
+            ) : null}
+            {!listShown ? (
+                <Button className={styles.showList} onPress={() => setListRequested(true)}>
+                    {typeof total === 'number'
+                        ? intl.formatMessage(appMessages.showListItems, {
+                              count: total,
+                              singular: resource.label.singular,
+                              plural: resource.label.plural,
+                          })
+                        : intl.formatMessage(appMessages.showList)}
+                </Button>
+            ) : null}
             <AsideLayout
                 narrow="overlay"
                 aside={
@@ -261,44 +330,49 @@ export function ResourceListPage({
                     ) : null
                 }
             >
-                <ListView
-                    {...definitionList}
-                    actions={filterActions(definitionList.actions, isSupported)}
-                    aria-label={title}
-                    list={list}
-                    items={data?.data}
-                    {...getPagingProps(data?.meta)}
-                    isLoading={isFetching}
-                    error={error}
-                    onRetry={() => void refetch()}
-                    fields={getVisibleFields(resource.fields)}
-                    itemTitle={resource.itemTitle}
-                    itemImage={getItemImageField(resource)}
-                    // The layouts of the definition, or the table and the cards without any
-                    layouts={
-                        resource.list?.layouts !== undefined
-                            ? definitionList.layouts
-                            : ['table', 'cards']
-                    }
-                    perPageOptions={[10, 20, 50, 100]}
-                    // Titles open the panel, with the list's query, or the form (`open` of the resource)
-                    getItemHref={(item) => getItemPath(resource, item, basePath, search)}
-                    getLinkHref={createLinkResolver(resource, basePath, { search, resolveRoute })}
-                    currentItemId={selectedId}
-                    highlightedItemId={highlightedId}
-                    // The main action of rows keeps its label: what the title opens
-                    primaryAction={getOpenMode(resource) === 'edit' ? 'edit' : 'show'}
-                    onAction={runAction}
-                    previewAction={previewAction}
-                    onInlineEdit={({ item, field, value }) =>
-                        update.mutateAsync({
-                            id: item.id,
-                            values: { [field.name]: value },
-                            version: typeof item.version === 'string' ? item.version : null,
-                        })
-                    }
-                    formatError={formatError}
-                />
+                {listShown ? (
+                    <ListView
+                        {...definitionList}
+                        actions={filterActions(definitionList.actions, isSupported)}
+                        aria-label={title}
+                        list={list}
+                        items={data?.data}
+                        {...getPagingProps(data?.meta)}
+                        isLoading={isFetching}
+                        error={error}
+                        onRetry={() => void refetch()}
+                        fields={getVisibleFields(resource.fields)}
+                        itemTitle={resource.itemTitle}
+                        itemImage={getItemImageField(resource)}
+                        // The layouts of the definition, or the table and the cards without any
+                        layouts={
+                            resource.list?.layouts !== undefined
+                                ? definitionList.layouts
+                                : ['table', 'cards']
+                        }
+                        perPageOptions={[10, 20, 50, 100]}
+                        // Titles open the panel, with the list's query, or the form (`open` of the resource)
+                        getItemHref={(item) => getItemPath(resource, item, basePath, search)}
+                        getLinkHref={createLinkResolver(resource, basePath, {
+                            search,
+                            resolveRoute,
+                        })}
+                        currentItemId={selectedId}
+                        highlightedItemId={highlightedId}
+                        // The main action of rows keeps its label: what the title opens
+                        primaryAction={getOpenMode(resource) === 'edit' ? 'edit' : 'show'}
+                        onAction={runAction}
+                        previewAction={previewAction}
+                        onInlineEdit={({ item, field, value }) =>
+                            update.mutateAsync({
+                                id: item.id,
+                                values: { [field.name]: value },
+                                version: typeof item.version === 'string' ? item.version : null,
+                            })
+                        }
+                        formatError={formatError}
+                    />
+                ) : null}
             </AsideLayout>
         </div>
     );

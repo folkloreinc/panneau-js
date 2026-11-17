@@ -5,7 +5,7 @@ import { PROTOCOL_VERSION } from '../version';
 import { Abilities, Id } from './common';
 import { Resource } from './resource';
 import { DefinitionTheme } from './theme';
-import { Widget } from './widget';
+import { OverviewPeriod, Widget } from './widget';
 
 export const User = z.looseObject({
     id: Id,
@@ -139,6 +139,14 @@ export const Page = z.looseObject({
         description:
             'What the current user can do with the page (decision 0046). `view: false` leaves it out of menus, and its route shows a forbidden state; `pages.home` falls back to the built-in home. Without it, the page is allowed.',
     }),
+    widgets: z.array(Widget).optional().meta({
+        description:
+            'A page whose component is the built-in `dashboard`: its widgets for the user, in order (decision 0084), fed by `GET /dashboard/widgets/{widget}?page={page}`. On `pages.home`, they replace `dashboard.widgets`.',
+    }),
+    period: OverviewPeriod.optional().meta({
+        description:
+            'A page whose component is the built-in `dashboard`: one period for its widgets (decision 0084). On `pages.home`, it replaces `dashboard.period`.',
+    }),
 });
 
 export const ContextOption = z
@@ -237,11 +245,11 @@ export const Definition = z
         }),
         auth: Auth.optional(),
         dashboard: z
-            .looseObject({ widgets: z.array(Widget) })
+            .looseObject({ widgets: z.array(Widget), period: OverviewPeriod.optional() })
             .optional()
             .meta({
                 description:
-                    'The widgets of the home page for the user, in order, when `pages.home` is the `dashboard` (decision 0064).',
+                    'The widgets of the home page for the user, in order, when `pages.home` is the `dashboard` (decision 0064): the shorthand of `pages.home.widgets`, which wins when set.',
             }),
         search: z.looseObject({ enabled: z.boolean() }).optional(),
         uploads: Uploads.optional(),

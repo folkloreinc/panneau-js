@@ -191,6 +191,7 @@ export const appFr: Record<string, string> = {
     'panneau.app.unreachableText':
         'Il est peut-être arrêté ou en train de redémarrer. Réessayez dans un instant.',
     'panneau.app.missingPage': 'Aucun plugin ne fournit la page « {component} ».',
+    'panneau.app.dashboardEmpty': 'Ce tableau de bord n’a pas encore de widgets.',
     'panneau.app.missingWidget': 'Aucun plugin ne fournit le widget « {type} ».',
     'panneau.app.widgetLoading': 'Chargement de {label}…',
     'panneau.app.widgetError': 'Ce widget n’a pas pu se charger.',
@@ -198,4 +199,15 @@ export const appFr: Record<string, string> = {
     'panneau.app.widgetSeeAll': 'Tout voir',
     'panneau.app.widgetTotal': 'Total',
     'panneau.app.widgetUntitled': 'Élément {id}',
+    'panneau.app.summary': 'Synthèse',
+    'panneau.app.period': 'Période',
+    'panneau.app.period7d': '7 jours',
+    'panneau.app.period30d': '30 jours',
+    'panneau.app.period90d': '90 jours',
+    'panneau.app.periodMonth': 'Ce mois-ci',
+    'panneau.app.periodYear': '12 mois',
+    'panneau.app.periodAppliesTo': 'Pour {widgets}',
+    'panneau.app.showList': 'Afficher la liste',
+    'panneau.app.showListItems':
+        '{count, plural, =0 {Afficher la liste} one {Afficher # {singular}} other {Afficher les # {plural}}}',
 };

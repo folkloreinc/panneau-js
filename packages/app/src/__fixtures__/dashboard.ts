@@ -1,4 +1,4 @@
-import type { DefinitionInput, Widget } from '@panneau/protocol';
+import type { DefinitionInput, OverviewPeriod, Widget } from '@panneau/protocol';
 import type { MockWidget } from '@panneau/protocol/mock';
 
 import { createDefinition } from './definition';
@@ -25,8 +25,60 @@ export const DASHBOARD_WIDGETS: Widget[] = [
     { id: 'closed', type: 'list', label: 'Closed contests' },
 ];
 
-/** A definition with a resource of entries, whose status is a `select` with tones. */
-export function createDashboardDefinition(widgets: Widget[] = DASHBOARD_WIDGETS): DefinitionInput {
+/**
+ * Widgets on the aggregates of the entries (decision 0084): a count per day, the entries per
+ * status, and the sum of their fees against a budget.
+ */
+export const AGGREGATE_WIDGETS: Widget[] = [
+    {
+        id: 'fees',
+        type: 'stat',
+        label: 'Entry fees',
+        settings: { resource: 'entries', measure: 'sum:fee', target: 10000 },
+    },
+    {
+        id: 'submitted',
+        type: 'series',
+        label: 'Entries per day',
+        width: 8,
+        settings: {
+            resource: 'entries',
+            group: 'day:submitted_at',
+            query: {
+                'filter[submitted_at][from]': '2026-10-01',
+                'filter[submitted_at][to]': '2026-10-07',
+            },
+        },
+    },
+    {
+        id: 'by-status',
+        type: 'breakdown',
+        label: 'Entries by status',
+        width: 4,
+        settings: { resource: 'entries', group: 'status' },
+    },
+];
+
+/** The widgets of "Activity", a dashboard page of its own (decision 0084). */
+export const ACTIVITY_WIDGETS: Widget[] = [
+    {
+        id: 'accepted',
+        type: 'stat',
+        label: 'Accepted entries',
+        settings: { resource: 'entries', query: { 'filter[status]': 'accepted' } },
+    },
+    { id: 'signups', type: 'stat', label: 'Sign-ups this week' },
+    { id: 'per-week', type: 'series', label: 'Entries per week', width: 12 },
+];
+
+/**
+ * A definition with a resource of entries, whose status is a `select` with tones: the widgets of
+ * the home page, and those of the dashboard page "Activity".
+ */
+export function createDashboardDefinition(
+    widgets: Widget[] = DASHBOARD_WIDGETS,
+    activity: Widget[] = ACTIVITY_WIDGETS,
+): DefinitionInput {
     return createDefinition({
         resources: [
             {
@@ -44,29 +96,43 @@ export function createDashboardDefinition(widgets: Widget[] = DASHBOARD_WIDGETS)
                             { value: 'refused', label: 'Refused' },
                         ],
                     },
+                    { name: 'submitted_at', type: 'datetime' },
+                    { name: 'fee', type: 'money', settings: { currency: 'CAD' } },
                 ],
                 list: {
                     columns: [{ field: 'title' }, { field: 'status' }],
-                    filters: [{ id: 'status', type: 'select' }],
+                    filters: [
+                        { id: 'status', type: 'select' },
+                        { id: 'submitted_at', type: 'date-range' },
+                    ],
                     sorts: ['title'],
+                    aggregates: { sum: ['fee'], groupBy: ['status'], dates: ['submitted_at'] },
                 },
                 abilities: { viewAny: true },
             },
         ],
-        pages: { home: { component: 'dashboard' } },
+        pages: {
+            home: { component: 'dashboard' },
+            activity: { component: 'dashboard', label: 'Activity', widgets: activity },
+        },
         dashboard: { widgets },
     });
+}
+
+/** The date an entry was submitted, and its fee in cents. */
+function entry(day: string, fee: number) {
+    return { submitted_at: `${day}T14:00:00Z`, fee: { amount: fee, currency: 'CAD' } };
 }
 
 /** The items of the entries. */
 export const DASHBOARD_ITEMS = {
     entries: [
-        { id: '1', title: 'A garden in winter', status: 'to-judge' },
-        { id: '2', title: 'Bridges at night', status: 'accepted' },
-        { id: '3', title: 'City lights', status: 'to-judge' },
-        { id: '4', title: 'Dunes', status: 'refused' },
-        { id: '5', title: 'Early frost', status: 'accepted' },
-        { id: '6', title: 'Fog on the river', status: 'accepted' },
+        { id: '1', title: 'A garden in winter', status: 'to-judge', ...entry('2026-10-01', 2500) },
+        { id: '2', title: 'Bridges at night', status: 'accepted', ...entry('2026-10-01', 2500) },
+        { id: '3', title: 'City lights', status: 'to-judge', ...entry('2026-10-03', 2500) },
+        { id: '4', title: 'Dunes', status: 'refused', ...entry('2026-10-04', 1500) },
+        { id: '5', title: 'Early frost', status: 'accepted', ...entry('2026-10-04', 1500) },
+        { id: '6', title: 'Fog on the river', status: 'accepted', ...entry('2026-10-06', 1500) },
     ],
 };
 
@@ -102,4 +168,130 @@ export const DASHBOARD_DATA: Record<string, MockWidget> = {
         url: '/panneau/resources/entries',
     },
     closed: { items: [], empty: 'No closed contests.' },
+    // On "Activity"
+    signups: { value: 42, help: '6 more than last week', tone: 'success' },
+    'per-week': {
+        period: 'week',
+        // Mondays, from August 31
+        points: PER_DAY.slice(0, 8).map((value, index) => ({
+            date: new Date(Date.UTC(2026, 7, 31 + index * 7)).toISOString().slice(0, 10),
+            value: value * 5,
+        })),
+        total: PER_DAY.slice(0, 8).reduce((sum, value) => sum + value * 5, 0),
+    },
 };
+
+/**
+ * The widgets of the summary above the list of entries (decision 0084): a count and a sum that
+ * follow the list, a count of every entry that doesn't, a breakdown by status, and a widget with
+ * data of its own.
+ */
+export const SUMMARY_WIDGETS: Widget[] = [
+    { id: 'shown', type: 'stat', label: 'Entries', settings: { resource: 'entries' } },
+    {
+        id: 'everything',
+        type: 'stat',
+        label: 'All entries',
+        settings: { resource: 'entries', followsList: false },
+    },
+    {
+        id: 'fees-shown',
+        type: 'stat',
+        label: 'Entry fees',
+        settings: { resource: 'entries', measure: 'sum:fee' },
+    },
+    { id: 'queue', type: 'stat', label: 'In the queue' },
+    {
+        id: 'status',
+        type: 'breakdown',
+        label: 'Entries by status',
+        width: 12,
+        settings: { resource: 'entries', group: 'status' },
+    },
+];
+
+/** The data of the widget of the summary with data of its own: it follows the list too. */
+export const SUMMARY_DATA: Record<string, MockWidget> = {
+    queue: ({ query }) => ({
+        value: query.filter?.status === 'accepted' ? 0 : 4,
+        help: query.filter?.status !== undefined ? 'Of the shown entries' : 'Of every entry',
+    }),
+};
+
+/** The dashboard definition, with a summary above the list of entries (decision 0084). */
+export function createSummaryDefinition(
+    widgets: Widget[] = SUMMARY_WIDGETS,
+    list?: 'collapsed',
+    period?: OverviewPeriod,
+): DefinitionInput {
+    const definition = createDashboardDefinition();
+    return {
+        ...definition,
+        resources: definition.resources.map((resource) => ({
+            ...resource,
+            summary: {
+                widgets,
+                ...(list !== undefined && { list }),
+                ...(period !== undefined && { period }),
+            },
+        })),
+    };
+}
+
+/**
+ * The widgets of a dashboard page with a period (decision 0084): entries submitted in the period,
+ * a widget with data of its own that gets it, and every entry, which doesn't follow it.
+ */
+export const PERIOD_WIDGETS: Widget[] = [
+    {
+        id: 'submitted-in-period',
+        type: 'stat',
+        label: 'Submitted',
+        settings: { resource: 'entries', period: 'submitted_at' },
+    },
+    { id: 'visits', type: 'stat', label: 'Visits' },
+    { id: 'all', type: 'stat', label: 'All entries', settings: { resource: 'entries' } },
+];
+
+/** The data of the widget with data of its own: the days of its period. */
+export const PERIOD_DATA: Record<string, MockWidget> = {
+    visits: ({ period }) => ({
+        value: period !== null ? 100 : 0,
+        help: period !== null ? `${period.option}: ${period.from} to ${period.to}` : 'All time',
+    }),
+};
+
+/** The dashboard definition, with a period on the page "Activity" (decision 0084). */
+export function createPeriodDefinition(
+    period: OverviewPeriod = { options: ['7d', '30d', 'month'], default: '7d' },
+): DefinitionInput {
+    const definition = createDashboardDefinition(DASHBOARD_WIDGETS, PERIOD_WIDGETS);
+    return {
+        ...definition,
+        pages: {
+            ...definition.pages,
+            activity: {
+                component: 'dashboard',
+                label: 'Activity',
+                widgets: PERIOD_WIDGETS,
+                period,
+            },
+        },
+    };
+}
+
+/** Entries submitted 1, 3, 10 and 40 days before today: 2 in 7 days, 3 in 30, 4 in 90. */
+export function createRecentItems(today: Date = new Date()) {
+    const daysAgo = (days: number) => {
+        const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() - days, 12);
+        return date.toISOString();
+    };
+    return {
+        entries: [
+            { id: '1', title: 'A garden in winter', status: 'to-judge', submitted_at: daysAgo(1) },
+            { id: '2', title: 'Bridges at night', status: 'accepted', submitted_at: daysAgo(3) },
+            { id: '3', title: 'City lights', status: 'accepted', submitted_at: daysAgo(10) },
+            { id: '4', title: 'Dunes', status: 'refused', submitted_at: daysAgo(40) },
+        ],
+    };
+}

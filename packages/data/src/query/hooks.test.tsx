@@ -16,6 +16,7 @@ import {
     useDefinition,
     useDeleteItem,
     useDuplicateItem,
+    useResourceAggregate,
     useResourceItem,
     useResourceList,
     useRunAction,
@@ -143,6 +144,72 @@ describe('query hooks', () => {
         const secret = renderHook(() => useWidgetData('secret'), { wrapper });
         await waitFor(() => expect(secret.result.current.isError).toBe(true));
         expect(secret.result.current.error).toBeInstanceOf(ForbiddenError);
+
+        // The same widget on another dashboard page: its own request and its own data
+        const activity = renderHook(() => useWidgetData('to judge', { page: 'activity' }), {
+            wrapper,
+        });
+        await waitFor(() => expect(activity.result.current.isSuccess).toBe(true));
+        expect(urls.at(-1)).toBe(`${BASE_URL}/dashboard/widgets/to%20judge?page=activity`);
+        expect(client.getQueryData(queryKeys.widget('to judge', { page: 'home' }))).toEqual({
+            value: 12,
+        });
+        expect(client.getQueryData(queryKeys.widget('to judge', { page: 'activity' }))).toEqual({
+            value: 12,
+        });
+        // Another period is another key
+        const period = { option: '7d' as const, from: '2026-11-11', to: '2026-11-17' };
+        const week = renderHook(() => useWidgetData('to judge', { page: 'activity', period }), {
+            wrapper,
+        });
+        await waitFor(() => expect(week.result.current.isSuccess).toBe(true));
+        expect(urls.at(-1)).toBe(
+            `${BASE_URL}/dashboard/widgets/to%20judge?page=activity&period%5Boption%5D=7d&period%5Bfrom%5D=2026-11-11&period%5Bto%5D=2026-11-17`,
+        );
+        expect(
+            client.getQueryData(queryKeys.widget('to judge', { page: 'activity', period })),
+        ).toEqual({ value: 12 });
+        // Every widget of every page is under the dashboard
+        expect(client.getQueryCache().findAll({ queryKey: ['panneau', 'dashboard'] })).toHaveLength(
+            4,
+        );
+    });
+
+    it('get the data of a widget of a summary with its list query, refetched when its items change', async () => {
+        const backend = createBackend();
+        const adapter = createRestAdapter({ baseUrl: BASE_URL, fetch: backend.fetch });
+        let calls = 0;
+        const getWidgetData = vi.fn(() => Promise.resolve({ value: ++calls }));
+        adapter.getWidgetData = getWidgetData;
+        const { wrapper, client } = setup(adapter);
+        const query = { filter: { status: 'draft' }, q: 'about' };
+        const { result } = renderHook(
+            () => ({
+                summary: useWidgetData('health', { resource: 'pages', query }),
+                home: useWidgetData('visits'),
+                remove: useDeleteItem('pages'),
+            }),
+            { wrapper },
+        );
+        await waitFor(() => expect(result.current.summary.isSuccess).toBe(true));
+        await waitFor(() => expect(result.current.home.isSuccess).toBe(true));
+        expect(getWidgetData).toHaveBeenCalledWith('health', {
+            signal: expect.any(AbortSignal) as AbortSignal,
+            resource: 'pages',
+            query,
+        });
+        expect(
+            client.getQueryData(queryKeys.widget('health', { resource: 'pages', query })),
+        ).toBeDefined();
+        // Another query of the list is another key
+        expect(
+            client.getQueryData(queryKeys.widget('health', { resource: 'pages' })),
+        ).toBeUndefined();
+        const home = result.current.home.data;
+        const before = result.current.summary.data;
+        await act(() => result.current.remove.mutateAsync('2'));
+        await waitFor(() => expect(result.current.summary.data).not.toEqual(before));
+        expect(result.current.home.data).toBe(home);
     });
 
     it('get an item, and wait for an id', async () => {
@@ -244,6 +311,41 @@ describe('query hooks', () => {
             }),
         );
         await waitFor(() => expect(result.current.list.data?.meta.total).toBe(4));
+    });
+
+    it('get the aggregates of a resource, refetched when its items change', async () => {
+        const { wrapper, backend } = setup();
+        const { result } = renderHook(
+            () => ({
+                aggregate: useResourceAggregate('pages', {
+                    filter: { status: 'draft' },
+                    group: 'status',
+                }),
+                remove: useDeleteItem('pages'),
+            }),
+            { wrapper },
+        );
+        await waitFor(() => expect(result.current.aggregate.isSuccess).toBe(true));
+        expect(result.current.aggregate.data).toEqual({
+            items: [{ label: 'Draft', value: 2, key: 'draft' }],
+            total: 2,
+        });
+        expect(new URL(backend.requests[0]?.url ?? '').search).toBe(
+            '?filter%5Bstatus%5D=draft&measure=count&group=status',
+        );
+        await act(() => result.current.remove.mutateAsync('2'));
+        await waitFor(() => expect(result.current.aggregate.data).toMatchObject({ total: 1 }));
+    });
+
+    it('fail the aggregates without getResourceAggregate()', async () => {
+        const adapter = createRestAdapter({ baseUrl: BASE_URL, fetch: createBackend().fetch });
+        delete adapter.getResourceAggregate;
+        const { wrapper } = setup(adapter);
+        const { result } = renderHook(() => useResourceAggregate('pages'), { wrapper });
+        await waitFor(() => expect(result.current.isError).toBe(true));
+        expect(result.current.error?.message).toBe(
+            'The data adapter has no getResourceAggregate().',
+        );
     });
 
     it('delete an item and refetch the lists', async () => {

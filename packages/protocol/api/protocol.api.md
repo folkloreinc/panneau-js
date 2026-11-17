@@ -530,6 +530,75 @@ export const AddressValue: z.ZodObject<{
 // @public (undocumented)
 export type AddressValue = z.infer<typeof AddressValue>;
 
+// @public
+export const AGGREGATE_COUNT = "count";
+
+// @public
+export const AGGREGATE_MAX_POINTS = 366;
+
+// @public
+export interface AggregateField {
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    options?: readonly {
+        value: unknown;
+        label: string;
+        tone?: string | undefined;
+    }[] | undefined;
+    // (undocumented)
+    type: string;
+}
+
+// @public
+export type AggregateGroup = {
+    type: 'period';
+    period: WidgetSeriesPeriod;
+    field: string;
+} | {
+    type: 'field';
+    field: string;
+};
+
+// @public
+export function aggregateItems(items: readonly Record<string, unknown>[], query: AggregateQuery, options: AggregateItemsOptions): StatWidgetData | SeriesWidgetData | BreakdownWidgetData;
+
+// @public (undocumented)
+export interface AggregateItemsOptions {
+    emptyLabel?: string;
+    fields: readonly AggregateField[];
+    range?: FilterRange | undefined;
+}
+
+// @public
+export type AggregateMeasure = {
+    type: 'count';
+} | {
+    type: 'sum';
+    field: string;
+};
+
+// @public
+export interface AggregateQuery {
+    // (undocumented)
+    group: AggregateGroup | null;
+    // (undocumented)
+    measure: AggregateMeasure;
+}
+
+// @public
+export interface AggregateRequest {
+    // (undocumented)
+    filter?: ListQuery['filter'];
+    group?: string | null | undefined;
+    measure?: string | undefined;
+    // (undocumented)
+    q?: string | undefined;
+}
+
+// @public
+export type AggregateWidgetType = 'stat' | 'series' | 'breakdown';
+
 // @public (undocumented)
 export const Auth: z.ZodObject<{
     mode: z.ZodEnum<{
@@ -648,6 +717,34 @@ export type BootConfig = z.infer<typeof BootConfig>;
 // @public
 export type BootConfigInput = z.input<typeof BootConfig>;
 
+// @public (undocumented)
+export const BreakdownWidgetData: z.ZodObject<{
+    items: z.ZodArray<z.ZodObject<{
+        label: z.ZodString;
+        value: z.ZodNumber;
+        tone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        key: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>>;
+    }, z.core.$loose>>;
+    total: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    other: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type BreakdownWidgetData = z.infer<typeof BreakdownWidgetData>;
+
+// @public (undocumented)
+export const BreakdownWidgetItem: z.ZodObject<{
+    label: z.ZodString;
+    value: z.ZodNumber;
+    tone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    key: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type BreakdownWidgetItem = z.infer<typeof BreakdownWidgetItem>;
+
 // @public
 export const BUILT_IN_ACTIONS: readonly ["show", "edit", "duplicate", "delete", "restore", "export", "import"];
 
@@ -670,7 +767,7 @@ export const BUILT_IN_LINK_TYPES: readonly ["url", "page", "email", "tel", "file
 export const BUILT_IN_LIST_LAYOUTS: readonly ["table", "cards", "gallery", "calendar"];
 
 // @public
-export const BUILT_IN_WIDGET_TYPES: readonly ["stat", "series", "list"];
+export const BUILT_IN_WIDGET_TYPES: readonly ["stat", "series", "list", "breakdown"];
 
 // @public (undocumented)
 export type BuiltInAction = (typeof BUILT_IN_ACTIONS)[number];
@@ -850,6 +947,9 @@ export const CursorPagination: z.ZodObject<{
 
 // @public (undocumented)
 export type CursorPagination = z.infer<typeof CursorPagination>;
+
+// @public
+export const DASHBOARD_COMPONENT = "dashboard";
 
 // @public
 export const DATE_RANGE_OPEN_BOUNDS: readonly ["start", "end", "both"];
@@ -1178,6 +1278,11 @@ export const Definition: z.ZodObject<{
                 filter: z.ZodOptional<z.ZodString>;
                 perPage: z.ZodOptional<z.ZodNumber>;
             }, z.core.$loose>>;
+            aggregates: z.ZodOptional<z.ZodObject<{
+                sum: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                groupBy: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                dates: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            }, z.core.$loose>>;
         }, z.core.$loose>>;
         actions: z.ZodOptional<z.ZodArray<z.ZodObject<{
             id: z.ZodString;
@@ -1445,6 +1550,43 @@ export const Definition: z.ZodObject<{
             fields: z.ZodArray<Field>;
             abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
         }, z.core.$loose>>>;
+        summary: z.ZodOptional<z.ZodObject<{
+            widgets: z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                type: z.ZodString;
+                label: z.ZodOptional<z.ZodString>;
+                width: z.ZodOptional<z.ZodNumber>;
+                settings: z.ZodOptional<z.ZodObject<{
+                    resource: z.ZodOptional<z.ZodString>;
+                    query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                    measure: z.ZodOptional<z.ZodString>;
+                    group: z.ZodOptional<z.ZodString>;
+                    target: z.ZodOptional<z.ZodNumber>;
+                    period: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodLiteral<false>]>>;
+                    followsList: z.ZodOptional<z.ZodBoolean>;
+                }, z.core.$loose>>;
+            }, z.core.$loose>>;
+            list: z.ZodOptional<z.ZodEnum<{
+                collapsed: "collapsed";
+            }>>;
+            period: z.ZodOptional<z.ZodObject<{
+                options: z.ZodArray<z.ZodEnum<{
+                    "7d": "7d";
+                    "30d": "30d";
+                    "90d": "90d";
+                    month: "month";
+                    year: "year";
+                }>>;
+                default: z.ZodOptional<z.ZodEnum<{
+                    "7d": "7d";
+                    "30d": "30d";
+                    "90d": "90d";
+                    month: "month";
+                    year: "year";
+                }>>;
+                filter: z.ZodOptional<z.ZodString>;
+            }, z.core.$loose>>;
+        }, z.core.$loose>>;
         settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     }, z.core.$loose>>;
     pages: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
@@ -1454,6 +1596,37 @@ export const Definition: z.ZodObject<{
         props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         params: z.ZodOptional<z.ZodArray<z.ZodString>>;
         abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
+        widgets: z.ZodOptional<z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            type: z.ZodString;
+            label: z.ZodOptional<z.ZodString>;
+            width: z.ZodOptional<z.ZodNumber>;
+            settings: z.ZodOptional<z.ZodObject<{
+                resource: z.ZodOptional<z.ZodString>;
+                query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                measure: z.ZodOptional<z.ZodString>;
+                group: z.ZodOptional<z.ZodString>;
+                target: z.ZodOptional<z.ZodNumber>;
+                period: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodLiteral<false>]>>;
+                followsList: z.ZodOptional<z.ZodBoolean>;
+            }, z.core.$loose>>;
+        }, z.core.$loose>>>;
+        period: z.ZodOptional<z.ZodObject<{
+            options: z.ZodArray<z.ZodEnum<{
+                "7d": "7d";
+                "30d": "30d";
+                "90d": "90d";
+                month: "month";
+                year: "year";
+            }>>;
+            default: z.ZodOptional<z.ZodEnum<{
+                "7d": "7d";
+                "30d": "30d";
+                "90d": "90d";
+                month: "month";
+                year: "year";
+            }>>;
+        }, z.core.$loose>>;
     }, z.core.$loose>>>;
     menus: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodArray<z.ZodObject<{
         type: z.ZodString;
@@ -1502,7 +1675,28 @@ export const Definition: z.ZodObject<{
             settings: z.ZodOptional<z.ZodObject<{
                 resource: z.ZodOptional<z.ZodString>;
                 query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                measure: z.ZodOptional<z.ZodString>;
+                group: z.ZodOptional<z.ZodString>;
+                target: z.ZodOptional<z.ZodNumber>;
+                period: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodLiteral<false>]>>;
+                followsList: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>>;
+        }, z.core.$loose>>;
+        period: z.ZodOptional<z.ZodObject<{
+            options: z.ZodArray<z.ZodEnum<{
+                "7d": "7d";
+                "30d": "30d";
+                "90d": "90d";
+                month: "month";
+                year: "year";
+            }>>;
+            default: z.ZodOptional<z.ZodEnum<{
+                "7d": "7d";
+                "30d": "30d";
+                "90d": "90d";
+                month: "month";
+                year: "year";
+            }>>;
         }, z.core.$loose>>;
     }, z.core.$loose>>;
     search: z.ZodOptional<z.ZodObject<{
@@ -2033,6 +2227,17 @@ export interface FilterRange {
 export type FilterValue = string | number | boolean | Array<string | number | boolean> | FilterRange;
 
 // @public
+export function findPeriodOption(range: unknown, period: PeriodLike, today?: string | Date): OverviewPeriodOption | null;
+
+// Warning: (ae-forgotten-export) The symbol "WidgetLike" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function followsList(widget: WidgetLike, resource: string): boolean;
+
+// @public
+export function followsPeriod(widget: WidgetLike, summaryOf?: string): boolean;
+
+// @public
 export function formatContextHeader(values: Readonly<Record<string, string | null | undefined>>, names?: readonly string[]): string;
 
 // @public
@@ -2045,6 +2250,9 @@ export function fromSearchParams(params: URLSearchParams): ListQuery;
 export function getAddressRequiredParts(field: Pick<Field, 'settings'>): AddressPart[];
 
 // @public
+export function getAggregateWidgetType(group: AggregateGroup | null): AggregateWidgetType;
+
+// @public
 export function getCreatableTypes<T extends {
     abilities?: Record<string, boolean> | undefined;
 }>(resource: {
@@ -2053,6 +2261,23 @@ export function getCreatableTypes<T extends {
 
 // @public
 export function getCurrencyDigits(code: string): number;
+
+// Warning: (ae-forgotten-export) The symbol "DashboardsOf" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function getDashboardPages(definition: DashboardsOf): string[];
+
+// @public
+export function getDashboardPeriod(definition: DashboardsOf, page?: string): OverviewPeriod | undefined;
+
+// @public
+export function getDashboardWidgets(definition: DashboardsOf, page?: string): Widget[];
+
+// @public
+export function getDefaultPeriod(period: PeriodLike): OverviewPeriodOption | null;
+
+// @public
+export function getFilterRange(query: Pick<ListQuery, 'filter'>, field: string): FilterRange | undefined;
 
 // @public
 export function getImageUrl(value: unknown): string | null;
@@ -2082,11 +2307,25 @@ export function getMediaLibraries(definition: MediaLibrariesDefinition | null, f
 export function getNestedShape(field: Pick<Field, 'type' | 'fields' | 'multiple'>): NestedShape | null;
 
 // @public
+export function getPeriodRange(option: OverviewPeriodOption, today?: string | Date): PeriodRange;
+
+// @public
 export function getResourceType<T extends {
     id: string;
 }>(resource: {
     types?: readonly T[] | undefined;
 }, id: unknown): T | undefined;
+
+// @public
+export function getSummaryPeriodFilter(resource: Pick<ResourceInput, 'summary' | 'list'>): string | null;
+
+// Warning: (ae-forgotten-export) The symbol "SummariesOf" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function getSummaryResources(definition: SummariesOf): string[];
+
+// @public
+export function getSummaryWidgets(definition: SummariesOf, resource: string): Widget[];
 
 // @public
 export function getTypeFields<F>(resource: {
@@ -2100,15 +2339,19 @@ export function getTypeFields<F>(resource: {
 // @public
 export function getValue(values: unknown, path: string): unknown;
 
-// Warning: (ae-forgotten-export) The symbol "WidgetLike" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function getWidgetResource(widget: WidgetLike): WidgetResource | null;
+
+// @public
+export const GROUPED_WIDGET_TYPES: readonly ["series", "breakdown"];
 
 // @public
 export function hasResourceTypes(resource: {
     types?: readonly unknown[] | undefined;
 }): boolean;
+
+// @public
+export const HOME_PAGE = "home";
 
 // @public (undocumented)
 export const Id: z.ZodString;
@@ -2160,6 +2403,9 @@ export function isCurrencyCode(code: unknown): code is CurrencyCode;
 export function isCursorPage(meta: object): meta is CursorPageMeta;
 
 // @public
+export function isDay(value: unknown): value is string;
+
+// @public
 export function isExternalUrl(url: string): boolean;
 
 // @public
@@ -2167,6 +2413,9 @@ export function isFilled(value: unknown): boolean;
 
 // @public
 export function isFilterRange(value: unknown): value is FilterRange;
+
+// @public (undocumented)
+export function isOverviewPeriod(value: unknown): value is OverviewPeriodOption;
 
 // @public
 export function isPostalCode(code: string, country?: string | null): boolean;
@@ -2318,6 +2567,23 @@ export type LinkValue = z.infer<typeof LinkValue>;
 export function lintDefinition(definition: DefinitionInput): ValidationIssue[];
 
 // @public (undocumented)
+export const ListAggregates: z.ZodObject<{
+    sum: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    groupBy: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    dates: z.ZodOptional<z.ZodArray<z.ZodString>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type ListAggregates = z.infer<typeof ListAggregates>;
+
+// @public
+export interface ListAggregatesLike {
+    dates?: readonly string[] | undefined;
+    groupBy?: readonly string[] | undefined;
+    sum?: readonly string[] | undefined;
+}
+
+// @public (undocumented)
 export const ListCalendar: z.ZodObject<{
     field: z.ZodString;
     filter: z.ZodOptional<z.ZodString>;
@@ -2376,10 +2642,18 @@ export const ListDefinition: z.ZodObject<{
         filter: z.ZodOptional<z.ZodString>;
         perPage: z.ZodOptional<z.ZodNumber>;
     }, z.core.$loose>>;
+    aggregates: z.ZodOptional<z.ZodObject<{
+        sum: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        groupBy: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        dates: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    }, z.core.$loose>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
 export type ListDefinition = z.infer<typeof ListDefinition>;
+
+// @public
+export function listPeriods(from: string, to: string, period: WidgetSeriesPeriod, max?: number): string[];
 
 // @public
 export interface ListQuery {
@@ -2453,6 +2727,9 @@ export const ListWidgetItem: z.ZodObject<{
 
 // @public (undocumented)
 export type ListWidgetItem = z.infer<typeof ListWidgetItem>;
+
+// @public
+export function localDay(date?: Date): string;
 
 // @public (undocumented)
 export const LocationValue: z.ZodObject<{
@@ -3267,6 +3544,11 @@ export const namedSchemas: {
         filter: z.ZodOptional<z.ZodString>;
         perPage: z.ZodOptional<z.ZodNumber>;
     }, z.core.$loose>;
+    ListAggregates: z.ZodObject<{
+        sum: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        groupBy: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        dates: z.ZodOptional<z.ZodArray<z.ZodString>>;
+    }, z.core.$loose>;
     ListDefinition: z.ZodObject<{
         columns: z.ZodOptional<z.ZodArray<z.ZodObject<{
             field: z.ZodOptional<z.ZodString>;
@@ -3314,6 +3596,11 @@ export const namedSchemas: {
             field: z.ZodString;
             filter: z.ZodOptional<z.ZodString>;
             perPage: z.ZodOptional<z.ZodNumber>;
+        }, z.core.$loose>>;
+        aggregates: z.ZodOptional<z.ZodObject<{
+            sum: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            groupBy: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            dates: z.ZodOptional<z.ZodArray<z.ZodString>>;
         }, z.core.$loose>>;
     }, z.core.$loose>;
     ActionScope: z.ZodEnum<{
@@ -3598,6 +3885,60 @@ export const namedSchemas: {
         fields: z.ZodArray<typeof Field>;
         abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
     }, z.core.$loose>;
+    SummaryPeriod: z.ZodObject<{
+        options: z.ZodArray<z.ZodEnum<{
+            "7d": "7d";
+            "30d": "30d";
+            "90d": "90d";
+            month: "month";
+            year: "year";
+        }>>;
+        default: z.ZodOptional<z.ZodEnum<{
+            "7d": "7d";
+            "30d": "30d";
+            "90d": "90d";
+            month: "month";
+            year: "year";
+        }>>;
+        filter: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>;
+    ResourceSummary: z.ZodObject<{
+        widgets: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            type: z.ZodString;
+            label: z.ZodOptional<z.ZodString>;
+            width: z.ZodOptional<z.ZodNumber>;
+            settings: z.ZodOptional<z.ZodObject<{
+                resource: z.ZodOptional<z.ZodString>;
+                query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                measure: z.ZodOptional<z.ZodString>;
+                group: z.ZodOptional<z.ZodString>;
+                target: z.ZodOptional<z.ZodNumber>;
+                period: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodLiteral<false>]>>;
+                followsList: z.ZodOptional<z.ZodBoolean>;
+            }, z.core.$loose>>;
+        }, z.core.$loose>>;
+        list: z.ZodOptional<z.ZodEnum<{
+            collapsed: "collapsed";
+        }>>;
+        period: z.ZodOptional<z.ZodObject<{
+            options: z.ZodArray<z.ZodEnum<{
+                "7d": "7d";
+                "30d": "30d";
+                "90d": "90d";
+                month: "month";
+                year: "year";
+            }>>;
+            default: z.ZodOptional<z.ZodEnum<{
+                "7d": "7d";
+                "30d": "30d";
+                "90d": "90d";
+                month: "month";
+                year: "year";
+            }>>;
+            filter: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>>;
+    }, z.core.$loose>;
     Resource: z.ZodObject<{
         id: z.ZodString;
         kind: z.ZodOptional<z.ZodString>;
@@ -3875,6 +4216,11 @@ export const namedSchemas: {
                 filter: z.ZodOptional<z.ZodString>;
                 perPage: z.ZodOptional<z.ZodNumber>;
             }, z.core.$loose>>;
+            aggregates: z.ZodOptional<z.ZodObject<{
+                sum: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                groupBy: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                dates: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            }, z.core.$loose>>;
         }, z.core.$loose>>;
         actions: z.ZodOptional<z.ZodArray<z.ZodObject<{
             id: z.ZodString;
@@ -4142,6 +4488,43 @@ export const namedSchemas: {
             fields: z.ZodArray<typeof Field>;
             abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
         }, z.core.$loose>>>;
+        summary: z.ZodOptional<z.ZodObject<{
+            widgets: z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                type: z.ZodString;
+                label: z.ZodOptional<z.ZodString>;
+                width: z.ZodOptional<z.ZodNumber>;
+                settings: z.ZodOptional<z.ZodObject<{
+                    resource: z.ZodOptional<z.ZodString>;
+                    query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                    measure: z.ZodOptional<z.ZodString>;
+                    group: z.ZodOptional<z.ZodString>;
+                    target: z.ZodOptional<z.ZodNumber>;
+                    period: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodLiteral<false>]>>;
+                    followsList: z.ZodOptional<z.ZodBoolean>;
+                }, z.core.$loose>>;
+            }, z.core.$loose>>;
+            list: z.ZodOptional<z.ZodEnum<{
+                collapsed: "collapsed";
+            }>>;
+            period: z.ZodOptional<z.ZodObject<{
+                options: z.ZodArray<z.ZodEnum<{
+                    "7d": "7d";
+                    "30d": "30d";
+                    "90d": "90d";
+                    month: "month";
+                    year: "year";
+                }>>;
+                default: z.ZodOptional<z.ZodEnum<{
+                    "7d": "7d";
+                    "30d": "30d";
+                    "90d": "90d";
+                    month: "month";
+                    year: "year";
+                }>>;
+                filter: z.ZodOptional<z.ZodString>;
+            }, z.core.$loose>>;
+        }, z.core.$loose>>;
         settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     }, z.core.$loose>;
     User: z.ZodObject<{
@@ -4211,10 +4594,62 @@ export const namedSchemas: {
         props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         params: z.ZodOptional<z.ZodArray<z.ZodString>>;
         abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
+        widgets: z.ZodOptional<z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            type: z.ZodString;
+            label: z.ZodOptional<z.ZodString>;
+            width: z.ZodOptional<z.ZodNumber>;
+            settings: z.ZodOptional<z.ZodObject<{
+                resource: z.ZodOptional<z.ZodString>;
+                query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                measure: z.ZodOptional<z.ZodString>;
+                group: z.ZodOptional<z.ZodString>;
+                target: z.ZodOptional<z.ZodNumber>;
+                period: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodLiteral<false>]>>;
+                followsList: z.ZodOptional<z.ZodBoolean>;
+            }, z.core.$loose>>;
+        }, z.core.$loose>>>;
+        period: z.ZodOptional<z.ZodObject<{
+            options: z.ZodArray<z.ZodEnum<{
+                "7d": "7d";
+                "30d": "30d";
+                "90d": "90d";
+                month: "month";
+                year: "year";
+            }>>;
+            default: z.ZodOptional<z.ZodEnum<{
+                "7d": "7d";
+                "30d": "30d";
+                "90d": "90d";
+                month: "month";
+                year: "year";
+            }>>;
+        }, z.core.$loose>>;
     }, z.core.$loose>;
     WidgetSettings: z.ZodObject<{
         resource: z.ZodOptional<z.ZodString>;
         query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+        measure: z.ZodOptional<z.ZodString>;
+        group: z.ZodOptional<z.ZodString>;
+        target: z.ZodOptional<z.ZodNumber>;
+        period: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodLiteral<false>]>>;
+        followsList: z.ZodOptional<z.ZodBoolean>;
+    }, z.core.$loose>;
+    OverviewPeriod: z.ZodObject<{
+        options: z.ZodArray<z.ZodEnum<{
+            "7d": "7d";
+            "30d": "30d";
+            "90d": "90d";
+            month: "month";
+            year: "year";
+        }>>;
+        default: z.ZodOptional<z.ZodEnum<{
+            "7d": "7d";
+            "30d": "30d";
+            "90d": "90d";
+            month: "month";
+            year: "year";
+        }>>;
     }, z.core.$loose>;
     Widget: z.ZodObject<{
         id: z.ZodString;
@@ -4224,6 +4659,11 @@ export const namedSchemas: {
         settings: z.ZodOptional<z.ZodObject<{
             resource: z.ZodOptional<z.ZodString>;
             query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+            measure: z.ZodOptional<z.ZodString>;
+            group: z.ZodOptional<z.ZodString>;
+            target: z.ZodOptional<z.ZodNumber>;
+            period: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodLiteral<false>]>>;
+            followsList: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>>;
     }, z.core.$loose>;
     Uploads: z.ZodObject<{
@@ -4733,6 +5173,11 @@ export const namedSchemas: {
                     filter: z.ZodOptional<z.ZodString>;
                     perPage: z.ZodOptional<z.ZodNumber>;
                 }, z.core.$loose>>;
+                aggregates: z.ZodOptional<z.ZodObject<{
+                    sum: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                    groupBy: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                    dates: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                }, z.core.$loose>>;
             }, z.core.$loose>>;
             actions: z.ZodOptional<z.ZodArray<z.ZodObject<{
                 id: z.ZodString;
@@ -5000,6 +5445,43 @@ export const namedSchemas: {
                 fields: z.ZodArray<typeof Field>;
                 abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
             }, z.core.$loose>>>;
+            summary: z.ZodOptional<z.ZodObject<{
+                widgets: z.ZodArray<z.ZodObject<{
+                    id: z.ZodString;
+                    type: z.ZodString;
+                    label: z.ZodOptional<z.ZodString>;
+                    width: z.ZodOptional<z.ZodNumber>;
+                    settings: z.ZodOptional<z.ZodObject<{
+                        resource: z.ZodOptional<z.ZodString>;
+                        query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                        measure: z.ZodOptional<z.ZodString>;
+                        group: z.ZodOptional<z.ZodString>;
+                        target: z.ZodOptional<z.ZodNumber>;
+                        period: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodLiteral<false>]>>;
+                        followsList: z.ZodOptional<z.ZodBoolean>;
+                    }, z.core.$loose>>;
+                }, z.core.$loose>>;
+                list: z.ZodOptional<z.ZodEnum<{
+                    collapsed: "collapsed";
+                }>>;
+                period: z.ZodOptional<z.ZodObject<{
+                    options: z.ZodArray<z.ZodEnum<{
+                        "7d": "7d";
+                        "30d": "30d";
+                        "90d": "90d";
+                        month: "month";
+                        year: "year";
+                    }>>;
+                    default: z.ZodOptional<z.ZodEnum<{
+                        "7d": "7d";
+                        "30d": "30d";
+                        "90d": "90d";
+                        month: "month";
+                        year: "year";
+                    }>>;
+                    filter: z.ZodOptional<z.ZodString>;
+                }, z.core.$loose>>;
+            }, z.core.$loose>>;
             settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         }, z.core.$loose>>;
         pages: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
@@ -5009,6 +5491,37 @@ export const namedSchemas: {
             props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
             params: z.ZodOptional<z.ZodArray<z.ZodString>>;
             abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
+            widgets: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                type: z.ZodString;
+                label: z.ZodOptional<z.ZodString>;
+                width: z.ZodOptional<z.ZodNumber>;
+                settings: z.ZodOptional<z.ZodObject<{
+                    resource: z.ZodOptional<z.ZodString>;
+                    query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                    measure: z.ZodOptional<z.ZodString>;
+                    group: z.ZodOptional<z.ZodString>;
+                    target: z.ZodOptional<z.ZodNumber>;
+                    period: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodLiteral<false>]>>;
+                    followsList: z.ZodOptional<z.ZodBoolean>;
+                }, z.core.$loose>>;
+            }, z.core.$loose>>>;
+            period: z.ZodOptional<z.ZodObject<{
+                options: z.ZodArray<z.ZodEnum<{
+                    "7d": "7d";
+                    "30d": "30d";
+                    "90d": "90d";
+                    month: "month";
+                    year: "year";
+                }>>;
+                default: z.ZodOptional<z.ZodEnum<{
+                    "7d": "7d";
+                    "30d": "30d";
+                    "90d": "90d";
+                    month: "month";
+                    year: "year";
+                }>>;
+            }, z.core.$loose>>;
         }, z.core.$loose>>>;
         menus: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodArray<z.ZodObject<{
             type: z.ZodString;
@@ -5057,7 +5570,28 @@ export const namedSchemas: {
                 settings: z.ZodOptional<z.ZodObject<{
                     resource: z.ZodOptional<z.ZodString>;
                     query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                    measure: z.ZodOptional<z.ZodString>;
+                    group: z.ZodOptional<z.ZodString>;
+                    target: z.ZodOptional<z.ZodNumber>;
+                    period: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodLiteral<false>]>>;
+                    followsList: z.ZodOptional<z.ZodBoolean>;
                 }, z.core.$loose>>;
+            }, z.core.$loose>>;
+            period: z.ZodOptional<z.ZodObject<{
+                options: z.ZodArray<z.ZodEnum<{
+                    "7d": "7d";
+                    "30d": "30d";
+                    "90d": "90d";
+                    month: "month";
+                    year: "year";
+                }>>;
+                default: z.ZodOptional<z.ZodEnum<{
+                    "7d": "7d";
+                    "30d": "30d";
+                    "90d": "90d";
+                    month: "month";
+                    year: "year";
+                }>>;
             }, z.core.$loose>>;
         }, z.core.$loose>>;
         search: z.ZodOptional<z.ZodObject<{
@@ -5791,6 +6325,7 @@ export const namedSchemas: {
         help: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         tone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        target: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
     }, z.core.$loose>;
     SeriesPoint: z.ZodObject<{
         date: z.ZodString;
@@ -5798,9 +6333,9 @@ export const namedSchemas: {
     }, z.core.$loose>;
     SeriesWidgetData: z.ZodObject<{
         period: z.ZodEnum<{
+            month: "month";
             day: "day";
             week: "week";
-            month: "month";
         }>;
         points: z.ZodArray<z.ZodObject<{
             date: z.ZodString;
@@ -5832,10 +6367,31 @@ export const namedSchemas: {
         empty: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     }, z.core.$loose>;
+    BreakdownWidgetItem: z.ZodObject<{
+        label: z.ZodString;
+        value: z.ZodNumber;
+        tone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        key: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>>;
+    }, z.core.$loose>;
+    BreakdownWidgetData: z.ZodObject<{
+        items: z.ZodArray<z.ZodObject<{
+            label: z.ZodString;
+            value: z.ZodNumber;
+            tone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            key: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>>;
+        }, z.core.$loose>>;
+        total: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        other: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    }, z.core.$loose>;
 };
 
 // @public
 export type NestedShape = 'group' | 'repeater';
+
+// @public
+export function nextPeriod(start: string, period: WidgetSeriesPeriod): string;
 
 // @public
 export function normalizePostalCode(code: string, country?: string | null): string;
@@ -5853,6 +6409,33 @@ const Option_2: z.ZodObject<{
 type Option_2 = z.infer<typeof Option_2>;
 export { Option_2 as Option }
 
+// @public
+export const OVERVIEW_PERIODS: readonly ["7d", "30d", "90d", "month", "year"];
+
+// @public (undocumented)
+export const OverviewPeriod: z.ZodObject<{
+    options: z.ZodArray<z.ZodEnum<{
+        "7d": "7d";
+        "30d": "30d";
+        "90d": "90d";
+        month: "month";
+        year: "year";
+    }>>;
+    default: z.ZodOptional<z.ZodEnum<{
+        "7d": "7d";
+        "30d": "30d";
+        "90d": "90d";
+        month: "month";
+        year: "year";
+    }>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type OverviewPeriod = z.infer<typeof OverviewPeriod>;
+
+// @public (undocumented)
+export type OverviewPeriodOption = (typeof OVERVIEW_PERIODS)[number];
+
 // @public (undocumented)
 export const Page: z.ZodObject<{
     component: z.ZodString;
@@ -5861,6 +6444,37 @@ export const Page: z.ZodObject<{
     props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     params: z.ZodOptional<z.ZodArray<z.ZodString>>;
     abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
+    widgets: z.ZodOptional<z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        type: z.ZodString;
+        label: z.ZodOptional<z.ZodString>;
+        width: z.ZodOptional<z.ZodNumber>;
+        settings: z.ZodOptional<z.ZodObject<{
+            resource: z.ZodOptional<z.ZodString>;
+            query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+            measure: z.ZodOptional<z.ZodString>;
+            group: z.ZodOptional<z.ZodString>;
+            target: z.ZodOptional<z.ZodNumber>;
+            period: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodLiteral<false>]>>;
+            followsList: z.ZodOptional<z.ZodBoolean>;
+        }, z.core.$loose>>;
+    }, z.core.$loose>>>;
+    period: z.ZodOptional<z.ZodObject<{
+        options: z.ZodArray<z.ZodEnum<{
+            "7d": "7d";
+            "30d": "30d";
+            "90d": "90d";
+            month: "month";
+            year: "year";
+        }>>;
+        default: z.ZodOptional<z.ZodEnum<{
+            "7d": "7d";
+            "30d": "30d";
+            "90d": "90d";
+            month: "month";
+            year: "year";
+        }>>;
+    }, z.core.$loose>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -5876,6 +6490,12 @@ export const Pagination: z.ZodObject<{
 
 // @public (undocumented)
 export type Pagination = z.infer<typeof Pagination>;
+
+// @public
+export function parseAggregateGroup(value: string): AggregateGroup | null;
+
+// @public
+export function parseAggregateMeasure(value: string): AggregateMeasure | null;
 
 // @public
 export function parseContextHeader(header: string | null | undefined): ContextValues;
@@ -5900,6 +6520,25 @@ export type Passkey = z.infer<typeof Passkey>;
 
 // @public
 export const PASSWORD_CONFIRMATION_PROBLEM_TYPE = "urn:panneau:problem:password-confirmation";
+
+// @public
+export const PERIOD_PARAM = "period";
+
+// @public
+export interface PeriodLike {
+    // (undocumented)
+    default?: string | undefined;
+    // (undocumented)
+    options: readonly string[];
+}
+
+// @public
+export interface PeriodRange {
+    // (undocumented)
+    from: string;
+    // (undocumented)
+    to: string;
+}
 
 // @public
 export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "json", "tel", "postalCode", "daterange", "money", "in", "accept", "maxSize", "before", "after", "crop", "providers"];
@@ -5946,6 +6585,21 @@ export const PROBLEM_CONTENT_TYPE = "application/problem+json";
 export const PROTOCOL_VERSION = 1;
 
 // @public
+export function readAggregateQuery(params: URLSearchParams, aggregates: ListAggregatesLike): ReadAggregateQueryResult;
+
+// @public
+export type ReadAggregateQueryResult = {
+    query: AggregateQuery;
+    errors?: undefined;
+} | {
+    query?: undefined;
+    errors: Record<string, string[]>;
+};
+
+// @public
+export function readPeriodOption(value: string | null | undefined, period: PeriodLike): OverviewPeriodOption | null;
+
+// @public
 export function readSearchQuery(params: URLSearchParams, definition: {
     resources: readonly SearchableResource[];
 }): ReadSearchQueryResult;
@@ -5957,6 +6611,28 @@ export type ReadSearchQueryResult = {
 } | {
     query?: undefined;
     errors: Record<string, string[]>;
+};
+
+// @public
+export function readWidgetDataQuery(params: URLSearchParams): ReadWidgetDataQueryResult;
+
+// @public
+export type ReadWidgetDataQueryResult = {
+    page: string;
+    resource?: undefined;
+    query?: undefined;
+    period: WidgetPeriod | null;
+    errors?: undefined;
+} | {
+    resource: string;
+    query: WidgetListQuery;
+    page?: undefined;
+    period: WidgetPeriod | null;
+    errors?: undefined;
+} | {
+    errors: Record<string, string[]>;
+    page?: undefined;
+    resource?: undefined;
 };
 
 // @public (undocumented)
@@ -6261,6 +6937,11 @@ export const Resource: z.ZodObject<{
             filter: z.ZodOptional<z.ZodString>;
             perPage: z.ZodOptional<z.ZodNumber>;
         }, z.core.$loose>>;
+        aggregates: z.ZodOptional<z.ZodObject<{
+            sum: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            groupBy: z.ZodOptional<z.ZodArray<z.ZodString>>;
+            dates: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        }, z.core.$loose>>;
     }, z.core.$loose>>;
     actions: z.ZodOptional<z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -6528,6 +7209,43 @@ export const Resource: z.ZodObject<{
         fields: z.ZodArray<typeof Field>;
         abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
     }, z.core.$loose>>>;
+    summary: z.ZodOptional<z.ZodObject<{
+        widgets: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            type: z.ZodString;
+            label: z.ZodOptional<z.ZodString>;
+            width: z.ZodOptional<z.ZodNumber>;
+            settings: z.ZodOptional<z.ZodObject<{
+                resource: z.ZodOptional<z.ZodString>;
+                query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+                measure: z.ZodOptional<z.ZodString>;
+                group: z.ZodOptional<z.ZodString>;
+                target: z.ZodOptional<z.ZodNumber>;
+                period: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodLiteral<false>]>>;
+                followsList: z.ZodOptional<z.ZodBoolean>;
+            }, z.core.$loose>>;
+        }, z.core.$loose>>;
+        list: z.ZodOptional<z.ZodEnum<{
+            collapsed: "collapsed";
+        }>>;
+        period: z.ZodOptional<z.ZodObject<{
+            options: z.ZodArray<z.ZodEnum<{
+                "7d": "7d";
+                "30d": "30d";
+                "90d": "90d";
+                month: "month";
+                year: "year";
+            }>>;
+            default: z.ZodOptional<z.ZodEnum<{
+                "7d": "7d";
+                "30d": "30d";
+                "90d": "90d";
+                month: "month";
+                year: "year";
+            }>>;
+            filter: z.ZodOptional<z.ZodString>;
+        }, z.core.$loose>>;
+    }, z.core.$loose>>;
     settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
 }, z.core.$loose>;
 
@@ -6535,7 +7253,7 @@ export const Resource: z.ZodObject<{
 export type Resource = z.infer<typeof Resource>;
 
 // @public
-export const RESOURCE_WIDGET_TYPES: readonly ["stat", "list"];
+export const RESOURCE_WIDGET_TYPES: readonly ["stat", "series", "list", "breakdown"];
 
 // @public (undocumented)
 export const ResourceFeatures: z.ZodObject<{
@@ -6556,6 +7274,48 @@ export type ResourceFeatures = z.infer<typeof ResourceFeatures>;
 
 // @public
 export type ResourceInput = z.input<typeof Resource>;
+
+// @public (undocumented)
+export const ResourceSummary: z.ZodObject<{
+    widgets: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        type: z.ZodString;
+        label: z.ZodOptional<z.ZodString>;
+        width: z.ZodOptional<z.ZodNumber>;
+        settings: z.ZodOptional<z.ZodObject<{
+            resource: z.ZodOptional<z.ZodString>;
+            query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+            measure: z.ZodOptional<z.ZodString>;
+            group: z.ZodOptional<z.ZodString>;
+            target: z.ZodOptional<z.ZodNumber>;
+            period: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodLiteral<false>]>>;
+            followsList: z.ZodOptional<z.ZodBoolean>;
+        }, z.core.$loose>>;
+    }, z.core.$loose>>;
+    list: z.ZodOptional<z.ZodEnum<{
+        collapsed: "collapsed";
+    }>>;
+    period: z.ZodOptional<z.ZodObject<{
+        options: z.ZodArray<z.ZodEnum<{
+            "7d": "7d";
+            "30d": "30d";
+            "90d": "90d";
+            month: "month";
+            year: "year";
+        }>>;
+        default: z.ZodOptional<z.ZodEnum<{
+            "7d": "7d";
+            "30d": "30d";
+            "90d": "90d";
+            month: "month";
+            year: "year";
+        }>>;
+        filter: z.ZodOptional<z.ZodString>;
+    }, z.core.$loose>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type ResourceSummary = z.infer<typeof ResourceSummary>;
 
 // @public (undocumented)
 export const ResourceType: z.ZodObject<{
@@ -6871,9 +7631,9 @@ export type SeriesPoint = z.infer<typeof SeriesPoint>;
 // @public (undocumented)
 export const SeriesWidgetData: z.ZodObject<{
     period: z.ZodEnum<{
+        month: "month";
         day: "day";
         week: "week";
-        month: "month";
     }>;
     points: z.ZodArray<z.ZodObject<{
         date: z.ZodString;
@@ -6900,12 +7660,16 @@ export const Session: z.ZodObject<{
 // @public (undocumented)
 export type Session = z.infer<typeof Session>;
 
+// @public
+export function startOfPeriod(day: string, period: WidgetSeriesPeriod): string;
+
 // @public (undocumented)
 export const StatWidgetData: z.ZodObject<{
     value: z.ZodNumber;
     help: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     tone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    target: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -6922,6 +7686,28 @@ export const StoredFile: z.ZodObject<{
 
 // @public (undocumented)
 export type StoredFile = z.infer<typeof StoredFile>;
+
+// @public (undocumented)
+export const SummaryPeriod: z.ZodObject<{
+    options: z.ZodArray<z.ZodEnum<{
+        "7d": "7d";
+        "30d": "30d";
+        "90d": "90d";
+        month: "month";
+        year: "year";
+    }>>;
+    default: z.ZodOptional<z.ZodEnum<{
+        "7d": "7d";
+        "30d": "30d";
+        "90d": "90d";
+        month: "month";
+        year: "year";
+    }>>;
+    filter: z.ZodOptional<z.ZodString>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type SummaryPeriod = z.infer<typeof SummaryPeriod>;
 
 // @public (undocumented)
 export const Theme: z.ZodObject<{
@@ -7031,6 +7817,9 @@ export const ThemeTokens: z.ZodRecord<z.ZodString, z.ZodString>;
 export type ThemeTokens = z.infer<typeof ThemeTokens>;
 
 // @public
+export function toAggregateParams(request: AggregateRequest): URLSearchParams;
+
+// @public
 export function toMinorUnits(amount: number, currency: string): number;
 
 // @public (undocumented)
@@ -7075,6 +7864,9 @@ export function toSearchParams(query: ListQuery): URLSearchParams;
 
 // @public
 export function toSearchQueryParams(query: SearchQuery): URLSearchParams;
+
+// @public
+export function toWidgetDataParams(request?: WidgetDataRequest): URLSearchParams;
 
 // @public
 export const TWO_FACTOR_REQUIRED_PROBLEM_TYPE = "urn:panneau:problem:two-factor-required";
@@ -7245,11 +8037,19 @@ export const Widget: z.ZodObject<{
     settings: z.ZodOptional<z.ZodObject<{
         resource: z.ZodOptional<z.ZodString>;
         query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+        measure: z.ZodOptional<z.ZodString>;
+        group: z.ZodOptional<z.ZodString>;
+        target: z.ZodOptional<z.ZodNumber>;
+        period: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodLiteral<false>]>>;
+        followsList: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
 export type Widget = z.infer<typeof Widget>;
+
+// @public
+export const WIDGET_BREAKDOWN_MAX_ITEMS = 10;
 
 // @public
 export const WIDGET_LIST_MAX_ITEMS = 5;
@@ -7259,6 +8059,12 @@ export const WIDGET_RESERVED_QUERY_PARAMS: readonly ["page", "perPage", "cursor"
 
 // @public
 export const WIDGET_SERIES_PERIODS: readonly ["day", "week", "month"];
+
+// @public
+export interface WidgetAggregate {
+    group: string | null;
+    measure: string;
+}
 
 // @public (undocumented)
 export const WidgetBadge: z.ZodObject<{
@@ -7270,18 +8076,27 @@ export const WidgetBadge: z.ZodObject<{
 export type WidgetBadge = z.infer<typeof WidgetBadge>;
 
 // @public
+export interface WidgetDataRequest {
+    page?: string;
+    period?: WidgetPeriod;
+    query?: WidgetListQuery;
+    resource?: string;
+}
+
+// @public
 export const widgetDataSchemas: {
     readonly stat: z.ZodObject<{
         value: z.ZodNumber;
         help: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         tone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        target: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
     }, z.core.$loose>;
     readonly series: z.ZodObject<{
         period: z.ZodEnum<{
+            month: "month";
             day: "day";
             week: "week";
-            month: "month";
         }>;
         points: z.ZodArray<z.ZodObject<{
             date: z.ZodString;
@@ -7303,10 +8118,31 @@ export const widgetDataSchemas: {
         empty: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     }, z.core.$loose>;
+    readonly breakdown: z.ZodObject<{
+        items: z.ZodArray<z.ZodObject<{
+            label: z.ZodString;
+            value: z.ZodNumber;
+            tone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            url: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            key: z.ZodOptional<z.ZodNullable<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>>;
+        }, z.core.$loose>>;
+        total: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        other: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    }, z.core.$loose>;
 };
 
 // @public
+export type WidgetListQuery = Pick<ListQuery, 'filter' | 'q'>;
+
+// @public
+export interface WidgetPeriod extends PeriodRange {
+    // (undocumented)
+    option: OverviewPeriodOption;
+}
+
+// @public
 export interface WidgetResource {
+    aggregate: WidgetAggregate | null;
     params: URLSearchParams;
     query: ListQuery;
     resource: string;
@@ -7319,6 +8155,11 @@ export type WidgetSeriesPeriod = (typeof WIDGET_SERIES_PERIODS)[number];
 export const WidgetSettings: z.ZodObject<{
     resource: z.ZodOptional<z.ZodString>;
     query: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<readonly [z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>, z.ZodArray<z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>>]>>>;
+    measure: z.ZodOptional<z.ZodString>;
+    group: z.ZodOptional<z.ZodString>;
+    target: z.ZodOptional<z.ZodNumber>;
+    period: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodLiteral<false>]>>;
+    followsList: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$loose>;
 
 // @public (undocumented)

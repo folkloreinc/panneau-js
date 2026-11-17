@@ -2,6 +2,7 @@ import type {
     ActionRequest,
     ActionResult,
     ActionRun,
+    AggregateRequest,
     ContextOption,
     ContextValues,
     Definition,
@@ -21,6 +22,7 @@ import type {
     TwoFactorStatus,
     User,
     WebAuthnOptions,
+    WidgetDataRequest,
 } from '@panneau/protocol';
 
 import type { PresignedUploads } from './uploads';
@@ -40,6 +42,12 @@ export interface SearchOptions extends RequestOptions {
     /** The searchable resources to search. Defaults to every one. */
     resources?: readonly string[];
 }
+
+/**
+ * Options of the data of a widget (`GET /dashboard/widgets/{widget}`): where it is, a dashboard
+ * page or the summary of a resource with the query of its list (decision 0084).
+ */
+export interface WidgetDataOptions extends RequestOptions, WidgetDataRequest {}
 
 export interface UpdateOptions extends RequestOptions {
     /**
@@ -281,8 +289,22 @@ export interface DataAdapter {
      * Optional: without it, `embed` fields keep the URL alone.
      */
     resolveEmbed?(url: string, options?: RequestOptions): Promise<EmbedValue>;
-    /** Data of a dashboard widget, in the shape its type defines. */
-    getWidgetData(widget: string, options?: RequestOptions): Promise<unknown>;
+    /**
+     * Data of a widget of a dashboard page or of the summary of a resource, in the shape its type
+     * defines.
+     */
+    getWidgetData(widget: string, options?: WidgetDataOptions): Promise<unknown>;
+    /**
+     * The count or the sum of the items of a list, with its filters and search, grouped by a
+     * period or a field (`GET /resources/{resource}/aggregate`, decision 0084): in the shape of a
+     * `stat`, a `series` or a `breakdown`, unchecked. Optional: without it, the widgets on the
+     * aggregates of a resource show their error.
+     */
+    getResourceAggregate?(
+        resource: string,
+        request: AggregateRequest,
+        options?: RequestOptions,
+    ): Promise<unknown>;
 
     /**
      * The same adapter, sending the values of the current context in the `Panneau-Context` header

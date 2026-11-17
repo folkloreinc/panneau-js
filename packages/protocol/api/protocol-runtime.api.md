@@ -13,6 +13,79 @@ export const ADDRESS_PARTS: readonly ["country", "street", "unit", "city", "regi
 export type AddressPart = (typeof ADDRESS_PARTS)[number];
 
 // @public
+export const AGGREGATE_COUNT = "count";
+
+// @public
+export const AGGREGATE_MAX_POINTS = 366;
+
+// @public
+export interface AggregateField {
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    options?: readonly {
+        value: unknown;
+        label: string;
+        tone?: string | undefined;
+    }[] | undefined;
+    // (undocumented)
+    type: string;
+}
+
+// @public
+export type AggregateGroup = {
+    type: 'period';
+    period: WidgetSeriesPeriod;
+    field: string;
+} | {
+    type: 'field';
+    field: string;
+};
+
+// Warning: (ae-forgotten-export) The symbol "StatWidgetData" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "SeriesWidgetData" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "BreakdownWidgetData" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function aggregateItems(items: readonly Record<string, unknown>[], query: AggregateQuery, options: AggregateItemsOptions): StatWidgetData | SeriesWidgetData | BreakdownWidgetData;
+
+// @public (undocumented)
+export interface AggregateItemsOptions {
+    emptyLabel?: string;
+    fields: readonly AggregateField[];
+    range?: FilterRange | undefined;
+}
+
+// @public
+export type AggregateMeasure = {
+    type: 'count';
+} | {
+    type: 'sum';
+    field: string;
+};
+
+// @public
+export interface AggregateQuery {
+    // (undocumented)
+    group: AggregateGroup | null;
+    // (undocumented)
+    measure: AggregateMeasure;
+}
+
+// @public
+export interface AggregateRequest {
+    // (undocumented)
+    filter?: ListQuery['filter'];
+    group?: string | null | undefined;
+    measure?: string | undefined;
+    // (undocumented)
+    q?: string | undefined;
+}
+
+// @public
+export type AggregateWidgetType = 'stat' | 'series' | 'breakdown';
+
+// @public
 export const AUTH_ERROR_CODES: readonly ["provider", "email", "domain", "access"];
 
 // @public
@@ -52,7 +125,7 @@ export const BUILT_IN_LINK_TYPES: readonly ["url", "page", "email", "tel", "file
 export const BUILT_IN_LIST_LAYOUTS: readonly ["table", "cards", "gallery", "calendar"];
 
 // @public
-export const BUILT_IN_WIDGET_TYPES: readonly ["stat", "series", "list"];
+export const BUILT_IN_WIDGET_TYPES: readonly ["stat", "series", "list", "breakdown"];
 
 // @public (undocumented)
 export type BuiltInAction = (typeof BUILT_IN_ACTIONS)[number];
@@ -130,6 +203,9 @@ export interface CursorPageMeta {
 }
 
 // @public
+export const DASHBOARD_COMPONENT = "dashboard";
+
+// @public
 export const DATE_RANGE_OPEN_BOUNDS: readonly ["start", "end", "both"];
 
 // @public (undocumented)
@@ -164,6 +240,17 @@ export interface FilterRange {
 export type FilterValue = string | number | boolean | Array<string | number | boolean> | FilterRange;
 
 // @public
+export function findPeriodOption(range: unknown, period: PeriodLike, today?: string | Date): OverviewPeriodOption | null;
+
+// Warning: (ae-forgotten-export) The symbol "WidgetLike" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function followsList(widget: WidgetLike, resource: string): boolean;
+
+// @public
+export function followsPeriod(widget: WidgetLike, summaryOf?: string): boolean;
+
+// @public
 export function formatContextHeader(values: Readonly<Record<string, string | null | undefined>>, names?: readonly string[]): string;
 
 // @public
@@ -176,6 +263,9 @@ export function fromSearchParams(params: URLSearchParams): ListQuery;
 export function getAddressRequiredParts(field: Pick<Field, 'settings'>): AddressPart[];
 
 // @public
+export function getAggregateWidgetType(group: AggregateGroup | null): AggregateWidgetType;
+
+// @public
 export function getCreatableTypes<T extends {
     abilities?: Record<string, boolean> | undefined;
 }>(resource: {
@@ -184,6 +274,27 @@ export function getCreatableTypes<T extends {
 
 // @public
 export function getCurrencyDigits(code: string): number;
+
+// Warning: (ae-forgotten-export) The symbol "DashboardsOf" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function getDashboardPages(definition: DashboardsOf): string[];
+
+// Warning: (ae-forgotten-export) The symbol "OverviewPeriod" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function getDashboardPeriod(definition: DashboardsOf, page?: string): OverviewPeriod | undefined;
+
+// Warning: (ae-forgotten-export) The symbol "Widget" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function getDashboardWidgets(definition: DashboardsOf, page?: string): Widget[];
+
+// @public
+export function getDefaultPeriod(period: PeriodLike): OverviewPeriodOption | null;
+
+// @public
+export function getFilterRange(query: Pick<ListQuery, 'filter'>, field: string): FilterRange | undefined;
 
 // @public
 export function getImageUrl(value: unknown): string | null;
@@ -213,11 +324,27 @@ export function getMediaLibraries(definition: MediaLibrariesDefinition | null, f
 export function getNestedShape(field: Pick<Field, 'type' | 'fields' | 'multiple'>): NestedShape | null;
 
 // @public
+export function getPeriodRange(option: OverviewPeriodOption, today?: string | Date): PeriodRange;
+
+// @public
 export function getResourceType<T extends {
     id: string;
 }>(resource: {
     types?: readonly T[] | undefined;
 }, id: unknown): T | undefined;
+
+// Warning: (ae-forgotten-export) The symbol "ResourceInput" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function getSummaryPeriodFilter(resource: Pick<ResourceInput, 'summary' | 'list'>): string | null;
+
+// Warning: (ae-forgotten-export) The symbol "SummariesOf" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function getSummaryResources(definition: SummariesOf): string[];
+
+// @public
+export function getSummaryWidgets(definition: SummariesOf, resource: string): Widget[];
 
 // @public
 export function getTypeFields<F>(resource: {
@@ -231,15 +358,19 @@ export function getTypeFields<F>(resource: {
 // @public
 export function getValue(values: unknown, path: string): unknown;
 
-// Warning: (ae-forgotten-export) The symbol "WidgetLike" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function getWidgetResource(widget: WidgetLike): WidgetResource | null;
+
+// @public
+export const GROUPED_WIDGET_TYPES: readonly ["series", "breakdown"];
 
 // @public
 export function hasResourceTypes(resource: {
     types?: readonly unknown[] | undefined;
 }): boolean;
+
+// @public
+export const HOME_PAGE = "home";
 
 // @public
 export const IDS_FILTER = "ids";
@@ -275,6 +406,9 @@ export function isCurrencyCode(code: unknown): code is CurrencyCode;
 export function isCursorPage(meta: object): meta is CursorPageMeta;
 
 // @public
+export function isDay(value: unknown): value is string;
+
+// @public
 export function isExternalUrl(url: string): boolean;
 
 // @public
@@ -282,6 +416,9 @@ export function isFilled(value: unknown): boolean;
 
 // @public
 export function isFilterRange(value: unknown): value is FilterRange;
+
+// @public (undocumented)
+export function isOverviewPeriod(value: unknown): value is OverviewPeriodOption;
 
 // @public
 export function isPostalCode(code: string, country?: string | null): boolean;
@@ -325,6 +462,16 @@ export interface LinkType {
 export function lintDefinition(definition: DefinitionInput): ValidationIssue[];
 
 // @public
+export interface ListAggregatesLike {
+    dates?: readonly string[] | undefined;
+    groupBy?: readonly string[] | undefined;
+    sum?: readonly string[] | undefined;
+}
+
+// @public
+export function listPeriods(from: string, to: string, period: WidgetSeriesPeriod, max?: number): string[];
+
+// @public
 export interface ListQuery {
     cursor?: string;
     fields?: string[];
@@ -338,6 +485,9 @@ export interface ListQuery {
     q?: string;
     sort?: string[];
 }
+
+// @public
+export function localDay(date?: Date): string;
 
 // @public
 export function matchesFilterRange(value: unknown, range: FilterRange): boolean;
@@ -363,7 +513,22 @@ export function mergeThemes(...themes: readonly PartialTheme[]): Theme;
 export type NestedShape = 'group' | 'repeater';
 
 // @public
+export function nextPeriod(start: string, period: WidgetSeriesPeriod): string;
+
+// @public
 export function normalizePostalCode(code: string, country?: string | null): string;
+
+// @public
+export const OVERVIEW_PERIODS: readonly ["7d", "30d", "90d", "month", "year"];
+
+// @public (undocumented)
+export type OverviewPeriodOption = (typeof OVERVIEW_PERIODS)[number];
+
+// @public
+export function parseAggregateGroup(value: string): AggregateGroup | null;
+
+// @public
+export function parseAggregateMeasure(value: string): AggregateMeasure | null;
 
 // @public
 export function parseContextHeader(header: string | null | undefined): ContextValues;
@@ -376,6 +541,25 @@ export type PartialTheme = Partial<Theme>;
 
 // @public
 export const PASSWORD_CONFIRMATION_PROBLEM_TYPE = "urn:panneau:problem:password-confirmation";
+
+// @public
+export const PERIOD_PARAM = "period";
+
+// @public
+export interface PeriodLike {
+    // (undocumented)
+    default?: string | undefined;
+    // (undocumented)
+    options: readonly string[];
+}
+
+// @public
+export interface PeriodRange {
+    // (undocumented)
+    from: string;
+    // (undocumented)
+    to: string;
+}
 
 // @public
 export const PORTABLE_RULES: readonly ["required", "min", "max", "pattern", "email", "url", "json", "tel", "postalCode", "daterange", "money", "in", "accept", "maxSize", "before", "after", "crop", "providers"];
@@ -393,6 +577,21 @@ export const PROBLEM_CONTENT_TYPE = "application/problem+json";
 export const PROTOCOL_VERSION = 1;
 
 // @public
+export function readAggregateQuery(params: URLSearchParams, aggregates: ListAggregatesLike): ReadAggregateQueryResult;
+
+// @public
+export type ReadAggregateQueryResult = {
+    query: AggregateQuery;
+    errors?: undefined;
+} | {
+    query?: undefined;
+    errors: Record<string, string[]>;
+};
+
+// @public
+export function readPeriodOption(value: string | null | undefined, period: PeriodLike): OverviewPeriodOption | null;
+
+// @public
 export function readSearchQuery(params: URLSearchParams, definition: {
     resources: readonly SearchableResource[];
 }): ReadSearchQueryResult;
@@ -404,6 +603,28 @@ export type ReadSearchQueryResult = {
 } | {
     query?: undefined;
     errors: Record<string, string[]>;
+};
+
+// @public
+export function readWidgetDataQuery(params: URLSearchParams): ReadWidgetDataQueryResult;
+
+// @public
+export type ReadWidgetDataQueryResult = {
+    page: string;
+    resource?: undefined;
+    query?: undefined;
+    period: WidgetPeriod | null;
+    errors?: undefined;
+} | {
+    resource: string;
+    query: WidgetListQuery;
+    page?: undefined;
+    period: WidgetPeriod | null;
+    errors?: undefined;
+} | {
+    errors: Record<string, string[]>;
+    page?: undefined;
+    resource?: undefined;
 };
 
 // Warning: (ae-forgotten-export) The symbol "MediaTransform" needs to be exported by the entry point index.d.ts
@@ -425,7 +646,7 @@ export function resolveLinkNewTab(newTab: LinkNewTab, link: {
 }): boolean;
 
 // @public
-export const RESOURCE_WIDGET_TYPES: readonly ["stat", "list"];
+export const RESOURCE_WIDGET_TYPES: readonly ["stat", "series", "list", "breakdown"];
 
 // @public
 export const RICH_TEXT_STYLE_ELEMENTS: readonly ["p", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "ul", "ol", "li"];
@@ -476,6 +697,12 @@ export interface SearchQuery {
 }
 
 // @public
+export function startOfPeriod(day: string, period: WidgetSeriesPeriod): string;
+
+// @public
+export function toAggregateParams(request: AggregateRequest): URLSearchParams;
+
+// @public
 export function toMinorUnits(amount: number, currency: string): number;
 
 // @public
@@ -483,6 +710,9 @@ export function toSearchParams(query: ListQuery): URLSearchParams;
 
 // @public
 export function toSearchQueryParams(query: SearchQuery): URLSearchParams;
+
+// @public
+export function toWidgetDataParams(request?: WidgetDataRequest): URLSearchParams;
 
 // @public
 export const TWO_FACTOR_REQUIRED_PROBLEM_TYPE = "urn:panneau:problem:two-factor-required";
@@ -498,6 +728,9 @@ export interface ValidationIssue {
 }
 
 // @public
+export const WIDGET_BREAKDOWN_MAX_ITEMS = 10;
+
+// @public
 export const WIDGET_LIST_MAX_ITEMS = 5;
 
 // @public
@@ -507,7 +740,31 @@ export const WIDGET_RESERVED_QUERY_PARAMS: readonly ["page", "perPage", "cursor"
 export const WIDGET_SERIES_PERIODS: readonly ["day", "week", "month"];
 
 // @public
+export interface WidgetAggregate {
+    group: string | null;
+    measure: string;
+}
+
+// @public
+export interface WidgetDataRequest {
+    page?: string;
+    period?: WidgetPeriod;
+    query?: WidgetListQuery;
+    resource?: string;
+}
+
+// @public
+export type WidgetListQuery = Pick<ListQuery, 'filter' | 'q'>;
+
+// @public
+export interface WidgetPeriod extends PeriodRange {
+    // (undocumented)
+    option: OverviewPeriodOption;
+}
+
+// @public
 export interface WidgetResource {
+    aggregate: WidgetAggregate | null;
     params: URLSearchParams;
     query: ListQuery;
     resource: string;

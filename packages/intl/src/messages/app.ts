@@ -547,6 +547,10 @@ export const appMessages = {
         id: 'panneau.app.missingPage',
         defaultMessage: 'No plugin provides the page “{component}”.',
     }),
+    dashboardEmpty: defineMessage({
+        id: 'panneau.app.dashboardEmpty',
+        defaultMessage: 'This dashboard has no widgets yet.',
+    }),
     missingWidget: defineMessage<{ type: string }>({
         id: 'panneau.app.missingWidget',
         defaultMessage: 'No plugin provides the widget “{type}”.',
@@ -568,5 +572,22 @@ export const appMessages = {
     widgetUntitled: defineMessage<{ id: string }>({
         id: 'panneau.app.widgetUntitled',
         defaultMessage: 'Item {id}',
+    }),
+    summary: defineMessage({ id: 'panneau.app.summary', defaultMessage: 'Summary' }),
+    period: defineMessage({ id: 'panneau.app.period', defaultMessage: 'Period' }),
+    period7d: defineMessage({ id: 'panneau.app.period7d', defaultMessage: '7 days' }),
+    period30d: defineMessage({ id: 'panneau.app.period30d', defaultMessage: '30 days' }),
+    period90d: defineMessage({ id: 'panneau.app.period90d', defaultMessage: '90 days' }),
+    periodMonth: defineMessage({ id: 'panneau.app.periodMonth', defaultMessage: 'This month' }),
+    periodYear: defineMessage({ id: 'panneau.app.periodYear', defaultMessage: '12 months' }),
+    periodAppliesTo: defineMessage<{ widgets: string }>({
+        id: 'panneau.app.periodAppliesTo',
+        defaultMessage: 'For {widgets}',
+    }),
+    showList: defineMessage({ id: 'panneau.app.showList', defaultMessage: 'Show the list' }),
+    showListItems: defineMessage<{ count: number; singular: string; plural: string }>({
+        id: 'panneau.app.showListItems',
+        defaultMessage:
+            '{count, plural, =0 {Show the list} one {Show # {singular}} other {Show the # {plural}}}',
     }),
 };
