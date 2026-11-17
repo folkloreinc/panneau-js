@@ -44,15 +44,20 @@ export function SaveControls({ status, isSubmitting, actions, submitLabel }: Sav
                 className={cx(styles.status, status === 'error' && styles.statusError)}
                 role="status"
             >
-                {status === 'error' ? (
-                    intl.formatMessage(messages.saveFailed)
-                ) : status === 'unsaved' ? (
-                    intl.formatMessage(messages.unsaved)
-                ) : status === 'saved' ? (
-                    <>
-                        <Icon icon={CircleCheck} />
-                        {intl.formatMessage(messages.saved)}
-                    </>
+                {status !== null ? (
+                    // Keyed by the status: each new one comes in with a short fade (decision 0081).
+                    <span key={status} className={styles.statusText}>
+                        {status === 'error' ? (
+                            intl.formatMessage(messages.saveFailed)
+                        ) : status === 'unsaved' ? (
+                            intl.formatMessage(messages.unsaved)
+                        ) : (
+                            <>
+                                <Icon icon={CircleCheck} />
+                                {intl.formatMessage(messages.saved)}
+                            </>
+                        )}
+                    </span>
                 ) : null}
             </span>
             {actions}

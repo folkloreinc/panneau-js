@@ -255,6 +255,7 @@ export type ListActions = readonly Action[] | Partial<Record<ActionPlacement, re
 // @public
 export interface ListCalendarProps {
     field: string;
+    isLeaving?: ((item: ListItem) => boolean) | undefined;
     month: string;
     more: {
         total: number | null;
@@ -305,6 +306,7 @@ export interface ListLayoutProps {
     getItemLabel: (item: ListItem) => string;
     isCurrent?: ((item: ListItem) => boolean) | undefined;
     isHighlighted?: ((item: ListItem) => boolean) | undefined;
+    isLeaving?: ((item: ListItem) => boolean) | undefined;
     // (undocumented)
     isSelected: (item: ListItem) => boolean;
     // (undocumented)

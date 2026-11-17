@@ -144,6 +144,12 @@ export interface ListCalendarProps {
      * shows. Without it, the browser's.
      */
     timeZone?: string | null | undefined;
+    /**
+     * Whether the item left the list, such as one just deleted: it shows for a moment while it fades
+     * out. The layout gives its element the `leaving` class of `@panneau/lists`' highlight,
+     * `data-leaving`, and makes it inert.
+     */
+    isLeaving?: ((item: ListItem) => boolean) | undefined;
     /** The month shown (`2026-11`). */
     month: string;
     onMonthChange: (month: string) => void;
@@ -171,6 +177,12 @@ export interface ListLayoutProps {
      * its element the `highlighted` class of `@panneau/lists`' highlight, and `data-highlighted`.
      */
     isHighlighted?: ((item: ListItem) => boolean) | undefined;
+    /**
+     * Whether the item left the list, such as one just deleted (decision 0081): it shows for a
+     * moment while it fades out. The layout gives its element the `leaving` class of
+     * `@panneau/lists`' highlight, `data-leaving`, and makes it inert.
+     */
+    isLeaving?: ((item: ListItem) => boolean) | undefined;
     /** Whether items have checkboxes. */
     selectable: boolean;
     isSelected: (item: ListItem) => boolean;

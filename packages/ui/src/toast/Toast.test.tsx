@@ -12,6 +12,7 @@ import {
     getToastTimeout,
     useToast,
     useToastOffset,
+    wrapToastUpdate,
 } from './Toast';
 
 function Show({ content, options }: { content: ToastContent; options?: ToastOptions }) {
@@ -197,5 +198,13 @@ describe('getToastTimeout', () => {
 
     it('gives no timeout to an error', () => {
         expect(getToastTimeout({ title: 'The network is down', tone: 'danger' })).toBeNull();
+    });
+});
+
+describe('wrapToastUpdate', () => {
+    it('updates at once without view transitions', () => {
+        const update = vi.fn();
+        wrapToastUpdate(update);
+        expect(update).toHaveBeenCalledTimes(1);
     });
 });

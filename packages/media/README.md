@@ -84,7 +84,7 @@ const sources = definition.resources
 
 ## The media library
 
-`MediaLibrary` (`@panneau/media/picker`, [decision 0080](../../docs/decisions/0080-a-media-library-page.md)) is the same library as a page: the same sources, search, filters, sorts, upload and details as `MediaPicker`, without the dialog and without picking. A click on a media opens its details, where its fields are edited; the grid scrolls with the page and the details stay in view. It takes the options of the picker that are about the library (`sources`, `source`, `accept`, `maxSize`, `filter`, `filters`, `sorts`, `sort`, `stateKey`, `uploadSource`, `refreshInterval`), plus `aria-label` and `className`.
+`MediaLibrary` (`@panneau/media/picker`, [decision 0081](../../docs/decisions/0080-a-media-library-page.md)) is the same library as a page: the same sources, search, filters, sorts, upload and details as `MediaPicker`, without the dialog and without picking. A click on a media opens its details, where its fields are edited; the grid scrolls with the page and the details stay in view. It takes the options of the picker that are about the library (`sources`, `source`, `accept`, `maxSize`, `filter`, `filters`, `sorts`, `sort`, `stateKey`, `uploadSource`, `refreshInterval`), plus `aria-label` and `className`.
 
 ```tsx
 import { MediaLibrary } from '@panneau/media/picker';

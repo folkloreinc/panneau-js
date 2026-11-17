@@ -70,9 +70,9 @@
     box-shadow: var(--panneau-toast-shadow, var(--panneau-shadow-lg));
     outline: none;
     transition:
-        transform var(--panneau-duration) ease-out,
-        opacity var(--panneau-duration) ease-out;
-    animation: rise calc(2 * var(--panneau-duration)) ease-out;
+        transform var(--panneau-duration) var(--panneau-ease-out),
+        opacity var(--panneau-duration) var(--panneau-ease-out);
+    animation: rise calc(2 * var(--panneau-duration)) var(--panneau-ease-out);
 }
 
 .region[data-placement='top-end'] .toast {
@@ -114,7 +114,7 @@
 
 .region li:nth-child(n + 2) > .toast > * {
     opacity: 0;
-    transition: opacity var(--panneau-duration) ease-out;
+    transition: opacity var(--panneau-duration) var(--panneau-ease-out);
 }
 
 .region:is(:hover, :focus-within, [data-hovered], [data-focused]) {
@@ -151,6 +151,36 @@
     li
     > .toast {
     grid-area: auto;
+}
+
+/*
+ * In the view transition of a change of the toasts (wrapToastUpdate()): a toast that closes fades
+ * out and drops a little, the others move into their place. One that opens keeps its own rise.
+ * Only the toasts are captured: the page itself isn't, so it doesn't cross-fade. The durations are written here,
+ * since these pseudo-elements live on the document, outside the root and its tokens.
+ */
+:global(html:active-view-transition-type(panneau-toast)) {
+    view-transition-name: none;
+}
+
+:global(html:active-view-transition-type(panneau-toast))::view-transition-group(*) {
+    animation-duration: 200ms;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:global(html:active-view-transition-type(panneau-toast))::view-transition-new(*):only-child {
+    animation: none;
+}
+
+:global(html:active-view-transition-type(panneau-toast))::view-transition-old(*):only-child {
+    animation: toast-leave 150ms cubic-bezier(0.55, 0, 1, 0.45) forwards;
+}
+
+@keyframes toast-leave {
+    to {
+        opacity: 0;
+        transform: translateY(0.5rem) scale(0.96);
+    }
 }
 
 /* Without motion when the system asks for less. */

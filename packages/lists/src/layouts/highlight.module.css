@@ -26,3 +26,18 @@ tr.highlighted > td {
         animation-timing-function: steps(1, end);
     }
 }
+
+/*
+ * An item that left the list, such as one just deleted: it fades out, then goes. It can't be
+ * clicked while it fades (the layout makes it inert).
+ */
+.leaving:not(tr),
+tr.leaving > td {
+    animation: leave var(--panneau-duration-slow) var(--panneau-ease-in) forwards;
+}
+
+@keyframes leave {
+    to {
+        opacity: 0;
+    }
+}
