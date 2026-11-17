@@ -13,7 +13,7 @@
     height: min(46rem, calc(100dvh - 2 * var(--panneau-space-4)));
 }
 
-/* The library in a page (MediaLibrary, decision 0080): the grid scrolls with the page, and the
+/* The library in a page (MediaLibrary, decision 0081): the grid scrolls with the page, and the
    details stay in view beside it. */
 .library {
     --media-picker-card-size: var(

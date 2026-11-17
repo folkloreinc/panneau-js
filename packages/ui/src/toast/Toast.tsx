@@ -17,6 +17,7 @@ import {
     UNSTABLE_ToastRegion as AriaToastRegion,
     Text,
 } from 'react-aria-components';
+import { flushSync } from 'react-dom';
 
 import { Button } from '../button/Button';
 import { IconButton } from '../icon-button/IconButton';
@@ -194,6 +195,26 @@ export function useToastOffset(ref: RefObject<HTMLElement | null>, active = true
 }
 
 /**
+ * Runs a change of the toasts in a view transition, where the browser has them: a toast that closes
+ * fades out, and the others slide into its place (decision 0081). At once without them, or when the
+ * system asks for less motion.
+ */
+export function wrapToastUpdate(update: () => void): void {
+    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+    if (reduced || typeof document.startViewTransition !== 'function') {
+        update();
+        return;
+    }
+    const transition = document.startViewTransition({
+        update: () => flushSync(update),
+        types: ['panneau-toast'],
+    });
+    // A change that comes during the transition skips it, and the update still runs: nothing to
+    // report.
+    transition.ready.catch(() => undefined);
+}
+
+/**
  * The toasts of a region: `show()` with keys over React Aria's queue, and the offsets of what
  * sticks to the bottom of the page.
  */
@@ -273,7 +294,11 @@ export function ToastProvider({
 }: ToastProviderProps) {
     const intl = usePanneauIntl();
     const [queue] = useState(
-        () => new AriaToastQueue<ToastContent>({ maxVisibleToasts: MAX_VISIBLE_TOASTS }),
+        () =>
+            new AriaToastQueue<ToastContent>({
+                maxVisibleToasts: MAX_VISIBLE_TOASTS,
+                wrapUpdate: wrapToastUpdate,
+            }),
     );
     const [offsets, setOffsets] = useState<ReadonlyMap<object, number>>(() => new Map());
     const [toasts] = useState(() => createToasts(queue, setOffsets));
@@ -296,6 +321,7 @@ export function ToastProvider({
                     return (
                         <AriaToast
                             toast={toast}
+                            style={{ viewTransitionName: `panneau-toast-${toast.key}` }}
                             className={cx(
                                 'panneau-toast',
                                 styles.toast,

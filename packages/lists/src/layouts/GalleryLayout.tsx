@@ -26,6 +26,7 @@ export function GalleryLayout({
     getItemFileKind,
     isCurrent,
     isHighlighted,
+    isLeaving,
     selectable,
     isSelected,
     onToggle,
@@ -46,15 +47,22 @@ export function GalleryLayout({
                         const actions = renderActions(item);
                         const current = isCurrent?.(item) ?? false;
                         const highlighted = isHighlighted?.(item) ?? false;
+                        const leaving = isLeaving?.(item) ?? false;
                         const image = getItemImage?.(item) ?? null;
                         const kind = getItemFileKind?.(item) ?? null;
                         return (
                             <li
                                 key={item.id}
-                                className={cx(styles.tile, highlighted && highlight.highlighted)}
+                                className={cx(
+                                    styles.tile,
+                                    highlighted && highlight.highlighted,
+                                    leaving && highlight.leaving,
+                                )}
                                 data-selected={selected || undefined}
                                 data-current={current || undefined}
                                 data-highlighted={highlighted || undefined}
+                                data-leaving={leaving || undefined}
+                                inert={leaving || undefined}
                             >
                                 <div className={styles.media}>
                                     {image !== null || kind !== null ? (
