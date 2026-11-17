@@ -45,7 +45,9 @@ describe('getInterfaceLocales()', () => {
     it('gives none with fewer than two languages', () => {
         expect(getInterfaceLocales(createDefinition() as never)).toEqual([]);
         expect(
-            getInterfaceLocales(createDefinition({ interfaceLocales: [LOCALES[0]!] }) as never),
+            getInterfaceLocales(
+                createDefinition({ interfaceLocales: LOCALES.slice(0, 1) }) as never,
+            ),
         ).toEqual([]);
         expect(
             getInterfaceLocales(createDefinition({ interfaceLocales: LOCALES }) as never),
@@ -100,7 +102,7 @@ describe('the language switcher (decision 0082)', () => {
     });
 
     it('has no switcher with a single language, or without any', async () => {
-        renderApp({ interfaceLocales: [LOCALES[0]!] });
+        renderApp({ interfaceLocales: LOCALES.slice(0, 1) });
         expect(await screen.findByRole('button', { name: /Appearance/ })).toBeInTheDocument();
         expect(screen.queryByRole('button', { name: /Language/ })).not.toBeInTheDocument();
     });
