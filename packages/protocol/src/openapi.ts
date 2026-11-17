@@ -216,6 +216,25 @@ export function createOpenApiDocument(): JsonObject {
                     },
                 },
             },
+            '/locale/{locale}': {
+                parameters: [pathParameter('locale', 'A `locale` of `interfaceLocales`.')],
+                get: {
+                    operationId: 'switchLocale',
+                    summary:
+                        'Optional: switches the interface to a locale of `interfaceLocales`, when their `url` is here (decision 0083). The app comes with a full navigation, and the next page load gets the definition in that locale.',
+                    parameters: [
+                        queryParameter(
+                            'next',
+                            'Where to go next: a local path under the base path of the app. Another one is ignored.',
+                            { type: 'string' },
+                        ),
+                    ],
+                    responses: {
+                        302: { description: 'To `next`, or to the base path of the app.' },
+                        ...problems(401, 404),
+                    },
+                },
+            },
             '/context/{param}/options': {
                 parameters: [pathParameter('param', 'The name of a param of the context.')],
                 get: {

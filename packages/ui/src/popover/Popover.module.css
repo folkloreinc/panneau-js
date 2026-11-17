@@ -13,11 +13,11 @@
 }
 
 .popover[data-entering] {
-    animation: pop var(--panneau-duration) ease-out;
+    animation: pop var(--panneau-duration) var(--panneau-ease-out);
 }
 
 .popover[data-exiting] {
-    animation: pop var(--panneau-duration) ease-in reverse;
+    animation: pop var(--panneau-duration) var(--panneau-ease-in) reverse;
 }
 
 .dialog {

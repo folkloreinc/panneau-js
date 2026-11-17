@@ -83,7 +83,7 @@
 }
 
 .backdrop[data-entering] {
-    animation: fade var(--panneau-duration) ease-out;
+    animation: fade var(--panneau-duration) var(--panneau-ease-out);
 }
 
 .drawer {
@@ -96,7 +96,7 @@
 }
 
 .drawer[data-entering] {
-    animation: slide 200ms ease-out;
+    animation: slide var(--panneau-duration-slow) var(--panneau-ease-out);
 }
 
 .drawerDialog {
@@ -143,7 +143,7 @@
     .layout {
         grid-template-rows: minmax(0, 1fr);
         grid-template-columns: var(--panneau-sidebar-width, 15rem) minmax(0, 1fr);
-        transition: grid-template-columns 200ms ease-out;
+        transition: grid-template-columns var(--panneau-duration-slow) var(--panneau-ease-out);
     }
 
     .layout.collapsed {

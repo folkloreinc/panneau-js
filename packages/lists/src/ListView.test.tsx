@@ -1,12 +1,14 @@
 import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Archive } from 'lucide-react';
+import type { ReactElement } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { PanneauProvider, createList, createMemoryRouter, definePlugin } from '@panneau/core';
 import { fr } from '@panneau/intl';
 import type { Field } from '@panneau/protocol';
 import { PanneauRoot } from '@panneau/ui';
+import { lucideIconLoader } from '@panneau/ui/named-icons';
 
 import { List } from './List';
 import { ListView } from './ListView';
@@ -949,5 +951,47 @@ describe('ListView inline editing', () => {
         await waitFor(() => expect(within(row()).queryByRole('alert')).toBeNull());
         expect(within(row()).getByRole('checkbox', { name: 'Active' })).toBeChecked();
         expect(await screen.findByRole('button', { name: 'Undo' })).toBeInTheDocument();
+    });
+});
+
+describe('ListView leaving items', () => {
+    const wrap = (ui: ReactElement) => (
+        <PanneauRoot iconLoader={lucideIconLoader}>{ui}</PanneauRoot>
+    );
+
+    it.each(['table', 'cards'] as const)(
+        'fades out an item that left the list, then removes it, in %s',
+        async (layout) => {
+            const list = createList();
+            const { container, rerender } = renderList(
+                <ListView list={list} columns={columns} items={pages} layout={layout} />,
+            );
+            rerender(
+                wrap(
+                    <ListView
+                        list={list}
+                        columns={columns}
+                        items={pages.filter((page) => page.id !== pages[1]?.id)}
+                        layout={layout}
+                    />,
+                ),
+            );
+            const leaving = container.querySelectorAll('[data-leaving]');
+            expect(leaving).toHaveLength(1);
+            expect(leaving[0]).toHaveTextContent('Contact');
+            expect(leaving[0]).toHaveAttribute('inert');
+            await waitFor(() => expect(container.querySelector('[data-leaving]')).toBeNull());
+            expect(container).not.toHaveTextContent('Contact');
+        },
+    );
+
+    it('replaces the items at once when the query changes', () => {
+        const list = createList();
+        const { container, rerender } = renderList(
+            <ListView list={list} columns={columns} items={pages} />,
+        );
+        act(() => list.setSearch('home'));
+        rerender(wrap(<ListView list={list} columns={columns} items={pages.slice(0, 1)} />));
+        expect(container.querySelector('[data-leaving]')).toBeNull();
     });
 });

@@ -16,7 +16,7 @@
 }
 
 .tooltip[data-exiting] {
-    animation: fade var(--panneau-duration) reverse ease-in;
+    animation: fade var(--panneau-duration) reverse var(--panneau-ease-in);
 }
 
 @keyframes fade {

@@ -63,6 +63,7 @@ export function TableLayout({
     getItemFileKind,
     isCurrent,
     isHighlighted,
+    isLeaving,
     selectable,
     isSelected,
     onToggle,
@@ -151,13 +152,20 @@ export function TableLayout({
                             const href = getItemHref?.(item) ?? null;
                             const current = isCurrent?.(item) ?? false;
                             const highlighted = isHighlighted?.(item) ?? false;
+                            const leaving = isLeaving?.(item) ?? false;
+                            const rowClass = cx(
+                                highlighted && highlight.highlighted,
+                                leaving && highlight.leaving,
+                            );
                             return (
                                 <tr
                                     key={item.id}
-                                    className={highlighted ? highlight.highlighted : undefined}
+                                    className={rowClass === '' ? undefined : rowClass}
                                     data-selected={selected || undefined}
                                     data-current={current || undefined}
                                     data-highlighted={highlighted || undefined}
+                                    data-leaving={leaving || undefined}
+                                    inert={leaving || undefined}
                                 >
                                     {selectable ? (
                                         <td className={styles.check}>

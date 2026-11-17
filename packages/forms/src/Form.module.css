@@ -157,6 +157,21 @@
     color: var(--panneau-color-danger);
 }
 
+/* A new status comes in: it fades in and rises a little, as a toast does. */
+.statusText {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--panneau-space-1);
+    animation: status-in var(--panneau-duration-slow) var(--panneau-ease-out);
+}
+
+@keyframes status-in {
+    from {
+        opacity: 0;
+        transform: translateY(0.25rem);
+    }
+}
+
 .summary:focus {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
     outline-offset: 2px;

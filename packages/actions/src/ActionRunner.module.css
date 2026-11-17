@@ -74,7 +74,7 @@
     height: 100%;
     background: var(--panneau-color-accent);
     border-radius: inherit;
-    transition: width var(--panneau-duration) ease-out;
+    transition: width var(--panneau-duration) var(--panneau-ease-out);
 }
 
 @media (prefers-reduced-motion: reduce) {

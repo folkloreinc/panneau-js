@@ -103,6 +103,39 @@ export const Several: Story = {
     },
 };
 
+/**
+ * A toast that closes fades out in a view transition, where the browser has them, and the others
+ * move into its place; the page itself doesn't cross-fade.
+ */
+export const Closed: Story = {
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        const document = canvasElement.ownerDocument;
+        await userEvent.click(canvas.getByRole('button', { name: 'Warning' }));
+        await userEvent.click(canvas.getByRole('button', { name: 'Neutral' }));
+        const region = await body.findByRole('region', { name: 'Notifications' });
+        await waitFor(() => expect(within(region).getAllByRole('alertdialog')).toHaveLength(2));
+        const link = within(region).getByText('Link copied');
+        region.focus();
+        await userEvent.click(
+            within(link.closest('[role="alertdialog"]') as HTMLElement).getByRole('button', {
+                name: 'Close',
+            }),
+        );
+        const transition = document.activeViewTransition;
+        if (transition !== null && transition !== undefined) {
+            await expect(getComputedStyle(document.documentElement).viewTransitionName).toBe(
+                'none',
+            );
+            await transition.finished;
+        }
+        await expect(document.activeViewTransition ?? null).toBeNull();
+        await expect(within(region).queryByText('Link copied')).toBeNull();
+        await expect(within(region).getAllByRole('alertdialog')).toHaveLength(1);
+    },
+};
+
 /** A toast with the key of one already shown replaces it: "Saved" once, however many saves. */
 export const Replaced: Story = {
     play: async ({ canvasElement }) => {

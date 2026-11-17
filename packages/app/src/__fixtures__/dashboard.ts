@@ -33,7 +33,6 @@ export function createDashboardDefinition(widgets: Widget[] = DASHBOARD_WIDGETS)
                 id: 'entries',
                 label: { singular: 'entry', plural: 'entries' },
                 itemTitle: 'title',
-                open: 'edit',
                 fields: [
                     { name: 'title', type: 'text' },
                     {

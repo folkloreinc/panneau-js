@@ -1,10 +1,23 @@
 # @panneau/media
 
+## 5.0.0-alpha.35
+
+### Patch Changes
+
+- Updated dependencies [60b8651]
+- Updated dependencies [1ecdaa8]
+  - @panneau/ui@5.0.0-alpha.35
+  - @panneau/fields@5.0.0-alpha.35
+  - @panneau/core@5.0.0-alpha.35
+  - @panneau/data@5.0.0-alpha.35
+  - @panneau/intl@5.0.0-alpha.35
+  - @panneau/protocol@5.0.0-alpha.35
+
 ## 5.0.0-alpha.34
 
 ### Minor Changes
 
-- 776ae81: Add `MediaLibrary` to `@panneau/media/picker`: the library of the media picker as a page, with the same sources, search, filters, upload and details, without the dialog and without picking. A click on a media opens its details. `MediaPicker` and `MediaLibrary` share one implementation, and `MediaPickerProps` now extends the new `MediaLibraryOptions` (decision 0080).
+- 776ae81: Add `MediaLibrary` to `@panneau/media/picker`: the library of the media picker as a page, with the same sources, search, filters, upload and details, without the dialog and without picking. A click on a media opens its details. `MediaPicker` and `MediaLibrary` share one implementation, and `MediaPickerProps` now extends the new `MediaLibraryOptions` (decision 0081).
 
 ### Patch Changes
 

@@ -1,4 +1,4 @@
-# 0082: Overviews: dashboard pages, summaries above lists, and widgets that count a resource
+# 0084: Overviews: dashboard pages, summaries above lists, and widgets that count a resource
 
 - Status: proposed
 - Date: 2026-11-17
@@ -27,7 +27,7 @@ The answers are a number, a curve or a breakdown, with the rows only to explain 
 Panneau 5 has most of the pieces (0064): the `stat`, `series` and `list` widgets, a grid, and `stat` and `list` that read a resource with no code. Four things are missing:
 
 - **One dashboard only.** The home page is the only one, so related logs can't be grouped into one page.
-- **Nothing above a list.** The list page is a table. The roadmap put a resource's widgets in the aside of its list, but the aside holds the item panel (0028, 0074), and a summary is read before the rows, not next to one of them.
+- **Nothing above a list.** The list page is a table. The roadmap put a resource's widgets in the aside of its list, but the aside holds the item panel of the resources that open their items there (0028, 0074, 0082), and a summary is read before the rows, not next to one of them.
 - **No chart without code.** A `series` can't read a resource ("a list doesn't give a count per period"). There is no widget for parts of a total (per status, per owner). Every chart is an endpoint written by the project, even for the same three questions on every log.
 - **No shared time.** Each widget picks its own window, and an admin can't look at the same page over 7 days and then over a quarter.
 

@@ -11,11 +11,11 @@
 }
 
 .overlay[data-entering] {
-    animation: fade var(--panneau-duration) ease-out;
+    animation: fade var(--panneau-duration) var(--panneau-ease-out);
 }
 
 .overlay[data-exiting] {
-    animation: fade var(--panneau-duration) ease-in reverse;
+    animation: fade var(--panneau-duration) var(--panneau-ease-in) reverse;
 }
 
 .modal {
@@ -39,7 +39,7 @@
 }
 
 .modal[data-entering] {
-    animation: rise var(--panneau-duration) ease-out;
+    animation: rise var(--panneau-duration) var(--panneau-ease-out);
 }
 
 .dialog {

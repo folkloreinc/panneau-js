@@ -17,6 +17,7 @@ export function CardsLayout({
     getItemHref,
     isCurrent,
     isHighlighted,
+    isLeaving,
     selectable,
     isSelected,
     onToggle,
@@ -37,13 +38,20 @@ export function CardsLayout({
                         const actions = renderActions(item);
                         const current = isCurrent?.(item) ?? false;
                         const highlighted = isHighlighted?.(item) ?? false;
+                        const leaving = isLeaving?.(item) ?? false;
                         return (
                             <li
                                 key={item.id}
-                                className={cx(styles.card, highlighted && highlight.highlighted)}
+                                className={cx(
+                                    styles.card,
+                                    highlighted && highlight.highlighted,
+                                    leaving && highlight.leaving,
+                                )}
                                 data-selected={selected || undefined}
                                 data-current={current || undefined}
                                 data-highlighted={highlighted || undefined}
+                                data-leaving={leaving || undefined}
+                                inert={leaving || undefined}
                             >
                                 <div className={styles.header}>
                                     <div className={styles.title}>

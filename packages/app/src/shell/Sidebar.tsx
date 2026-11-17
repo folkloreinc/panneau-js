@@ -1,5 +1,6 @@
 import {
     ChevronDown,
+    Languages,
     LogOut,
     Monitor,
     Moon,
@@ -18,6 +19,9 @@ import {
     Icon,
     IconButton,
     type IconComponent,
+    Menu,
+    MenuItem,
+    MenuTrigger,
     Tooltip,
     isApplePlatform,
     usePanneauIntl,
@@ -25,6 +29,7 @@ import {
 } from '@panneau/ui';
 
 import { cx } from '../cx';
+import { getInterfaceLocales } from '../interfaceLocales';
 import {
     type NavEntry,
     type NavLink,
@@ -132,6 +137,11 @@ export interface SidebarProps {
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
     /** Logs the user out. Without it, the sidebar has no "Log out" button. */
     onLogOut?: () => void;
+    /**
+     * Switches the interface to a locale of `interfaceLocales` (decision 0083). Without it, or
+     * with fewer than two, the sidebar has no language button.
+     */
+    onLocaleChange?: ((locale: string) => void) | undefined;
     /** Opens the "Go to…" palette. Without it, the sidebar has no such button. */
     onGoTo?: () => void;
     className?: string;
@@ -140,8 +150,9 @@ export interface SidebarProps {
 /**
  * The main navigation, as a column: the site, the current context (decision 0045), the links of
  * the `main` menu of the definition, the notification area of queued action runs, and the user,
- * with the buttons of the appearance and of the logout. Collapsed, it is a rail of icons, as in
- * the sidebars of recent browsers. It renders inside an `ActionRunnerProvider`.
+ * with the buttons of the appearance, of the language (decision 0083) and of the logout. Collapsed,
+ * it is a rail of icons, as in the sidebars of recent browsers. It renders inside an
+ * `ActionRunnerProvider`.
  */
 export function Sidebar({
     definition,
@@ -154,6 +165,7 @@ export function Sidebar({
     colorScheme,
     onColorSchemeChange,
     onLogOut,
+    onLocaleChange,
     onGoTo,
     className,
 }: SidebarProps) {
@@ -238,6 +250,9 @@ export function Sidebar({
     const apple = isApplePlatform();
     const shortcut = apple ? '⌘K' : 'Ctrl+K';
     const keyShortcuts = apple ? 'Meta+K' : 'Control+K';
+    const locales = onLocaleChange !== undefined ? getInterfaceLocales(definition) : [];
+    const language =
+        locales.find(({ locale }) => locale === definition.locale)?.label ?? definition.locale;
     const nextScheme =
         COLOR_SCHEMES[(COLOR_SCHEMES.indexOf(colorScheme) + 1) % COLOR_SCHEMES.length] ?? 'light';
 
@@ -349,6 +364,34 @@ export function Sidebar({
                     size="sm"
                     onPress={() => onColorSchemeChange(nextScheme)}
                 />
+                {locales.length > 0 ? (
+                    <MenuTrigger>
+                        <IconButton
+                            icon={Languages}
+                            label={intl.formatMessage(appMessages.languageButton, { language })}
+                            size="sm"
+                        />
+                        <Menu
+                            placement="top start"
+                            aria-label={intl.formatMessage(appMessages.language)}
+                            selectionMode="single"
+                            disallowEmptySelection
+                            selectedKeys={[definition.locale]}
+                            onSelectionChange={(keys) => {
+                                const [key] = keys === 'all' ? [] : [...keys];
+                                if (typeof key === 'string') {
+                                    onLocaleChange?.(key);
+                                }
+                            }}
+                        >
+                            {locales.map(({ locale, label }) => (
+                                <MenuItem key={locale} id={locale} textValue={label}>
+                                    <span lang={locale}>{label}</span>
+                                </MenuItem>
+                            ))}
+                        </Menu>
+                    </MenuTrigger>
+                ) : null}
                 {onLogOut !== undefined ? (
                     <IconButton
                         icon={LogOut}

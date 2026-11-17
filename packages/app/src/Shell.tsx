@@ -26,7 +26,8 @@ import { Alert, usePanneauIntl, useToast } from '@panneau/ui';
 
 import { Dashboard } from './dashboard/Dashboard';
 import { DocumentTitle } from './documentTitle';
-import { navigate, setHistoryGuard, usePathname } from './location';
+import { getInterfaceLocales, withNext } from './interfaceLocales';
+import { loadPage, navigate, setHistoryGuard, usePathname } from './location';
 import { AccountPage } from './pages/AccountPage';
 import { ContextPage } from './pages/ContextPage';
 import { ErrorPage } from './pages/ErrorPage';
@@ -278,6 +279,20 @@ export function Shell({
                   });
               }
             : undefined;
+    // A full navigation to the backend's switch, which comes back here (decision 0083). The
+    // browser guards unsaved changes, as for other pages outside the app.
+    const switchLocale =
+        getInterfaceLocales(definition).length > 0
+            ? (locale: string) => {
+                  const target = definition.interfaceLocales?.find(
+                      (option) => option.locale === locale,
+                  );
+                  if (target !== undefined && locale !== definition.locale) {
+                      const { pathname: path, search, hash } = window.location;
+                      loadPage(withNext(target.url, `${path}${search}${hash}`));
+                  }
+              }
+            : undefined;
     return (
         <LeaveGuardsProvider guards={guards}>
             <RouterProvider navigate={go}>
@@ -315,6 +330,7 @@ export function Shell({
                         colorScheme={colorScheme}
                         onColorSchemeChange={onColorSchemeChange}
                         onLogOut={logOut}
+                        onLocaleChange={switchLocale}
                     >
                         <PageErrorBoundary
                             homeHref={routePath({ name: 'home' }, basePath)}

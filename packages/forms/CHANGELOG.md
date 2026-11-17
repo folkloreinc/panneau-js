@@ -1,5 +1,18 @@
 # @panneau/forms
 
+## 5.0.0-alpha.35
+
+### Patch Changes
+
+- 60b8651: The status of a form's footer fades in when it changes, and a toast that closes fades out while the others move into its place, in a view transition where the browser has them.
+- Updated dependencies [60b8651]
+- Updated dependencies [1ecdaa8]
+  - @panneau/ui@5.0.0-alpha.35
+  - @panneau/fields@5.0.0-alpha.35
+  - @panneau/core@5.0.0-alpha.35
+  - @panneau/intl@5.0.0-alpha.35
+  - @panneau/protocol@5.0.0-alpha.35
+
 ## 5.0.0-alpha.34
 
 ### Patch Changes
