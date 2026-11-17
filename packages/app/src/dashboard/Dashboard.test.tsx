@@ -102,7 +102,7 @@ describe('Dashboard', () => {
         renderDashboard();
         const table = await widget('per-day').findByRole('table', { name: 'Entries per day' });
         expect(within(table).getAllByRole('row')).toHaveLength(14);
-        expect(within(table).getAllByRole('row')[0]).toHaveTextContent('Oct 54');
+        expect(within(table).getAllByRole('row')[0]).toHaveTextContent('October 5, 20264');
         expect(widget('per-day').getByText('Total')).toBeInTheDocument();
         expect(widget('per-day').getAllByText('137').length).toBeGreaterThan(0);
     });
@@ -233,7 +233,15 @@ describe('Dashboard', () => {
             within(table)
                 .getAllByRole('row')
                 .map((row) => row.textContent),
-        ).toEqual(['Oct 12', 'Oct 20', 'Oct 31', 'Oct 42', 'Oct 50', 'Oct 61', 'Oct 70']);
+        ).toEqual([
+            'October 1, 20262',
+            'October 2, 20260',
+            'October 3, 20261',
+            'October 4, 20262',
+            'October 5, 20260',
+            'October 6, 20261',
+            'October 7, 20260',
+        ]);
         expect(widget('submitted').getAllByText('6').length).toBeGreaterThan(0);
     });
 

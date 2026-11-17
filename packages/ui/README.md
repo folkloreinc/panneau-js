@@ -249,11 +249,17 @@ Each default categorical color reaches 3:1 against the surface (WCAG non-text co
 
 ```tsx
 <Stat label="Overdue" value={3} help="Since Monday" tone="danger" href="/entries?filter[late]=1" />
-<LineChart label="Entries per day" points={[{ label: 'Oct 5', value: 4 }, { label: 'Oct 6', value: 8 }]} />
+<LineChart
+    label="Entries per day"
+    points={[
+        { label: 'October 5, 2026', shortLabel: 'Oct 5', value: 4 },
+        { label: 'October 6, 2026', shortLabel: 'Oct 6', value: 8 },
+    ]}
+/>
 ```
 
 - `Stat` shows a number for the locale (`format` takes the options of `Intl.NumberFormat`), what it counts above it and its help under it. A `tone` colors the number only when it calls for attention: the help says why.
-- `LineChart` draws a line and the area under it on a categorical chart color (`color`, from 0), with the top of its scale and its first and last labels. The plot is hidden from assistive technologies, which read the values in a table.
+- `LineChart` draws a curve and the area under it on a categorical chart color (`color`, from 0), a scale of round graduations, dates under it and the last value at the end of the line ([decision 0085](../../docs/decisions/0085-readable-line-charts.md)). `axisLabel`, `showMax`, `showLast`, `showAxis`, `domain` and `formatTick` fit it to its data; `curve="linear"` draws straight segments. `isInteractive` shows the value of the point under the pointer or chosen with the arrow keys, for a long series. The plot is hidden from assistive technologies, which read the values in a table.
 - Both draw a skeleton of their shape while their `value` or `points` are `undefined`.
 
 ### Checking a theme

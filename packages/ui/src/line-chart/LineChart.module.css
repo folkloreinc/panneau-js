@@ -1,14 +1,86 @@
 .chart {
+    --_panneau-line-chart-plot-height: var(
+        --_panneau-line-chart-height,
+        var(--panneau-line-chart-height, 8rem)
+    );
+    --_panneau-line-chart-reveal: var(
+        --panneau-line-chart-reveal-duration,
+        calc(var(--panneau-duration-slow) * 3)
+    );
+
     display: flex;
     flex-direction: column;
     gap: var(--panneau-space-1);
     min-width: 0;
     margin: 0;
+    container: panneau-line-chart / inline-size;
+    font-size: var(--panneau-line-chart-label-font-size, var(--panneau-font-size-xs));
+    line-height: 1.5;
+}
+
+.skeleton {
+    height: var(--_panneau-line-chart-plot-height);
+}
+
+.axisLabel {
+    color: var(--panneau-color-text-muted);
+}
+
+/* The scale on the left of the plot, the dates under it */
+.body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: var(--panneau-space-2);
+    row-gap: var(--panneau-space-1);
+}
+
+.chart[data-axis] .body {
+    grid-template-columns: auto minmax(0, 1fr);
+    /* Room for the top graduation, centered on its line */
+    padding-block-start: 0.75em;
+}
+
+/* Room for a value written above the highest point */
+.chart[data-labels] .body {
+    padding-block-start: 2em;
+}
+
+.scale {
+    position: relative;
+    height: var(--_panneau-line-chart-plot-height);
+    color: var(--panneau-color-text-muted);
+    font-variant-numeric: tabular-nums;
+    text-align: end;
+}
+
+.widest {
+    display: block;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+}
+
+.tick {
+    position: absolute;
+    inset-inline-end: 0;
+    transform: translateY(-50%);
+    white-space: nowrap;
 }
 
 .plot {
     position: relative;
-    height: var(--_panneau-line-chart-height, var(--panneau-line-chart-height, 8rem));
+    height: var(--_panneau-line-chart-plot-height);
+    border-radius: var(--panneau-radius-sm);
+    touch-action: pan-y;
+}
+
+.plot[role='slider'] {
+    cursor: crosshair;
+}
+
+.plot[role='slider']:focus-visible {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 4px;
 }
 
 .svg {
@@ -18,15 +90,33 @@
     overflow: visible;
 }
 
+.grid,
 .baseline {
-    stroke: var(--panneau-color-border);
     stroke-width: 1px;
     vector-effect: non-scaling-stroke;
+    shape-rendering: crispEdges;
+}
+
+.grid {
+    stroke: var(--panneau-line-chart-grid-color, var(--panneau-color-border));
+    stroke-opacity: 0.6;
+}
+
+.baseline {
+    stroke: var(--panneau-color-border);
+}
+
+.areaTop {
+    stop-color: var(--_panneau-line-chart-color);
+    stop-opacity: var(--panneau-line-chart-area-opacity, 0.2);
+}
+
+.areaBottom {
+    stop-color: var(--_panneau-line-chart-color);
+    stop-opacity: 0;
 }
 
 .area {
-    fill: var(--_panneau-line-chart-color);
-    fill-opacity: var(--panneau-line-chart-area-opacity, 0.12);
     stroke: none;
 }
 
@@ -39,36 +129,145 @@
     vector-effect: non-scaling-stroke;
 }
 
-/* A path of no length with a round cap: a dot that the stretched plot doesn't deform. */
-.dot {
-    fill: none;
-    stroke: var(--_panneau-line-chart-color);
-    stroke-width: var(--panneau-line-chart-dot-size, 6px);
-    stroke-linecap: round;
-    vector-effect: non-scaling-stroke;
+/* The line draws itself from the left when the chart appears, then its labels fade in */
+.reveal {
+    animation: reveal var(--_panneau-line-chart-reveal) var(--panneau-ease-out) both;
 }
 
-.max,
-.labels {
-    font-size: var(--panneau-line-chart-label-font-size, var(--panneau-font-size-xs));
-    font-variant-numeric: var(--panneau-font-numeric);
+.marks {
+    animation: fade-in var(--panneau-duration-slow) var(--panneau-ease-out)
+        var(--_panneau-line-chart-reveal) both;
+}
+
+@keyframes reveal {
+    from {
+        clip-path: inset(-10% 100% -10% -10%);
+    }
+
+    to {
+        clip-path: inset(-10% -10% -10% -10%);
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal,
+    .marks {
+        animation: none;
+    }
+}
+
+/* A dot, round whatever the width of the chart, with a ring of the surface around it */
+.dot {
+    position: absolute;
+    width: var(--panneau-line-chart-dot-size, 8px);
+    height: var(--panneau-line-chart-dot-size, 8px);
+    border-radius: 50%;
+    background-color: var(--_panneau-line-chart-color);
+    box-shadow: 0 0 0 2px var(--panneau-card-bg, var(--panneau-color-surface));
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.activeDot {
+    width: calc(var(--panneau-line-chart-dot-size, 8px) + 2px);
+    height: calc(var(--panneau-line-chart-dot-size, 8px) + 2px);
+}
+
+.crosshair {
+    position: absolute;
+    inset-block: 0;
+    width: 1px;
+    background-color: var(--panneau-color-border-control);
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+/* A value on the line: above or under its point, kept inside the width of the plot */
+.valueLabel,
+.tooltip {
+    position: absolute;
+    white-space: nowrap;
+    pointer-events: none;
+    --_panneau-line-chart-shift-x: calc(var(--_x) * -1%);
+}
+
+.valueLabel {
+    padding-inline: 2px;
+    font-weight: var(--panneau-font-weight-medium);
+    font-variant-numeric: tabular-nums;
+    color: var(--panneau-color-text);
+    background-color: var(--panneau-card-bg, var(--panneau-color-surface));
+    border-radius: var(--panneau-radius-sm);
+}
+
+.valueLabel[data-placement='above'],
+.tooltip[data-placement='above'] {
+    transform: translate(var(--_panneau-line-chart-shift-x), calc(-100% - 0.5rem));
+}
+
+.valueLabel[data-placement='below'],
+.tooltip[data-placement='below'] {
+    transform: translate(var(--_panneau-line-chart-shift-x), 0.5rem);
+}
+
+.tooltip {
+    display: flex;
+    flex-direction: column;
+    padding: var(--panneau-space-1) var(--panneau-space-2);
+    color: var(--panneau-color-text);
+    background-color: var(--panneau-color-surface);
+    border: 1px solid var(--panneau-color-border);
+    border-radius: var(--panneau-radius-sm);
+    box-shadow: var(--panneau-shadow-sm, none);
+    z-index: 1;
+}
+
+.tooltipValue {
+    font-size: var(--panneau-font-size-sm);
+    font-weight: var(--panneau-font-weight-bold);
+    font-variant-numeric: tabular-nums;
+}
+
+.tooltipLabel {
     color: var(--panneau-color-text-muted);
 }
 
-.max {
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-start: 0;
-    line-height: 1;
-    transform: translateY(-50%);
-    padding-inline-end: var(--panneau-space-1);
-    background-color: var(--panneau-card-bg, var(--panneau-color-surface));
+.dates {
+    position: relative;
+    grid-column: -2 / -1;
+    height: 1.5em;
+    color: var(--panneau-color-text-muted);
 }
 
-.labels {
-    display: flex;
-    justify-content: space-between;
-    gap: var(--panneau-space-2);
+/* Centered under its point, the first and last kept inside the width of the plot */
+.date {
+    position: absolute;
+    white-space: nowrap;
+    transform: translateX(-50%);
+}
+
+.date[data-edge='start'] {
+    transform: none;
+}
+
+.date[data-edge='end'] {
+    transform: translateX(-100%);
+}
+
+.minor {
+    display: none;
+}
+
+@container panneau-line-chart (min-width: 28rem) {
+    .minor {
+        display: inline;
+    }
 }
 
 .visuallyHidden {
