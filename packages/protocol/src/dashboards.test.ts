@@ -284,10 +284,12 @@ describe('summaries (decision 0084)', () => {
         expect(readWidgetDataQuery(summary)).toEqual({
             resource: 'pages',
             query: { filter: { status: 'draft', published_at: { from: '2026-10-01' } }, q: 'été' },
+            period: null,
         });
-        expect(readWidgetDataQuery(new URLSearchParams())).toEqual({ page: 'home' });
+        expect(readWidgetDataQuery(new URLSearchParams())).toEqual({ page: 'home', period: null });
         expect(readWidgetDataQuery(new URLSearchParams('page=activity&sort=title'))).toEqual({
             page: 'activity',
+            period: null,
         });
         expect(
             readWidgetDataQuery(new URLSearchParams('resource=pages&page=2')).errors,

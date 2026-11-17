@@ -47,23 +47,29 @@ export const queryKeys = {
     /**
      * Under `['panneau', 'dashboard']`: invalidating it refreshes every widget, of every page and
      * summary. Without a page, the widget of the home page. In a summary, keyed by its resource
-     * and the filters and the search of the list, without the page.
+     * and the filters and the search of the list, without the page. With a period, by it too.
      */
-    widget: (widget: string, { page = HOME_PAGE, resource, query = {} }: WidgetKeyOptions = {}) =>
+    widget: (
+        widget: string,
+        { page = HOME_PAGE, resource, query = {}, period }: WidgetKeyOptions = {},
+    ) =>
         [
             'panneau',
             'dashboard',
             'widgets',
             widget,
-            resource !== undefined
-                ? {
-                      resource,
-                      query: {
-                          ...(query.filter !== undefined && { filter: query.filter }),
-                          ...(query.q !== undefined && { q: query.q }),
-                      },
-                  }
-                : { page },
+            {
+                ...(resource !== undefined
+                    ? {
+                          resource,
+                          query: {
+                              ...(query.filter !== undefined && { filter: query.filter }),
+                              ...(query.q !== undefined && { q: query.q }),
+                          },
+                      }
+                    : { page }),
+                ...(period !== undefined && { period }),
+            },
         ] as const,
     actionRuns: () => ['panneau', 'actions', 'runs'] as const,
     actionRun: (id: string) => ['panneau', 'actions', 'runs', id] as const,

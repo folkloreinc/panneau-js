@@ -113,9 +113,12 @@ describe('OpenAPI document', () => {
             'resource',
             'filter',
             'q',
+            'period',
         ]);
         expect(Object.keys(widget?.get?.responses ?? {})).toContain('422');
         expect(document.components.schemas).toHaveProperty('ResourceSummary');
+        expect(document.components.schemas).toHaveProperty('OverviewPeriod');
+        expect(document.components.schemas).toHaveProperty('SummaryPeriod');
     });
 
     it('only references schemas and parameters it defines', () => {

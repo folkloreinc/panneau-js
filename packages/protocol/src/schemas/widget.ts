@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { OVERVIEW_PERIODS } from '../periods';
 import {
     WIDGET_BREAKDOWN_MAX_ITEMS,
     WIDGET_LIST_MAX_ITEMS,
@@ -35,6 +36,13 @@ export const WidgetSettings = z
             description:
                 'With `resource`, for a `stat`: its `target` (a budget, a quota), in the unit of the value: minor units for a sum of `money`.',
         }),
+        period: z
+            .union([z.string().min(1), z.literal(false)])
+            .optional()
+            .meta({
+                description:
+                    "In an overview with a `period` (decision 0084). With `resource`: the id of the list's `date-range` filter that gets the days of the chosen period. `false`: the widget doesn't follow the period; a widget with data of its own then gets no `period` parameters.",
+            }),
         followsList: z.boolean().optional().meta({
             description:
                 "In the summary of a resource (decision 0084): `false` keeps the widget on the whole resource, without the list's current filters and search. Widgets on that resource, and widgets with data of their own, follow the list by default.",
@@ -42,7 +50,23 @@ export const WidgetSettings = z
     })
     .meta({
         description:
-            'The settings of a widget: `resource`, `query`, `measure`, `group` and `target` for the built-in types on a resource, `followsList` in a summary, anything else for widgets of plugins.',
+            'The settings of a widget: `resource`, `query`, `measure`, `group` and `target` for the built-in types on a resource, `period` in an overview with a period, `followsList` in a summary, anything else for widgets of plugins.',
+    });
+
+export const OverviewPeriod = z
+    .looseObject({
+        options: z.array(z.enum(OVERVIEW_PERIODS)).min(1).meta({
+            description:
+                'The periods the user chooses from, in order: `7d`, `30d` and `90d`, the 7, 30 or 90 days ending today; `month`, the current calendar month, from its first day to today; `year`, the last 12 months, from the first day of the month 11 months ago to today. Days are those of the time zone of the browser.',
+        }),
+        default: z.enum(OVERVIEW_PERIODS).optional().meta({
+            description:
+                'The period the overview opens on, among `options`. Defaults to the first.',
+        }),
+    })
+    .meta({
+        description:
+            'One period for the widgets of a dashboard page or a summary, chosen in its header and kept in the URL (`?period=30d`, decision 0084).',
     });
 
 export const Widget = z.looseObject({
@@ -200,6 +224,7 @@ export const widgetDataSchemas = {
     breakdown: BreakdownWidgetData,
 } as const;
 
+export type OverviewPeriod = z.infer<typeof OverviewPeriod>;
 export type WidgetSettings = z.infer<typeof WidgetSettings>;
 export type Widget = z.infer<typeof Widget>;
 export type WidgetBadge = z.infer<typeof WidgetBadge>;

@@ -6,19 +6,20 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { RouterProvider } from 'react-aria-components';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { ActionRunnerProvider } from '@panneau/actions';
 import { PanneauProvider, createMemoryRouter, resolveResource } from '@panneau/core';
 import { createRestAdapter } from '@panneau/data';
 import { DataAdapterProvider } from '@panneau/data/query';
-import { validateDefinition } from '@panneau/protocol';
+import { type OverviewPeriod, validateDefinition } from '@panneau/protocol';
 import { createMockBackend } from '@panneau/protocol/mock';
 
 import {
     DASHBOARD_ITEMS,
     SUMMARY_DATA,
     SUMMARY_WIDGETS,
+    createRecentItems,
     createSummaryDefinition,
 } from '../__fixtures__/dashboard';
 import { ResourceListPage } from './ResourceListPage';
@@ -30,16 +31,18 @@ interface ListStoryProps {
     search?: string;
     /** Requests never answer: the list and every widget load. */
     pending?: boolean;
+    /** The period of the summary, with entries submitted in the last days. */
+    period?: OverviewPeriod;
 }
 
-function ListStory({ list, search = '', pending = false }: ListStoryProps) {
+function ListStory({ list, search = '', pending = false, period }: ListStoryProps) {
     const [state] = useState(() => {
         // Each story starts with the summary open
         window.localStorage.removeItem('panneau:summary:entries');
-        const input = createSummaryDefinition(SUMMARY_WIDGETS, list);
+        const input = createSummaryDefinition(SUMMARY_WIDGETS, list, period);
         const backend = createMockBackend({
             definition: input,
-            items: DASHBOARD_ITEMS,
+            items: period !== undefined ? createRecentItems() : DASHBOARD_ITEMS,
             widgets: SUMMARY_DATA,
         });
         const parsed = validateDefinition(input);
@@ -170,5 +173,32 @@ export const Loading: Story = {
         await expect(widgetOf(canvasElement, 'shown').getByRole('status')).toHaveTextContent(
             'Loading Entries…',
         );
+    },
+};
+
+/**
+ * A summary with a period: the list's own date-range filter, so choosing one filters the rows and
+ * the widgets that follow the list. "All entries" keeps every entry.
+ */
+export const Period: Story = {
+    args: { period: { options: ['7d', '30d', '90d'] } },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const control = await canvas.findByRole('radiogroup', { name: 'Period' });
+        await expect(within(control).getByRole('radio', { name: '7 days' })).toBeChecked();
+        await expect(
+            await widgetOf(canvasElement, 'shown').findByRole('link', { name: /^Entries 2/ }),
+        ).toBeVisible();
+        await expect(
+            await widgetOf(canvasElement, 'everything').findByRole('link', {
+                name: /^All entries 4/,
+            }),
+        ).toBeVisible();
+        await userEvent.click(within(control).getByRole('radio', { name: '30 days' }));
+        await expect(
+            await widgetOf(canvasElement, 'shown').findByRole('link', { name: /^Entries 3/ }),
+        ).toBeVisible();
+        const table = await canvas.findByRole('table', { name: 'Entries' });
+        await waitFor(() => expect(within(table).getAllByRole('row')).toHaveLength(4));
     },
 };

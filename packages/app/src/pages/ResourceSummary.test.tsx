@@ -1,10 +1,10 @@
 import { QueryClient } from '@tanstack/react-query';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createRestAdapter } from '@panneau/data';
-import { type Widget, validateBootConfig } from '@panneau/protocol';
+import { type OverviewPeriod, type Widget, validateBootConfig } from '@panneau/protocol';
 import { createMockBackend } from '@panneau/protocol/mock';
 
 import { Panneau } from '../Panneau';
@@ -20,10 +20,11 @@ import { createBootConfig } from '../__fixtures__/definition';
 function renderList({
     widgets,
     list,
+    period,
     path = '',
-}: { widgets?: Widget[]; list?: 'collapsed'; path?: string } = {}) {
+}: { widgets?: Widget[]; list?: 'collapsed'; period?: OverviewPeriod; path?: string } = {}) {
     window.history.replaceState(null, '', `/panneau/resources/entries${path}`);
-    const definition = createSummaryDefinition(widgets, list);
+    const definition = createSummaryDefinition(widgets, list, period);
     const backend = createMockBackend({
         definition,
         items: DASHBOARD_ITEMS,
@@ -151,5 +152,81 @@ describe('the summary above a list (decision 0084)', () => {
         expect(
             await widget('shown').findByRole('link', { name: /^Entries 6/ }),
         ).toBeInTheDocument();
+    });
+
+    describe('its period (decision 0084)', () => {
+        const period: OverviewPeriod = { options: ['7d', '30d'] };
+        const rows = async () => (await screen.findAllByRole('row')).length - 1;
+        const search = () => new URLSearchParams(window.location.search);
+
+        beforeEach(() => {
+            // The entries are submitted from October 1 to 6
+            vi.useFakeTimers({ toFake: ['Date'] });
+            vi.setSystemTime(new Date(2026, 9, 9, 12));
+        });
+
+        afterEach(() => {
+            vi.useRealTimers();
+        });
+
+        it('is the date-range filter of the list: choosing it filters the rows too', async () => {
+            const user = userEvent.setup();
+            renderList({ period });
+            const control = await screen.findByRole('radiogroup', { name: 'Period' });
+            expect(within(control).getByRole('radio', { name: '7 days' })).toBeChecked();
+            await waitFor(() => expect(search().get('period')).toBe('7d'));
+            expect(search().get('filter[submitted_at][from]')).toBe('2026-10-03');
+            expect(search().get('filter[submitted_at][to]')).toBe('2026-10-09');
+            await waitFor(async () => expect(await rows()).toBe(4));
+            expect(await widget('shown').findByRole('link', { name: /^Entries 4/ })).toBeVisible();
+            expect(
+                await widget('everything').findByRole('link', { name: /^All entries 6/ }),
+            ).toBeVisible();
+
+            await user.click(within(control).getByRole('radio', { name: '30 days' }));
+            expect(search().get('period')).toBe('30d');
+            expect(search().get('filter[submitted_at][from]')).toBe('2026-09-10');
+            await waitFor(async () => expect(await rows()).toBe(6));
+            expect(await widget('shown').findByRole('link', { name: /^Entries 6/ })).toBeVisible();
+        });
+
+        it('takes the days of today for the period of the URL', async () => {
+            renderList({
+                period,
+                path: '?period=30d&filter[submitted_at][from]=2026-01-01&filter[submitted_at][to]=2026-01-31',
+            });
+            await waitFor(() =>
+                expect(search().get('filter[submitted_at][from]')).toBe('2026-09-10'),
+            );
+            expect(search().get('filter[submitted_at][to]')).toBe('2026-10-09');
+            expect(
+                within(await screen.findByRole('radiogroup', { name: 'Period' })).getByRole(
+                    'radio',
+                    { name: '30 days' },
+                ),
+            ).toBeChecked();
+        });
+
+        it('keeps a range of a link that is no option, and chooses none', async () => {
+            const { requests } = renderList({
+                period,
+                path: '?filter[submitted_at][from]=2026-10-04&filter[submitted_at][to]=2026-10-05',
+            });
+            await waitFor(async () => expect(await rows()).toBe(2));
+            const control = await screen.findByRole('radiogroup', { name: 'Period' });
+            expect(within(control).queryByRole('radio', { checked: true })).toBeNull();
+            expect(search().get('period')).toBeNull();
+            // The widget with data of its own gets the range of the list, without a period
+            await waitFor(() =>
+                expect(
+                    requests.some(
+                        (url) =>
+                            url.startsWith('/panneau/api/dashboard/widgets/queue?') &&
+                            url.includes('filter[submitted_at][from]=2026-10-04') &&
+                            !url.includes('period['),
+                    ),
+                ).toBe(true),
+            );
+        });
     });
 });

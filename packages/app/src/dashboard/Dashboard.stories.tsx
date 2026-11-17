@@ -9,7 +9,7 @@ import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { createRestAdapter } from '@panneau/data';
 import { DataAdapterProvider } from '@panneau/data/query';
-import { type Widget, validateDefinition } from '@panneau/protocol';
+import { type DefinitionInput, type Widget, validateDefinition } from '@panneau/protocol';
 import { type MockWidget, createMockBackend } from '@panneau/protocol/mock';
 
 import {
@@ -18,7 +18,10 @@ import {
     DASHBOARD_DATA,
     DASHBOARD_ITEMS,
     DASHBOARD_WIDGETS,
+    PERIOD_DATA,
     createDashboardDefinition,
+    createPeriodDefinition,
+    createRecentItems,
 } from '../__fixtures__/dashboard';
 import { Dashboard } from './Dashboard';
 
@@ -31,6 +34,9 @@ interface DashboardStoryProps {
     data?: Record<string, MockWidget>;
     /** Requests never answer: every widget loads. */
     pending?: boolean;
+    /** A definition and items of their own, in place of the fixture's. */
+    definition?: () => DefinitionInput;
+    items?: () => Record<string, Record<string, unknown>[]>;
 }
 
 function DashboardStory({
@@ -39,10 +45,16 @@ function DashboardStory({
     page,
     data = DASHBOARD_DATA,
     pending = false,
+    definition: createDefinition,
+    items,
 }: DashboardStoryProps) {
     const [state] = useState(() => {
-        const definition = createDashboardDefinition(widgets, activity);
-        const backend = createMockBackend({ definition, items: DASHBOARD_ITEMS, widgets: data });
+        const definition = createDefinition?.() ?? createDashboardDefinition(widgets, activity);
+        const backend = createMockBackend({
+            definition,
+            items: items?.() ?? DASHBOARD_ITEMS,
+            widgets: data,
+        });
         const parsed = validateDefinition(definition);
         if (!parsed.success) {
             throw new Error('Invalid definition.');
@@ -307,5 +319,42 @@ export const Errors: Story = {
         answersFail = false;
         await userEvent.click(answers.getByRole('button', { name: 'Try again' }));
         await expect(await answers.findByText('129')).toBeVisible();
+    },
+};
+
+/**
+ * A dashboard page with a period (decision 0084): the stat of the entries submitted in it and the
+ * widget with data of its own follow it, "All entries" doesn't, and the control says so.
+ */
+export const Period: Story = {
+    args: {
+        page: 'activity',
+        definition: () =>
+            createPeriodDefinition({
+                options: ['7d', '30d', '90d', 'month', 'year'],
+                default: '7d',
+            }),
+        items: () => createRecentItems(),
+        data: PERIOD_DATA,
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const control = canvas.getByRole('radiogroup', { name: 'Period' });
+        await expect(within(control).getByRole('radio', { name: '7 days' })).toBeChecked();
+        await expect(canvas.getByText('For Submitted and Visits')).toBeVisible();
+        await expect(
+            await widgetOf(canvasElement, 'submitted-in-period').findByRole('link', {
+                name: /^Submitted 2/,
+            }),
+        ).toBeVisible();
+        await userEvent.click(within(control).getByRole('radio', { name: '90 days' }));
+        await expect(
+            await widgetOf(canvasElement, 'submitted-in-period').findByRole('link', {
+                name: /^Submitted 4/,
+            }),
+        ).toBeVisible();
+        await expect(
+            await widgetOf(canvasElement, 'all').findByRole('link', { name: /^All entries 4/ }),
+        ).toBeVisible();
     },
 };

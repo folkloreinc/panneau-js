@@ -5,7 +5,7 @@ import { Abilities } from './common';
 import { Field } from './field';
 import { LayoutNode } from './layout';
 import { ListDefinition } from './list';
-import { Widget } from './widget';
+import { OverviewPeriod, Widget } from './widget';
 
 export const ResourceFeatures = z.looseObject({
     drafts: z.boolean().optional(),
@@ -59,6 +59,16 @@ export const ResourceType = z
             'A type of the items of a resource (decision 0077): the items of a type have the fields of the resource and its own.',
     });
 
+export const SummaryPeriod = OverviewPeriod.extend({
+    filter: z.string().min(1).optional().meta({
+        description:
+            "The id of the list's `date-range` filter that the period sets. Defaults to the first `date-range` filter of the list.",
+    }),
+}).meta({
+    description:
+        "The period of a summary (decision 0084): the list's own `date-range` filter, so choosing it filters the rows too.",
+});
+
 export const ResourceSummary = z
     .looseObject({
         widgets: z.array(Widget).meta({
@@ -69,6 +79,7 @@ export const ResourceSummary = z
             description:
                 '`collapsed`: the resource opens on its summary, with its list folded under it behind "Show the N items". Without it, the list is shown under the summary.',
         }),
+        period: SummaryPeriod.optional(),
     })
     .meta({
         description:
@@ -128,6 +139,7 @@ export const Resource = z
 
 export type ResourceFeatures = z.infer<typeof ResourceFeatures>;
 export type ResourceType = z.infer<typeof ResourceType>;
+export type SummaryPeriod = z.infer<typeof SummaryPeriod>;
 export type ResourceSummary = z.infer<typeof ResourceSummary>;
 export type Resource = z.infer<typeof Resource>;
 /** A resource as a backend writes it, before defaults are applied. */

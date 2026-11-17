@@ -75,7 +75,13 @@ import {
 import { actionJsonRules } from './jsonRules';
 import { LayoutNode } from './layout';
 import { Column, Filter, ListAggregates, ListCalendar, ListDefinition } from './list';
-import { Resource, ResourceFeatures, ResourceSummary, ResourceType } from './resource';
+import {
+    Resource,
+    ResourceFeatures,
+    ResourceSummary,
+    ResourceType,
+    SummaryPeriod,
+} from './resource';
 import {
     DefinitionTheme,
     Theme,
@@ -91,6 +97,7 @@ import {
     BreakdownWidgetItem,
     ListWidgetData,
     ListWidgetItem,
+    OverviewPeriod,
     SeriesPoint,
     SeriesWidgetData,
     StatWidgetData,
@@ -141,6 +148,7 @@ export const namedSchemas = {
     Action,
     ResourceFeatures,
     ResourceType,
+    SummaryPeriod,
     ResourceSummary,
     Resource,
     User,
@@ -151,6 +159,7 @@ export const namedSchemas = {
     MenuItem,
     Page,
     WidgetSettings,
+    OverviewPeriod,
     Widget,
     Uploads,
     ContextOption,

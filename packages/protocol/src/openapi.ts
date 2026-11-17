@@ -9,6 +9,7 @@ import {
     PASSWORD_CONFIRMATION_PROBLEM_TYPE,
     TWO_FACTOR_REQUIRED_PROBLEM_TYPE,
 } from './constants';
+import { OVERVIEW_PERIODS } from './periods';
 import { createSchemaRegistry } from './schemas';
 import { BootConfig } from './schemas/boot';
 import { Definition } from './schemas/definition';
@@ -947,6 +948,24 @@ export function createOpenApiDocument(): JsonObject {
                         ...listParameters.filter((parameter) =>
                             ['filter', 'q'].includes(String(parameter.name)),
                         ),
+                        {
+                            name: 'period',
+                            in: 'query',
+                            required: false,
+                            style: 'deepObject',
+                            explode: true,
+                            description:
+                                'The period chosen in the overview of the widget (decision 0084), unless the widget has `settings.period: false`: `period[option]=30d&period[from]=2026-10-19&period[to]=2026-11-17`. `from` and `to` are its first and last days, both inclusive, in the time zone of the browser. A wrong period is a `422` keyed by `period`.',
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    option: { type: 'string', enum: [...OVERVIEW_PERIODS] },
+                                    from: { type: 'string', format: 'date' },
+                                    to: { type: 'string', format: 'date' },
+                                },
+                                required: ['option', 'from', 'to'],
+                            },
+                        },
                     ],
                     responses: {
                         200: ok(

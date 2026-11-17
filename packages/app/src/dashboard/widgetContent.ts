@@ -19,6 +19,7 @@ import type {
 import {
     WIDGET_LIST_MAX_ITEMS,
     type WidgetListQuery,
+    type WidgetPeriod,
     type WidgetResource,
     checkWidgetData,
     followsList,
@@ -222,6 +223,18 @@ function withListQuery(read: WidgetResource, list: WidgetListQuery): WidgetResou
     return { ...read, query, params: toSearchParams(query) };
 }
 
+/**
+ * A widget on a resource that follows the period of its overview (decision 0084): the days of the
+ * period in the list's `date-range` filter that `settings.period` names.
+ */
+function withPeriod(read: WidgetResource, filter: string, period: WidgetPeriod): WidgetResource {
+    const query: ListQuery = {
+        ...read.query,
+        filter: { ...read.query.filter, [filter]: { from: period.from, to: period.to } },
+    };
+    return { ...read, query, params: toSearchParams(query) };
+}
+
 /** The summary of a resource that holds a widget, with the current query of its list. */
 export interface WidgetSummary {
     resource: string;
@@ -235,6 +248,8 @@ interface UseWidgetContentOptions {
     page?: string | undefined;
     /** The summary of a resource that holds the widget, instead of a page (decision 0084). */
     summary?: WidgetSummary | undefined;
+    /** The period chosen in the overview of the widget (decision 0084). */
+    period?: WidgetPeriod | null | undefined;
     definition: Definition;
     basePath: string;
     /** The title of an item without one. */
@@ -253,6 +268,7 @@ export function useWidgetContent({
     widget,
     page,
     summary,
+    period = null,
     definition,
     basePath,
     untitled,
@@ -260,7 +276,12 @@ export function useWidgetContent({
 }: UseWidgetContentOptions): WidgetContent {
     const follows = summary !== undefined && followsList(widget, summary.resource);
     const own = getWidgetResource(widget);
-    const read = own !== null && follows ? withListQuery(own, summary.query) : own;
+    const listed = own !== null && follows ? withListQuery(own, summary.query) : own;
+    const periodFilter = widget.settings?.period;
+    const read =
+        listed !== null && period !== null && typeof periodFilter === 'string'
+            ? withPeriod(listed, periodFilter, period)
+            : listed;
     const resource =
         read !== null
             ? definition.resources.find((candidate) => candidate.id === read.resource)
@@ -292,6 +313,7 @@ export function useWidgetContent({
         ...(summary !== undefined
             ? { resource: summary.resource, ...(follows && { query: summary.query }) }
             : { page }),
+        ...(period !== null && periodFilter !== false && { period }),
         enabled: enabled && read === null,
         placeholderData: keepPreviousData,
     });

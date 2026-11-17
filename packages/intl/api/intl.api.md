@@ -342,6 +342,15 @@ export const appMessages: {
     id: string;
     }>;
     summary: PanneauMessage<Record<never, never>>;
+    period: PanneauMessage<Record<never, never>>;
+    period7d: PanneauMessage<Record<never, never>>;
+    period30d: PanneauMessage<Record<never, never>>;
+    period90d: PanneauMessage<Record<never, never>>;
+    periodMonth: PanneauMessage<Record<never, never>>;
+    periodYear: PanneauMessage<Record<never, never>>;
+    periodAppliesTo: PanneauMessage<    {
+    widgets: string;
+    }>;
     showList: PanneauMessage<Record<never, never>>;
     showListItems: PanneauMessage<    {
     count: number;

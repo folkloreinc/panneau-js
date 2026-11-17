@@ -157,9 +157,21 @@ describe('query hooks', () => {
         expect(client.getQueryData(queryKeys.widget('to judge', { page: 'activity' }))).toEqual({
             value: 12,
         });
+        // Another period is another key
+        const period = { option: '7d' as const, from: '2026-11-11', to: '2026-11-17' };
+        const week = renderHook(() => useWidgetData('to judge', { page: 'activity', period }), {
+            wrapper,
+        });
+        await waitFor(() => expect(week.result.current.isSuccess).toBe(true));
+        expect(urls.at(-1)).toBe(
+            `${BASE_URL}/dashboard/widgets/to%20judge?page=activity&period%5Boption%5D=7d&period%5Bfrom%5D=2026-11-11&period%5Bto%5D=2026-11-17`,
+        );
+        expect(
+            client.getQueryData(queryKeys.widget('to judge', { page: 'activity', period })),
+        ).toEqual({ value: 12 });
         // Every widget of every page is under the dashboard
         expect(client.getQueryCache().findAll({ queryKey: ['panneau', 'dashboard'] })).toHaveLength(
-            3,
+            4,
         );
     });
 

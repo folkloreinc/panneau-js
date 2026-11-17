@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { createDefinition } from '../__fixtures__/definition';
 import { createMockBackend } from '../mock';
+import { getPeriodRange } from '../periods';
 import { formatReport, runConformance } from './index';
 
 function createBackend() {
@@ -53,6 +54,8 @@ function createBackend() {
                 },
                 { id: 'health', type: 'stat' },
             ],
+            // The period of the summary is the list's date-range filter (decision 0084)
+            period: { options: ['30d', 'year'] },
         };
     }
     definition.resources.push({
@@ -126,6 +129,7 @@ function createBackend() {
         activity: {
             component: 'dashboard',
             label: 'Activity',
+            period: { options: ['7d', '30d', 'month'], default: '30d' },
             widgets: [
                 { id: 'signups', type: 'stat' },
                 { id: 'published', type: 'list', settings: { resource: 'pages' } },
@@ -387,6 +391,40 @@ describe('runConformance', () => {
         ).toContain(
             'Widget "health" of the summary of "pages" with both a page and a resource: expected status 422, got 404.',
         );
+    });
+
+    it('asks for the widgets that follow a period with its parameters (decision 0084)', async () => {
+        const backend = createBackend();
+        const requested: string[] = [];
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: (input, init) => {
+                requested.push(decodeURIComponent(input));
+                return backend.fetch(input, init);
+            },
+        });
+        expect(report.checks.find(({ id }) => id === 'dashboard.widgets.period')?.status).toBe(
+            'passed',
+        );
+        const { from, to } = getPeriodRange('30d');
+        expect(requested).toContain(
+            `http://panneau.test/panneau/api/dashboard/widgets/signups?page=activity&period[option]=30d&period[from]=${from}&period[to]=${to}`,
+        );
+        expect(requested).toContain(
+            `http://panneau.test/panneau/api/dashboard/widgets/health?resource=pages&period[option]=30d&period[from]=${from}&period[to]=${to}`,
+        );
+    });
+
+    it('fails a backend that accepts a wrong period', async () => {
+        const backend = createBackend();
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            // A backend that ignores the period
+            fetch: (input, init) => backend.fetch(input.replace(/[?&]period%5B.*$/, ''), init),
+        });
+        const check = report.checks.find(({ id }) => id === 'dashboard.widgets.period');
+        expect(check?.status).toBe('failed');
+        expect(check?.issues[0]).toMatch(/for the period "decade": expected status 422, got 200/);
     });
 
     it('checks a list paged with cursors: the next page, and an invalid cursor', async () => {
@@ -674,6 +712,7 @@ describe('runConformance', () => {
             'item.missing',
             'search.invalid',
             'list.aggregate.invalid',
+            'dashboard.widgets.period',
             'dashboard.widgets.unknown',
             'create.invalid',
             'create.implied-rules',

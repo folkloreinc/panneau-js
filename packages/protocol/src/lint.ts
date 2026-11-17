@@ -1,7 +1,14 @@
 import { parseAggregateGroup, parseAggregateMeasure } from './aggregates';
-import { DASHBOARD_COMPONENT, HOME_PAGE } from './dashboards';
+import { DASHBOARD_COMPONENT, HOME_PAGE, getSummaryPeriodFilter } from './dashboards';
 import { ITEM_TYPE_KEY } from './resourceTypes';
-import type { DefinitionInput, Field, LayoutNode, ResourceInput, Widget } from './schemas';
+import type {
+    DefinitionInput,
+    Field,
+    LayoutNode,
+    OverviewPeriod,
+    ResourceInput,
+    Widget,
+} from './schemas';
 import type { ValidationIssue } from './validate';
 import {
     GROUPED_WIDGET_TYPES,
@@ -277,13 +284,24 @@ export function lintDefinition(definition: DefinitionInput): ValidationIssue[] {
     definition.resources.forEach((resource, index) => {
         checkResource(resource, `resources.${index}`, issues);
         if (resource.summary !== undefined) {
-            checkWidgets(
-                definition,
-                resource.summary.widgets,
-                `resources.${index}.summary.widgets`,
-                issues,
-                resource.id,
-            );
+            const summaryPath = `resources.${index}.summary`;
+            const period = resource.summary.period;
+            if (period !== undefined) {
+                checkPeriod(period, `${summaryPath}.period`, issues);
+                if (getSummaryPeriodFilter(resource) === null) {
+                    issues.push({
+                        path: `${summaryPath}.period${period.filter !== undefined ? '.filter' : ''}`,
+                        message:
+                            period.filter !== undefined
+                                ? `The list of \`${resource.id}\` has no \`date-range\` filter \`${period.filter}\`.`
+                                : `The period of a summary is a \`date-range\` filter of the list of \`${resource.id}\`: it has none.`,
+                    });
+                }
+            }
+            checkWidgets(definition, resource.summary.widgets, `${summaryPath}.widgets`, issues, {
+                summaryOf: resource.id,
+                hasPeriod: period !== undefined,
+            });
         }
         allFields(resource, `resources.${index}`).forEach(({ field, path }) => {
             if (
@@ -334,7 +352,21 @@ export function lintDefinition(definition: DefinitionInput): ValidationIssue[] {
  * its own, which can't come with them. Only a `dashboard` page has widgets.
  */
 function checkDashboards(definition: DefinitionInput, issues: ValidationIssue[]) {
+    const home = definition.pages?.[HOME_PAGE];
+    const homePeriod =
+        (home?.component === DASHBOARD_COMPONENT ? home.period : undefined) ??
+        definition.dashboard?.period;
     Object.entries(definition.pages ?? {}).forEach(([id, page]) => {
+        if (page.period !== undefined) {
+            if (page.component !== DASHBOARD_COMPONENT) {
+                issues.push({
+                    path: `pages.${id}.period`,
+                    message: `Only a \`${DASHBOARD_COMPONENT}\` page has a period.`,
+                });
+            } else {
+                checkPeriod(page.period, `pages.${id}.period`, issues);
+            }
+        }
         if (page.widgets === undefined) {
             return;
         }
@@ -345,12 +377,23 @@ function checkDashboards(definition: DefinitionInput, issues: ValidationIssue[])
             });
             return;
         }
-        checkWidgets(definition, page.widgets, `pages.${id}.widgets`, issues);
+        checkWidgets(definition, page.widgets, `pages.${id}.widgets`, issues, {
+            hasPeriod: (id === HOME_PAGE ? homePeriod : page.period) !== undefined,
+        });
     });
     if (definition.dashboard === undefined) {
         return;
     }
-    const home = definition.pages?.[HOME_PAGE];
+    if (definition.dashboard.period !== undefined) {
+        if (home?.component === DASHBOARD_COMPONENT && home.period !== undefined) {
+            issues.push({
+                path: 'dashboard.period',
+                message: `\`pages.${HOME_PAGE}.period\` replaces it: set only one.`,
+            });
+        } else {
+            checkPeriod(definition.dashboard.period, 'dashboard.period', issues);
+        }
+    }
     if (home?.component === DASHBOARD_COMPONENT && home.widgets !== undefined) {
         if (definition.dashboard.widgets.length > 0) {
             issues.push({
@@ -360,7 +403,22 @@ function checkDashboards(definition: DefinitionInput, issues: ValidationIssue[])
         }
         return;
     }
-    checkWidgets(definition, definition.dashboard.widgets, 'dashboard.widgets', issues);
+    checkWidgets(definition, definition.dashboard.widgets, 'dashboard.widgets', issues, {
+        hasPeriod: homePeriod !== undefined,
+    });
+}
+
+/** A period (decision 0084): its options once each, and its default among them. */
+function checkPeriod(period: OverviewPeriod, path: string, issues: ValidationIssue[]) {
+    if (new Set(period.options).size !== period.options.length) {
+        issues.push({ path: `${path}.options`, message: 'Each period is offered once.' });
+    }
+    if (period.default !== undefined && !period.options.includes(period.default)) {
+        issues.push({
+            path: `${path}.default`,
+            message: `\`${period.default}\` isn't one of the options.`,
+        });
+    }
 }
 
 const FILTER_PARAM = /^filter\[([^\]]+)\]/;
@@ -458,7 +516,7 @@ function checkWidgets(
     widgets: Widget[],
     widgetsPath: string,
     issues: ValidationIssue[],
-    summaryOf?: string,
+    { summaryOf, hasPeriod = false }: { summaryOf?: string; hasPeriod?: boolean } = {},
 ) {
     const ids = new Set<string>();
     widgets.forEach((widget, index) => {
@@ -487,7 +545,20 @@ function checkWidgets(
         }
         const settings = widget.settings ?? {};
         const onResource = typeof settings.resource === 'string';
+        if (settings.period !== undefined && !hasPeriod) {
+            issues.push({
+                path: `${path}.settings.period`,
+                message: `Its ${summaryOf !== undefined ? 'summary' : 'dashboard'} has no \`period\`.`,
+            });
+        }
         if (!onResource) {
+            if (typeof settings.period === 'string') {
+                issues.push({
+                    path: `${path}.settings.period`,
+                    message:
+                        '`period` names a `date-range` filter of the list of its `resource`: without one, it can only be `false`.',
+                });
+            }
             RESOURCE_SETTINGS.forEach((key) => {
                 if (settings[key] !== undefined) {
                     issues.push({
@@ -527,6 +598,17 @@ function checkWidgets(
             issues.push({
                 path: `${path}.settings.resource`,
                 message: `The list of \`${resource.id}\` is paged with cursors and has no total: it can't feed a \`stat\` that counts.`,
+            });
+        }
+        if (
+            typeof settings.period === 'string' &&
+            !(resource.list?.filters ?? []).some(
+                (filter) => filter.id === settings.period && filter.type === 'date-range',
+            )
+        ) {
+            issues.push({
+                path: `${path}.settings.period`,
+                message: `The list of \`${resource.id}\` has no \`date-range\` filter \`${settings.period}\`.`,
             });
         }
         const filters = new Set((resource.list?.filters ?? []).map((filter) => filter.id));

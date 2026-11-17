@@ -118,17 +118,19 @@ export function searchQueryOptions(
  * Query options of the data of a widget of a dashboard, with data of its own (decision 0064): the
  * shape of its type, unchecked. Widgets on a resource read its list instead. `page` is the
  * dashboard page of the widget (decision 0084), the home page without it; `resource` the resource
- * whose summary holds it, with `query`, the filters and the search of its list.
+ * whose summary holds it, with `query`, the filters and the search of its list; `period` the
+ * period of its overview.
  */
 export function widgetDataQueryOptions(
     adapter: DataAdapter,
     widget: string,
-    { page, resource, query }: WidgetKeyOptions = {},
+    { page, resource, query, period }: WidgetKeyOptions = {},
 ): DataQueryOptions<unknown, ReturnType<typeof queryKeys.widget>> {
     const request = {
         ...(page !== undefined && { page }),
         ...(resource !== undefined && { resource }),
         ...(query !== undefined && { query }),
+        ...(period !== undefined && { period }),
     };
     return queryOptions({
         queryKey: queryKeys.widget(widget, request),

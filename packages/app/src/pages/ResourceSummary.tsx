@@ -4,10 +4,12 @@ import { Button, Heading } from 'react-aria-components';
 
 import { appMessages } from '@panneau/intl';
 import type { Definition, Resource, ResourceSummary as Summary } from '@panneau/protocol';
-import type { WidgetListQuery } from '@panneau/protocol/runtime';
+import { type WidgetListQuery, followsPeriod } from '@panneau/protocol/runtime';
 import { Icon, usePanneauIntl, usePreference } from '@panneau/ui';
 
 import { DashboardGrid } from '../dashboard/Dashboard';
+import { PeriodControl } from '../dashboard/PeriodControl';
+import type { PeriodState } from '../dashboard/period';
 import styles from './ResourceSummary.module.css';
 
 /** Whether the summary is shown, as the browser remembers it. */
@@ -34,6 +36,8 @@ export interface ResourceSummaryProps {
     /** Whether the summary is shown: `useSummaryOpen()`. */
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
+    /** The period of the summary, which is the list's date-range filter (decision 0084). */
+    period?: PeriodState | undefined;
     /** At the end of its header, next to its title. */
     headerEnd?: ReactNode;
 }
@@ -51,6 +55,7 @@ export function ResourceSummary({
     query,
     isOpen,
     onOpenChange,
+    period,
     headerEnd,
 }: ResourceSummaryProps) {
     const intl = usePanneauIntl();
@@ -70,6 +75,17 @@ export function ResourceSummary({
                         {intl.formatMessage(appMessages.summary)}
                     </Button>
                 </Heading>
+                {summary.period !== undefined && period !== undefined ? (
+                    <PeriodControl
+                        options={summary.period.options}
+                        value={period.option}
+                        onChange={period.choose}
+                        widgets={summary.widgets}
+                        following={summary.widgets.filter((widget) =>
+                            followsPeriod(widget, resource.id),
+                        )}
+                    />
+                ) : null}
                 {headerEnd}
             </div>
             <div id={contentId} hidden={!isOpen}>
@@ -77,6 +93,7 @@ export function ResourceSummary({
                     <DashboardGrid
                         widgets={summary.widgets}
                         summary={{ resource: resource.id, query }}
+                        period={period?.period}
                         definition={definition}
                         basePath={basePath}
                     />
