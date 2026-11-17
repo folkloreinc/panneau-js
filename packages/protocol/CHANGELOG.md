@@ -1,5 +1,16 @@
 # @panneau/protocol
 
+## 5.0.0-alpha.36
+
+### Minor Changes
+
+- c2b7df7: Add a language switcher to the shell (decision 0083). The definition can list the languages of the interface in `interfaceLocales`, each with its label and the URL that switches to it. With two or more, the sidebar has a language button beside the appearance's, the dock's user menu a "Language" section, and "Go to…" a command for each other language. Choosing one goes to its URL with `next`, the page to come back to. The protocol documents `GET /locale/{locale}` as an optional endpoint for that URL.
+- 6441b21: **Items open in their form by default (decision 0082).** `edit` is now the default of a resource's `open`: the title of an item opens its edit form, its show route redirects there, and rows show "Edit" without "View". The panel of an item's details is now a choice of the resource, `"open": "panel"`, for items read more than edited or shown with their preview. An item the user can't update still opens in the panel. `getOpenMode()` returns `edit` unless the resource says `panel`, and clients treat an `open` they don't know as `edit`.
+  
+  **Breaking:** a definition without `open` used to open items in the panel. To keep it, set `"open": "panel"` on the resource.
+  
+  Also fixes the show route of an item that opens in its form when its fetch fails (`403`, `404`): the page showed nothing, as the panel's refetch made it wait again. It now shows the panel with the error.
+
 ## 5.0.0-alpha.35
 
 No changes in this release.
