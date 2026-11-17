@@ -89,6 +89,17 @@ export const MenuItem = z
         page: z.string().optional(),
         url: z.string().optional(),
         external: z.boolean().optional(),
+        collapsible: z.boolean().optional().meta({
+            description:
+                '`group` with a `label`: the user shows or hides its links, and the browser remembers it (decision 0079).',
+        }),
+        collapsed: z.boolean().optional().meta({
+            description:
+                '`group`: collapsible, and closed until the user opens it, unless it holds the current page.',
+        }),
+        emphasis: z.boolean().optional().meta({
+            description: '`resource`, `page` or `link`: its label is bold, for the main entries.',
+        }),
         // The return type is written out so that declaration files keep the recursion.
         get children(): z.ZodOptional<z.ZodArray<typeof MenuItem>> {
             return z.array(MenuItem).optional();

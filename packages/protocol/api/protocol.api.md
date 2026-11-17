@@ -1458,6 +1458,9 @@ export const Definition: z.ZodObject<{
         page: z.ZodOptional<z.ZodString>;
         url: z.ZodOptional<z.ZodString>;
         external: z.ZodOptional<z.ZodBoolean>;
+        collapsible: z.ZodOptional<z.ZodBoolean>;
+        collapsed: z.ZodOptional<z.ZodBoolean>;
+        emphasis: z.ZodOptional<z.ZodBoolean>;
         children: z.ZodOptional<z.ZodArray<typeof MenuItem>>;
     }, z.core.$loose>>>>;
     routes: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;
@@ -2679,6 +2682,9 @@ export const MenuItem: z.ZodObject<{
     page: z.ZodOptional<z.ZodString>;
     url: z.ZodOptional<z.ZodString>;
     external: z.ZodOptional<z.ZodBoolean>;
+    collapsible: z.ZodOptional<z.ZodBoolean>;
+    collapsed: z.ZodOptional<z.ZodBoolean>;
+    emphasis: z.ZodOptional<z.ZodBoolean>;
     children: z.ZodOptional<z.ZodArray<typeof MenuItem>>;
 }, z.core.$loose>;
 
@@ -4173,6 +4179,9 @@ export const namedSchemas: {
         page: z.ZodOptional<z.ZodString>;
         url: z.ZodOptional<z.ZodString>;
         external: z.ZodOptional<z.ZodBoolean>;
+        collapsible: z.ZodOptional<z.ZodBoolean>;
+        collapsed: z.ZodOptional<z.ZodBoolean>;
+        emphasis: z.ZodOptional<z.ZodBoolean>;
         children: z.ZodOptional<z.ZodArray<typeof MenuItem>>;
     }, z.core.$loose>;
     Page: z.ZodObject<{
@@ -4984,6 +4993,9 @@ export const namedSchemas: {
             page: z.ZodOptional<z.ZodString>;
             url: z.ZodOptional<z.ZodString>;
             external: z.ZodOptional<z.ZodBoolean>;
+            collapsible: z.ZodOptional<z.ZodBoolean>;
+            collapsed: z.ZodOptional<z.ZodBoolean>;
+            emphasis: z.ZodOptional<z.ZodBoolean>;
             children: z.ZodOptional<z.ZodArray<typeof MenuItem>>;
         }, z.core.$loose>>>>;
         routes: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodString>>;

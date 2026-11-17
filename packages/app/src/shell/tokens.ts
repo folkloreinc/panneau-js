@@ -46,6 +46,10 @@ export const sidebarTokens = defineComponentTokens('sidebar', {
     'link-current-border': 'var(--panneau-color-border)',
     /** Shadow of the current link. */
     'link-current-shadow': 'var(--panneau-shadow-sm)',
+    /** Text and icon of an emphasized link, a main entry (decision 0079). */
+    'link-emphasis-color': 'var(--panneau-color-text)',
+    /** Font weight of an emphasized link. */
+    'link-emphasis-weight': 'var(--panneau-font-weight-bold)',
     /** Background of the logo, the first letter of the site. */
     'logo-bg': 'var(--panneau-color-accent)',
     /** Letter of the logo. */

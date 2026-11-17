@@ -84,3 +84,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0076](0076-a-dock-in-place-of-the-sidebar.md)                    | A dock, in place of the sidebar                                               | Proposed                          |
 | [0077](0077-resource-types.md)                                    | Resource types                                                                | Proposed                          |
 | [0078](0078-the-app-owns-its-page.md)                             | The app owns its page                                                         | Proposed                          |
+| [0079](0079-collapsible-groups-and-emphasized-entries.md)         | Collapsible groups and emphasized entries in menus                            | Proposed                          |

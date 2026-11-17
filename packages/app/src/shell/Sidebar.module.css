@@ -130,6 +130,43 @@
     text-transform: uppercase;
 }
 
+/* The title of a collapsible group (decision 0079): a button, as wide as the links. */
+.sectionToggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--panneau-space-1);
+    width: 100%;
+    min-height: var(--panneau-target-size);
+    margin: 0;
+    padding: 0 var(--panneau-space-2);
+    border: 0;
+    border-radius: var(--panneau-sidebar-link-radius, var(--panneau-radius-md));
+    background: none;
+    font-family: inherit;
+    text-align: start;
+    outline: none;
+    cursor: pointer;
+}
+
+.sectionToggle[data-hovered] {
+    background: var(--panneau-sidebar-link-hover-bg, var(--panneau-color-hover));
+    color: var(--panneau-sidebar-link-current-color, var(--panneau-color-text));
+}
+
+.sectionToggle[data-focus-visible] {
+    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+}
+
+.sectionChevron {
+    flex: none;
+    transition: transform var(--panneau-duration);
+}
+
+.sectionToggle[aria-expanded='false'] .sectionChevron {
+    transform: rotate(-90deg);
+}
+
 .list {
     display: flex;
     flex-direction: column;
@@ -172,6 +209,12 @@
 
 .link[data-pressed] {
     background: var(--panneau-color-pressed);
+}
+
+/* A main entry (decision 0079) */
+.emphasis {
+    color: var(--panneau-sidebar-link-emphasis-color, var(--panneau-color-text));
+    font-weight: var(--panneau-sidebar-link-emphasis-weight, var(--panneau-font-weight-bold));
 }
 
 .link[aria-current='page'] {

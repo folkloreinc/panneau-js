@@ -1,4 +1,15 @@
-import { LogOut, Monitor, Moon, PanelLeftClose, PanelLeftOpen, Search, Sun, X } from 'lucide-react';
+import {
+    ChevronDown,
+    LogOut,
+    Monitor,
+    Moon,
+    PanelLeftClose,
+    PanelLeftOpen,
+    Search,
+    Sun,
+    X,
+} from 'lucide-react';
+import { type ReactNode, useId, useState } from 'react';
 import { Button, Link } from 'react-aria-components';
 
 import { appMessages } from '@panneau/intl';
@@ -10,6 +21,7 @@ import {
     Tooltip,
     isApplePlatform,
     usePanneauIntl,
+    usePreference,
 } from '@panneau/ui';
 
 import { cx } from '../cx';
@@ -25,6 +37,73 @@ import { ActionRunsButton } from './ActionRunsButton';
 import { ContextPicker, ContextPickerButton } from './ContextPicker';
 import styles from './Sidebar.module.css';
 import { getHomeLink, getLinkIcon } from './links';
+
+/** A group of the sidebar, opened or closed by the user (decision 0079). */
+const GROUP_STATES = ['open', 'closed'] as const;
+
+/** A list of links of the sidebar: a group, or the links between separators. */
+interface Section {
+    key: string;
+    label?: string | undefined;
+    links: NavLink[];
+    collapsible?: boolean;
+    collapsed?: boolean;
+}
+
+interface NavSectionProps {
+    section: Section;
+    /** The sidebar is a rail of icons: no titles, every link shown. */
+    rail: boolean;
+    /** One of its links is the current page. */
+    holdsCurrent: boolean;
+    children: ReactNode;
+}
+
+/**
+ * A section of the sidebar, under its title. A collapsible group (decision 0079) has a button for
+ * its title, and the browser remembers whether the user opened or closed it. Without that choice,
+ * it starts as `collapsed` says, but open when it holds the current page, and stays open once the
+ * user went to one of its pages.
+ */
+function NavSection({ section, rail, holdsCurrent, children }: NavSectionProps) {
+    const { label, collapsible = false, collapsed = false } = section;
+    const [choice, setChoice] = usePreference(
+        collapsible && label !== undefined ? `nav-group:${label}` : null,
+        GROUP_STATES,
+    );
+    const [visited, setVisited] = useState(holdsCurrent);
+    if (holdsCurrent && !visited) {
+        setVisited(true);
+    }
+    const listId = useId();
+    const open =
+        !collapsible || rail || (choice !== null ? choice === 'open' : !collapsed || visited);
+
+    return (
+        <div className={styles.section}>
+            {label !== undefined ? (
+                collapsible && !rail ? (
+                    <Button
+                        className={cx(styles.sectionLabel, styles.sectionToggle)}
+                        aria-expanded={open}
+                        aria-controls={listId}
+                        onPress={() => setChoice(open ? 'closed' : 'open')}
+                    >
+                        <span className={styles.label}>{label}</span>
+                        <Icon icon={ChevronDown} size="sm" className={styles.sectionChevron} />
+                    </Button>
+                ) : (
+                    <span className={styles.sectionLabel} aria-hidden={rail}>
+                        {label}
+                    </span>
+                )
+            ) : null}
+            <ul id={listId} className={styles.list} hidden={!open}>
+                {children}
+            </ul>
+        </div>
+    );
+}
 
 /** The color schemes the user can pick, in the order of the button. */
 export const COLOR_SCHEMES = ['light', 'dark', 'auto'] as const;
@@ -82,9 +161,7 @@ export function Sidebar({
     const home = getHomeLink(intl.formatMessage(appMessages.home), basePath);
     const entries = getNavigation(definition, basePath);
     // Groups and the links between separators each get their own list.
-    const sections: { key: string; label?: string; links: NavLink[] }[] = [
-        { key: 'home', links: [home] },
-    ];
+    const sections: Section[] = [{ key: 'home', links: [home] }];
     entries.forEach((entry: NavEntry) => {
         const last = sections.at(-1);
         if (entry.type === 'link') {
@@ -94,7 +171,13 @@ export function Sidebar({
                 last.links.push(entry);
             }
         } else if (entry.type === 'group') {
-            sections.push({ key: entry.key, label: entry.label, links: entry.children });
+            sections.push({
+                key: entry.key,
+                label: entry.label,
+                links: entry.children,
+                collapsible: entry.collapsible === true,
+                collapsed: entry.collapsed === true,
+            });
         } else {
             sections.push({ key: `separator-${entry.key}`, links: [] });
         }
@@ -110,7 +193,7 @@ export function Sidebar({
                 rel={external ? 'noopener noreferrer' : undefined}
                 aria-current={current ? 'page' : undefined}
                 aria-label={collapsed ? link.label : undefined}
-                className={styles.link}
+                className={cx(styles.link, link.emphasis === true && styles.emphasis)}
                 onPress={onNavigate}
             >
                 <Icon icon={getLinkIcon(link)} size="md" className={styles.linkIcon} />
@@ -226,14 +309,16 @@ export function Sidebar({
                     section.links.length === 0 ? (
                         <hr key={section.key} className={styles.separator} />
                     ) : (
-                        <div key={section.key} className={styles.section}>
-                            {section.label !== undefined ? (
-                                <span className={styles.sectionLabel} aria-hidden={collapsed}>
-                                    {section.label}
-                                </span>
-                            ) : null}
-                            <ul className={styles.list}>{section.links.map(renderLink)}</ul>
-                        </div>
+                        <NavSection
+                            key={section.key}
+                            section={section}
+                            rail={collapsed}
+                            holdsCurrent={section.links.some((link) =>
+                                isCurrent(link.target, route),
+                            )}
+                        >
+                            {section.links.map(renderLink)}
+                        </NavSection>
                     ),
                 )}
             </nav>
