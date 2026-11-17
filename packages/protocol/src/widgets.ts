@@ -131,6 +131,25 @@ export function followsList(widget: WidgetLike, resource: string): boolean {
     return read === null || read.resource === resource;
 }
 
+/**
+ * Whether a widget follows the period of its overview (decision 0084): a built-in widget on a
+ * resource with `settings.period`, the list's `date-range` filter that gets its days; in the
+ * summary of `summaryOf`, a widget that follows its list, whose `date-range` filter the period is;
+ * and a widget with data of its own, which gets the period, unless `settings.period` is `false`.
+ */
+export function followsPeriod(widget: WidgetLike, summaryOf?: string): boolean {
+    const period = widget.settings?.period;
+    if (period === false) {
+        return false;
+    }
+    const read = getWidgetResource(widget);
+    return (
+        read === null ||
+        (typeof period === 'string' && period !== '') ||
+        (summaryOf !== undefined && followsList(widget, summaryOf))
+    );
+}
+
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const TONE = /^[a-z0-9-]+$/;
 

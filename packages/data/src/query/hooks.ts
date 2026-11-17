@@ -108,7 +108,8 @@ export function useSearch(
  * The data of a widget of a dashboard with data of its own (decision 0064), unchecked: check it
  * with `checkWidgetData()` of `@panneau/protocol/runtime`. `page` is the dashboard page of the
  * widget (decision 0084), the home page without it; `resource` the resource whose summary holds
- * it, with `query`, the filters and the search of its list. Changes to the items of that resource
+ * it, with `query`, the filters and the search of its list; `period` the period of its overview
+ * (`period[option]`, `period[from]`, `period[to]`). Changes to the items of that resource
  * refetch the widgets of its summary. A `403` fails with a `ForbiddenError`: the widget is hidden.
  */
 export function useWidgetData(
@@ -117,12 +118,13 @@ export function useWidgetData(
         page,
         resource,
         query,
+        period,
         ...options
     }: QueryHookOptions<unknown, ReturnType<typeof queryKeys.widget>> & WidgetKeyOptions = {},
 ): UseQueryResult<unknown> {
     const adapter = useDataAdapter();
     return useQuery({
-        ...widgetDataQueryOptions(adapter, widget, { page, resource, query }),
+        ...widgetDataQueryOptions(adapter, widget, { page, resource, query, period }),
         ...options,
     });
 }

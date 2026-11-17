@@ -16,6 +16,7 @@ import {
     readWidgetDataQuery,
 } from '../dashboards';
 import { getMediaLibraries } from '../libraries';
+import type { WidgetPeriod } from '../periods';
 import { type ListQuery, fromSearchParams, isFilterRange, matchesFilterRange } from '../query';
 import { ITEM_TYPE_KEY, getResourceType, getTypeFields, hasResourceTypes } from '../resourceTypes';
 import { type RuleFailure, checkValues } from '../rules';
@@ -80,8 +81,9 @@ export interface MockBackendOptions {
      * those of the summary of a resource, whose functions get the filters and the search of the
      * list. Data that doesn't have the shape of a built-in type is a `500` problem that names the
      * wrong keys, as a backend answers it. Widgets without data, built-in widgets on a resource, and
-     * widgets that aren't on the page or in the summary are a `404`; `page` and `resource` together
-     * are a `422`, and the summary of a resource that can't be listed a `403`.
+     * widgets that aren't on the page or in the summary are a `404`; `page` and `resource` together,
+     * or a wrong period, are a `422`, and the summary of a resource that can't be listed a `403`.
+     * Functions get the period of the overview (decision 0084).
      */
     widgets?: Record<string, MockWidget>;
     /**
@@ -112,6 +114,8 @@ export interface MockWidgetContext {
     resource: string | null;
     /** In a summary: the filters and the search of the list (`filter[…]`, `q`). Empty otherwise. */
     query: WidgetListQuery;
+    /** The period of the overview (`period[option]`, `period[from]`, `period[to]`), or `null`. */
+    period: WidgetPeriod | null;
     /** The current items of a resource, in the context. */
     items: (resource: string) => Item[];
 }
@@ -846,6 +850,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                       page: read.page ?? null,
                       resource: read.resource ?? null,
                       query: read.query ?? {},
+                      period: read.period,
                       items: (resource) => inScope(resource, store.get(resource) ?? []),
                   })
                 : data;

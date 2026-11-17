@@ -1,4 +1,4 @@
-import type { DefinitionInput, Widget } from '@panneau/protocol';
+import type { DefinitionInput, OverviewPeriod, Widget } from '@panneau/protocol';
 import type { MockWidget } from '@panneau/protocol/mock';
 
 import { createDefinition } from './definition';
@@ -222,13 +222,76 @@ export const SUMMARY_DATA: Record<string, MockWidget> = {
 export function createSummaryDefinition(
     widgets: Widget[] = SUMMARY_WIDGETS,
     list?: 'collapsed',
+    period?: OverviewPeriod,
 ): DefinitionInput {
     const definition = createDashboardDefinition();
     return {
         ...definition,
         resources: definition.resources.map((resource) => ({
             ...resource,
-            summary: { widgets, ...(list !== undefined && { list }) },
+            summary: {
+                widgets,
+                ...(list !== undefined && { list }),
+                ...(period !== undefined && { period }),
+            },
         })),
+    };
+}
+
+/**
+ * The widgets of a dashboard page with a period (decision 0084): entries submitted in the period,
+ * a widget with data of its own that gets it, and every entry, which doesn't follow it.
+ */
+export const PERIOD_WIDGETS: Widget[] = [
+    {
+        id: 'submitted-in-period',
+        type: 'stat',
+        label: 'Submitted',
+        settings: { resource: 'entries', period: 'submitted_at' },
+    },
+    { id: 'visits', type: 'stat', label: 'Visits' },
+    { id: 'all', type: 'stat', label: 'All entries', settings: { resource: 'entries' } },
+];
+
+/** The data of the widget with data of its own: the days of its period. */
+export const PERIOD_DATA: Record<string, MockWidget> = {
+    visits: ({ period }) => ({
+        value: period !== null ? 100 : 0,
+        help: period !== null ? `${period.option}: ${period.from} to ${period.to}` : 'All time',
+    }),
+};
+
+/** The dashboard definition, with a period on the page "Activity" (decision 0084). */
+export function createPeriodDefinition(
+    period: OverviewPeriod = { options: ['7d', '30d', 'month'], default: '7d' },
+): DefinitionInput {
+    const definition = createDashboardDefinition(DASHBOARD_WIDGETS, PERIOD_WIDGETS);
+    return {
+        ...definition,
+        pages: {
+            ...definition.pages,
+            activity: {
+                component: 'dashboard',
+                label: 'Activity',
+                widgets: PERIOD_WIDGETS,
+                period,
+            },
+        },
+    };
+}
+
+/** Entries submitted 1, 3, 10 and 40 days before today: 2 in 7 days, 3 in 30, 4 in 90. */
+export function createRecentItems(today: Date = new Date()) {
+    const daysAgo = (days: number) => {
+        const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() - days, 12);
+        return date.toISOString();
+    };
+    return {
+        entries: [
+            { id: '1', title: 'A garden in winter', status: 'to-judge', submitted_at: daysAgo(1) },
+            { id: '2', title: 'Bridges at night', status: 'accepted', submitted_at: daysAgo(3) },
+            { id: '3', title: 'City lights', status: 'accepted', submitted_at: daysAgo(10) },
+            { id: '4', title: 'Dunes', status: 'refused', submitted_at: daysAgo(40) },
+        ],
     };
 }

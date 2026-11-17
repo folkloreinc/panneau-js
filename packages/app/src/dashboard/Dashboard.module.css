@@ -103,3 +103,19 @@ a.itemTitle[data-hovered] {
     font-weight: var(--panneau-font-weight-medium);
     color: var(--panneau-color-link, var(--panneau-color-accent));
 }
+
+/* The period of an overview (decision 0084): its options, and the widgets it changes under them. */
+.period {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--panneau-space-1);
+    min-width: 0;
+}
+
+.periodHelp {
+    margin: 0;
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-text-muted);
+    text-align: end;
+}

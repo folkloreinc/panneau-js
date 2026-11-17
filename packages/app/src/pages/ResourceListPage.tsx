@@ -14,7 +14,11 @@ import { useFormatRuleFailure } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
 import { ListView, getPagingProps } from '@panneau/lists';
 import type { RouteReference } from '@panneau/protocol';
-import { getCreatableTypes, getItemImageField } from '@panneau/protocol/runtime';
+import {
+    getCreatableTypes,
+    getItemImageField,
+    getSummaryPeriodFilter,
+} from '@panneau/protocol/runtime';
 import {
     AsideLayout,
     Button,
@@ -28,6 +32,7 @@ import {
 } from '@panneau/ui';
 
 import { cx } from '../cx';
+import { useSummaryPeriod } from '../dashboard/period';
 import { useDocumentTitle } from '../documentTitle';
 import { navigate } from '../location';
 import { capitalize } from '../navigation';
@@ -48,9 +53,16 @@ const HIGHLIGHT_DURATION = 4000;
 /** The parameters of a URL that say which items of a list to show: a link to some of them. */
 const LIST_QUERY_PARAM = /^(page|cursor|sort|q|filter\[.+)$/;
 
-/** Whether a URL opens a list on some of its items: its filters, its search, a page or a sort. */
-function hasListQuery(search: string): boolean {
-    return [...new URLSearchParams(search).keys()].some((key) => LIST_QUERY_PARAM.test(key));
+/**
+ * Whether a URL opens a list on some of its items: its filters, its search, a page or a sort. The
+ * filter of the period of its summary isn't one: the summary sets it.
+ */
+function hasListQuery(search: string, periodFilter: string | null): boolean {
+    return [...new URLSearchParams(search).keys()].some(
+        (key) =>
+            LIST_QUERY_PARAM.test(key) &&
+            (periodFilter === null || !key.startsWith(`filter[${periodFilter}]`)),
+    );
 }
 
 export interface ResourceListPageProps {
@@ -97,12 +109,21 @@ export function ResourceListPage({
     // items (a link of a widget, a filtered list) or an item.
     const summary = resource.summary;
     const [summaryOpen, setSummaryOpen] = useSummaryOpen(resource.id);
+    const periodFilter = getSummaryPeriodFilter(resource);
     const [listRequested, setListRequested] = useState(
         () =>
             summary?.list !== 'collapsed' ||
             selectedId !== null ||
-            hasListQuery(router?.getSearch() ?? window.location.search),
+            hasListQuery(router?.getSearch() ?? window.location.search, periodFilter),
     );
+    // The period of the summary is the list's own date-range filter (decision 0084)
+    const period = useSummaryPeriod({
+        period: summary?.period,
+        filter: periodFilter,
+        list,
+        value: periodFilter !== null ? query.filter?.[periodFilter] : undefined,
+        router,
+    });
     const listShown = summary === undefined || !summaryOpen || listRequested;
     const total = (data?.meta as { total?: unknown } | undefined)?.total;
     const { run: runAction, isSupported } = useItemActionRunner(resource, { basePath, locale });
@@ -279,6 +300,7 @@ export function ResourceListPage({
                     }}
                     isOpen={summaryOpen}
                     onOpenChange={setSummaryOpen}
+                    period={period}
                 />
             ) : null}
             {!listShown ? (

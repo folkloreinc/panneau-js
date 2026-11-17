@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { type PanneauPlugin, PanneauProvider, type WidgetProps, definePlugin } from '@panneau/core';
 import { createRestAdapter } from '@panneau/data';
@@ -13,7 +13,9 @@ import {
     AGGREGATE_WIDGETS,
     DASHBOARD_DATA,
     DASHBOARD_ITEMS,
+    PERIOD_DATA,
     createDashboardDefinition,
+    createPeriodDefinition,
 } from '../__fixtures__/dashboard';
 import { Dashboard } from './Dashboard';
 
@@ -339,6 +341,72 @@ describe('Dashboard', () => {
             expect(screen.getByText('Welcome, Ada.')).toBeVisible();
             expect(await widget('answers').findByText('128')).toBeInTheDocument();
             expect(document.querySelector('[data-widget="overdue"]')).toBeNull();
+        });
+    });
+
+    describe('the period of a dashboard page (decision 0084)', () => {
+        afterEach(() => {
+            vi.useRealTimers();
+        });
+
+        it('gives the widgets that follow it the days of the chosen period', async () => {
+            // The entries are submitted from October 1 to 6
+            vi.useFakeTimers({ toFake: ['Date'] });
+            vi.setSystemTime(new Date(2026, 9, 9, 12));
+            const user = userEvent.setup();
+            const requests: string[] = [];
+            renderDashboard({
+                definition: createPeriodDefinition(),
+                widgets: PERIOD_DATA,
+                page: 'activity',
+                requests,
+            });
+            const control = screen.getByRole('radiogroup', { name: 'Period' });
+            expect(within(control).getByRole('radio', { name: '7 days' })).toBeChecked();
+            // "All entries" doesn't follow the period: the control says which widgets do
+            expect(screen.getByText('For Submitted and Visits')).toBeVisible();
+            expect(
+                await widget('submitted-in-period').findByRole('link', { name: /^Submitted 4/ }),
+            ).toHaveAttribute(
+                'href',
+                '/panneau/resources/entries?filter%5Bsubmitted_at%5D%5Bfrom%5D=2026-10-03&filter%5Bsubmitted_at%5D%5Bto%5D=2026-10-09',
+            );
+            expect(
+                await widget('visits').findByText('7d: 2026-10-03 to 2026-10-09'),
+            ).toBeInTheDocument();
+            expect(
+                await widget('all').findByRole('link', { name: /^All entries 6/ }),
+            ).toBeVisible();
+
+            await user.click(within(control).getByRole('radio', { name: '30 days' }));
+            expect(
+                await widget('submitted-in-period').findByRole('link', { name: /^Submitted 6/ }),
+            ).toBeVisible();
+            expect(
+                await widget('visits').findByText('30d: 2026-09-10 to 2026-10-09'),
+            ).toBeInTheDocument();
+            expect(decodeURIComponent(requests.at(-1) ?? '')).toBe(
+                '/panneau/api/dashboard/widgets/visits?page=activity&period[option]=30d&period[from]=2026-09-10&period[to]=2026-10-09',
+            );
+
+            await user.click(within(control).getByRole('radio', { name: 'This month' }));
+            expect(
+                await widget('visits').findByText('month: 2026-10-01 to 2026-10-09'),
+            ).toBeInTheDocument();
+        });
+
+        it('sends no period to a widget that says it ignores it', async () => {
+            const requests: string[] = [];
+            const definition = createPeriodDefinition();
+            const activity = definition.pages?.activity;
+            if (activity?.widgets !== undefined) {
+                activity.widgets = [{ id: 'visits', type: 'stat', settings: { period: false } }];
+            }
+            renderDashboard({ definition, widgets: PERIOD_DATA, page: 'activity', requests });
+            expect(await widget('visits').findByText('All time')).toBeInTheDocument();
+            expect(requests).toContain('/panneau/api/dashboard/widgets/visits?page=activity');
+            // No widget follows it: the control doesn't list them
+            expect(screen.queryByText(/^For /)).toBeNull();
         });
     });
 });

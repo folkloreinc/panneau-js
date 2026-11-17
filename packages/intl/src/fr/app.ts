@@ -199,6 +199,13 @@ export const appFr: Record<string, string> = {
     'panneau.app.widgetTotal': 'Total',
     'panneau.app.widgetUntitled': 'Élément {id}',
     'panneau.app.summary': 'Synthèse',
+    'panneau.app.period': 'Période',
+    'panneau.app.period7d': '7 jours',
+    'panneau.app.period30d': '30 jours',
+    'panneau.app.period90d': '90 jours',
+    'panneau.app.periodMonth': 'Ce mois-ci',
+    'panneau.app.periodYear': '12 mois',
+    'panneau.app.periodAppliesTo': 'Pour {widgets}',
     'panneau.app.showList': 'Afficher la liste',
     'panneau.app.showListItems':
         '{count, plural, =0 {Afficher la liste} one {Afficher # {singular}} other {Afficher les # {plural}}}',

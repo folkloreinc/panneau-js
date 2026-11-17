@@ -88,7 +88,9 @@ export {
     DASHBOARD_COMPONENT,
     HOME_PAGE,
     getDashboardPages,
+    getDashboardPeriod,
     getDashboardWidgets,
+    getSummaryPeriodFilter,
     getSummaryResources,
     getSummaryWidgets,
     readWidgetDataQuery,
@@ -108,6 +110,7 @@ export {
     WIDGET_SERIES_PERIODS,
     checkWidgetData,
     followsList,
+    followsPeriod,
     getWidgetResource,
     isBuiltInWidgetType,
 } from '../widgets';
@@ -134,3 +137,18 @@ export {
     startOfPeriod,
     toAggregateParams,
 } from '../aggregates';
+export {
+    type OverviewPeriodOption,
+    type PeriodLike,
+    type PeriodRange,
+    type WidgetPeriod,
+    OVERVIEW_PERIODS,
+    PERIOD_PARAM,
+    findPeriodOption,
+    getDefaultPeriod,
+    getPeriodRange,
+    isDay,
+    isOverviewPeriod,
+    localDay,
+    readPeriodOption,
+} from '../periods';

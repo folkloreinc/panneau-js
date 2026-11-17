@@ -127,6 +127,9 @@
                             "items": {
                                 "$ref": "#/$defs/Widget"
                             }
+                        },
+                        "period": {
+                            "$ref": "#/$defs/OverviewPeriod"
                         }
                     },
                     "required": [
@@ -1607,6 +1610,9 @@
                     "enum": [
                         "collapsed"
                     ]
+                },
+                "period": {
+                    "$ref": "#/$defs/SummaryPeriod"
                 }
             },
             "required": [
@@ -1689,10 +1695,59 @@
                     "type": "number",
                     "exclusiveMinimum": 0
                 },
+                "period": {
+                    "anyOf": [
+                        {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        {
+                            "type": "boolean",
+                            "const": false
+                        }
+                    ]
+                },
                 "followsList": {
                     "type": "boolean"
                 }
             },
+            "additionalProperties": {}
+        },
+        "SummaryPeriod": {
+            "type": "object",
+            "properties": {
+                "options": {
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "7d",
+                            "30d",
+                            "90d",
+                            "month",
+                            "year"
+                        ]
+                    }
+                },
+                "default": {
+                    "type": "string",
+                    "enum": [
+                        "7d",
+                        "30d",
+                        "90d",
+                        "month",
+                        "year"
+                    ]
+                },
+                "filter": {
+                    "type": "string",
+                    "minLength": 1
+                }
+            },
+            "required": [
+                "options"
+            ],
             "additionalProperties": {}
         },
         "Page": {
@@ -1730,10 +1785,46 @@
                     "items": {
                         "$ref": "#/$defs/Widget"
                     }
+                },
+                "period": {
+                    "$ref": "#/$defs/OverviewPeriod"
                 }
             },
             "required": [
                 "component"
+            ],
+            "additionalProperties": {}
+        },
+        "OverviewPeriod": {
+            "type": "object",
+            "properties": {
+                "options": {
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "7d",
+                            "30d",
+                            "90d",
+                            "month",
+                            "year"
+                        ]
+                    }
+                },
+                "default": {
+                    "type": "string",
+                    "enum": [
+                        "7d",
+                        "30d",
+                        "90d",
+                        "month",
+                        "year"
+                    ]
+                }
+            },
+            "required": [
+                "options"
             ],
             "additionalProperties": {}
         },

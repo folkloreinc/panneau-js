@@ -2,7 +2,7 @@ import { type CSSProperties, Component, type ReactNode, createElement } from 're
 import { Link } from 'react-aria-components';
 import type { FormatNumberOptions } from 'react-intl';
 
-import { usePlugins } from '@panneau/core';
+import { usePanneau, usePlugins } from '@panneau/core';
 import { appMessages } from '@panneau/intl';
 import type {
     BreakdownWidgetData,
@@ -12,7 +12,14 @@ import type {
     StatWidgetData,
     Widget,
 } from '@panneau/protocol';
-import { HOME_PAGE, getDashboardWidgets, isBuiltInWidgetType } from '@panneau/protocol/runtime';
+import {
+    HOME_PAGE,
+    type WidgetPeriod,
+    followsPeriod,
+    getDashboardPeriod,
+    getDashboardWidgets,
+    isBuiltInWidgetType,
+} from '@panneau/protocol/runtime';
 import {
     Alert,
     Badge,
@@ -32,6 +39,8 @@ import { HomePage } from '../pages/HomePage';
 import { PageHeader, PageLayout } from '../pages/PageHeader';
 import pageStyles from '../pages/pages.module.css';
 import styles from './Dashboard.module.css';
+import { PeriodControl } from './PeriodControl';
+import { type PeriodState, useDashboardPeriod } from './period';
 import { type WidgetContent, type WidgetSummary, useWidgetContent } from './widgetContent';
 
 export interface DashboardProps {
@@ -336,6 +345,7 @@ function DashboardWidget({
     widget,
     page,
     summary,
+    period,
     definition,
     basePath,
 }: Omit<DashboardGridProps, 'widgets'> & { widget: Widget }) {
@@ -346,6 +356,7 @@ function DashboardWidget({
         widget,
         page,
         summary,
+        period,
         definition,
         basePath,
         untitled: (id) => intl.formatMessage(appMessages.widgetUntitled, { id }),
@@ -385,6 +396,8 @@ export interface DashboardGridProps {
      * that resource and those with data of their own get the current query of its list.
      */
     summary?: WidgetSummary | undefined;
+    /** The period chosen in the overview: the widgets that follow it get it (decision 0084). */
+    period?: WidgetPeriod | null | undefined;
     definition: Definition;
     basePath: string;
 }
@@ -398,6 +411,7 @@ export function DashboardGrid({
     widgets,
     page,
     summary,
+    period,
     definition,
     basePath,
 }: DashboardGridProps) {
@@ -409,6 +423,7 @@ export function DashboardGrid({
                     widget={widget}
                     page={page}
                     summary={summary}
+                    period={period}
                     definition={definition}
                     basePath={basePath}
                 />
@@ -417,20 +432,44 @@ export function DashboardGrid({
     );
 }
 
+/** The period of a dashboard page in its header, with the widgets it changes (decision 0084). */
+function periodControl(
+    state: PeriodState,
+    options: readonly string[] | undefined,
+    widgets: Widget[],
+) {
+    return options !== undefined && widgets.length > 0 ? (
+        <PeriodControl
+            options={options}
+            value={state.option}
+            onChange={state.choose}
+            widgets={widgets}
+            following={widgets.filter((widget) => followsPeriod(widget))}
+        />
+    ) : undefined;
+}
+
 /** The home page with widgets: the name of the app and a welcome above them. */
 function HomeDashboard({ widgets, definition, basePath }: DashboardGridProps) {
     const intl = usePanneauIntl();
     const user = definition.user ?? null;
+    const options = getDashboardPeriod(definition)?.options;
+    const period = useDashboardPeriod(getDashboardPeriod(definition), usePanneau().router);
     useDocumentTitle([]);
     return (
         <PageLayout>
-            <PageHeader title={definition.name} />
+            <PageHeader title={definition.name} actions={periodControl(period, options, widgets)} />
             {user !== null ? (
                 <p className={pageStyles.intro}>
                     {intl.formatMessage(appMessages.welcome, { name: user.name })}
                 </p>
             ) : null}
-            <DashboardGrid widgets={widgets} definition={definition} basePath={basePath} />
+            <DashboardGrid
+                widgets={widgets}
+                period={period.period}
+                definition={definition}
+                basePath={basePath}
+            />
         </PageLayout>
     );
 }
@@ -444,14 +483,17 @@ function PageDashboard({
 }: DashboardGridProps & { page: string }) {
     const intl = usePanneauIntl();
     const title = definition.pages?.[page]?.label ?? page;
+    const options = getDashboardPeriod(definition, page)?.options;
+    const period = useDashboardPeriod(getDashboardPeriod(definition, page), usePanneau().router);
     useDocumentTitle([title]);
     return (
         <PageLayout>
-            <PageHeader title={title} />
+            <PageHeader title={title} actions={periodControl(period, options, widgets)} />
             {widgets.length > 0 ? (
                 <DashboardGrid
                     widgets={widgets}
                     page={page}
+                    period={period.period}
                     definition={definition}
                     basePath={basePath}
                 />

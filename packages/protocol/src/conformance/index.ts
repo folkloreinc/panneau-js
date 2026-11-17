@@ -11,12 +11,14 @@ import { formatContextHeader } from '../context';
 import {
     HOME_PAGE,
     getDashboardPages,
+    getDashboardPeriod,
     getDashboardWidgets,
     getSummaryResources,
     getSummaryWidgets,
     toWidgetDataParams,
 } from '../dashboards';
 import { getLinkTypes } from '../links';
+import { type WidgetPeriod, getDefaultPeriod, getPeriodRange } from '../periods';
 import { type FilterRange, isCursorPage, toSearchParams } from '../query';
 import {
     BreakdownWidgetData,
@@ -54,6 +56,7 @@ import { PROBLEM_CONTENT_TYPE } from '../version';
 import {
     WIDGET_LIST_MAX_ITEMS,
     type WidgetSeriesPeriod,
+    followsPeriod,
     getWidgetResource,
     isBuiltInWidgetType,
 } from '../widgets';
@@ -1396,7 +1399,7 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
         ),
     ];
     // The home page's widgets without `page`, as clients ask for them
-    const widgetPath = (id: string, place: WidgetPlace) => {
+    const widgetPath = (id: string, place: WidgetPlace & { period?: WidgetPeriod }) => {
         const search = toWidgetDataParams(place).toString();
         return `/dashboard/widgets/${encodeURIComponent(id)}${search !== '' ? `?${search}` : ''}`;
     };
@@ -1523,6 +1526,69 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
                         `The list of the stat ${name} has no meta.total to count.`,
                     );
                 }
+            }
+        },
+    );
+
+    // The period of an overview (decision 0084): the widgets with data of their own that follow it
+    // answer with its parameters, and a wrong period is a 422.
+    const placePeriod = (place: WidgetPlace) => {
+        const current = definition as Definition;
+        return place.resource !== undefined
+            ? current.resources.find(({ id }) => id === place.resource)?.summary?.period
+            : getDashboardPeriod(current, place.page);
+    };
+    await run(
+        'dashboard.widgets.period',
+        'GET /dashboard/widgets/{widget} answers the widgets that follow the period of their overview with its parameters',
+        async (check) => {
+            const following = widgets().flatMap(({ place, widget }) => {
+                const period = placePeriod(place);
+                const option = period !== undefined ? getDefaultPeriod(period) : null;
+                return getWidgetResource(widget) === null &&
+                    option !== null &&
+                    followsPeriod(widget, place.resource)
+                    ? [{ place, widget, period: { option, ...getPeriodRange(option) } }]
+                    : [];
+            });
+            const first = following[0];
+            if (first === undefined) {
+                check.skip(
+                    'No dashboard or summary with a period has a widget with data of its own that follows it.',
+                );
+                return;
+            }
+            for (const { place, widget, period } of following) {
+                const name = widgetName(widget.id, place);
+                const reply = await request(widgetPath(widget.id, { ...place, period }));
+                if (reply.status === 403) {
+                    check.expectProblem(reply, 403);
+                    continue;
+                }
+                if (
+                    check.expect(
+                        reply.status === 200,
+                        `Widget ${name} for the period ${period.option}: expected status 200, got ${reply.status}.`,
+                    ) &&
+                    isBuiltInWidgetType(widget.type)
+                ) {
+                    check.expectSchema(
+                        widgetDataSchemas[widget.type],
+                        reply.body,
+                        `The data of the ${widget.type} ${name} for the period ${period.option}`,
+                    );
+                }
+            }
+            const wrong = await request(
+                `${widgetPath(first.widget.id, first.place)}${first.place.resource !== undefined || first.place.page !== HOME_PAGE ? '&' : '?'}period%5Boption%5D=decade&period%5Bfrom%5D=2026-01-01&period%5Bto%5D=2026-12-31`,
+            );
+            if (
+                check.expect(
+                    wrong.status === 422,
+                    `Widget ${widgetName(first.widget.id, first.place)} for the period "decade": expected status 422, got ${wrong.status}.`,
+                )
+            ) {
+                check.expectProblem(wrong, 422);
             }
         },
     );

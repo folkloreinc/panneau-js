@@ -40,6 +40,7 @@ import { UseQueryResult } from '@tanstack/react-query';
 import type { User } from '@panneau/protocol';
 import type { WebAuthnOptions } from '@panneau/protocol';
 import { WidgetDataRequest } from '@panneau/protocol';
+import { WidgetPeriod } from '@panneau/protocol';
 
 // @public
 export function DataAdapterProvider(input: DataAdapterProviderProps): JSX.Element;
@@ -91,16 +92,15 @@ export const queryKeys: {
     twoFactor: () => readonly ["panneau", "account", "two-factor"];
     passkeys: () => readonly ["panneau", "account", "passkeys"];
     widget: (widget: string, input?: WidgetKeyOptions) => readonly ["panneau", "dashboard", "widgets", string, {
-        resource: string;
-        query: {
+        readonly period?: WidgetPeriod | undefined;
+        readonly resource: string;
+        readonly query: {
             q?: string | undefined;
             filter?: Record<string, FilterValue> | undefined;
         };
-        page?: undefined;
     } | {
-        page: string;
-        resource?: undefined;
-        query?: undefined;
+        readonly period?: WidgetPeriod | undefined;
+        readonly page: string;
     }];
     actionRuns: () => readonly ["panneau", "actions", "runs"];
     actionRun: (id: string) => readonly ["panneau", "actions", "runs", string];
