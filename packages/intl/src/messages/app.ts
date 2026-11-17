@@ -184,6 +184,10 @@ export const appMessages = {
         defaultMessage: 'Remove the passkey {name}',
     }),
     account: defineMessage({ id: 'panneau.app.account', defaultMessage: 'Your account' }),
+    userMenu: defineMessage<{ name: string }>({
+        id: 'panneau.app.userMenu',
+        defaultMessage: 'Your account ({name})',
+    }),
     accountProfile: defineMessage({ id: 'panneau.app.accountProfile', defaultMessage: 'Profile' }),
     name: defineMessage({ id: 'panneau.app.name', defaultMessage: 'Name' }),
     saveAccount: defineMessage({ id: 'panneau.app.saveAccount', defaultMessage: 'Save' }),

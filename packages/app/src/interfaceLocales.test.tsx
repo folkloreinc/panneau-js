@@ -72,17 +72,19 @@ describe('the language switcher (decision 0083)', () => {
         vi.mocked(loadPage).mockClear();
     });
 
-    it('switches the language from the footer of the sidebar, and comes back to the page', async () => {
+    it("switches the language from the user's menu of the sidebar, and comes back to the page", async () => {
         const user = userEvent.setup();
         renderApp();
-        await user.click(await screen.findByRole('button', { name: 'Language: English' }));
-        // The menu is named after its button
-        const menu = await screen.findByRole('menu', { name: 'Language: English' });
-        expect(within(menu).getByRole('menuitemradio', { name: 'English' })).toHaveAttribute(
+        await user.click(await screen.findByRole('button', { name: 'Your account (Ada)' }));
+        // A group of the user's menu (decision 0086)
+        const menu = within(
+            within(await screen.findByRole('menu')).getByRole('group', { name: 'Language' }),
+        );
+        expect(menu.getByRole('menuitemradio', { name: 'English' })).toHaveAttribute(
             'aria-checked',
             'true',
         );
-        const french = within(menu).getByRole('menuitemradio', { name: 'Français' });
+        const french = menu.getByRole('menuitemradio', { name: 'Français' });
         expect(within(french).getByText('Français')).toHaveAttribute('lang', 'fr');
 
         await user.click(french);
@@ -94,17 +96,19 @@ describe('the language switcher (decision 0083)', () => {
     it('does nothing for the current language', async () => {
         const user = userEvent.setup();
         renderApp();
-        await user.click(await screen.findByRole('button', { name: 'Language: English' }));
-        // The menu is named after its button
-        const menu = await screen.findByRole('menu', { name: 'Language: English' });
+        await user.click(await screen.findByRole('button', { name: 'Your account (Ada)' }));
+        const menu = await screen.findByRole('menu');
         await user.click(within(menu).getByRole('menuitemradio', { name: 'English' }));
         expect(loadPage).not.toHaveBeenCalled();
     });
 
     it('has no switcher with a single language, or without any', async () => {
+        const user = userEvent.setup();
         renderApp({ interfaceLocales: LOCALES.slice(0, 1) });
-        expect(await screen.findByRole('button', { name: /Appearance/ })).toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Language/ })).not.toBeInTheDocument();
+        await user.click(await screen.findByRole('button', { name: 'Your account (Ada)' }));
+        const menu = within(await screen.findByRole('menu'));
+        expect(menu.getByRole('group', { name: 'Appearance' })).toBeInTheDocument();
+        expect(menu.queryByRole('group', { name: 'Language' })).not.toBeInTheDocument();
     });
 
     it('switches the language from "Go to…"', async () => {
@@ -130,8 +134,8 @@ describe('the language switcher (decision 0083)', () => {
     it("switches the language from the user's menu of the dock", async () => {
         const user = userEvent.setup();
         renderApp({ theme: { navigation: 'dock' } });
-        await user.click(await screen.findByRole('button', { name: 'Ada' }));
-        const menu = await screen.findByRole('menu', { name: 'Ada' });
+        await user.click(await screen.findByRole('button', { name: 'Your account (Ada)' }));
+        const menu = await screen.findByRole('menu', { name: 'Your account (Ada)' });
         const language = within(menu).getByRole('group', { name: 'Language' });
         expect(within(language).getByRole('menuitemradio', { name: 'English' })).toHaveAttribute(
             'aria-checked',

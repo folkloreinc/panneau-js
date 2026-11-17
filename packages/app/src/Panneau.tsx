@@ -63,7 +63,7 @@ import {
     routePath,
 } from './routes';
 import { ShellSkeleton } from './shell/ShellSkeleton';
-import { COLOR_SCHEMES } from './shell/Sidebar';
+import { COLOR_SCHEMES } from './shell/UserMenu';
 import {
     type SessionState,
     createSessionState,

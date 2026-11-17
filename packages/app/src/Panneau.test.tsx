@@ -45,6 +45,12 @@ function createAdapter(getDefinition: () => Promise<unknown>) {
 
 const navigation = () => within(screen.getByRole('navigation', { name: 'Main navigation' }));
 
+/** Opens the user's menu (decision 0086). */
+async function openUserMenu(user: ReturnType<typeof userEvent.setup>) {
+    await user.click(screen.getByRole('button', { name: /^Your account/ }));
+    return within(await screen.findByRole('menu'));
+}
+
 const createQueryClient = () => new QueryClient({ defaultOptions: { queries: { retry: false } } });
 
 function renderPanneau(
@@ -519,7 +525,7 @@ describe('Panneau', () => {
             });
             expect(adapter.getDefinition).not.toHaveBeenCalled();
 
-            await user.click(screen.getByRole('button', { name: 'Log out' }));
+            await user.click((await openUserMenu(user)).getByRole('menuitem', { name: 'Log out' }));
             expect(adapter.logout).toHaveBeenCalledTimes(1);
             expect(await screen.findByRole('heading', { name: 'Log in' })).toBeInTheDocument();
             expect(screen.queryByText(/session has ended/)).not.toBeInTheDocument();
@@ -542,7 +548,7 @@ describe('Panneau', () => {
                 queryClient: createQueryClient(),
                 config: createBootConfig({ definition: definition() }),
             });
-            await user.click(screen.getByRole('button', { name: 'Log out' }));
+            await user.click((await openUserMenu(user)).getByRole('menuitem', { name: 'Log out' }));
             expect(
                 await screen.findByText('You could not be logged out. Try again.'),
             ).toBeInTheDocument();
@@ -737,11 +743,10 @@ describe('Panneau', () => {
             );
             renderAt('/panneau');
             await screen.findByRole('heading', { name: 'Test site' });
-            const profile = screen
-                .getAllByRole('link')
-                .find((link) => link.getAttribute('href') === '/panneau/account');
-            expect(profile).toHaveTextContent('Ada');
-            await user.click(profile ?? document.body);
+            const account = screen.getByRole('button', { name: 'Your account (Ada)' });
+            const profile = (await openUserMenu(user)).getByRole('menuitem', { name: 'Profile' });
+            expect(profile).toHaveAttribute('href', '/panneau/account');
+            await user.click(profile);
             expect(
                 await screen.findByRole('heading', { level: 1, name: 'Your account' }),
             ).toBeInTheDocument();
@@ -752,7 +757,9 @@ describe('Panneau', () => {
             await user.type(name, 'Ada Lovelace');
             await user.click(screen.getByRole('button', { name: 'Save' }));
             expect(await screen.findByText('Your account was saved.')).toBeInTheDocument();
-            await waitFor(() => expect(profile).toHaveTextContent('Ada Lovelace'));
+            // The button of the user's menu shows the new name
+            await waitFor(() => expect(account).toHaveTextContent('Ada Lovelace'));
+            expect(account).toHaveAccessibleName('Your account (Ada Lovelace)');
 
             await user.type(screen.getByLabelText(/^Current password/), 'wrong');
             await user.type(screen.getByLabelText(/^New password/), 'new password');
@@ -813,7 +820,9 @@ describe('Panneau', () => {
                 expect(within(list).getByText('Laptop')).toBeInTheDocument();
                 expect(credentials.create).toHaveBeenCalledTimes(1);
 
-                await user.click(screen.getByRole('button', { name: 'Log out' }));
+                await user.click(
+                    (await openUserMenu(user)).getByRole('menuitem', { name: 'Log out' }),
+                );
                 await user.click(
                     await screen.findByRole('button', { name: 'Log in with a passkey' }),
                 );
@@ -874,13 +883,17 @@ describe('Panneau', () => {
     });
 
     describe('in external auth mode', () => {
-        it('offers no logout without auth.logoutUrl', () => {
+        it('offers no logout without auth.logoutUrl', async () => {
+            const user = userEvent.setup();
             renderPanneau({ config: createBootConfig({ definition: createDefinition() }) });
-            expect(screen.queryByRole('button', { name: 'Log out' })).not.toBeInTheDocument();
+            expect(
+                (await openUserMenu(user)).queryByRole('menuitem', { name: 'Log out' }),
+            ).not.toBeInTheDocument();
         });
 
-        it('offers a logout with auth.logoutUrl', () => {
-            // The button sends the browser to the URL, which jsdom doesn't do.
+        it('offers a logout with auth.logoutUrl', async () => {
+            const user = userEvent.setup();
+            // The item sends the browser to the URL, which jsdom doesn't do.
             renderPanneau({
                 config: createBootConfig({
                     definition: createDefinition({
@@ -888,7 +901,9 @@ describe('Panneau', () => {
                     }),
                 }),
             });
-            expect(screen.getByRole('button', { name: 'Log out' })).toBeInTheDocument();
+            expect(
+                (await openUserMenu(user)).getByRole('menuitem', { name: 'Log out' }),
+            ).toBeInTheDocument();
         });
     });
 });

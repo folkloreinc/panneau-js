@@ -71,6 +71,12 @@ function renderForbidden(abilities: { viewAny: boolean; create: boolean }) {
 
 const navigation = () => within(screen.getByRole('navigation', { name: 'Main navigation' }));
 
+const USERS_RESOURCE = {
+    id: 'users',
+    label: { singular: 'user', plural: 'users' },
+    fields: [{ name: 'name', type: 'text' }],
+};
+
 describe('the app shell', () => {
     beforeEach(() => {
         window.history.replaceState(null, '', '/panneau');
@@ -317,25 +323,107 @@ describe('the app shell', () => {
 
     it("links the user to their profile, the user's item in the resource users", async () => {
         const user = userEvent.setup();
-        renderApp({
-            resources: [
-                ...createDefinition().resources,
-                {
-                    id: 'users',
-                    label: { singular: 'user', plural: 'users' },
-                    fields: [{ name: 'name', type: 'text' }],
-                },
-            ],
+        renderApp({ resources: [...createDefinition().resources, USERS_RESOURCE] });
+        const account = within(screen.getByRole('complementary')).getByRole('button', {
+            name: 'Your account (Ada)',
         });
+        await user.click(account);
         await user.click(
-            within(screen.getByRole('complementary')).getByRole('link', { name: /Ada/ }),
+            within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Profile' }),
         );
         await waitFor(() =>
             expect(window.location.pathname).toBe('/panneau/resources/users/usr_1/edit'),
         );
-        expect(
-            within(screen.getByRole('complementary')).getByRole('link', { name: /Ada/ }),
-        ).toHaveAttribute('aria-current', 'page');
+        expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+        // The button of the menu shows that the profile is the current page
+        expect(account).toHaveAttribute('data-current', 'true');
+    });
+
+    describe("the user's menu (decision 0086)", () => {
+        const sidebar = () => within(screen.getByRole('complementary'));
+
+        it('opens from the keyboard, with the user, their profile, the appearance and "Log out"', async () => {
+            const user = userEvent.setup();
+            renderApp({
+                resources: [...createDefinition().resources, USERS_RESOURCE],
+                user: { id: 'usr_1', name: 'Ada Lovelace', email: 'ada.lovelace@example.com' },
+                auth: { mode: 'external', loginUrl: '/login', logoutUrl: '/logout' },
+            });
+            const account = sidebar().getByRole('button', {
+                name: 'Your account (Ada Lovelace)',
+            });
+            // Only one button in the footer: no buttons of the appearance or the language
+            expect(sidebar().queryByRole('button', { name: /Appearance/ })).toBeNull();
+            expect(sidebar().queryByRole('button', { name: 'Log out' })).toBeNull();
+            expect(account).toHaveAttribute('aria-haspopup', 'true');
+            expect(account).toHaveAttribute('aria-expanded', 'false');
+
+            account.focus();
+            await user.keyboard('{Enter}');
+            const menu = await screen.findByRole('menu', { name: 'Your account (Ada Lovelace)' });
+            expect(account).toHaveAttribute('aria-expanded', 'true');
+            // The first item has the focus
+            await waitFor(() =>
+                expect(within(menu).getByRole('menuitem', { name: 'Profile' })).toHaveFocus(),
+            );
+            // Who is logged in, with the whole email, labels the profile's group
+            expect(
+                within(menu).getByRole('group', {
+                    name: 'Ada Lovelace ada.lovelace@example.com',
+                }),
+            ).toContainElement(within(menu).getByRole('menuitem', { name: 'Profile' }));
+            const appearance = within(within(menu).getByRole('group', { name: 'Appearance' }));
+            expect(
+                appearance
+                    .getAllByRole('menuitemradio')
+                    .map((item) => [item.textContent, item.getAttribute('aria-checked')]),
+            ).toEqual([
+                ['Light', 'true'],
+                ['Dark', 'false'],
+                ['Same as the system', 'false'],
+            ]);
+            expect(within(menu).getByRole('menuitem', { name: 'Log out' })).toBeInTheDocument();
+
+            await user.keyboard('{ArrowDown}{ArrowDown}');
+            expect(appearance.getByRole('menuitemradio', { name: 'Dark' })).toHaveFocus();
+            await user.keyboard('{Enter}');
+            expect(window.localStorage.getItem('panneau:color-scheme')).toBe('dark');
+            // The menu closes, and gives the focus back to its button
+            await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument());
+            await waitFor(() => expect(account).toHaveFocus());
+
+            await user.keyboard('{Enter}');
+            const reopened = await screen.findByRole('menu');
+            expect(within(reopened).getByRole('menuitemradio', { name: 'Dark' })).toHaveAttribute(
+                'aria-checked',
+                'true',
+            );
+            await user.keyboard('{Escape}');
+            await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument());
+            await waitFor(() => expect(account).toHaveFocus());
+        });
+
+        it('has no profile without the resource of users', async () => {
+            const user = userEvent.setup();
+            renderApp();
+            await user.click(sidebar().getByRole('button', { name: 'Your account (Ada)' }));
+            const menu = await screen.findByRole('menu');
+            expect(within(menu).queryByRole('menuitem', { name: 'Profile' })).toBeNull();
+            expect(within(menu).getByRole('group', { name: 'Appearance' })).toBeInTheDocument();
+        });
+
+        it('opens the same menu from the avatar of the rail', async () => {
+            const user = userEvent.setup();
+            renderApp();
+            await user.click(screen.getByRole('button', { name: 'Collapse the sidebar' }));
+            const account = sidebar().getByRole('button', { name: 'Your account (Ada)' });
+            await user.click(account);
+            const menu = await screen.findByRole('menu', { name: 'Your account (Ada)' });
+            expect(within(menu).getByRole('menuitemradio', { name: 'Light' })).toHaveAttribute(
+                'aria-checked',
+                'true',
+            );
+        });
     });
 
     describe('with a dock (decision 0076)', () => {
@@ -407,9 +495,10 @@ describe('the app shell', () => {
         it("changes the color scheme from the user's menu", async () => {
             const user = userEvent.setup();
             renderApp(dock);
-            await user.click(screen.getByRole('button', { name: 'Ada' }));
-            // The menu is named after its button
-            const menu = await screen.findByRole('menu', { name: 'Ada' });
+            await user.click(screen.getByRole('button', { name: 'Your account (Ada)' }));
+            // The same menu as the sidebar's, named after its button
+            const menu = await screen.findByRole('menu', { name: 'Your account (Ada)' });
+            expect(within(menu).getByRole('group', { name: 'Ada' })).toBeInTheDocument();
             expect(within(menu).getByRole('menuitemradio', { name: 'Light' })).toHaveAttribute(
                 'aria-checked',
                 'true',

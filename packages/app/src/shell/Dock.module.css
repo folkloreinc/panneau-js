@@ -119,10 +119,6 @@
     background: var(--panneau-color-border);
 }
 
-.userMenu {
-    min-width: 14rem;
-}
-
 /* Only in the pill, or only in the bar of tabs. */
 .wideOnly,
 .list > .wideOnly {

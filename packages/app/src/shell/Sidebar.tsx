@@ -1,13 +1,10 @@
 import {
     ChevronDown,
-    Languages,
-    LogOut,
-    Monitor,
-    Moon,
+    ChevronsUpDown,
     PanelLeftClose,
     PanelLeftOpen,
     Search,
-    Sun,
+    UserRound,
     X,
 } from 'lucide-react';
 import { type ReactNode, useId, useState } from 'react';
@@ -18,10 +15,6 @@ import type { Definition } from '@panneau/protocol';
 import {
     Icon,
     IconButton,
-    type IconComponent,
-    Menu,
-    MenuItem,
-    MenuTrigger,
     Tooltip,
     isApplePlatform,
     usePanneauIntl,
@@ -29,7 +22,6 @@ import {
 } from '@panneau/ui';
 
 import { cx } from '../cx';
-import { getInterfaceLocales } from '../interfaceLocales';
 import {
     type NavEntry,
     type NavLink,
@@ -41,6 +33,7 @@ import { type AppRoute, routePath } from '../routes';
 import { ActionRunsButton } from './ActionRunsButton';
 import { ContextPicker, ContextPickerButton } from './ContextPicker';
 import styles from './Sidebar.module.css';
+import { type ColorSchemePreference, UserAvatar, UserMenu, getUserMenuLabel } from './UserMenu';
 import { getHomeLink, getLinkIcon } from './links';
 
 /** A group of the sidebar, opened or closed by the user (decision 0079). */
@@ -110,17 +103,6 @@ function NavSection({ section, rail, holdsCurrent, children }: NavSectionProps) 
     );
 }
 
-/** The color schemes the user can pick, in the order of the button. */
-export const COLOR_SCHEMES = ['light', 'dark', 'auto'] as const;
-export type ColorSchemePreference = (typeof COLOR_SCHEMES)[number];
-
-/** The icon of each color scheme. */
-export const SCHEME_ICONS: Record<ColorSchemePreference, IconComponent> = {
-    light: Sun,
-    dark: Moon,
-    auto: Monitor,
-};
-
 export interface SidebarProps {
     definition: Definition;
     basePath: string;
@@ -135,11 +117,11 @@ export interface SidebarProps {
     onNavigate?: () => void;
     colorScheme: ColorSchemePreference;
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
-    /** Logs the user out. Without it, the sidebar has no "Log out" button. */
+    /** Logs the user out. Without it, the user's menu has no "Log out". */
     onLogOut?: () => void;
     /**
      * Switches the interface to a locale of `interfaceLocales` (decision 0083). Without it, or
-     * with fewer than two, the sidebar has no language button.
+     * with fewer than two, the user's menu has no "Language".
      */
     onLocaleChange?: ((locale: string) => void) | undefined;
     /** Opens the "Go to…" palette. Without it, the sidebar has no such button. */
@@ -150,8 +132,8 @@ export interface SidebarProps {
 /**
  * The main navigation, as a column: the site, the current context (decision 0045), the links of
  * the `main` menu of the definition, the notification area of queued action runs, and the user,
- * with the buttons of the appearance, of the language (decision 0083) and of the logout. Collapsed,
- * it is a rail of icons, as in the sidebars of recent browsers. It renders inside an
+ * whose menu has their profile, the appearance, the language and the logout (decision 0086).
+ * Collapsed, it is a rail of icons, as in the sidebars of recent browsers. It renders inside an
  * `ActionRunnerProvider`.
  */
 export function Sidebar({
@@ -226,35 +208,38 @@ export function Sidebar({
     };
 
     const user = definition.user ?? null;
-    // The user's profile, when the definition has the resource of users
     const profilePath = getProfilePath(definition, basePath);
     const currentPath = route.name !== 'not-found' ? routePath(route, basePath) : null;
-    const userContent =
+    const userLabel = getUserMenuLabel(definition, intl);
+    const avatar =
         user !== null ? (
-            <>
-                {user.avatarUrl !== undefined ? (
-                    <img src={user.avatarUrl} alt="" className={styles.avatar} />
-                ) : (
-                    <span className={styles.avatar} aria-hidden="true">
-                        {user.name.charAt(0).toLocaleUpperCase(definition.locale)}
-                    </span>
-                )}
-                <span className={cx(styles.label, styles.userText)}>
-                    <span className={styles.userName}>{user.name}</span>
-                    {user.email !== undefined ? (
-                        <span className={styles.userEmail}>{user.email}</span>
-                    ) : null}
+            <UserAvatar user={user} locale={definition.locale} className={styles.avatar} />
+        ) : (
+            <span className={styles.avatar} aria-hidden="true">
+                <Icon icon={UserRound} size="sm" />
+            </span>
+        );
+    const userButton = (
+        <Button
+            aria-label={userLabel}
+            className={styles.user}
+            data-current={(profilePath !== null && currentPath === profilePath) || undefined}
+        >
+            {avatar}
+            <span className={cx(styles.label, styles.userText)}>
+                <span className={styles.userName}>
+                    {user?.name ?? intl.formatMessage(appMessages.account)}
                 </span>
-            </>
-        ) : null;
+                {user?.email !== undefined ? (
+                    <span className={styles.userEmail}>{user.email}</span>
+                ) : null}
+            </span>
+            <Icon icon={ChevronsUpDown} size="sm" className={styles.userChevron} />
+        </Button>
+    );
     const apple = isApplePlatform();
     const shortcut = apple ? '⌘K' : 'Ctrl+K';
     const keyShortcuts = apple ? 'Meta+K' : 'Control+K';
-    const locales = onLocaleChange !== undefined ? getInterfaceLocales(definition) : [];
-    const language =
-        locales.find(({ locale }) => locale === definition.locale)?.label ?? definition.locale;
-    const nextScheme =
-        COLOR_SCHEMES[(COLOR_SCHEMES.indexOf(colorScheme) + 1) % COLOR_SCHEMES.length] ?? 'light';
 
     return (
         <div className={cx(styles.sidebar, collapsed && styles.collapsed, className)}>
@@ -339,67 +324,24 @@ export function Sidebar({
             </nav>
             <ActionRunsButton appearance={collapsed ? 'icon' : 'row'} />
             <div className={styles.footer}>
-                {user !== null ? (
-                    profilePath !== null ? (
-                        <Link
-                            href={profilePath}
-                            className={cx(styles.user, styles.userLink)}
-                            aria-label={
-                                collapsed
-                                    ? intl.formatMessage(appMessages.profile, { name: user.name })
-                                    : undefined
-                            }
-                            aria-current={currentPath === profilePath ? 'page' : undefined}
-                            onPress={onNavigate}
-                        >
-                            {userContent}
-                        </Link>
+                <UserMenu
+                    definition={definition}
+                    basePath={basePath}
+                    colorScheme={colorScheme}
+                    onColorSchemeChange={onColorSchemeChange}
+                    onLogOut={onLogOut}
+                    onLocaleChange={onLocaleChange}
+                    onNavigate={onNavigate}
+                    placement="top start"
+                >
+                    {collapsed ? (
+                        <Tooltip content={userLabel} placement="end" delay={300}>
+                            {userButton}
+                        </Tooltip>
                     ) : (
-                        <div className={styles.user}>{userContent}</div>
-                    )
-                ) : null}
-                <IconButton
-                    icon={SCHEME_ICONS[colorScheme]}
-                    label={intl.formatMessage(appMessages.colorScheme, { scheme: colorScheme })}
-                    size="sm"
-                    onPress={() => onColorSchemeChange(nextScheme)}
-                />
-                {locales.length > 0 ? (
-                    <MenuTrigger>
-                        <IconButton
-                            icon={Languages}
-                            label={intl.formatMessage(appMessages.languageButton, { language })}
-                            size="sm"
-                        />
-                        <Menu
-                            placement="top start"
-                            aria-label={intl.formatMessage(appMessages.language)}
-                            selectionMode="single"
-                            disallowEmptySelection
-                            selectedKeys={[definition.locale]}
-                            onSelectionChange={(keys) => {
-                                const [key] = keys === 'all' ? [] : [...keys];
-                                if (typeof key === 'string') {
-                                    onLocaleChange?.(key);
-                                }
-                            }}
-                        >
-                            {locales.map(({ locale, label }) => (
-                                <MenuItem key={locale} id={locale} textValue={label}>
-                                    <span lang={locale}>{label}</span>
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                    </MenuTrigger>
-                ) : null}
-                {onLogOut !== undefined ? (
-                    <IconButton
-                        icon={LogOut}
-                        label={intl.formatMessage(appMessages.logOut)}
-                        size="sm"
-                        onPress={onLogOut}
-                    />
-                ) : null}
+                        userButton
+                    )}
+                </UserMenu>
             </div>
         </div>
     );

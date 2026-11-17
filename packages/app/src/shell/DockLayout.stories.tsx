@@ -17,7 +17,7 @@ import { createMockBackend } from '@panneau/protocol/mock';
 import { Heading, Stack, Text } from '@panneau/ui';
 
 import { DockLayout } from './DockLayout';
-import type { ColorSchemePreference } from './Sidebar';
+import type { ColorSchemePreference } from './UserMenu';
 
 const input: DefinitionInput = {
     protocol: 1,
@@ -153,13 +153,13 @@ export const Group: Story = {
     },
 };
 
-/** The user's menu: the color scheme, the language (decision 0083), and "Log out". */
+/** The user's menu, the sidebar's (decision 0086): the color scheme, the language, "Log out". */
 export const UserMenu: Story = {
     play: async ({ args, canvasElement }) => {
         const canvas = within(canvasElement);
         const body = within(canvasElement.ownerDocument.body);
-        await userEvent.click(canvas.getByRole('button', { name: 'Ada Lovelace' }));
-        const menu = await body.findByRole('menu', { name: 'Ada Lovelace' });
+        await userEvent.click(canvas.getByRole('button', { name: 'Your account (Ada Lovelace)' }));
+        const menu = await body.findByRole('menu', { name: 'Your account (Ada Lovelace)' });
         await expect(within(menu).getByRole('menuitemradio', { name: 'Light' })).toHaveAttribute(
             'aria-checked',
             'true',
@@ -173,8 +173,8 @@ export const UserMenu: Story = {
         await userEvent.click(within(menu).getByRole('menuitem', { name: 'Log out' }));
         await expect(args.onLogOut).toHaveBeenCalledTimes(1);
 
-        await userEvent.click(canvas.getByRole('button', { name: 'Ada Lovelace' }));
-        const reopened = await body.findByRole('menu', { name: 'Ada Lovelace' });
+        await userEvent.click(canvas.getByRole('button', { name: 'Your account (Ada Lovelace)' }));
+        const reopened = await body.findByRole('menu', { name: 'Your account (Ada Lovelace)' });
         await userEvent.click(within(reopened).getByRole('menuitemradio', { name: 'Français' }));
         await expect(args.onLocaleChange).toHaveBeenCalledWith('fr');
     },

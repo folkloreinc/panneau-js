@@ -1,0 +1,29 @@
+/* The user's menu (decision 0086), shared by the sidebar and the dock. */
+
+.popover {
+    min-width: 14rem;
+    max-width: min(20rem, calc(100vw - 2 * var(--panneau-space-4)));
+}
+
+/* Who is logged in, above their profile: the name and the whole email, not an eyebrow. */
+.header {
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.user {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-1);
+}
+
+.name {
+    color: var(--panneau-color-text);
+    font-size: var(--panneau-font-size-sm);
+    font-weight: var(--panneau-font-weight-medium);
+}
+
+.email {
+    font-weight: var(--panneau-font-weight-normal);
+    overflow-wrap: anywhere;
+}
