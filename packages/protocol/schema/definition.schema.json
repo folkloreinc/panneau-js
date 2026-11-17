@@ -1093,6 +1093,9 @@
                 },
                 "calendar": {
                     "$ref": "#/$defs/ListCalendar"
+                },
+                "aggregates": {
+                    "$ref": "#/$defs/ListAggregates"
                 }
             },
             "additionalProperties": {}
@@ -1195,6 +1198,33 @@
             "required": [
                 "field"
             ],
+            "additionalProperties": {}
+        },
+        "ListAggregates": {
+            "type": "object",
+            "properties": {
+                "sum": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                },
+                "groupBy": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                },
+                "dates": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                }
+            },
             "additionalProperties": {}
         },
         "Action": {
@@ -1729,6 +1759,18 @@
                             }
                         ]
                     }
+                },
+                "measure": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "group": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "target": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
                 }
             },
             "additionalProperties": {}

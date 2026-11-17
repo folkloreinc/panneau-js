@@ -28,6 +28,19 @@ describe('Stat', () => {
         expect(screen.getByText('n/a')).toBeInTheDocument();
     });
 
+    it('draws a meter of its target, in its tone or danger past it', () => {
+        const { rerender } = render(<Stat label="Spent" value={600} target={1000} />);
+        const meter = screen.getByRole('meter', { name: 'Spent' });
+        expect(meter).toHaveAttribute('aria-valuetext', '600 of 1,000');
+        expect(meter).not.toHaveClass('panneau-tone-danger');
+        rerender(<Stat label="Spent" value={1200} target={1000} />);
+        expect(screen.getByRole('meter')).toHaveClass('panneau-tone-danger');
+        rerender(<Stat label="Spent" value={1200} target={1000} tone="warning" />);
+        expect(screen.getByRole('meter')).toHaveClass('panneau-tone-warning');
+        rerender(<Stat label="Spent" value={1200} target={null} />);
+        expect(screen.queryByRole('meter')).toBeNull();
+    });
+
     it('draws a skeleton of the number while it loads, without a link', () => {
         const { container } = render(<Stat label="Overdue" href="/x" help="…" />);
         expect(screen.queryByRole('link')).toBeNull();

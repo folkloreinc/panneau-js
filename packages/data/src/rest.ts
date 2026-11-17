@@ -7,6 +7,7 @@ import {
     PROBLEM_CONTENT_TYPE,
     type Problem,
     formatContextHeader,
+    toAggregateParams,
     toSearchParams,
     toSearchQueryParams,
     validate,
@@ -434,6 +435,13 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
         },
         getWidgetData(widget, { signal } = {}) {
             return json<unknown>({ path: `/dashboard/widgets/${encode(widget)}`, signal });
+        },
+        getResourceAggregate(resource, request, { signal } = {}) {
+            return json<unknown>({
+                path: `/resources/${encode(resource)}/aggregate`,
+                query: toAggregateParams(request),
+                signal,
+            });
         },
 
         withContext(values) {

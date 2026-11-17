@@ -11,6 +11,7 @@ import {
 import type {
     ActionRequest,
     ActionRun,
+    AggregateRequest,
     Definition,
     Item,
     ListQuery,
@@ -25,12 +26,13 @@ import { type SearchKeyOptions, queryKeys } from './keys';
 import {
     definitionQueryOptions,
     itemPreviewQueryOptions,
+    resourceAggregateQueryOptions,
     resourceItemQueryOptions,
     resourceListQueryOptions,
     searchQueryOptions,
     widgetDataQueryOptions,
 } from './options';
-import { invalidateActionResult } from './refresh';
+import { invalidateActionResult, invalidateLists } from './refresh';
 
 /** Options of a query hook: TanStack Query's options, without the key and the function. */
 export type QueryHookOptions<TData, TKey extends readonly unknown[]> = Omit<
@@ -115,6 +117,21 @@ export function useWidgetData(
     return useQuery({ ...widgetDataQueryOptions(adapter, widget), ...options });
 }
 
+/**
+ * The aggregates of a resource (`GET /resources/{resource}/aggregate`, decision 0084): the count
+ * or the sum of its list with the filters and the search of `request`, grouped by its `group`, in
+ * the shape of a widget, unchecked: check it with `checkWidgetData()` of
+ * `@panneau/protocol/runtime`. Changes to the items of the resource refetch it.
+ */
+export function useResourceAggregate(
+    resource: string,
+    request: AggregateRequest = {},
+    options: QueryHookOptions<unknown, ReturnType<typeof queryKeys.aggregate>> = {},
+): UseQueryResult<unknown> {
+    const adapter = useDataAdapter();
+    return useQuery({ ...resourceAggregateQueryOptions(adapter, resource, request), ...options });
+}
+
 /** Creates an item, then refetches the lists of the resource. */
 export function useCreateItem(resource: string): UseMutationResult<Item, Error, Values> {
     const adapter = useDataAdapter();
@@ -123,7 +140,7 @@ export function useCreateItem(resource: string): UseMutationResult<Item, Error, 
         mutationFn: (values: Values) => adapter.create(resource, values),
         onSuccess: (item) => {
             client.setQueryData(queryKeys.item(resource, item.id), item);
-            return client.invalidateQueries({ queryKey: queryKeys.lists(resource) });
+            return invalidateLists(client, resource);
         },
     });
 }
@@ -162,7 +179,7 @@ export function useUpdateItem(
                       }
                     : list,
             );
-            return client.invalidateQueries({ queryKey: queryKeys.lists(resource) });
+            return invalidateLists(client, resource);
         },
     });
 }
@@ -175,7 +192,7 @@ export function useDeleteItem(resource: string): UseMutationResult<void, Error, 
         mutationFn: (id: string) => adapter.delete(resource, id),
         onSuccess: (_result, id) => {
             client.removeQueries({ queryKey: queryKeys.item(resource, id) });
-            return client.invalidateQueries({ queryKey: queryKeys.lists(resource) });
+            return invalidateLists(client, resource);
         },
     });
 }
@@ -196,7 +213,7 @@ export function useDuplicateItem(resource: string): UseMutationResult<Item, Erro
         },
         onSuccess: (item) => {
             client.setQueryData(queryKeys.item(resource, item.id), item);
-            return client.invalidateQueries({ queryKey: queryKeys.lists(resource) });
+            return invalidateLists(client, resource);
         },
     });
 }

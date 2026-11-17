@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-query';
 
 import type {
+    AggregateRequest,
     Definition,
     Item,
     ListQuery,
@@ -126,5 +127,27 @@ export function widgetDataQueryOptions(
         queryFn: ({ signal }) => adapter.getWidgetData(widget, { signal }),
         // The dashboard is a glance: a minute old is fresh enough when the user comes back to it.
         staleTime: 60_000,
+    });
+}
+
+/**
+ * Query options of the aggregates of a resource (decision 0084): a count or a sum of its list, in
+ * the shape of a `stat`, a `series` or a `breakdown`, unchecked. The previous answer stays while
+ * the next one loads. Fails when the adapter has no `getResourceAggregate()`.
+ */
+export function resourceAggregateQueryOptions(
+    adapter: DataAdapter,
+    resource: string,
+    request: AggregateRequest = {},
+): DataQueryOptions<unknown, ReturnType<typeof queryKeys.aggregate>> {
+    return queryOptions({
+        queryKey: queryKeys.aggregate(resource, request),
+        queryFn: ({ signal }) => {
+            if (adapter.getResourceAggregate === undefined) {
+                throw new Error('The data adapter has no getResourceAggregate().');
+            }
+            return adapter.getResourceAggregate(resource, request, { signal });
+        },
+        placeholderData: keepPreviousData,
     });
 }

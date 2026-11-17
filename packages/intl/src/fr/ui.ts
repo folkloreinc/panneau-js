@@ -22,4 +22,7 @@ export const uiFr: Record<string, string> = {
     'panneau.ui.rangeStart': 'Début',
     'panneau.ui.rangeEnd': 'Fin',
     'panneau.ui.calendar': 'Calendrier',
+    'panneau.ui.barChartOther': 'Autres',
+    'panneau.ui.meterTarget': 'Cible',
+    'panneau.ui.meterValue': '{value} sur {target}',
 };

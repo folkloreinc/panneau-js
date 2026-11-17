@@ -30,11 +30,34 @@ describe('getWidgetResource', () => {
             'filter%5Bstatus%5D=draft&filter%5Btags%5D%5B%5D=a&filter%5Btags%5D%5B%5D=b',
         );
         expect(read?.query).toEqual({ filter: { status: 'draft', tags: ['a', 'b'] } });
+        expect(read?.aggregate).toBeNull();
+    });
+
+    it('reads the aggregates of a series, a breakdown, and a stat that sums', () => {
+        const aggregate = (widget: { type: string; settings: Record<string, unknown> }) =>
+            getWidgetResource(widget)?.aggregate;
+        expect(
+            aggregate({ type: 'series', settings: { resource: 'runs', group: 'day:created_at' } }),
+        ).toEqual({ measure: 'count', group: 'day:created_at' });
+        expect(
+            aggregate({
+                type: 'breakdown',
+                settings: { resource: 'runs', measure: 'sum:cost', group: 'status' },
+            }),
+        ).toEqual({ measure: 'sum:cost', group: 'status' });
+        expect(
+            aggregate({ type: 'stat', settings: { resource: 'runs', measure: 'sum:cost' } }),
+        ).toEqual({ measure: 'sum:cost', group: null });
+        // A stat that counts reads the total of the list
+        expect(
+            aggregate({ type: 'stat', settings: { resource: 'runs', measure: 'count' } }),
+        ).toBeNull();
+        expect(aggregate({ type: 'list', settings: { resource: 'runs' } })).toBeNull();
     });
 
     it('is null for widgets with data of their own, and for widgets of plugins', () => {
         expect(getWidgetResource({ type: 'stat' })).toBeNull();
-        expect(getWidgetResource({ type: 'series', settings: { resource: 'pages' } })).toBeNull();
+        expect(getWidgetResource({ type: 'series' })).toBeNull();
         expect(getWidgetResource({ type: 'map', settings: { resource: 'pages' } })).toBeNull();
     });
 });
@@ -43,6 +66,25 @@ describe('the data of the widgets', () => {
     const valid: [string, unknown][] = [
         ['stat', { value: 12, help: '3 more than last week', tone: 'warning', url: '/x' }],
         ['stat', { value: 0, help: null, tone: null }],
+        ['stat', { value: 1250, target: 1000, tone: 'warning' }],
+        [
+            'breakdown',
+            {
+                items: [
+                    {
+                        label: 'Failed',
+                        value: 3,
+                        tone: 'danger',
+                        url: '/runs?filter[status]=failed',
+                    },
+                    { label: 'Done', value: 34, key: 'done' },
+                    { label: 'None', value: 2, key: null, tone: null, url: null },
+                ],
+                total: 42,
+                other: 3,
+            },
+        ],
+        ['breakdown', { items: [] }],
         [
             'series',
             {
@@ -77,6 +119,21 @@ describe('the data of the widgets', () => {
         ['stat', { value: '12' }, ['value']],
         ['stat', { value: 12, tone: 'Warning!', url: 3 }, ['tone', 'url']],
         ['stat', [], ['']],
+        ['stat', { value: 3, target: 0 }, ['target']],
+        [
+            'breakdown',
+            {
+                items: [{ value: '3', tone: 'Red', key: {} }, 'Done'],
+                total: '42',
+                other: null,
+            },
+            ['items.0.label', 'items.0.value', 'items.0.tone', 'items.0.key', 'items.1', 'total'],
+        ],
+        [
+            'breakdown',
+            { items: Array.from({ length: 11 }, (_, index) => ({ label: `${index}`, value: 1 })) },
+            ['items'],
+        ],
         ['series', { period: 'year', points: {} }, ['period', 'points']],
         [
             'series',
@@ -144,7 +201,7 @@ describe('the widgets of the definition', () => {
         ).toEqual([]);
     });
 
-    it('refuses duplicate ids, unknown resources and filters, and a series on a resource', () => {
+    it('refuses duplicate ids, unknown resources and filters, and a series without a group', () => {
         expect(
             messages(
                 withWidgets([
@@ -164,7 +221,7 @@ describe('the widgets of the definition', () => {
         ).toEqual([
             'dashboard.widgets.0.settings.resource: No resource `nope`.',
             'dashboard.widgets.1.id: Duplicate widget id `a`.',
-            'dashboard.widgets.1.settings.resource: A `series` widget has data of its own: only `stat` and `list` read a resource.',
+            'dashboard.widgets.1.settings.group: A `series` on a resource needs a `group` on the period of a date: `day:created_at`.',
             'dashboard.widgets.2.settings.query.filter[color]: The list of `pages` has no filter `color`.',
             'dashboard.widgets.2.settings.query.perPage: The client sets `perPage`.',
             'dashboard.widgets.3.settings.query: `query` goes with a `resource`.',
@@ -181,7 +238,7 @@ describe('the widgets of the definition', () => {
                 : resource,
         );
         expect(messages(definition)).toEqual([
-            "dashboard.widgets.0.settings.resource: The list of `pages` is paged with cursors and has no total: it can't feed a `stat`.",
+            "dashboard.widgets.0.settings.resource: The list of `pages` is paged with cursors and has no total: it can't feed a `stat` that counts.",
         ]);
     });
 });

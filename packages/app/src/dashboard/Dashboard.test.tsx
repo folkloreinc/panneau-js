@@ -10,6 +10,7 @@ import { type DefinitionInput, type Widget, validateDefinition } from '@panneau/
 import { type MockWidget, createMockBackend } from '@panneau/protocol/mock';
 
 import {
+    AGGREGATE_WIDGETS,
     DASHBOARD_DATA,
     DASHBOARD_ITEMS,
     createDashboardDefinition,
@@ -20,13 +21,19 @@ function renderDashboard({
     definition = createDashboardDefinition(),
     widgets = DASHBOARD_DATA,
     plugins = [],
+    answer = () => undefined,
 }: {
     definition?: DefinitionInput;
     widgets?: Record<string, MockWidget>;
     plugins?: PanneauPlugin[];
+    /** Answers a request in place of the mock backend, unless it returns `undefined`. */
+    answer?: (url: string) => Response | undefined;
 } = {}) {
     const backend = createMockBackend({ definition, items: DASHBOARD_ITEMS, widgets });
-    const adapter = createRestAdapter({ baseUrl: '/panneau/api', fetch: backend.fetch });
+    const adapter = createRestAdapter({
+        baseUrl: '/panneau/api',
+        fetch: (input, init) => Promise.resolve(answer(input) ?? backend.fetch(input, init)),
+    });
     const parsed = validateDefinition(definition);
     if (!parsed.success) {
         throw new Error(JSON.stringify(parsed.issues));
@@ -185,6 +192,64 @@ describe('Dashboard', () => {
         });
         expect(await screen.findByText('weather: clear')).toBeInTheDocument();
         expect(widget('map').getByText('No plugin provides the widget “map”.')).toBeVisible();
+    });
+
+    it('draws a skeleton of the widgets on aggregates while they load', () => {
+        renderDashboard({ definition: createDashboardDefinition(AGGREGATE_WIDGETS) });
+        expect(document.querySelectorAll('[aria-busy="true"]')).toHaveLength(3);
+        expect(widget('by-status').getByRole('status')).toHaveTextContent(
+            'Loading Entries by status…',
+        );
+    });
+
+    it('sums money in its currency, links to the list, and draws the meter of its target', async () => {
+        renderDashboard({ definition: createDashboardDefinition(AGGREGATE_WIDGETS) });
+        const fees = await widget('fees').findByRole('link');
+        expect(fees).toHaveAttribute('href', '/panneau/resources/entries');
+        expect(fees).toHaveTextContent('CA$120.00');
+        const meter = widget('fees').getByRole('meter', { name: 'Entry fees' });
+        expect(meter).toHaveAttribute('aria-valuetext', 'CA$120.00 of CA$100.00');
+        expect(meter).toHaveClass('panneau-tone-danger');
+    });
+
+    it('draws a series of the entries per day, at 0 on the days without', async () => {
+        renderDashboard({ definition: createDashboardDefinition(AGGREGATE_WIDGETS) });
+        const table = await widget('submitted').findByRole('table', { name: 'Entries per day' });
+        expect(
+            within(table)
+                .getAllByRole('row')
+                .map((row) => row.textContent),
+        ).toEqual(['Oct 12', 'Oct 20', 'Oct 31', 'Oct 42', 'Oct 50', 'Oct 61', 'Oct 70']);
+        expect(widget('submitted').getAllByText('6').length).toBeGreaterThan(0);
+    });
+
+    it('breaks down the entries by status, with the labels and the links of the options', async () => {
+        renderDashboard({ definition: createDashboardDefinition(AGGREGATE_WIDGETS) });
+        const list = await widget('by-status').findByRole('list', { name: 'Entries by status' });
+        expect(
+            within(list)
+                .getAllByRole('listitem')
+                .map((item) => item.textContent),
+        ).toEqual(['Accepted3', 'To judge2', 'Refused1']);
+        expect(within(list).getByRole('link', { name: 'To judge' })).toHaveAttribute(
+            'href',
+            '/panneau/resources/entries?filter%5Bstatus%5D=to-judge',
+        );
+        expect(within(list).getAllByRole('listitem')[0]).toHaveClass('panneau-tone-success');
+    });
+
+    it('shows the error of aggregates in the wrong shape', async () => {
+        renderDashboard({
+            definition: createDashboardDefinition(AGGREGATE_WIDGETS),
+            answer: (url) =>
+                url.includes('/aggregate?')
+                    ? new Response(JSON.stringify({ items: [{ label: 'No value' }] }), {
+                          headers: { 'Content-Type': 'application/json' },
+                      })
+                    : undefined,
+        });
+        expect(await widget('by-status').findByText('This widget couldn’t load.')).toBeVisible();
+        expect(await widget('fees').findByText('This widget couldn’t load.')).toBeVisible();
     });
 
     it('shows the cards of the resources without widgets', () => {

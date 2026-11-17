@@ -36,6 +36,11 @@ function createBackend() {
         { name: 'dates', type: 'daterange', settings: { open: 'end' } },
         { name: 'price', type: 'money', settings: { currency: 'CAD' } },
     );
+    // What the list can sum and group by (decision 0084).
+    const list = definition.resources[0]?.list;
+    if (list !== undefined) {
+        list.aggregates = { sum: ['price'], groupBy: ['status'], dates: ['published_at'] };
+    }
     definition.resources.push({
         id: 'settings',
         label: { singular: 'setting', plural: 'settings' },
@@ -84,6 +89,22 @@ function createBackend() {
             },
             { id: 'visits', type: 'series' },
             { id: 'map', type: 'map' },
+            // On the aggregates of a resource (decision 0084)
+            {
+                id: 'per-week',
+                type: 'series',
+                settings: { resource: 'pages', group: 'week:published_at' },
+            },
+            {
+                id: 'by-status',
+                type: 'breakdown',
+                settings: { resource: 'pages', group: 'status' },
+            },
+            {
+                id: 'revenue',
+                type: 'stat',
+                settings: { resource: 'pages', measure: 'sum:price', target: 100000 },
+            },
         ],
     };
     return createMockBackend({
@@ -106,6 +127,7 @@ function createBackend() {
                     status: 'published',
                     published_at: '2026-10-01T12:00:00Z',
                     notes: 'Internal',
+                    price: { amount: 1250, currency: 'CAD' },
                 },
                 { title: { fr: 'Contact', en: 'Contact' }, status: 'draft', published_at: null },
                 {
@@ -203,6 +225,51 @@ describe('runConformance', () => {
         const check = report.checks.find(({ id }) => id === 'dashboard.widgets');
         expect(check?.status).toBe('failed');
         expect(check?.issues.join('\n')).toContain('The data of the series "visits"');
+    });
+
+    it('fails aggregates that skip empty periods, ignore the range, or accept what is not declared', async () => {
+        const backend = createBackend();
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: async (input, init) => {
+                const url = new URL(input);
+                if (!url.pathname.endsWith('/aggregate')) {
+                    return backend.fetch(input, init);
+                }
+                const group = url.searchParams.get('group');
+                const answer = group?.startsWith('day:')
+                    ? // Only the periods with items, and none of the range
+                      { period: 'day', points: [{ date: '2026-10-01', value: 1 }], total: 1 }
+                    : group?.startsWith('week:')
+                      ? {
+                            period: 'week',
+                            points: [
+                                { date: '2026-09-28', value: 1 },
+                                { date: '2026-10-12', value: 1 },
+                            ],
+                        }
+                      : group === null
+                        ? { value: 0 }
+                        : { items: [] };
+                return new Response(JSON.stringify(answer), {
+                    headers: { 'Content-Type': 'application/json' },
+                });
+            },
+        });
+        const aggregate = report.checks.find(({ id }) => id === 'list.aggregate');
+        expect(aggregate?.status).toBe('failed');
+        expect(aggregate?.issues.join('\n')).toContain(
+            'after 2026-09-28, expected a point on 2026-10-05, got 2026-10-12.',
+        );
+        expect(aggregate?.issues.join('\n')).toContain(
+            'expected a point per day from 2026-01-01 to 2026-01-07, got 2026-10-01 to 2026-10-01.',
+        );
+        expect(aggregate?.issues.join('\n')).toContain(
+            'The count of "pages" is 0; its list has 3 items.',
+        );
+        const invalid = report.checks.find(({ id }) => id === 'list.aggregate.invalid');
+        expect(invalid?.status).toBe('failed');
+        expect(invalid?.issues[0]).toBe('Expected status 422, got 200.');
     });
 
     it('checks a list paged with cursors: the next page, and an invalid cursor', async () => {
@@ -489,6 +556,7 @@ describe('runConformance', () => {
             'item',
             'item.missing',
             'search.invalid',
+            'list.aggregate.invalid',
             'dashboard.widgets.unknown',
             'create.invalid',
             'create.implied-rules',

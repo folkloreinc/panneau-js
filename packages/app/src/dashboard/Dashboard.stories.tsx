@@ -13,6 +13,7 @@ import { type Widget, validateDefinition } from '@panneau/protocol';
 import { type MockWidget, createMockBackend } from '@panneau/protocol/mock';
 
 import {
+    AGGREGATE_WIDGETS,
     DASHBOARD_DATA,
     DASHBOARD_ITEMS,
     DASHBOARD_WIDGETS,
@@ -145,6 +146,50 @@ export const Lists: Story = {
     },
 };
 
+/**
+ * On the aggregates of a resource (decision 0084): a sum of fees against its budget, the entries
+ * per day, and per status, each bar a link to the list filtered by it.
+ */
+export const Aggregates: Story = {
+    args: { widgets: AGGREGATE_WIDGETS },
+    play: async ({ canvasElement }) => {
+        await expect(
+            await widgetOf(canvasElement, 'fees').findByRole('meter', { name: 'Entry fees' }),
+        ).toHaveAttribute('aria-valuetext', 'CA$120.00 of CA$100.00');
+        await expect(
+            await widgetOf(canvasElement, 'submitted').findByRole('table', {
+                name: 'Entries per day',
+            }),
+        ).toBeInTheDocument();
+        await expect(
+            await widgetOf(canvasElement, 'by-status').findByRole('link', { name: 'To judge' }),
+        ).toHaveAttribute('href', '/panneau/resources/entries?filter%5Bstatus%5D=to-judge');
+    },
+};
+
+/** A breakdown with data of its own: the rest of the total as "Other". */
+export const Breakdown: Story = {
+    args: {
+        widgets: [{ id: 'by-tool', type: 'breakdown', label: 'Runs by tool' }],
+        data: {
+            'by-tool': {
+                items: [
+                    { label: 'Summaries', value: 182 },
+                    { label: 'Translations', value: 94 },
+                    { label: 'Failed runs', value: 7, tone: 'danger', url: '#failed' },
+                ],
+                total: 314,
+                other: 31,
+            },
+        },
+    },
+    play: async ({ canvasElement }) => {
+        const breakdown = widgetOf(canvasElement, 'by-tool');
+        await expect(await breakdown.findByText('Other')).toBeVisible();
+        await expect(breakdown.getByRole('link', { name: 'Failed runs' })).toBeVisible();
+    },
+};
+
 /** Empty: a list without items says so, and a series without points draws its baseline. */
 export const Empty: Story = {
     args: {
@@ -153,18 +198,20 @@ export const Empty: Story = {
             { id: 'none', type: 'list', label: 'Reports' },
             { id: 'quiet', type: 'series', label: 'Entries per day' },
             { id: 'zero', type: 'stat', label: 'Overdue' },
+            { id: 'parts', type: 'breakdown', label: 'Entries by status' },
         ],
         data: {
             closed: { items: [], empty: 'No closed contests.' },
             none: { items: [] },
             quiet: { period: 'day', points: [], total: 0 },
             zero: { value: 0, help: 'Nothing late' },
+            parts: { items: [], total: 0 },
         },
     },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         await expect(await canvas.findByText('No closed contests.')).toBeVisible();
-        await expect(await canvas.findByText('Nothing here yet.')).toBeVisible();
+        await waitFor(() => expect(canvas.getAllByText('Nothing here yet.')).toHaveLength(2));
     },
 };
 

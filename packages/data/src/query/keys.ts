@@ -1,4 +1,4 @@
-import type { ListQuery } from '@panneau/protocol';
+import type { AggregateRequest, ListQuery } from '@panneau/protocol';
 
 /** What a search is keyed by besides its query: its `limit` and `resources`. */
 export interface SearchKeyOptions {
@@ -17,6 +17,10 @@ export const queryKeys = {
     lists: (resource: string) => ['panneau', 'resources', resource, 'list'] as const,
     list: (resource: string, query: ListQuery = {}) =>
         ['panneau', 'resources', resource, 'list', query] as const,
+    /** The aggregates of a resource: its lists invalidate them too, when its items change. */
+    aggregates: (resource: string) => ['panneau', 'resources', resource, 'aggregate'] as const,
+    aggregate: (resource: string, request: AggregateRequest = {}) =>
+        ['panneau', 'resources', resource, 'aggregate', request] as const,
     items: (resource: string) => ['panneau', 'resources', resource, 'item'] as const,
     item: (resource: string, id: string) => ['panneau', 'resources', resource, 'item', id] as const,
     /** Under the item's key: refetching or invalidating the item refreshes its preview. */

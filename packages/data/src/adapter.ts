@@ -2,6 +2,7 @@ import type {
     ActionRequest,
     ActionResult,
     ActionRun,
+    AggregateRequest,
     ContextOption,
     ContextValues,
     Definition,
@@ -283,6 +284,17 @@ export interface DataAdapter {
     resolveEmbed?(url: string, options?: RequestOptions): Promise<EmbedValue>;
     /** Data of a dashboard widget, in the shape its type defines. */
     getWidgetData(widget: string, options?: RequestOptions): Promise<unknown>;
+    /**
+     * The count or the sum of the items of a list, with its filters and search, grouped by a
+     * period or a field (`GET /resources/{resource}/aggregate`, decision 0084): in the shape of a
+     * `stat`, a `series` or a `breakdown`, unchecked. Optional: without it, the widgets on the
+     * aggregates of a resource show their error.
+     */
+    getResourceAggregate?(
+        resource: string,
+        request: AggregateRequest,
+        options?: RequestOptions,
+    ): Promise<unknown>;
 
     /**
      * The same adapter, sending the values of the current context in the `Panneau-Context` header

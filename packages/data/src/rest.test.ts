@@ -375,6 +375,12 @@ describe('createRestAdapter', () => {
         await adapter.search('été');
         await adapter.search('été', { limit: 20, resources: ['pages', 'articles'] });
         await adapter.getWidgetData('pages-count');
+        await adapter.getResourceAggregate?.('pages', {
+            filter: { status: 'draft', published_at: { from: '2026-10-01' } },
+            q: 'été',
+            measure: 'sum:price',
+            group: 'week:published_at',
+        });
 
         expect(
             requests.map((request) => {
@@ -390,6 +396,7 @@ describe('createRestAdapter', () => {
             'GET /panneau/api/search?q=%C3%A9t%C3%A9',
             'GET /panneau/api/search?q=%C3%A9t%C3%A9&limit=20&resources=pages%2Carticles',
             'GET /panneau/api/dashboard/widgets/pages-count',
+            'GET /panneau/api/resources/pages/aggregate?filter%5Bstatus%5D=draft&filter%5Bpublished_at%5D%5Bfrom%5D=2026-10-01&q=%C3%A9t%C3%A9&measure=sum%3Aprice&group=week%3Apublished_at',
         ]);
         expect(await requests[3]?.json()).toEqual({
             email: 'ada@example.com',

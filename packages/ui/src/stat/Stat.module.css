@@ -32,6 +32,10 @@
     color: var(--panneau-tone-text);
 }
 
+.meter {
+    margin-block: var(--panneau-space-1);
+}
+
 .help {
     font-size: var(--panneau-stat-help-font-size, var(--panneau-font-size-sm));
     color: var(--panneau-color-text-muted);

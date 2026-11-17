@@ -74,6 +74,33 @@ describe('OpenAPI document', () => {
         expect(Object.keys(list?.get?.responses ?? {})).toContain('422');
     });
 
+    it('describes the aggregates of a list, in the shape of a widget (decision 0084)', () => {
+        const aggregate = (
+            document.paths as Record<
+                string,
+                {
+                    get?: {
+                        parameters?: { name: string }[];
+                        responses?: Record<string, { content?: unknown }>;
+                    };
+                }
+            >
+        )['/resources/{resource}/aggregate'];
+        expect(aggregate?.get?.parameters?.map((parameter) => parameter.name)).toEqual([
+            'filter',
+            'q',
+            'measure',
+            'group',
+        ]);
+        expect(Object.keys(aggregate?.get?.responses ?? {})).toEqual(
+            expect.arrayContaining(['200', '403', '404', '422']),
+        );
+        expect(JSON.stringify(aggregate?.get?.responses?.['200'])).toContain(
+            '#/components/schemas/BreakdownWidgetData',
+        );
+        expect(document.components.schemas).toHaveProperty('ListAggregates');
+    });
+
     it('only references schemas and parameters it defines', () => {
         const missing = [...collectRefs(document)].filter((ref) => {
             const [, , kind = '', name = ''] = ref.split('/');

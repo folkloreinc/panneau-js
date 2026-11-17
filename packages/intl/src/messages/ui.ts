@@ -28,6 +28,12 @@ export const uiMessages = {
     rangeStart: defineMessage({ id: 'panneau.ui.rangeStart', defaultMessage: 'Start' }),
     rangeEnd: defineMessage({ id: 'panneau.ui.rangeEnd', defaultMessage: 'End' }),
     calendar: defineMessage({ id: 'panneau.ui.calendar', defaultMessage: 'Calendar' }),
+    barChartOther: defineMessage({ id: 'panneau.ui.barChartOther', defaultMessage: 'Other' }),
+    meterTarget: defineMessage({ id: 'panneau.ui.meterTarget', defaultMessage: 'Target' }),
+    meterValue: defineMessage<{ value: string; target: string }>({
+        id: 'panneau.ui.meterValue',
+        defaultMessage: '{value} of {target}',
+    }),
     tags: defineMessage<{ label: string }>({
         id: 'panneau.ui.tags',
         defaultMessage: 'Tags: {label}',
