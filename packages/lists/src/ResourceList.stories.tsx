@@ -270,7 +270,7 @@ export const FilterAndPublish: Story = {
 
         // Every draft is published, except the one that doesn't allow it.
         await waitFor(() => expect(canvas.getByRole('navigation')).toHaveTextContent('1–1 of 1'));
-        // The published pages fade out of the drafts (decision 0080), then go.
+        // The published pages fade out of the drafts (decision 0081), then go.
         await waitFor(() => expect(table.querySelector('[data-leaving]')).toBeNull());
         await expect(within(table).getAllByRole('row')).toHaveLength(2);
         await expect(within(table).getAllByRole('row')[1]).toHaveTextContent('Team');

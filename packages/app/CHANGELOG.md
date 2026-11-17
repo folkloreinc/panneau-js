@@ -1,5 +1,19 @@
 # @panneau/app
 
+## 5.0.0-alpha.34
+
+### Patch Changes
+
+- @panneau/actions@5.0.0-alpha.34
+  - @panneau/core@5.0.0-alpha.34
+  - @panneau/data@5.0.0-alpha.34
+  - @panneau/fields@5.0.0-alpha.34
+  - @panneau/forms@5.0.0-alpha.34
+  - @panneau/intl@5.0.0-alpha.34
+  - @panneau/lists@5.0.0-alpha.34
+  - @panneau/protocol@5.0.0-alpha.34
+  - @panneau/ui@5.0.0-alpha.34
+
 ## 5.0.0-alpha.33
 
 ### Patch Changes

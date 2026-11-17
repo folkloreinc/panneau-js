@@ -13,6 +13,32 @@ import type { MediaReference } from '@panneau/protocol';
 import type { UploadedFile } from '@panneau/fields';
 import type { UploadSource } from '@panneau/fields';
 
+// @public
+export function MediaLibrary(input: MediaLibraryProps): JSX.Element | null;
+
+// @public
+export interface MediaLibraryOptions {
+    accept?: readonly string[] | null;
+    filter?: Readonly<Record<string, FilterValue>>;
+    filters?: readonly Filter[];
+    // (undocumented)
+    maxSize?: number | null;
+    refreshInterval?: number;
+    sort?: string;
+    sorts?: readonly MediaSort[];
+    source?: string;
+    sources: readonly MediaSource_2[];
+    stateKey?: string;
+    uploadSource?: UploadSource | null;
+}
+
+// @public
+export interface MediaLibraryProps extends MediaLibraryOptions {
+    'aria-label'?: string;
+    // (undocumented)
+    className?: string;
+}
+
 // @public (undocumented)
 export interface MediaPage {
     // (undocumented)
@@ -25,29 +51,17 @@ export interface MediaPage {
 export function MediaPicker(props: MediaPickerProps): JSX.Element | null;
 
 // @public (undocumented)
-export interface MediaPickerProps {
-    accept?: readonly string[] | null;
+export interface MediaPickerProps extends MediaLibraryOptions {
     confirmLabel?: string | ((count: number) => string);
     confirmOnUpload?: boolean;
-    filter?: Readonly<Record<string, FilterValue>>;
-    filters?: readonly Filter[];
     // (undocumented)
     isOpen: boolean;
-    // (undocumented)
-    maxSize?: number | null;
     // (undocumented)
     multiple?: boolean;
     // (undocumented)
     onOpenChange: (isOpen: boolean) => void;
     onSelect: (media: MediaReference[]) => void;
-    refreshInterval?: number;
-    sort?: string;
-    sorts?: readonly MediaSort[];
-    source?: string;
-    sources: readonly MediaSource_2[];
-    stateKey?: string;
     title?: string;
-    uploadSource?: UploadSource | null;
     value?: readonly MediaReference[];
 }
 

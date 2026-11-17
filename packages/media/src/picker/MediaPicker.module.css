@@ -13,6 +13,34 @@
     height: min(46rem, calc(100dvh - 2 * var(--panneau-space-4)));
 }
 
+/* The library in a page (MediaLibrary, decision 0081): the grid scrolls with the page, and the
+   details stay in view beside it. */
+.library {
+    --media-picker-card-size: var(
+        --panneau-media-picker-card-size,
+        calc(var(--panneau-control-height) * 5 - 1.75rem)
+    );
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-3);
+}
+
+.libraryHeader {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.library .scroll {
+    overflow-y: visible;
+}
+
+.library .details {
+    position: sticky;
+    top: var(--panneau-space-4);
+    max-height: calc(100dvh - 2 * var(--panneau-space-4));
+}
+
 .body {
     display: flex;
     flex-direction: column;
@@ -541,6 +569,13 @@
 
 /* Phones: a full-screen sheet with two or three media a row, and no Cancel button. */
 @media (max-width: 30rem) {
+    .library {
+        --media-picker-card-size: var(
+            --panneau-media-picker-card-size-sm,
+            calc(var(--panneau-control-height) * 2.5)
+        );
+    }
+
     .dialog {
         --media-picker-card-size: var(
             --panneau-media-picker-card-size-sm,

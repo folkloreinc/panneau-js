@@ -196,7 +196,7 @@ export function useToastOffset(ref: RefObject<HTMLElement | null>, active = true
 
 /**
  * Runs a change of the toasts in a view transition, where the browser has them: a toast that closes
- * fades out, and the others slide into its place (decision 0080). At once without them, or when the
+ * fades out, and the others slide into its place (decision 0081). At once without them, or when the
  * system asks for less motion.
  */
 export function wrapToastUpdate(update: () => void): void {

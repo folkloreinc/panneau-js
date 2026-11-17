@@ -178,7 +178,7 @@ export interface ListLayoutProps {
      */
     isHighlighted?: ((item: ListItem) => boolean) | undefined;
     /**
-     * Whether the item left the list, such as one just deleted (decision 0080): it shows for a
+     * Whether the item left the list, such as one just deleted (decision 0081): it shows for a
      * moment while it fades out. The layout gives its element the `leaving` class of
      * `@panneau/lists`' highlight, `data-leaving`, and makes it inert.
      */

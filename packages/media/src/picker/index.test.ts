@@ -70,7 +70,7 @@ describe('@panneau/media/picker', () => {
         ]);
     });
 
-    it('exports the picker', () => {
-        expect(Object.keys(picker)).toEqual(['MediaPicker']);
+    it('exports the picker and the library', () => {
+        expect(Object.keys(picker)).toEqual(['MediaLibrary', 'MediaPicker']);
     });
 });

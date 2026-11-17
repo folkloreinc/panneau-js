@@ -2,8 +2,11 @@
 // imports `@panneau/ui`, `@panneau/fields`, `@panneau/intl` and types of `@panneau/protocol`, so
 // that a product opens it without loading `@panneau/data` or `@panneau/core`: `index.test.ts`
 // checks it.
+export { MediaLibrary } from './MediaLibrary';
 export { MediaPicker } from './MediaPicker';
 export type {
+    MediaLibraryOptions,
+    MediaLibraryProps,
     MediaPage,
     MediaPickerProps,
     MediaQuery,
