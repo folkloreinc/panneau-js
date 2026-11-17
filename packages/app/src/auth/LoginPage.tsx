@@ -5,6 +5,7 @@ import { appMessages } from '@panneau/intl';
 import { AUTH_ERROR_CODES, type Auth, type AuthErrorCode } from '@panneau/protocol';
 import { Alert, Button, Checkbox, LinkButton, TextInput, usePanneauIntl } from '@panneau/ui';
 
+import { withNext } from '../interfaceLocales';
 import { AuthForm, AuthLayout } from './AuthLayout';
 import styles from './LoginPage.module.css';
 import { TwoFactorChallenge } from './TwoFactorChallenge';
@@ -244,14 +245,6 @@ const PROVIDER_ERRORS: Record<AuthErrorCode, (typeof appMessages)['providerFaile
     domain: appMessages.providerDomain,
     access: appMessages.providerAccess,
 };
-
-/** The URL of a provider, with the path to come back to. */
-function withNext(url: string, next: string | undefined): string {
-    if (next === undefined || next === '') {
-        return url;
-    }
-    return `${url}${url.includes('?') ? '&' : '?'}next=${encodeURIComponent(next)}`;
-}
 
 const NOTICES = {
     'password-reset': appMessages.passwordWasReset,

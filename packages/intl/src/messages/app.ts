@@ -370,6 +370,11 @@ export const appMessages = {
         defaultMessage:
             'Appearance: {scheme, select, light {light} dark {dark} other {same as the system}}',
     }),
+    language: defineMessage({ id: 'panneau.app.language', defaultMessage: 'Language' }),
+    languageButton: defineMessage<{ language: string }>({
+        id: 'panneau.app.languageButton',
+        defaultMessage: 'Language: {language}',
+    }),
     home: defineMessage({ id: 'panneau.app.home', defaultMessage: 'Home' }),
     welcome: defineMessage<{ name: string }>({
         id: 'panneau.app.welcome',

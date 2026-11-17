@@ -31,6 +31,8 @@ export interface AppLayoutProps {
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
     /** Logs the user out. Without it, the sidebar has no "Log out" button. */
     onLogOut?: () => void;
+    /** Switches the interface to a locale of `interfaceLocales` (decision 0082). */
+    onLocaleChange?: ((locale: string) => void) | undefined;
     children?: ReactNode;
 }
 
@@ -57,6 +59,7 @@ export function AppLayout({
     colorScheme,
     onColorSchemeChange,
     onLogOut,
+    onLocaleChange,
     children,
 }: AppLayoutProps) {
     const intl = usePanneauIntl();
@@ -98,6 +101,7 @@ export function AppLayout({
         colorScheme,
         onColorSchemeChange,
         onLogOut,
+        onLocaleChange,
         onGoTo: openGoTo,
     };
 
@@ -141,6 +145,7 @@ export function AppLayout({
                 onToggleSidebar={toggle}
                 colorScheme={colorScheme}
                 onColorSchemeChange={onColorSchemeChange}
+                onLocaleChange={onLocaleChange}
             />
             {portalContainer !== null ? (
                 <ModalOverlay

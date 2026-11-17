@@ -23,6 +23,11 @@ const input: DefinitionInput = {
     name: 'Northwind Journal',
     locale: 'en',
     locales: ['en'],
+    // The languages of the interface, with a switcher (decision 0082)
+    interfaceLocales: [
+        { locale: 'en', label: 'English', url: '/admin/api/locale/en' },
+        { locale: 'fr', label: 'Français', url: '/admin/api/locale/fr' },
+    ],
     api: { baseUrl: '/api' },
     resources: ['pages', 'articles', 'categories', 'authors', 'tags', 'redirects'].map((id) => ({
         id,
@@ -80,7 +85,13 @@ function createData() {
     };
 }
 
-function Layout({ onLogOut }: { onLogOut?: () => void }) {
+function Layout({
+    onLogOut,
+    onLocaleChange,
+}: {
+    onLogOut?: () => void;
+    onLocaleChange?: (locale: string) => void;
+}) {
     const [colorScheme, setColorScheme] = useState<ColorSchemePreference>('light');
     // The "Go to…" palette searches through the data adapter.
     const [{ adapter, client }] = useState(createData);
@@ -96,6 +107,7 @@ function Layout({ onLogOut }: { onLogOut?: () => void }) {
                             colorScheme={colorScheme}
                             onColorSchemeChange={setColorScheme}
                             onLogOut={onLogOut}
+                            onLocaleChange={onLocaleChange}
                         >
                             <Heading level={1}>Articles</Heading>
                             <Text muted>The page of the current route.</Text>
@@ -111,7 +123,7 @@ const meta = {
     title: 'App/Layout',
     component: Layout,
     parameters: { layout: 'fullscreen' },
-    args: { onLogOut: fn() },
+    args: { onLogOut: fn(), onLocaleChange: fn() },
     beforeEach: () => {
         window.localStorage.removeItem('panneau:sidebar');
         window.localStorage.removeItem('panneau:nav-group:Content');
@@ -180,6 +192,22 @@ export const LogOut: Story = {
         const canvas = within(canvasElement);
         await userEvent.click(canvas.getByRole('button', { name: 'Log out' }));
         await expect(args.onLogOut).toHaveBeenCalledTimes(1);
+    },
+};
+
+/** The language button, next to the appearance's, switches the interface (decision 0082). */
+export const Languages: Story = {
+    play: async ({ args, canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        await userEvent.click(canvas.getByRole('button', { name: 'Language: English' }));
+        const menu = await body.findByRole('menu', { name: 'Language: English' });
+        await expect(within(menu).getByRole('menuitemradio', { name: 'English' })).toHaveAttribute(
+            'aria-checked',
+            'true',
+        );
+        await userEvent.click(within(menu).getByRole('menuitemradio', { name: 'Français' }));
+        await expect(args.onLocaleChange).toHaveBeenCalledWith('fr');
     },
 };
 

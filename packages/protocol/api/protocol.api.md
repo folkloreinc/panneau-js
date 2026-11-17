@@ -893,6 +893,11 @@ export const Definition: z.ZodObject<{
     name: z.ZodString;
     locale: z.ZodString;
     locales: z.ZodArray<z.ZodString>;
+    interfaceLocales: z.ZodOptional<z.ZodArray<z.ZodObject<{
+        locale: z.ZodString;
+        label: z.ZodString;
+        url: z.ZodString;
+    }, z.core.$loose>>>;
     api: z.ZodObject<{
         baseUrl: z.ZodString;
     }, z.core.$loose>;
@@ -2116,6 +2121,16 @@ export const IDS_FILTER = "ids";
 
 // @public
 export const IDS_FILTER_LIMIT = 100;
+
+// @public (undocumented)
+export const InterfaceLocale: z.ZodObject<{
+    locale: z.ZodString;
+    label: z.ZodString;
+    url: z.ZodString;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type InterfaceLocale = z.infer<typeof InterfaceLocale>;
 
 // @public
 export function isAddressPart(value: unknown): value is AddressPart;
@@ -4171,6 +4186,11 @@ export const namedSchemas: {
         passkeys: z.ZodOptional<z.ZodBoolean>;
         emailVerification: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>;
+    InterfaceLocale: z.ZodObject<{
+        locale: z.ZodString;
+        label: z.ZodString;
+        url: z.ZodString;
+    }, z.core.$loose>;
     MenuItem: z.ZodObject<{
         type: z.ZodString;
         label: z.ZodOptional<z.ZodString>;
@@ -4428,6 +4448,11 @@ export const namedSchemas: {
         name: z.ZodString;
         locale: z.ZodString;
         locales: z.ZodArray<z.ZodString>;
+        interfaceLocales: z.ZodOptional<z.ZodArray<z.ZodObject<{
+            locale: z.ZodString;
+            label: z.ZodString;
+            url: z.ZodString;
+        }, z.core.$loose>>>;
         api: z.ZodObject<{
             baseUrl: z.ZodString;
         }, z.core.$loose>;

@@ -87,3 +87,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0079](0079-collapsible-groups-and-emphasized-entries.md)         | Collapsible groups and emphasized entries in menus                            | Proposed                          |
 | [0080](0080-a-media-library-page.md)                              | A media library page, the picker's library outside a dialog                   | Proposed                          |
 | [0081](0081-motion-tokens-and-leaving-items.md)                   | Motion tokens, and items that fade out of a list                              | Proposed                          |
+| [0082](0082-a-language-switcher-in-the-shell.md)                  | A language switcher in the shell                                              | Proposed                          |
