@@ -9,7 +9,7 @@ npm install @panneau/media@^5.0.0-alpha.0 @tanstack/react-query react-aria-compo
 | Export                  | Content                                                                                                                                                                                         |
 | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `@panneau/media`        | `MediaField`, `ImageField`, `MediaFieldEntry`, `mediaPlugin`, `getImageOptions()`, `createResourceMediaSource()`, `getLibrary()`, `toMediaReference()`, `toMediaReferences()`, `isProcessing()` |
-| `@panneau/media/picker` | `MediaPicker`, and the types of its sources: `MediaSource`, `MediaQuery`, `MediaPage`, `PickerMedia`, `MediaSort`                                                                               |
+| `@panneau/media/picker` | `MediaPicker`, `MediaLibrary`, and the types of its sources: `MediaSource`, `MediaQuery`, `MediaPage`, `PickerMedia`, `MediaSort`                                                               |
 | `@panneau/media/editor` | `ImageEditor`, `ImageEditorDialog`, `useImageEditorTools()`, and the types of the editor and its tools: `EditedImage`, `ImageEditorTool`, `ImageEditorToolContext`                              |
 
 ## The media field
@@ -80,6 +80,16 @@ const sources = definition.resources
     confirmLabel="Insert"
     onSelect={([media]) => insertImage(media)}
 />;
+```
+
+## The media library
+
+`MediaLibrary` (`@panneau/media/picker`, [decision 0080](../../docs/decisions/0080-a-media-library-page.md)) is the same library as a page: the same sources, search, filters, sorts, upload and details as `MediaPicker`, without the dialog and without picking. A click on a media opens its details, where its fields are edited; the grid scrolls with the page and the details stay in view. It takes the options of the picker that are about the library (`sources`, `source`, `accept`, `maxSize`, `filter`, `filters`, `sorts`, `sort`, `stateKey`, `uploadSource`, `refreshInterval`), plus `aria-label` and `className`.
+
+```tsx
+import { MediaLibrary } from '@panneau/media/picker';
+
+<MediaLibrary sources={sources} stateKey="media-page" />;
 ```
 
 ## The image editor

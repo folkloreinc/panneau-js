@@ -84,17 +84,15 @@ export interface MediaSource {
     ): Promise<PickerMedia>;
 }
 
-export interface MediaPickerProps {
-    isOpen: boolean;
-    onOpenChange: (isOpen: boolean) => void;
+/** What a library shows: its sources, their query and its uploads (`MediaLibrary`, `MediaPicker`). */
+export interface MediaLibraryOptions {
     /**
-     * The libraries the user can pick from, in the order of the switcher. The opener restricts
-     * the picker to some libraries by giving only their sources.
+     * The libraries, in the order of the switcher. The opener restricts the library to some of
+     * them by giving only their sources.
      */
     sources: readonly MediaSource[];
     /** The source shown first. Defaults to the first one. */
     source?: string;
-    multiple?: boolean;
     /** Media that don't match are shown greyed out, with the reason: the opener's rules. */
     accept?: readonly string[] | null;
     maxSize?: number | null;
@@ -104,8 +102,23 @@ export interface MediaPickerProps {
     filters?: readonly Filter[];
     /** Sorts the opener adds to those of the sources. */
     sorts?: readonly MediaSort[];
-    /** The sort the picker starts with. Defaults to the source's first sort. */
+    /** The sort the library starts with. Defaults to the source's first sort. */
     sort?: string;
+    /**
+     * Keeps the query, the pages and the scroll position of each source under this key, so that
+     * the library opens again where the user left it.
+     */
+    stateKey?: string;
+    /** Where files are uploaded directly. Defaults to the upload source of the fields context. */
+    uploadSource?: UploadSource | null;
+    /** How often to read media being processed again, in milliseconds. Defaults to 3 s. */
+    refreshInterval?: number;
+}
+
+export interface MediaPickerProps extends MediaLibraryOptions {
+    isOpen: boolean;
+    onOpenChange: (isOpen: boolean) => void;
+    multiple?: boolean;
     /** The media of the opener's value: marked "Current", and replaced by a single pick. */
     value?: readonly MediaReference[];
     /** The title of the dialog. Defaults to "Choose media". */
@@ -115,16 +128,17 @@ export interface MediaPickerProps {
     /** With a single media: confirms as soon as an uploaded file is made a media. */
     confirmOnUpload?: boolean;
     /**
-     * Keeps the query, the pages and the scroll position of each source under this key when the
-     * picker closes, so that it opens again where the user left it.
-     */
-    stateKey?: string;
-    /** Where files are uploaded directly. Defaults to the upload source of the fields context. */
-    uploadSource?: UploadSource | null;
-    /** How often to read media being processed again, in milliseconds. Defaults to 3 s. */
-    refreshInterval?: number;
-    /**
      * Called with the media chosen, each with its source as `resource`, then the picker closes.
      */
     onSelect: (media: MediaReference[]) => void;
+}
+
+/**
+ * The library of the picker in a page (`MediaLibrary`): browse, search, filter, upload and edit
+ * the details of media, with nothing to pick.
+ */
+export interface MediaLibraryProps extends MediaLibraryOptions {
+    /** Names the region of the library for assistive technologies. Defaults to the library's. */
+    'aria-label'?: string;
+    className?: string;
 }
