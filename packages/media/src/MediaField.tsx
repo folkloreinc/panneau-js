@@ -89,6 +89,12 @@ export interface ImageOptions {
      * original file, or the user's choice in the editor.
      */
     transformBase?: 'media' | 'original' | 'choose';
+    /**
+     * Whether values keep a transform for this use. Defaults to true. Without, the field has no
+     * editor, shows each image as the media is, and drops the transform of the values it sends
+     * (decision 0087).
+     */
+    transforms?: boolean;
 }
 
 export interface SingleMediaFieldProps extends MediaFieldBaseProps {
@@ -147,6 +153,12 @@ export function toMediaReferences(value: unknown, itemTitle?: string): MediaRefe
         .map((entry) => toMediaReference(entry, itemTitle))
         .filter((reference): reference is MediaReference => reference !== null);
 }
+
+/** A reference without its transform for this use. */
+const withoutTransform = ({
+    transform: _transform,
+    ...reference
+}: MediaReference): MediaReference => reference;
 
 /** The key of a reference: its library and its id, which are unique only together. */
 const keyOf = (reference: MediaReference, resource: string) =>
@@ -260,12 +272,17 @@ export function MediaField(props: MediaFieldProps) {
     const uploadSource =
         props.uploadSource === undefined ? context.uploadSource : props.uploadSource;
     const multiple = props.multiple === true;
-    const media = toMediaReferences(props.value, itemTitle);
+    const imageOptions = props.image ?? null;
+    // A field without transforms has no editor, and its values keep none (decision 0087).
+    const keepsTransforms = imageOptions?.transforms !== false;
+    const editable = imageOptions !== null && keepsTransforms;
+    const media = toMediaReferences(props.value, itemTitle).map((reference) =>
+        keepsTransforms ? reference : withoutTransform(reference),
+    );
     const enabled = disabled !== true && readOnly !== true;
     const canUpload = adapter !== null && enabled;
     const canPick = sources.length > 0 && enabled;
     const [picking, setPicking] = useState(false);
-    const imageOptions = props.image ?? null;
     // The image being edited: one of the value, by its key, or one just picked, before it is added.
     const [editing, setEditing] = useState<{ key: string } | { picked: MediaReference } | null>(
         null,
@@ -280,11 +297,12 @@ export function MediaField(props: MediaFieldProps) {
         latest.current = media;
     });
     const set = (next: MediaReference[]) => {
-        latest.current = next;
+        const values = keepsTransforms ? next : next.map(withoutTransform);
+        latest.current = values;
         if (props.multiple === true) {
-            props.onChange?.(next.length > 0 ? next : null);
+            props.onChange?.(values.length > 0 ? values : null);
         } else {
-            props.onChange?.(next[0] ?? null);
+            props.onChange?.(values[0] ?? null);
         }
     };
 
@@ -384,10 +402,10 @@ export function MediaField(props: MediaFieldProps) {
         return null;
     };
 
-    // The constraints of an `image` field, next to its description.
+    // The constraints of an `image` field with an editor, next to its description.
     const imageRatios = imageOptions?.ratios ?? [];
     const constraints =
-        imageOptions === null
+        imageOptions === null || !editable
             ? []
             : [
                   ...(imageRatios.length > 0
@@ -431,7 +449,7 @@ export function MediaField(props: MediaFieldProps) {
             : multiple
               ? messages.addMedia
               : messages.chooseMedia;
-    const cropStep = imageOptions?.cropRequired === true && !multiple;
+    const cropStep = editable && imageOptions.cropRequired === true && !multiple;
     const withTransform = (reference: MediaReference, transform: MediaReference['transform']) => {
         const { transform: _previous, ...rest } = reference;
         return transform === null || transform === undefined ? rest : { ...rest, transform };
@@ -473,10 +491,10 @@ export function MediaField(props: MediaFieldProps) {
                                 key={keyOf(item, resource)}
                                 reference={item}
                                 tile={multiple}
-                                cropRequired={imageOptions.cropRequired === true}
+                                cropRequired={editable && imageOptions.cropRequired === true}
                                 status={statusBadge(item)}
                                 onEdit={
-                                    enabled
+                                    enabled && editable
                                         ? () => setEditing({ key: keyOf(item, resource) })
                                         : null
                                 }
@@ -636,6 +654,7 @@ export function MediaField(props: MediaFieldProps) {
                 />
             ) : null}
             {imageOptions !== null &&
+            editable &&
             edited !== null &&
             editedImage !== null &&
             editing !== null ? (
@@ -689,7 +708,7 @@ export type ImageFieldProps = MediaFieldProps & ImageOptions;
  * An `image` field (decision 0031): a `media` field for images, with the image editor. It accepts
  * `image/*` by default. Each image shows as it is rendered for this use, with Edit, which opens
  * the editor on its transform. When a crop is required, the editor is the step right after the
- * pick of one image.
+ * pick of one image. With `transforms={false}`, the field has no editor (decision 0087).
  */
 export function ImageField(props: ImageFieldProps) {
     const {
@@ -699,6 +718,7 @@ export function ImageField(props: ImageFieldProps) {
         rotate,
         focalPoint,
         transformBase,
+        transforms,
         accept = ['image/*'],
         ...rest
     } = props;
@@ -709,13 +729,15 @@ export function ImageField(props: ImageFieldProps) {
         ...(rotate !== undefined ? { rotate } : {}),
         ...(focalPoint !== undefined ? { focalPoint } : {}),
         ...(transformBase !== undefined ? { transformBase } : {}),
+        ...(transforms !== undefined ? { transforms } : {}),
     };
     return <MediaField {...(rest as MediaFieldProps)} accept={accept} image={image} />;
 }
 
 /**
  * The options of an `image` field of a definition: its `crop` rule (enforced ratios, a required
- * crop), its suggested `ratios`, and the tools and base of its editor.
+ * crop), its suggested `ratios`, the tools and base of its editor, and whether its values keep
+ * transforms.
  */
 export function getImageOptions(field: Field): ImageOptions {
     const rule = field.rules?.find((candidate) => candidate.rule === 'crop');
@@ -736,6 +758,7 @@ export function getImageOptions(field: Field): ImageOptions {
         rotate: field.rotate !== false,
         focalPoint: field.focalPoint !== false,
         transformBase: field.transformBase ?? 'media',
+        transforms: field.transforms !== false,
     };
 }
 

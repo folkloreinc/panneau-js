@@ -140,6 +140,52 @@ describe('ImageField', () => {
         ]);
     });
 
+    it('has no editor without transforms, and drops the transforms it had', async () => {
+        const onChange = vi.fn();
+        const media = createMemorySource({ id: 'media', label: 'Media', items: libraryMedia });
+        renderInRoot(
+            <Controlled<MediaReference | null>
+                initial={referenceTo(harbour, 'med_h', { transform: harbourBanner })}
+                onChange={onChange}
+            >
+                {(value, setValue) => (
+                    <ImageField
+                        label="Cover"
+                        resource="media"
+                        adapter={null}
+                        sources={[media]}
+                        value={value}
+                        onChange={setValue}
+                        ratios={['16:9']}
+                        cropRequired
+                        transforms={false}
+                    />
+                )}
+            </Controlled>,
+        );
+
+        // The image as the media is, without its crop, its constraints or Edit.
+        expect(screen.getByText('harbour at dawn')).toBeInTheDocument();
+        expect(screen.getByText(/4,?000 × 3,?000/)).toBeInTheDocument();
+        expect(screen.queryByText('Cropped for this use')).not.toBeInTheDocument();
+        expect(screen.queryByText('Needs a crop')).not.toBeInTheDocument();
+        expect(screen.queryByText(/16:9/)).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /^Edit / })).not.toBeInTheDocument();
+
+        // A pick goes in the value, without the crop step.
+        await userEvent.click(screen.getByRole('button', { name: 'Choose image' }));
+        const picker = within(screen.getByRole('dialog', { name: 'Choose image' }));
+        await userEvent.click(await picker.findByRole('row', { name: 'autumn forest' }));
+        expect(picker.queryByRole('button', { name: 'Next: crop' })).not.toBeInTheDocument();
+        await userEvent.click(picker.getByRole('button', { name: 'Select' }));
+
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+        expect(onChange).toHaveBeenLastCalledWith(
+            expect.objectContaining({ id: 'med_03', resource: 'media' }),
+        );
+        expect(onChange.mock.lastCall?.[0]).not.toHaveProperty('transform');
+    });
+
     it('has no actions when it is read-only', () => {
         renderInRoot(
             <ImageField
@@ -172,6 +218,7 @@ describe('the image type', () => {
             rotate: false,
             focalPoint: true,
             transformBase: 'choose',
+            transforms: true,
         });
         expect(
             getImageOptions({
@@ -184,6 +231,12 @@ describe('the image type', () => {
                 enforceRatios: true,
                 cropRequired: true,
             }),
+        );
+    });
+
+    it('reads a field without transforms', () => {
+        expect(getImageOptions({ name: 'cover', type: 'image', transforms: false })).toEqual(
+            expect.objectContaining({ transforms: false }),
         );
     });
 

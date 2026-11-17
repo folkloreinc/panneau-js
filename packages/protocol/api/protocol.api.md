@@ -220,6 +220,7 @@ export const Action: z.ZodObject<{
             original: "original";
             choose: "choose";
         }>>;
+        transforms: z.ZodOptional<z.ZodBoolean>;
         from: z.ZodOptional<z.ZodString>;
         check: z.ZodOptional<z.ZodBoolean>;
         display: z.ZodOptional<z.ZodString>;
@@ -1198,6 +1199,7 @@ export const Definition: z.ZodObject<{
                 original: "original";
                 choose: "choose";
             }>>;
+            transforms: z.ZodOptional<z.ZodBoolean>;
             from: z.ZodOptional<z.ZodString>;
             check: z.ZodOptional<z.ZodBoolean>;
             display: z.ZodOptional<z.ZodString>;
@@ -1491,6 +1493,7 @@ export const Definition: z.ZodObject<{
                     original: "original";
                     choose: "choose";
                 }>>;
+                transforms: z.ZodOptional<z.ZodBoolean>;
                 from: z.ZodOptional<z.ZodString>;
                 check: z.ZodOptional<z.ZodBoolean>;
                 display: z.ZodOptional<z.ZodString>;
@@ -2161,6 +2164,7 @@ export const Field: z.ZodObject<{
         original: "original";
         choose: "choose";
     }>>;
+    transforms: z.ZodOptional<z.ZodBoolean>;
     from: z.ZodOptional<z.ZodString>;
     check: z.ZodOptional<z.ZodBoolean>;
     display: z.ZodOptional<z.ZodString>;
@@ -3354,6 +3358,7 @@ export const namedSchemas: {
             original: "original";
             choose: "choose";
         }>>;
+        transforms: z.ZodOptional<z.ZodBoolean>;
         from: z.ZodOptional<z.ZodString>;
         check: z.ZodOptional<z.ZodBoolean>;
         display: z.ZodOptional<z.ZodString>;
@@ -3827,6 +3832,7 @@ export const namedSchemas: {
                 original: "original";
                 choose: "choose";
             }>>;
+            transforms: z.ZodOptional<z.ZodBoolean>;
             from: z.ZodOptional<z.ZodString>;
             check: z.ZodOptional<z.ZodBoolean>;
             display: z.ZodOptional<z.ZodString>;
@@ -4136,6 +4142,7 @@ export const namedSchemas: {
                 original: "original";
                 choose: "choose";
             }>>;
+            transforms: z.ZodOptional<z.ZodBoolean>;
             from: z.ZodOptional<z.ZodString>;
             check: z.ZodOptional<z.ZodBoolean>;
             display: z.ZodOptional<z.ZodString>;
@@ -4429,6 +4436,7 @@ export const namedSchemas: {
                     original: "original";
                     choose: "choose";
                 }>>;
+                transforms: z.ZodOptional<z.ZodBoolean>;
                 from: z.ZodOptional<z.ZodString>;
                 check: z.ZodOptional<z.ZodBoolean>;
                 display: z.ZodOptional<z.ZodString>;
@@ -5093,6 +5101,7 @@ export const namedSchemas: {
                     original: "original";
                     choose: "choose";
                 }>>;
+                transforms: z.ZodOptional<z.ZodBoolean>;
                 from: z.ZodOptional<z.ZodString>;
                 check: z.ZodOptional<z.ZodBoolean>;
                 display: z.ZodOptional<z.ZodString>;
@@ -5386,6 +5395,7 @@ export const namedSchemas: {
                         original: "original";
                         choose: "choose";
                     }>>;
+                    transforms: z.ZodOptional<z.ZodBoolean>;
                     from: z.ZodOptional<z.ZodString>;
                     check: z.ZodOptional<z.ZodBoolean>;
                     display: z.ZodOptional<z.ZodString>;
@@ -6857,6 +6867,7 @@ export const Resource: z.ZodObject<{
             original: "original";
             choose: "choose";
         }>>;
+        transforms: z.ZodOptional<z.ZodBoolean>;
         from: z.ZodOptional<z.ZodString>;
         check: z.ZodOptional<z.ZodBoolean>;
         display: z.ZodOptional<z.ZodString>;
@@ -7150,6 +7161,7 @@ export const Resource: z.ZodObject<{
                 original: "original";
                 choose: "choose";
             }>>;
+            transforms: z.ZodOptional<z.ZodBoolean>;
             from: z.ZodOptional<z.ZodString>;
             check: z.ZodOptional<z.ZodBoolean>;
             display: z.ZodOptional<z.ZodString>;

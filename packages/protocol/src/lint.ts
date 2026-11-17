@@ -339,6 +339,24 @@ export function lintDefinition(definition: DefinitionInput): ValidationIssue[] {
                         }
                     });
                 }
+                // A field without transforms keeps no crop (decision 0087).
+                if (field.transforms === false) {
+                    if (field.ratios !== undefined && field.ratios.length > 0) {
+                        issues.push({
+                            path: `${path}.ratios`,
+                            message: 'A field without transforms has no editor to suggest ratios.',
+                        });
+                    }
+                    field.rules?.forEach((rule, ruleIndex) => {
+                        if (rule.rule === 'crop') {
+                            issues.push({
+                                path: `${path}.rules.${String(ruleIndex)}`,
+                                message:
+                                    'A field without transforms keeps no crop for the `crop` rule.',
+                            });
+                        }
+                    });
+                }
             }
         });
     });

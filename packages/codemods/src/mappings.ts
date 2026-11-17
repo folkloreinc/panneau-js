@@ -122,6 +122,7 @@ const image: FieldTarget = {
         'ratios',
         'rotate',
         'transformBase',
+        'transforms',
     ],
     note: MEDIA_NOTE,
 };

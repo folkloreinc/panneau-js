@@ -161,6 +161,31 @@ export const Gallery: Story = {
     },
 };
 
+/** A field whose values keep no transform: the image as the media is, without Edit (decision 0087). */
+export const WithoutTransforms: Story = {
+    render: function Render() {
+        const [value, setValue] = useState<MediaReference | null>(cover);
+        return (
+            <ImageField
+                label="Photo"
+                resource="media"
+                adapter={null}
+                value={value}
+                onChange={setValue}
+                transforms={false}
+            />
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByText(/4,?000 × 3,?000 · 4:3/)).toBeVisible();
+        await expect(canvas.queryByText('Cropped for this use')).not.toBeInTheDocument();
+        await expect(
+            canvas.queryByRole('button', { name: 'Edit harbour at dawn' }),
+        ).not.toBeInTheDocument();
+    },
+};
+
 /** Without an image yet. */
 export const Empty: Story = {
     render: () => <Cover initial={null} cropRequired={false} />,

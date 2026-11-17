@@ -1,6 +1,6 @@
 # 0031: An image editor with tools, and an `image` field
 
-- Status: accepted
+- Status: accepted, amended by [0087](0087-image-fields-without-transforms.md): a field whose values keep no transform (`"transforms": false`) has no editor
 - Date: 2026-10-22
 - Issue: [#100](https://github.com/folkloreinc/panneau-js/issues/100)
 - Amends: [0010](0010-media.md), for the base of a transform for one use

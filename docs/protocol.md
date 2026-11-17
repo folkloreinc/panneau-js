@@ -163,12 +163,14 @@ The protocol is the only contract between a Panneau frontend and its backend. It
         "rotate": true, // the editor offers rotation and flips (true by default)
         "focalPoint": true, // the editor offers the focal point (true by default)
         "transformBase": "media", // media (the default), original, or choose
+        "transforms": true, // values keep a transform for this use (true by default)
         "rules": [{ "rule": "crop", "value": { "ratios": ["16:9", "1:1"], "required": true } }],
     }
     ```
 
     - The `transform` of a value is the edits of the image for this use ([Transform](#media)). `transformBase` sets what it starts from: the media's own transform (`media`), the original file (`original`), or the user's choice in the editor (`choose`).
     - The `crop` rule enforces ratios, and can require a crop for each image.
+    - With `"transforms": false`, values keep no transform: the backend ignores the `transform` it receives and items give none, so the field has no editor, and clients send no `transform`. Such a field can't have `ratios` or the `crop` rule. A `media` field can say it too ([0087](decisions/0087-image-fields-without-transforms.md)).
 
 - **`file` values** are files that belong to the item, outside the media library: an attachment, a PDF, a CSV ([0025](decisions/0025-presigned-uploads.md)).
     - In items, a value is a stored file, `{ "name": "terms.pdf", "url": "https://…", "mime": "application/pdf", "size": 52000 }`, or `null`. With `multiple`, it is a list of them.
