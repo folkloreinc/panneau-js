@@ -25,4 +25,5 @@ export const uiFr: Record<string, string> = {
     'panneau.ui.barChartOther': 'Autres',
     'panneau.ui.meterTarget': 'Cible',
     'panneau.ui.meterValue': '{value} sur {target}',
+    'panneau.ui.chartPoint': '{label} : {value}',
 };

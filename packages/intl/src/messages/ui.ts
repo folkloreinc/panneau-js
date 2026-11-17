@@ -53,4 +53,8 @@ export const uiMessages = {
     commandHintMove: defineMessage({ id: 'panneau.ui.commandHintMove', defaultMessage: 'Move' }),
     commandHintOpen: defineMessage({ id: 'panneau.ui.commandHintOpen', defaultMessage: 'Open' }),
     commandHintClose: defineMessage({ id: 'panneau.ui.commandHintClose', defaultMessage: 'Close' }),
+    chartPoint: defineMessage<{ label: string; value: string }>({
+        id: 'panneau.ui.chartPoint',
+        defaultMessage: '{label}: {value}',
+    }),
 };
