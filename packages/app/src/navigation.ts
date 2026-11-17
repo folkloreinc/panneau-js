@@ -41,7 +41,8 @@ export type NavEntry = NavLink | NavGroup | NavSeparator;
 /**
  * The path of the user's profile: the account page with `auth.account` (decision 0050), or else the
  * user's item in the resource of users (`user.resource`, or the resource `users`), or `null` when
- * the definition has no such resource.
+ * the definition has no such resource, or when `user.resource` is `null`: the user has no item they
+ * can edit.
  */
 export function getProfilePath(definition: Definition, basePath: string): string | null {
     const user = definition.user;
@@ -50,6 +51,9 @@ export function getProfilePath(definition: Definition, basePath: string): string
     }
     if (definition.auth?.account === true) {
         return routePath({ name: 'account' }, basePath);
+    }
+    if (user.resource === null) {
+        return null;
     }
     const id = user.resource ?? 'users';
     const resource = definition.resources.find((candidate) => candidate.id === id);
