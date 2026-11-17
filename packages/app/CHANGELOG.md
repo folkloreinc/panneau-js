@@ -1,5 +1,21 @@
 # @panneau/app
 
+## 5.0.0-alpha.33
+
+### Patch Changes
+
+- 16fd93b: Menus can have collapsible groups and emphasized entries (decision 0079). A `group` with a label and `"collapsible": true` has a button for its title in the sidebar, which shows or hides its links; the browser remembers the user's choice. `"collapsed": true` starts it closed, unless it holds the current page. `"emphasis": true` on a `resource`, `page` or `link` shows its label in bold, in the sidebar and the dock. New sidebar tokens: `link-emphasis-color` and `link-emphasis-weight`.
+- Updated dependencies [16fd93b]
+  - @panneau/protocol@5.0.0-alpha.33
+  - @panneau/actions@5.0.0-alpha.33
+  - @panneau/core@5.0.0-alpha.33
+  - @panneau/data@5.0.0-alpha.33
+  - @panneau/fields@5.0.0-alpha.33
+  - @panneau/forms@5.0.0-alpha.33
+  - @panneau/lists@5.0.0-alpha.33
+  - @panneau/ui@5.0.0-alpha.33
+  - @panneau/intl@5.0.0-alpha.33
+
 ## 5.0.0-alpha.32
 
 ### Patch Changes
