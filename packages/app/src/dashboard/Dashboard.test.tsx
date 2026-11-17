@@ -233,7 +233,15 @@ describe('Dashboard', () => {
             within(table)
                 .getAllByRole('row')
                 .map((row) => row.textContent),
-        ).toEqual(['Oct 12', 'Oct 20', 'Oct 31', 'Oct 42', 'Oct 50', 'Oct 61', 'Oct 70']);
+        ).toEqual([
+            'October 1, 20262',
+            'October 2, 20260',
+            'October 3, 20261',
+            'October 4, 20262',
+            'October 5, 20260',
+            'October 6, 20261',
+            'October 7, 20260',
+        ]);
         expect(widget('submitted').getAllByText('6').length).toBeGreaterThan(0);
     });
 

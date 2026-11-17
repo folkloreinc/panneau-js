@@ -199,6 +199,11 @@ function SeriesBody({ widget, data, currency }: BodyProps<SeriesWidgetData>) {
                         value: point.value,
                     }))}
                     formatValue={(value) => intl.formatNumber(value, format)}
+                    {...(format !== undefined && {
+                        // Amounts on the scale too, short: $1K
+                        formatTick: (value: number) =>
+                            intl.formatNumber(value, { ...format, notation: 'compact' }),
+                    })}
                     isInteractive={data.points.length > SERIES_INTERACTIVE_POINTS}
                 />
             </div>
