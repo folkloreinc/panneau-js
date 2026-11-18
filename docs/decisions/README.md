@@ -95,3 +95,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0087](0087-image-fields-without-transforms.md)                   | Image fields without transforms                                                      | Proposed                          |
 | [0088](0088-destructive-actions-in-a-menu.md)                     | Actions that destroy come last, outlined                                             | Proposed                          |
 | [0089](0089-combined-widgets.md)                                  | Combined widgets: a metric, several lines, a table of numbers                        | Proposed                          |
+| [0090](0090-agents-work-through-tools-as-their-user.md)           | AI agents work in a Panneau through tools of the protocol, as their user             | Proposed                          |
