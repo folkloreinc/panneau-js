@@ -27,6 +27,7 @@ import { ReactNode } from 'react';
 import type { ResolvedCalendar } from '@panneau/core';
 import type { RuleFailure } from '@panneau/protocol';
 import type { Selection as Selection_2 } from '@panneau/protocol';
+import { Tone } from '@panneau/ui';
 
 // @public
 export type ActionIcons = Readonly<Record<string, IconComponent>>;
@@ -171,6 +172,9 @@ export function getActionHref(action: Action, item?: ListItem): string | null;
 
 // @public
 export function getActionIcon(action: Action, icons?: ActionIcons): IconComponent | undefined;
+
+// @public
+export function getActionTone(action: Action): Tone;
 
 export { getImageUrl }
 
