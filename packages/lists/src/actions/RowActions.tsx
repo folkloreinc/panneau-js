@@ -17,7 +17,10 @@ export interface RowActionsProps {
     itemLabel: string;
     /** Actions placed in `row`, with their links (`selectItemActions()` of `@panneau/core`). */
     actions: readonly ItemAction[];
-    /** Actions placed in `menu`: icons too while they fit, the first to go in the menu. */
+    /**
+     * Actions placed in `menu`: icons too while they fit, the first to go in the menu. Those that
+     * destroy are always in it.
+     */
     menu: readonly ItemAction[];
     /** Id of the action that is running on this item, if any. */
     pending: string | null;
@@ -53,9 +56,11 @@ export function orderRowActions(
 
 /**
  * The actions of a row (decision 0060): their icons, in their colors, with their labels as names
- * and tooltips, but the main action, which keeps its label while the row has room; and when the
- * icons don't fit, the last ones in an overflow menu, which never holds a single action. How they fit is the same for every row of the list (`RowActionsFit`), and a
- * row keeps the place of the actions of other rows that it doesn't have, so they line up.
+ * and tooltips, but the main action, which keeps its label while the row has room. Those that
+ * destroy are always in an overflow menu (decision 0088), and when the icons don't fit, the last
+ * others join them; a menu without them never holds a single action. How they fit is the same
+ * for every row of the list (`RowActionsFit`), and a row keeps the place of the actions of other
+ * rows that it doesn't have, so they line up.
  */
 export function RowActions({
     itemLabel,
@@ -70,14 +75,18 @@ export function RowActions({
     const intl = usePanneauIntl();
     const level = use(RowActionsFit);
     const own = orderRowActions(actions, menu);
-    const all = [
-        ...(slots ?? []),
-        ...own.filter(({ action }) => slots?.some((slot) => slot.action.id === action.id) !== true),
-    ];
+    // Those that destroy last, so that they are the ones in the menu
+    const all = orderRowActions([...(slots ?? []), ...own], []);
     const find = (slot: ItemAction) => own.find(({ action }) => action.id === slot.action.id);
-    const inMenu = level >= 2 && all.length >= 2 ? Math.min(level, all.length) : 0;
+    const destructive = all.filter(({ action }) => action.destructive === true).length;
+    const inMenu = Math.max(
+        destructive,
+        level >= 2 && all.length >= 2 ? Math.min(level, all.length) : 0,
+    );
     const shown = all.slice(0, all.length - inMenu);
     const overflow = all.slice(all.length - inMenu).flatMap((slot) => find(slot) ?? []);
+    const hasMenu =
+        overflow.length >= 2 || overflow.some(({ action }) => action.destructive === true);
     const name = (action: Action) =>
         intl.formatMessage(messages.actionOnItem, {
             action: getActionLabel(action, intl),
@@ -108,7 +117,7 @@ export function RowActions({
             size="sm"
             appearance="subtle"
             label={intl.formatMessage(messages.itemActions, { item: itemLabel })}
-            showTooltip={overflow.length >= 2}
+            showTooltip={hasMenu}
             isPending={pending !== null && overflow.some(({ action }) => action.id === pending)}
         />
     );
@@ -120,7 +129,7 @@ export function RowActions({
                     ? button(entry)
                     : placeholder(slot.action.id, button({ ...slot, href: null }));
             })}
-            {overflow.length >= 2 ? (
+            {hasMenu ? (
                 <MenuTrigger>
                     {menuButton}
                     <Menu
@@ -149,7 +158,7 @@ export function RowActions({
                     </Menu>
                 </MenuTrigger>
             ) : overflow.length === 1 && overflow[0] !== undefined ? (
-                // A single action is no menu: its button, in the menu's place
+                // A single action that doesn't destroy is no menu: its button, in the menu's place
                 button(overflow[0])
             ) : inMenu > 0 ? (
                 placeholder('menu', menuButton)

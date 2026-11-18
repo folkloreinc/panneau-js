@@ -736,7 +736,10 @@ describe('the app shell', () => {
         expect(main.queryByRole('button', { name: 'Publish' })).not.toBeInTheDocument();
         expect(main.queryByRole('link', { name: 'Edit' })).not.toBeInTheDocument();
 
-        await user.click(main.getByRole('button', { name: 'Delete' }));
+        // Last, in a menu (decision 0088)
+        expect(main.queryByRole('button', { name: 'Delete' })).toBeNull();
+        await user.click(main.getByRole('button', { name: 'More actions' }));
+        await user.click(await screen.findByRole('menuitem', { name: 'Delete' }));
         const dialog = await screen.findByRole('alertdialog');
         await user.click(within(dialog).getByRole('button', { name: 'Delete' }));
         expect(await screen.findByText('1 deleted.')).toBeInTheDocument();
@@ -923,6 +926,7 @@ describe('the app shell', () => {
     });
 
     it('shows the built-in item actions on each row by its abilities, without declaring them', async () => {
+        const user = userEvent.setup();
         window.history.replaceState(null, '', '/panneau/resources/pages');
         renderApp({}, [], (backend) => {
             const contact = backend.items('pages')[1];
@@ -942,11 +946,13 @@ describe('the app shell', () => {
         expect(within(table).queryByRole('button', { name: 'Duplicate: Contact' })).toBeNull();
         expect(within(table).queryByRole('button', { name: 'Delete: Contact' })).toBeNull();
 
-        // Buttons in the row while they fit (decision 0060)
+        // Buttons in the row while they fit (decision 0060), but `delete`, in the menu (0088)
         expect(
             within(table).getByRole('button', { name: 'Duplicate: About us' }),
         ).toBeInTheDocument();
-        expect(within(table).getByRole('button', { name: 'Delete: About us' })).toBeInTheDocument();
+        expect(within(table).queryByRole('button', { name: 'Delete: About us' })).toBeNull();
+        await user.click(within(table).getByRole('button', { name: 'Actions for About us' }));
+        expect(await screen.findByRole('menuitem', { name: 'Delete' })).toBeInTheDocument();
     });
 
     it('shows the same actions of an item in its row, its panel and its form', async () => {
@@ -1012,7 +1018,7 @@ describe('the app shell', () => {
         // The panel is what `show` opens
         await waitFor(() => expect(names(panel, 'link')).toEqual(['Edit', 'On the site']));
         expect(names(panel, 'button')).toContain('Duplicate');
-        expect(names(panel, 'button')).not.toContain('Delete');
+        expect(within(panel).queryByRole('button', { name: 'More actions' })).toBeNull();
 
         await user.click(within(panel).getByRole('link', { name: 'Edit' }));
         await waitFor(() =>
@@ -1026,7 +1032,7 @@ describe('the app shell', () => {
         expect(within(main).getByRole('link', { name: 'On the site' })).toBeInTheDocument();
         expect(within(main).getByRole('button', { name: 'Duplicate' })).toBeInTheDocument();
         expect(within(main).queryByRole('link', { name: 'Edit' })).toBeNull();
-        expect(within(main).queryByRole('button', { name: 'Delete' })).toBeNull();
+        expect(within(main).queryByRole('button', { name: 'More actions' })).toBeNull();
     });
 
     it('shows only the built-in item actions of `itemActions`, in its order', async () => {
@@ -1094,7 +1100,8 @@ describe('the app shell', () => {
         window.history.replaceState(null, '', '/panneau/resources/pages');
         const backend = renderApp();
         const table = await screen.findByRole('table', { name: 'Pages' });
-        await user.click(await within(table).findByRole('button', { name: 'Delete: Contact' }));
+        await user.click(await within(table).findByRole('button', { name: 'Actions for Contact' }));
+        await user.click(await screen.findByRole('menuitem', { name: 'Delete' }));
         const dialog = await screen.findByRole('alertdialog');
         await user.click(within(dialog).getByRole('button', { name: 'Delete' }));
         await waitFor(() => expect(backend.items('pages').map((page) => page.id)).toEqual(['1']));
@@ -1106,7 +1113,8 @@ describe('the app shell', () => {
         window.history.replaceState(null, '', '/panneau/resources/pages/2');
         const backend = renderApp();
         const panel = await screen.findByRole('region', { name: 'Details of the page' });
-        await user.click(await within(panel).findByRole('button', { name: 'Delete' }));
+        await user.click(await within(panel).findByRole('button', { name: 'More actions' }));
+        await user.click(await screen.findByRole('menuitem', { name: 'Delete' }));
         const dialog = await screen.findByRole('alertdialog');
         await user.click(within(dialog).getByRole('button', { name: 'Delete' }));
         await waitFor(() => expect(window.location.pathname).toBe('/panneau/resources/pages'));
@@ -1439,7 +1447,8 @@ describe('the app shell', () => {
             ],
         });
         const before = backend.items('pages').length;
-        await user.click(await screen.findByRole('button', { name: 'Delete: About us' }));
+        await user.click(await screen.findByRole('button', { name: 'Actions for About us' }));
+        await user.click(await screen.findByRole('menuitem', { name: 'Delete' }));
         // No confirmation: the toast offers to undo it
         expect(screen.queryByRole('alertdialog', { name: /Delete/ })).toBeNull();
         await waitFor(() => expect(backend.items('pages')).toHaveLength(before - 1));

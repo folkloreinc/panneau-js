@@ -243,6 +243,9 @@ export const Default: Story = {
             'href',
             'https://example.com/articles/1',
         );
+        // `delete` is last, in a menu (decision 0088)
+        await expect(within(panel).queryByRole('button', { name: 'Delete' })).toBeNull();
+        await expect(within(panel).getByRole('button', { name: 'More actions' })).toBeVisible();
         await expect(within(panel).getAllByRole('term')).toHaveLength(4);
         // Beside the list, it can be widened
         await expect(within(panel).getByRole('button', { name: 'Widen the panel' })).toBeVisible();
