@@ -110,7 +110,7 @@ export const Confirmation: Story = {
     },
 };
 
-/** An item whose only action destroys: one secondary button. */
+/** An item whose only button destroys: a secondary button after its link, not a menu of one. */
 export const OnlyDelete: Story = {
     args: {
         actions: selectItemActions(actions, { ...project, abilities: { delete: true } }, 'form'),
