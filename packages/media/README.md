@@ -137,8 +137,9 @@ const tools = useImageEditorTools();
 - Each image shows as it is rendered for this use, computed in the browser from the original, the media's own transform and the transform for this use. Edit opens the editor on that transform.
 - Badges say whether an image is cropped for this use, needs a crop the field requires, or was cropped over a version of the library that changed since.
 - **Options:** `ratios`, offered or enforced with `enforceRatios`; `cropRequired`; `rotate` and `focalPoint`, which offer those tools; and `transformBase` (`media`, `original` or `choose`). They show next to the description.
+- **Without transforms** (`transforms={false}`, decision 0087), for a backend that keeps ids only: the field has no Edit action, no editor and no crop step. It shows each image as the media is, and drops the `transform` of the values it sends.
 - When a crop is required, the editor is the step right after the pick of one image ("Next: crop", then "Use this crop"), with "Back to the library". It doesn't open after an upload.
-- `MediaFieldEntry` renders the `image` type with `getImageOptions()`: the field's `crop` rule (enforced ratios, a required crop), its suggested `ratios`, `rotate`, `focalPoint` and `transformBase`.
+- `MediaFieldEntry` renders the `image` type with `getImageOptions()`: the field's `crop` rule (enforced ratios, a required crop), its suggested `ratios`, `rotate`, `focalPoint`, `transformBase` and `transforms`.
 
 `mediaPlugin` gives the `media` and `image` types to `@panneau/core`: pass it after `fieldsPlugin`. The `file` type is built into `@panneau/fields`.
 

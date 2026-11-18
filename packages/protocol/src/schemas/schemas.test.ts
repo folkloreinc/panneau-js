@@ -600,4 +600,35 @@ describe('the image field', () => {
             message: 'An `image` field needs a resource of kind `media`.',
         });
     });
+
+    it('can keep no transform, without ratios or the crop rule', () => {
+        expect(Field.safeParse({ name: 'cover', type: 'image', transforms: false }).success).toBe(
+            true,
+        );
+        expect(Field.safeParse({ name: 'cover', type: 'image', transforms: 'no' }).success).toBe(
+            false,
+        );
+
+        const definition = createDefinition();
+        const authors = definition.resources.find((resource) => resource.id === 'authors');
+        authors?.fields.push({ name: 'portrait', type: 'image', transforms: false });
+        authors?.fields.push({
+            name: 'banner',
+            type: 'image',
+            transforms: false,
+            ratios: ['16:9'],
+            rules: [{ rule: 'crop', value: { required: true } }],
+        });
+        const index = (authors?.fields.length ?? 0) - 1;
+        expect(lintDefinition(definition)).toEqual([
+            {
+                path: `resources.1.fields.${String(index)}.ratios`,
+                message: 'A field without transforms has no editor to suggest ratios.',
+            },
+            {
+                path: `resources.1.fields.${String(index)}.rules.0`,
+                message: 'A field without transforms keeps no crop for the `crop` rule.',
+            },
+        ]);
+    });
 });

@@ -229,6 +229,10 @@ export const Field = z
             description:
                 "`image`: what a transform for one use starts from: the media's own transform (`media`, the default), the original file, or the user's choice in the editor (decision 0031).",
         }),
+        transforms: z.boolean().optional().meta({
+            description:
+                "`media`, `image`: whether values keep a transform for one use. Defaults to true. With `false`, the backend ignores the `transform` of values and items give none, clients send none, and an `image` field has no editor; it can't have `ratios` or the `crop` rule (decision 0087).",
+        }),
         from: z.string().optional().meta({
             description:
                 '`slug`: the field the slug is generated from. `region`: the field of the same object that holds its country.',

@@ -42,6 +42,7 @@ export interface ImageOptions {
     ratios?: readonly string[];
     rotate?: boolean;
     transformBase?: 'media' | 'original' | 'choose';
+    transforms?: boolean;
 }
 
 // @public

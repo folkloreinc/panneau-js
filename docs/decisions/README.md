@@ -36,7 +36,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0028](0028-item-panel.md)                                        | The show route opens an item's details in a panel next to its list                   | Amended by 0040, 0041, 0074, 0082 |
 | [0029](0029-go-to-palette.md)                                     | A "Go to…" command palette that products can use without the app                     | Accepted                          |
 | [0030](0030-search-parameters-and-scope.md)                       | The parameters of the global search, its errors, a scope per resource                | Accepted                          |
-| [0031](0031-image-editor-and-image-field.md)                      | An image editor with tools, and an `image` field                                     | Accepted                          |
+| [0031](0031-image-editor-and-image-field.md)                      | An image editor with tools, and an `image` field                                     | Amended by 0087                   |
 | [0032](0032-field-checks-and-slugs.md)                            | Fields check their value with the backend, and a generic slug                        | Accepted                          |
 | [0033](0033-more-field-types.md)                                  | More field types: tel, range, duration, json, tags, embed and location               | Amended by 0047, 0056             |
 | [0034](0034-skeletons-while-content-loads.md)                     | Skeletons while content loads                                                        | Accepted                          |
@@ -92,3 +92,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0084](0084-overviews.md)                                         | Overviews: dashboard pages, summaries above lists, and widgets that count a resource | Proposed                          |
 | [0085](0085-readable-line-charts.md)                              | Line charts that read without a pointer                                              | Proposed                          |
 | [0086](0086-one-user-menu.md)                                     | One user's menu, at the bottom of the sidebar and in the dock                        | Proposed                          |
+| [0087](0087-image-fields-without-transforms.md)                   | Image fields without transforms                                                      | Proposed                          |
