@@ -24,6 +24,14 @@ export interface DateFieldProps extends FieldProps<string> {
     controlClassName?: string;
     max?: string;
     min?: string;
+    shortcuts?: readonly DateShortcut[];
+}
+
+// @public
+export interface DateShortcut {
+    // (undocumented)
+    label: ReactNode;
+    value: string | null;
 }
 
 // (No @packageDocumentation comment for this package)
