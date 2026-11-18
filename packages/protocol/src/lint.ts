@@ -15,6 +15,7 @@ import {
     RESOURCE_WIDGET_TYPES,
     WIDGET_RESERVED_QUERY_PARAMS,
     getWidgetResource,
+    getWidgetSources,
     isBuiltInWidgetType,
 } from './widgets';
 
@@ -442,7 +443,208 @@ function checkPeriod(period: OverviewPeriod, path: string, issues: ValidationIss
 const FILTER_PARAM = /^filter\[([^\]]+)\]/;
 
 /** The settings of a widget that go with a `resource`. */
-const RESOURCE_SETTINGS = ['query', 'measure', 'group', 'target'] as const;
+const RESOURCE_SETTINGS = ['query', 'measure', 'group', 'target', 'points', 'by', 'split'] as const;
+
+/** The settings of a built-in widget that only some types have (decision 0089), and those types. */
+const TYPED_SETTINGS: Record<string, readonly string[]> = {
+    goodWhen: ['metric', 'table'],
+    points: ['metric', 'table'],
+    by: ['metric'],
+    split: ['series'],
+    sources: ['series'],
+    stacked: ['series'],
+    rows: ['table'],
+};
+
+/** A `measure` of the aggregates of a list: `count`, or the `sum:` of a field of its `sum`. */
+function checkMeasure(
+    value: unknown,
+    resource: ResourceInput,
+    path: string,
+    issues: ValidationIssue[],
+) {
+    if (value === undefined) {
+        return;
+    }
+    const measure = typeof value === 'string' ? parseAggregateMeasure(value) : null;
+    if (measure === null) {
+        issues.push({ path, message: 'The measure must be `count` or `sum:{field}`.' });
+    } else if (
+        measure.type === 'sum' &&
+        !(resource.list?.aggregates?.sum ?? []).includes(measure.field)
+    ) {
+        issues.push({
+            path,
+            message: `The list of \`${resource.id}\` can't sum \`${measure.field}\`: it isn't in the \`sum\` of its aggregates.`,
+        });
+    }
+}
+
+/** A group on the period of a date of the aggregates of a list: `day:created_at`. */
+function checkPeriodGroup(
+    value: unknown,
+    resource: ResourceInput,
+    path: string,
+    issues: ValidationIssue[],
+    what: string,
+) {
+    const group = typeof value === 'string' ? parseAggregateGroup(value) : null;
+    if (group?.type !== 'period') {
+        issues.push({ path, message: `${what} needs a period of a date: \`day:created_at\`.` });
+    } else if (!(resource.list?.aggregates?.dates ?? []).includes(group.field)) {
+        issues.push({
+            path,
+            message: `The list of \`${resource.id}\` can't group by \`${group.field}\`: it isn't in the \`dates\` of its aggregates.`,
+        });
+    }
+}
+
+/** A field of the `groupBy` of the aggregates of a list. */
+function checkGroupByField(
+    value: unknown,
+    resource: ResourceInput,
+    path: string,
+    issues: ValidationIssue[],
+) {
+    if (typeof value !== 'string' || !(resource.list?.aggregates?.groupBy ?? []).includes(value)) {
+        issues.push({
+            path,
+            message: `The list of \`${resource.id}\` can't group by \`${String(value)}\`: it isn't in the \`groupBy\` of its aggregates.`,
+        });
+    }
+}
+
+/** The filters of a query of a widget or of a source: filters of the list, never the paging. */
+function checkQuery(
+    query: unknown,
+    resource: ResourceInput,
+    path: string,
+    issues: ValidationIssue[],
+) {
+    if (query === null || typeof query !== 'object') {
+        return;
+    }
+    const filters = new Set((resource.list?.filters ?? []).map((filter) => filter.id));
+    Object.keys(query).forEach((key) => {
+        const filter = FILTER_PARAM.exec(key)?.[1];
+        if ((WIDGET_RESERVED_QUERY_PARAMS as readonly string[]).includes(key)) {
+            issues.push({ path: `${path}.${key}`, message: `The client sets \`${key}\`.` });
+        } else if (filter !== undefined && !filters.has(filter)) {
+            issues.push({
+                path: `${path}.${key}`,
+                message: `The list of \`${resource.id}\` has no filter \`${filter}\`.`,
+            });
+        }
+    });
+}
+
+/** `period`: a `date-range` filter of the list of the resource. */
+function checkPeriodFilter(
+    period: unknown,
+    resource: ResourceInput,
+    path: string,
+    issues: ValidationIssue[],
+) {
+    if (
+        typeof period === 'string' &&
+        !(resource.list?.filters ?? []).some(
+            (filter) => filter.id === period && filter.type === 'date-range',
+        )
+    ) {
+        issues.push({
+            path,
+            message: `The list of \`${resource.id}\` has no \`date-range\` filter \`${period}\`.`,
+        });
+    }
+}
+
+/**
+ * The `sources` of a `series` or the `rows` of a `table` (decision 0089): each on a resource that
+ * exists and declares aggregates, with a measure, a group on a period of a date (required for a
+ * line of a series), a period and a query, and an alert, that its list declares.
+ */
+function checkSources(
+    definition: DefinitionInput,
+    widget: Widget,
+    path: string,
+    issues: ValidationIssue[],
+    hasPeriod: boolean,
+) {
+    const settings = widget.settings ?? {};
+    const key = widget.type === 'series' ? 'sources' : 'rows';
+    const entries = settings[key];
+    if (!Array.isArray(entries)) {
+        return;
+    }
+    const sources = getWidgetSources(widget);
+    // One chart has one period: the lines of a series, or the trends of a table, share it
+    const periods = new Set(
+        sources.flatMap((source) => {
+            const group = source.group !== null ? parseAggregateGroup(source.group) : null;
+            return group?.type === 'period' ? [group.period] : [];
+        }),
+    );
+    if (periods.size > 1) {
+        issues.push({
+            path: `${path}.settings.${key}`,
+            message: `Its ${widget.type === 'series' ? 'lines' : 'trends'} have different periods (${[...periods].join(', ')}): they share one.`,
+        });
+    }
+    entries.forEach((entry: unknown, index) => {
+        const sourcePath = `${path}.settings.${key}.${index}`;
+        const source = sources[index];
+        if (source === undefined || entry === null || typeof entry !== 'object') {
+            return;
+        }
+        const raw = entry as Record<string, unknown>;
+        const resource = definition.resources.find((candidate) => candidate.id === source.resource);
+        if (resource === undefined) {
+            issues.push({
+                path: `${sourcePath}.resource`,
+                message: `No resource \`${source.resource}\`.`,
+            });
+            return;
+        }
+        if (resource.list?.aggregates === undefined) {
+            issues.push({
+                path: `${sourcePath}.resource`,
+                message: `The list of \`${resource.id}\` declares no \`aggregates\`.`,
+            });
+            return;
+        }
+        checkMeasure(raw.measure, resource, `${sourcePath}.measure`, issues);
+        const groupKey = widget.type === 'series' ? 'group' : 'points';
+        if (widget.type === 'series' || source.group !== null) {
+            checkPeriodGroup(
+                source.group,
+                resource,
+                `${raw[groupKey] !== undefined ? sourcePath : `${path}.settings`}.${groupKey}`,
+                issues,
+                widget.type === 'series' ? 'A line of a `series`' : 'The trend of a row',
+            );
+        }
+        if (typeof source.period === 'string') {
+            // The widget's own `period` is checked with the widget
+            if (!hasPeriod && raw.period !== undefined) {
+                issues.push({
+                    path: `${raw.period !== undefined ? sourcePath : `${path}.settings`}.period`,
+                    message: 'Its overview has no `period`.',
+                });
+            }
+            checkPeriodFilter(
+                source.period,
+                resource,
+                `${raw.period !== undefined ? sourcePath : `${path}.settings`}.period`,
+                issues,
+            );
+        }
+        checkQuery(raw.query, resource, `${sourcePath}.query`, issues);
+        const alert = raw.alert as Record<string, unknown> | undefined;
+        if (alert !== undefined && alert !== null && typeof alert === 'object') {
+            checkQuery(alert.query, resource, `${sourcePath}.alert.query`, issues);
+        }
+    });
+}
 
 /**
  * The measure and the group of a widget on a resource (decision 0084): a `sum:` and a group name
@@ -491,6 +693,27 @@ function checkAggregateSettings(
                 message: `A \`${widget.type}\` isn't grouped: only a \`series\` and a \`breakdown\` are.`,
             });
         }
+        if (widget.type === 'metric') {
+            if (resource.list?.aggregates === undefined) {
+                issues.push({
+                    path: `${path}.settings.resource`,
+                    message: `The list of \`${resource.id}\` declares no \`aggregates\`: a \`metric\` reads them.`,
+                });
+                return;
+            }
+            if (settings.points !== undefined) {
+                checkPeriodGroup(
+                    settings.points,
+                    resource,
+                    `${path}.settings.points`,
+                    issues,
+                    'The trend of a `metric`',
+                );
+            }
+            if (settings.by !== undefined) {
+                checkGroupByField(settings.by, resource, `${path}.settings.by`, issues);
+            }
+        }
         return;
     }
     const group = typeof settings.group === 'string' ? parseAggregateGroup(settings.group) : null;
@@ -506,6 +729,20 @@ function checkAggregateSettings(
                 path: `${path}.settings.group`,
                 message: `The list of \`${resource.id}\` can't group by \`${group.field}\`: it isn't in the \`dates\` of its aggregates.`,
             });
+        }
+        if (settings.split !== undefined) {
+            checkGroupByField(settings.split, resource, `${path}.settings.split`, issues);
+            // Each line reads the aggregates filtered by its value
+            if (
+                !(resource.list?.filters ?? []).some(
+                    (filter) => filter.id === settings.split && filter.type !== 'date-range',
+                )
+            ) {
+                issues.push({
+                    path: `${path}.settings.split`,
+                    message: `The list of \`${resource.id}\` has no filter \`${String(settings.split)}\` to read each of its values.`,
+                });
+            }
         }
         return;
     }
@@ -569,6 +806,37 @@ function checkWidgets(
                 message: `Its ${summaryOf !== undefined ? 'summary' : 'dashboard'} has no \`period\`.`,
             });
         }
+        Object.entries(TYPED_SETTINGS).forEach(([key, types]) => {
+            if (settings[key] !== undefined && !types.includes(widget.type)) {
+                issues.push({
+                    path: `${path}.settings.${key}`,
+                    message: `Only a ${types.map((type) => `\`${type}\``).join(' or a ')} has \`${key}\`.`,
+                });
+            }
+        });
+        const sourcesKey = widget.type === 'series' ? 'sources' : 'rows';
+        if (
+            settings[sourcesKey] !== undefined &&
+            TYPED_SETTINGS[sourcesKey]?.includes(widget.type)
+        ) {
+            if (onResource) {
+                issues.push({
+                    path: `${path}.settings.${sourcesKey}`,
+                    message: `\`${sourcesKey}\` name their resources: the widget has no \`resource\`.`,
+                });
+                return;
+            }
+            ['query', 'measure', 'target', 'by', 'split'].forEach((key) => {
+                if (settings[key] !== undefined) {
+                    issues.push({
+                        path: `${path}.settings.${key}`,
+                        message: `\`${key}\` goes with a \`resource\`, not \`${sourcesKey}\`.`,
+                    });
+                }
+            });
+            checkSources(definition, widget, path, issues, hasPeriod);
+            return;
+        }
         if (!onResource) {
             if (typeof settings.period === 'string') {
                 issues.push({
@@ -604,10 +872,10 @@ function checkWidgets(
             });
             return;
         }
-        if (settings.target !== undefined && widget.type !== 'stat') {
+        if (settings.target !== undefined && widget.type !== 'stat' && widget.type !== 'metric') {
             issues.push({
                 path: `${path}.settings.target`,
-                message: 'Only a `stat` has a `target`.',
+                message: 'Only a `stat` and a `metric` have a `target`.',
             });
         }
         checkAggregateSettings(widget, resource, path, issues);
@@ -618,31 +886,7 @@ function checkWidgets(
                 message: `The list of \`${resource.id}\` is paged with cursors and has no total: it can't feed a \`stat\` that counts.`,
             });
         }
-        if (
-            typeof settings.period === 'string' &&
-            !(resource.list?.filters ?? []).some(
-                (filter) => filter.id === settings.period && filter.type === 'date-range',
-            )
-        ) {
-            issues.push({
-                path: `${path}.settings.period`,
-                message: `The list of \`${resource.id}\` has no \`date-range\` filter \`${settings.period}\`.`,
-            });
-        }
-        const filters = new Set((resource.list?.filters ?? []).map((filter) => filter.id));
-        Object.keys(settings.query ?? {}).forEach((key) => {
-            const filter = FILTER_PARAM.exec(key)?.[1];
-            if ((WIDGET_RESERVED_QUERY_PARAMS as readonly string[]).includes(key)) {
-                issues.push({
-                    path: `${path}.settings.query.${key}`,
-                    message: `The client sets \`${key}\`.`,
-                });
-            } else if (filter !== undefined && !filters.has(filter)) {
-                issues.push({
-                    path: `${path}.settings.query.${key}`,
-                    message: `The list of \`${resource.id}\` has no filter \`${filter}\`.`,
-                });
-            }
-        });
+        checkPeriodFilter(settings.period, resource, `${path}.settings.period`, issues);
+        checkQuery(settings.query, resource, `${path}.settings.query`, issues);
     });
 }

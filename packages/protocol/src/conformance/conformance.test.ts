@@ -122,6 +122,39 @@ function createBackend() {
                 type: 'stat',
                 settings: { resource: 'pages', measure: 'sum:price', target: 100000 },
             },
+            // Combined widgets (decision 0089): on resources, and with data of their own
+            {
+                id: 'published-metric',
+                type: 'metric',
+                settings: {
+                    resource: 'pages',
+                    points: 'week:published_at',
+                    by: 'status',
+                    goodWhen: 'up',
+                },
+            },
+            {
+                id: 'per-status',
+                type: 'series',
+                settings: { resource: 'pages', group: 'week:published_at', split: 'status' },
+            },
+            {
+                id: 'pages-table',
+                type: 'table',
+                settings: {
+                    rows: [
+                        { resource: 'pages', label: 'Pages', points: 'month:published_at' },
+                        {
+                            resource: 'pages',
+                            label: 'Revenue',
+                            measure: 'sum:price',
+                            alert: { query: { 'filter[status]': 'draft' }, label: 'drafts' },
+                        },
+                    ],
+                },
+            },
+            { id: 'storage', type: 'metric', settings: { hideEmpty: true } },
+            { id: 'costs', type: 'table' },
         ],
     };
     // A dashboard page of its own (decision 0084).
@@ -152,6 +185,11 @@ function createBackend() {
             visits: { period: 'week', points: [{ date: '2026-10-05', value: 4 }], total: 4 },
             map: { pins: [] },
             signups: { value: 3 },
+            storage: { value: 1530, previous: 1700, format: { style: 'unit', unit: 'megabyte' } },
+            costs: {
+                columns: [{ key: 'cost', label: 'Cost' }],
+                rows: [{ label: 'Summaries', cells: { cost: 9.08 } }],
+            },
             health: ({ query }) => ({ value: query.q !== undefined ? 0 : 1 }),
         },
         auth: { users: [{ email: 'ada@example.com', password: 'secret' }] },

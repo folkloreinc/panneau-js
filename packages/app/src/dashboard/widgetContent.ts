@@ -26,14 +26,20 @@ import {
     fromMinorUnits,
     getWidgetResource,
     isBuiltInWidgetType,
+    isCombinedWidget,
+    isWidgetDataEmpty,
     parseAggregateGroup,
-    parseAggregateMeasure,
+    readsResources,
     toSearchParams,
 } from '@panneau/protocol/runtime';
 
 import { getItemPath } from '../pages/itemLinks';
 import { getItemTitle } from '../pages/itemTitle';
-import { routePath } from '../routes';
+import { type CombinedTexts, useCombinedContent } from './combinedContent';
+import { currencyOf, widgetListHref } from './widgetHelpers';
+
+export type { CombinedTexts } from './combinedContent';
+export { widgetListHref } from './widgetHelpers';
 
 /**
  * What a widget of the dashboard draws: its skeleton, nothing, its error, or its data. A widget
@@ -44,12 +50,6 @@ export type WidgetContent =
     | { status: 'hidden' }
     | { status: 'error'; retry: () => void }
     | { status: 'ready'; data: unknown; currency?: string };
-
-/** The link to the list of a resource, with the query of a widget on it. */
-export function widgetListHref(read: WidgetResource, basePath: string): string {
-    const search = read.params.toString();
-    return `${routePath({ name: 'resource.index', resource: read.resource }, basePath)}${search !== '' ? `?${search}` : ''}`;
-}
 
 /** The badge of an item: the option of its value of the first `select` column of the list. */
 function badgeOf(resource: Resource, item: Item): ListWidgetItem['badge'] {
@@ -108,17 +108,6 @@ function fromList(
         })),
         url,
     };
-}
-
-/** The currency of a sum of `money` of one currency: its amounts are in minor units. */
-function currencyOf(resource: Resource, measure: string): string | undefined {
-    const parsed = parseAggregateMeasure(measure);
-    if (parsed?.type !== 'sum') {
-        return undefined;
-    }
-    const field = resource.fields.find((candidate) => candidate.name === parsed.field);
-    const currency = (field?.settings as { currency?: unknown } | undefined)?.currency;
-    return field?.type === 'money' && typeof currency === 'string' ? currency : undefined;
 }
 
 /** The link of a bar of a breakdown: the list of the widget, filtered by the value of the bar. */
@@ -254,17 +243,29 @@ interface UseWidgetContentOptions {
     basePath: string;
     /** The title of an item without one. */
     untitled: (id: string) => string;
+    /** The texts that combined widgets write in their data (decision 0089). */
+    texts: CombinedTexts;
     /** `false` for a type that nothing draws: its data isn't fetched. */
     enabled?: boolean;
 }
 
 /**
- * The content of a widget of the dashboard (decisions 0064 and 0084): the data of a widget with
- * data of its own, checked against the shape of its type, a `stat` or a `list` from the list of a
- * resource, or a `series`, a `breakdown` or a `stat` that sums from its aggregates. A widget the
- * user can't see (a `403`, a resource they can't list) is hidden.
+ * The content of a widget of the dashboard (decisions 0064, 0084 and 0089): the data of a widget
+ * with data of its own, checked against the shape of its type, a `stat` or a `list` from the list
+ * of a resource, a `series`, a `breakdown` or a `stat` that sums from its aggregates, or a widget
+ * that combines several aggregates. A widget the user can't see (a `403`, a resource they can't
+ * list) is hidden, and so is a widget with `settings.hideEmpty` whose data has nothing to show.
  */
-export function useWidgetContent({
+export function useWidgetContent(options: UseWidgetContentOptions): WidgetContent {
+    const content = useContent(options);
+    return content.status === 'ready' &&
+        options.widget.settings?.hideEmpty === true &&
+        isWidgetDataEmpty(options.widget.type, content.data)
+        ? { status: 'hidden' }
+        : content;
+}
+
+function useContent({
     widget,
     page,
     summary,
@@ -272,8 +273,19 @@ export function useWidgetContent({
     definition,
     basePath,
     untitled,
+    texts,
     enabled = true,
 }: UseWidgetContentOptions): WidgetContent {
+    const combined = isCombinedWidget(widget);
+    const combinedContent = useCombinedContent({
+        widget,
+        summary,
+        period,
+        definition,
+        basePath,
+        texts,
+        enabled,
+    });
     const follows = summary !== undefined && followsList(widget, summary.resource);
     const own = getWidgetResource(widget);
     const listed = own !== null && follows ? withListQuery(own, summary.query) : own;
@@ -295,7 +307,7 @@ export function useWidgetContent({
             perPage: widget.type === 'stat' ? 1 : WIDGET_LIST_MAX_ITEMS,
         },
         {
-            enabled: enabled && read !== null && aggregate === null && canList,
+            enabled: enabled && !combined && read !== null && aggregate === null && canList,
             // A widget that follows its list keeps its data while the next query loads
             placeholderData: keepPreviousData,
         },
@@ -307,16 +319,19 @@ export function useWidgetContent({
             ...(read?.query.q !== undefined && { q: read.query.q }),
             ...(aggregate !== null && { measure: aggregate.measure, group: aggregate.group }),
         },
-        { enabled: enabled && aggregate !== null && canList },
+        { enabled: enabled && !combined && aggregate !== null && canList },
     );
     const data = useWidgetData(widget.id, {
         ...(summary !== undefined
             ? { resource: summary.resource, ...(follows && { query: summary.query }) }
             : { page }),
         ...(period !== null && periodFilter !== false && { period }),
-        enabled: enabled && read === null,
+        enabled: enabled && !readsResources(widget),
         placeholderData: keepPreviousData,
     });
+    if (combinedContent !== null) {
+        return combinedContent;
+    }
     const query = read === null ? data : aggregate !== null ? totals : list;
     if (read !== null && !canList) {
         return { status: 'hidden' };

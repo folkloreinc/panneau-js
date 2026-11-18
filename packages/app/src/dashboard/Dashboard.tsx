@@ -8,17 +8,24 @@ import type {
     BreakdownWidgetData,
     Definition,
     ListWidgetData,
+    MetricWidgetData,
     SeriesWidgetData,
     StatWidgetData,
+    TableWidgetData,
     Widget,
 } from '@panneau/protocol';
 import {
     HOME_PAGE,
+    type OverviewPeriodOption,
+    WIDGET_METRIC_MAX_PARTS,
     type WidgetPeriod,
     followsPeriod,
+    getChangeTone,
     getDashboardPeriod,
     getDashboardWidgets,
+    getWidgetChange,
     isBuiltInWidgetType,
+    readWidgetFormat,
 } from '@panneau/protocol/runtime';
 import {
     Alert,
@@ -26,10 +33,14 @@ import {
     BarChart,
     Button,
     Card,
+    ChartLegend,
     LineChart,
     LoadingRegion,
     Skeleton,
+    Sparkline,
     Stat,
+    type StatChange,
+    Text,
     type Tone,
     usePanneauIntl,
 } from '@panneau/ui';
@@ -52,7 +63,7 @@ export interface DashboardProps {
 
 /** Columns of the grid of 12 a widget takes, without a `width`. */
 function widthOf(widget: Widget): number {
-    return widget.width ?? (widget.type === 'stat' ? 3 : 6);
+    return widget.width ?? (widget.type === 'stat' ? 3 : widget.type === 'metric' ? 4 : 6);
 }
 
 /** Keeps a widget that throws while it draws from taking the others down. */
@@ -103,6 +114,18 @@ function WidgetSkeleton({ widget }: { widget: Widget }) {
             </Card>
         );
     }
+    if (widget.type === 'metric') {
+        return (
+            <Card className={styles.widget}>
+                <LoadingRegion {...(label !== undefined && { label })}>
+                    <div className={styles.metric}>
+                        <Stat label={widget.label} help="" />
+                        <Sparkline />
+                    </div>
+                </LoadingRegion>
+            </Card>
+        );
+    }
     return (
         <Card title={widget.label} className={styles.widget}>
             <LoadingRegion {...(label !== undefined && { label })}>
@@ -113,7 +136,7 @@ function WidgetSkeleton({ widget }: { widget: Widget }) {
                     </div>
                 ) : widget.type === 'breakdown' ? (
                     <BarChart label={widget.label ?? ''} />
-                ) : widget.type === 'list' ? (
+                ) : widget.type === 'list' || widget.type === 'table' ? (
                     <ul className={styles.items}>
                         {[0, 1, 2].map((index) => (
                             <li key={index} className={styles.item}>
@@ -150,9 +173,20 @@ function formatPointDate(
 /** Past this number of points, a series shows the value under the pointer: its days can't be read from the scale. */
 const SERIES_INTERACTIVE_POINTS = 31;
 
-/** The options of the numbers of a widget: amounts in a currency, for a sum of `money`. */
-function formatOf(currency: string | undefined): FormatNumberOptions | undefined {
-    return currency !== undefined ? { style: 'currency', currency } : undefined;
+/**
+ * The options of the numbers of a widget (decision 0089): the `format` of its data, the `format`
+ * of its settings over it, else amounts in a currency, for a sum of `money`.
+ */
+function formatOf(
+    widget: Widget,
+    data: { format?: unknown },
+    currency: string | undefined,
+): FormatNumberOptions | undefined {
+    return (
+        (readWidgetFormat(data.format, widget.settings?.format) as
+            FormatNumberOptions | undefined) ??
+        (currency !== undefined ? { style: 'currency', currency } : undefined)
+    );
 }
 
 interface BodyProps<Data> {
@@ -160,6 +194,60 @@ interface BodyProps<Data> {
     data: Data;
     /** The currency of the values, for a sum of `money`. */
     currency?: string | undefined;
+    /** The option of the period of the overview, when the widget follows it. */
+    period?: OverviewPeriodOption | null | undefined;
+}
+
+/** Days of the periods that are a number of days. */
+const PERIOD_DAYS: Partial<Record<OverviewPeriodOption, number>> = {
+    '7d': 7,
+    '30d': 30,
+    '90d': 90,
+};
+
+/**
+ * The change of a number from the previous period (decision 0089): a percent, or the difference
+ * when it was 0, and from what: the previous days of the period, the same days of the month or the
+ * year before. In the tone of good or bad news only with `goodWhen`.
+ */
+function changeOf(
+    intl: ReturnType<typeof usePanneauIntl>,
+    value: number,
+    previous: number | null | undefined,
+    {
+        format,
+        period,
+        goodWhen,
+    }: {
+        format: FormatNumberOptions | undefined;
+        period: OverviewPeriodOption | null | undefined;
+        goodWhen: unknown;
+    },
+): StatChange | undefined {
+    if (previous === undefined || previous === null) {
+        return undefined;
+    }
+    const change = getWidgetChange(value, previous);
+    const amount =
+        change.direction === 'none'
+            ? intl.formatMessage(appMessages.widgetNoChange)
+            : change.ratio !== null
+              ? intl.formatNumber(Math.abs(change.ratio), {
+                    style: 'percent',
+                    maximumFractionDigits: Math.abs(change.ratio) < 0.1 ? 1 : 0,
+                })
+              : intl.formatNumber(Math.abs(change.difference), format);
+    const days = period !== null && period !== undefined ? PERIOD_DAYS[period] : undefined;
+    const label =
+        days !== undefined
+            ? intl.formatMessage(appMessages.widgetChangeDays, { change: amount, days })
+            : period === 'month'
+              ? intl.formatMessage(appMessages.widgetChangeMonth, { change: amount })
+              : period === 'year'
+                ? intl.formatMessage(appMessages.widgetChangeYear, { change: amount })
+                : intl.formatMessage(appMessages.widgetChangePrevious, { change: amount });
+    const tone = getChangeTone(change.direction, goodWhen);
+    return { direction: change.direction, label, ...(tone !== null && { tone }) };
 }
 
 function StatBody({ widget, data, currency }: BodyProps<StatWidgetData>) {
@@ -168,7 +256,7 @@ function StatBody({ widget, data, currency }: BodyProps<StatWidgetData>) {
             <Stat
                 label={widget.label}
                 value={data.value}
-                format={formatOf(currency)}
+                format={formatOf(widget, data, currency)}
                 help={data.help ?? undefined}
                 tone={(data.tone ?? undefined) as Tone | undefined}
                 href={data.url ?? undefined}
@@ -178,9 +266,87 @@ function StatBody({ widget, data, currency }: BodyProps<StatWidgetData>) {
     );
 }
 
+/** The lines of a series with several (decision 0089), on the dates of all of them. */
+function seriesLines(intl: ReturnType<typeof usePanneauIntl>, data: SeriesWidgetData) {
+    const lines = data.series ?? [];
+    const dates = [
+        ...new Set(lines.flatMap((line) => line.points.map((point) => point.date))),
+    ].sort();
+    return lines.map((line) => {
+        const values = new Map(line.points.map((point) => [point.date, point.value]));
+        return {
+            label: line.label,
+            tone: (line.tone ?? undefined) as Tone | undefined,
+            points: dates.map((date) => ({
+                label: formatPointDate(intl, date, data.period, 'long'),
+                shortLabel: formatPointDate(intl, date, data.period, 'short'),
+                value: values.get(date) ?? 0,
+            })),
+        };
+    });
+}
+
 function SeriesBody({ widget, data, currency }: BodyProps<SeriesWidgetData>) {
     const intl = usePanneauIntl();
-    const format = formatOf(currency);
+    const format = formatOf(widget, data, currency);
+    const formatValue = (value: number) => intl.formatNumber(value, format);
+    const lines = data.series ?? [];
+    if (lines.length > 0) {
+        const chart = seriesLines(intl, data);
+        const label = widget.label ?? intl.formatMessage(appMessages.widgetTotal);
+        return (
+            <Card title={widget.label} className={styles.widget}>
+                <div className={styles.series}>
+                    {data.total !== undefined && data.total !== null ? (
+                        <Stat
+                            label={intl.formatMessage(appMessages.widgetTotal)}
+                            value={data.total}
+                            format={format}
+                        />
+                    ) : null}
+                    <LineChart
+                        label={label}
+                        series={chart}
+                        stacked={widget.settings?.stacked === true}
+                        formatValue={formatValue}
+                        {...(format !== undefined && {
+                            formatTick: (value: number) =>
+                                intl.formatNumber(value, { ...format, notation: 'compact' }),
+                        })}
+                        isInteractive
+                    />
+                    <ChartLegend
+                        label={label}
+                        items={lines.map((line) => {
+                            const alert =
+                                line.alert !== undefined &&
+                                line.alert !== null &&
+                                line.alert.value > 0
+                                    ? line.alert
+                                    : null;
+                            return {
+                                label: line.label,
+                                ...(line.total !== undefined &&
+                                    line.total !== null && { value: formatValue(line.total) }),
+                                ...(alert !== null
+                                    ? {
+                                          help: intl.formatMessage(appMessages.widgetAlert, {
+                                              value: intl.formatNumber(alert.value),
+                                              label: alert.label,
+                                          }),
+                                          helpTone: (alert.tone ?? 'danger') as Tone,
+                                      }
+                                    : line.help !== undefined &&
+                                      line.help !== null && { help: line.help }),
+                                tone: (line.tone ?? undefined) as Tone | undefined,
+                                href: line.url ?? undefined,
+                            };
+                        })}
+                    />
+                </div>
+            </Card>
+        );
+    }
     return (
         <Card title={widget.label} className={styles.widget}>
             <div className={styles.series}>
@@ -213,7 +379,7 @@ function SeriesBody({ widget, data, currency }: BodyProps<SeriesWidgetData>) {
 
 function BreakdownBody({ widget, data, currency }: BodyProps<BreakdownWidgetData>) {
     const intl = usePanneauIntl();
-    const format = formatOf(currency);
+    const format = formatOf(widget, data, currency);
     const other = data.other ?? null;
     return (
         <Card title={widget.label} className={styles.widget}>
@@ -239,6 +405,195 @@ function BreakdownBody({ widget, data, currency }: BodyProps<BreakdownWidgetData
                         other={other}
                         formatValue={(value) => intl.formatNumber(value, format)}
                     />
+                </div>
+            )}
+        </Card>
+    );
+}
+
+/**
+ * A `metric` (decision 0089): its number, its change from the previous period, its trend as a
+ * small line, and its largest parts as bars, the rest as "Other".
+ */
+function MetricBody({ widget, data, currency, period }: BodyProps<MetricWidgetData>) {
+    const intl = usePanneauIntl();
+    const format = formatOf(widget, data, currency);
+    const formatValue = (value: number) => intl.formatNumber(value, format);
+    const points = data.points ?? [];
+    const first = points[0];
+    const last = points.at(-1);
+    const parts = [...(data.parts ?? [])].sort((a, b) => b.value - a.value);
+    const shown = parts.slice(0, WIDGET_METRIC_MAX_PARTS);
+    const rest =
+        parts.slice(WIDGET_METRIC_MAX_PARTS).reduce((sum, part) => sum + part.value, 0) +
+        (data.other ?? 0);
+    return (
+        <Card className={styles.widget}>
+            <div className={styles.metric}>
+                <Stat
+                    label={widget.label}
+                    value={data.value}
+                    format={format}
+                    help={data.help ?? undefined}
+                    tone={(data.tone ?? undefined) as Tone | undefined}
+                    href={data.url ?? undefined}
+                    target={data.target}
+                    change={changeOf(intl, data.value, data.previous, {
+                        format,
+                        period,
+                        goodWhen: widget.settings?.goodWhen,
+                    })}
+                />
+                {first !== undefined && last !== undefined && points.length > 1 ? (
+                    <Sparkline
+                        values={points.map((point) => point.value)}
+                        label={intl.formatMessage(appMessages.widgetTrend, {
+                            first: formatValue(first.value),
+                            last: formatValue(last.value),
+                        })}
+                    />
+                ) : null}
+                {shown.length > 0 ? (
+                    <BarChart
+                        label={widget.label ?? intl.formatMessage(appMessages.widgetTotal)}
+                        items={shown.map((part) => ({
+                            label: part.label,
+                            value: part.value,
+                            tone: (part.tone ?? undefined) as Tone | undefined,
+                            href: part.url ?? undefined,
+                        }))}
+                        other={rest > 0 ? rest : null}
+                        formatValue={formatValue}
+                    />
+                ) : null}
+            </div>
+        </Card>
+    );
+}
+
+/** The number of a cell of a table: a number, `null`, or a number with a tone, a word, a format. */
+function cellOf(cell: TableWidgetData['rows'][number]['cells'][string] | undefined): {
+    value: number | null | undefined;
+    tone?: Tone | undefined;
+    help?: string | undefined;
+    format?: unknown;
+} {
+    if (cell === undefined || cell === null || typeof cell === 'number') {
+        return { value: cell };
+    }
+    return {
+        value: cell.value,
+        tone: (cell.tone ?? undefined) as Tone | undefined,
+        help: cell.help ?? undefined,
+        format: cell.format,
+    };
+}
+
+/**
+ * A `table` (decision 0089): a row per subject, its label linking to its list, its numbers in
+ * columns, aligned to the end and formatted, and its trend as a small line in a last column.
+ */
+function TableBody({ widget, data }: BodyProps<TableWidgetData>) {
+    const intl = usePanneauIntl();
+    const widgetFormat = formatOf(widget, data, undefined);
+    const hasTrend = data.rows.some((row) => (row.points ?? []).length > 1);
+    const url = data.url ?? undefined;
+    return (
+        <Card
+            title={widget.label}
+            className={styles.widget}
+            footer={
+                url !== undefined ? (
+                    <Link href={url} className={styles.seeAll}>
+                        {intl.formatMessage(appMessages.widgetSeeAll)}
+                    </Link>
+                ) : undefined
+            }
+        >
+            {data.rows.length === 0 ? (
+                <p className={styles.empty}>
+                    {data.empty ?? intl.formatMessage(appMessages.widgetEmpty)}
+                </p>
+            ) : (
+                <div className={styles.tableScroll}>
+                    <table className={styles.table}>
+                        {widget.label !== undefined ? (
+                            <caption className={styles.visuallyHidden}>{widget.label}</caption>
+                        ) : null}
+                        <thead>
+                            <tr>
+                                <td />
+                                {data.columns.map((column) => (
+                                    <th
+                                        key={column.key}
+                                        scope="col"
+                                        data-align={column.align ?? 'end'}
+                                    >
+                                        {column.label}
+                                    </th>
+                                ))}
+                                {hasTrend ? (
+                                    <th scope="col" data-align="end">
+                                        {intl.formatMessage(appMessages.widgetColumnTrend)}
+                                    </th>
+                                ) : null}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.rows.map((row, index) => (
+                                <tr key={index}>
+                                    <th scope="row">
+                                        {row.url !== undefined && row.url !== null ? (
+                                            <Link href={row.url} className={styles.itemTitle}>
+                                                {row.label}
+                                            </Link>
+                                        ) : (
+                                            <span className={styles.itemTitle}>{row.label}</span>
+                                        )}
+                                    </th>
+                                    {data.columns.map((column) => {
+                                        const cell = cellOf(row.cells[column.key]);
+                                        const format =
+                                            (readWidgetFormat(cell.format) as
+                                                FormatNumberOptions | undefined) ??
+                                            (readWidgetFormat(column.format) as
+                                                FormatNumberOptions | undefined) ??
+                                            widgetFormat;
+                                        // A cell missing is empty, a `null` says there is none
+                                        const text =
+                                            cell.value === undefined
+                                                ? ''
+                                                : cell.value !== null
+                                                  ? intl.formatNumber(cell.value, format)
+                                                  : '—';
+                                        return (
+                                            <td key={column.key} data-align={column.align ?? 'end'}>
+                                                <Text as="span" size="sm" tone={cell.tone}>
+                                                    {cell.help !== undefined && text !== ''
+                                                        ? intl.formatMessage(
+                                                              appMessages.widgetAlert,
+                                                              { value: text, label: cell.help },
+                                                          )
+                                                        : text}
+                                                </Text>
+                                            </td>
+                                        );
+                                    })}
+                                    {hasTrend ? (
+                                        <td data-align="end" className={styles.trend}>
+                                            {(row.points ?? []).length > 1 ? (
+                                                <Sparkline
+                                                    values={(row.points ?? []).map(
+                                                        (point) => point.value,
+                                                    )}
+                                                />
+                                            ) : null}
+                                        </td>
+                                    ) : null}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             )}
         </Card>
@@ -302,10 +657,12 @@ function WidgetBody({
     widget,
     content,
     definition,
+    period,
 }: {
     widget: Widget;
     content: WidgetContent;
     definition: Definition;
+    period: OverviewPeriodOption | null;
 }) {
     const plugins = usePlugins();
     if (content.status === 'loading') {
@@ -344,6 +701,17 @@ function WidgetBody({
                     currency={content.currency}
                 />
             );
+        case 'metric':
+            return (
+                <MetricBody
+                    widget={widget}
+                    data={content.data as MetricWidgetData}
+                    currency={content.currency}
+                    period={period}
+                />
+            );
+        case 'table':
+            return <TableBody widget={widget} data={content.data as TableWidgetData} />;
         default: {
             const Plugin = plugins.widgets.get(widget.type);
             return (
@@ -376,8 +744,18 @@ function DashboardWidget({
         definition,
         basePath,
         untitled: (id) => intl.formatMessage(appMessages.widgetUntitled, { id }),
+        texts: {
+            total: intl.formatMessage(appMessages.widgetTotal),
+            change: intl.formatMessage(appMessages.widgetColumnChange),
+            alerts: intl.formatMessage(appMessages.widgetColumnAlerts),
+            other: intl.formatMessage(appMessages.widgetOther),
+        },
         enabled: drawn,
     });
+    const followed =
+        period !== null && period !== undefined && followsPeriod(widget, summary?.resource)
+            ? period.option
+            : null;
     if (drawn && content.status === 'hidden') {
         return null;
     }
@@ -391,7 +769,12 @@ function DashboardWidget({
                 <WidgetErrorBoundary
                     fallback={(retry) => <WidgetError widget={widget} retry={retry} />}
                 >
-                    <WidgetBody widget={widget} content={content} definition={definition} />
+                    <WidgetBody
+                        widget={widget}
+                        content={content}
+                        definition={definition}
+                        period={followed}
+                    />
                 </WidgetErrorBoundary>
             ) : (
                 <Alert tone="warning">

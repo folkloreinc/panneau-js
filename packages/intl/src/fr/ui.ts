@@ -26,4 +26,7 @@ export const uiFr: Record<string, string> = {
     'panneau.ui.meterTarget': 'Cible',
     'panneau.ui.meterValue': '{value} sur {target}',
     'panneau.ui.chartPoint': '{label} : {value}',
+    'panneau.ui.chartDate': 'Date',
+    'panneau.ui.statChangeUp': 'En hausse',
+    'panneau.ui.statChangeDown': 'En baisse',
 };

@@ -57,4 +57,7 @@ export const uiMessages = {
         id: 'panneau.ui.chartPoint',
         defaultMessage: '{label}: {value}',
     }),
+    chartDate: defineMessage({ id: 'panneau.ui.chartDate', defaultMessage: 'Date' }),
+    statChangeUp: defineMessage({ id: 'panneau.ui.statChangeUp', defaultMessage: 'Up' }),
+    statChangeDown: defineMessage({ id: 'panneau.ui.statChangeDown', defaultMessage: 'Down' }),
 };

@@ -4,6 +4,8 @@ import { messages } from '../intl/messages';
 import { usePanneauIntl } from '../intl/usePanneauIntl';
 import { Skeleton } from '../skeleton/Skeleton';
 import { chartColors } from '../theme/chartColors';
+import { toneClass } from '../theme/toneClass';
+import type { Tone } from '../theme/tones';
 import { cx } from '../utils/cx';
 import styles from './LineChart.module.css';
 import { type PlotPoint, axisLabelIndices, linearPath, monotonePath, niceScale } from './geometry';
@@ -17,11 +19,34 @@ export interface LineChartPoint {
     value: number;
 }
 
+/** A line of a `LineChart` with several. */
+export interface LineChartSeries {
+    /** What the line is: a column of the table of the chart, and a line of its tooltip. */
+    label: string;
+    /**
+     * Its points, one per date, in the order of those of the first line, whose labels are the
+     * dates of the chart. A point missing is 0.
+     */
+    points: LineChartPoint[];
+    /** Its categorical color, from 0. Defaults to its place among the lines. */
+    color?: number | undefined;
+    /** The solid color of a tone instead. */
+    tone?: Tone | undefined;
+}
+
 export interface LineChartProps {
     /** What the chart shows: the caption of its table, for assistive technologies. */
     label: string;
     /** The points, in order. Left `undefined` while they load: a skeleton of the plot. */
     points?: LineChartPoint[] | undefined;
+    /**
+     * Several lines over the same dates, instead of `points`: each on its categorical color or its
+     * tone, without values written on them (a legend beside the chart gives their names and
+     * totals). The table of the chart has a column per line.
+     */
+    series?: LineChartSeries[] | undefined;
+    /** Stacks the lines of `series`, as areas: the top one is their total. */
+    stacked?: boolean | undefined;
     /** Formats a value: in the table, the labels on the line and the tooltip. A number of the locale by default. */
     formatValue?: ((value: number) => string) | undefined;
     /**
@@ -74,7 +99,9 @@ const LABEL_GAP = 12;
  */
 export function LineChart({
     label,
-    points,
+    points: ownPoints,
+    series,
+    stacked = false,
     formatValue,
     formatTick,
     axisLabel,
@@ -96,6 +123,8 @@ export function LineChart({
         '--_panneau-line-chart-color': chartColors.categorical(color),
         ...(height !== undefined ? { '--_panneau-line-chart-height': height } : {}),
     } as CSSProperties;
+    const multiple = series !== undefined && series.length > 1;
+    const points = series !== undefined ? (series[0]?.points ?? []) : ownPoints;
     if (points === undefined) {
         return (
             <div className={cx('panneau-line-chart', styles.chart, className)} style={style}>
@@ -107,8 +136,23 @@ export function LineChart({
         );
     }
 
+    // The values of each line, aligned on the dates of the first one; stacked, their running totals
+    const lines = (series ?? [{ label, points, color, tone: undefined }]).map((line, index) => ({
+        label: line.label,
+        color: line.color ?? (series !== undefined ? index : color),
+        tone: line.tone,
+        values: points.map((_, at) => line.points[at]?.value ?? 0),
+    }));
+    const tops = lines.map((line, index) =>
+        line.values.map((value, at) =>
+            stacked
+                ? lines.slice(0, index + 1).reduce((sum, other) => sum + (other.values[at] ?? 0), 0)
+                : value,
+        ),
+    );
+    const drawn = tops.flat();
     const values = points.map((point) => point.value);
-    const scale = niceScale(Math.min(...values, 0), Math.max(...values, 0), domain);
+    const scale = niceScale(Math.min(...drawn, 0), Math.max(...drawn, 0), domain);
     const tick =
         formatTick ??
         ((value: number) =>
@@ -126,8 +170,9 @@ export function LineChart({
     const maxValue = Math.max(...values);
     const maxIndex = values.indexOf(maxValue);
     const maxPoint = plotted[maxIndex];
-    const labelLast = showLast && lastPoint !== undefined;
+    const labelLast = showLast && !multiple && lastPoint !== undefined;
     const labelMax =
+        !multiple &&
         showMax &&
         maxPoint !== undefined &&
         maxValue > scale.min &&
@@ -135,8 +180,31 @@ export function LineChart({
     const activePoint = active !== null ? plotted[active] : undefined;
     const activeData = active !== null ? points[active] : undefined;
     const shortLabel = (point: LineChartPoint) => point.shortLabel ?? point.label;
-    const describe = (point: LineChartPoint) =>
-        intl.formatMessage(messages.chartPoint, { label: point.label, value: format(point.value) });
+    const describe = (point: LineChartPoint, index: number) =>
+        intl.formatMessage(messages.chartPoint, {
+            label: point.label,
+            value: multiple
+                ? lines
+                      .map((line) =>
+                          intl.formatMessage(messages.chartPoint, {
+                              label: line.label,
+                              value: format(line.values[index] ?? 0),
+                          }),
+                      )
+                      .join(', ')
+                : format(point.value),
+        });
+    const plotLine = (line: number[]): PlotPoint[] =>
+        line.map((value, index) => ({
+            x: points.length === 1 ? 50 : (index / (points.length - 1)) * 100,
+            y: y(value),
+        }));
+    const pathOf = (plot: PlotPoint[]) =>
+        curve === 'linear' ? linearPath(plot) : monotonePath(plot);
+    const colorStyle = (line: (typeof lines)[number]) =>
+        ({ '--_panneau-line-chart-color': chartColors.categorical(line.color) }) as CSSProperties;
+    const colorClass = (line: (typeof lines)[number]) =>
+        line.tone !== undefined ? cx(styles.toned, toneClass(line.tone)) : undefined;
 
     // The point under the pointer: the nearest one along the width of the plot
     const point = (event: PointerEvent<HTMLDivElement>) => {
@@ -174,7 +242,7 @@ export function LineChart({
                   'aria-valuemin': 0,
                   'aria-valuemax': lastIndex,
                   'aria-valuenow': active ?? lastIndex,
-                  'aria-valuetext': describe(focused),
+                  'aria-valuetext': describe(focused, active ?? lastIndex),
                   onPointerMove: point,
                   onPointerDown: point,
                   onPointerLeave: () => setActive(null),
@@ -258,7 +326,35 @@ export function LineChart({
                               ))
                             : null}
                         <line className={styles.baseline} x1="0" x2="100" y1={zero} y2={zero} />
-                        {firstPoint !== undefined &&
+                        {multiple && points.length > 1 ? (
+                            <g className={styles.reveal}>
+                                {lines.map((line, index) => {
+                                    const top = plotLine(tops[index] ?? []);
+                                    const below =
+                                        index > 0
+                                            ? plotLine(tops[index - 1] ?? [])
+                                            : top.map((point) => ({ ...point, y: zero }));
+                                    const back = pathOf([...below].reverse()).replace(/^M/, 'L');
+                                    return (
+                                        <g
+                                            key={index}
+                                            className={colorClass(line)}
+                                            style={colorStyle(line)}
+                                        >
+                                            {stacked ? (
+                                                <path
+                                                    className={styles.stackArea}
+                                                    d={`${pathOf(top)} ${back} Z`}
+                                                />
+                                            ) : null}
+                                            <path className={styles.line} d={pathOf(top)} />
+                                        </g>
+                                    );
+                                })}
+                            </g>
+                        ) : null}
+                        {!multiple &&
+                        firstPoint !== undefined &&
                         lastPoint !== undefined &&
                         points.length > 1 ? (
                             <g className={styles.reveal}>
@@ -279,7 +375,31 @@ export function LineChart({
                         />
                     ) : null}
                     <div className={styles.marks} aria-hidden="true">
-                        {points.length === 1 && firstPoint !== undefined && !labelLast ? (
+                        {multiple
+                            ? lines.map((line, index) => {
+                                  const at = active ?? lastIndex;
+                                  const value = tops[index]?.[at];
+                                  const where = plotted[at];
+                                  return value !== undefined && where !== undefined ? (
+                                      <span
+                                          key={index}
+                                          className={cx(
+                                              styles.dot,
+                                              active !== null && styles.activeDot,
+                                              colorClass(line),
+                                          )}
+                                          style={{
+                                              ...colorStyle(line),
+                                              ...positionOf({ x: where.x, y: y(value) }),
+                                          }}
+                                      />
+                                  ) : null;
+                              })
+                            : null}
+                        {!multiple &&
+                        points.length === 1 &&
+                        firstPoint !== undefined &&
+                        !labelLast ? (
                             <span className={styles.dot} style={positionOf(firstPoint)} />
                         ) : null}
                         {labelMax && maxPoint !== undefined ? (
@@ -294,7 +414,28 @@ export function LineChart({
                         {activePoint === undefined && labelLast && lastPoint !== undefined
                             ? valueLabel(lastIndex, lastPoint, placement(lastIndex))
                             : null}
-                        {activePoint !== undefined && activeData !== undefined ? (
+                        {activePoint !== undefined && activeData !== undefined && multiple ? (
+                            <span
+                                className={styles.tooltip}
+                                data-placement="below"
+                                style={positionOf({ x: activePoint.x, y: 0 })}
+                            >
+                                <span className={styles.tooltipLabel}>{activeData.label}</span>
+                                {lines.map((line, index) => (
+                                    <span key={index} className={styles.tooltipRow}>
+                                        <span
+                                            className={cx(styles.swatch, colorClass(line))}
+                                            style={colorStyle(line)}
+                                        />
+                                        {line.label}
+                                        <strong className={styles.tooltipValue}>
+                                            {format(line.values[active ?? lastIndex] ?? 0)}
+                                        </strong>
+                                    </span>
+                                ))}
+                            </span>
+                        ) : null}
+                        {activePoint !== undefined && activeData !== undefined && !multiple ? (
                             <>
                                 <span
                                     className={cx(styles.dot, styles.activeDot)}
@@ -343,11 +484,29 @@ export function LineChart({
             <div className={styles.visuallyHidden}>
                 <table>
                     <caption>{label}</caption>
+                    {multiple ? (
+                        <thead>
+                            <tr>
+                                <th scope="col">{intl.formatMessage(messages.chartDate)}</th>
+                                {lines.map((line, index) => (
+                                    <th key={index} scope="col">
+                                        {line.label}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                    ) : null}
                     <tbody>
                         {points.map((data, index) => (
                             <tr key={index}>
                                 <th scope="row">{data.label}</th>
-                                <td>{format(data.value)}</td>
+                                {multiple ? (
+                                    lines.map((line, at) => (
+                                        <td key={at}>{format(line.values[index] ?? 0)}</td>
+                                    ))
+                                ) : (
+                                    <td>{format(data.value)}</td>
+                                )}
                             </tr>
                         ))}
                     </tbody>

@@ -94,3 +94,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0086](0086-one-user-menu.md)                                     | One user's menu, at the bottom of the sidebar and in the dock                        | Proposed                          |
 | [0087](0087-image-fields-without-transforms.md)                   | Image fields without transforms                                                      | Proposed                          |
 | [0088](0088-destructive-actions-in-a-menu.md)                     | Actions that destroy come last, outlined                                             | Proposed                          |
+| [0089](0089-combined-widgets.md)                                  | Combined widgets: a metric, several lines, a table of numbers                        | Proposed                          |

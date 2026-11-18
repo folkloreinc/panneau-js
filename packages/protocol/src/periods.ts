@@ -93,6 +93,55 @@ export function getPeriodRange(
     };
 }
 
+const DAY_MS = 86_400_000;
+
+/** The number of days of a month, of a year and a month from 0. */
+const daysInMonth = (year: number, month: number) =>
+    new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+
+/**
+ * The days a period is compared with, both inclusive (decision 0089): the change of a `metric` or a
+ * `table` is from them.
+ *
+ * - `7d`, `30d`, `90d`, and a range without an option: the same number of days, just before it;
+ * - `month`: the same days of the month before, to its last day when it is shorter (March 1 to 31
+ *   after February 1 to 28);
+ * - `year`: the same days a year before.
+ *
+ * A backend computes `previous` of the data of a `metric` over these days.
+ */
+export function getPreviousRange(
+    range: PeriodRange,
+    option?: OverviewPeriodOption | null,
+): PeriodRange {
+    const from = utcDay(range.from);
+    const to = utcDay(range.to);
+    if (option === 'month' || option === 'year') {
+        const back = option === 'month' ? 1 : 12;
+        const shift = (date: Date) => {
+            const year = date.getUTCFullYear();
+            const month = date.getUTCMonth() - back;
+            const target = new Date(Date.UTC(year, month, 1));
+            const last = daysInMonth(target.getUTCFullYear(), target.getUTCMonth());
+            return toDay(
+                new Date(
+                    Date.UTC(
+                        target.getUTCFullYear(),
+                        target.getUTCMonth(),
+                        Math.min(date.getUTCDate(), last),
+                    ),
+                ),
+            );
+        };
+        return { from: shift(from), to: shift(to) };
+    }
+    const days = Math.round((to.getTime() - from.getTime()) / DAY_MS) + 1;
+    return {
+        from: toDay(new Date(from.getTime() - days * DAY_MS)),
+        to: toDay(new Date(from.getTime() - DAY_MS)),
+    };
+}
+
 /** The period an overview starts on: its `default`, or its first option. */
 export function getDefaultPeriod(period: PeriodLike): OverviewPeriodOption | null {
     const candidate = period.default ?? period.options[0];

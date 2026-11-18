@@ -39,7 +39,7 @@ import type {
 import { SEARCH_MAX_LIMIT, readSearchQuery } from '../search';
 import { isRecord } from '../values';
 import { PROBLEM_CONTENT_TYPE } from '../version';
-import { checkWidgetData, getWidgetResource } from '../widgets';
+import { checkWidgetData, readsResources } from '../widgets';
 import { type MockAuthOptions, createMockAuth } from './auth';
 
 export type { MockAuthOptions, MockMail, MockUser } from './auth';
@@ -840,7 +840,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                 : getDashboardWidgets(current, read.page)
         ).find((candidate) => candidate.id === id);
         const data = options.widgets?.[id];
-        if (widget === undefined || getWidgetResource(widget) !== null || data === undefined) {
+        if (widget === undefined || readsResources(widget) || data === undefined) {
             return problem(404, 'Widget not found.');
         }
         const answer =

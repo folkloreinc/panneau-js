@@ -110,6 +110,14 @@ export const queryKeys: {
 export function resourceAggregateQueryOptions(adapter: DataAdapter, resource: string, request?: AggregateRequest): DataQueryOptions<unknown, ReturnType<typeof queryKeys.aggregate>>;
 
 // @public
+export interface ResourceAggregateRead {
+    // (undocumented)
+    request: AggregateRequest;
+    // (undocumented)
+    resource: string;
+}
+
+// @public
 export function resourceItemQueryOptions(adapter: DataAdapter, resource: string, id: string): DataQueryOptions<Item, ReturnType<typeof queryKeys.item>>;
 
 // @public
@@ -169,6 +177,11 @@ export function useOptionalDataAdapter(): DataAdapter | null;
 
 // @public
 export function useResourceAggregate(resource: string, request?: AggregateRequest, options?: QueryHookOptions<unknown, ReturnType<typeof queryKeys.aggregate>>): UseQueryResult<unknown>;
+
+// @public
+export function useResourceAggregates(reads: readonly ResourceAggregateRead[], input?: {
+    enabled?: boolean;
+}): UseQueryResult<unknown>[];
 
 // @public
 export function useResourceItem(resource: string, id: string | null | undefined, options?: QueryHookOptions<Item, ReturnType<typeof queryKeys.item>>): UseQueryResult<Item>;

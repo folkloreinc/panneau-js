@@ -17,6 +17,7 @@ import {
     useDeleteItem,
     useDuplicateItem,
     useResourceAggregate,
+    useResourceAggregates,
     useResourceItem,
     useResourceList,
     useRunAction,
@@ -335,6 +336,24 @@ describe('query hooks', () => {
         );
         await act(() => result.current.remove.mutateAsync('2'));
         await waitFor(() => expect(result.current.aggregate.data).toMatchObject({ total: 1 }));
+    });
+
+    it('get several aggregates, in order, and none when disabled', async () => {
+        const { wrapper, backend } = setup();
+        const reads = [
+            { resource: 'pages', request: {} },
+            { resource: 'pages', request: { group: 'status' } },
+        ];
+        const { result, rerender } = renderHook(
+            ({ enabled }) => useResourceAggregates(reads, { enabled }),
+            { wrapper, initialProps: { enabled: false } },
+        );
+        expect(result.current.map((query) => query.fetchStatus)).toEqual(['idle', 'idle']);
+        expect(backend.requests).toHaveLength(0);
+        rerender({ enabled: true });
+        await waitFor(() => expect(result.current.every((query) => query.isSuccess)).toBe(true));
+        expect(result.current[0]?.data).toEqual({ value: 3 });
+        expect(result.current[1]?.data).toMatchObject({ total: 3 });
     });
 
     it('fail the aggregates without getResourceAggregate()', async () => {
