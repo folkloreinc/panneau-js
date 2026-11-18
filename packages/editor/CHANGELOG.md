@@ -1,5 +1,15 @@
 # @panneau/editor
 
+## 5.0.0-alpha.38
+
+### Patch Changes
+
+- Updated dependencies [6c3dd8d]
+  - @panneau/protocol@5.0.0-alpha.38
+  - @panneau/fields@5.0.0-alpha.38
+  - @panneau/ui@5.0.0-alpha.38
+  - @panneau/intl@5.0.0-alpha.38
+
 ## 5.0.0-alpha.37
 
 ### Patch Changes

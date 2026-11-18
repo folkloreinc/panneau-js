@@ -1,5 +1,21 @@
 # @panneau/media
 
+## 5.0.0-alpha.38
+
+### Minor Changes
+
+- 6c3dd8d: Image fields without transforms (decision 0087). A `media` or `image` field can say that its values keep no transform for one use: `"transforms": false`, which `laravel-panneau` writes for `transforms(false)`. An `image` field without transforms has no Edit action, no editor and no crop step: it shows each image as the media is, and drops the `transform` of the values it sends. `ImageField` and `ImageOptions` take `transforms`, which `getImageOptions()` reads. `lintDefinition()` reports `ratios` and the `crop` rule on a field without transforms. The codemods pass `transforms` to `ImageField`.
+
+### Patch Changes
+
+- Updated dependencies [6c3dd8d]
+  - @panneau/protocol@5.0.0-alpha.38
+  - @panneau/core@5.0.0-alpha.38
+  - @panneau/data@5.0.0-alpha.38
+  - @panneau/fields@5.0.0-alpha.38
+  - @panneau/ui@5.0.0-alpha.38
+  - @panneau/intl@5.0.0-alpha.38
+
 ## 5.0.0-alpha.37
 
 ### Patch Changes
