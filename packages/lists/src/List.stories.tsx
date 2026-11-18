@@ -548,18 +548,15 @@ export const SelectionAndActions: Story = {
         );
         await waitFor(() => expect(canvas.queryByText(/selected/)).not.toBeInTheDocument());
 
-        // An item of the row's menu, since it destroys (decision 0088)
-        const remove = await findRowAction(canvasElement, 'Remove', 'Grace Hopper');
-        await expect(remove).toHaveAttribute('role', 'menuitem');
-        await expect(remove.querySelector('svg')).toHaveClass('lucide-user-minus');
-        await userEvent.keyboard('{Escape}');
-        await waitFor(() => expect(body.queryByRole('menu')).toBeNull());
         // A button of the row, or an item of its menu when they don't fit (decision 0060)
         const resend = await findRowAction(canvasElement, 'Resend the invitation', 'Grace Hopper');
         // A named icon loads on demand: give it time on a busy machine.
         await waitFor(() => expect(resend.querySelector('svg')).toHaveClass('lucide-mail'), {
             timeout: 5000,
         });
+        await expect(
+            (await findRowAction(canvasElement, 'Remove', 'Grace Hopper')).querySelector('svg'),
+        ).toHaveClass('lucide-user-minus');
         await userEvent.click(resend);
         await expect(args.onAction).toHaveBeenLastCalledWith(
             expect.objectContaining({ scope: 'item', count: 1 }),
@@ -644,10 +641,7 @@ function rowActions(canvasElement: HTMLElement, item: string): HTMLElement[] {
         : [];
 }
 
-/**
- * Checks the rules of decisions 0060 and 0088 on a row: a menu holds two actions or more, or one
- * that destroys.
- */
+/** Checks the rule of decision 0060 on a row: a menu holds two actions or more. */
 async function expectMenuOfTwoOrMore(canvasElement: HTMLElement, item: string) {
     const canvas = within(canvasElement);
     const body = within(canvasElement.ownerDocument.body);
@@ -657,9 +651,7 @@ async function expectMenuOfTwoOrMore(canvasElement: HTMLElement, item: string) {
     }
     await userEvent.click(menu);
     const entries = await body.findAllByRole('menuitem');
-    if (entries.length === 1) {
-        await expect(entries[0]).toHaveAttribute('data-danger');
-    }
+    await expect(entries.length).toBeGreaterThanOrEqual(2);
     await userEvent.keyboard('{Escape}');
     await waitFor(() => expect(body.queryByRole('menu')).toBeNull());
     return entries.length;
@@ -667,8 +659,8 @@ async function expectMenuOfTwoOrMore(canvasElement: HTMLElement, item: string) {
 
 /**
  * The built-in actions of rows (decision 0060): their icons, in their colors, with their labels as
- * names and tooltips, and the main action, `show`, with its label. `delete` is in the menu, last,
- * red, and asks first (decision 0088). Owners can't be deleted: their rows keep the place.
+ * names and tooltips, and the main action, `show`, with its label. `delete` is last, red, and asks
+ * first. No menu: the icons fit. Owners can't be deleted: their rows keep the place.
  */
 export const RowActions: Story = {
     args: {
@@ -681,26 +673,25 @@ export const RowActions: Story = {
     play: async ({ args, canvasElement }) => {
         const canvas = within(canvasElement);
         const body = within(canvasElement.ownerDocument.body);
+        await expect(canvas.queryByRole('button', { name: /^Actions for/ })).toBeNull();
         const view = canvas.getByRole('link', { name: 'View: Grace Hopper' });
         await expect(view).toHaveTextContent('View');
         const edit = canvas.getByRole('link', { name: 'Edit: Grace Hopper' });
         await expect(edit).toHaveTextContent('');
         const duplicate = canvas.getByRole('button', { name: 'Duplicate: Grace Hopper' });
         await expect(duplicate).toHaveTextContent('');
-        await expect(canvas.queryByRole('button', { name: 'Delete: Grace Hopper' })).toBeNull();
-        const menu = canvas.getByRole('button', { name: 'Actions for Grace Hopper' });
+        const remove = canvas.getByRole('button', { name: 'Delete: Grace Hopper' });
+        await expect(remove).toHaveTextContent('');
         // Each in its color
+        await expect(getComputedStyle(remove).color).not.toBe(getComputedStyle(duplicate).color);
         await expect(getComputedStyle(view).color).not.toBe(getComputedStyle(duplicate).color);
         // The same place on every row
         await expect(
             canvas.getByRole('link', { name: 'Edit: Ada Lovelace' }).getBoundingClientRect().left,
         ).toBe(edit.getBoundingClientRect().left);
-        await expect(rowActions(canvasElement, 'Grace Hopper').at(-1)).toBe(menu);
-        // Ada Lovelace is an owner: no menu, but its place
-        await expect(canvas.queryByRole('button', { name: 'Actions for Ada Lovelace' })).toBeNull();
-        await expect(
-            canvas.getByRole('link', { name: 'Edit: Ada Lovelace' }).getBoundingClientRect().left,
-        ).toBe(edit.getBoundingClientRect().left);
+        await expect(rowActions(canvasElement, 'Grace Hopper').at(-1)).toBe(remove);
+        // Ada Lovelace is an owner
+        await expect(canvas.queryByRole('button', { name: 'Delete: Ada Lovelace' })).toBeNull();
 
         // The link shows its hover
         const idle = await settledBackground(edit);
@@ -738,12 +729,7 @@ export const RowActions: Story = {
         // `--panneau-space-2`
         await expect(next.left - link.right).toBeGreaterThanOrEqual(8);
 
-        // `delete`, alone in the menu, in its color, asks first
-        await userEvent.click(menu);
-        const remove = await body.findByRole('menuitem', { name: 'Delete' });
-        await expect(body.getAllByRole('menuitem')).toHaveLength(1);
-        await expect(remove).toHaveAttribute('data-danger');
-        await expect(getComputedStyle(remove).color).not.toBe(getComputedStyle(duplicate).color);
+        // `delete` asks first, as it did from the menu
         await userEvent.click(remove);
         const dialog = await body.findByRole('alertdialog');
         await expect(args.onAction).not.toHaveBeenCalled();
@@ -764,8 +750,7 @@ const BIOS = [
 
 /**
  * Rows whose content needs the room: the same actions as in any list of the admin, icons and the
- * labelled main action, and a menu that only holds `delete`: the others join it only when the
- * icons don't fit.
+ * labelled main action, and no menu, which only takes actions when the icons don't fit.
  */
 export const RowActionsWithLongContent: Story = {
     args: {
@@ -788,14 +773,12 @@ export const RowActionsWithLongContent: Story = {
         await expect(canvas.getByRole('link', { name: 'View: Grace Hopper' })).toHaveTextContent(
             'View',
         );
-        await expect(
-            canvas.getByRole('button', { name: 'Duplicate: Grace Hopper' }),
-        ).toBeInTheDocument();
-        const menu = canvas.getByRole('button', { name: 'Actions for Grace Hopper' });
-        await expect(menu.querySelector('svg')).toHaveClass('lucide-ellipsis');
-        await expect(await expectMenuOfTwoOrMore(canvasElement, 'Grace Hopper')).toBe(1);
+        const remove = canvas.getByRole('button', { name: 'Delete: Grace Hopper' });
+        await expect(remove).toHaveTextContent('');
+        await expect(remove.querySelector('svg')).toHaveClass('lucide-trash-2');
+        await expect(canvas.queryByRole('button', { name: /^Actions for/ })).toBeNull();
         // Square, as high as they are wide
-        const { width, height } = menu.getBoundingClientRect();
+        const { width, height } = remove.getBoundingClientRect();
         await expect(width).toBe(height);
     },
 };
@@ -846,7 +829,7 @@ const declaredActions: Action[] = [
 
 /**
  * Many actions on each row: the icons alone would crowd it, so the last ones go to a menu, the
- * same on every row so the columns line up, with the actions that destroy.
+ * same on every row so the columns line up. The menu never holds a single action.
  */
 export const ManyRowActions: Story = {
     args: {
@@ -882,6 +865,9 @@ export const ManyRowActions: Story = {
             rowActions(canvasElement, item).map((action) => action.getAttribute('aria-label'));
         await expect(shown('Grace Hopper').length).toBe(shown('Alan Turing').length);
         await expect(await expectMenuOfTwoOrMore(canvasElement, 'Grace Hopper')).toBeGreaterThan(1);
+        // Two actions that destroy: in the menu, whatever the width (decision 0088)
+        await expect(canvas.queryByRole('button', { name: 'Delete: Grace Hopper' })).toBeNull();
+        await expect(canvas.queryByRole('button', { name: 'Suspend: Grace Hopper' })).toBeNull();
 
         // The icon link and the menu button: the same height and corners, aligned
         const link = edit.getBoundingClientRect();

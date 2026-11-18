@@ -243,9 +243,16 @@ export const Default: Story = {
             'href',
             'https://example.com/articles/1',
         );
-        // `delete` is last, in a menu (decision 0088)
-        await expect(within(panel).queryByRole('button', { name: 'Delete' })).toBeNull();
-        await expect(within(panel).getByRole('button', { name: 'More actions' })).toBeVisible();
+        // `delete` is last, a secondary button like the others (decision 0088)
+        const remove = within(panel).getByRole('button', { name: 'Delete' });
+        await expect(remove.className).toBe(
+            within(panel).getByRole('button', { name: 'Duplicate' }).className,
+        );
+        await expect(
+            within(panel)
+                .getByRole('link', { name: 'View on the site' })
+                .compareDocumentPosition(remove),
+        ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
         await expect(within(panel).getAllByRole('term')).toHaveLength(4);
         // Beside the list, it can be widened
         await expect(within(panel).getByRole('button', { name: 'Widen the panel' })).toBeVisible();

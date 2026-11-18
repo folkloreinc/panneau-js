@@ -19,7 +19,7 @@ export interface RowActionsProps {
     actions: readonly ItemAction[];
     /**
      * Actions placed in `menu`: icons too while they fit, the first to go in the menu. Those that
-     * destroy are always in it.
+     * destroy are always in it when there are two or more.
      */
     menu: readonly ItemAction[];
     /** Id of the action that is running on this item, if any. */
@@ -57,10 +57,10 @@ export function orderRowActions(
 /**
  * The actions of a row (decision 0060): their icons, in their colors, with their labels as names
  * and tooltips, but the main action, which keeps its label while the row has room. Those that
- * destroy are always in an overflow menu (decision 0088), and when the icons don't fit, the last
- * others join them; a menu without them never holds a single action. How they fit is the same
- * for every row of the list (`RowActionsFit`), and a row keeps the place of the actions of other
- * rows that it doesn't have, so they line up.
+ * destroy are last, in an overflow menu when there are two or more (decision 0088), and when the
+ * icons don't fit, the last others join them. The menu never holds a single action. How they fit
+ * is the same for every row of the list (`RowActionsFit`), and a row keeps the place of the
+ * actions of other rows that it doesn't have, so they line up.
  */
 export function RowActions({
     itemLabel,
@@ -80,13 +80,12 @@ export function RowActions({
     const find = (slot: ItemAction) => own.find(({ action }) => action.id === slot.action.id);
     const destructive = all.filter(({ action }) => action.destructive === true).length;
     const inMenu = Math.max(
-        destructive,
+        destructive >= 2 ? destructive : 0,
         level >= 2 && all.length >= 2 ? Math.min(level, all.length) : 0,
     );
     const shown = all.slice(0, all.length - inMenu);
     const overflow = all.slice(all.length - inMenu).flatMap((slot) => find(slot) ?? []);
-    const hasMenu =
-        overflow.length >= 2 || overflow.some(({ action }) => action.destructive === true);
+    const hasMenu = overflow.length >= 2;
     const name = (action: Action) =>
         intl.formatMessage(messages.actionOnItem, {
             action: getActionLabel(action, intl),
@@ -158,7 +157,7 @@ export function RowActions({
                     </Menu>
                 </MenuTrigger>
             ) : overflow.length === 1 && overflow[0] !== undefined ? (
-                // A single action that doesn't destroy is no menu: its button, in the menu's place
+                // A single action is no menu: its button, in the menu's place
                 button(overflow[0])
             ) : inMenu > 0 ? (
                 placeholder('menu', menuButton)

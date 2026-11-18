@@ -40,8 +40,9 @@ function isExternal(href: string): boolean {
 /**
  * The actions of an item in the header of its panel or of its edit page (decision 0040). Links
  * are links, in a new tab when they leave the admin. Other actions run through the action runner
- * (parameters, results, queued runs), after a confirmation when they ask for one. Those that
- * destroy are in a "More actions" menu, last (decision 0088).
+ * (parameters, results, queued runs), after a confirmation when they ask for one. Every action is
+ * a secondary button; those that destroy come last, in a "More actions" menu when there are two
+ * or more (decision 0088).
  */
 export function ItemActions({
     resource,
@@ -94,8 +95,13 @@ export function ItemActions({
         }
     };
 
-    const buttons = actions.filter(({ action }) => action.destructive !== true);
-    const menu = actions.filter(({ action }) => action.destructive === true);
+    const destructive = actions.filter(({ action }) => action.destructive === true);
+    // A menu never holds a single action
+    const menu = destructive.length >= 2 ? destructive : [];
+    const buttons = [
+        ...actions.filter(({ action }) => action.destructive !== true),
+        ...(menu.length === 0 ? destructive : []),
+    ];
     const inMenu = pending !== null && menu.some(({ action }) => action.id === pending);
 
     return (

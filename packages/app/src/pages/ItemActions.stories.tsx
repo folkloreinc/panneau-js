@@ -1,7 +1,8 @@
 /**
  * The actions of an item in the header of its edit page: those placed in `form` that the item
- * allows, run through the action runner of `@panneau/actions`. Those that destroy are in a "More
- * actions" menu, last (decision 0088).
+ * allows, run through the action runner of `@panneau/actions`. Every action is a secondary
+ * button; those that destroy come last, in a "More actions" menu when there are two or more
+ * (decision 0088).
  */
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
@@ -83,31 +84,25 @@ export const Default: Story = {
         );
         // The item doesn't allow it
         await expect(canvas.queryByRole('button', { name: 'Enable' })).not.toBeInTheDocument();
-        // `delete` is last, in a menu, as high as the buttons beside it
-        await expect(canvas.queryByRole('button', { name: 'Delete' })).toBeNull();
-        const more = canvas.getByRole('button', { name: 'More actions' });
-        await expect(more.getBoundingClientRect().height).toBe(
-            disable.getBoundingClientRect().height,
-        );
-        await expect(more.getBoundingClientRect().left).toBeGreaterThan(
+        // A single action that destroys: a secondary button, last, not a menu of one
+        const remove = canvas.getByRole('button', { name: 'Delete' });
+        await expect(remove.className).toBe(disable.className);
+        await expect(remove.getBoundingClientRect().left).toBeGreaterThan(
             disable.getBoundingClientRect().right,
         );
+        await expect(canvas.queryByRole('button', { name: 'More actions' })).toBeNull();
         runAction.mockClear();
         await userEvent.click(canvas.getByRole('button', { name: 'Disable' }));
         await expect(runAction.mock.calls[0]?.slice(0, 2)).toEqual(['projects', 'disable']);
     },
 };
 
-/** An action that asks first, from the menu, where it keeps its color. */
+/** An action that asks first. */
 export const Confirmation: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        const body = within(document.body);
         runAction.mockClear();
-        await userEvent.click(canvas.getByRole('button', { name: 'More actions' }));
-        const item = await body.findByRole('menuitem', { name: 'Delete' });
-        await expect(item).toHaveAttribute('data-danger');
-        await userEvent.click(item);
+        await userEvent.click(canvas.getByRole('button', { name: 'Delete' }));
         const dialog = within(await within(document.body).findByRole('alertdialog'));
         await expect(dialog.getByText('Its keys stop working at once.')).toBeInTheDocument();
         await userEvent.click(dialog.getByRole('button', { name: 'Delete' }));
@@ -115,7 +110,7 @@ export const Confirmation: Story = {
     },
 };
 
-/** An item whose only action destroys: the menu holds it alone. */
+/** An item whose only action destroys: one secondary button. */
 export const OnlyDelete: Story = {
     args: {
         actions: selectItemActions(actions, { ...project, abilities: { delete: true } }, 'form'),
@@ -123,10 +118,55 @@ export const OnlyDelete: Story = {
     },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
+        await expect(canvas.getAllByRole('button').map((button) => button.textContent)).toEqual([
+            'Delete',
+        ]);
+    },
+};
+
+const archive: Action = {
+    id: 'archive',
+    label: 'Archive',
+    kind: 'server',
+    scope: ['item'],
+    destructive: true,
+};
+
+/**
+ * Two actions that destroy: last, in a "More actions" menu, as high as the buttons beside it,
+ * where they keep their color.
+ */
+export const SeveralActionsThatDestroy: Story = {
+    args: {
+        actions: selectItemActions(
+            [...actions, archive],
+            { ...project, abilities: { ...project.abilities, archive: true } },
+            'form',
+        ),
+        item: { ...project, abilities: { ...project.abilities, archive: true } },
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
         const body = within(document.body);
-        await expect(canvas.getAllByRole('button')).toHaveLength(1);
-        await userEvent.click(canvas.getByRole('button', { name: 'More actions' }));
-        await expect(await body.findAllByRole('menuitem')).toHaveLength(1);
-        await userEvent.keyboard('{Escape}');
+        await expect(canvas.queryByRole('button', { name: 'Delete' })).toBeNull();
+        const disable = canvas.getByRole('button', { name: 'Disable' });
+        const more = canvas.getByRole('button', { name: 'More actions' });
+        await expect(more.getBoundingClientRect().height).toBe(
+            disable.getBoundingClientRect().height,
+        );
+        await expect(more.getBoundingClientRect().left).toBeGreaterThan(
+            disable.getBoundingClientRect().right,
+        );
+        await userEvent.click(more);
+        const items = await body.findAllByRole('menuitem');
+        await expect(items.map((item) => item.textContent)).toEqual(['Delete', 'Archive']);
+        for (const item of items) {
+            await expect(item).toHaveAttribute('data-danger');
+        }
+        runAction.mockClear();
+        await userEvent.click(body.getByRole('menuitem', { name: 'Delete' }));
+        const dialog = within(await body.findByRole('alertdialog'));
+        await userEvent.click(dialog.getByRole('button', { name: 'Delete' }));
+        await expect(runAction.mock.calls[0]?.slice(0, 2)).toEqual(['projects', 'delete']);
     },
 };
