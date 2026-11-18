@@ -1,5 +1,21 @@
 # @panneau/app
 
+## 5.0.0-alpha.42
+
+### Patch Changes
+
+- Updated dependencies [019247e]
+- Updated dependencies [66a1a2a]
+  - @panneau/ui@5.0.0-alpha.42
+  - @panneau/fields@5.0.0-alpha.42
+  - @panneau/intl@5.0.0-alpha.42
+  - @panneau/actions@5.0.0-alpha.42
+  - @panneau/forms@5.0.0-alpha.42
+  - @panneau/lists@5.0.0-alpha.42
+  - @panneau/core@5.0.0-alpha.42
+  - @panneau/data@5.0.0-alpha.42
+  - @panneau/protocol@5.0.0-alpha.42
+
 ## 5.0.0-alpha.41
 
 ### Patch Changes

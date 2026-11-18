@@ -1,5 +1,11 @@
 # @panneau/data
 
+## 5.0.0-alpha.42
+
+### Patch Changes
+
+- @panneau/protocol@5.0.0-alpha.42
+
 ## 5.0.0-alpha.41
 
 ### Patch Changes
