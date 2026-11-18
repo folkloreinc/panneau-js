@@ -24,7 +24,7 @@ Every field takes `value`, `onChange`, `onBlur`, `errors`, `disabled`, `readOnly
 | --------------------------- | -------------------------------------------- | ------------------------------------------------------------------- |
 | `@panneau/fields/text`      | `TextField`                                  | `string`                                                            |
 | `@panneau/fields/textarea`  | `TextAreaField`                              | `string`                                                            |
-| `@panneau/fields/number`    | `NumberField`                                | `number`                                                            |
+| `@panneau/fields/number`    | `NumberField`, or a scale (`widget="scale"`) | `number`                                                            |
 | `@panneau/fields/boolean`   | `BooleanField` (checkbox, switch)            | `boolean`                                                           |
 | `@panneau/fields/date`      | `DateField`                                  | `'2026-10-15'`                                                      |
 | `@panneau/fields/datetime`  | `DateTimeField`                              | `'2026-10-15T13:30:00Z'`, or without an offset                      |

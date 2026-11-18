@@ -172,3 +172,117 @@
 .card[data-focus-visible] .circle {
     outline: none;
 }
+
+/*
+ * Scale: the options as joined buttons of the same width in one row, the selected one filled, and
+ * what the two ends mean under them. It keeps the width of its options, at most that of the field.
+ */
+
+.scaleBody {
+    display: inline-flex;
+    flex-direction: column;
+    gap: var(--panneau-space-1);
+    max-width: 100%;
+}
+
+.scale .options {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 0;
+}
+
+.step {
+    display: inline-flex;
+    flex: 1 1 0;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--panneau-control-height);
+    min-height: var(--panneau-control-height);
+    padding: 0 var(--panneau-space-3);
+    font-size: var(--panneau-font-size-control);
+    font-weight: var(--panneau-font-weight-medium);
+    font-variant-numeric: var(--panneau-font-numeric);
+    color: var(--panneau-color-text);
+    cursor: pointer;
+    background-color: var(--panneau-radio-scale-bg, var(--panneau-color-surface));
+    border: var(--panneau-border-width) solid
+        var(--panneau-radio-scale-border-color, var(--panneau-color-border-control));
+    transition:
+        background-color var(--panneau-duration),
+        color var(--panneau-duration);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.step + .step {
+    margin-inline-start: calc(-1 * var(--panneau-border-width));
+}
+
+.step:first-child {
+    border-start-start-radius: var(--panneau-radius-md);
+    border-end-start-radius: var(--panneau-radius-md);
+}
+
+.step:last-child {
+    border-start-end-radius: var(--panneau-radius-md);
+    border-end-end-radius: var(--panneau-radius-md);
+}
+
+.step[data-hovered] {
+    background-color: var(--panneau-color-hover);
+}
+
+.step[data-selected] {
+    position: relative;
+    color: var(
+        --panneau-radio-scale-selected-text,
+        var(--panneau-selected-text, var(--panneau-color-accent-text))
+    );
+    background-color: var(
+        --panneau-radio-scale-selected-bg,
+        var(--panneau-selected-bg, var(--panneau-color-accent))
+    );
+    border-color: var(
+        --panneau-radio-scale-selected-bg,
+        var(--panneau-selected-bg, var(--panneau-color-accent))
+    );
+}
+
+.step[data-invalid] {
+    border-color: var(--panneau-color-danger);
+}
+
+.step[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.step[data-readonly] {
+    cursor: default;
+}
+
+.step[data-focus-visible] {
+    position: relative;
+    z-index: 1;
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 2px;
+}
+
+.ends {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--panneau-space-3);
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-text-muted);
+}
+
+.visuallyHidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}

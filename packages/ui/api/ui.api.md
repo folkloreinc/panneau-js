@@ -480,7 +480,7 @@ export const componentTokens: Readonly<{
     'pill-trigger': Readonly<Record<"panneau-pill-trigger-color" | "panneau-pill-trigger-radius" | "panneau-pill-trigger-gap" | "panneau-pill-trigger-padding-x" | "panneau-pill-trigger-bg" | "panneau-pill-trigger-font-size" | "panneau-pill-trigger-font-weight" | "panneau-pill-trigger-padding-x-sm" | "panneau-pill-trigger-font-size-sm" | "panneau-pill-trigger-border-color" | "panneau-pill-trigger-media-size" | "panneau-pill-trigger-media-radius" | "panneau-pill-trigger-bg-hover" | "panneau-pill-trigger-media-size-sm", string>>;
     popover: Readonly<Record<"panneau-popover-radius" | "panneau-popover-padding" | "panneau-popover-bg" | "panneau-popover-shadow" | "panneau-popover-border-color", string>>;
     prose: Readonly<Record<"panneau-prose-gap" | "panneau-prose-border-color" | "panneau-prose-line-height" | "panneau-prose-heading-gap" | "panneau-prose-list-indent" | "panneau-prose-link-color" | "panneau-prose-code-font-size" | "panneau-prose-code-color" | "panneau-prose-code-bg" | "panneau-prose-code-radius" | "panneau-prose-quote-border-color" | "panneau-prose-quote-color", string>>;
-    radio: Readonly<Record<"panneau-radio-size" | "panneau-radio-bg" | "panneau-radio-border-color" | "panneau-radio-checked-color" | "panneau-radio-media-size" | "panneau-radio-media-radius" | "panneau-radio-checked-border-width" | "panneau-radio-card-gap" | "panneau-radio-card-padding" | "panneau-radio-card-bg" | "panneau-radio-card-border-color" | "panneau-radio-card-border-color-hover" | "panneau-radio-card-border-color-selected" | "panneau-radio-card-radius" | "panneau-radio-card-label-font-weight", string>>;
+    radio: Readonly<Record<"panneau-radio-size" | "panneau-radio-bg" | "panneau-radio-border-color" | "panneau-radio-checked-color" | "panneau-radio-media-size" | "panneau-radio-media-radius" | "panneau-radio-checked-border-width" | "panneau-radio-card-gap" | "panneau-radio-card-padding" | "panneau-radio-card-bg" | "panneau-radio-card-border-color" | "panneau-radio-card-border-color-hover" | "panneau-radio-card-border-color-selected" | "panneau-radio-scale-bg" | "panneau-radio-scale-border-color" | "panneau-radio-scale-selected-bg" | "panneau-radio-scale-selected-text" | "panneau-radio-card-radius" | "panneau-radio-card-label-font-weight", string>>;
     'segmented-control': Readonly<Record<"panneau-segmented-control-radius" | "panneau-segmented-control-padding" | "panneau-segmented-control-bg" | "panneau-segmented-control-border-color" | "panneau-segmented-control-segment-padding-x" | "panneau-segmented-control-segment-font-weight" | "panneau-segmented-control-segment-color" | "panneau-segmented-control-segment-color-hover" | "panneau-segmented-control-segment-bg-hover" | "panneau-segmented-control-segment-color-selected" | "panneau-segmented-control-segment-bg-selected" | "panneau-segmented-control-segment-shadow-selected", string>>;
     selected: Readonly<Record<"panneau-selected-text" | "panneau-selected-subtle" | "panneau-selected-bg", string>>;
     skeleton: Readonly<Record<"panneau-skeleton-color" | "panneau-skeleton-radius" | "panneau-skeleton-duration", string>>;
@@ -1043,7 +1043,7 @@ export interface ProseProps extends HTMLAttributes<HTMLElement> {
 export function RadioGroup(input: RadioGroupProps): JSX.Element;
 
 // @public
-export type RadioGroupAppearance = 'list' | 'cards';
+export type RadioGroupAppearance = 'list' | 'cards' | 'scale';
 
 // @public
 export interface RadioGroupOption extends SelectOption {
@@ -1055,11 +1055,14 @@ export interface RadioGroupProps extends Omit<RadioGroupProps_2, 'className' | '
     appearance?: RadioGroupAppearance;
     columns?: number;
     // (undocumented)
+    endLabel?: ReactNode;
+    // (undocumented)
     onChange?: (value: OptionValue) => void;
     // (undocumented)
     options: readonly RadioGroupOption[];
     // (undocumented)
     radioClassName?: string;
+    startLabel?: ReactNode;
     // (undocumented)
     value?: OptionValue | null;
 }
