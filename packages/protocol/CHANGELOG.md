@@ -1,5 +1,9 @@
 # @panneau/protocol
 
+## 5.0.0-alpha.41
+
+No changes in this release.
+
 ## 5.0.0-alpha.40
 
 ### Minor Changes
