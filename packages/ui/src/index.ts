@@ -51,7 +51,11 @@ export { Heading, type HeadingLevel, type HeadingProps, type HeadingSize } from 
 export { Checkbox, type CheckboxProps } from './checkbox/Checkbox';
 export { type ChoiceChromeProps } from './checkbox/ChoiceChrome';
 export { ComboBox, type ComboBoxItem, type ComboBoxProps } from './combo-box/ComboBox';
-export { DatePicker, type DatePickerProps } from './date-picker/DatePicker';
+export {
+    DatePicker,
+    type DatePickerProps,
+    type DatePickerShortcut,
+} from './date-picker/DatePicker';
 export {
     DateRangePicker,
     type DateRangePickerProps,

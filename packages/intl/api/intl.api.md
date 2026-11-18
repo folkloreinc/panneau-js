@@ -1138,6 +1138,7 @@ export const uiMessages: {
     rangeStart: PanneauMessage<Record<never, never>>;
     rangeEnd: PanneauMessage<Record<never, never>>;
     calendar: PanneauMessage<Record<never, never>>;
+    dateShortcuts: PanneauMessage<Record<never, never>>;
     barChartOther: PanneauMessage<Record<never, never>>;
     meterTarget: PanneauMessage<Record<never, never>>;
     meterValue: PanneauMessage<    {

@@ -1,9 +1,10 @@
 import { CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
-import { use } from 'react';
+import { type ReactNode, use } from 'react';
 import {
     DatePicker as AriaDatePicker,
     type DatePickerProps as AriaDatePickerProps,
     Button,
+    ButtonContext,
     Calendar,
     CalendarCell,
     CalendarGrid,
@@ -19,6 +20,7 @@ import {
     Heading,
 } from 'react-aria-components';
 
+import { Button as PanneauButton } from '../button/Button';
 import {
     type FieldChromeProps,
     FieldDescription,
@@ -58,6 +60,58 @@ function CalendarTime() {
     );
 }
 
+/** A button under a date picker that fills it with a date: today, a week after the start. */
+export interface DatePickerShortcut {
+    label: ReactNode;
+    /** The date it fills in. `null` disables the button: a date that can't be worked out yet. */
+    value: DateValue | null;
+}
+
+/** The shortcuts of a date picker, under its control. */
+function DatePickerShortcuts({
+    shortcuts,
+    isDisabled,
+}: {
+    shortcuts: readonly DatePickerShortcut[];
+    isDisabled: boolean;
+}) {
+    const intl = usePanneauIntl();
+    const state = use(DatePickerStateContext);
+    if (shortcuts.length === 0 || state === null) {
+        return null;
+    }
+    // The date picker gives its context to the buttons inside it, for the one that opens the
+    // calendar: the shortcuts are buttons of their own
+    return (
+        <ButtonContext value={null}>
+            <div
+                role="group"
+                aria-label={intl.formatMessage(messages.dateShortcuts)}
+                className={styles.shortcuts}
+            >
+                {shortcuts.map((shortcut, index) => {
+                    const { value } = shortcut;
+                    return (
+                        <PanneauButton
+                            key={index}
+                            size="sm"
+                            appearance="subtle"
+                            isDisabled={isDisabled || value === null}
+                            onPress={() => {
+                                if (value !== null) {
+                                    state.setValue(value);
+                                }
+                            }}
+                        >
+                            {shortcut.label}
+                        </PanneauButton>
+                    );
+                })}
+            </div>
+        </ButtonContext>
+    );
+}
+
 export interface DatePickerProps
     extends
         Omit<
@@ -67,6 +121,11 @@ export interface DatePickerProps
         FieldChromeProps {
     controlClassName?: string;
     popoverClassName?: string;
+    /**
+     * Buttons under the control that fill it with a date, such as today, or a date worked out from
+     * other values of the form.
+     */
+    shortcuts?: readonly DatePickerShortcut[];
 }
 
 /**
@@ -86,6 +145,7 @@ export function DatePicker({
     errorsClassName,
     controlClassName,
     popoverClassName,
+    shortcuts = [],
     ...props
 }: DatePickerProps) {
     const invalid = errors.length > 0;
@@ -119,6 +179,10 @@ export function DatePicker({
                     </Button>
                 ) : null}
             </Group>
+            <DatePickerShortcuts
+                shortcuts={shortcuts}
+                isDisabled={props.isDisabled === true || isReadOnly === true}
+            />
             <FieldDescription className={descriptionClassName}>{description}</FieldDescription>
             <FieldErrors errors={errors} className={errorsClassName} />
             <PopoverSurface className={cx(styles.popover, popoverClassName)}>

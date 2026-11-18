@@ -1,8 +1,20 @@
+import type { ReactNode } from 'react';
+
 import { DatePicker } from '@panneau/ui';
 
 import { toCalendarDate } from '../shared/dates';
 import { getFieldProps, isString } from '../shared/entry';
 import type { FieldEntryProps, FieldProps } from '../shared/types';
+
+/** A button under a date field that fills it with a date. */
+export interface DateShortcut {
+    label: ReactNode;
+    /**
+     * The date it fills in, as an ISO string (`2026-10-15`). `null` disables the button: a date
+     * that can't be worked out yet, such as a week after a start that isn't set.
+     */
+    value: string | null;
+}
 
 export interface DateFieldProps extends FieldProps<string> {
     /** Earliest date (`2026-01-01`). */
@@ -10,6 +22,11 @@ export interface DateFieldProps extends FieldProps<string> {
     /** Latest date. */
     max?: string;
     controlClassName?: string;
+    /**
+     * Buttons under the field that fill it with a date: today, yesterday, or a date the app works
+     * out from the other values of the form (a year after the start).
+     */
+    shortcuts?: readonly DateShortcut[];
 }
 
 /**
@@ -24,6 +41,7 @@ export function DateField({
     disabled,
     readOnly,
     required,
+    shortcuts,
     ...props
 }: DateFieldProps) {
     const minValue = toCalendarDate(min);
@@ -39,6 +57,14 @@ export function DateField({
             isDisabled={disabled}
             isReadOnly={readOnly}
             isRequired={required}
+            {...(shortcuts !== undefined
+                ? {
+                      shortcuts: shortcuts.map((shortcut) => ({
+                          label: shortcut.label,
+                          value: toCalendarDate(shortcut.value),
+                      })),
+                  }
+                : {})}
         />
     );
 }

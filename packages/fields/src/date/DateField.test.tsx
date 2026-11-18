@@ -18,6 +18,39 @@ describe('DateField', () => {
         expect(onChange).toHaveBeenLastCalledWith('2026-10-16');
     });
 
+    it('fills the date with a shortcut', async () => {
+        const onChange = vi.fn();
+        renderField(
+            <DateField
+                label="Ends on"
+                value={null}
+                onChange={onChange}
+                shortcuts={[
+                    { label: 'A year after the start', value: '2027-10-15' },
+                    { label: 'Six months', value: null },
+                ]}
+            />,
+        );
+        const shortcuts = screen.getByRole('group', { name: 'Shortcuts' });
+        await userEvent.click(
+            within(shortcuts).getByRole('button', { name: 'A year after the start' }),
+        );
+        expect(onChange).toHaveBeenLastCalledWith('2027-10-15');
+        expect(within(shortcuts).getByRole('button', { name: 'Six months' })).toBeDisabled();
+    });
+
+    it('disables its shortcuts with the field', () => {
+        renderField(
+            <DateField
+                label="Ends on"
+                value={null}
+                disabled
+                shortcuts={[{ label: 'Today', value: '2026-10-15' }]}
+            />,
+        );
+        expect(screen.getByRole('button', { name: 'Today' })).toBeDisabled();
+    });
+
     it('reads the date of a date-time, and ignores invalid values', () => {
         renderField(
             <>

@@ -26,7 +26,7 @@ Every field takes `value`, `onChange`, `onBlur`, `errors`, `disabled`, `readOnly
 | `@panneau/fields/textarea`  | `TextAreaField`                              | `string`                                                            |
 | `@panneau/fields/number`    | `NumberField`                                | `number`                                                            |
 | `@panneau/fields/boolean`   | `BooleanField` (checkbox, switch)            | `boolean`                                                           |
-| `@panneau/fields/date`      | `DateField`                                  | `'2026-10-15'`                                                      |
+| `@panneau/fields/date`      | `DateField`, with `shortcuts` under it       | `'2026-10-15'`                                                      |
 | `@panneau/fields/datetime`  | `DateTimeField`                              | `'2026-10-15T13:30:00Z'`, or without an offset                      |
 | `@panneau/fields/time`      | `TimeField`                                  | `'09:30'`                                                           |
 | `@panneau/fields/select`    | `SelectField` (dropdown, radios, checkboxes) | an option's value, or a list with `multiple`                        |

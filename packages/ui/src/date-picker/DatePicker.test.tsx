@@ -18,6 +18,29 @@ describe('DatePicker', () => {
         expect(segments.map((segment) => segment.textContent)).toEqual(['2026', '10', '15']);
     });
 
+    it('fills the date with a shortcut, without opening the calendar', async () => {
+        const onChange = vi.fn();
+        render(
+            <PanneauRoot locale="en-US">
+                <DatePicker
+                    label="Ends on"
+                    onChange={onChange}
+                    shortcuts={[{ label: 'Next year', value: new CalendarDate(2027, 10, 15) }]}
+                />
+            </PanneauRoot>,
+        );
+        const shortcuts = screen.getByRole('group', { name: 'Shortcuts' });
+        await userEvent.click(within(shortcuts).getByRole('button', { name: 'Next year' }));
+        expect(onChange).toHaveBeenLastCalledWith(new CalendarDate(2027, 10, 15));
+        expect(screen.queryByRole('dialog')).toBeNull();
+        const group = screen.getByRole('group', { name: 'Ends on' });
+        expect(
+            within(group)
+                .getAllByRole('spinbutton')
+                .map((segment) => segment.textContent),
+        ).toEqual(['10', '15', '2027']);
+    });
+
     it('picks a date in the calendar', async () => {
         const onChange = vi.fn();
         render(

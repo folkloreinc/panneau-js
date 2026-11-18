@@ -514,6 +514,14 @@ export interface DatePickerProps extends Omit<DatePickerProps_2<DateValue>, 'cla
     controlClassName?: string;
     // (undocumented)
     popoverClassName?: string;
+    shortcuts?: readonly DatePickerShortcut[];
+}
+
+// @public
+export interface DatePickerShortcut {
+    // (undocumented)
+    label: ReactNode;
+    value: DateValue | null;
 }
 
 // @public
