@@ -1,5 +1,17 @@
 # @panneau/ui
 
+## 5.0.0-alpha.42
+
+### Minor Changes
+
+- 019247e: Date shortcuts. `DateField` (and `DatePicker`) take `shortcuts`: small buttons under the control that fill it with a date, such as today, yesterday, or a date the app works out from other values of the form (a year after the start). Each shortcut has a `label` and a `value` (an ISO date for `DateField`, a `DateValue` for `DatePicker`); a `null` value disables its button, for a date that can't be worked out yet. The buttons are a group named "Shortcuts" (`panneau.ui.dateShortcuts`, in English and French), and are disabled with the field.
+- 66a1a2a: Scales. `RadioGroup` takes `appearance="scale"`: its options as joined buttons of the same width in one row, the selected one filled, with `startLabel` and `endLabel` under the first and the last option ("Not at all", "Very"), which assistive technologies read with these options. `NumberField` takes `widget="scale"` (setting `widget` of the `number` type): every number from `min` to `max` (1 to 5 by default, by `step`) as such a scale, with `minLabel` and `maxLabel` (settings too), for a rating; a value is `null` until a button is picked. Beyond 11 buttons, it stays a field to type the number in. New tokens: `radio-scale-bg`, `radio-scale-border-color`, `radio-scale-selected-bg` and `radio-scale-selected-text`.
+
+### Patch Changes
+
+- Updated dependencies [019247e]
+  - @panneau/intl@5.0.0-alpha.42
+
 ## 5.0.0-alpha.41
 
 ### Patch Changes
