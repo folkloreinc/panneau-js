@@ -28,6 +28,14 @@ export const radioTokens = defineComponentTokens('radio', {
     'card-border-color-hover': 'var(--panneau-color-border-control)',
     /** Border color of the selected card, which is twice as wide. */
     'card-border-color-selected': 'var(--panneau-selected-bg, var(--panneau-color-accent))',
+    /** Background of a button of a scale, with `appearance="scale"`. */
+    'scale-bg': 'var(--panneau-color-surface)',
+    /** Border color of the buttons of a scale. */
+    'scale-border-color': 'var(--panneau-color-border-control)',
+    /** Background of the selected button of a scale. */
+    'scale-selected-bg': 'var(--panneau-selected-bg, var(--panneau-color-accent))',
+    /** Text of the selected button of a scale. */
+    'scale-selected-text': 'var(--panneau-selected-text, var(--panneau-color-accent-text))',
     /** Corner radius of a card. */
     'card-radius': 'var(--panneau-radius-md)',
     /** Font weight of the label of a card. */

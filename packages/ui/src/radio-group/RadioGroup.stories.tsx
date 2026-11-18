@@ -115,3 +115,29 @@ export const CardColumns: Story = {
         ).toBeDisabled();
     },
 };
+
+/** A rating: joined buttons, what the two ends mean under them, and no choice at first. */
+export const Scale: Story = {
+    args: {
+        label: 'How useful is the tool?',
+        appearance: 'scale',
+        startLabel: 'Not at all',
+        endLabel: 'Very',
+        options: [1, 2, 3, 4, 5].map((value) => ({ value, label: String(value) })),
+    },
+    render: (args) => <ControlledRadioGroup {...args} />,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const group = canvas.getByRole('radiogroup', { name: 'How useful is the tool?' });
+        await expect(
+            within(group)
+                .getAllByRole('radio')
+                .some((radio) => (radio as HTMLInputElement).checked),
+        ).toBe(false);
+        await userEvent.click(within(group).getByRole('radio', { name: '4' }));
+        await expect(within(group).getByRole('radio', { name: '4' })).toBeChecked();
+        await expect(
+            within(group).getByRole('radio', { name: /^5\s*,\s*Very$/ }),
+        ).toBeInTheDocument();
+    },
+};

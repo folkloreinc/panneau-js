@@ -27,12 +27,15 @@ export interface NumberFieldProps extends FieldProps<number> {
     inputClassName?: string;
     // (undocumented)
     max?: number;
+    maxLabel?: ReactNode;
     // (undocumented)
     min?: number;
+    minLabel?: ReactNode;
     // (undocumented)
     placeholder?: string;
     step?: number;
     suffix?: ReactNode;
+    widget?: 'input' | 'scale';
 }
 
 // (No @packageDocumentation comment for this package)

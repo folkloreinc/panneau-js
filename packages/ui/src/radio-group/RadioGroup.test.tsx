@@ -11,6 +11,25 @@ const OPTIONS = [
 ];
 
 describe('RadioGroup', () => {
+    it('shows a scale, whose ends are read with their options', async () => {
+        const onChange = vi.fn();
+        render(
+            <RadioGroup
+                label="Rating"
+                appearance="scale"
+                startLabel="Bad"
+                endLabel="Great"
+                options={[1, 2, 3].map((value) => ({ value, label: String(value) }))}
+                value={null}
+                onChange={onChange}
+            />,
+        );
+        expect(screen.getByRole('radio', { name: /^1\s*,\s*Bad$/ })).not.toBeChecked();
+        expect(screen.getByRole('radio', { name: '2' })).toBeInTheDocument();
+        await userEvent.click(screen.getByRole('radio', { name: /^3\s*,\s*Great$/ }));
+        expect(onChange).toHaveBeenCalledWith(3);
+    });
+
     it('picks an option, keeping the type of its value', async () => {
         const onChange = vi.fn();
         render(<RadioGroup label="Size" options={OPTIONS} value={1} onChange={onChange} />);

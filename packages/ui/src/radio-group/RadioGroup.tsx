@@ -22,8 +22,11 @@ export interface RadioGroupOption extends SelectOption {
     media?: ReactNode;
 }
 
-/** How a `RadioGroup` shows its options: a list of radios, or bordered cards in a grid. */
-export type RadioGroupAppearance = 'list' | 'cards';
+/**
+ * How a `RadioGroup` shows its options: a list of radios, bordered cards in a grid, or a scale of
+ * joined buttons in one row (a rating from 1 to 5).
+ */
+export type RadioGroupAppearance = 'list' | 'cards' | 'scale';
 
 export interface RadioGroupProps
     extends
@@ -50,12 +53,19 @@ export interface RadioGroupProps
     appearance?: RadioGroupAppearance;
     /** Columns of cards, with `appearance="cards"`. Defaults to 2. */
     columns?: number;
+    /**
+     * What the first and the last options mean, under them, with `appearance="scale"`: "Not at
+     * all" and "Completely". They are read with these options too.
+     */
+    startLabel?: ReactNode;
+    endLabel?: ReactNode;
     radioClassName?: string;
 }
 
 /**
- * A set of options where one can be picked, all visible at once, as a list of radios or as cards
- * (`appearance="cards"`). Arrow keys move between options in both appearances.
+ * A set of options where one can be picked, all visible at once, as a list of radios, as cards
+ * (`appearance="cards"`) or as a scale (`appearance="scale"`). Arrow keys move between options in
+ * every appearance.
  */
 export function RadioGroup({
     options,
@@ -67,6 +77,8 @@ export function RadioGroup({
     orientation = 'vertical',
     appearance = 'list',
     columns = 2,
+    startLabel,
+    endLabel,
     isRequired,
     className,
     labelClassName,
@@ -75,30 +87,51 @@ export function RadioGroup({
     radioClassName,
     ...props
 }: RadioGroupProps) {
-    const radios = options.map((option, position) => (
-        <Radio
-            key={position}
-            value={String(position)}
-            isDisabled={option.disabled}
-            className={cx(
-                'panneau-radio',
-                styles.radio,
-                appearance === 'cards' && styles.card,
-                radioClassName,
-            )}
-        >
-            <span className={styles.circle} aria-hidden="true" />
-            {option.media !== undefined && option.media !== null ? (
-                <span className={styles.media}>{option.media}</span>
-            ) : null}
-            <span className={styles.text}>
-                <span className={styles.optionLabel}>{option.label}</span>
-                {option.description !== undefined ? (
-                    <span className={styles.description}>{option.description}</span>
+    const isScale = appearance === 'scale';
+    const hasEnds =
+        isScale &&
+        ((startLabel !== undefined && startLabel !== null) ||
+            (endLabel !== undefined && endLabel !== null));
+    const endOf = (position: number): ReactNode =>
+        position === 0 ? startLabel : position === options.length - 1 ? endLabel : null;
+    const radios = options.map((option, position) =>
+        isScale ? (
+            <Radio
+                key={position}
+                value={String(position)}
+                isDisabled={option.disabled}
+                className={cx('panneau-radio', styles.step, radioClassName)}
+            >
+                {option.label}
+                {endOf(position) !== undefined && endOf(position) !== null ? (
+                    <span className={styles.visuallyHidden}>, {endOf(position)}</span>
                 ) : null}
-            </span>
-        </Radio>
-    ));
+            </Radio>
+        ) : (
+            <Radio
+                key={position}
+                value={String(position)}
+                isDisabled={option.disabled}
+                className={cx(
+                    'panneau-radio',
+                    styles.radio,
+                    appearance === 'cards' && styles.card,
+                    radioClassName,
+                )}
+            >
+                <span className={styles.circle} aria-hidden="true" />
+                {option.media !== undefined && option.media !== null ? (
+                    <span className={styles.media}>{option.media}</span>
+                ) : null}
+                <span className={styles.text}>
+                    <span className={styles.optionLabel}>{option.label}</span>
+                    {option.description !== undefined ? (
+                        <span className={styles.description}>{option.description}</span>
+                    ) : null}
+                </span>
+            </Radio>
+        ),
+    );
     const index = value === undefined ? undefined : options.findIndex((o) => o.value === value);
     return (
         <AriaRadioGroup
@@ -119,7 +152,9 @@ export function RadioGroup({
                 fieldStyles.field,
                 appearance === 'cards'
                     ? styles.cards
-                    : orientation === 'horizontal' && styles.horizontal,
+                    : isScale
+                      ? styles.scale
+                      : orientation === 'horizontal' && styles.horizontal,
                 className,
             )}
         >
@@ -140,6 +175,17 @@ export function RadioGroup({
                     >
                         {radios}
                     </div>
+                </div>
+            ) : isScale ? (
+                <div className={styles.scaleBody}>
+                    <div className={styles.options}>{radios}</div>
+                    {hasEnds ? (
+                        // Read with the first and the last options
+                        <div className={styles.ends} aria-hidden="true">
+                            <span>{startLabel}</span>
+                            <span>{endLabel}</span>
+                        </div>
+                    ) : null}
                 </div>
             ) : (
                 <div className={styles.options}>{radios}</div>
