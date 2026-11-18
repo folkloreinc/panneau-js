@@ -1,5 +1,15 @@
 # @panneau/forms
 
+## 5.0.0-alpha.41
+
+### Patch Changes
+
+- @panneau/core@5.0.0-alpha.41
+  - @panneau/fields@5.0.0-alpha.41
+  - @panneau/intl@5.0.0-alpha.41
+  - @panneau/protocol@5.0.0-alpha.41
+  - @panneau/ui@5.0.0-alpha.41
+
 ## 5.0.0-alpha.40
 
 ### Patch Changes
