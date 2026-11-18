@@ -226,27 +226,6 @@ export function useCombinedContent({
         enabled: enabled && splitReads.length > 0,
     });
 
-    if (!combined) {
-        return null;
-    }
-    if (planned.length === 0) {
-        return { status: 'hidden' };
-    }
-    const all = [...answers, ...splitAnswers];
-    if (all.some((query) => query.error instanceof ForbiddenError)) {
-        return { status: 'hidden' };
-    }
-    const retry = () => {
-        all.filter((query) => query.isError).forEach((query) => void query.refetch());
-    };
-    if (all.some((query) => query.data === undefined)) {
-        return all.some((query) => query.isError)
-            ? { status: 'error', retry }
-            : { status: 'loading' };
-    }
-    const data = assemble();
-    return data !== null ? { status: 'ready', ...data } : { status: 'error', retry };
-
     function assemble(): { data: unknown; currency?: string } | null {
         if (widget.type === 'metric') {
             return metric();
@@ -406,7 +385,9 @@ export function useCombinedContent({
             }
             const { currency, amount } = amountsOf(resource, source.measure);
             currencies.add(currency);
-            period ??= answer.period;
+            if (period === undefined) {
+                period = answer.period;
+            }
             lines.push({
                 label: source.label,
                 points: pointsWith(answer.points, amount),
@@ -500,7 +481,9 @@ export function useCombinedContent({
                     ...(count.value > 0 && { tone: source.alert.tone }),
                 };
             }
-            rowPeriod ??= series?.period;
+            if (rowPeriod === undefined) {
+                rowPeriod = series?.period;
+            }
             rows.push({
                 label: source.label,
                 url: listHref(source.resource, value.read.query, basePath),
@@ -531,4 +514,25 @@ export function useCombinedContent({
             data: { columns, rows, ...(rowPeriod !== undefined && { period: rowPeriod }) },
         };
     }
+
+    if (!combined) {
+        return null;
+    }
+    if (planned.length === 0) {
+        return { status: 'hidden' };
+    }
+    const all = [...answers, ...splitAnswers];
+    if (all.some((query) => query.error instanceof ForbiddenError)) {
+        return { status: 'hidden' };
+    }
+    const retry = () => {
+        all.filter((query) => query.isError).forEach((query) => void query.refetch());
+    };
+    if (all.some((query) => query.data === undefined)) {
+        return all.some((query) => query.isError)
+            ? { status: 'error', retry }
+            : { status: 'loading' };
+    }
+    const data = assemble();
+    return data !== null ? { status: 'ready', ...data } : { status: 'error', retry };
 }
