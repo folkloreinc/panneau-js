@@ -22,7 +22,7 @@ const DELETE: ActionInput = {
     label: 'Delete',
     icon: 'trash-2',
     scope: ['item', 'selection'],
-    // As the built-in `delete`: rows, the bottom of the form and of the panel, and selections
+    // As the built-in `delete`: rows, the header of the form and of the panel, and selections
     placement: ['menu', 'form', 'toolbar'],
     destructive: true,
     confirm: true,

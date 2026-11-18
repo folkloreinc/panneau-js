@@ -80,11 +80,6 @@ export interface AsideProps {
     toolbar?: ReactNode;
     /** Its panels (`AsidePanel`), or any content. */
     children?: ReactNode;
-    /**
-     * At its bottom, under its content: the actions that destroy what it shows, such as "Delete"
-     * (decision 0088).
-     */
-    footer?: ReactNode;
     /** Shows a button that widens it, for previews. */
     isWidenable?: boolean;
     /** Shows a close button, also run by Escape. */
@@ -113,7 +108,6 @@ export function Aside({
     isLoading = false,
     toolbar,
     children,
-    footer,
     isWidenable = false,
     onClose,
     storageKey,
@@ -187,9 +181,6 @@ export function Aside({
             <div className={cx(styles.body, bodyClassName)}>
                 <StorageKeyContext value={storageKey ?? null}>{children}</StorageKeyContext>
             </div>
-            {footer !== undefined && footer !== null ? (
-                <div className={styles.footer}>{footer}</div>
-            ) : null}
         </section>
     );
 }

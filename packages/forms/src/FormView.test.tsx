@@ -44,28 +44,6 @@ describe('FormView', () => {
         await waitFor(() => expect(onSubmit).toHaveBeenCalled());
     });
 
-    it('puts its start actions in its footer, before the status and the submit button', async () => {
-        function Editor() {
-            const { form } = useForm({ fields: FIELDS, onSubmit: vi.fn() });
-            return (
-                <FormView
-                    form={form}
-                    fields={FIELDS}
-                    aria-label="Editor"
-                    startActions={<button type="button">Delete</button>}
-                />
-            );
-        }
-        renderForm(<Editor />);
-        await userEvent.type(screen.getByRole('textbox', { name: /Title/ }), 'Hi');
-        const remove = screen.getByRole('button', { name: 'Delete' });
-        const status = screen.getByText('Unsaved changes');
-        const save = screen.getByRole('button', { name: 'Save' });
-        expect(remove.parentElement?.parentElement).toBe(save.parentElement);
-        expect(remove.compareDocumentPosition(status)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
-        expect(status.compareDocumentPosition(save)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
-    });
-
     it('marks a field required in the mode of the form', () => {
         const fields: Field[] = [
             {

@@ -24,10 +24,10 @@ export interface ItemActionsProps {
 }
 
 /**
- * An action that destroys is quiet: its icon and label in the danger color, without a fill
- * (decision 0088). The others are secondary buttons.
+ * An action that destroys is outlined in the danger color, without a fill (decision 0088). The
+ * others are secondary buttons.
  */
-const DESTRUCTIVE = { tone: 'danger', appearance: 'ghost' } as const;
+const DESTRUCTIVE = { tone: 'danger', appearance: 'outline' } as const;
 const SECONDARY = { variant: 'secondary' } as const;
 
 /** Whether a link leaves the admin: it opens in a new tab. */
@@ -36,8 +36,8 @@ function isExternal(href: string): boolean {
 }
 
 /**
- * The actions of an item, in the header of its panel or of its edit page (decision 0040), and those
- * that destroy at their bottom (decision 0088). Links are links, in a new tab when they leave the
+ * The actions of an item in the header of its panel or of its edit page (decision 0040), those
+ * that destroy last and outlined (decision 0088). Links are links, in a new tab when they leave the
  * admin. Other actions run through the action runner (parameters, results, queued runs), after a
  * confirmation when they ask for one.
  */
@@ -94,7 +94,10 @@ export function ItemActions({
 
     return (
         <>
-            {actions.map(({ action, href }) => {
+            {[
+                ...actions.filter(({ action }) => action.destructive !== true),
+                ...actions.filter(({ action }) => action.destructive === true),
+            ].map(({ action, href }) => {
                 const label = getActionLabel(action, intl);
                 const external = href !== null && isExternal(href);
                 const icon = external ? ExternalLink : getActionIcon(action);

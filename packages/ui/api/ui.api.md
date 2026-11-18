@@ -124,7 +124,6 @@ export interface AsideProps {
     children?: ReactNode;
     // (undocumented)
     className?: string;
-    footer?: ReactNode;
     headingLevel?: HeadingLevel;
     isLoading?: boolean;
     isWidenable?: boolean;

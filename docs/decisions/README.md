@@ -80,7 +80,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0072](0072-touch-targets-follow-the-density.md)                  | Touch targets follow the density                                                     | Proposed                          |
 | [0073](0073-selections-focus-rings-and-outlined-buttons.md)       | Selections apart from the accent, focus rings, and outlined filled buttons           | Proposed                          |
 | [0074](0074-asides-next-to-lists-and-forms.md)                    | One aside, next to lists and forms                                                   | Proposed                          |
-| [0075](0075-panels-of-a-form-sidebar.md)                          | The panels of a form's sidebar, defined by the resource                              | Proposed, amended by 0088         |
+| [0075](0075-panels-of-a-form-sidebar.md)                          | The panels of a form's sidebar, defined by the resource                              | Proposed                          |
 | [0076](0076-a-dock-in-place-of-the-sidebar.md)                    | A dock, in place of the sidebar                                                      | Proposed, amended by 0086         |
 | [0077](0077-resource-types.md)                                    | Resource types                                                                       | Proposed                          |
 | [0078](0078-the-app-owns-its-page.md)                             | The app owns its page                                                                | Proposed                          |
@@ -93,4 +93,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0085](0085-readable-line-charts.md)                              | Line charts that read without a pointer                                              | Proposed                          |
 | [0086](0086-one-user-menu.md)                                     | One user's menu, at the bottom of the sidebar and in the dock                        | Proposed                          |
 | [0087](0087-image-fields-without-transforms.md)                   | Image fields without transforms                                                      | Proposed                          |
-| [0088](0088-destructive-actions-in-a-menu.md)                     | Actions that destroy at the bottom of the form and of the panel                      | Proposed                          |
+| [0088](0088-destructive-actions-in-a-menu.md)                     | Actions that destroy come last, outlined                                             | Proposed                          |

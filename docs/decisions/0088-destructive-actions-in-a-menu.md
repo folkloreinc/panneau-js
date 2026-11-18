@@ -1,9 +1,9 @@
-# 0088: Actions that destroy at the bottom of the form and of the panel
+# 0088: Actions that destroy come last, outlined
 
-- Status: proposed, amended the same day: at the bottom of the form and of the panel instead of a menu, and rows as before (see [Amendment](#amendment-a-danger-zone-at-the-bottom))
+- Status: proposed, amended the same day: last and outlined in the header, instead of a menu, and rows as before (see [Amendment](#amendment-one-place-for-the-actions-of-an-item))
 - Date: 2026-11-18
 - Issue: [#322](https://github.com/folkloreinc/panneau-js/issues/322)
-- Amends: the header of an item in [0040](0040-row-links-and-open-mode.md), and the `save` and `actions` panels of [0075](0075-panels-of-a-form-sidebar.md)
+- Amends: the header of an item in [0040](0040-row-links-and-open-mode.md)
 - Part of: [#6](https://github.com/folkloreinc/panneau-js/issues/6), 5.x (the interface)
 
 ## Context
@@ -14,22 +14,22 @@ People delete an item rarely, and it is the action they least want to hit by mis
 
 ## Decision
 
-- **An action that destroys** (`destructive: true`: the built-in `delete`, and declared actions that say so) **leaves the header of an item** and goes to its bottom: the "danger zone" of many apps, where people find it when they look for it. Its placement still says on which surfaces it is.
-- **In the edit form**, it is at the start of the footer, opposite "Save" (`startActions` of `Form`). When the form's layout puts the `save` panel in its sidebar ([0075](0075-panels-of-a-form-sidebar.md)), it follows "Save" there, opposite it too. The `actions` panel, which takes the header's actions, leaves it out as the header does.
-- **In the panel of an item**, it is in the panel's footer, under its details (`footer` of `Aside`).
-- **A quiet button:** its icon and its label in the danger color, without a fill (the `ghost` appearance of the `danger` tone). No solid danger button.
-- **The header keeps the links and the other actions,** as secondary buttons.
+- **The actions of an item stay in one place**: the header of its form and of its panel, or the `actions` panel of the form's sidebar when its layout has one ([0075](0075-panels-of-a-form-sidebar.md)). The footer of a form is for saving and for the state of the item, not for its actions.
+- **Actions that destroy come last** (`destructive: true`: the built-in `delete`, and declared actions that say so), after the links and the other actions, whatever the order of `getItemActions()`.
+- **Outlined, not filled:** their icon, label and border in the danger color, without a fill (the `outline` appearance of the `danger` tone). The other actions are secondary buttons.
 - **What doesn't change:**
-    - Its confirmation, and "Undo" in place of it ([0063](0063-undo-instead-of-a-confirmation.md)).
+    - Their confirmation, and "Undo" in place of it ([0063](0063-undo-instead-of-a-confirmation.md)).
     - Rows ([0060](0060-row-actions-colored-icons.md)): "Delete" is the last icon of each row, in its danger color, and goes to the row's menu only when the icons don't fit.
     - The bulk actions of a selection: "Delete" is a button of the selection's bar.
     - Which actions an item has: `getItemActions()` of `@panneau/core` decides them, and each surface only places them.
 
-## Amendment: a danger zone at the bottom
+## Amendment: one place for the actions of an item
 
-The first version of this decision (in 5.0.0-alpha.39) put the actions that destroy in a "More actions" menu (`…`) at the end of the header of an item and of each row, even alone in it. "Delete" was then the only item of a menu on every item and on every row of a list where items can be deleted: a wasted click, and a menu that hides what it holds. Rows go back to [0060](0060-row-actions-colored-icons.md), where a red icon at the end of the row is clear and doesn't crowd the title. The header has no menu: "Delete" moves to the bottom of the form and of the panel.
+The first version of this decision (in 5.0.0-alpha.39) put the actions that destroy in a "More actions" menu (`…`) at the end of the header of an item and of each row, even alone in it. "Delete" was then the only item of a menu on every item and on every row of a list where items can be deleted: a wasted click, and a menu that hides what it holds.
+
+Moving "Delete" to the footer of the form and of the panel was considered next. It spreads the actions of an item over two more places, beside "Save" and in the sidebar's `save` panel, which will also hold the state of the item (its versions, its autosave). One place, with the action that destroys last and outlined, is quieter than a solid button and as easy to find.
 
 ## Consequences
 
-- A resource with only the built-in actions shows its links and "Duplicate" in the header of its items, and "Delete" at their bottom, at the left of the form's footer.
-- `Form` of `@panneau/forms` takes `startActions`, and `Aside` of `@panneau/ui` a `footer`. `ItemActions` of `@panneau/app` renders an action that destroys as a quiet button. No change of the protocol, of `getItemActions()` or of the backend.
+- A resource with only the built-in actions shows its links, "Duplicate", then "Delete", outlined in red, in the header of its items.
+- `ItemActions` of `@panneau/app` orders and outlines the actions that destroy. No change of the protocol, of `getItemActions()` or of the backend.

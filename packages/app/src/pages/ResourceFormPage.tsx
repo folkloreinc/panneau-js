@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 
-import type { ActionOutcome } from '@panneau/actions';
 import { type ResolvedResource, getItemActions, getItemValues, resolveForm } from '@panneau/core';
 import { NotFoundError } from '@panneau/data';
 import { useCreateItem, useDataAdapter, useResourceItem, useUpdateItem } from '@panneau/data/query';
 import { createFieldCheckSource, createRelationSource } from '@panneau/fields';
 import { Form } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
-import type { Action, Definition, Item, RouteReference } from '@panneau/protocol';
+import type { Definition, Item, RouteReference } from '@panneau/protocol';
 import { ITEM_TYPE_KEY, getItemType, getResourceType } from '@panneau/protocol/runtime';
 import { usePanneauIntl } from '@panneau/ui';
 
@@ -118,36 +117,28 @@ export function ResourceFormPage({
                   filter: isSupported,
               })
             : [];
-    const onRun = (_action: Action, outcome: ActionOutcome) => {
-        // An action that removed the item (`delete`) leaves its page: back to the list, unless its
-        // result went somewhere already (`redirect`).
-        if (outcome.status !== 'done' || (outcome.result.redirect ?? null) !== null) {
-            return;
-        }
-        void itemQuery.refetch().then(({ error }) => {
-            if (error instanceof NotFoundError) {
-                // In place of the item's page, which Back can't return to
-                navigate(back.href, { replace: true });
-            }
-        });
-    };
-    // Those that destroy go to the bottom of the form, opposite Save (decision 0088)
-    const renderActions = (destructive: boolean) => {
-        const actions = formActions.filter(
-            ({ action }) => (action.destructive === true) === destructive,
-        );
-        return mode === 'update' && item !== undefined && actions.length > 0 ? (
+    const itemActions =
+        mode === 'update' && item !== undefined && formActions.length > 0 ? (
             <ItemActions
                 resource={resource.id}
-                actions={actions}
+                actions={formActions}
                 item={item}
                 runAction={run}
-                onRun={onRun}
+                onRun={(_action, outcome) => {
+                    // An action that removed the item (`delete`) leaves its page: back to the list,
+                    // unless its result went somewhere already (`redirect`).
+                    if (outcome.status !== 'done' || (outcome.result.redirect ?? null) !== null) {
+                        return;
+                    }
+                    void itemQuery.refetch().then(({ error }) => {
+                        if (error instanceof NotFoundError) {
+                            // In place of the item's page, which Back can't return to
+                            navigate(back.href, { replace: true });
+                        }
+                    });
+                }}
             />
         ) : undefined;
-    };
-    const itemActions = renderActions(false);
-    const destructiveActions = renderActions(true);
 
     // An item the user can't update opens in its panel, as its title does (decisions 0040 and
     // 0046), or is forbidden when they can't view it either.
@@ -201,7 +192,6 @@ export function ResourceFormPage({
             relationSource={relationSource}
             checkSource={checkSource}
             guardUnsavedChanges
-            {...(destructiveActions !== undefined ? { startActions: destructiveActions } : {})}
             panels={PANELS}
             // The panels of its sidebar that the user collapsed, per resource (decision 0074)
             sidebarStorageKey={`form-${resource.id}`}

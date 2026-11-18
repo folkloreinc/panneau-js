@@ -736,10 +736,12 @@ describe('the app shell', () => {
         expect(main.queryByRole('button', { name: 'Publish' })).not.toBeInTheDocument();
         expect(main.queryByRole('link', { name: 'Edit' })).not.toBeInTheDocument();
 
-        // At the bottom of the form, opposite Save, not in its header (decision 0088)
+        // Last in the header, after the link the resource declares, outlined (decision 0088)
         const remove = main.getByRole('button', { name: 'Delete' });
-        expect(remove.closest('header')).toBeNull();
-        expect(main.getByRole('form')).toContainElement(remove);
+        expect(
+            main.getByRole('link', { name: 'View on the site' }).compareDocumentPosition(remove),
+        ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+        expect(remove.className).toMatch(/outline/);
         expect(remove.className).not.toMatch(/solid/);
         await user.click(remove);
         const dialog = await screen.findByRole('alertdialog');
@@ -1111,12 +1113,7 @@ describe('the app shell', () => {
         window.history.replaceState(null, '', '/panneau/resources/pages/2');
         const backend = renderApp();
         const panel = await screen.findByRole('region', { name: 'Details of the page' });
-        const remove = await within(panel).findByRole('button', { name: 'Delete' });
-        // At the bottom of the panel, after the item's details (decision 0088)
-        expect(within(panel).getAllByRole('term')[0]?.compareDocumentPosition(remove)).toBe(
-            Node.DOCUMENT_POSITION_FOLLOWING,
-        );
-        await user.click(remove);
+        await user.click(await within(panel).findByRole('button', { name: 'Delete' }));
         const dialog = await screen.findByRole('alertdialog');
         await user.click(within(dialog).getByRole('button', { name: 'Delete' }));
         await waitFor(() => expect(window.location.pathname).toBe('/panneau/resources/pages'));

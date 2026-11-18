@@ -243,13 +243,19 @@ export const Default: Story = {
             'href',
             'https://example.com/articles/1',
         );
-        await expect(within(panel).getAllByRole('term')).toHaveLength(4);
-        // At the bottom of the panel, after the details, quiet (decision 0088)
+        // `delete` is last, after the link the resource declares, outlined (decision 0088)
         const remove = within(panel).getByRole('button', { name: 'Delete' });
-        await expect(within(panel).getAllByRole('term')[3]?.compareDocumentPosition(remove)).toBe(
-            Node.DOCUMENT_POSITION_FOLLOWING,
+        await expect(
+            within(panel)
+                .getByRole('link', { name: 'View on the site' })
+                .compareDocumentPosition(remove),
+        ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+        // Without a fill, as the buttons beside it
+        await expect(getComputedStyle(remove).backgroundColor).toBe(
+            getComputedStyle(within(panel).getByRole('button', { name: 'Duplicate' }))
+                .backgroundColor,
         );
-        await expect(getComputedStyle(remove).backgroundColor).toBe('rgba(0, 0, 0, 0)');
+        await expect(within(panel).getAllByRole('term')).toHaveLength(4);
         // Beside the list, it can be widened
         await expect(within(panel).getByRole('button', { name: 'Widen the panel' })).toBeVisible();
     },

@@ -21,20 +21,6 @@ describe('Aside', () => {
         expect(screen.getByText('Values')).toBeInTheDocument();
     });
 
-    it('puts its footer after its content', () => {
-        render(
-            <Aside label="Details: Article" title="Hello" footer={<button>Delete</button>}>
-                <p>Values</p>
-            </Aside>,
-        );
-        const region = screen.getByRole('region', { name: 'Details: Article' });
-        const remove = screen.getByRole('button', { name: 'Delete' });
-        expect(region).toContainElement(remove);
-        expect(screen.getByText('Values').compareDocumentPosition(remove)).toBe(
-            Node.DOCUMENT_POSITION_FOLLOWING,
-        );
-    });
-
     it('draws a skeleton of its title while it loads', () => {
         render(<Aside label="Details" isLoading />);
         expect(screen.queryByRole('heading')).not.toBeInTheDocument();

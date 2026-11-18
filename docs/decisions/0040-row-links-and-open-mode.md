@@ -1,6 +1,6 @@
 # 0040: Built-in item actions by abilities, and what opens an item
 
-- Status: accepted, superseded in part by [0082](0082-items-open-in-their-form.md): `edit` is the default of `open`, and a value clients don't know is `edit`; amended by [0088](0088-destructive-actions-in-a-menu.md): actions that destroy leave the header of an item for the bottom of its form and of its panel
+- Status: accepted, superseded in part by [0082](0082-items-open-in-their-form.md): `edit` is the default of `open`, and a value clients don't know is `edit`; amended by [0088](0088-destructive-actions-in-a-menu.md): actions that destroy come last in the header of an item, outlined
 - Date: 2026-11-02
 - Changes: the built-in actions of [0017](0017-actions.md), and what titles link to in [0028](0028-item-panel.md)
 

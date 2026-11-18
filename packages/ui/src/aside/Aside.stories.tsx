@@ -146,23 +146,3 @@ export const Loading: Story = {
         </div>
     ),
 };
-
-/** A footer under its content: the actions that destroy what the aside shows (decision 0088). */
-export const Footer: Story = {
-    render: (args) => (
-        <div style={{ maxWidth: '22rem' }}>
-            <Aside {...args} title="Hello world" footer={<Button size="sm">Delete</Button>}>
-                <Panels />
-            </Aside>
-        </div>
-    ),
-    play: async ({ canvasElement }) => {
-        const canvas = within(canvasElement);
-        const region = canvas.getByRole('region', { name: 'Details' });
-        const remove = canvas.getByRole('button', { name: 'Delete' });
-        await expect(region).toContainElement(remove);
-        await expect(
-            canvas.getByText('What goes with the content.').compareDocumentPosition(remove),
-        ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
-    },
-};
