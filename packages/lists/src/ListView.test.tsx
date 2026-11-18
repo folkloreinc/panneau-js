@@ -405,7 +405,8 @@ describe('ListView', () => {
             />,
         );
         // One item: at once, "Undo" in its toast replaces the confirmation
-        await user.click(screen.getByRole('button', { name: 'Delete: Contact' }));
+        await user.click(screen.getByRole('button', { name: 'Actions for Contact' }));
+        await user.click(await screen.findByRole('menuitem', { name: 'Delete' }));
         await waitFor(() => expect(onAction).toHaveBeenCalledTimes(1));
         expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
         // Every matching item, more than an undo puts back: the confirmation comes back
@@ -477,17 +478,17 @@ describe('ListView', () => {
         );
         // Blog can't be deleted: no menu without actions.
         expect(screen.queryByRole('button', { name: 'Actions for Blog' })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: 'Delete: Blog' })).not.toBeInTheDocument();
 
-        // Actions placed in the menu are buttons too while they fit (decision 0060)
-        expect(screen.queryByRole('button', { name: 'Actions for Contact' })).toBeNull();
-        await user.click(screen.getByRole('button', { name: 'Delete: Contact' }));
+        // Actions that destroy are in the menu, even alone (decision 0088)
+        expect(screen.queryByRole('button', { name: 'Delete: Contact' })).toBeNull();
+        await user.click(screen.getByRole('button', { name: 'Actions for Contact' }));
+        await user.click(await screen.findByRole('menuitem', { name: 'Delete' }));
         expect(onAction).toHaveBeenCalledWith(
             expect.objectContaining({ scope: 'item', count: 1, item: pages[1] }),
         );
     });
 
-    it('confirms `delete` from the button of its row', async () => {
+    it('confirms `delete` from the menu of its row', async () => {
         const user = userEvent.setup();
         const onAction = vi.fn(() => Promise.resolve());
         renderList(
@@ -500,7 +501,8 @@ describe('ListView', () => {
                 selectable={false}
             />,
         );
-        await user.click(screen.getByRole('button', { name: 'Delete: Contact' }));
+        await user.click(screen.getByRole('button', { name: 'Actions for Contact' }));
+        await user.click(await screen.findByRole('menuitem', { name: 'Delete' }));
         const dialog = await screen.findByRole('alertdialog');
         expect(dialog).toHaveTextContent('Delete this page?');
         expect(onAction).not.toHaveBeenCalled();
@@ -632,6 +634,7 @@ describe('ListView', () => {
     });
 
     it('shows the icons that actions name, and those given by action id', async () => {
+        const user = userEvent.setup();
         renderList(
             <ListView
                 list={createList()}
@@ -651,8 +654,9 @@ describe('ListView', () => {
                 ).toHaveClass('lucide-file-down'),
             { timeout: 5000 },
         );
+        await user.click(screen.getByRole('button', { name: 'Actions for Contact' }));
         expect(
-            screen.getByRole('button', { name: 'Delete: Contact' }).querySelector('svg'),
+            (await screen.findByRole('menuitem', { name: 'Delete' })).querySelector('svg'),
         ).toHaveClass('lucide-archive');
     });
 

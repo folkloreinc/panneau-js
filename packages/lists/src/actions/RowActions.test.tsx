@@ -61,9 +61,8 @@ describe('RowActions', () => {
         ).toEqual(['show', 'duplicate', 'delete']);
     });
 
-    it('shows every action as an icon in its color, but the main one, which keeps its label', async () => {
-        const user = userEvent.setup();
-        const onRun = renderActions(0);
+    it('shows every action as an icon in its color, but the main one, which keeps its label', () => {
+        renderActions(0);
         const show = screen.getByRole('link', { name: 'View: Contact' });
         expect(show).toHaveTextContent('View');
         expect(show.className).toMatch(/tone-info/);
@@ -71,12 +70,19 @@ describe('RowActions', () => {
         expect(link).toHaveTextContent('');
         expect(link.querySelector('svg')).toHaveClass('lucide-pencil');
         expect(screen.getByRole('button', { name: 'Duplicate: Contact' })).toHaveTextContent('');
-        const button = screen.getByRole('button', { name: 'Delete: Contact' });
-        expect(button).toHaveTextContent('');
-        expect(button.querySelector('svg')).toHaveClass('lucide-trash-2');
-        expect(button.className).toMatch(/tone-danger/);
-        expect(screen.queryByRole('button', { name: 'Actions for Contact' })).toBeNull();
-        await user.click(button);
+    });
+
+    it('puts the actions that destroy in the menu, even alone, in their color', async () => {
+        const user = userEvent.setup();
+        const onRun = renderActions(0);
+        expect(screen.queryByRole('button', { name: 'Delete: Contact' })).toBeNull();
+        await user.click(screen.getByRole('button', { name: 'Actions for Contact' }));
+        const menu = await screen.findByRole('menu');
+        const item = within(menu).getByRole('menuitem', { name: 'Delete' });
+        expect(within(menu).getAllByRole('menuitem')).toEqual([item]);
+        expect(item).toHaveAttribute('data-danger');
+        expect(item.querySelector('svg')).toHaveClass('lucide-trash-2');
+        await user.click(item);
         expect(onRun).toHaveBeenCalledWith(remove.action);
     });
 
@@ -86,7 +92,7 @@ describe('RowActions', () => {
     });
 
     it('drops the label of the main action first, when room runs short', () => {
-        renderActions(1);
+        renderActions(1, [duplicate]);
         expect(screen.getByRole('link', { name: 'View: Contact' })).toHaveTextContent('');
         expect(screen.queryByRole('button', { name: 'Actions for Contact' })).toBeNull();
     });
@@ -108,28 +114,46 @@ describe('RowActions', () => {
         expect(onRun).toHaveBeenCalledWith(remove.action);
     });
 
-    it('never puts a single action in the menu', () => {
+    it('never puts a single action that doesn’t destroy in the menu', () => {
         renderActions(2, []);
         // Two actions, both in the menu
         expect(screen.getByRole('button', { name: 'Actions for Contact' })).toBeInTheDocument();
         expect(screen.queryByRole('link')).toBeNull();
     });
 
-    it('keeps a lone action as a button, at every level', () => {
+    it('keeps a lone action that doesn’t destroy as a button, at every level', () => {
         const onRun = vi.fn();
         renderList(
             <RowActionsFit value={5}>
                 <RowActions
                     itemLabel="Contact"
                     actions={[]}
-                    menu={[remove]}
+                    menu={[duplicate]}
                     pending={null}
                     onRun={onRun}
                 />
             </RowActionsFit>,
         );
-        expect(screen.getByRole('button', { name: 'Delete: Contact' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Duplicate: Contact' })).toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Actions for Contact' })).toBeNull();
+    });
+
+    it('keeps the place of the menu on a row without the action that destroys', () => {
+        renderList(
+            <RowActionsFit value={0}>
+                <RowActions
+                    itemLabel="Contact"
+                    actions={[view, edit]}
+                    menu={[]}
+                    pending={null}
+                    onRun={vi.fn()}
+                    slots={[view, edit, remove]}
+                />
+            </RowActionsFit>,
+        );
+        // Unseen and out of reach
+        expect(screen.queryByRole('button', { name: 'Actions for Contact' })).toBeNull();
+        expect(document.querySelector('[aria-hidden="true"] .lucide-ellipsis')).not.toBeNull();
     });
 });
 

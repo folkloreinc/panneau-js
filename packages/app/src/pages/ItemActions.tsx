@@ -1,12 +1,21 @@
-import { ExternalLink } from 'lucide-react';
+import { Ellipsis, ExternalLink } from 'lucide-react';
 import { useState } from 'react';
 
 import { type ActionOutcome, type ActionTarget, useActionRunner } from '@panneau/actions';
 import { type ItemAction, asksConfirmation } from '@panneau/core';
-import { getActionLabel, listsMessages } from '@panneau/intl';
+import { getActionLabel, listsMessages, uiMessages } from '@panneau/intl';
 import { ConfirmDialog, type ListActionEvent, getActionIcon } from '@panneau/lists';
 import type { Action, Item } from '@panneau/protocol';
-import { Button, LinkButton, usePanneauIntl, useToast } from '@panneau/ui';
+import {
+    Button,
+    IconButton,
+    LinkButton,
+    Menu,
+    MenuItem,
+    MenuTrigger,
+    usePanneauIntl,
+    useToast,
+} from '@panneau/ui';
 
 export interface ItemActionsProps {
     /** The id of the resource. */
@@ -31,7 +40,8 @@ function isExternal(href: string): boolean {
 /**
  * The actions of an item in the header of its panel or of its edit page (decision 0040). Links
  * are links, in a new tab when they leave the admin. Other actions run through the action runner
- * (parameters, results, queued runs), after a confirmation when they ask for one.
+ * (parameters, results, queued runs), after a confirmation when they ask for one. Those that
+ * destroy are in a "More actions" menu, last (decision 0088).
  */
 export function ItemActions({
     resource,
@@ -84,9 +94,13 @@ export function ItemActions({
         }
     };
 
+    const buttons = actions.filter(({ action }) => action.destructive !== true);
+    const menu = actions.filter(({ action }) => action.destructive === true);
+    const inMenu = pending !== null && menu.some(({ action }) => action.id === pending);
+
     return (
         <>
-            {actions.map(({ action, href }) => {
+            {buttons.map(({ action, href }) => {
                 const label = getActionLabel(action, intl);
                 const external = href !== null && isExternal(href);
                 const icon = external ? ExternalLink : getActionIcon(action);
@@ -94,7 +108,7 @@ export function ItemActions({
                     <LinkButton
                         key={action.id}
                         href={href}
-                        variant={action.destructive === true ? 'danger' : 'secondary'}
+                        variant="secondary"
                         {...(icon !== undefined ? { icon } : {})}
                         external={external}
                     >
@@ -103,7 +117,7 @@ export function ItemActions({
                 ) : (
                     <Button
                         key={action.id}
-                        variant={action.destructive === true ? 'danger' : 'secondary'}
+                        variant="secondary"
                         {...(icon !== undefined ? { icon } : {})}
                         isPending={pending === action.id}
                         isDisabled={pending !== null && pending !== action.id}
@@ -113,6 +127,46 @@ export function ItemActions({
                     </Button>
                 );
             })}
+            {menu.length > 0 ? (
+                <MenuTrigger>
+                    <IconButton
+                        icon={Ellipsis}
+                        tone="neutral"
+                        appearance="outline"
+                        label={intl.formatMessage(uiMessages.moreActions)}
+                        isPending={inMenu}
+                        isDisabled={pending !== null && !inMenu}
+                    />
+                    <Menu
+                        placement="bottom end"
+                        onAction={(key) => {
+                            const entry = menu.find(({ action }) => action.id === key);
+                            if (entry !== undefined && entry.href === null) {
+                                run(entry.action);
+                            }
+                        }}
+                    >
+                        {menu.map(({ action, href }) => {
+                            const external = href !== null && isExternal(href);
+                            const icon = external ? ExternalLink : getActionIcon(action);
+                            return (
+                                <MenuItem
+                                    key={action.id}
+                                    id={action.id}
+                                    isDanger
+                                    {...(icon !== undefined ? { icon } : {})}
+                                    {...(href !== null ? { href } : {})}
+                                    {...(external
+                                        ? { target: '_blank', rel: 'noopener noreferrer' }
+                                        : {})}
+                                >
+                                    {getActionLabel(action, intl)}
+                                </MenuItem>
+                            );
+                        })}
+                    </Menu>
+                </MenuTrigger>
+            ) : null}
             <ConfirmDialog
                 event={confirming}
                 onConfirm={(event) => void execute(event.action)}
