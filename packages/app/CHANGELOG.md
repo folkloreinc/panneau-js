@@ -1,5 +1,24 @@
 # @panneau/app
 
+## 5.0.0-alpha.39
+
+### Minor Changes
+
+- ab10f01: Destructive actions in a menu (decision 0088). In the header of an item, its edit form and its panel, actions that destroy (`destructive: true`, as the built-in `delete`) are no longer solid danger buttons before the others: they are in a "More actions" menu (`…`), after the other actions, which are all secondary buttons. In rows, they are always in the row's menu, at every width, even alone in it; a row that doesn't have them keeps the place of the menu. In both menus, they keep their icon and the danger color, their confirmation and "Undo". The bulk actions of a selection don't change.
+
+### Patch Changes
+
+- Updated dependencies [ab10f01]
+  - @panneau/lists@5.0.0-alpha.39
+  - @panneau/actions@5.0.0-alpha.39
+  - @panneau/core@5.0.0-alpha.39
+  - @panneau/data@5.0.0-alpha.39
+  - @panneau/fields@5.0.0-alpha.39
+  - @panneau/forms@5.0.0-alpha.39
+  - @panneau/intl@5.0.0-alpha.39
+  - @panneau/protocol@5.0.0-alpha.39
+  - @panneau/ui@5.0.0-alpha.39
+
 ## 5.0.0-alpha.38
 
 ### Patch Changes
