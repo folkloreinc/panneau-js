@@ -181,6 +181,7 @@
 .scaleBody {
     display: inline-flex;
     flex-direction: column;
+    align-self: flex-start;
     gap: var(--panneau-space-1);
     max-width: 100%;
 }
@@ -196,9 +197,9 @@
     flex: 1 1 0;
     align-items: center;
     justify-content: center;
-    min-width: var(--panneau-control-height);
+    min-width: calc(var(--panneau-control-height) * 1.25);
     min-height: var(--panneau-control-height);
-    padding: 0 var(--panneau-space-3);
+    padding: 0 var(--panneau-space-2);
     font-size: var(--panneau-font-size-control);
     font-weight: var(--panneau-font-weight-medium);
     font-variant-numeric: var(--panneau-font-numeric);
