@@ -1,5 +1,11 @@
 # @panneau/ui
 
+## 5.0.0-alpha.43
+
+### Patch Changes
+
+- @panneau/intl@5.0.0-alpha.43
+
 ## 5.0.0-alpha.42
 
 ### Minor Changes
