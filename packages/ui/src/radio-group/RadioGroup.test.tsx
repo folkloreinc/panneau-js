@@ -24,9 +24,9 @@ describe('RadioGroup', () => {
                 onChange={onChange}
             />,
         );
-        expect(screen.getByRole('radio', { name: '1, Bad' })).not.toBeChecked();
+        expect(screen.getByRole('radio', { name: /^1\s*,\s*Bad$/ })).not.toBeChecked();
         expect(screen.getByRole('radio', { name: '2' })).toBeInTheDocument();
-        await userEvent.click(screen.getByRole('radio', { name: '3, Great' }));
+        await userEvent.click(screen.getByRole('radio', { name: /^3\s*,\s*Great$/ }));
         expect(onChange).toHaveBeenCalledWith(3);
     });
 

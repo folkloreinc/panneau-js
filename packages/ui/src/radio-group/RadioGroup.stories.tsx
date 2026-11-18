@@ -136,6 +136,8 @@ export const Scale: Story = {
         ).toBe(false);
         await userEvent.click(within(group).getByRole('radio', { name: '4' }));
         await expect(within(group).getByRole('radio', { name: '4' })).toBeChecked();
-        await expect(within(group).getByRole('radio', { name: '5, Very' })).toBeInTheDocument();
+        await expect(
+            within(group).getByRole('radio', { name: /^5\s*,\s*Very$/ }),
+        ).toBeInTheDocument();
     },
 };

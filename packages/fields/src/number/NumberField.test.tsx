@@ -31,8 +31,10 @@ describe('NumberField', () => {
         const radios = within(group).getAllByRole('radio');
         expect(radios).toHaveLength(5);
         expect(radios.every((radio) => !(radio as HTMLInputElement).checked)).toBe(true);
-        expect(within(group).getByRole('radio', { name: '1, Not at all' })).toBeInTheDocument();
-        await userEvent.click(within(group).getByRole('radio', { name: '5, Very' }));
+        expect(
+            within(group).getByRole('radio', { name: /^1\s*,\s*Not at all$/ }),
+        ).toBeInTheDocument();
+        await userEvent.click(within(group).getByRole('radio', { name: /^5\s*,\s*Very$/ }));
         expect(onChange).toHaveBeenLastCalledWith(5);
     });
 
