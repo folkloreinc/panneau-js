@@ -284,6 +284,29 @@ export const chartColors: Readonly<{
 }>;
 
 // @public
+export function ChartLegend(input: ChartLegendProps): JSX.Element;
+
+// @public
+export interface ChartLegendItem {
+    color?: number | undefined;
+    help?: ReactNode;
+    helpTone?: Tone | undefined;
+    href?: string | undefined;
+    label: string;
+    tone?: Tone | undefined;
+    value?: ReactNode;
+}
+
+// @public (undocumented)
+export interface ChartLegendProps {
+    // (undocumented)
+    className?: string | undefined;
+    // (undocumented)
+    items: ChartLegendItem[];
+    label: string;
+}
+
+// @public
 export function Checkbox(input: CheckboxProps): JSX.Element;
 
 // @public (undocumented)
@@ -461,6 +484,7 @@ export const componentTokens: Readonly<{
     'segmented-control': Readonly<Record<"panneau-segmented-control-radius" | "panneau-segmented-control-padding" | "panneau-segmented-control-bg" | "panneau-segmented-control-border-color" | "panneau-segmented-control-segment-padding-x" | "panneau-segmented-control-segment-font-weight" | "panneau-segmented-control-segment-color" | "panneau-segmented-control-segment-color-hover" | "panneau-segmented-control-segment-bg-hover" | "panneau-segmented-control-segment-color-selected" | "panneau-segmented-control-segment-bg-selected" | "panneau-segmented-control-segment-shadow-selected", string>>;
     selected: Readonly<Record<"panneau-selected-text" | "panneau-selected-subtle" | "panneau-selected-bg", string>>;
     skeleton: Readonly<Record<"panneau-skeleton-color" | "panneau-skeleton-radius" | "panneau-skeleton-duration", string>>;
+    sparkline: Readonly<Record<"panneau-sparkline-height" | "panneau-sparkline-line-width" | "panneau-sparkline-dot-size" | "panneau-sparkline-area-opacity", string>>;
     spinner: Readonly<Record<"panneau-spinner-border-width", string>>;
     stack: Readonly<Record<"panneau-stack-gap", string>>;
     stat: Readonly<Record<"panneau-stat-gap" | "panneau-stat-label-font-size" | "panneau-stat-value-font-family" | "panneau-stat-value-font-size" | "panneau-stat-value-font-weight" | "panneau-stat-help-font-size", string>>;
@@ -785,9 +809,12 @@ export interface LineChartProps {
     isInteractive?: boolean | undefined;
     label: string;
     points?: LineChartPoint[] | undefined;
+    // Warning: (ae-forgotten-export) The symbol "LineChartSeries" needs to be exported by the entry point index.d.ts
+    series?: LineChartSeries[] | undefined;
     showAxis?: boolean | undefined;
     showLast?: boolean | undefined;
     showMax?: boolean | undefined;
+    stacked?: boolean | undefined;
 }
 
 // @public
@@ -1184,6 +1211,21 @@ export interface SliderProps extends Omit<SliderProps_2<number>, 'className' | '
 export type Space = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 8 | 10;
 
 // @public
+export function Sparkline(input: SparklineProps): JSX.Element;
+
+// @public (undocumented)
+export interface SparklineProps {
+    // (undocumented)
+    className?: string | undefined;
+    color?: number | undefined;
+    // Warning: (tsdoc-code-span-missing-delimiter) The code span is missing its closing backtick
+    // Warning: (tsdoc-code-span-missing-delimiter) The code span is missing its closing backtick
+    label?: string | undefined;
+    tone?: Tone | undefined;
+    values?: readonly number[] | undefined;
+}
+
+// @public
 export function Spinner(input: SpinnerProps): JSX.Element;
 
 // @public (undocumented)
@@ -1210,8 +1252,16 @@ export interface StackProps extends HTMLAttributes<HTMLElement> {
 // @public
 export function Stat(input: StatProps): JSX.Element;
 
+// @public
+export interface StatChange {
+    direction: 'up' | 'down' | 'none';
+    label: ReactNode;
+    tone?: Tone | undefined;
+}
+
 // @public (undocumented)
 export interface StatProps {
+    change?: StatChange | undefined;
     // (undocumented)
     className?: string;
     format?: FormatNumberOptions;

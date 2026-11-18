@@ -19,6 +19,30 @@ describe('Stat', () => {
         expect(link).toHaveClass('panneau-tone-danger');
     });
 
+    it('says its change from a previous value, with an arrow, in its tone', () => {
+        const { container, rerender } = render(
+            <Stat
+                value={40}
+                change={{
+                    direction: 'up',
+                    label: '12% from the previous 30 days',
+                    tone: 'success',
+                }}
+            />,
+        );
+        const change = screen.getByText('12% from the previous 30 days').parentElement;
+        expect(change).toHaveTextContent('Up 12% from the previous 30 days');
+        expect(change).toHaveClass('panneau-tone-success');
+        expect(container.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
+        rerender(
+            <Stat value={40} change={{ direction: 'none', label: 'No change from last month' }} />,
+        );
+        expect(screen.getByText('No change from last month').parentElement).toHaveTextContent(
+            /^No change from last month$/,
+        );
+        expect(container.querySelector('svg')).toBeNull();
+    });
+
     it('formats with options, and shows text as is', () => {
         const { rerender } = render(
             <Stat value={1250} format={{ style: 'currency', currency: 'CAD' }} />,

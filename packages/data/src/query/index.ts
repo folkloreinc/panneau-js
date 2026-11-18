@@ -6,6 +6,7 @@ export {
 } from './context';
 export {
     type QueryHookOptions,
+    type ResourceAggregateRead,
     type RunActionVariables,
     type UpdateItemVariables,
     type UseActionRunOptions,
@@ -17,6 +18,7 @@ export {
     useDuplicateItem,
     useItemPreview,
     useResourceAggregate,
+    useResourceAggregates,
     useResourceItem,
     useResourceList,
     useRunAction,

@@ -295,3 +295,153 @@ export function createRecentItems(today: Date = new Date()) {
         ],
     };
 }
+
+/**
+ * Widgets that combine several aggregates of the entries into one card (decision 0089), on the
+ * period of their page: a metric with its change, its trend and its parts, a series per status,
+ * a series per source with an alert, and a table of a count and a sum.
+ */
+export const COMBINED_WIDGETS: Widget[] = [
+    {
+        id: 'submitted',
+        type: 'metric',
+        label: 'Submitted',
+        settings: {
+            resource: 'entries',
+            period: 'submitted_at',
+            points: 'day:submitted_at',
+            by: 'status',
+            goodWhen: 'up',
+        },
+    },
+    {
+        id: 'per-status',
+        type: 'series',
+        label: 'Entries per status',
+        settings: {
+            resource: 'entries',
+            group: 'day:submitted_at',
+            split: 'status',
+            period: 'submitted_at',
+        },
+    },
+    {
+        id: 'sources',
+        type: 'series',
+        label: 'Accepted and all',
+        settings: {
+            group: 'day:submitted_at',
+            period: 'submitted_at',
+            sources: [
+                {
+                    resource: 'entries',
+                    label: 'Accepted',
+                    query: { 'filter[status]': 'accepted' },
+                    help: 'Ready to publish',
+                },
+                {
+                    resource: 'entries',
+                    label: 'All entries',
+                    alert: { query: { 'filter[status]': 'refused' }, label: 'refused' },
+                },
+            ],
+        },
+    },
+    {
+        id: 'activity',
+        type: 'table',
+        label: 'Activity',
+        width: 12,
+        settings: {
+            period: 'submitted_at',
+            points: 'day:submitted_at',
+            goodWhen: 'up',
+            rows: [
+                {
+                    resource: 'entries',
+                    label: 'Entries',
+                    alert: { query: { 'filter[status]': 'refused' }, label: 'refused' },
+                },
+                { resource: 'entries', label: 'Fees', measure: 'sum:fee' },
+            ],
+        },
+    },
+];
+
+/** Widgets of the same types with data of their own (decision 0089). */
+export const COMBINED_ENDPOINT_WIDGETS: Widget[] = [
+    {
+        id: 'storage',
+        type: 'metric',
+        label: 'Storage',
+        settings: { format: { style: 'unit', unit: 'megabyte', maximumFractionDigits: 1 } },
+    },
+    { id: 'costs', type: 'table', label: 'Costs' },
+    { id: 'quiet', type: 'stat', label: 'Nothing today', settings: { hideEmpty: true } },
+    { id: 'messages', type: 'series', label: 'Messages', settings: { stacked: true } },
+];
+
+/** The data of the widgets of `COMBINED_ENDPOINT_WIDGETS`. */
+export const COMBINED_DATA: Record<string, MockWidget> = {
+    storage: {
+        value: 1530.25,
+        previous: 1700,
+        points: [
+            { date: '2026-10-05', value: 1700 },
+            { date: '2026-10-06', value: 1650 },
+            { date: '2026-10-07', value: 1530.25 },
+        ],
+        period: 'day',
+        parts: [
+            { label: 'Images', value: 900 },
+            { label: 'Videos', value: 400 },
+            { label: 'Audio', value: 120 },
+            { label: 'Documents', value: 60 },
+            { label: 'Fonts', value: 30 },
+            { label: 'Other files', value: 20.25 },
+        ],
+    },
+    costs: {
+        columns: [
+            { key: 'cost', label: 'Cost', format: { style: 'currency', currency: 'USD' } },
+            { key: 'calls', label: 'Calls' },
+        ],
+        rows: [
+            {
+                label: 'Summaries',
+                url: '/panneau/resources/entries',
+                cells: { cost: 9.08, calls: { value: 1203, help: 'calls' } },
+                points: [
+                    { date: '2026-10-05', value: 3 },
+                    { date: '2026-10-06', value: 2.5 },
+                    { date: '2026-10-07', value: 3.58 },
+                ],
+            },
+            {
+                label: 'Translations',
+                cells: { cost: { value: 0.42, tone: 'warning' }, calls: null },
+            },
+        ],
+    },
+    quiet: { value: 0 },
+    messages: {
+        period: 'day',
+        points: [],
+        series: [
+            {
+                label: 'Emails',
+                points: [
+                    { date: '2026-10-05', value: 12 },
+                    { date: '2026-10-06', value: 20 },
+                ],
+                total: 32,
+            },
+            {
+                label: 'Text messages',
+                points: [{ date: '2026-10-06', value: 3 }],
+                total: 3,
+                alert: { value: 1, label: 'failed' },
+            },
+        ],
+    },
+};

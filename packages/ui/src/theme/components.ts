@@ -28,6 +28,7 @@ import { radioTokens } from '../radio-group/tokens';
 import { segmentedControlTokens } from '../segmented-control/tokens';
 import { listBoxTokens } from '../select/listBoxTokens';
 import { skeletonTokens } from '../skeleton/tokens';
+import { sparklineTokens } from '../sparkline/tokens';
 import { spinnerTokens } from '../spinner/tokens';
 import { stackTokens } from '../stack/tokens';
 import { statTokens } from '../stat/tokens';
@@ -74,6 +75,7 @@ export const componentTokens = Object.freeze({
     'segmented-control': segmentedControlTokens.tokens,
     selected: selectedTokens.tokens,
     skeleton: skeletonTokens.tokens,
+    sparkline: sparklineTokens.tokens,
     spinner: spinnerTokens.tokens,
     stack: stackTokens.tokens,
     stat: statTokens.tokens,

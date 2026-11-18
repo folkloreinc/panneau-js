@@ -1,0 +1,73 @@
+.legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 10rem), 1fr));
+    gap: var(--panneau-space-2) var(--panneau-space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--panneau-font-size-sm);
+}
+
+.item {
+    display: flex;
+    align-items: baseline;
+    gap: var(--panneau-space-2);
+    min-width: 0;
+}
+
+/* The color of the line: categorical, or the solid color of a tone. */
+.swatch {
+    flex-shrink: 0;
+    align-self: center;
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 2px;
+    background-color: var(--_panneau-chart-legend-color);
+}
+
+.toned {
+    --_panneau-chart-legend-color: var(--panneau-tone-solid);
+}
+
+.text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.label {
+    overflow: hidden;
+    color: var(--panneau-color-text);
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+a.label:hover,
+a.label[data-hovered] {
+    text-decoration: underline;
+}
+
+.label[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 2px;
+    border-radius: var(--panneau-radius-sm);
+}
+
+.help {
+    font-size: var(--panneau-font-size-xs);
+    color: var(--panneau-color-text-muted);
+}
+
+.helpToned {
+    font-weight: var(--panneau-font-weight-medium);
+    color: var(--panneau-tone-text);
+}
+
+.value {
+    flex-shrink: 0;
+    font-variant-numeric: var(--panneau-font-numeric);
+    font-weight: var(--panneau-font-weight-medium);
+    color: var(--panneau-color-text);
+}

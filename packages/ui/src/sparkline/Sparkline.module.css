@@ -1,0 +1,44 @@
+.sparkline {
+    position: relative;
+    width: 100%;
+    min-width: 3rem;
+    height: var(--panneau-sparkline-height, 2rem);
+}
+
+/* In a tone: the solid color of the tone. */
+.toned {
+    --_panneau-sparkline-color: var(--panneau-tone-solid);
+}
+
+.svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.line {
+    fill: none;
+    stroke: var(--_panneau-sparkline-color);
+    stroke-width: var(--panneau-sparkline-line-width, 1.5px);
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.area {
+    fill: var(--_panneau-sparkline-color);
+    fill-opacity: var(--panneau-sparkline-area-opacity, 0.12);
+    stroke: none;
+}
+
+/* Round whatever the width, with a ring of the surface around it */
+.dot {
+    position: absolute;
+    width: var(--panneau-sparkline-dot-size, 6px);
+    height: var(--panneau-sparkline-dot-size, 6px);
+    border-radius: 50%;
+    background-color: var(--_panneau-sparkline-color);
+    box-shadow: 0 0 0 2px var(--panneau-card-bg, var(--panneau-color-surface));
+    transform: translate(-50%, -50%);
+}

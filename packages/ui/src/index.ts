@@ -31,6 +31,11 @@ export {
 } from './button/Button';
 export { LinkButton, type LinkButtonProps } from './button/LinkButton';
 export { Card, type CardProps } from './card/Card';
+export {
+    ChartLegend,
+    type ChartLegendItem,
+    type ChartLegendProps,
+} from './chart-legend/ChartLegend';
 export { CommandPalette, type CommandPaletteProps } from './command-palette/CommandPalette';
 export {
     type CommandPaletteGroup,
@@ -111,9 +116,10 @@ export {
 export { Prose, type ProseProps } from './prose/Prose';
 export { LoadingRegion, type LoadingRegionProps } from './skeleton/LoadingRegion';
 export { Skeleton, type SkeletonProps } from './skeleton/Skeleton';
+export { Sparkline, type SparklineProps } from './sparkline/Sparkline';
 export { Spinner, type SpinnerProps } from './spinner/Spinner';
 export { Stack, type StackProps } from './stack/Stack';
-export { Stat, type StatProps } from './stat/Stat';
+export { Stat, type StatChange, type StatProps } from './stat/Stat';
 export { Switch, type SwitchProps } from './switch/Switch';
 export {
     Tab,

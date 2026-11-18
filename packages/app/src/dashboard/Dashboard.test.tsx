@@ -11,8 +11,12 @@ import { type MockWidget, createMockBackend } from '@panneau/protocol/mock';
 
 import {
     AGGREGATE_WIDGETS,
+    COMBINED_DATA,
+    COMBINED_ENDPOINT_WIDGETS,
+    COMBINED_WIDGETS,
     DASHBOARD_DATA,
     DASHBOARD_ITEMS,
+    DASHBOARD_WIDGETS,
     PERIOD_DATA,
     createDashboardDefinition,
     createPeriodDefinition,
@@ -415,6 +419,145 @@ describe('Dashboard', () => {
             expect(requests).toContain('/panneau/api/dashboard/widgets/visits?page=activity');
             // No widget follows it: the control doesn't list them
             expect(screen.queryByText(/^For /)).toBeNull();
+        });
+    });
+
+    describe('combined widgets (decision 0089)', () => {
+        afterEach(() => {
+            vi.useRealTimers();
+        });
+
+        /** The page "Activity" with the combined widgets, on the 7 days to October 9. */
+        function renderCombined(requests: string[] = []) {
+            // The entries are submitted from October 1 to 6
+            vi.useFakeTimers({ toFake: ['Date'] });
+            vi.setSystemTime(new Date(2026, 9, 9, 12));
+            const definition = createDashboardDefinition(DASHBOARD_WIDGETS, COMBINED_WIDGETS);
+            const activity = definition.pages?.activity;
+            if (activity !== undefined) {
+                activity.period = { options: ['7d', '30d'], default: '7d' };
+            }
+            return renderDashboard({ definition, page: 'activity', requests });
+        }
+
+        it('draws a metric: its number, its change from the previous days, its trend, its parts', async () => {
+            const requests: string[] = [];
+            renderCombined(requests);
+            expect(widget('submitted').getByRole('status')).toHaveTextContent('Loading Submitted…');
+            // October 3 to 9: 4 entries; September 26 to October 2: 2
+            const link = await widget('submitted').findByRole('link', { name: /^Submitted 4/ });
+            expect(link).toHaveAttribute(
+                'href',
+                '/panneau/resources/entries?filter%5Bsubmitted_at%5D%5Bfrom%5D=2026-10-03&filter%5Bsubmitted_at%5D%5Bto%5D=2026-10-09',
+            );
+            const change = widget('submitted').getByText('100% from the previous 7 days');
+            expect(change.parentElement).toHaveTextContent('Up 100% from the previous 7 days');
+            expect(change.parentElement).toHaveClass('panneau-tone-success');
+            expect(
+                widget('submitted').getByRole('img', { name: 'Trend: from 1 to 0' }),
+            ).toBeInTheDocument();
+            const parts = widget('submitted').getByRole('list', { name: 'Submitted' });
+            expect(
+                within(parts)
+                    .getAllByRole('listitem')
+                    .map((item) => item.textContent),
+            ).toEqual(['Accepted2', 'To judge1', 'Refused1']);
+            expect(
+                requests
+                    .map((url) => decodeURIComponent(url))
+                    .filter((url) => url.includes('measure=count') && !url.includes('group')),
+            ).toContain(
+                '/panneau/api/resources/entries/aggregate?filter[submitted_at][from]=2026-09-26&filter[submitted_at][to]=2026-10-02&measure=count',
+            );
+        });
+
+        it('draws a line per value of a field, with a legend of their totals', async () => {
+            renderCombined();
+            const legend = await widget('per-status').findByRole('list', {
+                name: 'Entries per status',
+            });
+            expect(
+                within(legend)
+                    .getAllByRole('listitem')
+                    .map((item) => item.textContent),
+            ).toEqual(['Accepted2', 'To judge1', 'Refused1']);
+            expect(within(legend).getByRole('link', { name: 'To judge' })).toHaveAttribute(
+                'href',
+                '/panneau/resources/entries?filter%5Bsubmitted_at%5D%5Bfrom%5D=2026-10-03&filter%5Bsubmitted_at%5D%5Bto%5D=2026-10-09&filter%5Bstatus%5D=to-judge',
+            );
+            const table = widget('per-status').getByRole('table', { name: 'Entries per status' });
+            expect(
+                within(table)
+                    .getAllByRole('columnheader')
+                    .map((cell) => cell.textContent),
+            ).toEqual(['Date', 'Accepted', 'To judge', 'Refused']);
+        });
+
+        it('draws a line per source, with the help of each, or the count of its alert', async () => {
+            renderCombined();
+            const legend = await widget('sources').findByRole('list', { name: 'Accepted and all' });
+            expect(
+                within(legend)
+                    .getAllByRole('listitem')
+                    .map((item) => item.textContent),
+            ).toEqual(['AcceptedReady to publish2', 'All entries1 refused4']);
+            expect(within(legend).getByText('1 refused')).toHaveClass('panneau-tone-danger');
+        });
+
+        it('draws a table of rows: their value, their change, their alert, their trend', async () => {
+            renderCombined();
+            const table = await widget('activity').findByRole('table', { name: 'Activity' });
+            expect(
+                within(table)
+                    .getAllByRole('row')
+                    .map((row) => row.textContent),
+            ).toEqual(['TotalChangeAlertsTrend', 'Entries4+100%1 refused', 'FeesCA$70.00+40%']);
+            expect(within(table).getByRole('link', { name: 'Fees' })).toHaveAttribute(
+                'href',
+                '/panneau/resources/entries?filter%5Bsubmitted_at%5D%5Bfrom%5D=2026-10-03&filter%5Bsubmitted_at%5D%5Bto%5D=2026-10-09',
+            );
+            expect(within(table).getByText('1 refused')).toHaveClass('panneau-tone-danger');
+            expect(within(table).getAllByText('+100%')[0]).toHaveClass('panneau-tone-success');
+        });
+
+        it('draws the data of their own, in the format of the widget, and hides empty widgets', async () => {
+            renderDashboard({
+                definition: createDashboardDefinition(COMBINED_ENDPOINT_WIDGETS),
+                widgets: COMBINED_DATA,
+            });
+            expect(await widget('storage').findByText('1,530.3 MB')).toBeInTheDocument();
+            // No period: the change is from the previous period
+            expect(widget('storage').getByText('10% from the previous period')).toBeVisible();
+            const parts = widget('storage').getByRole('list', { name: 'Storage' });
+            // The 5 largest parts, then the rest
+            expect(
+                within(parts)
+                    .getAllByRole('listitem')
+                    .map((item) => item.textContent),
+            ).toEqual([
+                'Images900 MB',
+                'Videos400 MB',
+                'Audio120 MB',
+                'Documents60 MB',
+                'Fonts30 MB',
+                'Other20.3 MB',
+            ]);
+
+            const costs = await widget('costs').findByRole('table', { name: 'Costs' });
+            expect(
+                within(costs)
+                    .getAllByRole('row')
+                    .map((row) => row.textContent),
+            ).toEqual(['CostCallsTrend', 'Summaries$9.081,203 calls', 'Translations$0.42—']);
+            expect(within(costs).getByText('$0.42')).toHaveClass('panneau-tone-warning');
+
+            const legend = await widget('messages').findByRole('list', { name: 'Messages' });
+            expect(
+                within(legend)
+                    .getAllByRole('listitem')
+                    .map((item) => item.textContent),
+            ).toEqual(['Emails32', 'Text messages1 failed3']);
+            expect(document.querySelector('[data-widget="quiet"]')).toBeNull();
         });
     });
 });

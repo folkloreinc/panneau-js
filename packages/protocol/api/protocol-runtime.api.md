@@ -125,7 +125,7 @@ export const BUILT_IN_LINK_TYPES: readonly ["url", "page", "email", "tel", "file
 export const BUILT_IN_LIST_LAYOUTS: readonly ["table", "cards", "gallery", "calendar"];
 
 // @public
-export const BUILT_IN_WIDGET_TYPES: readonly ["stat", "series", "list", "breakdown"];
+export const BUILT_IN_WIDGET_TYPES: readonly ["stat", "series", "list", "breakdown", "metric", "table"];
 
 // @public (undocumented)
 export type BuiltInAction = (typeof BUILT_IN_ACTIONS)[number];
@@ -266,6 +266,9 @@ export function getAddressRequiredParts(field: Pick<Field, 'settings'>): Address
 export function getAggregateWidgetType(group: AggregateGroup | null): AggregateWidgetType;
 
 // @public
+export function getChangeTone(direction: WidgetChange['direction'], goodWhen: unknown): 'success' | 'danger' | null;
+
+// @public
 export function getCreatableTypes<T extends {
     abilities?: Record<string, boolean> | undefined;
 }>(resource: {
@@ -327,6 +330,9 @@ export function getNestedShape(field: Pick<Field, 'type' | 'fields' | 'multiple'
 export function getPeriodRange(option: OverviewPeriodOption, today?: string | Date): PeriodRange;
 
 // @public
+export function getPreviousRange(range: PeriodRange, option?: OverviewPeriodOption | null): PeriodRange;
+
+// @public
 export function getResourceType<T extends {
     id: string;
 }>(resource: {
@@ -359,7 +365,16 @@ export function getTypeFields<F>(resource: {
 export function getValue(values: unknown, path: string): unknown;
 
 // @public
+export function getWidgetAggregates(widget: WidgetLike): WidgetAggregateRead[];
+
+// @public
+export function getWidgetChange(value: number, previous: number): WidgetChange;
+
+// @public
 export function getWidgetResource(widget: WidgetLike): WidgetResource | null;
+
+// @public
+export function getWidgetSources(widget: WidgetLike): WidgetSource[];
 
 // @public
 export const GROUPED_WIDGET_TYPES: readonly ["series", "breakdown"];
@@ -397,6 +412,9 @@ export function isBuiltInLinkType(type: string): type is BuiltInLinkType;
 export function isBuiltInWidgetType(type: string): type is BuiltInWidgetType;
 
 // @public
+export function isCombinedWidget(widget: WidgetLike): boolean;
+
+// @public
 export function isCompoundField(field: Pick<Field, 'type' | 'fields'>): boolean;
 
 // @public
@@ -430,6 +448,12 @@ export function isProblem(value: unknown): value is Problem;
 
 // @public
 export function isSearchableResource(resource: Omit<SearchableResource, 'id'>): boolean;
+
+// @public
+export function isWidgetDataEmpty(type: string, data: unknown): boolean;
+
+// @public
+export function isWidgetUnit(value: unknown): value is string;
 
 // @public
 export const ITEM_ACTION_ABILITIES: Readonly<Record<BuiltInItemAction, string>>;
@@ -606,6 +630,9 @@ export type ReadSearchQueryResult = {
 };
 
 // @public
+export function readsResources(widget: WidgetLike): boolean;
+
+// @public
 export function readWidgetDataQuery(params: URLSearchParams): ReadWidgetDataQueryResult;
 
 // @public
@@ -627,6 +654,11 @@ export type ReadWidgetDataQueryResult = {
     resource?: undefined;
 };
 
+// Warning: (ae-forgotten-export) The symbol "WidgetNumberFormat" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function readWidgetFormat(...formats: unknown[]): WidgetNumberFormat | undefined;
+
 // Warning: (ae-forgotten-export) The symbol "MediaTransform" needs to be exported by the entry point index.d.ts
 //
 // @public
@@ -646,7 +678,7 @@ export function resolveLinkNewTab(newTab: LinkNewTab, link: {
 }): boolean;
 
 // @public
-export const RESOURCE_WIDGET_TYPES: readonly ["stat", "series", "list", "breakdown"];
+export const RESOURCE_WIDGET_TYPES: readonly ["stat", "series", "list", "breakdown", "metric"];
 
 // @public
 export const RICH_TEXT_STYLE_ELEMENTS: readonly ["p", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "ul", "ol", "li"];
@@ -730,19 +762,92 @@ export interface ValidationIssue {
 // @public
 export const WIDGET_BREAKDOWN_MAX_ITEMS = 10;
 
+// @public (undocumented)
+export const WIDGET_FORMAT_CURRENCY_DISPLAYS: readonly ["symbol", "narrowSymbol", "code", "name"];
+
+// @public (undocumented)
+export const WIDGET_FORMAT_NOTATIONS: readonly ["standard", "compact"];
+
+// @public (undocumented)
+export const WIDGET_FORMAT_SIGN_DISPLAYS: readonly ["auto", "always", "exceptZero", "never"];
+
+// @public
+export const WIDGET_FORMAT_STYLES: readonly ["decimal", "percent", "currency", "unit"];
+
+// @public (undocumented)
+export const WIDGET_FORMAT_UNIT_DISPLAYS: readonly ["short", "narrow", "long"];
+
+// @public
+export const WIDGET_FORMAT_UNITS: readonly ["acre", "bit", "byte", "celsius", "centimeter", "day", "degree", "fahrenheit", "fluid-ounce", "foot", "gallon", "gigabit", "gigabyte", "gram", "hectare", "hour", "inch", "kilobit", "kilobyte", "kilogram", "kilometer", "liter", "megabit", "megabyte", "meter", "microsecond", "mile", "mile-scandinavian", "milliliter", "millimeter", "millisecond", "minute", "month", "nanosecond", "ounce", "percent", "petabyte", "pound", "second", "stone", "terabit", "terabyte", "week", "yard", "year"];
+
+// @public
+export const WIDGET_GOOD_WHEN: readonly ["up", "down"];
+
 // @public
 export const WIDGET_LIST_MAX_ITEMS = 5;
+
+// @public
+export const WIDGET_METRIC_MAX_PARTS = 5;
 
 // @public
 export const WIDGET_RESERVED_QUERY_PARAMS: readonly ["page", "perPage", "cursor"];
 
 // @public
+export const WIDGET_SERIES_MAX_SERIES = 6;
+
+// @public
 export const WIDGET_SERIES_PERIODS: readonly ["day", "week", "month"];
+
+// @public
+export const WIDGET_SOURCES_MAX = 5;
+
+// @public
+export const WIDGET_TABLE_ALIGNS: readonly ["start", "end"];
+
+// @public
+export const WIDGET_TABLE_MAX_COLUMNS = 6;
+
+// @public
+export const WIDGET_TABLE_MAX_ROWS = 8;
 
 // @public
 export interface WidgetAggregate {
     group: string | null;
     measure: string;
+}
+
+// @public
+export interface WidgetAggregateRead {
+    // (undocumented)
+    group: string | null;
+    // (undocumented)
+    measure: string;
+    period: string | false | null;
+    query: ListQuery;
+    // (undocumented)
+    resource: string;
+    // (undocumented)
+    role: WidgetAggregateRole;
+    source: number | null;
+}
+
+// @public
+export type WidgetAggregateRole =
+/** The number: of a `metric`, of a row of a `table`. */
+'value'
+/** A line of points: the trend of a `metric` or of a row, a line of a `series`, its total. */
+| 'points'
+/** The parts of a `metric` (`by`), the values of the `split` of a `series`. */
+| 'parts'
+/** The count of the alert of a source. */
+| 'alert';
+
+// @public
+export interface WidgetChange {
+    difference: number;
+    // (undocumented)
+    direction: 'up' | 'down' | 'none';
+    ratio: number | null;
 }
 
 // @public
@@ -752,6 +857,9 @@ export interface WidgetDataRequest {
     query?: WidgetListQuery;
     resource?: string;
 }
+
+// @public (undocumented)
+export type WidgetGoodWhen = (typeof WIDGET_GOOD_WHEN)[number];
 
 // @public
 export type WidgetListQuery = Pick<ListQuery, 'filter' | 'q'>;
@@ -772,6 +880,33 @@ export interface WidgetResource {
 
 // @public (undocumented)
 export type WidgetSeriesPeriod = (typeof WIDGET_SERIES_PERIODS)[number];
+
+// @public
+export interface WidgetSource {
+    // (undocumented)
+    alert: WidgetSourceAlert | null;
+    group: string | null;
+    help: string | null;
+    // (undocumented)
+    label: string;
+    measure: string;
+    params: URLSearchParams;
+    period: string | false | null;
+    // (undocumented)
+    query: ListQuery;
+    // (undocumented)
+    resource: string;
+    tone: string | null;
+}
+
+// @public
+export interface WidgetSourceAlert {
+    label: string;
+    params: URLSearchParams;
+    // (undocumented)
+    query: ListQuery;
+    tone: string;
+}
 
 // (No @packageDocumentation comment for this package)
 

@@ -412,7 +412,7 @@ describe('the aggregates of a list in the definition', () => {
             'dashboard.widgets.1.settings.group: A `series` on a resource needs a `group` on the period of a date: `day:created_at`.',
             'dashboard.widgets.2.settings.group: A `breakdown` on a resource needs a `group` on a field: `status`.',
             "dashboard.widgets.3.settings.group: The list of `runs` can't group by `title`: it isn't in the `groupBy` of its aggregates.",
-            'dashboard.widgets.4.settings.target: Only a `stat` has a `target`.',
+            'dashboard.widgets.4.settings.target: Only a `stat` and a `metric` have a `target`.',
             'dashboard.widgets.4.settings.measure: A `list` shows items: it has no `measure`.',
             "dashboard.widgets.5.settings.group: A `stat` isn't grouped: only a `series` and a `breakdown` are.",
             'dashboard.widgets.6.settings.group: `group` goes with a `resource`.',

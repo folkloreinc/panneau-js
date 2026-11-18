@@ -120,6 +120,56 @@ export const Interactive: Story = {
     },
 };
 
+/** Several lines over the same days, each on its categorical color, or in a tone. */
+export const Series: Story = {
+    args: {
+        label: 'Messages per day',
+        series: [
+            { label: 'Emails', points: DAYS },
+            {
+                label: 'Text messages',
+                points: DAYS.map((point, index) => ({ ...point, value: (index * 3) % 7 })),
+            },
+            {
+                label: 'Failed',
+                points: DAYS.map((point, index) => ({ ...point, value: index % 5 === 0 ? 2 : 0 })),
+                tone: 'danger',
+            },
+        ],
+        isInteractive: true,
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const table = canvas.getByRole('table', { name: 'Messages per day' });
+        await expect(within(table).getAllByRole('columnheader')).toHaveLength(4);
+        const plot = canvas.getByRole('slider', { name: 'Messages per day' });
+        await userEvent.tab();
+        await expect(plot).toHaveFocus();
+        await expect(plot).toHaveAttribute(
+            'aria-valuetext',
+            'October 18, 2026: Emails: 16, Text messages: 4, Failed: 0',
+        );
+    },
+};
+
+/** Lines stacked as areas: the top one is their total. */
+export const Stacked: Story = {
+    args: {
+        label: 'Messages per day',
+        stacked: true,
+        series: [
+            { label: 'Emails', points: DAYS },
+            {
+                label: 'Text messages',
+                points: DAYS.map((point, index) => ({ ...point, value: (index * 3) % 7 })),
+            },
+        ],
+    },
+    play: async ({ canvasElement }) => {
+        await expect(canvasElement.querySelectorAll('svg g g')).toHaveLength(2);
+    },
+};
+
 /** Three months, by month. */
 export const Months: Story = {
     args: {

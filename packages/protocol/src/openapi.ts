@@ -969,13 +969,15 @@ export function createOpenApiDocument(): JsonObject {
                     ],
                     responses: {
                         200: ok(
-                            "The widget's data, in the shape of its type: `StatWidgetData`, `SeriesWidgetData`, `ListWidgetData` and `BreakdownWidgetData` for the built-in types, the plugin's own object for others.",
+                            "The widget's data, in the shape of its type: `StatWidgetData`, `SeriesWidgetData`, `ListWidgetData`, `BreakdownWidgetData`, `MetricWidgetData` and `TableWidgetData` for the built-in types, the plugin's own object for others. A `metric` that follows the period has `previous`, its value over the days of `getPreviousRange()`: the same number of days just before (`7d`, `30d`, `90d`), the same days of the month before (`month`), or of the year before (`year`).",
                             {
                                 anyOf: [
                                     ref('StatWidgetData'),
                                     ref('SeriesWidgetData'),
                                     ref('ListWidgetData'),
                                     ref('BreakdownWidgetData'),
+                                    ref('MetricWidgetData'),
+                                    ref('TableWidgetData'),
                                     { type: 'object', additionalProperties: true },
                                 ],
                             },
