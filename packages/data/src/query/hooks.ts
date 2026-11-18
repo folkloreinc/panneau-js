@@ -4,6 +4,7 @@ import {
     type UseQueryResult,
     skipToken,
     useMutation,
+    useQueries,
     useQuery,
     useQueryClient,
 } from '@tanstack/react-query';
@@ -142,6 +143,31 @@ export function useResourceAggregate(
 ): UseQueryResult<unknown> {
     const adapter = useDataAdapter();
     return useQuery({ ...resourceAggregateQueryOptions(adapter, resource, request), ...options });
+}
+
+/** A read of `useResourceAggregates()`: a resource and the request of its aggregates. */
+export interface ResourceAggregateRead {
+    resource: string;
+    request: AggregateRequest;
+}
+
+/**
+ * Several aggregates, of one resource or more (decision 0089), as `useResourceAggregate()` reads
+ * each one: the results in the order of `reads`, whose length can change between renders (a read
+ * that depends on another one's answer). The previous answer of each one stays while the next one
+ * loads. `enabled: false` reads none.
+ */
+export function useResourceAggregates(
+    reads: readonly ResourceAggregateRead[],
+    { enabled = true }: { enabled?: boolean } = {},
+): UseQueryResult<unknown>[] {
+    const adapter = useDataAdapter();
+    return useQueries({
+        queries: reads.map(({ resource, request }) => ({
+            ...resourceAggregateQueryOptions(adapter, resource, request),
+            enabled,
+        })),
+    });
 }
 
 /** Creates an item, then refetches the lists of the resource. */

@@ -57,8 +57,11 @@ import {
     WIDGET_LIST_MAX_ITEMS,
     type WidgetSeriesPeriod,
     followsPeriod,
+    getWidgetAggregates,
     getWidgetResource,
     isBuiltInWidgetType,
+    isCombinedWidget,
+    readsResources,
 } from '../widgets';
 
 export interface ConformanceOptions {
@@ -1418,7 +1421,7 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
         'dashboard.widgets',
         'GET /dashboard/widgets/{widget} answers each widget in the shape of its type',
         async (check) => {
-            const own = widgets().filter(({ widget }) => getWidgetResource(widget) === null);
+            const own = widgets().filter(({ widget }) => !readsResources(widget));
             if (own.length === 0) {
                 check.skip('No dashboard or summary has a widget with data of its own.');
                 return;
@@ -1463,9 +1466,45 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
         async (check) => {
             const onResource = widgets().flatMap(({ place, widget }) => {
                 const read = getWidgetResource(widget);
-                return read !== null ? [{ place, widget, read }] : [];
+                return read !== null && !isCombinedWidget(widget) ? [{ place, widget, read }] : [];
             });
-            if (onResource.length === 0) {
+            // The widgets that combine several aggregates (decision 0089): each of their reads
+            const combined = widgets().flatMap(({ place, widget }) =>
+                getWidgetAggregates(widget).map((read) => ({ place, widget, read })),
+            );
+            for (const { place, widget, read } of combined) {
+                const name = widgetName(widget.id, place);
+                const params = toAggregateParams({
+                    ...(read.query.filter !== undefined && { filter: read.query.filter }),
+                    ...(read.query.q !== undefined && { q: read.query.q }),
+                    measure: read.measure,
+                    group: read.group,
+                });
+                const reply = await request(
+                    `/resources/${encodeURIComponent(read.resource)}/aggregate?${params.toString()}`,
+                );
+                if (reply.status === 403) {
+                    check.expectProblem(reply, 403);
+                    continue;
+                }
+                if (
+                    !check.expect(
+                        reply.status === 200,
+                        `Widget ${name}: expected status 200 from the aggregate of "${read.resource}" (${read.role}), got ${reply.status}.`,
+                    )
+                ) {
+                    continue;
+                }
+                const type = getAggregateWidgetType(
+                    read.group !== null ? parseAggregateGroup(read.group) : null,
+                );
+                check.expectSchema(
+                    widgetDataSchemas[type],
+                    reply.body,
+                    `The aggregate of the widget ${name} (${read.role} of "${read.resource}")`,
+                );
+            }
+            if (onResource.length === 0 && combined.length === 0) {
                 check.skip('No dashboard or summary has a widget on a resource.');
                 return;
             }
@@ -1545,7 +1584,7 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
             const following = widgets().flatMap(({ place, widget }) => {
                 const period = placePeriod(place);
                 const option = period !== undefined ? getDefaultPeriod(period) : null;
-                return getWidgetResource(widget) === null &&
+                return !readsResources(widget) &&
                     option !== null &&
                     followsPeriod(widget, place.resource)
                     ? [{ place, widget, period: { option, ...getPeriodRange(option) } }]
@@ -1629,9 +1668,7 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
             // doesn't exist, or on another dashboard page or summary than its own. Widgets with
             // data of their own first: the others are a 404 anywhere.
             const all = widgets().sort(
-                (a, b) =>
-                    Number(getWidgetResource(a.widget) !== null) -
-                    Number(getWidgetResource(b.widget) !== null),
+                (a, b) => Number(readsResources(a.widget)) - Number(readsResources(b.widget)),
             );
             const first = all[0];
             if (first === undefined) {
@@ -1639,8 +1676,7 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
             }
             // A widget is on a page or in a summary: both are a 422
             const summarized = all.find(
-                ({ place, widget }) =>
-                    place.resource !== undefined && getWidgetResource(widget) === null,
+                ({ place, widget }) => place.resource !== undefined && !readsResources(widget),
             );
             if (summarized?.place.resource !== undefined) {
                 await expectStatus(

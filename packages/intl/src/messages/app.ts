@@ -569,6 +569,47 @@ export const appMessages = {
     }),
     widgetSeeAll: defineMessage({ id: 'panneau.app.widgetSeeAll', defaultMessage: 'See all' }),
     widgetTotal: defineMessage({ id: 'panneau.app.widgetTotal', defaultMessage: 'Total' }),
+    widgetOther: defineMessage({ id: 'panneau.app.widgetOther', defaultMessage: 'Other' }),
+    widgetAlert: defineMessage<{ value: string; label: string }>({
+        id: 'panneau.app.widgetAlert',
+        defaultMessage: '{value} {label}',
+    }),
+    widgetNoChange: defineMessage({
+        id: 'panneau.app.widgetNoChange',
+        defaultMessage: 'No change',
+    }),
+    widgetChangeDays: defineMessage<{ change: string; days: number }>({
+        id: 'panneau.app.widgetChangeDays',
+        defaultMessage: '{change} from the previous {days} days',
+    }),
+    widgetChangeMonth: defineMessage<{ change: string }>({
+        id: 'panneau.app.widgetChangeMonth',
+        defaultMessage: '{change} from the same days last month',
+    }),
+    widgetChangeYear: defineMessage<{ change: string }>({
+        id: 'panneau.app.widgetChangeYear',
+        defaultMessage: '{change} from the 12 months before',
+    }),
+    widgetChangePrevious: defineMessage<{ change: string }>({
+        id: 'panneau.app.widgetChangePrevious',
+        defaultMessage: '{change} from the previous period',
+    }),
+    widgetTrend: defineMessage<{ first: string; last: string }>({
+        id: 'panneau.app.widgetTrend',
+        defaultMessage: 'Trend: from {first} to {last}',
+    }),
+    widgetColumnChange: defineMessage({
+        id: 'panneau.app.widgetColumnChange',
+        defaultMessage: 'Change',
+    }),
+    widgetColumnAlerts: defineMessage({
+        id: 'panneau.app.widgetColumnAlerts',
+        defaultMessage: 'Alerts',
+    }),
+    widgetColumnTrend: defineMessage({
+        id: 'panneau.app.widgetColumnTrend',
+        defaultMessage: 'Trend',
+    }),
     widgetUntitled: defineMessage<{ id: string }>({
         id: 'panneau.app.widgetUntitled',
         defaultMessage: 'Item {id}',

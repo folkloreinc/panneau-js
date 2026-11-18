@@ -341,6 +341,32 @@ export const appMessages: {
     widgetEmpty: PanneauMessage<Record<never, never>>;
     widgetSeeAll: PanneauMessage<Record<never, never>>;
     widgetTotal: PanneauMessage<Record<never, never>>;
+    widgetOther: PanneauMessage<Record<never, never>>;
+    widgetAlert: PanneauMessage<    {
+    value: string;
+    label: string;
+    }>;
+    widgetNoChange: PanneauMessage<Record<never, never>>;
+    widgetChangeDays: PanneauMessage<    {
+    change: string;
+    days: number;
+    }>;
+    widgetChangeMonth: PanneauMessage<    {
+    change: string;
+    }>;
+    widgetChangeYear: PanneauMessage<    {
+    change: string;
+    }>;
+    widgetChangePrevious: PanneauMessage<    {
+    change: string;
+    }>;
+    widgetTrend: PanneauMessage<    {
+    first: string;
+    last: string;
+    }>;
+    widgetColumnChange: PanneauMessage<Record<never, never>>;
+    widgetColumnAlerts: PanneauMessage<Record<never, never>>;
+    widgetColumnTrend: PanneauMessage<Record<never, never>>;
     widgetUntitled: PanneauMessage<    {
     id: string;
     }>;
@@ -1135,6 +1161,9 @@ export const uiMessages: {
     label: string;
     value: string;
     }>;
+    chartDate: PanneauMessage<Record<never, never>>;
+    statChangeUp: PanneauMessage<Record<never, never>>;
+    statChangeDown: PanneauMessage<Record<never, never>>;
 };
 
 // @public

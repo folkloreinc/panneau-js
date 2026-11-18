@@ -120,6 +120,18 @@
     stroke: none;
 }
 
+/* A line of several in the color of a tone */
+.toned {
+    --_panneau-line-chart-color: var(--panneau-tone-solid);
+}
+
+/* A stacked line: the area between it and the one under it */
+.stackArea {
+    fill: var(--_panneau-line-chart-color);
+    fill-opacity: calc(var(--panneau-line-chart-area-opacity, 0.2) * 1.75);
+    stroke: none;
+}
+
 .line {
     fill: none;
     stroke: var(--_panneau-line-chart-color);
@@ -236,6 +248,25 @@
 
 .tooltipLabel {
     color: var(--panneau-color-text-muted);
+}
+
+.tooltipRow {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-1);
+}
+
+.tooltipRow .tooltipValue {
+    margin-inline-start: auto;
+    padding-inline-start: var(--panneau-space-2);
+}
+
+.swatch {
+    flex-shrink: 0;
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 2px;
+    background-color: var(--_panneau-line-chart-color);
 }
 
 .dates {

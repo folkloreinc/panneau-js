@@ -1,6 +1,7 @@
 /**
  * The dashboard of the home page (decision 0064): the built-in widgets, on a resource or with data
- * of their own, on the mock backend. And a dashboard page of its own (decision 0084).
+ * of their own, on the mock backend. And a dashboard page of its own (decision 0084), and widgets
+ * that combine several aggregates into one card (decision 0089).
  */
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -15,6 +16,9 @@ import { type MockWidget, createMockBackend } from '@panneau/protocol/mock';
 import {
     ACTIVITY_WIDGETS,
     AGGREGATE_WIDGETS,
+    COMBINED_DATA,
+    COMBINED_ENDPOINT_WIDGETS,
+    COMBINED_WIDGETS,
     DASHBOARD_DATA,
     DASHBOARD_ITEMS,
     DASHBOARD_WIDGETS,
@@ -360,5 +364,97 @@ export const Period: Story = {
         await expect(
             await widgetOf(canvasElement, 'all').findByRole('link', { name: /^All entries 4/ }),
         ).toBeVisible();
+    },
+};
+
+/** The page "Activity" with the combined widgets, over a period of 30 days by default. */
+function createCombinedDefinition(): DefinitionInput {
+    const definition = createDashboardDefinition(DASHBOARD_WIDGETS, COMBINED_WIDGETS);
+    const activity = definition.pages?.activity;
+    if (activity !== undefined) {
+        activity.period = { options: ['7d', '30d', '90d'], default: '30d' };
+    }
+    return definition;
+}
+
+/**
+ * Combined widgets on the entries (decision 0089), each answering several questions in one card:
+ * a metric with its change from the previous 30 days, its trend and its parts; a line per status;
+ * a line per source with an alert; and a table of rows with their change and their trend.
+ */
+export const Combined: Story = {
+    args: {
+        page: 'activity',
+        definition: createCombinedDefinition,
+        items: () => createRecentItems(),
+    },
+    play: async ({ canvasElement }) => {
+        // 3 entries in the last 30 days, 1 in the 30 before
+        await expect(
+            await widgetOf(canvasElement, 'submitted').findByRole('link', {
+                name: /^Submitted 3/,
+            }),
+        ).toBeVisible();
+        await expect(
+            widgetOf(canvasElement, 'submitted').getByText('200% from the previous 30 days'),
+        ).toBeVisible();
+        await expect(
+            await widgetOf(canvasElement, 'per-status').findByRole('list', {
+                name: 'Entries per status',
+            }),
+        ).toBeVisible();
+        // No refused entry in the last 30 days: no alert
+        await expect(
+            await widgetOf(canvasElement, 'sources').findByRole('link', { name: 'All entries' }),
+        ).toBeVisible();
+        await expect(widgetOf(canvasElement, 'sources').queryByText('1 refused')).toBeNull();
+        const table = await widgetOf(canvasElement, 'activity').findByRole('table', {
+            name: 'Activity',
+        });
+        await expect(within(table).getAllByRole('row')).toHaveLength(3);
+        await userEvent.click(within(canvasElement).getByRole('radio', { name: '90 days' }));
+        await expect(
+            await widgetOf(canvasElement, 'submitted').findByRole('link', {
+                name: /^Submitted 4/,
+            }),
+        ).toBeVisible();
+        await expect(
+            await widgetOf(canvasElement, 'sources').findByText('1 refused'),
+        ).toBeVisible();
+    },
+};
+
+/** While they load: a combined widget draws the skeleton of its type, and says it loads. */
+export const CombinedLoading: Story = {
+    args: { page: 'activity', definition: createCombinedDefinition, pending: true },
+    play: async ({ canvasElement }) => {
+        await expect(canvasElement.querySelectorAll('[aria-busy="true"]')).toHaveLength(
+            COMBINED_WIDGETS.length,
+        );
+        await expect(widgetOf(canvasElement, 'submitted').getByRole('status')).toHaveTextContent(
+            'Loading Submitted…',
+        );
+    },
+};
+
+/**
+ * Combined widgets with data of their own (decision 0089): a metric in megabytes, a table of
+ * costs in dollars, stacked lines with an alert, and a stat at 0 that hides itself.
+ */
+export const CombinedData: Story = {
+    args: { widgets: COMBINED_ENDPOINT_WIDGETS, data: COMBINED_DATA },
+    play: async ({ canvasElement }) => {
+        await expect(
+            await widgetOf(canvasElement, 'storage').findByText('1,530.3 MB'),
+        ).toBeVisible();
+        await expect(
+            await widgetOf(canvasElement, 'costs').findByRole('link', { name: 'Summaries' }),
+        ).toBeVisible();
+        await expect(
+            await widgetOf(canvasElement, 'messages').findByText('1 failed'),
+        ).toBeVisible();
+        await waitFor(() =>
+            expect(canvasElement.querySelector('[data-widget="quiet"]')).toBeNull(),
+        );
     },
 };

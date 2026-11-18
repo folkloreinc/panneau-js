@@ -66,6 +66,23 @@ export const Currency: Story = {
     },
 };
 
+/**
+ * The change from the previous period: an arrow and what it is, said to assistive technologies,
+ * in the tone of good or bad news only when the widget says which is which.
+ */
+export const Change: Story = {
+    args: {
+        label: 'Emails sent',
+        value: 1240,
+        change: { direction: 'up', label: '12% from the previous 30 days', tone: 'success' },
+    },
+    play: async ({ canvasElement }) => {
+        await expect(
+            within(canvasElement).getByText('12% from the previous 30 days').parentElement,
+        ).toHaveTextContent('Up 12% from the previous 30 days');
+    },
+};
+
 /** A target: a meter under the number, in the tone of the stat or `danger` past it. */
 export const Target: Story = {
     render: () => (

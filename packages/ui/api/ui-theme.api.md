@@ -102,6 +102,7 @@ export const componentTokens: Readonly<{
     'segmented-control': Readonly<Record<"panneau-segmented-control-radius" | "panneau-segmented-control-padding" | "panneau-segmented-control-bg" | "panneau-segmented-control-border-color" | "panneau-segmented-control-segment-padding-x" | "panneau-segmented-control-segment-font-weight" | "panneau-segmented-control-segment-color" | "panneau-segmented-control-segment-color-hover" | "panneau-segmented-control-segment-bg-hover" | "panneau-segmented-control-segment-color-selected" | "panneau-segmented-control-segment-bg-selected" | "panneau-segmented-control-segment-shadow-selected", string>>;
     selected: Readonly<Record<"panneau-selected-text" | "panneau-selected-subtle" | "panneau-selected-bg", string>>;
     skeleton: Readonly<Record<"panneau-skeleton-color" | "panneau-skeleton-radius" | "panneau-skeleton-duration", string>>;
+    sparkline: Readonly<Record<"panneau-sparkline-height" | "panneau-sparkline-line-width" | "panneau-sparkline-dot-size" | "panneau-sparkline-area-opacity", string>>;
     spinner: Readonly<Record<"panneau-spinner-border-width", string>>;
     stack: Readonly<Record<"panneau-stack-gap", string>>;
     stat: Readonly<Record<"panneau-stat-gap" | "panneau-stat-label-font-size" | "panneau-stat-value-font-family" | "panneau-stat-value-font-size" | "panneau-stat-value-font-weight" | "panneau-stat-help-font-size", string>>;

@@ -140,4 +140,54 @@ describe('LineChart', () => {
         expect(table.className).toBe('');
         expect(table.parentElement?.className).toMatch(/visuallyHidden/);
     });
+
+    describe('with several lines', () => {
+        const series = [
+            { label: 'Emails', points },
+            {
+                label: 'Texts',
+                points: points.map((point) => ({ ...point, value: 2 })),
+                tone: 'danger' as const,
+            },
+        ];
+
+        it('gives a column per line in its table', () => {
+            render(<LineChart label="Messages per day" series={series} />);
+            const table = screen.getByRole('table', { name: 'Messages per day' });
+            expect(
+                within(table)
+                    .getAllByRole('row')
+                    .map((row) => row.textContent),
+            ).toEqual([
+                'DateEmailsTexts',
+                'October 5, 202642',
+                'October 6, 202602',
+                'October 7, 202682',
+            ]);
+        });
+
+        it('draws a line per series, in its color or its tone, without values on them', () => {
+            const { container } = render(<LineChart label="Messages" series={series} />);
+            const lines = container.querySelectorAll('svg g g');
+            expect(lines).toHaveLength(2);
+            expect(lines[1]).toHaveClass('panneau-tone-danger');
+            expect(drawn(container)).toEqual(['10', '0', '5', '10', 'Oct 5', 'Oct 6', 'Oct 7']);
+        });
+
+        it('stacks them, on a scale of their total', () => {
+            const { container } = render(<LineChart label="Messages" series={series} stacked />);
+            expect(container.querySelectorAll('svg g g path')).toHaveLength(4);
+            expect(drawn(container)).toContain('10');
+            // The dot of the top line is on the total of the last day: 8 + 2 of 10
+            const dots = [...container.querySelectorAll<HTMLElement>('[aria-hidden="true"] span')];
+            expect(dots.some((dot) => dot.style.top === '0%')).toBe(true);
+        });
+
+        it('says the value of each line at a point, from the keyboard', () => {
+            render(<LineChart label="Messages" series={series} isInteractive />);
+            const plot = screen.getByRole('slider', { name: 'Messages' });
+            fireEvent.focus(plot);
+            expect(plot).toHaveAttribute('aria-valuetext', 'October 7, 2026: Emails: 8, Texts: 2');
+        });
+    });
 });

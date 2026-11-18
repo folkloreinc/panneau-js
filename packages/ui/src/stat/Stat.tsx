@@ -1,7 +1,10 @@
+import { ArrowDown, ArrowUp } from 'lucide-react';
 import { type ReactNode, useId } from 'react';
 import { Link } from 'react-aria-components';
 import type { FormatNumberOptions } from 'react-intl';
 
+import { Icon } from '../icon/Icon';
+import { messages } from '../intl/messages';
 import { usePanneauIntl } from '../intl/usePanneauIntl';
 import { Meter } from '../meter/Meter';
 import { Skeleton } from '../skeleton/Skeleton';
@@ -9,6 +12,19 @@ import { toneClass } from '../theme/toneClass';
 import type { Tone } from '../theme/tones';
 import { cx } from '../utils/cx';
 import styles from './Stat.module.css';
+
+/** The change of a stat from a previous value: its direction and what it is. */
+export interface StatChange {
+    /** Up or down, drawn as an arrow and said to assistive technologies; `none` without a change. */
+    direction: 'up' | 'down' | 'none';
+    /** The change, from what: `12% from the previous 30 days`. */
+    label: ReactNode;
+    /**
+     * `success` or `danger` when the change is good or bad news, which the label or the context
+     * says too. Neutral by default: a rise isn't always good.
+     */
+    tone?: Tone | undefined;
+}
 
 export interface StatProps {
     /** What the number counts. */
@@ -34,6 +50,8 @@ export interface StatProps {
      * target, the meter takes the `tone`, or `danger` without one.
      */
     target?: number | null | undefined;
+    /** The change from a previous value, under the number: `↑ 12% from the previous 30 days`. */
+    change?: StatChange | undefined;
     className?: string;
 }
 
@@ -41,7 +59,17 @@ export interface StatProps {
  * A number in large type, with what it counts and a line of help, and a meter of its target when it
  * has one: a stat of a dashboard.
  */
-export function Stat({ label, value, format, help, tone, href, target, className }: StatProps) {
+export function Stat({
+    label,
+    value,
+    format,
+    help,
+    tone,
+    href,
+    target,
+    change,
+    className,
+}: StatProps) {
     const intl = usePanneauIntl();
     const labelId = useId();
     const isLoading = value === undefined;
@@ -69,6 +97,33 @@ export function Stat({ label, value, format, help, tone, href, target, className
                     <div className={styles.value}>
                         {typeof value === 'number' ? intl.formatNumber(value, format) : value}
                     </div>
+                    {change !== undefined ? (
+                        <div
+                            className={cx(
+                                styles.change,
+                                change.tone !== undefined && styles.changeToned,
+                                change.tone !== undefined && toneClass(change.tone),
+                            )}
+                        >
+                            {change.direction !== 'none' ? (
+                                <>
+                                    <Icon
+                                        icon={change.direction === 'up' ? ArrowUp : ArrowDown}
+                                        size="sm"
+                                        className={styles.changeIcon}
+                                    />
+                                    <span className={styles.visuallyHidden}>
+                                        {intl.formatMessage(
+                                            change.direction === 'up'
+                                                ? messages.statChangeUp
+                                                : messages.statChangeDown,
+                                        )}{' '}
+                                    </span>
+                                </>
+                            ) : null}
+                            <span>{change.label}</span>
+                        </div>
+                    ) : null}
                     {typeof value === 'number' &&
                     target !== undefined &&
                     target !== null &&
