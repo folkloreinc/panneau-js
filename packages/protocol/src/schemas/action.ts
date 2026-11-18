@@ -38,6 +38,14 @@ export const Action = z
         scope: z.array(ActionScope).min(1),
         placement: z.array(ActionPlacement).optional(),
         destructive: z.boolean().optional(),
+        tone: z
+            .string()
+            .regex(/^[a-z0-9-]+$/)
+            .optional()
+            .meta({
+                description:
+                    'The color of its icon in rows and of its button in the header of an item (decision 0091): a tone of the theme, such as `info`. An action that destroys is always `danger`.',
+            }),
         confirm: ActionConfirm.optional(),
         fields: z.array(Field).optional().meta({ description: 'Parameters, shown in a modal.' }),
         layout: z.array(LayoutNode).optional(),

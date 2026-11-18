@@ -4,7 +4,7 @@ export {
     type ConfirmDialogProps,
     type ConfirmPreview,
 } from './actions/ConfirmDialog';
-export { type ActionIcons, getActionIcon } from './actions/icons';
+export { type ActionIcons, getActionIcon, getActionTone } from './actions/icons';
 export {
     BooleanDisplay,
     ColorDisplay,

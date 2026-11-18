@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 
 import type { Action } from '@panneau/protocol';
-import { type IconComponent, getNamedIcon } from '@panneau/ui';
+import { type IconComponent, type Tone, getNamedIcon } from '@panneau/ui';
 
 /** Icons of actions by action id, for actions written in code (`{ archive: Archive }`). */
 export type ActionIcons = Readonly<Record<string, IconComponent>>;
@@ -42,7 +42,7 @@ export function getActionIcon(action: Action, icons?: ActionIcons): IconComponen
     return Object.hasOwn(BUILT_IN_ICONS, action.id) ? BUILT_IN_ICONS[action.id] : undefined;
 }
 
-/** Colors of the built-in actions in rows, as Panneau 4 had them (decision 0060). */
+/** Colors of the built-in actions, as Panneau 4 had them in rows (decision 0060). */
 const BUILT_IN_TONES: Record<string, 'accent' | 'info' | 'success'> = {
     show: 'info',
     edit: 'accent',
@@ -50,16 +50,27 @@ const BUILT_IN_TONES: Record<string, 'accent' | 'info' | 'success'> = {
 };
 
 /**
- * The tone of an action in rows (decision 0060): `danger` when it destroys, a color for `show`
- * (`info`), `edit` (`accent`) and `restore` (`success`), and `neutral` for the others.
+ * The tone of an action, in rows and in the header of an item (decisions 0060 and 0091): `danger`
+ * when it destroys, then the tone it declares, then `info` for `show`, `accent` for `edit` and
+ * `success` for `restore`, then `info` for a link that leaves the admin (its page on the site), and
+ * `neutral` for the others.
  */
-export function getActionTone(
-    action: Action,
-): 'neutral' | 'accent' | 'info' | 'success' | 'danger' {
+export function getActionTone(action: Action): Tone {
     if (action.destructive === true) {
         return 'danger';
     }
-    return Object.hasOwn(BUILT_IN_TONES, action.id)
-        ? (BUILT_IN_TONES[action.id] ?? 'neutral')
-        : 'neutral';
+    if (typeof action.tone === 'string' && action.tone !== '') {
+        return action.tone as Tone;
+    }
+    if (Object.hasOwn(BUILT_IN_TONES, action.id)) {
+        return BUILT_IN_TONES[action.id] ?? 'neutral';
+    }
+    if (
+        action.kind === 'link' &&
+        typeof action.url === 'string' &&
+        /^https?:\/\//.test(action.url)
+    ) {
+        return 'info';
+    }
+    return 'neutral';
 }

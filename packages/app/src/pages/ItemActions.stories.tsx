@@ -1,7 +1,8 @@
 /**
  * The actions of an item in the header of its edit page: those placed in `form` that the item
  * allows, run through the action runner of `@panneau/actions`. Those that destroy come last,
- * outlined in the danger color (decision 0088).
+ * outlined in the danger color (decision 0088), and the others are outlined in their tone
+ * (decision 0091).
  */
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
@@ -137,5 +138,57 @@ export const DestructiveFirst: Story = {
                 Node.DOCUMENT_POSITION_FOLLOWING,
             );
         }
+    },
+};
+
+/**
+ * Actions in their tones (decision 0091): the page of the item on the site, a link that leaves
+ * the admin, in `info`, and an action that declares `success`. The others stay secondary.
+ */
+export const Tones: Story = {
+    args: {
+        actions: selectItemActions(
+            [
+                {
+                    id: 'site',
+                    label: 'View on the site',
+                    kind: 'link',
+                    url: 'https://example.com/projects/{id}',
+                    scope: ['item'],
+                },
+                { id: 'disable', label: 'Disable', kind: 'server', scope: ['item'] },
+                {
+                    id: 'publish',
+                    label: 'Publish',
+                    kind: 'server',
+                    scope: ['item'],
+                    tone: 'success',
+                },
+            ],
+            { ...project, abilities: { ...project.abilities, site: true, publish: true } },
+            'form',
+        ),
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const site = canvas.getByRole('link', { name: /View on the site/ });
+        const disable = canvas.getByRole('button', { name: 'Disable' });
+        const publish = canvas.getByRole('button', { name: 'Publish' });
+        await expect(site).toHaveAttribute('target', '_blank');
+        // Outlined in their tones, without a fill, as high as the secondary buttons
+        for (const toned of [site, publish]) {
+            await expect(getComputedStyle(toned).borderColor).not.toBe(
+                getComputedStyle(disable).borderColor,
+            );
+            await expect(getComputedStyle(toned).backgroundColor).toBe(
+                getComputedStyle(disable).backgroundColor,
+            );
+            await expect(toned.getBoundingClientRect().height).toBe(
+                disable.getBoundingClientRect().height,
+            );
+        }
+        await expect(getComputedStyle(site).borderColor).not.toBe(
+            getComputedStyle(publish).borderColor,
+        );
     },
 };

@@ -34,6 +34,7 @@ export const Action: z.ZodObject<{
         menu: "menu";
     }>>>;
     destructive: z.ZodOptional<z.ZodBoolean>;
+    tone: z.ZodOptional<z.ZodString>;
     confirm: z.ZodOptional<z.ZodUnion<readonly [z.ZodBoolean, z.ZodObject<{
         title: z.ZodOptional<z.ZodString>;
         message: z.ZodOptional<z.ZodString>;
@@ -1502,6 +1503,7 @@ export const Definition: z.ZodObject<{
                 menu: "menu";
             }>>>;
             destructive: z.ZodOptional<z.ZodBoolean>;
+            tone: z.ZodOptional<z.ZodString>;
             confirm: z.ZodOptional<z.ZodUnion<readonly [z.ZodBoolean, z.ZodObject<{
                 title: z.ZodOptional<z.ZodString>;
                 message: z.ZodOptional<z.ZodString>;
@@ -4786,6 +4788,7 @@ export const namedSchemas: {
             menu: "menu";
         }>>>;
         destructive: z.ZodOptional<z.ZodBoolean>;
+        tone: z.ZodOptional<z.ZodString>;
         confirm: z.ZodOptional<z.ZodUnion<readonly [z.ZodBoolean, z.ZodObject<{
             title: z.ZodOptional<z.ZodString>;
             message: z.ZodOptional<z.ZodString>;
@@ -5622,6 +5625,7 @@ export const namedSchemas: {
                 menu: "menu";
             }>>>;
             destructive: z.ZodOptional<z.ZodBoolean>;
+            tone: z.ZodOptional<z.ZodString>;
             confirm: z.ZodOptional<z.ZodUnion<readonly [z.ZodBoolean, z.ZodObject<{
                 title: z.ZodOptional<z.ZodString>;
                 message: z.ZodOptional<z.ZodString>;
@@ -7737,6 +7741,7 @@ export const namedSchemas: {
                     menu: "menu";
                 }>>>;
                 destructive: z.ZodOptional<z.ZodBoolean>;
+                tone: z.ZodOptional<z.ZodString>;
                 confirm: z.ZodOptional<z.ZodUnion<readonly [z.ZodBoolean, z.ZodObject<{
                     title: z.ZodOptional<z.ZodString>;
                     message: z.ZodOptional<z.ZodString>;
@@ -12507,6 +12512,7 @@ export const Resource: z.ZodObject<{
             menu: "menu";
         }>>>;
         destructive: z.ZodOptional<z.ZodBoolean>;
+        tone: z.ZodOptional<z.ZodString>;
         confirm: z.ZodOptional<z.ZodUnion<readonly [z.ZodBoolean, z.ZodObject<{
             title: z.ZodOptional<z.ZodString>;
             message: z.ZodOptional<z.ZodString>;
