@@ -1,7 +1,7 @@
 /**
  * The actions of an item in the header of its edit page: those placed in `form` that the item
- * allows, run through the action runner of `@panneau/actions`. Those that destroy are in a "More
- * actions" menu, last (decision 0088).
+ * allows, run through the action runner of `@panneau/actions`. Those that destroy come last,
+ * outlined in the danger color (decision 0088).
  */
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
@@ -83,14 +83,19 @@ export const Default: Story = {
         );
         // The item doesn't allow it
         await expect(canvas.queryByRole('button', { name: 'Enable' })).not.toBeInTheDocument();
-        // `delete` is last, in a menu, as high as the buttons beside it
-        await expect(canvas.queryByRole('button', { name: 'Delete' })).toBeNull();
-        const more = canvas.getByRole('button', { name: 'More actions' });
-        await expect(more.getBoundingClientRect().height).toBe(
+        // Last, outlined in its color, as high as the others, without a fill
+        const remove = canvas.getByRole('button', { name: 'Delete' });
+        await expect(disable.compareDocumentPosition(remove)).toBe(
+            Node.DOCUMENT_POSITION_FOLLOWING,
+        );
+        await expect(remove.getBoundingClientRect().height).toBe(
             disable.getBoundingClientRect().height,
         );
-        await expect(more.getBoundingClientRect().left).toBeGreaterThan(
-            disable.getBoundingClientRect().right,
+        await expect(getComputedStyle(remove).backgroundColor).toBe(
+            getComputedStyle(disable).backgroundColor,
+        );
+        await expect(getComputedStyle(remove).borderColor).not.toBe(
+            getComputedStyle(disable).borderColor,
         );
         runAction.mockClear();
         await userEvent.click(canvas.getByRole('button', { name: 'Disable' }));
@@ -98,16 +103,12 @@ export const Default: Story = {
     },
 };
 
-/** An action that asks first, from the menu, where it keeps its color. */
+/** An action that asks first. */
 export const Confirmation: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        const body = within(document.body);
         runAction.mockClear();
-        await userEvent.click(canvas.getByRole('button', { name: 'More actions' }));
-        const item = await body.findByRole('menuitem', { name: 'Delete' });
-        await expect(item).toHaveAttribute('data-danger');
-        await userEvent.click(item);
+        await userEvent.click(canvas.getByRole('button', { name: 'Delete' }));
         const dialog = within(await within(document.body).findByRole('alertdialog'));
         await expect(dialog.getByText('Its keys stop working at once.')).toBeInTheDocument();
         await userEvent.click(dialog.getByRole('button', { name: 'Delete' }));
@@ -115,18 +116,26 @@ export const Confirmation: Story = {
     },
 };
 
-/** An item whose only action destroys: the menu holds it alone. */
-export const OnlyDelete: Story = {
+/** A declared action that destroys, before the links in its declaration: still last. */
+export const DestructiveFirst: Story = {
     args: {
-        actions: selectItemActions(actions, { ...project, abilities: { delete: true } }, 'form'),
-        item: { ...project, abilities: { delete: true } },
+        actions: selectItemActions(
+            [
+                ...actions.filter(({ id }) => id === 'delete'),
+                ...actions.filter(({ id }) => id !== 'delete'),
+            ],
+            project,
+            'form',
+        ),
     },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        const body = within(document.body);
-        await expect(canvas.getAllByRole('button')).toHaveLength(1);
-        await userEvent.click(canvas.getByRole('button', { name: 'More actions' }));
-        await expect(await body.findAllByRole('menuitem')).toHaveLength(1);
-        await userEvent.keyboard('{Escape}');
+        const controls = canvas.getAllByRole('button').concat(canvas.getAllByRole('link'));
+        const remove = canvas.getByRole('button', { name: 'Delete' });
+        for (const control of controls.filter((element) => element !== remove)) {
+            await expect(control.compareDocumentPosition(remove)).toBe(
+                Node.DOCUMENT_POSITION_FOLLOWING,
+            );
+        }
     },
 };

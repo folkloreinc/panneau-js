@@ -65,7 +65,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0057](0057-phone-extensions.md)                                  | Phone extensions                                                                     | Proposed                          |
 | [0058](0058-multiple-countries-embed-providers-color-palettes.md) | Several countries, the providers of an embed, and color palettes                     | Proposed                          |
 | [0059](0059-flags-of-regions.md)                                  | Flags of regions                                                                     | Proposed                          |
-| [0060](0060-row-actions-colored-icons.md)                         | Row actions are colored icons, and a menu last                                       | Proposed, amended by 0088         |
+| [0060](0060-row-actions-colored-icons.md)                         | Row actions are colored icons, and a menu last                                       | Proposed                          |
 | [0061](0061-item-images-in-lists.md)                              | The image of items in the table, and in media libraries                              | Proposed                          |
 | [0062](0062-toasts.md)                                            | Toasts at the bottom, one per thing, and only when the page doesn't say it           | Proposed, amended by 0066         |
 | [0063](0063-undo-instead-of-a-confirmation.md)                    | "Undo" instead of a confirmation                                                     | Proposed                          |
@@ -93,5 +93,5 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0085](0085-readable-line-charts.md)                              | Line charts that read without a pointer                                              | Proposed                          |
 | [0086](0086-one-user-menu.md)                                     | One user's menu, at the bottom of the sidebar and in the dock                        | Proposed                          |
 | [0087](0087-image-fields-without-transforms.md)                   | Image fields without transforms                                                      | Proposed                          |
-| [0088](0088-destructive-actions-in-a-menu.md)                     | Destructive actions in a menu, in the header of items and in rows                    | Proposed                          |
+| [0088](0088-destructive-actions-in-a-menu.md)                     | Actions that destroy come last, outlined                                             | Proposed                          |
 | [0089](0089-combined-widgets.md)                                  | Combined widgets: a metric, several lines, a table of numbers                        | Proposed                          |

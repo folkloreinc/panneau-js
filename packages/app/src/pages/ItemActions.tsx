@@ -1,21 +1,12 @@
-import { Ellipsis, ExternalLink } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { useState } from 'react';
 
 import { type ActionOutcome, type ActionTarget, useActionRunner } from '@panneau/actions';
 import { type ItemAction, asksConfirmation } from '@panneau/core';
-import { getActionLabel, listsMessages, uiMessages } from '@panneau/intl';
+import { getActionLabel, listsMessages } from '@panneau/intl';
 import { ConfirmDialog, type ListActionEvent, getActionIcon } from '@panneau/lists';
 import type { Action, Item } from '@panneau/protocol';
-import {
-    Button,
-    IconButton,
-    LinkButton,
-    Menu,
-    MenuItem,
-    MenuTrigger,
-    usePanneauIntl,
-    useToast,
-} from '@panneau/ui';
+import { Button, LinkButton, usePanneauIntl, useToast } from '@panneau/ui';
 
 export interface ItemActionsProps {
     /** The id of the resource. */
@@ -32,16 +23,23 @@ export interface ItemActionsProps {
     onRun?: (action: Action, outcome: ActionOutcome) => void;
 }
 
+/**
+ * An action that destroys is outlined in the danger color, without a fill (decision 0088). The
+ * others are secondary buttons.
+ */
+const DESTRUCTIVE = { tone: 'danger', appearance: 'outline' } as const;
+const SECONDARY = { variant: 'secondary' } as const;
+
 /** Whether a link leaves the admin: it opens in a new tab. */
 function isExternal(href: string): boolean {
     return /^https?:\/\//.test(href);
 }
 
 /**
- * The actions of an item in the header of its panel or of its edit page (decision 0040). Links
- * are links, in a new tab when they leave the admin. Other actions run through the action runner
- * (parameters, results, queued runs), after a confirmation when they ask for one. Those that
- * destroy are in a "More actions" menu, last (decision 0088).
+ * The actions of an item in the header of its panel or of its edit page (decision 0040), those
+ * that destroy last and outlined (decision 0088). Links are links, in a new tab when they leave the
+ * admin. Other actions run through the action runner (parameters, results, queued runs), after a
+ * confirmation when they ask for one.
  */
 export function ItemActions({
     resource,
@@ -94,13 +92,12 @@ export function ItemActions({
         }
     };
 
-    const buttons = actions.filter(({ action }) => action.destructive !== true);
-    const menu = actions.filter(({ action }) => action.destructive === true);
-    const inMenu = pending !== null && menu.some(({ action }) => action.id === pending);
-
     return (
         <>
-            {buttons.map(({ action, href }) => {
+            {[
+                ...actions.filter(({ action }) => action.destructive !== true),
+                ...actions.filter(({ action }) => action.destructive === true),
+            ].map(({ action, href }) => {
                 const label = getActionLabel(action, intl);
                 const external = href !== null && isExternal(href);
                 const icon = external ? ExternalLink : getActionIcon(action);
@@ -108,7 +105,7 @@ export function ItemActions({
                     <LinkButton
                         key={action.id}
                         href={href}
-                        variant="secondary"
+                        {...(action.destructive === true ? DESTRUCTIVE : SECONDARY)}
                         {...(icon !== undefined ? { icon } : {})}
                         external={external}
                     >
@@ -117,7 +114,7 @@ export function ItemActions({
                 ) : (
                     <Button
                         key={action.id}
-                        variant="secondary"
+                        {...(action.destructive === true ? DESTRUCTIVE : SECONDARY)}
                         {...(icon !== undefined ? { icon } : {})}
                         isPending={pending === action.id}
                         isDisabled={pending !== null && pending !== action.id}
@@ -127,46 +124,6 @@ export function ItemActions({
                     </Button>
                 );
             })}
-            {menu.length > 0 ? (
-                <MenuTrigger>
-                    <IconButton
-                        icon={Ellipsis}
-                        tone="neutral"
-                        appearance="outline"
-                        label={intl.formatMessage(uiMessages.moreActions)}
-                        isPending={inMenu}
-                        isDisabled={pending !== null && !inMenu}
-                    />
-                    <Menu
-                        placement="bottom end"
-                        onAction={(key) => {
-                            const entry = menu.find(({ action }) => action.id === key);
-                            if (entry !== undefined && entry.href === null) {
-                                run(entry.action);
-                            }
-                        }}
-                    >
-                        {menu.map(({ action, href }) => {
-                            const external = href !== null && isExternal(href);
-                            const icon = external ? ExternalLink : getActionIcon(action);
-                            return (
-                                <MenuItem
-                                    key={action.id}
-                                    id={action.id}
-                                    isDanger
-                                    {...(icon !== undefined ? { icon } : {})}
-                                    {...(href !== null ? { href } : {})}
-                                    {...(external
-                                        ? { target: '_blank', rel: 'noopener noreferrer' }
-                                        : {})}
-                                >
-                                    {getActionLabel(action, intl)}
-                                </MenuItem>
-                            );
-                        })}
-                    </Menu>
-                </MenuTrigger>
-            ) : null}
             <ConfirmDialog
                 event={confirming}
                 onConfirm={(event) => void execute(event.action)}
