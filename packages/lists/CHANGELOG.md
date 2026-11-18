@@ -1,5 +1,16 @@
 # @panneau/lists
 
+## 5.0.0-alpha.40
+
+### Patch Changes
+
+- Updated dependencies [0511341]
+  - @panneau/protocol@5.0.0-alpha.40
+  - @panneau/ui@5.0.0-alpha.40
+  - @panneau/intl@5.0.0-alpha.40
+  - @panneau/core@5.0.0-alpha.40
+  - @panneau/fields@5.0.0-alpha.40
+
 ## 5.0.0-alpha.39
 
 ### Minor Changes
