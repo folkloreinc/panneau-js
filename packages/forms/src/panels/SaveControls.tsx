@@ -14,6 +14,8 @@ export interface SaveState {
     isSubmitting: boolean;
     /** The form's `actions`, next to its button. */
     actions: ReactNode;
+    /** The form's `startActions`, opposite its button. */
+    startActions?: ReactNode;
     /** The label of the submit button, or `null` without one. */
     submitLabel: ReactNode;
 }
@@ -35,11 +37,20 @@ export const SummaryContext = createContext<SummaryState | null>(null);
  * The status of a form, its actions and its Save button: in its footer, or in the `save` panel of
  * its sidebar.
  */
-export function SaveControls({ status, isSubmitting, actions, submitLabel }: SaveState) {
+export function SaveControls({
+    status,
+    isSubmitting,
+    actions,
+    startActions,
+    submitLabel,
+}: SaveState) {
     const intl = usePanneauIntl();
     const apple = isApplePlatform();
     return (
         <>
+            {startActions !== undefined && startActions !== null ? (
+                <div className={styles.startActions}>{startActions}</div>
+            ) : null}
             <span
                 className={cx(styles.status, status === 'error' && styles.statusError)}
                 role="status"

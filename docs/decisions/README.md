@@ -65,7 +65,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0057](0057-phone-extensions.md)                                  | Phone extensions                                                                     | Proposed                          |
 | [0058](0058-multiple-countries-embed-providers-color-palettes.md) | Several countries, the providers of an embed, and color palettes                     | Proposed                          |
 | [0059](0059-flags-of-regions.md)                                  | Flags of regions                                                                     | Proposed                          |
-| [0060](0060-row-actions-colored-icons.md)                         | Row actions are colored icons, and a menu last                                       | Proposed, amended by 0088         |
+| [0060](0060-row-actions-colored-icons.md)                         | Row actions are colored icons, and a menu last                                       | Proposed                          |
 | [0061](0061-item-images-in-lists.md)                              | The image of items in the table, and in media libraries                              | Proposed                          |
 | [0062](0062-toasts.md)                                            | Toasts at the bottom, one per thing, and only when the page doesn't say it           | Proposed, amended by 0066         |
 | [0063](0063-undo-instead-of-a-confirmation.md)                    | "Undo" instead of a confirmation                                                     | Proposed                          |
@@ -80,7 +80,7 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0072](0072-touch-targets-follow-the-density.md)                  | Touch targets follow the density                                                     | Proposed                          |
 | [0073](0073-selections-focus-rings-and-outlined-buttons.md)       | Selections apart from the accent, focus rings, and outlined filled buttons           | Proposed                          |
 | [0074](0074-asides-next-to-lists-and-forms.md)                    | One aside, next to lists and forms                                                   | Proposed                          |
-| [0075](0075-panels-of-a-form-sidebar.md)                          | The panels of a form's sidebar, defined by the resource                              | Proposed                          |
+| [0075](0075-panels-of-a-form-sidebar.md)                          | The panels of a form's sidebar, defined by the resource                              | Proposed, amended by 0088         |
 | [0076](0076-a-dock-in-place-of-the-sidebar.md)                    | A dock, in place of the sidebar                                                      | Proposed, amended by 0086         |
 | [0077](0077-resource-types.md)                                    | Resource types                                                                       | Proposed                          |
 | [0078](0078-the-app-owns-its-page.md)                             | The app owns its page                                                                | Proposed                          |
@@ -93,4 +93,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0085](0085-readable-line-charts.md)                              | Line charts that read without a pointer                                              | Proposed                          |
 | [0086](0086-one-user-menu.md)                                     | One user's menu, at the bottom of the sidebar and in the dock                        | Proposed                          |
 | [0087](0087-image-fields-without-transforms.md)                   | Image fields without transforms                                                      | Proposed                          |
-| [0088](0088-destructive-actions-in-a-menu.md)                     | Destructive actions in a menu, in the header of items and in rows                    | Proposed                          |
+| [0088](0088-destructive-actions-in-a-menu.md)                     | Actions that destroy at the bottom of the form and of the panel                      | Proposed                          |

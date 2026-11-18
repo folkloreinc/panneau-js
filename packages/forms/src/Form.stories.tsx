@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
@@ -299,5 +300,31 @@ export const UnsavedChanges: Story = {
         await expect(
             await canvas.findByRole('alertdialog', { name: 'Leave without saving?' }),
         ).toBeInTheDocument();
+    },
+};
+
+/**
+ * An action that destroys, such as "Delete", at the start of the footer, opposite Save
+ * (decision 0088): a quiet button, in the danger color without a fill.
+ */
+export const StartActions: Story = {
+    args: {
+        values: { name: 'Ada Lovelace', email: 'ada@example.com' },
+        startActions: (
+            <Button tone="danger" appearance="ghost" icon={Trash2}>
+                Delete
+            </Button>
+        ),
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const remove = canvas.getByRole('button', { name: 'Delete' });
+        const save = canvas.getByRole('button', { name: 'Save' });
+        // On the same line, at either end
+        await expect(remove.getBoundingClientRect().top).toBe(save.getBoundingClientRect().top);
+        await expect(remove.getBoundingClientRect().right).toBeLessThan(
+            save.getBoundingClientRect().left,
+        );
+        await expect(getComputedStyle(remove).backgroundColor).toBe('rgba(0, 0, 0, 0)');
     },
 };

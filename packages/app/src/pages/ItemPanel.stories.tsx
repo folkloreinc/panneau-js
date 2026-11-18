@@ -243,10 +243,13 @@ export const Default: Story = {
             'href',
             'https://example.com/articles/1',
         );
-        // `delete` is last, in a menu (decision 0088)
-        await expect(within(panel).queryByRole('button', { name: 'Delete' })).toBeNull();
-        await expect(within(panel).getByRole('button', { name: 'More actions' })).toBeVisible();
         await expect(within(panel).getAllByRole('term')).toHaveLength(4);
+        // At the bottom of the panel, after the details, quiet (decision 0088)
+        const remove = within(panel).getByRole('button', { name: 'Delete' });
+        await expect(within(panel).getAllByRole('term')[3]?.compareDocumentPosition(remove)).toBe(
+            Node.DOCUMENT_POSITION_FOLLOWING,
+        );
+        await expect(getComputedStyle(remove).backgroundColor).toBe('rgba(0, 0, 0, 0)');
         // Beside the list, it can be widened
         await expect(within(panel).getByRole('button', { name: 'Widen the panel' })).toBeVisible();
     },

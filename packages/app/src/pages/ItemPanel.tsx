@@ -115,6 +115,32 @@ export function ItemPanel({
               })
             : [];
 
+    // Those that destroy go to the bottom of the panel (decision 0088)
+    const renderActions = (shown: Item, destructive: boolean) => {
+        const actions = itemActions.filter(
+            ({ action }) => (action.destructive === true) === destructive,
+        );
+        return actions.length > 0 ? (
+            <ItemActions
+                resource={resource.id}
+                actions={actions}
+                item={shown}
+                runAction={run}
+                onRun={(_action, outcome) => {
+                    // An action that removed the item (`delete`) closes the panel.
+                    if (outcome.status !== 'done') {
+                        return;
+                    }
+                    void refetch().then(({ error: refetched }) => {
+                        if (refetched instanceof NotFoundError) {
+                            navigate(closeHref, { replace: true });
+                        }
+                    });
+                }}
+            />
+        ) : undefined;
+    };
+
     let content;
     if (item === undefined && error instanceof ForbiddenError) {
         // An item the user can't view: retrying won't help (decision 0046)
@@ -183,25 +209,10 @@ export function ItemPanel({
             storageKey="item-panel"
             onClose={() => navigate(closeHref)}
             className={styles.panel}
+            footer={item !== undefined ? renderActions(item, true) : undefined}
             toolbar={
                 item !== undefined ? (
-                    <ItemActions
-                        resource={resource.id}
-                        actions={itemActions}
-                        item={item}
-                        runAction={run}
-                        onRun={(_action, outcome) => {
-                            // An action that removed the item (`delete`) closes the panel.
-                            if (outcome.status !== 'done') {
-                                return;
-                            }
-                            void refetch().then(({ error }) => {
-                                if (error instanceof NotFoundError) {
-                                    navigate(closeHref, { replace: true });
-                                }
-                            });
-                        }}
-                    />
+                    renderActions(item, false)
                 ) : !isError ? (
                     <Skeleton shape="rect" width="5rem" height="var(--panneau-control-height-sm)" />
                 ) : undefined

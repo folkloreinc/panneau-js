@@ -114,6 +114,7 @@ export interface FormViewProps {
     // (undocumented)
     sidebarClassName?: string;
     sidebarStorageKey?: string;
+    startActions?: ReactNode;
     submitLabel?: ReactNode;
     // (undocumented)
     summaryClassName?: string;

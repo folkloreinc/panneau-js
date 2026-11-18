@@ -83,6 +83,11 @@ export interface FormViewProps {
     submitLabel?: ReactNode;
     /** Other buttons, next to the submit button. */
     actions?: ReactNode;
+    /**
+     * Buttons at the start of the footer, opposite the submit button: those that destroy, such as
+     * "Delete" (decision 0088). They follow the submit button into the `save` panel.
+     */
+    startActions?: ReactNode;
     /** Called after a successful submit, with what `onSubmit` returned. */
     onSubmitted?: (result: unknown) => void;
     /**
@@ -97,7 +102,7 @@ export interface FormViewProps {
     guardUnsavedChanges?: boolean;
     /**
      * Shows "Saved" in a toast after a successful submit, when the form has no footer to say it
-     * (no submit button and no `actions`). Defaults to true. A form with a footer says "Saved" in
+     * (no submit button, no `actions` and no `startActions`). Defaults to true. A form with a footer says "Saved" in
      * it, next to its button, where "Unsaved changes" was: the page already shows it (decision
      * 0062).
      */
@@ -208,6 +213,7 @@ export function FormView({
     panels,
     submitLabel,
     actions,
+    startActions,
     onSubmitted,
     onReload,
     guardUnsavedChanges = true,
@@ -233,7 +239,7 @@ export function FormView({
     const [resolving, setResolving] = useState(false);
     const root = useRef<HTMLFormElement>(null);
     const footer = useRef<HTMLDivElement>(null);
-    const hasFooter = submitLabel !== null || actions !== undefined;
+    const hasFooter = submitLabel !== null || actions !== undefined || startActions !== undefined;
     // Toasts rise above the footer, which sticks to the bottom of the page.
     useToastOffset(footer, hasFooter && !isLoading);
     // "Saved" in the footer, from the last submit or from before the form started over, until the
@@ -375,6 +381,7 @@ export function FormView({
                     : null,
         isSubmitting: state.status === 'submitting',
         actions,
+        startActions,
         submitLabel: submitLabel === undefined ? intl.formatMessage(messages.save) : submitLabel,
     };
 
