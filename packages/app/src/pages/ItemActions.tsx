@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { type ActionOutcome, type ActionTarget, useActionRunner } from '@panneau/actions';
 import { type ItemAction, asksConfirmation } from '@panneau/core';
 import { getActionLabel, listsMessages } from '@panneau/intl';
-import { ConfirmDialog, type ListActionEvent, getActionIcon } from '@panneau/lists';
+import { ConfirmDialog, type ListActionEvent, getActionIcon, getActionTone } from '@panneau/lists';
 import type { Action, Item } from '@panneau/protocol';
 import { Button, LinkButton, usePanneauIntl, useToast } from '@panneau/ui';
 
@@ -24,11 +24,16 @@ export interface ItemActionsProps {
 }
 
 /**
- * An action that destroys is outlined in the danger color, without a fill (decision 0088). The
+ * An action is outlined in its tone (decision 0091), as one that destroys is in the danger color
+ * (decision 0088): its page on the site in `info`, an action that declares a tone in it. The
  * others are secondary buttons.
  */
-const DESTRUCTIVE = { tone: 'danger', appearance: 'outline' } as const;
 const SECONDARY = { variant: 'secondary' } as const;
+
+function buttonStyle(action: Action) {
+    const tone = getActionTone(action);
+    return tone === 'neutral' ? SECONDARY : ({ tone, appearance: 'outline' } as const);
+}
 
 /** Whether a link leaves the admin: it opens in a new tab. */
 function isExternal(href: string): boolean {
@@ -105,7 +110,7 @@ export function ItemActions({
                     <LinkButton
                         key={action.id}
                         href={href}
-                        {...(action.destructive === true ? DESTRUCTIVE : SECONDARY)}
+                        {...buttonStyle(action)}
                         {...(icon !== undefined ? { icon } : {})}
                         external={external}
                     >
@@ -114,7 +119,7 @@ export function ItemActions({
                 ) : (
                     <Button
                         key={action.id}
-                        {...(action.destructive === true ? DESTRUCTIVE : SECONDARY)}
+                        {...buttonStyle(action)}
                         {...(icon !== undefined ? { icon } : {})}
                         isPending={pending === action.id}
                         isDisabled={pending !== null && pending !== action.id}
