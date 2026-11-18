@@ -37,8 +37,8 @@ describe('Stat', () => {
         rerender(
             <Stat value={40} change={{ direction: 'none', label: 'No change from last month' }} />,
         );
-        expect(screen.getByText('No change from last month').parentElement).toHaveTextContent(
-            /^No change from last month$/,
+        expect(screen.getByText('No change from last month').parentElement?.textContent).toBe(
+            'No change from last month',
         );
         expect(container.querySelector('svg')).toBeNull();
     });
