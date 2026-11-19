@@ -1,4 +1,2 @@
-/** Joins class names, skipping empty ones. */
-export function cx(...classNames: (string | false | null | undefined)[]): string {
-    return classNames.filter(Boolean).join(' ');
-}
+// The `cx` of `@panneau/ui`: one implementation for every package.
+export { cx } from '@panneau/ui';

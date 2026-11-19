@@ -1,4 +1,4 @@
-import { canRunAction, fillActionUrl, groupActions, isActionAllowedOn } from '@panneau/core';
+import { canRunAction, groupActions, isActionAllowedOn } from '@panneau/core';
 import type { Action, ActionPlacement } from '@panneau/protocol';
 
 import type { ListItem } from '../types';
@@ -35,14 +35,6 @@ function isActionList(actions: ListActions): actions is readonly Action[] {
  */
 export function isAllowedOn(action: Action, item: ListItem): boolean {
     return isActionAllowedOn(action, item);
-}
-
-/**
- * The link of a `link` action for an item: its `url` template with `{id}` (and other `{field}`
- * values of the item) filled in, or `null` for an action with a `route` or without an item.
- */
-export function getActionHref(action: Action, item?: ListItem): string | null {
-    return fillActionUrl(action, item);
 }
 
 /** Whether an action's scope includes another one. */

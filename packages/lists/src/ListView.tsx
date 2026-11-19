@@ -5,6 +5,7 @@ import type { List, ResolvedCalendar } from '@panneau/core';
 import {
     asksConfirmation,
     currentMonth,
+    fillActionUrl,
     formatRuleFailure,
     selectItemActions,
     usePlugins,
@@ -19,13 +20,7 @@ import styles from './ListView.module.css';
 import { ActionButton } from './actions/ActionButton';
 import { ConfirmDialog, type ConfirmPreview, needsConfirmation } from './actions/ConfirmDialog';
 import { RowActions, orderRowActions } from './actions/RowActions';
-import {
-    type ListActions,
-    getActionHref,
-    groupListActions,
-    hasScope,
-    isAllowedOn,
-} from './actions/actions';
+import { type ListActions, groupListActions, hasScope, isAllowedOn } from './actions/actions';
 import type { ActionIcons } from './actions/icons';
 import { getShownColumns } from './columns';
 import { cx } from './cx';
@@ -759,7 +754,7 @@ export function ListView({
                                     action={action}
                                     icons={actionIcons}
                                     size="md"
-                                    href={getActionHref(action)}
+                                    href={fillActionUrl(action)}
                                     isPending={pending === keyOf(action)}
                                     onPress={() => runOnResource(action)}
                                 />

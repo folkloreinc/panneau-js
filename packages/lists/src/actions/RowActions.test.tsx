@@ -80,6 +80,33 @@ describe('RowActions', () => {
         expect(onRun).toHaveBeenCalledWith(remove.action);
     });
 
+    it('opens a link to another site in a new tab, protocol-relative ones included', () => {
+        const site: ItemAction = {
+            action: {
+                id: 'site',
+                label: 'Site',
+                kind: 'link',
+                scope: ['item'],
+                url: '//example.com/{id}',
+            },
+            href: '//example.com/2',
+        };
+        renderList(
+            <RowActions
+                itemLabel="Contact"
+                actions={[site, edit]}
+                menu={[]}
+                pending={null}
+                onRun={vi.fn()}
+                primary={null}
+            />,
+        );
+        const link = screen.getByRole('link', { name: 'Site: Contact' });
+        expect(link).toHaveAttribute('target', '_blank');
+        expect(link.className).toMatch(/tone-info/);
+        expect(screen.getByRole('link', { name: 'Edit: Contact' })).not.toHaveAttribute('target');
+    });
+
     it('shows every action as an icon without a main one', () => {
         renderActions(0, [duplicate, remove], null);
         expect(screen.getByRole('link', { name: 'View: Contact' })).toHaveTextContent('');

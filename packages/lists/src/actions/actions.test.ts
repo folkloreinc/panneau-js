@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { edit, editLink, exportAction, publish, remove, showLink } from '../__fixtures__/pages';
-import { getActionHref, groupListActions, isAllowedOn } from './actions';
+import { groupListActions, isAllowedOn } from './actions';
 
 describe('groupListActions', () => {
     it('places a list of actions by placement, or by scope', () => {
@@ -44,15 +44,5 @@ describe('isAllowedOn', () => {
         expect(isAllowedOn(remove, { id: '1' })).toBe(false);
         expect(isAllowedOn(edit, { id: '1' })).toBe(false);
         expect(isAllowedOn(showLink, { id: '1' })).toBe(false);
-    });
-});
-
-describe('getActionHref', () => {
-    it('fills the URL template of a link with the item', () => {
-        expect(getActionHref(edit, { id: 'a/b' })).toBe('/pages/a%2Fb/edit');
-        expect(getActionHref(publish, { id: '1' })).toBeNull();
-        expect(
-            getActionHref({ ...edit, url: undefined, route: 'pages.edit' }, { id: '1' }),
-        ).toBeNull();
     });
 });

@@ -1,5 +1,8 @@
+import { ExternalLink } from 'lucide-react';
+
 import { getActionLabel } from '@panneau/intl';
 import type { Action } from '@panneau/protocol';
+import { isExternalUrl } from '@panneau/protocol/runtime';
 import { Button, LinkButton, Tooltip, usePanneauIntl } from '@panneau/ui';
 
 import styles from './Actions.module.css';
@@ -21,13 +24,14 @@ export interface ActionButtonProps {
      * label.
      */
     iconOnly?: boolean;
+    /**
+     * In the header of an item (decision 0091): the color of the action, outlined, as one that
+     * destroys is in the danger color (decision 0088). A link that leaves the admin shows the icon
+     * of an external link.
+     */
+    inHeader?: boolean;
     /** Accessible label, when the label alone isn't enough (`Edit Ada Lovelace`). */
     'aria-label'?: string;
-}
-
-/** Whether a link leaves the admin: it opens in a new tab. */
-function isExternal(href: string): boolean {
-    return /^https?:\/\//.test(href);
 }
 
 /** An action as a button, or as a link for a `link` action with a URL. */
@@ -40,17 +44,19 @@ export function ActionButton({
     isDisabled = false,
     size = 'sm',
     iconOnly = false,
+    inHeader = false,
     'aria-label': ariaLabel,
 }: ActionButtonProps) {
     const intl = usePanneauIntl();
-    const icon = getActionIcon(action, icons);
+    const external = href !== null && isExternalUrl(href);
+    const icon = inHeader && external ? ExternalLink : getActionIcon(action, icons);
     const label = getActionLabel(action, intl);
     const destructive = action.destructive === true;
-    // In rows, the color of the action, tinted (decision 0060); beside the buttons of a toolbar,
-    // outlined (solid when it destroys).
-    const inRow = size === 'sm';
-    const tone = inRow ? getActionTone(action) : destructive ? 'danger' : 'neutral';
-    const appearance = inRow ? 'subtle' : destructive ? 'solid' : 'outline';
+    // In rows, the color of the action, tinted (decision 0060); in the header of an item, outlined
+    // in it; beside the buttons of a toolbar, outlined (solid when it destroys).
+    const inRow = size === 'sm' && !inHeader;
+    const tone = inRow || inHeader ? getActionTone(action) : destructive ? 'danger' : 'neutral';
+    const appearance = inRow ? 'subtle' : destructive && !inHeader ? 'solid' : 'outline';
     const onlyIcon = iconOnly && icon !== undefined;
     const name = ariaLabel ?? (onlyIcon ? label : undefined);
     const button =
@@ -61,7 +67,7 @@ export function ActionButton({
                 tone={tone}
                 appearance={appearance}
                 {...(icon !== undefined ? { icon } : {})}
-                external={isExternal(href)}
+                external={external}
                 aria-label={name}
                 className={onlyIcon ? styles.iconOnly : undefined}
             >

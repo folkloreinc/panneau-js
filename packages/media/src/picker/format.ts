@@ -12,8 +12,8 @@ export function extensionOf(item: PickerMedia): string {
     return match?.[1]?.toUpperCase() ?? item.media.type.toUpperCase();
 }
 
-/** A duration in seconds, as `m:ss` or `h:mm:ss`. */
-export function formatDuration(seconds: number): string {
+/** A playback time in seconds, as `m:ss` or `h:mm:ss`, as players show it. */
+export function formatPlaybackTime(seconds: number): string {
     const minutes = Math.floor(seconds / 60);
     const rest = String(Math.round(seconds % 60)).padStart(2, '0');
     return minutes >= 60
