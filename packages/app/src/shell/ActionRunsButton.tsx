@@ -1,14 +1,16 @@
-import { ListChecks, LoaderCircle } from 'lucide-react';
+import { ListChecks } from 'lucide-react';
 import { Button } from 'react-aria-components';
 
 import { ActionRuns, useActionRuns } from '@panneau/actions';
 import { appMessages } from '@panneau/intl';
 import {
+    Badge,
     Heading,
     Icon,
     Popover,
     type PopoverProps,
     PopoverTrigger,
+    Spinner,
     Tooltip,
     usePanneauIntl,
 } from '@panneau/ui';
@@ -51,15 +53,15 @@ export function ActionRunsButton({
     const label = intl.formatMessage(appMessages.actionRunsLabel, { count: active });
     const icon = (
         <span className={styles.icon}>
-            <Icon
-                icon={active > 0 ? LoaderCircle : ListChecks}
-                size="md"
-                className={cx(active > 0 && styles.spinning)}
-            />
+            {active > 0 ? (
+                <Spinner className={styles.spinner} />
+            ) : (
+                <Icon icon={ListChecks} size="md" />
+            )}
             {appearance !== 'row' && active > 0 ? (
-                <span className={styles.dot} aria-hidden="true">
+                <Badge tone="accent" appearance="solid" className={styles.dot}>
                     {active}
-                </span>
+                </Badge>
             ) : null}
         </span>
     );
@@ -81,9 +83,9 @@ export function ActionRunsButton({
                 <>
                     <span className={styles.label}>{title}</span>
                     {active > 0 ? (
-                        <span className={styles.count} aria-hidden="true">
+                        <Badge tone="accent" appearance="solid" className={styles.count}>
                             {active}
-                        </span>
+                        </Badge>
                     ) : null}
                 </>
             ) : null}

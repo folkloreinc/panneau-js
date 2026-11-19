@@ -28,6 +28,7 @@ import {
     AsideLayout,
     Button,
     isApplePlatform,
+    prefersReducedMotion,
     usePanneauIntl,
     useToast,
     useToastOffset,
@@ -200,8 +201,10 @@ function showField(root: RefObject<HTMLElement | null>, path: string, frames: nu
         requestAnimationFrame(() => showField(root, path, frames - 1));
         return;
     }
-    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    element.scrollIntoView?.({ block: 'center', behavior: reduced ? 'auto' : 'smooth' });
+    element.scrollIntoView?.({
+        block: 'center',
+        behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+    });
     const target =
         element.querySelector<HTMLElement>('[aria-invalid="true"]') ??
         element.querySelector<HTMLElement>(FOCUSABLE);

@@ -57,7 +57,7 @@ export {
     createForm,
     getDefaultValues,
 } from './form/form';
-export { formatRuleFailure } from './form/messages';
+export { type RuleMessageValues, formatRuleFailure, ruleMessages } from './form/messages';
 export { getItemValues, getProblem, isItem } from './form/problem';
 export { selectErrorCount, selectErrors, selectValue, selectVisible } from './form/selectors';
 export { type FormStore, createLocalStore } from './form/store';

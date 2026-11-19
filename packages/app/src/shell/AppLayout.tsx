@@ -19,9 +19,9 @@ import styles from './AppLayout.module.css';
 import { GoTo } from './GoTo';
 import { Sidebar } from './Sidebar';
 import type { ColorSchemePreference } from './UserMenu';
+import { CONTENT_ID, SkipLink } from './frame';
 import { useRouteFocus } from './useRouteFocus';
 
-export const CONTENT_ID = 'panneau-content';
 export const SIDEBAR_STATES = ['expanded', 'collapsed'] as const;
 
 export interface AppLayoutProps {
@@ -108,9 +108,7 @@ export function AppLayout({
 
     return (
         <div className={cx(styles.layout, collapsed && styles.collapsed)}>
-            <a href={`#${CONTENT_ID}`} className={styles.skipLink}>
-                {intl.formatMessage(appMessages.skipToContent)}
-            </a>
+            <SkipLink />
             <header className={styles.topBar}>
                 <IconButton
                     icon={Menu}

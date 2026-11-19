@@ -84,7 +84,7 @@ describe('Form layout', () => {
         );
         const title = screen.getByRole('textbox', { name: /Title/ });
         expect(
-            (title.closest('[style]') as HTMLElement).style.getPropertyValue('--panneau-span'),
+            (title.closest('[style]') as HTMLElement).style.getPropertyValue('--_panneau-span'),
         ).toBe('8');
         expect(screen.getByText('Write for the web.')).toBeInTheDocument();
         expect(screen.getByRole('region', { name: 'Sidebar' })).toBeInTheDocument();

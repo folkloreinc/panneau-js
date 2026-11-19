@@ -1,11 +1,9 @@
-import { ChevronDown } from 'lucide-react';
-import { type ReactNode, useId } from 'react';
-import { Button, Heading } from 'react-aria-components';
+import type { ReactNode } from 'react';
 
 import { appMessages } from '@panneau/intl';
 import type { Definition, Resource, ResourceSummary as Summary } from '@panneau/protocol';
 import { type WidgetListQuery, followsPeriod } from '@panneau/protocol/runtime';
-import { Icon, usePanneauIntl, usePreference } from '@panneau/ui';
+import { Disclosure, usePanneauIntl, usePreference } from '@panneau/ui';
 
 import { PeriodControl } from '../dashboard/PeriodControl';
 import type { PeriodState } from '../dashboard/period';
@@ -59,36 +57,35 @@ export function ResourceSummary({
     headerEnd,
 }: ResourceSummaryProps) {
     const intl = usePanneauIntl();
-    const titleId = useId();
-    const contentId = useId();
+    const title = intl.formatMessage(appMessages.summary);
     return (
-        <section className={styles.root} aria-labelledby={titleId}>
-            <div className={styles.header}>
-                <Heading level={2} className={styles.heading} id={titleId}>
-                    <Button
-                        className={styles.toggle}
-                        aria-expanded={isOpen}
-                        aria-controls={contentId}
-                        onPress={() => onOpenChange(!isOpen)}
-                    >
-                        <Icon icon={ChevronDown} size="sm" className={styles.chevron} />
-                        {intl.formatMessage(appMessages.summary)}
-                    </Button>
-                </Heading>
-                {summary.period !== undefined && period !== undefined ? (
-                    <PeriodControl
-                        options={summary.period.options}
-                        value={period.option}
-                        onChange={period.choose}
-                        widgets={summary.widgets}
-                        following={summary.widgets.filter((widget) =>
-                            followsPeriod(widget, resource.id),
-                        )}
-                    />
-                ) : null}
-                {headerEnd}
-            </div>
-            <div id={contentId} hidden={!isOpen}>
+        <section className={styles.root} aria-label={title}>
+            <Disclosure
+                title={title}
+                headingLevel={2}
+                isExpanded={isOpen}
+                onExpandedChange={onOpenChange}
+                triggerClassName={styles.toggle}
+                headerEnd={
+                    (summary.period !== undefined && period !== undefined) ||
+                    (headerEnd !== undefined && headerEnd !== null) ? (
+                        <>
+                            {summary.period !== undefined && period !== undefined ? (
+                                <PeriodControl
+                                    options={summary.period.options}
+                                    value={period.option}
+                                    onChange={period.choose}
+                                    widgets={summary.widgets}
+                                    following={summary.widgets.filter((widget) =>
+                                        followsPeriod(widget, resource.id),
+                                    )}
+                                />
+                            ) : null}
+                            {headerEnd}
+                        </>
+                    ) : undefined
+                }
+            >
                 {isOpen ? (
                     <DashboardGrid
                         widgets={summary.widgets}
@@ -98,7 +95,7 @@ export function ResourceSummary({
                         basePath={basePath}
                     />
                 ) : null}
-            </div>
+            </Disclosure>
         </section>
     );
 }

@@ -6,7 +6,7 @@ import { mediaMessages as messages } from '@panneau/intl';
 import { Badge, IconButton, usePanneauIntl } from '@panneau/ui';
 
 import styles from './MediaPicker.module.css';
-import { extensionOf, formatDuration, isProcessingMedia, refusalOf } from './format';
+import { extensionOf, formatPlaybackTime, isProcessingMedia, refusalOf } from './format';
 import type { PickerMedia } from './types';
 
 /** The status badge of a media being processed, or whose processing failed. */
@@ -130,7 +130,7 @@ export function MediaGrid({
                                     </span>
                                     {typeof duration === 'number' ? (
                                         <span className={styles.duration}>
-                                            {formatDuration(duration)}
+                                            {formatPlaybackTime(duration)}
                                         </span>
                                     ) : null}
                                 </span>
