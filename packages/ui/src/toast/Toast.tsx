@@ -150,7 +150,7 @@ export function getToastOffset(rect: Pick<DOMRect, 'top' | 'bottom' | 'height'>,
 /**
  * Raises the toasts above an element that sticks to the bottom of the page, such as the footer of
  * a form, while it is mounted and `active` and it covers the bottom of the viewport: the space it
- * takes there becomes the `--panneau-bottom-offset` of the region. Measured again when the page
+ * takes there becomes the `--panneau-frame-bottom` of the region. Measured again when the page
  * scrolls or resizes. Toasts at the top ignore it.
  */
 export function useToastOffset(ref: RefObject<HTMLElement | null>, active = true): void {
@@ -311,7 +311,7 @@ export function ToastProvider({
                 aria-label={intl.formatMessage(messages.notifications)}
                 className={cx('panneau-toast-region', regionClassName, styles.region)}
                 data-placement={placement}
-                style={{ '--panneau-bottom-offset': `${offset}px` } as CSSProperties}
+                style={{ '--panneau-frame-bottom': `${offset}px` } as CSSProperties}
                 {...regionProps}
             >
                 {({ toast }) => {

@@ -141,7 +141,7 @@
 }
 
 .content > * + * {
-    margin-top: var(--panneau-prose-gap, var(--panneau-space-3));
+    margin-top: var(--panneau-prose-gap, var(--panneau-space-4));
 }
 
 .content :where(h1, h2, h3, h4, h5, h6) {

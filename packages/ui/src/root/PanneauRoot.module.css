@@ -148,6 +148,11 @@
     --panneau-z-overlay: 1000;
     --panneau-z-toast: 1100;
 
+    /* Layout: the space at the bottom of the window that the frame of the app takes (a dock), or
+     * that the toasts keep free. What sticks or floats at the bottom stays above it. Layouts set
+     * it; themes don't. */
+    --panneau-frame-bottom: 0px;
+
     color-scheme: light;
 }
 

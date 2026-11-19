@@ -113,6 +113,7 @@ export const SEMANTIC_TOKENS = [
     'panneau-ease-in',
     'panneau-z-overlay',
     'panneau-z-toast',
+    'panneau-frame-bottom',
 ] as const;
 
 /** The name of a semantic token, without the leading `--`. */
