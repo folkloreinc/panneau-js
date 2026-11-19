@@ -1,10 +1,4 @@
-export {
-    Alert,
-    type AlertAppearance,
-    type AlertProps,
-    type AlertTone,
-    type AlertVariants,
-} from './alert/Alert';
+export { Alert, type AlertAppearance, type AlertProps, type AlertVariants } from './alert/Alert';
 export {
     Aside,
     AsideLayout,
@@ -15,13 +9,7 @@ export {
 } from './aside/Aside';
 export { Avatar, type AvatarProps, type AvatarSize } from './avatar/Avatar';
 export { AvatarGroup, type AvatarGroupPerson, type AvatarGroupProps } from './avatar/AvatarGroup';
-export {
-    Badge,
-    type BadgeAppearance,
-    type BadgeProps,
-    type BadgeTone,
-    type BadgeVariants,
-} from './badge/Badge';
+export { Badge, type BadgeAppearance, type BadgeProps, type BadgeVariants } from './badge/Badge';
 export { BarChart, type BarChartItem, type BarChartProps } from './bar-chart/BarChart';
 export { type BreadcrumbItem, Breadcrumbs, type BreadcrumbsProps } from './breadcrumbs/Breadcrumbs';
 export {
@@ -29,7 +17,6 @@ export {
     type ButtonAppearance,
     type ButtonProps,
     type ButtonStyleProps,
-    type ButtonVariant,
     type ButtonVariants,
 } from './button/Button';
 export { ButtonGroup, type ButtonGroupProps } from './button-group/ButtonGroup';
@@ -192,7 +179,6 @@ export {
     type ToastContent,
     type ToastOptions,
     type ToastPlacement,
-    type ToastTone,
     type Toasts,
     getToastTimeout,
     useToast,

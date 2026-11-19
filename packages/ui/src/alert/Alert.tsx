@@ -10,9 +10,6 @@ import type { Tone } from '../theme/tones';
 import { cx } from '../utils/cx';
 import styles from './Alert.module.css';
 
-/** @deprecated Use `Tone`. */
-export type AlertTone = Tone;
-
 /** How an alert uses its tone. */
 export type AlertAppearance = 'subtle' | 'outline' | 'solid';
 

@@ -53,7 +53,6 @@ Every field takes `value`, `onChange`, `onBlur`, `errors`, `disabled`, `readOnly
 | `@panneau/fields/relation`  | `RelationField`, `createRelationSource()`    | `{ id, label }`, or a list with `multiple`                          |
 | `@panneau/fields/file`      | `FileField`                                  | a file, or a list with `multiple` (below)                           |
 | `@panneau/fields/uppy`      | `createUppyUploadSource()`                   | the upload source on Uppy 6 (below)                                 |
-| `@panneau/fields/locales`   | `en`, `fr`                                   | deprecated: use `@panneau/intl`                                     |
 
 ## From a definition
 

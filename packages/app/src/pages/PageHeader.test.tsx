@@ -68,15 +68,6 @@ describe('PageHeader (decision 0093)', () => {
         expect(screen.queryByRole('link')).toBeNull();
     });
 
-    it('still takes the deprecated `back` as its only parent', () => {
-        renderHeader(
-            { title: 'Ada', back: { href: '/panneau/resources/authors', label: 'Authors' } },
-            { name: 'resource.edit', resource: 'authors', id: '1' },
-        );
-        expect(screen.getByRole('link', { name: 'Authors' })).toBeInTheDocument();
-        expect(crumbs()).toBeNull();
-    });
-
     it('names the page in its crumb with `crumbLabel`, or links to the nearest parent without one', () => {
         const parents = [
             { href: '/panneau/pages/activity', label: 'Activity' },

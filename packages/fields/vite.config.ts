@@ -36,7 +36,6 @@ export default definePackageConfig({
         'repeater/index': 'src/repeater/index.ts',
         'relation/index': 'src/relation/index.ts',
         'file/index': 'src/file/index.ts',
-        'locales/index': 'src/locales/index.ts',
         'uppy/index': 'src/uppy/index.ts',
     },
     react: true,

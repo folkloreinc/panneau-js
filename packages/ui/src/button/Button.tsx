@@ -26,33 +26,18 @@ export type ButtonAppearance = 'solid' | 'outline' | 'subtle' | 'ghost';
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- extended by projects
 export interface ButtonVariants {}
 
-/**
- * The variants of the first alpha, kept as aliases of a tone and an appearance: `primary` is
- * accent solid, `secondary` neutral outline, `ghost` neutral ghost, `danger` danger solid.
- *
- * @deprecated Use `tone` and `appearance`.
- */
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
-
-const ALIASES: Record<ButtonVariant, { tone: Tone; appearance: ButtonAppearance }> = {
-    primary: { tone: 'accent', appearance: 'solid' },
-    secondary: { tone: 'neutral', appearance: 'outline' },
-    ghost: { tone: 'neutral', appearance: 'ghost' },
-    danger: { tone: 'danger', appearance: 'solid' },
-};
-
-function isAlias(variant: string): variant is ButtonVariant {
-    return Object.hasOwn(ALIASES, variant);
-}
-
 /** The look of a button, shared by `Button` and `LinkButton`. */
 export interface ButtonStyleProps {
     /** Defaults to `neutral`. */
     tone?: Tone;
     /** Defaults to `outline` for the neutral tone, and `solid` for the others. */
     appearance?: ButtonAppearance;
-    /** A named variant of the theme, or one of the deprecated aliases (`primary`…). */
-    variant?: ButtonVariant | (keyof ButtonVariants & string);
+    /**
+     * A named variant of the theme (`ButtonVariants`), over the tone and the appearance. The
+     * aliases of the first alphas (`primary`, `secondary`, `ghost`, `danger`) are gone: give a
+     * `tone` and an `appearance` (`npx @panneau/codemods button-variants`).
+     */
+    variant?: keyof ButtonVariants & string;
     size?: 'sm' | 'md';
     /** Icon before the label. */
     icon?: IconComponent;
@@ -82,16 +67,14 @@ export function getButtonClassName({
 }: Pick<ButtonStyleProps, 'tone' | 'appearance' | 'variant' | 'size' | 'fullWidth'> & {
     className?: string | undefined;
 }): string {
-    const alias = variant !== undefined && isAlias(variant) ? ALIASES[variant] : undefined;
-    const resolvedTone = tone ?? alias?.tone ?? 'neutral';
-    const resolvedAppearance =
-        appearance ?? alias?.appearance ?? (resolvedTone === 'neutral' ? 'outline' : 'solid');
+    const resolvedTone = tone ?? 'neutral';
+    const resolvedAppearance = appearance ?? (resolvedTone === 'neutral' ? 'outline' : 'solid');
     return cx(
         'panneau-button',
         styles.button,
         toneClass(resolvedTone),
         styles[resolvedAppearance],
-        variant !== undefined && alias === undefined && `panneau-button-variant-${variant}`,
+        variant !== undefined && `panneau-button-variant-${variant}`,
         size === 'sm' && styles.sm,
         fullWidth && styles.fullWidth,
         className,

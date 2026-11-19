@@ -72,9 +72,6 @@ export interface AlertProps {
     variant?: keyof AlertVariants & string;
 }
 
-// @public @deprecated (undocumented)
-export type AlertTone = Tone;
-
 // @public
 export interface AlertVariants {
 }
@@ -200,9 +197,6 @@ export interface BadgeProps {
     variant?: keyof BadgeVariants & string;
 }
 
-// @public @deprecated (undocumented)
-export type BadgeTone = Tone;
-
 // @public
 export interface BadgeVariants {
 }
@@ -310,11 +304,8 @@ export interface ButtonStyleProps {
     // (undocumented)
     size?: 'sm' | 'md';
     tone?: Tone;
-    variant?: ButtonVariant | (keyof ButtonVariants & string);
+    variant?: keyof ButtonVariants & string;
 }
-
-// @public @deprecated
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 
 // @public
 export interface ButtonVariants {
@@ -1688,9 +1679,6 @@ export interface Toasts {
     close(key: string): void;
     show(content: ToastContent, options?: ToastOptions): string;
 }
-
-// @public @deprecated (undocumented)
-export type ToastTone = Tone;
 
 // @public
 export type TokenName = SemanticTokenName | ComponentTokenName | PaletteTokenName | (keyof PanneauTokens & string);

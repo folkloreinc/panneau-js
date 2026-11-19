@@ -55,29 +55,12 @@ export interface FormPage {
 // @public
 export function getErrorPageKind(error: unknown): ErrorPageKind;
 
-// @public @deprecated
-export function LinkButton(input: LinkButtonProps): JSX.Element;
-
-// @public (undocumented)
-export interface LinkButtonProps {
-    // (undocumented)
-    children: ReactNode;
-    // (undocumented)
-    href: string;
-    icon?: ReactNode;
-}
-
 // @public
 export function PageHeader(input: PageHeaderProps): JSX.Element;
 
 // @public (undocumented)
 export interface PageHeaderProps {
     actions?: ReactNode;
-    // @deprecated
-    back?: {
-        href: string;
-        label: string;
-    };
     crumbLabel?: string;
     isLoading?: boolean;
     parents?: readonly PageParent[];
