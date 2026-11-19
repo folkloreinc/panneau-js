@@ -896,6 +896,20 @@ describe('runConformance', () => {
             passing.checks.map((check) => [check.id, check.status]),
         );
         expect(statuses).toMatchObject({ 'list.fields': 'passed', 'list.per-page': 'passed' });
+        // A backend that also gives the title of items, as laravel-panneau does
+        const withTitle = (input: string, init?: RequestInit) => {
+            const url = new URL(input);
+            const fields = url.searchParams.get('fields');
+            if (fields !== null) {
+                url.searchParams.set('fields', `${fields},title`);
+            }
+            return backend.fetch(url.toString(), init);
+        };
+        const titled = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: withTitle,
+        });
+        expect(titled.checks.find((check) => check.id === 'list.fields')?.status).toBe('passed');
         // A backend that gives every field, and as many items as asked for
         const careless = async (input: string, init?: RequestInit) => {
             const url = new URL(input);
@@ -914,7 +928,7 @@ describe('runConformance', () => {
         });
         const fields = report.checks.find((check) => check.id === 'list.fields');
         expect(fields?.status).toBe('failed');
-        expect(fields?.issues?.[0]).toMatch(/^fields=title also gave the values of /);
+        expect(fields?.issues?.[0]).toMatch(/^fields=status also gave the values of /);
         const perPage = report.checks.find((check) => check.id === 'list.per-page');
         expect(perPage?.status).toBe('failed');
         expect(perPage?.issues?.[0]).toMatch(/^perPage=101 answered meta.perPage 101/);

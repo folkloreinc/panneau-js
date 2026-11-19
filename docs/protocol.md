@@ -715,7 +715,7 @@ All paths are relative to `api.baseUrl`.
     A backend ignores the filters it doesn't declare, but `ids`. In an action's query selection, the same values are JSON: `"filter": { "published_at": { "from": "2026-01-01" } }`.
 
 - `q`: search
-- `fields=title,status`: the fields to give the values of, so lists ask for the fields they show (their columns, the title and the image of items, the field of the calendar). Items still have their `id`, `version`, `abilities`, their `type` ([0077](decisions/0077-resource-types.md)) and, in a media library, `media`. Without it, items have every field. Clients get by with a backend that ignores it.
+- `fields=title,status`: the fields to give the values of, so lists ask for the fields they show (their columns, the title and the image of items, the field of the calendar). Items still have their `id`, `version`, `abilities`, their `type` ([0077](decisions/0077-resource-types.md)) and, in a media library, `media`. A backend can also give the values of the resource's `itemTitle` and `itemImage` fields, which lists show. Without it, items have every field. Clients get by with a backend that ignores it.
 
 #### Aggregates
 

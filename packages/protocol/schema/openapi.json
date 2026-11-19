@@ -270,7 +270,7 @@
                         "name": "fields",
                         "in": "query",
                         "required": false,
-                        "description": "Comma-separated fields to include in each item.",
+                        "description": "Comma-separated fields to include in each item. Items still have their `id`, `version`, `abilities` and `type`, and a backend can also give the values of the `itemTitle` and `itemImage` fields of the resource.",
                         "schema": {
                             "type": "string"
                         }

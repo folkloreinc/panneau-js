@@ -105,7 +105,11 @@ const listParameters = [
         schema: { type: 'object', additionalProperties: true },
     },
     queryParameter('q', 'Search.', { type: 'string' }),
-    queryParameter('fields', 'Comma-separated fields to include in each item.', { type: 'string' }),
+    queryParameter(
+        'fields',
+        'Comma-separated fields to include in each item. Items still have their `id`, `version`, `abilities` and `type`, and a backend can also give the values of the `itemTitle` and `itemImage` fields of the resource.',
+        { type: 'string' },
+    ),
 ];
 
 /** The parameters of `GET /resources/{resource}/aggregate`: the filters and search of the list. */

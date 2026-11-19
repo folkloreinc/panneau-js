@@ -17,6 +17,7 @@ import {
     getSummaryWidgets,
     toWidgetDataParams,
 } from '../dashboards';
+import { getItemImageField } from '../libraries';
 import { getLinkTypes } from '../links';
 import { type WidgetPeriod, getDefaultPeriod, getPeriodRange } from '../periods';
 import { type FilterRange, isCursorPage, toSearchParams } from '../query';
@@ -802,9 +803,21 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
         'GET /resources/{resource} gives the fields asked for only (fields)',
         async (check) => {
             const fields = (resource as Resource | null)?.fields ?? [];
-            const asked = (resource as Resource | null)?.itemTitle ?? fields[0]?.name;
-            if (resource === null || asked === undefined || fields.length < 2) {
-                check.skip('The resource has fewer than 2 fields.');
+            // A backend can also give the title and the image of items, which lists show
+            const allowed = new Set(
+                [
+                    (resource as Resource | null)?.itemTitle,
+                    resource !== null ? getItemImageField(resource as Resource) : undefined,
+                ].filter((name): name is string => name !== undefined),
+            );
+            const asked = fields.find((field) => !allowed.has(field.name))?.name;
+            const others = fields
+                .map((field) => field.name)
+                .filter((name) => name !== asked && !allowed.has(name));
+            if (resource === null || asked === undefined || others.length === 0) {
+                check.skip(
+                    'The resource has no 2 fields besides the title and the image of items.',
+                );
                 return;
             }
             const reply = await request(
@@ -815,7 +828,6 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
             }
             // Items still have their id, version and abilities
             const list = check.expectSchema(ListResponse, reply.body, 'The list with fields');
-            const others = fields.map((field) => field.name).filter((name) => name !== asked);
             const extra = [
                 ...new Set(
                     (list?.data ?? []).flatMap((item) => others.filter((name) => name in item)),
