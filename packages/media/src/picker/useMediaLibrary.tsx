@@ -493,7 +493,7 @@ export function useMediaLibrary({
                 }
                 actions={
                     source.canCreate ? (
-                        <Button variant="primary" onPress={() => setTab('upload')}>
+                        <Button tone="accent" onPress={() => setTab('upload')}>
                             {intl.formatMessage(messages.pickerUploadFiles)}
                         </Button>
                     ) : undefined
@@ -551,7 +551,7 @@ export function useMediaLibrary({
                                 {intl.formatMessage(messages.pickerRetry)}
                             </Button>
                         ) : hasMore && state.status === 'ready' ? (
-                            <Button size="sm" variant="ghost" onPress={browser.loadMore}>
+                            <Button size="sm" appearance="ghost" onPress={browser.loadMore}>
                                 {intl.formatMessage(messages.pickerLoadMore)}
                             </Button>
                         ) : null}
@@ -700,7 +700,7 @@ export function useMediaLibrary({
                         {intl.formatMessage(messages.pickerDiscard)}
                     </Button>
                     <Button
-                        variant="primary"
+                        tone="accent"
                         isDisabled={saving}
                         onPress={() =>
                             void save().then((saved) => {

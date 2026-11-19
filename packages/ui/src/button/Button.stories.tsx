@@ -24,22 +24,20 @@ export const Secondary: Story = {
 export const Variants: Story = {
     render: (args) => (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-            <Button {...args} variant="primary" icon={Plus}>
+            <Button {...args} tone="accent" icon={Plus}>
                 Create
             </Button>
-            <Button {...args} variant="secondary">
-                Cancel
-            </Button>
-            <Button {...args} variant="ghost" iconEnd={ArrowRight}>
+            <Button {...args}>Cancel</Button>
+            <Button {...args} appearance="ghost" iconEnd={ArrowRight}>
                 Next
             </Button>
-            <Button {...args} variant="danger" icon={Trash}>
+            <Button {...args} tone="danger" icon={Trash}>
                 Delete
             </Button>
-            <Button {...args} variant="primary" isDisabled>
+            <Button {...args} tone="accent" isDisabled>
                 Disabled
             </Button>
-            <Button {...args} variant="primary" size="sm">
+            <Button {...args} tone="accent" size="sm">
                 Small
             </Button>
         </div>
@@ -70,7 +68,7 @@ export const TonesAndAppearances: Story = {
 };
 
 export const Pending: Story = {
-    args: { variant: 'primary', isPending: true },
+    args: { tone: 'accent', isPending: true },
     play: async ({ args, canvasElement }) => {
         const button = within(canvasElement).getByRole('button');
         await userEvent.click(button);
@@ -79,5 +77,5 @@ export const Pending: Story = {
 };
 
 export const FullWidth: Story = {
-    args: { variant: 'primary', fullWidth: true },
+    args: { tone: 'accent', fullWidth: true },
 };

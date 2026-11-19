@@ -21,7 +21,7 @@ function Sample() {
             footer={
                 <>
                     <Button>Cancel</Button>
-                    <Button variant="primary" icon={Plus}>
+                    <Button tone="accent" icon={Plus}>
                         Save
                     </Button>
                 </>
@@ -59,8 +59,8 @@ function Sample() {
                         <Checkbox defaultSelected>Members only</Checkbox>
                         <Switch>Comments</Switch>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                            <Button variant="ghost">Preview</Button>
-                            <Button variant="danger">Delete</Button>
+                            <Button appearance="ghost">Preview</Button>
+                            <Button tone="danger">Delete</Button>
                         </div>
                     </div>
                 </TabPanel>

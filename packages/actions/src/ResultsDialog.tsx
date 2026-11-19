@@ -25,11 +25,7 @@ export function ResultsDialog({ label, result, onClose }: ResultsDialogProps) {
                 }
             }}
             title={intl.formatMessage(messages.resultsTitle, { action: label })}
-            footer={
-                <Button variant="secondary" onPress={onClose}>
-                    {intl.formatMessage(messages.close)}
-                </Button>
-            }
+            footer={<Button onPress={onClose}>{intl.formatMessage(messages.close)}</Button>}
         >
             <p className={styles.summary}>
                 {summary.title}

@@ -52,11 +52,7 @@ export function ParametersDialog({
                 {...(locales !== undefined ? { locales } : {})}
                 aria-label={getActionLabel(action, intl)}
                 submitLabel={confirmLabel}
-                actions={
-                    <Button variant="secondary" onPress={onCancel}>
-                        {intl.formatMessage(messages.cancel)}
-                    </Button>
-                }
+                actions={<Button onPress={onCancel}>{intl.formatMessage(messages.cancel)}</Button>}
                 onSubmit={(values) => onSubmit(values)}
                 onSubmitted={(outcome) => onDone(outcome as ActionOutcome)}
                 guardUnsavedChanges={false}

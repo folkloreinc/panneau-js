@@ -152,7 +152,7 @@ export interface LinkButtonProps {
  */
 export function LinkButton({ href, icon, children }: LinkButtonProps) {
     return (
-        <ButtonLink href={href} variant="primary">
+        <ButtonLink href={href} tone="accent">
             {icon}
             {children}
         </ButtonLink>

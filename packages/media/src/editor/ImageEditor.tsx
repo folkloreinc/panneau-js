@@ -387,12 +387,12 @@ function useImageEditor({
         actions: (
             <div className={styles.footer}>
                 {onBack !== undefined ? (
-                    <Button variant="ghost" icon={ArrowLeft} onPress={onBack}>
+                    <Button appearance="ghost" icon={ArrowLeft} onPress={onBack}>
                         {intl.formatMessage(messages.editorBack)}
                     </Button>
                 ) : null}
                 <Button
-                    variant="ghost"
+                    appearance="ghost"
                     icon={Undo2}
                     className={styles.reset}
                     onPress={() => setTransform({})}
@@ -411,7 +411,7 @@ function useImageEditor({
                         </Button>
                     ) : null}
                     <Button
-                        variant="primary"
+                        tone="accent"
                         isDisabled={problem !== null}
                         aria-describedby={problem !== null ? problemId : undefined}
                         onPress={() => onApply(result())}

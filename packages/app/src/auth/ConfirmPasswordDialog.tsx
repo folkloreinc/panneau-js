@@ -76,7 +76,7 @@ function ConfirmPasswordDialog({
                     <Button appearance="ghost" onPress={onCancel}>
                         {intl.formatMessage(appMessages.cancel)}
                     </Button>
-                    <Button type="submit" variant="primary" isPending={pending}>
+                    <Button type="submit" tone="accent" isPending={pending}>
                         {intl.formatMessage(appMessages.confirm)}
                     </Button>
                 </div>

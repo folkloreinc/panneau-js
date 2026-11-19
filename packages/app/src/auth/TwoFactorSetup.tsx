@@ -79,7 +79,7 @@ export function TwoFactorSetup({
                             {step.error}
                         </Alert>
                     ) : null}
-                    <Button variant="primary" isPending={pending} onPress={start} fullWidth>
+                    <Button tone="accent" isPending={pending} onPress={start} fullWidth>
                         {intl.formatMessage(appMessages.setUpTwoFactor)}
                     </Button>
                 </div>
@@ -131,7 +131,7 @@ export function TwoFactorSetup({
             ) : (
                 <>
                     <RecoveryCodes codes={step.codes} />
-                    <Button variant="primary" onPress={onDone} fullWidth>
+                    <Button tone="accent" onPress={onDone} fullWidth>
                         {intl.formatMessage(appMessages.done)}
                     </Button>
                 </>

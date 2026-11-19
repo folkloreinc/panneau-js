@@ -85,7 +85,7 @@ function ResourceForm() {
                 onReload={() => void adapter.get('pages', item.id).then(setItem)}
                 actions={
                     <Button
-                        variant="ghost"
+                        appearance="ghost"
                         onPress={() =>
                             void adapter.update('pages', item.id, {
                                 status: 'published',

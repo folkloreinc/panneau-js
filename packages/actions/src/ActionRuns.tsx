@@ -62,7 +62,7 @@ export function ActionRuns({ 'aria-label': ariaLabel, className }: ActionRunsPro
                         ) : canCancel ? (
                             <Button
                                 size="sm"
-                                variant="ghost"
+                                appearance="ghost"
                                 aria-label={intl.formatMessage(messages.cancelRun, {
                                     action: label,
                                 })}

@@ -85,7 +85,7 @@ function OpenMediaPicker({
                                               count: library.picked.length,
                                           })}
                                 </Text>
-                                <Button size="sm" variant="ghost" onPress={library.clear}>
+                                <Button size="sm" appearance="ghost" onPress={library.clear}>
                                     {intl.formatMessage(messages.pickerClear)}
                                 </Button>
                             </>
@@ -102,7 +102,7 @@ function OpenMediaPicker({
                             {intl.formatMessage(messages.pickerCancel)}
                         </Button>
                         <Button
-                            variant="primary"
+                            tone="accent"
                             isDisabled={library.picked.length === 0 || library.unchanged}
                             onPress={() => confirm(library.picked)}
                         >

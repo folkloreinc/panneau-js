@@ -134,7 +134,7 @@ export function ImageItem({
                 <Button
                     size="sm"
                     icon={Crop}
-                    variant={needsCrop || changed ? 'primary' : undefined}
+                    tone={needsCrop || changed ? 'accent' : undefined}
                     aria-label={intl.formatMessage(messages.imageEditOf, { name })}
                     onPress={onEdit}
                 >
@@ -147,7 +147,6 @@ export function ImageItem({
             <IconButton
                 icon={Trash2}
                 size="sm"
-                variant="ghost"
                 label={intl.formatMessage(fieldsMessages.removeFile, { name })}
                 onPress={onRemove}
             />

@@ -87,12 +87,12 @@ export function ConfirmDialog({ event, preview = null, onConfirm, onCancel }: Co
             footer={
                 <>
                     {/* The safe choice has the focus when the action destroys (decision 0095) */}
-                    <Button variant="ghost" autoFocus={destructive} onPress={onCancel}>
+                    <Button appearance="ghost" autoFocus={destructive} onPress={onCancel}>
                         {confirm.cancelLabel ?? intl.formatMessage(messages.cancel)}
                     </Button>
                     {/* Pending while the dry run counts: it keeps the focus, and ignores presses */}
                     <Button
-                        variant={destructive ? 'danger' : 'primary'}
+                        tone={destructive ? 'danger' : 'accent'}
                         autoFocus={!destructive}
                         isPending={loading}
                         onPress={() => onConfirm(event)}

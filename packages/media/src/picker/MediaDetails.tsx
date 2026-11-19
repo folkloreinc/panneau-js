@@ -93,7 +93,7 @@ export function MediaDetails({
         >
             <Button
                 size="sm"
-                variant="ghost"
+                appearance="ghost"
                 icon={ArrowLeft}
                 onPress={onBack}
                 className={styles.backButton}

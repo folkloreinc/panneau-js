@@ -58,7 +58,7 @@ export function VerifyEmailPage({ name, onSend, onContinue, onLogOut }: VerifyEm
                 </Alert>
             ) : null}
             <div className={styles.form}>
-                <Button variant="primary" onPress={onContinue} fullWidth>
+                <Button tone="accent" onPress={onContinue} fullWidth>
                     {intl.formatMessage(appMessages.continue)}
                 </Button>
                 {onSend !== undefined ? (
@@ -147,7 +147,7 @@ export function EmailVerificationLinkPage({
                 </Alert>
             )}
             <Button
-                variant="primary"
+                tone="accent"
                 onPress={onContinue}
                 isDisabled={verification.status === 'pending'}
                 fullWidth

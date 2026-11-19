@@ -27,8 +27,8 @@ export const PluginPage: Story = {
                 title="Usage and costs"
                 actions={
                     <>
-                        <Button variant="secondary">Export</Button>
-                        <LinkButton href="/admin/pages/budgets" variant="primary" icon={Plus}>
+                        <Button>Export</Button>
+                        <LinkButton href="/admin/pages/budgets" tone="accent" icon={Plus}>
                             New budget
                         </LinkButton>
                     </>
@@ -79,7 +79,7 @@ export const Breadcrumbs: Story = {
             <PageHeader
                 title="To Ada Lovelace"
                 parents={LOG_PARENTS}
-                actions={<Button variant="secondary">Resend</Button>}
+                actions={<Button>Resend</Button>}
             />
             <Text muted>The message as it was sent.</Text>
         </PageLayout>

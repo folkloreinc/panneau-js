@@ -786,11 +786,15 @@ export function ListView({
                     {selection.mode === 'ids' &&
                     pageSelection === 'all' &&
                     count > pageItems.length ? (
-                        <Button size="sm" variant="ghost" onPress={() => list.selectAllMatching()}>
+                        <Button
+                            size="sm"
+                            appearance="ghost"
+                            onPress={() => list.selectAllMatching()}
+                        >
                             {intl.formatMessage(messages.selectAllMatching, { total: count })}
                         </Button>
                     ) : null}
-                    <Button size="sm" variant="ghost" onPress={() => list.clearSelection()}>
+                    <Button size="sm" appearance="ghost" onPress={() => list.clearSelection()}>
                         {intl.formatMessage(messages.clearSelection)}
                     </Button>
                     {selectionActions.length > 0 ? (
