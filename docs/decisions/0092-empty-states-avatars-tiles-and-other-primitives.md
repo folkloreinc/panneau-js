@@ -59,7 +59,7 @@ A row that shows one thing: a media, a title, a description, actions.
 - **`href` makes the whole tile a link**: the title is the link, and its hit area covers the tile. The actions stay above it, reachable and pressable on their own. The link goes through React Aria, so the app's router handles it.
 - `TileGroup` is a list (`ul`), and its tiles are its items. It draws a line between them, and with `appearance="outline"`, a border around them all.
 
-Relation cards, recent items, the sessions and passkeys of the account page and the media picker's list will move to it, one at a time.
+The chosen items of a relation field, the items of the dashboard's list widgets, the passkeys of the account page and the chosen files of a media field use it. Two lists stay as they are: the recent items of "Go to…" and the media picker's grid are the options of React Aria collections (a `ListBox`, a `GridList`), which move the focus between their options and select them, and a tile is neither. The account page has no list of sessions yet: it will use tiles when it gets one.
 
 ### `ButtonGroup`
 
@@ -93,5 +93,6 @@ No `InputGroup` component wraps fields: each field already draws its box.
 
 - `@panneau/ui` exports `EmptyState`, `Avatar`, `AvatarGroup`, `Tile`, `TileGroup`, `ButtonGroup` and `Breadcrumbs`, with their component tokens (`empty-state`, `avatar`, `tile`, `button-group`, `breadcrumbs`), and `TextArea` takes `header` and `footer`.
 - `@panneau/lists`: empty lists and lists without a match show an `EmptyState`. Their messages stay.
-- `@panneau/app`: widgets without data show a small `EmptyState`. `UserAvatar` draws an `Avatar`: the user has their initials and their color, rather than a first letter on the surface.
+- `@panneau/app`: widgets without data show a small `EmptyState`. `UserAvatar` draws an `Avatar`: the user has their initials and their color, rather than a first letter on the surface. The items of list widgets and the passkeys of the account page are tiles.
+- `@panneau/fields` and `@panneau/media`: the chosen items of a relation field and the chosen files of a media field are tiles. The classes of their old rows are removed.
 - Projects restyle them with their tokens and stable classes, like the other components.
