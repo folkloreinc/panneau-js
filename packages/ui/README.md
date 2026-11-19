@@ -11,7 +11,7 @@ import { Button, PanneauRoot, TextInput, bootstrapTheme } from '@panneau/ui';
 
 <PanneauRoot theme={bootstrapTheme} colorScheme="auto">
     <TextInput label="Title" isRequired />
-    <Button variant="primary">Save</Button>
+    <Button tone="accent">Save</Button>
 </PanneauRoot>;
 ```
 
@@ -20,7 +20,6 @@ import { Button, PanneauRoot, TextInput, bootstrapTheme } from '@panneau/ui';
 | `@panneau/ui`             | `PanneauRoot`, themes, the primitives, `Icon`, `getNamedIcon()`, `useToast()`, `usePanneauIntl()`       |
 | `@panneau/ui/named-icons` | `lucideIconLoader`: loads any Lucide icon by name, for `PanneauRoot`'s `iconLoader`                     |
 | `@panneau/ui/theme`       | Themes as data, without components or CSS, for Node: `defineTheme()`, `checkTheme()`, `bootstrapTheme`… |
-| `@panneau/ui/locales`     | Deprecated: the UI messages by locale, `en` and `fr`. Use `@panneau/intl`                               |
 
 ## Root, tokens and themes
 
@@ -82,7 +81,7 @@ Components with a color take a `tone`, like Bootstrap's theme colors: `neutral`,
 <Alert tone="warning" appearance="solid" title="Scheduled" />
 ```
 
-The `variant` values of `Button` (`primary`, `secondary`, `ghost`, `danger`) are deprecated aliases of a tone and an appearance.
+The aliases of the first alphas, `variant="primary"`, `secondary`, `ghost` and `danger`, were removed before 5.0: `npx @panneau/codemods button-variants` gives each button the tone and the appearance it stood for. `variant` names a variant of the theme.
 
 A theme adds tones, from one color (Panneau derives a readable text color, the hover, the subtle background and the border) or with every value, and named variants of components:
 

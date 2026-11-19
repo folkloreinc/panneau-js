@@ -11,6 +11,7 @@ import {
     getLine,
 } from './context';
 import { reportBootstrap } from './transforms/bootstrap';
+import { transformButtonVariants } from './transforms/buttonVariants';
 import { readContainer, transformAppEntry, transformContainer } from './transforms/entry';
 import {
     findDefaultComponent,
@@ -19,6 +20,15 @@ import {
 } from './transforms/fieldEntries';
 import { transformFields } from './transforms/fields';
 import { transformImports } from './transforms/imports';
+
+/**
+ * The codemods: `v4-to-v5` moves a Panneau 4 project to Panneau 5; `button-variants` replaces the
+ * aliases of `variant` on buttons (`primary`, `secondary`, `ghost`, `danger`) with a `tone` and an
+ * `appearance`, for code written against the first alphas of Panneau 5.
+ */
+export type Codemod = 'v4-to-v5' | 'button-variants';
+
+export const CODEMODS: readonly Codemod[] = ['v4-to-v5', 'button-variants'];
 
 /** Extensions of the files the codemods read. */
 export const EXTENSIONS: readonly string[] = ['.js', '.jsx', '.mjs', '.ts', '.tsx'];
@@ -165,6 +175,7 @@ export function transformFile(
     source: string,
     project: Project,
     file = path,
+    codemod: Codemod = 'v4-to-v5',
 ): TransformResult {
     const findings: Finding[] = [];
     const j = getParser(path);
@@ -197,9 +208,13 @@ export function transformFile(
             }
         },
     };
-    const plugin = transformContainer(api);
+    const plugin = codemod === 'v4-to-v5' ? transformContainer(api) : null;
     let output: string;
-    if (plugin !== null) {
+    if (codemod === 'button-variants') {
+        // Only a file with a rewritten button is printed again: recast reprints some untouched
+        // expressions once the tree is traversed.
+        output = transformButtonVariants(api) ? root.toSource({ quote: 'single' }) : source;
+    } else if (plugin !== null) {
         output = plugin;
     } else {
         transformAppEntry(api);
@@ -232,7 +247,11 @@ export interface SourcesResult {
  * Rewrites a set of files, given by path. Paths of findings are relative to `cwd`. The files are
  * read together, so that the entry knows the field components and the plugin module.
  */
-export function transformSources(sources: ReadonlyMap<string, string>, cwd = '/'): SourcesResult {
+export function transformSources(
+    sources: ReadonlyMap<string, string>,
+    cwd = '/',
+    codemod: Codemod = 'v4-to-v5',
+): SourcesResult {
     const infos = new Map<string, FileInfo>();
     const findings: Finding[] = [];
     sources.forEach((source, path) => {
@@ -245,7 +264,7 @@ export function transformSources(sources: ReadonlyMap<string, string>, cwd = '/'
     const project = createProject(infos);
     const outputs = new Map<string, string>();
     sources.forEach((source, path) => {
-        const result = transformFile(path, source, project, relative(cwd, path) || path);
+        const result = transformFile(path, source, project, relative(cwd, path) || path, codemod);
         if (result.output !== null) {
             outputs.set(path, result.output);
         }

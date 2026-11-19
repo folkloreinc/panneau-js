@@ -23,7 +23,7 @@ export const WithHeaderAndFooter: Story = {
                 Add a link
             </Button>
         ),
-        footer: <Button variant="primary">Save</Button>,
+        footer: <Button tone="accent">Save</Button>,
         children: (
             <>
                 <TextInput label="Name" defaultValue="Ada Lovelace" />

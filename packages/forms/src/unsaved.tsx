@@ -74,7 +74,7 @@ export function useLeaveConfirmation(dirty: boolean): LeaveConfirmation {
                         <Button onPress={() => answer(false)} autoFocus>
                             {intl.formatMessage(messages.stay)}
                         </Button>
-                        <Button variant="danger" onPress={() => answer(true)}>
+                        <Button tone="danger" onPress={() => answer(true)}>
                             {intl.formatMessage(messages.leave)}
                         </Button>
                     </>

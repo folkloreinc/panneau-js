@@ -24,7 +24,7 @@ export const WithTrigger: Story = {
                 footer={(close) => (
                     <>
                         <Button onPress={close}>Cancel</Button>
-                        <Button variant="primary" onPress={close}>
+                        <Button tone="accent" onPress={close}>
                             Rename
                         </Button>
                     </>
@@ -55,7 +55,7 @@ export const AlertDialog: Story = {
         footer: (
             <>
                 <Button>Cancel</Button>
-                <Button variant="danger">Delete</Button>
+                <Button tone="danger">Delete</Button>
             </>
         ),
     },
@@ -85,7 +85,7 @@ export const Picker: Story = {
         footer: (
             <>
                 <Button>Cancel</Button>
-                <Button variant="primary">Select</Button>
+                <Button tone="accent">Select</Button>
             </>
         ),
     },
@@ -128,7 +128,7 @@ export const InsideAForm: Story = {
                             }}
                         >
                             <TextInput label="Name of the key" autoFocus />
-                            <Button type="submit" variant="primary">
+                            <Button type="submit" tone="accent">
                                 Create the key
                             </Button>
                         </form>

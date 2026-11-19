@@ -939,7 +939,7 @@ export const Empty: Story = {
     args: {
         items: [],
         emptyMessage: 'Nobody has joined the workspace yet.',
-        toolbar: <Button variant="primary">Invite</Button>,
+        toolbar: <Button tone="accent">Invite</Button>,
     },
 };
 

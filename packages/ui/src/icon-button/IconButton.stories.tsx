@@ -24,10 +24,10 @@ export const Ghost: Story = {
 export const Variants: Story = {
     render: (args) => (
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <IconButton {...args} variant="ghost" />
-            <IconButton {...args} variant="secondary" />
-            <IconButton {...args} variant="primary" />
-            <IconButton {...args} variant="danger" icon={Trash} label="Delete" />
+            <IconButton {...args} />
+            <IconButton {...args} appearance="outline" />
+            <IconButton {...args} tone="accent" />
+            <IconButton {...args} tone="danger" icon={Trash} label="Delete" />
             <IconButton {...args} size="sm" />
         </div>
     ),

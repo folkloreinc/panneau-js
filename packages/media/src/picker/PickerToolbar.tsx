@@ -218,7 +218,7 @@ export function PickerToolbar({
                         );
                     })}
                     {active > 0 ? (
-                        <Button size="sm" variant="ghost" onPress={() => set({ filter: {} })}>
+                        <Button size="sm" appearance="ghost" onPress={() => set({ filter: {} })}>
                             {intl.formatMessage(messages.pickerResetFilters)}
                         </Button>
                     ) : null}

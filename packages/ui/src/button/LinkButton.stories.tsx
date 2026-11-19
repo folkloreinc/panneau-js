@@ -53,7 +53,7 @@ export const TonesAndAppearances: Story = {
             <LinkButton {...args} appearance="ghost" icon={Pencil}>
                 Edit
             </LinkButton>
-            <LinkButton {...args} variant="primary" size="sm">
+            <LinkButton {...args} tone="accent" size="sm">
                 Small
             </LinkButton>
         </div>

@@ -49,7 +49,8 @@ describe('runCodemods', () => {
         it('prints its usage without a command', async () => {
             const logs: string[] = [];
             expect(await runCli([], { cwd: folder, log: (text) => logs.push(text) })).toBe(2);
-            expect(logs.join('')).toContain('Usage: panneau-codemods v4-to-v5');
+            expect(logs.join('')).toContain('Usage: panneau-codemods <codemod> <paths...>');
+            expect(logs.join('')).toContain('button-variants');
         });
 
         it('prints the report of a dry run', async () => {
@@ -75,6 +76,25 @@ describe('runCodemods', () => {
                 changed: ['js/fields/Title.jsx'],
                 findings: [],
             });
+        });
+
+        it('runs the codemod it names', async () => {
+            await writeFile(
+                join(folder, 'js/Page.tsx'),
+                'import { Button } from \'@panneau/ui\';\n\nexport const a = <Button variant="primary">Save</Button>;\n',
+            );
+            const logs: string[] = [];
+            expect(
+                await runCli(['button-variants', 'js'], {
+                    cwd: folder,
+                    log: (text) => logs.push(text),
+                }),
+            ).toBe(0);
+            expect(logs.join('')).toContain('2 files read, 1 changed, 0 findings.');
+            expect(await readFile(join(folder, 'js/Page.tsx'), 'utf8')).toContain(
+                '<Button tone="accent">Save</Button>',
+            );
+            expect(await readFile(join(folder, 'js/fields/Title.jsx'), 'utf8')).toBe(FIELD);
         });
 
         it('fails when a file cannot be parsed', async () => {

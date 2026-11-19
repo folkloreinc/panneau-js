@@ -23,11 +23,6 @@
             "types": "./dist/publication/index.d.ts",
             "default": "./dist/publication/index.js"
         },
-        "./locales": {
-            "@panneau/source": "./src/locales/index.ts",
-            "types": "./dist/locales/index.d.ts",
-            "default": "./dist/locales/index.js"
-        },
         "./package.json": "./package.json"
     },
     "files": [

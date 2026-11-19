@@ -111,7 +111,7 @@ export function AuthForm({
                 </Alert>
             ) : null}
             {children(errors)}
-            <Button type="submit" variant="primary" isPending={pending} fullWidth>
+            <Button type="submit" tone="accent" isPending={pending} fullWidth>
                 {submitLabel}
             </Button>
         </form>

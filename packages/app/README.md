@@ -22,9 +22,9 @@ The page writes the boot config next to the root element ([protocol.md](../../do
 </script>
 ```
 
-| Export         | Content                                                                                                                                                                                                                            |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@panneau/app` | `createPanneauApp()`, the `<Panneau>` component, `readBootConfig()` and the types of their options, the component tokens of the shell, and the building blocks of pages for plugin pages: `PageLayout`, `PageHeader`, `LinkButton` |
+| Export         | Content                                                                                                                                                                                                                                                                      |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@panneau/app` | `createPanneauApp()`, the `<Panneau>` component, `readBootConfig()` and the types of their options, the component tokens of the shell, and the building blocks of pages for plugin pages: `PageLayout` and `PageHeader` (with `LinkButton` of `@panneau/ui` for its actions) |
 
 ## Setup
 

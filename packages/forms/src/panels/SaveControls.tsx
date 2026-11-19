@@ -69,7 +69,7 @@ export function SaveControls({ status, isSubmitting, actions, submitLabel }: Sav
                 >
                     <Button
                         type="submit"
-                        variant="primary"
+                        tone="accent"
                         isPending={isSubmitting}
                         aria-keyshortcuts={apple ? 'Meta+Enter' : 'Control+Enter'}
                     >

@@ -11,10 +11,28 @@ npx @panneau/codemods@alpha v4-to-v5 resources/js/panneau.tsx resources/js/compo
 
 The steps, and what each rewrite does, are in the migration guide: [Custom fields](../../docs/migration.md#custom-fields).
 
-| Export              | Content                                                                                                    |
-| ------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `@panneau/codemods` | `runCodemods()` (files on disk), `transformSources()` (sources in memory), `formatReport()` and `runCli()` |
-| `panneau-codemods`  | The command (`bin`)                                                                                        |
+## Button variants
+
+The first alphas of Panneau 5 had aliases for the look of a button: `variant="primary"`, `secondary`, `ghost` and `danger`. Panneau 5.0 drops them for `tone` and `appearance`. `button-variants` rewrites them on `Button`, `LinkButton` and `IconButton` of `@panneau/ui`:
+
+```bash
+npx @panneau/codemods@alpha button-variants resources/js --dry
+npx @panneau/codemods@alpha button-variants resources/js
+```
+
+| Alias       | `Button`, `LinkButton` | `IconButton`    |
+| ----------- | ---------------------- | --------------- |
+| `primary`   | `tone="accent"`        | `tone="accent"` |
+| `secondary` | (nothing: the default) | (nothing)       |
+| `ghost`     | `appearance="ghost"`   | (nothing)       |
+| `danger`    | `tone="danger"`        | `tone="danger"` |
+
+The codemod leaves out what the button has without them (a neutral button is outlined, another tone is solid, an `IconButton` is always a ghost button), rewrites conditions over aliases (`variant={retry ? 'secondary' : 'primary'}`), and keeps a `tone` or an `appearance` given beside the variant. Named variants of a theme (`variant="pill"`) stay. It reports a `variant` it can't read (a variable) and `variant: 'primary'` in objects of props, such as the `args` of a story.
+
+| Export              | Content                                                                                                                                                                           |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@panneau/codemods` | `runCodemods()` (files on disk), `transformSources()` (sources in memory), `formatReport()` and `runCli()`, with the codemod to run (`v4-to-v5` by default, or `button-variants`) |
+| `panneau-codemods`  | The command (`bin`)                                                                                                                                                               |
 
 ## Why jscodeshift
 

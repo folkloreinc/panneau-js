@@ -114,12 +114,12 @@ export function ErrorPage({ kind, onRetry, homeHref, className }: ErrorPageProps
             {canRetry || homeHref !== undefined ? (
                 <div className={styles.buttons}>
                     {canRetry ? (
-                        <Button variant="primary" onPress={onRetry}>
+                        <Button tone="accent" onPress={onRetry}>
                             {intl.formatMessage(appMessages.retry)}
                         </Button>
                     ) : null}
                     {homeHref !== undefined ? (
-                        <LinkButton href={homeHref} variant={canRetry ? 'secondary' : 'primary'}>
+                        <LinkButton href={homeHref} tone={canRetry ? 'neutral' : 'accent'}>
                             {intl.formatMessage(appMessages.backHome)}
                         </LinkButton>
                     ) : null}

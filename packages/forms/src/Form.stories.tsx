@@ -282,7 +282,7 @@ function LeaveGuard() {
     return (
         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
             <Button onPress={() => void confirmLeave().then(setLeft)}>Go to another page</Button>
-            <Button variant="ghost" onPress={() => setDirty(!dirty)}>
+            <Button appearance="ghost" onPress={() => setDirty(!dirty)}>
                 {dirty ? 'Mark as saved' : 'Make a change'}
             </Button>
             <span>{left === null ? '' : left ? 'Left' : 'Stayed'}</span>

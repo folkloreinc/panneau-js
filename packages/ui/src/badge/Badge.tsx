@@ -5,9 +5,6 @@ import type { Tone } from '../theme/tones';
 import { cx } from '../utils/cx';
 import styles from './Badge.module.css';
 
-/** @deprecated Use `Tone`. */
-export type BadgeTone = Tone;
-
 /** How a badge uses its tone. */
 export type BadgeAppearance = 'subtle' | 'solid' | 'outline';
 

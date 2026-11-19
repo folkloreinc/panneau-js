@@ -22,31 +22,17 @@ declare module '../badge/Badge' {
 
 describe('tones and appearances', () => {
     it.each([
-        [undefined, 'panneau-tone-neutral', 'outline'],
-        ['primary', 'panneau-tone-accent', 'solid'],
-        ['secondary', 'panneau-tone-neutral', 'outline'],
-        ['ghost', 'panneau-tone-neutral', 'ghost'],
-        ['danger', 'panneau-tone-danger', 'solid'],
-    ] as const)(
-        'maps the button variant %s to a tone and an appearance',
-        (variant, tone, appearance) => {
-            render(<Button variant={variant}>Save</Button>);
-            const button = screen.getByRole('button');
-            expect(button.className).toContain(tone);
-            expect(button.className).toMatch(new RegExp(`(^| )\\S*${appearance}\\S*( |$)`));
-            expect(button.className).not.toContain('variant-');
-        },
-    );
-
-    it('lets tone and appearance win over a variant alias', () => {
-        render(
-            <Button variant="primary" tone="signal" appearance="subtle">
-                Save
-            </Button>,
-        );
+        [{}, 'panneau-tone-neutral', 'outline'],
+        [{ tone: 'accent' }, 'panneau-tone-accent', 'solid'],
+        [{ appearance: 'ghost' }, 'panneau-tone-neutral', 'ghost'],
+        [{ tone: 'danger' }, 'panneau-tone-danger', 'solid'],
+        [{ tone: 'signal', appearance: 'subtle' }, 'panneau-tone-signal', 'subtle'],
+    ] as const)('gives a button with %o its tone and its appearance', (props, tone, appearance) => {
+        render(<Button {...props}>Save</Button>);
         const button = screen.getByRole('button');
-        expect(button.className).toContain('panneau-tone-signal');
-        expect(button.className).toMatch(/subtle/);
+        expect(button.className).toContain(tone);
+        expect(button.className).toMatch(new RegExp(`(^| )\\S*${appearance}\\S*( |$)`));
+        expect(button.className).not.toContain('variant-');
     });
 
     it('defaults a colored tone to solid', () => {

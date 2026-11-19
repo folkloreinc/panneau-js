@@ -252,7 +252,7 @@ export function ResourceListPage({
                     !abilities.create ? undefined : creatableTypes.length > 1 ? (
                         // A resource with types: a menu of the types to create (decision 0077)
                         <MenuTrigger>
-                            <Button variant="primary" icon={Plus} iconEnd={ChevronDown}>
+                            <Button tone="accent" icon={Plus} iconEnd={ChevronDown}>
                                 {createLabel}
                             </Button>
                             <Menu placement="bottom end">
@@ -292,7 +292,7 @@ export function ResourceListPage({
                                 },
                                 basePath,
                             )}
-                            variant="primary"
+                            tone="accent"
                             icon={Plus}
                         >
                             {createLabel}

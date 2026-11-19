@@ -68,6 +68,6 @@ Under a `PanneauProvider`, forms use the field components of the plugins and the
 
 ## Messages
 
-Strings go through react-intl, with English defaults. Add the messages of every Panneau package to the app's with `withPanneauMessages()` from [`@panneau/intl`](../intl), or use `fieldsPlugin`, which carries them. `@panneau/forms/locales` is deprecated.
+Strings go through react-intl, with English defaults. Add the messages of every Panneau package to the app's with `withPanneauMessages()` from [`@panneau/intl`](../intl), or use `fieldsPlugin`, which carries them.
 
 The package layout, scripts and API reports are explained in [`docs/packages.md`](../../docs/packages.md). Why forms depend on `@panneau/core`: [decision 0021](../../docs/decisions/0021-forms-render-core-state.md).

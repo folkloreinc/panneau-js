@@ -117,7 +117,7 @@ export function ConflictDialog({
                     <Button onPress={onReload} isDisabled={isPending}>
                         {intl.formatMessage(messages.loadCurrent)}
                     </Button>
-                    <Button variant="danger" onPress={onOverwrite} isPending={isPending}>
+                    <Button tone="danger" onPress={onOverwrite} isPending={isPending}>
                         {intl.formatMessage(messages.overwrite)}
                     </Button>
                 </>

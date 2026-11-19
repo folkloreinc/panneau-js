@@ -324,7 +324,7 @@ export function LoginPage({
                     <LinkButton
                         key={provider.id}
                         href={withNext(provider.url ?? '', next)}
-                        variant="primary"
+                        tone="accent"
                     >
                         {intl.formatMessage(appMessages.logInWith, { provider: provider.label })}
                     </LinkButton>

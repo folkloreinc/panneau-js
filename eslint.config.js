@@ -56,5 +56,23 @@ export default defineConfig([
             ],
         },
     },
+    {
+        // The aliases of `variant` on buttons were removed before 5.0 (#349): buttons take a
+        // `tone` and an `appearance`. `npx @panneau/codemods button-variants` rewrites them.
+        files: ['packages/*/src/**/*.{ts,tsx}'],
+        rules: {
+            'no-restricted-syntax': [
+                'error',
+                ...[
+                    "JSXAttribute[name.name='variant'] Literal[value=/^(primary|secondary|ghost|danger)$/]",
+                    "Property[key.name='variant'] > Literal[value=/^(primary|secondary|ghost|danger)$/]",
+                ].map((selector) => ({
+                    selector,
+                    message:
+                        'The `primary`, `secondary`, `ghost` and `danger` variants are gone: give the button a `tone` and an `appearance` (`npx @panneau/codemods button-variants`).',
+                })),
+            ],
+        },
+    },
     prettier,
 ]);

@@ -3,14 +3,7 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-aria-components';
 
 import { appMessages } from '@panneau/intl';
-import {
-    Breadcrumbs,
-    LinkButton as ButtonLink,
-    Heading,
-    Icon,
-    Skeleton,
-    usePanneauIntl,
-} from '@panneau/ui';
+import { Breadcrumbs, Heading, Icon, Skeleton, usePanneauIntl } from '@panneau/ui';
 
 import { cx } from '../cx';
 import { usePageParents } from '../pageRoute';
@@ -52,12 +45,6 @@ export interface PageHeaderProps {
     crumbLabel?: string;
     /** The title loads, such as the title of an item: it is a skeleton, and its crumb too. */
     isLoading?: boolean;
-    /**
-     * A link to the parent page, above the title.
-     *
-     * @deprecated Use `parents`, with the parent in it: `parents={[back]}`.
-     */
-    back?: { href: string; label: string };
     /** Buttons and links at the end of the header. */
     actions?: ReactNode;
 }
@@ -75,12 +62,11 @@ export function PageHeader({
     parents,
     crumbLabel,
     isLoading = false,
-    back,
     actions,
 }: PageHeaderProps) {
     const intl = usePanneauIntl();
     const routeParents = usePageParents();
-    const list = parents ?? (back !== undefined ? [back] : routeParents);
+    const list = parents ?? routeParents;
     const nearest = list.at(-1);
     const label =
         crumbLabel ??
@@ -134,27 +120,5 @@ export function PageHeader({
             </div>
             {actions !== undefined ? <div className={styles.headerActions}>{actions}</div> : null}
         </header>
-    );
-}
-
-export interface LinkButtonProps {
-    href: string;
-    /** An element before the label. */
-    icon?: ReactNode;
-    children: ReactNode;
-}
-
-/**
- * A link that looks like the primary button, for the actions of a `PageHeader`.
- *
- * @deprecated Use `LinkButton` of `@panneau/ui` with `variant="primary"`, which takes an icon
- * component (`icon={Plus}`).
- */
-export function LinkButton({ href, icon, children }: LinkButtonProps) {
-    return (
-        <ButtonLink href={href} variant="primary">
-            {icon}
-            {children}
-        </ButtonLink>
     );
 }

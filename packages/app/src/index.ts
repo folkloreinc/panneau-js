@@ -9,8 +9,6 @@ export {
 } from './pages/ErrorPage';
 export { type FormPage, useFormPage } from './pages/formPage';
 export {
-    LinkButton,
-    type LinkButtonProps,
     PageHeader,
     type PageHeaderProps,
     PageLayout,

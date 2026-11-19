@@ -178,11 +178,6 @@
             "types": "./dist/file/index.d.ts",
             "default": "./dist/file/index.js"
         },
-        "./locales": {
-            "@panneau/source": "./src/locales/index.ts",
-            "types": "./dist/locales/index.d.ts",
-            "default": "./dist/locales/index.js"
-        },
         "./uppy": {
             "@panneau/source": "./src/uppy/index.ts",
             "types": "./dist/uppy/index.d.ts",

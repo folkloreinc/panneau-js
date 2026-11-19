@@ -325,3 +325,15 @@ Each migration is a pull request in the project, following this checklist:
 4. Delete the files that the package now provides.
 5. Check every resource page in the browser: list, create, edit, delete, plus custom actions.
 6. Update the project in the inventory of `folkloreinc/folklore-dev`.
+
+## From an alpha of 5.0
+
+Projects that started on an alpha, such as the pilots, drop what was deprecated before the first beta ([#349](https://github.com/folkloreinc/panneau-js/issues/349)):
+
+| Removed                                                                    | Instead                                                                                                                |
+| -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `variant="primary\|secondary\|ghost\|danger"` on buttons                   | `tone` and `appearance`: `npx @panneau/codemods@alpha button-variants resources/js` ([codemods](../packages/codemods)) |
+| `ButtonVariant`, `AlertTone`, `BadgeTone`, `ToastTone`                     | `Tone` of `@panneau/ui`                                                                                                |
+| `@panneau/fields/locales`, `@panneau/forms/locales`, `@panneau/ui/locales` | `en`, `fr` or `withPanneauMessages()` of `@panneau/intl`, with the messages of every package                           |
+| `LinkButton` of `@panneau/app`                                             | `LinkButton` of `@panneau/ui`, with `tone="accent"` and an icon component (`icon={Plus}`)                              |
+| `back` of `PageHeader`                                                     | `parents={[back]}`                                                                                                     |

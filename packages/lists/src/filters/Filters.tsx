@@ -176,7 +176,7 @@ export function FilterChips({
                     );
                 })}
             </ul>
-            <Button variant="ghost" size="sm" onPress={onClear}>
+            <Button appearance="ghost" size="sm" onPress={onClear}>
                 {intl.formatMessage(messages.clearFilters)}
             </Button>
         </div>

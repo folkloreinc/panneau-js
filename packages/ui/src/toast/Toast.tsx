@@ -30,9 +30,6 @@ import { cx } from '../utils/cx';
 import { prefersReducedMotion } from '../utils/motion';
 import styles from './Toast.module.css';
 
-/** @deprecated Use `Tone`. */
-export type ToastTone = Tone;
-
 /**
  * What a toast says: what was done to what ("“Spring contest” saved", "3 entries archived"), and
  * the next step when there is one.
