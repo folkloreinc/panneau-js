@@ -1,4 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { KeyRound } from 'lucide-react';
 import { useState } from 'react';
 
 import { PasswordConfirmationError, ValidationError } from '@panneau/data';
@@ -12,6 +13,8 @@ import {
     LoadingRegion,
     Skeleton,
     TextInput,
+    Tile,
+    TileGroup,
     usePanneauIntl,
     useToast,
 } from '@panneau/ui';
@@ -307,7 +310,7 @@ function TwoFactorSection() {
 }
 
 /** A passkey of the list: its name, what keeps it, when it was added and last used. */
-function PasskeyRow({
+function PasskeyTile({
     passkey,
     pending,
     onRemove,
@@ -319,38 +322,37 @@ function PasskeyRow({
     const intl = usePanneauIntl();
     const date = (value: string) => intl.formatDate(value, { dateStyle: 'medium' });
     return (
-        <li className={styles.passkey}>
-            <div>
-                <p className={styles.passkeyName}>{passkey.name}</p>
-                <p className={styles.accountHelp}>
-                    {[
-                        passkey.authenticator ?? null,
-                        intl.formatMessage(appMessages.passkeyAdded, {
-                            date: date(passkey.createdAt),
-                        }),
-                        passkey.lastUsedAt !== null
-                            ? intl.formatMessage(appMessages.passkeyUsed, {
-                                  date: date(passkey.lastUsedAt),
-                              })
-                            : intl.formatMessage(appMessages.passkeyNeverUsed),
-                    ]
-                        .filter((part) => part !== null)
-                        .join(' · ')}
-                </p>
-            </div>
-            <Button
-                tone="danger"
-                appearance="ghost"
-                size="sm"
-                isPending={pending}
-                onPress={onRemove}
-                aria-label={intl.formatMessage(appMessages.removePasskeyNamed, {
-                    name: passkey.name,
-                })}
-            >
-                {intl.formatMessage(appMessages.removePasskey)}
-            </Button>
-        </li>
+        <Tile
+            icon={KeyRound}
+            title={passkey.name}
+            description={[
+                passkey.authenticator ?? null,
+                intl.formatMessage(appMessages.passkeyAdded, {
+                    date: date(passkey.createdAt),
+                }),
+                passkey.lastUsedAt !== null
+                    ? intl.formatMessage(appMessages.passkeyUsed, {
+                          date: date(passkey.lastUsedAt),
+                      })
+                    : intl.formatMessage(appMessages.passkeyNeverUsed),
+            ]
+                .filter((part) => part !== null)
+                .join(' · ')}
+            actions={
+                <Button
+                    tone="danger"
+                    appearance="ghost"
+                    size="sm"
+                    isPending={pending}
+                    onPress={onRemove}
+                    aria-label={intl.formatMessage(appMessages.removePasskeyNamed, {
+                        name: passkey.name,
+                    })}
+                >
+                    {intl.formatMessage(appMessages.removePasskey)}
+                </Button>
+            }
+        />
     );
 }
 
@@ -409,19 +411,19 @@ function PasskeysSection() {
                         <FormSkeleton fields={1} />
                     )
                 ) : query.data.length > 0 ? (
-                    <ul
-                        className={styles.passkeys}
-                        aria-label={intl.formatMessage(appMessages.passkeys)}
+                    <TileGroup
+                        appearance="outline"
+                        label={intl.formatMessage(appMessages.passkeys)}
                     >
                         {query.data.map((passkey) => (
-                            <PasskeyRow
+                            <PasskeyTile
                                 key={passkey.id}
                                 passkey={passkey}
                                 pending={removing === passkey.id}
                                 onRemove={() => remove(passkey)}
                             />
                         ))}
-                    </ul>
+                    </TileGroup>
                 ) : (
                     <p className={styles.accountHelp}>
                         {intl.formatMessage(appMessages.noPasskeys)}
