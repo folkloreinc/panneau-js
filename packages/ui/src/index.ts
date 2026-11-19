@@ -74,6 +74,7 @@ export { Icon, type IconComponent, type IconProps, type IconSize } from './icon/
 export { type NamedIconLoader, getNamedIcon, loadNamedIcon } from './icon/namedIcons';
 export { IconButton, type IconButtonProps } from './icon-button/IconButton';
 export { usePanneauIntl } from './intl/usePanneauIntl';
+export { cx } from './utils/cx';
 export { usePreference } from './utils/preference';
 export {
     Menu,
