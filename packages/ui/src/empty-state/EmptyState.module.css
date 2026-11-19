@@ -1,0 +1,73 @@
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--panneau-empty-state-gap, var(--panneau-space-3));
+    padding: var(--panneau-empty-state-padding-y, var(--panneau-space-10))
+        var(--panneau-empty-state-padding-x, var(--panneau-space-4));
+    color: var(--panneau-color-text);
+    text-align: center;
+}
+
+.sm {
+    gap: var(--panneau-space-2);
+    padding-block: var(--panneau-empty-state-padding-y-sm, var(--panneau-space-4));
+}
+
+.icon {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: var(--panneau-empty-state-icon-size, 3rem);
+    height: var(--panneau-empty-state-icon-size, 3rem);
+    color: var(--panneau-empty-state-icon-color, var(--panneau-color-text-muted));
+    background-color: var(--panneau-empty-state-icon-bg, var(--panneau-color-surface-sunken));
+    border-radius: var(--panneau-empty-state-icon-radius, var(--panneau-radius-lg));
+}
+
+.sm .icon {
+    width: calc(var(--panneau-empty-state-icon-size, 3rem) * 0.75);
+    height: calc(var(--panneau-empty-state-icon-size, 3rem) * 0.75);
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-1);
+    max-width: var(--panneau-empty-state-max-width, 32rem);
+}
+
+.title {
+    margin: 0;
+    font-size: var(--panneau-empty-state-title-font-size, var(--panneau-font-size-lg));
+    font-weight: var(--panneau-empty-state-title-font-weight, var(--panneau-font-weight-medium));
+    line-height: var(--panneau-line-height-tight);
+    text-wrap: balance;
+}
+
+.sm .title {
+    font-size: var(--panneau-empty-state-title-font-size-sm, var(--panneau-font-size-md));
+}
+
+.description {
+    font-size: var(--panneau-font-size-sm);
+    line-height: var(--panneau-line-height);
+    color: var(--panneau-empty-state-description-color, var(--panneau-color-text-muted));
+    text-wrap: pretty;
+}
+
+.description > :first-child {
+    margin-top: 0;
+}
+
+.description > :last-child {
+    margin-bottom: 0;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--panneau-space-2);
+    margin-top: var(--panneau-space-1);
+}

@@ -254,11 +254,7 @@ export function Dock({
                     }
                 >
                     {user !== null ? (
-                        <UserAvatar
-                            user={user}
-                            locale={definition.locale}
-                            className={styles.avatar}
-                        />
+                        <UserAvatar user={user} size="xs" />
                     ) : (
                         <Icon icon={UserRound} size="md" />
                     )}

@@ -4,6 +4,8 @@ import type { ReactElement } from 'react';
 import { appMessages } from '@panneau/intl';
 import type { Definition } from '@panneau/protocol';
 import {
+    Avatar,
+    type AvatarSize,
     type IconComponent,
     Menu,
     MenuItem,
@@ -29,23 +31,17 @@ export const SCHEME_ICONS: Record<ColorSchemePreference, IconComponent> = {
     auto: Monitor,
 };
 
-/** The user's picture, or the first letter of their name. */
+/** The user's picture, or their initials in the color of their name. */
 export function UserAvatar({
     user,
-    locale,
+    size = 'sm',
     className,
 }: {
     user: NonNullable<Definition['user']>;
-    locale: string;
+    size?: AvatarSize;
     className?: string | undefined;
 }) {
-    return user.avatarUrl !== undefined ? (
-        <img src={user.avatarUrl} alt="" className={className} />
-    ) : (
-        <span className={className} aria-hidden="true">
-            {user.name.charAt(0).toLocaleUpperCase(locale)}
-        </span>
-    );
+    return <Avatar name={user.name} src={user.avatarUrl} size={size} className={className} />;
 }
 
 /** The label of the button of the user's menu. */

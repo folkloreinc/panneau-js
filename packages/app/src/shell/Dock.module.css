@@ -94,22 +94,6 @@
     white-space: nowrap;
 }
 
-.avatar {
-    display: inline-grid;
-    flex: none;
-    place-items: center;
-    width: 1.375rem;
-    height: 1.375rem;
-    border: var(--panneau-border-width) solid var(--panneau-color-border);
-    border-radius: var(--panneau-radius-full);
-    background: var(--panneau-color-surface);
-    color: var(--panneau-color-text);
-    font-size: var(--panneau-font-size-xs);
-    font-weight: var(--panneau-font-weight-bold);
-    line-height: 1;
-    object-fit: cover;
-}
-
 .separator,
 .list > .separator {
     flex: none;

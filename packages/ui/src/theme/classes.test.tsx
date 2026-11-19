@@ -4,7 +4,11 @@ import type { ReactNode } from 'react';
 import { describe, expect, it } from 'vitest';
 
 import { Alert } from '../alert/Alert';
+import { Avatar } from '../avatar/Avatar';
+import { AvatarGroup } from '../avatar/AvatarGroup';
 import { Badge } from '../badge/Badge';
+import { Breadcrumbs } from '../breadcrumbs/Breadcrumbs';
+import { ButtonGroup } from '../button-group/ButtonGroup';
 import { Button } from '../button/Button';
 import { Card } from '../card/Card';
 import { Checkbox } from '../checkbox/Checkbox';
@@ -13,6 +17,7 @@ import { Container } from '../container/Container';
 import { DatePicker } from '../date-picker/DatePicker';
 import { Disclosure } from '../disclosure/Disclosure';
 import { Divider } from '../divider/Divider';
+import { EmptyState } from '../empty-state/EmptyState';
 import { Fieldset } from '../field/Fieldset';
 import { Grid, GridItem } from '../grid/Grid';
 import { Heading } from '../heading/Heading';
@@ -35,6 +40,7 @@ import { Tab, TabList, TabPanel, Tabs } from '../tabs/Tabs';
 import { TextArea } from '../text-area/TextArea';
 import { TextInput } from '../text-input/TextInput';
 import { Text } from '../text/Text';
+import { Tile, TileGroup } from '../tile/Tile';
 import { TimeInput } from '../time-input/TimeInput';
 
 const options = [
@@ -44,8 +50,12 @@ const options = [
 
 const cases: [string, ReactNode][] = [
     ['alert', <Alert key="alert">Saved</Alert>],
+    ['avatar', <Avatar key="avatar" name="Ada Lovelace" />],
+    ['avatar-group', <AvatarGroup key="avatar-group" people={[{ name: 'Ada Lovelace' }]} />],
     ['badge', <Badge key="badge">3</Badge>],
+    ['breadcrumbs', <Breadcrumbs key="breadcrumbs" items={[{ id: 'home', label: 'Home' }]} />],
     ['button', <Button key="button">Save</Button>],
+    ['button-group', <ButtonGroup key="button-group" label="Actions" />],
     ['card', <Card key="card">Body</Card>],
     ['checkbox', <Checkbox key="checkbox">Published</Checkbox>],
     ['container', <Container key="container" />],
@@ -53,6 +63,7 @@ const cases: [string, ReactNode][] = [
     ['date-picker', <DatePicker key="date-picker" label="Date" />],
     ['disclosure', <Disclosure key="disclosure" title="More" />],
     ['divider', <Divider key="divider" />],
+    ['empty-state', <EmptyState key="empty-state" title="No items yet." />],
     ['fieldset', <Fieldset key="fieldset" legend="Group" />],
     ['grid', <Grid key="grid" />],
     ['grid-item', <GridItem key="grid-item" />],
@@ -84,6 +95,13 @@ const cases: [string, ReactNode][] = [
     ['text', <Text key="text">Body</Text>],
     ['text-area', <TextArea key="text-area" label="Notes" />],
     ['text-input', <TextInput key="text-input" label="Title" />],
+    ['tile', <Tile key="tile" title="Report.pdf" />],
+    [
+        'tile-group',
+        <TileGroup key="tile-group">
+            <Tile title="Report.pdf" />
+        </TileGroup>,
+    ],
     ['time-input', <TimeInput key="time-input" label="Time" />],
 ];
 

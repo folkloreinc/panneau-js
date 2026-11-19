@@ -302,9 +302,6 @@
     border-radius: var(--panneau-radius-full);
     background: var(--panneau-color-surface);
     color: var(--panneau-color-text);
-    font-size: var(--panneau-font-size-xs);
-    font-weight: var(--panneau-font-weight-bold);
-    object-fit: cover;
 }
 
 .userText {

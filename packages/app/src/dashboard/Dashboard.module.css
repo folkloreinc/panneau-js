@@ -83,8 +83,7 @@ a.itemTitle[data-hovered] {
 }
 
 .itemDescription,
-.itemMeta,
-.empty {
+.itemMeta {
     font-size: var(--panneau-font-size-sm);
     color: var(--panneau-color-text-muted);
 }
@@ -92,10 +91,6 @@ a.itemTitle[data-hovered] {
 .itemMeta {
     flex-shrink: 0;
     font-variant-numeric: var(--panneau-font-numeric);
-}
-
-.empty {
-    margin: 0;
 }
 
 .seeAll {

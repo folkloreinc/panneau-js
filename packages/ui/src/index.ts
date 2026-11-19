@@ -13,6 +13,8 @@ export {
     type AsidePanelProps,
     type AsideProps,
 } from './aside/Aside';
+export { Avatar, type AvatarProps, type AvatarSize } from './avatar/Avatar';
+export { AvatarGroup, type AvatarGroupPerson, type AvatarGroupProps } from './avatar/AvatarGroup';
 export {
     Badge,
     type BadgeAppearance,
@@ -21,6 +23,7 @@ export {
     type BadgeVariants,
 } from './badge/Badge';
 export { BarChart, type BarChartItem, type BarChartProps } from './bar-chart/BarChart';
+export { type BreadcrumbItem, Breadcrumbs, type BreadcrumbsProps } from './breadcrumbs/Breadcrumbs';
 export {
     Button,
     type ButtonAppearance,
@@ -29,6 +32,7 @@ export {
     type ButtonVariant,
     type ButtonVariants,
 } from './button/Button';
+export { ButtonGroup, type ButtonGroupProps } from './button-group/ButtonGroup';
 export { LinkButton, type LinkButtonProps } from './button/LinkButton';
 export { Card, type CardProps } from './card/Card';
 export {
@@ -63,6 +67,7 @@ export {
 } from './date-range-picker/DateRangePicker';
 export { Dialog, type DialogProps, DialogTrigger } from './dialog/Dialog';
 export { Disclosure, type DisclosureProps } from './disclosure/Disclosure';
+export { EmptyState, type EmptyStateProps } from './empty-state/EmptyState';
 export { type FieldChromeProps } from './field/FieldParts';
 export { Fieldset, type FieldsetProps } from './field/Fieldset';
 export { Icon, type IconComponent, type IconProps, type IconSize } from './icon/Icon';
@@ -172,6 +177,13 @@ export {
     deriveTone,
     toneClassName,
 } from './theme/tones';
+export {
+    Tile,
+    type TileAppearance,
+    TileGroup,
+    type TileGroupProps,
+    type TileProps,
+} from './tile/Tile';
 export { TimeInput, type TimeInputProps } from './time-input/TimeInput';
 export {
     MAX_VISIBLE_TOASTS,

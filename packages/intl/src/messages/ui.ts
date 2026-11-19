@@ -61,4 +61,21 @@ export const uiMessages = {
     chartDate: defineMessage({ id: 'panneau.ui.chartDate', defaultMessage: 'Date' }),
     statChangeUp: defineMessage({ id: 'panneau.ui.statChangeUp', defaultMessage: 'Up' }),
     statChangeDown: defineMessage({ id: 'panneau.ui.statChangeDown', defaultMessage: 'Down' }),
+    avatarStatus: defineMessage<{ name: string; status: string }>({
+        id: 'panneau.ui.avatarStatus',
+        defaultMessage: '{name} ({status})',
+    }),
+    avatarMore: defineMessage<{ count: number }>({
+        id: 'panneau.ui.avatarMore',
+        defaultMessage: '+{count, number}',
+    }),
+    avatarOthers: defineMessage<{ count: number }>({
+        id: 'panneau.ui.avatarOthers',
+        defaultMessage: '{count, plural, one {# other} other {# others}}',
+    }),
+    breadcrumbs: defineMessage({ id: 'panneau.ui.breadcrumbs', defaultMessage: 'Breadcrumbs' }),
+    moreBreadcrumbs: defineMessage({
+        id: 'panneau.ui.moreBreadcrumbs',
+        defaultMessage: 'More pages',
+    }),
 };

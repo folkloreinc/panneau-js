@@ -1,0 +1,87 @@
+.avatar {
+    --_panneau-avatar-size: var(--panneau-avatar-size-md, 2.25rem);
+
+    position: relative;
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: var(--_panneau-avatar-size);
+    height: var(--_panneau-avatar-size);
+    overflow: hidden;
+    font-size: max(0.5625rem, calc(var(--_panneau-avatar-size) * 0.4));
+    font-weight: var(--panneau-avatar-font-weight, var(--panneau-font-weight-bold));
+    line-height: 1;
+    color: var(--panneau-color-text);
+    white-space: nowrap;
+    user-select: none;
+    background-color: color-mix(
+        in srgb,
+        var(--_panneau-avatar-color) var(--panneau-avatar-tint, 30%),
+        var(--panneau-color-surface)
+    );
+    border-radius: var(--panneau-avatar-radius, var(--panneau-radius-full));
+}
+
+.xs {
+    --_panneau-avatar-size: var(--panneau-avatar-size-xs, 1.25rem);
+
+    letter-spacing: -0.02em;
+}
+
+.sm {
+    --_panneau-avatar-size: var(--panneau-avatar-size-sm, 1.75rem);
+}
+
+.md {
+    --_panneau-avatar-size: var(--panneau-avatar-size-md, 2.25rem);
+}
+
+.lg {
+    --_panneau-avatar-size: var(--panneau-avatar-size-lg, 3rem);
+}
+
+.xl {
+    --_panneau-avatar-size: var(--panneau-avatar-size-xl, 4rem);
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.initials {
+    overflow: hidden;
+}
+
+/* A state in a tone: a ring of its solid color, apart from the avatar by a gap of the surface. */
+.ring {
+    box-shadow:
+        0 0 0 var(--panneau-avatar-ring-gap, 2px)
+            var(--panneau-avatar-gap-color, var(--panneau-color-surface)),
+        0 0 0 calc(var(--panneau-avatar-ring-gap, 2px) + var(--panneau-avatar-ring-width, 2px))
+            var(--panneau-tone-solid);
+}
+
+/* AvatarGroup: avatars overlap, each one parted from the previous by a line of the surface. */
+.group {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+}
+
+.group > .avatar + .avatar {
+    margin-inline-start: calc(
+        var(--_panneau-avatar-size) * var(--panneau-avatar-group-overlap, 0.25) * -1
+    );
+}
+
+.group > .avatar:not(.ring) {
+    box-shadow: 0 0 0 var(--panneau-border-width)
+        var(--panneau-avatar-gap-color, var(--panneau-color-surface));
+}
+
+.more {
+    font-size: max(0.5625rem, calc(var(--_panneau-avatar-size) * 0.34));
+    background-color: var(--panneau-color-surface-sunken);
+}

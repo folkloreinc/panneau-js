@@ -30,4 +30,9 @@ export const uiFr: Record<string, string> = {
     'panneau.ui.chartDate': 'Date',
     'panneau.ui.statChangeUp': 'En hausse',
     'panneau.ui.statChangeDown': 'En baisse',
+    'panneau.ui.avatarStatus': '{name} ({status})',
+    'panneau.ui.avatarMore': '+{count, number}',
+    'panneau.ui.avatarOthers': '{count, plural, one {# autre} other {# autres}}',
+    'panneau.ui.breadcrumbs': 'Fil d’Ariane',
+    'panneau.ui.moreBreadcrumbs': 'Plus de pages',
 };

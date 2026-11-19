@@ -1,4 +1,4 @@
-import { ListChecks } from 'lucide-react';
+import { Inbox, ListChecks, SearchX } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 
 import type { List, ResolvedCalendar } from '@panneau/core';
@@ -12,7 +12,7 @@ import {
 import { getFileKind } from '@panneau/fields';
 import { getActionLabel } from '@panneau/intl';
 import type { Action, Field, Filter, RuleFailure } from '@panneau/protocol';
-import { Alert, Button, Checkbox, usePanneauIntl, useToast } from '@panneau/ui';
+import { Alert, Button, Checkbox, EmptyState, usePanneauIntl, useToast } from '@panneau/ui';
 
 import { ListSkeleton } from './ListSkeleton';
 import styles from './ListView.module.css';
@@ -579,18 +579,22 @@ export function ListView({
         // An empty month is still a calendar: it goes to the others.
         if (pageItems.length === 0 && !inCalendar) {
             return (
-                <div className={styles.state}>
-                    <p>
-                        {hasQuery
+                <EmptyState
+                    className={styles.state}
+                    icon={hasQuery ? SearchX : Inbox}
+                    title={
+                        hasQuery
                             ? intl.formatMessage(messages.noResults)
-                            : (emptyMessage ?? intl.formatMessage(messages.empty))}
-                    </p>
-                    {hasQuery ? (
-                        <Button size="sm" onPress={() => clearFilters()}>
-                            {intl.formatMessage(messages.clearFilters)}
-                        </Button>
-                    ) : null}
-                </div>
+                            : (emptyMessage ?? intl.formatMessage(messages.empty))
+                    }
+                    actions={
+                        hasQuery ? (
+                            <Button size="sm" onPress={() => clearFilters()}>
+                                {intl.formatMessage(messages.clearFilters)}
+                            </Button>
+                        ) : undefined
+                    }
+                />
             );
         }
         return (
