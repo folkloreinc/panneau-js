@@ -325,6 +325,68 @@ describe('RelationField', () => {
         expect(idRequests()).toHaveLength(1);
     });
 
+    it('searches only for the picker that is about to be used, in a form of relations', async () => {
+        const user = userEvent.setup();
+        const list = vi.fn(async (_resource: string, query?: ListQuery) => ({
+            data: AUTHORS.filter(
+                (author) =>
+                    query?.filter?.[IDS_FILTER] === undefined ||
+                    (query.filter[IDS_FILTER] as string[]).includes(author.id),
+            ).map(({ id, label }) => ({ id, version: null, abilities: {}, name: label })),
+        }));
+        const searches = () =>
+            list.mock.calls.filter(([, query]) => query?.filter?.[IDS_FILTER] === undefined);
+        const source = createRelationSource(
+            { list },
+            {
+                definition: {
+                    resources: [
+                        {
+                            id: 'authors',
+                            label: { singular: 'author', plural: 'authors' },
+                            fields: [{ name: 'name', type: 'text' }],
+                            itemTitle: 'name',
+                        },
+                    ],
+                },
+            },
+        );
+        renderField(
+            <DefinitionField
+                field={{
+                    name: 'credits',
+                    type: 'repeater',
+                    label: 'Credits',
+                    fields: [
+                        {
+                            name: 'author',
+                            type: 'relation',
+                            label: 'Author',
+                            resource: 'authors',
+                            multiple: true,
+                        },
+                    ],
+                    settings: { collapsible: false },
+                }}
+                path="credits"
+                value={Array.from({ length: 6 }, () => ({ author: [] }))}
+                onChange={() => undefined}
+            />,
+            { relationSource: source },
+        );
+        const pickers = screen.getAllByRole('combobox', { name: 'Author' });
+        expect(pickers).toHaveLength(6);
+        // Longer than the debounce of a search: nothing went
+        await act(() => new Promise((resolve) => setTimeout(resolve, 300)));
+        expect(list).not.toHaveBeenCalled();
+
+        // The focus on one picker: its search, at once, and its options when it opens
+        await user.click(pickers[2] as HTMLElement);
+        await vi.waitFor(() => expect(searches()).toHaveLength(1));
+        expect(await screen.findByRole('option', { name: 'Grace Hopper' })).toBeInTheDocument();
+        expect(searches()).toEqual([['authors', { page: 1, perPage: 20 }, expect.anything()]]);
+    });
+
     it('creates an item from the typed text, with the source', async () => {
         const { source, create } = createFullSource();
         const onChange = vi.fn();
