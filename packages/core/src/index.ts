@@ -85,16 +85,25 @@ export {
 export {
     type Messages,
     type MessagesLoader,
+    type EntryOverrides,
     type PanneauPlugin,
     type PluginComponent,
     type PluginComponentKind,
+    type PluginEntries,
+    type PluginKind,
+    type PluginKinds,
     type PluginRegistry,
+    type ResolveEntryOptions,
     type Theme,
     createPluginRegistry,
     definePlugin,
+    getEntries,
     loadMessages,
+    resolveEntry,
     resolveTheme,
+    warnMissingEntry,
 } from './plugins';
+export { type PageProps } from './page';
 export {
     type Command,
     type CommandContext,
@@ -119,6 +128,8 @@ export {
     type PanneauContextValue,
     type PanneauProviderProps,
     usePanneau,
+    useEntries,
+    useEntry,
     usePlugins,
     useResource,
 } from './react/provider';

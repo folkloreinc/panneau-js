@@ -1,6 +1,13 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { createPluginRegistry, definePlugin, loadMessages, resolveTheme } from './plugins';
+import {
+    createPluginRegistry,
+    definePlugin,
+    getEntries,
+    loadMessages,
+    resolveEntry,
+    resolveTheme,
+} from './plugins';
 
 const Text = () => null;
 const CustomText = () => null;
@@ -32,6 +39,61 @@ describe('plugins', () => {
         const PagePreview = () => null;
         const registry = createPluginRegistry([{ id: 'site', previews: { page: PagePreview } }]);
         expect(registry.previews.get('page')).toBe(PagePreview);
+    });
+
+    it('resolve every kind in one order: built-ins, plugins, then overrides', () => {
+        const BuiltIn = () => null;
+        const Plugin = () => null;
+        const Override = () => null;
+        const registry = createPluginRegistry([
+            { id: 'test.base', fields: { text: Plugin, slug: Plugin } },
+        ]);
+        const options = {
+            builtIn: { text: BuiltIn, date: BuiltIn },
+            overrides: { slug: Override },
+        };
+        expect(resolveEntry(registry, 'fields', 'date', options)).toBe(BuiltIn);
+        expect(resolveEntry(registry, 'fields', 'text', options)).toBe(Plugin);
+        expect(resolveEntry(registry, 'fields', 'slug', options)).toBe(Override);
+        // A map of overrides, as a component can have them
+        expect(
+            resolveEntry(registry, 'fields', 'text', { overrides: new Map([['text', Override]]) }),
+        ).toBe(Override);
+        // Not a property inherited by the record
+        expect(resolveEntry(registry, 'fields', 'toString', options)).toBeUndefined();
+        expect([...getEntries(registry, 'fields', options)]).toEqual([
+            ['text', Plugin],
+            ['date', BuiltIn],
+            ['slug', Override],
+        ]);
+    });
+
+    it('have every kind, with or without a plugin that gives it, and the kinds of plugins', () => {
+        const Map = () => null;
+        const registry = createPluginRegistry([
+            { id: 'test.own', ...({ maps: { world: Map } } as object) },
+        ]);
+        expect(registry.previews.size).toBe(0);
+        expect(registry.widgets.size).toBe(0);
+        expect(
+            (registry as unknown as Record<string, ReadonlyMap<string, unknown>>).maps?.get(
+                'world',
+            ),
+        ).toBe(Map);
+    });
+
+    it('warn once in development when nothing gives an entry', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        const registry = createPluginRegistry([]);
+        expect(resolveEntry(registry, 'widgets', 'world-map')).toBeUndefined();
+        expect(resolveEntry(registry, 'widgets', 'world-map')).toBeUndefined();
+        expect(warn).toHaveBeenCalledTimes(1);
+        expect(warn.mock.calls[0]?.[0]).toMatch(/"widgets" for "world-map"/);
+        vi.stubEnv('NODE_ENV', 'production');
+        resolveEntry(registry, 'widgets', 'calendar-heatmap');
+        expect(warn).toHaveBeenCalledTimes(1);
+        vi.unstubAllEnvs();
+        warn.mockRestore();
     });
 
     it('need unique ids', () => {
