@@ -147,10 +147,14 @@ describe('Form without a definition', () => {
             />,
         );
         const chosen = new File(['png'], 'photo.png', { type: 'image/png' });
-        const input = container.querySelector<HTMLInputElement>('input[type="file"]');
-        if (input === null) {
-            throw new Error('No file input.');
-        }
+        // The file field loads its code first
+        const input = await waitFor(() => {
+            const found = container.querySelector<HTMLInputElement>('input[type="file"]');
+            if (found === null) {
+                throw new Error('No file input.');
+            }
+            return found;
+        });
         await userEvent.upload(input, chosen);
         await userEvent.click(screen.getByRole('button', { name: 'Save' }));
         await waitFor(() => expect(onSubmitted).toHaveBeenCalled());
@@ -222,7 +226,7 @@ describe('Form without a definition', () => {
                 onSubmit={onSubmit}
             />,
         );
-        await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+        await userEvent.click(await screen.findByRole('button', { name: 'Save' }));
         expect(onSubmit).not.toHaveBeenCalled();
         const summary = await screen.findByRole('alert');
         expect(summary).toHaveTextContent('3 errors prevent saving');

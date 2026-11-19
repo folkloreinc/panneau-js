@@ -38,7 +38,7 @@ describe('LocationField', () => {
     it('takes a point typed in latitude and longitude', async () => {
         const onChange = vi.fn();
         renderLocation(onChange);
-        expect(screen.getByRole('group', { name: 'Place' })).toBeInTheDocument();
+        expect(await screen.findByRole('group', { name: 'Place' })).toBeInTheDocument();
         expect(screen.getByRole('application', { name: /Map: Place/ })).toBeInTheDocument();
         await userEvent.type(screen.getByRole('textbox', { name: 'Latitude' }), '45.5');
         await userEvent.tab();
@@ -56,7 +56,10 @@ describe('LocationField', () => {
     it('sets the point and the address of a place found', async () => {
         const onChange = vi.fn();
         renderLocation(onChange, { geocoding });
-        await userEvent.type(screen.getByRole('combobox', { name: 'Search an address' }), 'Montré');
+        await userEvent.type(
+            await screen.findByRole('combobox', { name: 'Search an address' }),
+            'Montré',
+        );
         await userEvent.click(
             await screen.findByRole('option', { name: 'Montréal, Québec, Canada' }),
         );
@@ -73,9 +76,9 @@ describe('LocationField', () => {
         expect(screen.getByRole('textbox', { name: 'Latitude' })).toHaveValue('45.503182');
     });
 
-    it('has no address search without a source', () => {
+    it('has no address search without a source', async () => {
         renderLocation(vi.fn(), { initial: { lat: 1, lng: 2 } });
         expect(screen.queryByRole('combobox', { name: 'Search an address' })).toBeNull();
-        expect(screen.getByRole('textbox', { name: 'Longitude' })).toHaveValue('2');
+        expect(await screen.findByRole('textbox', { name: 'Longitude' })).toHaveValue('2');
     });
 });

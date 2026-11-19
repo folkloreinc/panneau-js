@@ -1,5 +1,6 @@
 export { DefinitionField, NestedField, type NestedFieldProps } from './shared/DefinitionField';
 export { builtInFields, fieldsPlugin } from './shared/builtIn';
+export { lazyFieldEntry } from './shared/lazy';
 export {
     type BoundFieldProps,
     type FieldBinding,

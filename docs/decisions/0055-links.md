@@ -1,6 +1,6 @@
 # 0055: Links
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-04
 - Issue: [#202](https://github.com/folkloreinc/panneau-js/issues/202)
 

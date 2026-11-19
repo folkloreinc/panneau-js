@@ -1,6 +1,6 @@
 # 0066: A create goes back to the list, which shows the new item
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-05
 - Changes: the toast after a create ([0062](0062-toasts.md)), and the page that opens after it
 

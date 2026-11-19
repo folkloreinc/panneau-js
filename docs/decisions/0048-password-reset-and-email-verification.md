@@ -1,6 +1,6 @@
 # 0048: Password reset and email verification
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-03
 - Issues: [#196](https://github.com/folkloreinc/panneau-js/issues/196), [folkloreinc/laravel-panneau#158](https://github.com/folkloreinc/laravel-panneau/issues/158)
 - Changes: the auth endpoints sketched in [0012](0012-authentication.md) and `openapi.json`; the `{basePath}/auth/…` pages that [0037](0037-login-page-token-and-logout.md) reserved

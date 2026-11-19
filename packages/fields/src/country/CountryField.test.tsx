@@ -89,7 +89,7 @@ describe('CountryField', () => {
                 onChange={() => undefined}
             />,
         );
-        await userEvent.click(screen.getByRole('button', { name: /Show options/ }));
+        await userEvent.click(await screen.findByRole('button', { name: /Show options/ }));
         expect(screen.getAllByRole('option').map((option) => option.textContent)).toEqual([
             '🇺🇸United States',
             '🇨🇦Canada',

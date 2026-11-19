@@ -1,6 +1,6 @@
 # 0073: Selections apart from the accent, focus rings, and outlined filled buttons
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-09
 - Amends: [0024](0024-theme-model.md)
 

@@ -1,6 +1,6 @@
 # 0087: Image fields without transforms
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-17
 - Issue: [#319](https://github.com/folkloreinc/panneau-js/issues/319)
 - Amends: [0031](0031-image-editor-and-image-field.md), for the fields whose values keep no transform

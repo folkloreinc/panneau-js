@@ -1,6 +1,6 @@
 # 0058: Several countries, the providers of an embed, and color palettes
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-04
 - Issues: [#213](https://github.com/folkloreinc/panneau-js/issues/213), [#214](https://github.com/folkloreinc/panneau-js/issues/214), [#215](https://github.com/folkloreinc/panneau-js/issues/215)
 - Changes: the `embed` type of [0033](0033-more-field-types.md), and the `country` type of [0047](0047-countries-regions-and-phone-numbers.md)

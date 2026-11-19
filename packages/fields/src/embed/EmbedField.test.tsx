@@ -41,7 +41,7 @@ describe('EmbedField', () => {
         const onChange = vi.fn();
         renderEmbed(onChange, source);
         await userEvent.type(
-            screen.getByRole('textbox', { name: 'Video' }),
+            await screen.findByRole('textbox', { name: 'Video' }),
             'https://youtu.be/abc',
         );
         expect(onChange).toHaveBeenLastCalledWith({ url: 'https://youtu.be/abc' });

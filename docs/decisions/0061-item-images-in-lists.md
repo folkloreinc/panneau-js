@@ -1,6 +1,6 @@
 # 0061: The image of items in the table, and in media libraries
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-04
 - Changes: the `itemImage` of resources ([0044](0044-gallery-and-calendar.md)), for media libraries ([0026](0026-media-libraries.md))
 

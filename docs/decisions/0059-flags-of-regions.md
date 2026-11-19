@@ -1,6 +1,6 @@
 # 0059: Flags of regions
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-04
 - Changes: the `region` type of [0047](0047-countries-regions-and-phone-numbers.md)
 

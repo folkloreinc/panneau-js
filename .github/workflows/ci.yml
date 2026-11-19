@@ -29,6 +29,9 @@ jobs:
             - name: Check formatting
               run: npm run format:check
 
+            - name: Check the status of decisions
+              run: node scripts/verify.js --decisions
+
             - name: Lint
               run: npm run lint
 
@@ -104,13 +107,28 @@ jobs:
                   chromium: true
 
             - name: Run the stories as tests, with axe checks
-              run: npm run test:storybook
+              run: npm run test:storybook -- --project storybook
 
             - name: Build Storybook
               run: npm run build-storybook -- --quiet
 
+    # The same stories in the dark scheme and the touch density, in their own job so that the wait
+    # stays the longest job.
+    storybook-dark-touch:
+        name: Storybook (dark scheme, touch density)
+        runs-on: ubuntu-24.04
+        steps:
+            - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+
+            - uses: ./.github/actions/setup
+              with:
+                  chromium: true
+
+            - name: Run the stories as tests in the dark scheme and the touch density, with axe checks
+              run: npm run test:storybook -- --project storybook-dark-touch
+
     smoke-webpack:
-        name: Smoke tests (webpack app, types under NodeNext, icons in Vite bundles)
+        name: Smoke tests (webpack app, types under NodeNext, icons and size of Vite bundles)
         runs-on: ubuntu-24.04
         steps:
             - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -130,3 +148,6 @@ jobs:
 
             - name: Lucide icons only in the bundles of apps that use them (Vite)
               run: npm run test:icons
+
+            - name: Initial JavaScript of a minimal app within its budget (Vite)
+              run: npm run test:bundle-size

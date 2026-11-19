@@ -61,7 +61,7 @@ Components that work without a definition, a router or a network.
 
 Turns a definition into working forms and lists, and is the extension point.
 
-- **Plugin registry.** Plugins provide field types, displays, list layouts, actions, pages, widgets, locales and themes. They replace the namespaced `ComponentsManager` and the deep imports of `@panneau/core/contexts`.
+- **Plugin registry.** Plugins provide field types, displays, list layouts, client actions, pages, dashboard widgets, components of form layouts, panels of a form's sidebar, previews, commands of the "Go to…" palette, locales and themes (`PanneauPlugin` in `@panneau/core`). They replace the namespaced `ComponentsManager` and the deep imports of `@panneau/core/contexts`.
 - **Definition engine.** It resolves a resource into:
     - its form, from fields plus layout;
     - its list, from columns, filters, sorts and actions;
@@ -97,14 +97,14 @@ Every page can be replaced through a plugin, and the building blocks (layout, pa
 
 Heavier features live in their own packages, so projects only load what they use:
 
-| Package            | Content                                                                                                                                            |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@panneau/actions` | Runs actions: parameters in a dialog, the request through the adapter, results and queued runs ([decisions/0023](decisions/0023-action-runner.md)) |
-| `@panneau/editor`  | Rich text field built on TipTap 3                                                                                                                  |
-| `@panneau/media`   | The media field and the media library, image editing (crop, rotate, focal point). Uploads are in `@panneau/fields` (Uppy in `./uppy`)              |
-| `@panneau/auth`    | Auth forms and flows: login, OAuth providers, password reset, 2FA, passkeys, email verification                                                    |
-| `@panneau/intl`    | UI translations (French, English) and the locale loading helpers                                                                                   |
-| `@panneau/collab`  | (5.x) Presence and realtime collaboration through Yjs                                                                                              |
+| Package            | Content                                                                                                                                                                                                               |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@panneau/actions` | Runs actions: parameters in a dialog, the request through the adapter, results and queued runs ([decisions/0023](decisions/0023-action-runner.md))                                                                    |
+| `@panneau/editor`  | Rich text field built on TipTap 3                                                                                                                                                                                     |
+| `@panneau/media`   | The media field and the media library, image editing (crop, rotate, focal point). Uploads are in `@panneau/fields` (Uppy in `./uppy`)                                                                                 |
+| `@panneau/auth`    | Auth forms and flows: login, OAuth providers, password reset, 2FA, passkeys, email verification. Not created yet: these pages are in `@panneau/app` ([decisions/0037](decisions/0037-login-page-token-and-logout.md)) |
+| `@panneau/intl`    | UI translations (French, English) and the locale loading helpers                                                                                                                                                      |
+| `@panneau/collab`  | (5.x) Presence and realtime collaboration through Yjs                                                                                                                                                                 |
 
 ## Packages
 

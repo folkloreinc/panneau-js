@@ -65,7 +65,7 @@ describe('MoneyField', () => {
                 onChange={onChange}
             />,
         );
-        await userEvent.click(screen.getByRole('button', { name: /Currency/ }));
+        await userEvent.click(await screen.findByRole('button', { name: /Currency/ }));
         const listbox = await screen.findByRole('listbox');
         expect(within(listbox).getAllByRole('option')).toHaveLength(2);
         await userEvent.click(within(listbox).getByRole('option', { name: /EUR/ }));

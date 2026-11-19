@@ -1,6 +1,6 @@
 # 0070: Lists show their checkboxes once "Select" is pressed
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-06
 - Changes: the checkboxes of the table ([0068](0068-collapsed-items-and-lighter-controls.md)), and of every layout of a list
 

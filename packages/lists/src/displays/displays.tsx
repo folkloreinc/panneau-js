@@ -1,4 +1,5 @@
 import { Check, File, FileText, Globe, Hash, Mail, Minus, Phone } from 'lucide-react';
+import { Suspense, lazy } from 'react';
 
 import { toReferences } from '@panneau/fields';
 import { formatAddress, isAddress } from '@panneau/fields/address';
@@ -9,7 +10,6 @@ import { formatDuration, getDurationUnits } from '@panneau/fields/duration';
 import { getLinkText, isLink } from '@panneau/fields/link';
 import { formatMoney } from '@panneau/fields/money';
 import { RegionFlag, getRegionCountry, getRegionName } from '@panneau/fields/region';
-import { parsePhone, splitExtension } from '@panneau/fields/tel';
 import { fieldsMessages } from '@panneau/intl';
 import { Badge, Icon, type Tone, usePanneauIntl } from '@panneau/ui';
 
@@ -250,48 +250,6 @@ export function EmailDisplay({ value }: DisplayProps) {
     return (
         <a className={styles.link} href={`mailto:${value}`}>
             {value}
-        </a>
-    );
-}
-
-/**
- * A link that calls the phone number: the flag of its country and the number in its international
- * format (`+1 514 555 0199`), with its extension (`, ext. 123`) when its field allows one
- * (`settings.extension`) or the column has no field. A value that isn't E.164 shows as it is.
- */
-export function TelDisplay({ value, field }: DisplayProps) {
-    const intl = usePanneauIntl();
-    if (typeof value !== 'string' || value.trim() === '') {
-        return <EmptyValue />;
-    }
-    const { number: text, extension } =
-        field === null || field.settings?.extension === true
-            ? splitExtension(value)
-            : { number: value, extension: null };
-    const number = parsePhone(text);
-    if (number === null) {
-        return (
-            <a className={styles.link} href={`tel:${value.replace(/[^\d+]/g, '')}`}>
-                {value}
-            </a>
-        );
-    }
-    return (
-        <a
-            className={`${styles.link} ${styles.flagged}`}
-            href={`tel:${number.number}${extension !== null ? `;ext=${extension}` : ''}`}
-        >
-            {number.country !== null ? (
-                <span className={styles.flag} aria-hidden="true">
-                    {getCountryFlag(number.country)}
-                </span>
-            ) : null}
-            {extension !== null
-                ? intl.formatMessage(messages.phoneExtension, {
-                      number: number.international,
-                      extension,
-                  })
-                : number.international}
         </a>
     );
 }
@@ -648,6 +606,20 @@ export function FileDisplay({ value }: DisplayProps) {
     );
 }
 
+const LoadedTelDisplay = lazy(async () => ({ default: (await import('./TelDisplay')).TelDisplay }));
+
+/**
+ * `tel` in the registry: the metadata of phone numbers loads with the first number shown (#346).
+ * Until then, the number shows as it is.
+ */
+function LazyTelDisplay(props: DisplayProps) {
+    return (
+        <Suspense fallback={<TextDisplay {...props} />}>
+            <LoadedTelDisplay {...props} />
+        </Suspense>
+    );
+}
+
 /**
  * The built-in displays, by name. A column's display is its `display`, its field's `display`, or
  * its field's type: field types are display names. Values without a known display are shown as
@@ -671,7 +643,7 @@ export const builtInDisplays: Readonly<Record<string, DisplayEntry>> = {
     media: MediaDisplay,
     image: MediaDisplay,
     file: FileDisplay,
-    tel: TelDisplay,
+    tel: LazyTelDisplay,
     range: NumberDisplay,
     duration: DurationDisplay,
     json: JsonDisplay,

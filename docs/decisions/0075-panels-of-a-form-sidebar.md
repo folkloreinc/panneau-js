@@ -1,6 +1,6 @@
 # 0075: The panels of a form's sidebar, defined by the resource
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-09
 - Extends: [0074](0074-asides-next-to-lists-and-forms.md) (the `sidebar` nodes of form layouts), [0065](0065-compound-fields.md) (the `publication` component)
 - Part of: [#6](https://github.com/folkloreinc/panneau-js/issues/6), 5.x (Sidebars, a general principle)

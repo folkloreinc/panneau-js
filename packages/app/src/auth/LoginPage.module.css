@@ -16,6 +16,12 @@
     max-width: 24rem;
 }
 
+/* The title while the page loads: a line of the size of a level 1 heading. */
+.titleSkeleton {
+    font-size: var(--panneau-heading-1-font-size, 1.75rem);
+    line-height: var(--panneau-heading-1-line-height, var(--panneau-line-height-tight));
+}
+
 .name {
     margin: 0;
     color: var(--panneau-color-text-muted);

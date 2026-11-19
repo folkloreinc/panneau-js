@@ -1,6 +1,6 @@
 # 0065: Compound fields: plugin types made of sub-fields
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-05
 - Changes: the sessions of [0053](0053-date-ranges-and-money.md), which become a compound field
 

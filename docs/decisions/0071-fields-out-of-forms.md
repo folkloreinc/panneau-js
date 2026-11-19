@@ -1,6 +1,6 @@
 # 0071: Fields that items give, but that forms leave out
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-09
 - Extends: the `Field` of the protocol, next to `readOnly`, `createOnly` and `updateOnly`
 

@@ -1,6 +1,6 @@
 # 0091: Actions in their tones
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-18
 - Extends: [0060](0060-row-actions-colored-icons.md) (the colored icons of rows), [0088](0088-destructive-actions-in-a-menu.md) (the actions that destroy, outlined last)
 - Part of: [#6](https://github.com/folkloreinc/panneau-js/issues/6), 5.x (the interface)

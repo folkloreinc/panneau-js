@@ -29,12 +29,12 @@ export {
     RichTextDisplay,
     SelectDisplay,
     TagsDisplay,
-    TelDisplay,
     TextDisplay,
     TimeDisplay,
     UrlDisplay,
     builtInDisplays,
 } from './displays/displays';
+export { TelDisplay } from './displays/TelDisplay';
 export {
     DateFilter,
     DateRangeFilter,

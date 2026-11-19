@@ -672,11 +672,13 @@ describe('the app shell', () => {
             menus: { main: [{ type: 'resources' }, { type: 'page', page: 'activity' }] },
         });
         // The home page without widgets keeps the cards of the resources
-        expect(screen.getByText('Welcome, Ada.')).toBeInTheDocument();
+        expect(await screen.findByText('Welcome, Ada.')).toBeInTheDocument();
 
         await user.click(navigation().getByRole('link', { name: 'Activity' }));
         expect(window.location.pathname).toBe('/panneau/pages/activity');
-        expect(screen.getByRole('heading', { level: 1, name: 'Activity' })).toBeInTheDocument();
+        expect(
+            await screen.findByRole('heading', { level: 1, name: 'Activity' }),
+        ).toBeInTheDocument();
         expect(screen.queryByText('Welcome, Ada.')).toBeNull();
         await waitFor(() => expect(document.title).toBe('Activity · Test site'));
         expect(await screen.findByRole('link', { name: 'All pages 2' })).toHaveAttribute(

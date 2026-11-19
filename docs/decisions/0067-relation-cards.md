@@ -1,6 +1,6 @@
 # 0067: Relation fields show their items as cards
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-05
 - Changes: how a `relation` field shows its value
 

@@ -1,6 +1,6 @@
 # 0069: "Show" the items an action changed, with a filter of lists on ids
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-06
 - Changes: the list query ([protocol](../protocol.md#resources)), and the actions of toasts ([0062](0062-toasts.md))
 

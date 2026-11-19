@@ -1,6 +1,6 @@
 # 0089: Combined widgets: a metric, several lines, a table of numbers
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-18
 - Builds on: [0064](0064-dashboard-widgets.md) (the widgets of the dashboard), [0084](0084-overviews.md) (overviews, aggregates, the period), [0085](0085-readable-line-charts.md) (readable line charts)
 - Decides: "comparing a period with the previous one", left open by 0084, and "the change against the previous period, a trend in a `stat`, several series with a legend", left open by 0085

@@ -37,11 +37,8 @@ import { type NamedIconLoader, PanneauRoot, usePanneauIntl, usePreference } from
 
 import styles from './Panneau.module.css';
 import { Shell } from './Shell';
-import { type LoginNotice, LoginPage } from './auth/LoginPage';
-import { ResetPasswordPage } from './auth/ResetPasswordPage';
-import { TwoFactorRequiredPage } from './auth/TwoFactorRequiredPage';
-import { EmailVerificationLinkPage, VerifyEmailPage } from './auth/VerifyEmailPage';
-import { getPasskey } from './auth/webauthn';
+import type { LoginNotice } from './auth/LoginPage';
+import type { getPasskey as getPasskeyNow } from './auth/webauthn';
 import {
     CurrentContextProvider,
     type CurrentContextValue,
@@ -50,6 +47,13 @@ import {
     isBuiltFor,
     selectValue,
 } from './currentContext';
+import {
+    EmailVerificationLinkPage,
+    LoginPage,
+    ResetPasswordPage,
+    TwoFactorRequiredPage,
+    VerifyEmailPage,
+} from './lazyPages';
 import { loadPage, navigate, usePathname } from './location';
 import { usePluginMessages } from './messages';
 import { usePageStyles } from './pageStyles';
@@ -121,6 +125,11 @@ export interface PanneauProps {
      * Aria reads too.
      */
     nonce?: string;
+}
+
+/** The user's passkey, with the code of WebAuthn loaded on first use (#346). */
+async function getPasskey(...args: Parameters<typeof getPasskeyNow>) {
+    return (await import('./auth/webauthn')).getPasskey(...args);
 }
 
 function redirectToLogin({ loginUrl }: UnauthorizedContext) {

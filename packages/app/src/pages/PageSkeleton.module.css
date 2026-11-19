@@ -1,0 +1,13 @@
+/* A page whose code loads: its title and blocks of content, spaced as the pages are. */
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-4);
+}
+
+/* The title of the page: a line of the size of a level 1 heading. */
+.title {
+    font-size: var(--panneau-heading-1-font-size, 1.75rem);
+    line-height: var(--panneau-heading-1-line-height, var(--panneau-line-height-tight));
+}

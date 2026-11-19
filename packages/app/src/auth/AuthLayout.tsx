@@ -1,7 +1,7 @@
 import { type FormEvent, type ReactNode, useState } from 'react';
 
 import { RateLimitedError, ValidationError } from '@panneau/data';
-import { Alert, Button, Heading } from '@panneau/ui';
+import { Alert, Button, Heading, LoadingRegion, Skeleton } from '@panneau/ui';
 
 import { useDocumentTitle } from '../documentTitle';
 import styles from './LoginPage.module.css';
@@ -27,6 +27,23 @@ export function AuthLayout({
                 <Heading level={1}>{title}</Heading>
                 {children}
             </div>
+        </main>
+    );
+}
+
+/**
+ * An auth page whose code loads (decision 0034): the frame of the auth pages, with a title, two
+ * fields and a button.
+ */
+export function AuthSkeleton() {
+    return (
+        <main className={styles.page}>
+            <LoadingRegion className={styles.panel}>
+                <Skeleton className={styles.titleSkeleton} width="60%" />
+                <Skeleton shape="rect" height="var(--panneau-control-height)" />
+                <Skeleton shape="rect" height="var(--panneau-control-height)" />
+                <Skeleton shape="rect" height="var(--panneau-control-height)" />
+            </LoadingRegion>
         </main>
     );
 }
