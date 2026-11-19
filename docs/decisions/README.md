@@ -98,3 +98,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0090](0090-agents-work-through-tools-as-their-user.md)           | AI agents work in a Panneau through tools of the protocol, as their user                            | Proposed                          |
 | [0091](0091-actions-in-their-tones.md)                            | Actions in their tones                                                                              | Proposed                          |
 | [0092](0092-empty-states-avatars-tiles-and-other-primitives.md)   | Empty states, avatars, tiles, button groups, breadcrumbs, and text areas with a header and a footer | Proposed                          |
+| [0093](0093-breadcrumbs-in-the-page-header.md)                    | Breadcrumbs in the page header, from two parents                                                    | Proposed                          |
