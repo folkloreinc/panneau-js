@@ -1,8 +1,16 @@
-import { type HTMLAttributes, type ReactNode, type Ref, createContext, use, useState } from 'react';
+import {
+    type HTMLAttributes,
+    type ReactNode,
+    type Ref,
+    createContext,
+    use,
+    useEffect,
+    useState,
+} from 'react';
 import { I18nProvider } from 'react-aria-components';
 import { IntlContext, IntlProvider, type IntlShape } from 'react-intl';
 
-import { getPanneauMessages } from '@panneau/intl';
+import { getLoadedPanneauMessages, loadPanneauMessages } from '@panneau/intl';
 
 import { type NamedIconLoader, NamedIconLoaderContext } from '../icon/namedIcons';
 import { getFontFaceCss, getFontStylesheets } from '../theme/fonts';
@@ -42,8 +50,9 @@ export interface PanneauRootProps extends HTMLAttributes<HTMLDivElement> {
      *
      * Without an `IntlProvider` above it, the root provides one, with the messages of every Panneau
      * package in this locale (English without a locale, or for a locale Panneau doesn't translate).
-     * An app with its own `IntlProvider` adds them with `withPanneauMessages()` from
-     * `@panneau/intl`.
+     * They load on first use, in English until then: `loadPanneauMessages()` of `@panneau/intl`
+     * loads them ahead. An app with its own `IntlProvider` adds them with `withPanneauMessages()`
+     * from `@panneau/intl`.
      */
     locale?: string;
     /**
@@ -161,8 +170,9 @@ export function usePortalContainer(): Element | null | undefined {
 }
 
 /**
- * An `IntlProvider` with Panneau's messages in a locale, for a root without one above it. A locale
- * Panneau doesn't translate gets English, so that react-intl doesn't report every message as
+ * An `IntlProvider` with Panneau's messages in a locale, for a root without one above it. They load
+ * on first use (#346): until then, and for a locale Panneau doesn't translate, it renders in
+ * English, the default text of every message, so that react-intl doesn't report every message as
  * missing.
  */
 function PanneauIntlProvider({
@@ -174,13 +184,38 @@ function PanneauIntlProvider({
     messages?: Readonly<Record<string, string>> | null;
     children: ReactNode;
 }) {
-    const messages = getPanneauMessages(locale);
-    const translated = Object.keys(messages).length > 0;
+    // The catalog once loaded, in state: the React Compiler keeps what render reads for the same
+    // locale
+    const [loaded, setLoaded] = useState<{
+        locale: string;
+        messages: Readonly<Record<string, string>>;
+    } | null>(null);
+    const messages = loaded?.locale === locale ? loaded.messages : getLoadedPanneauMessages(locale);
+    useEffect(() => {
+        if (messages !== undefined) {
+            return;
+        }
+        let current = true;
+        loadPanneauMessages(locale).then(
+            (catalog) => {
+                if (current) {
+                    setLoaded({ locale, messages: catalog });
+                }
+            },
+            (error: unknown) => {
+                console.error(`[panneau] The messages in "${locale}" failed to load.`, error);
+            },
+        );
+        return () => {
+            current = false;
+        };
+    }, [locale, messages]);
+    const translated = messages !== undefined && Object.keys(messages).length > 0;
     return (
         <IntlProvider
             locale={translated ? locale : 'en'}
             defaultLocale="en"
-            messages={{ ...(translated ? messages : getPanneauMessages('en')), ...added }}
+            messages={{ ...messages, ...added }}
         >
             {children}
         </IntlProvider>

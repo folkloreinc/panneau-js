@@ -95,6 +95,7 @@ export function ImageItem({
             <img
                 src={reference.media.thumbnailUrl}
                 alt=""
+                loading="lazy"
                 className={tile ? styles.tilePreview : styles.preview}
             />
         ) : (

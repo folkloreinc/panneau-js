@@ -374,6 +374,8 @@ describe('displays', () => {
         });
         expect(embed.querySelector('a')).toHaveAttribute('href', 'https://youtu.be/abc');
         expect(embed.textContent).toBe('A video');
+        // Thumbnails below the fold load when scrolled to (#346)
+        expect(embed.querySelector('img')).toHaveAttribute('loading', 'lazy');
         expect(renderDisplay('embed', { url: 'https://example.com/a' }).textContent).toBe(
             'example.com/a',
         );

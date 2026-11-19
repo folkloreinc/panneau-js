@@ -141,7 +141,7 @@ const uploadSource =
 
 ## Messages
 
-Strings go through react-intl, with English defaults. Add the messages of every Panneau package to the app's with `withPanneauMessages()` from [`@panneau/intl`](../intl), or use `fieldsPlugin`, which carries the French messages of every package (`ui`, `fields` and `forms`).
+Strings go through react-intl, with English defaults. Add the messages of every Panneau package to the app's with `withPanneauMessages()` from [`@panneau/intl`](../intl), or use `fieldsPlugin`, which loads the French messages of every package on first use.
 
 The package layout, scripts and API reports are explained in [`docs/packages.md`](../../docs/packages.md).
 

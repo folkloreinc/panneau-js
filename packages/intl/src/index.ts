@@ -10,3 +10,4 @@ export { listsMessages } from './messages/lists';
 export { mediaMessages } from './messages/media';
 export { uiMessages } from './messages/ui';
 export { getPanneauMessages, withPanneauMessages } from './merge';
+export { getLoadedPanneauMessages, loadPanneauMessages } from './load';

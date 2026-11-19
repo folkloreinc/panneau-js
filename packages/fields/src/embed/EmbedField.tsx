@@ -201,7 +201,12 @@ function EmbedPreview({ value }: { value: EmbedValue }) {
         <div className={styles.preview}>
             {thumbnail ? (
                 <span className={styles.media}>
-                    <img className={styles.thumbnail} src={value.thumbnailUrl} alt="" />
+                    <img
+                        className={styles.thumbnail}
+                        src={value.thumbnailUrl}
+                        alt=""
+                        loading="lazy"
+                    />
                     {duration !== null ? (
                         <Duration duration={duration} className={styles.duration} />
                     ) : null}

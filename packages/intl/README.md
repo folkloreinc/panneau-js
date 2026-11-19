@@ -12,9 +12,9 @@ import { withPanneauMessages } from '@panneau/intl';
 </IntlProvider>;
 ```
 
-| Export          | Content                                                                                                 |
-| --------------- | ------------------------------------------------------------------------------------------------------- |
-| `@panneau/intl` | `en`, `fr`, `panneauMessages`, `getPanneauMessages()`, `withPanneauMessages()`, the message descriptors |
+| Export          | Content                                                                                                                                                        |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@panneau/intl` | `en`, `fr`, `panneauMessages`, `getPanneauMessages()`, `withPanneauMessages()`, `loadPanneauMessages()`, `getLoadedPanneauMessages()`, the message descriptors |
 
 ## Messages of every package
 
@@ -23,10 +23,11 @@ The messages of `@panneau/ui`, `@panneau/fields`, `@panneau/forms`, `@panneau/li
 - **`withPanneauMessages(locale, messages)`** merges the messages of every package for a locale with the app's. The app's win, so it can reword a Panneau message by its id (`'panneau.forms.save'`).
 - **`getPanneauMessages(locale)`** returns the messages of every package for a locale. A regional locale (`fr-CA`) gets those of its language. A locale Panneau doesn't translate gets none, and components fall back to their English defaults.
 - **`en`** and **`fr`** are the catalogs, by id, and **`panneauMessages`** has them by locale.
+- **`loadPanneauMessages(locale)`** loads the messages of every package for a locale with an `import()`, the first time, so that an app only loads the languages it shows. **`getLoadedPanneauMessages(locale)`** returns them once loaded (none in English, which needs none), or `undefined` while they still have to load. `PanneauRoot` and `createPanneauApp()` load them this way, and the catalogs above stay out of their bundle.
 
-English is also the default text of every message (`defaultMessage`), so components render in English without any of these. Without an `IntlProvider`, `PanneauRoot` (from `@panneau/ui`) provides one with `getPanneauMessages()` in its `locale`.
+English is also the default text of every message (`defaultMessage`), so components render in English without any of these. Without an `IntlProvider`, `PanneauRoot` (from `@panneau/ui`) provides one with Panneau's messages in its `locale`: in English until they load, unless `loadPanneauMessages()` loaded them first.
 
-With `@panneau/core` plugins, `fieldsPlugin` (from `@panneau/fields`) carries `fr`, and `loadMessages(registry, locale)` returns it.
+With `@panneau/core` plugins, `fieldsPlugin` (from `@panneau/fields`) loads `fr`, and `loadMessages(registry, locale)` returns it.
 
 ## Descriptors
 

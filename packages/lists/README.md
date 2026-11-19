@@ -109,7 +109,7 @@ A display gets `{ value, item, column, field }`. A layout gets the items, the co
 
 ## Messages
 
-Strings go through react-intl, with English defaults. Their descriptors and their French text live in [`@panneau/intl`](../intl) (`listsMessages`), with those of the other packages: give the app's `IntlProvider` `withPanneauMessages(locale, appMessages)`, or pass `listsPlugin`, which carries them.
+Strings go through react-intl, with English defaults. Their descriptors and their French text live in [`@panneau/intl`](../intl) (`listsMessages`), with those of the other packages: give the app's `IntlProvider` `withPanneauMessages(locale, appMessages)`, or pass `listsPlugin`, which loads them on first use.
 
 | Export           | Content                                                               |
 | ---------------- | --------------------------------------------------------------------- |
