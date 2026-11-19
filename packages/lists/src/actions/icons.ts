@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 
 import type { Action } from '@panneau/protocol';
+import { isExternalUrl } from '@panneau/protocol/runtime';
 import { type IconComponent, type Tone, getNamedIcon } from '@panneau/ui';
 
 /** Icons of actions by action id, for actions written in code (`{ archive: Archive }`). */
@@ -65,11 +66,7 @@ export function getActionTone(action: Action): Tone {
     if (Object.hasOwn(BUILT_IN_TONES, action.id)) {
         return BUILT_IN_TONES[action.id] ?? 'neutral';
     }
-    if (
-        action.kind === 'link' &&
-        typeof action.url === 'string' &&
-        /^https?:\/\//.test(action.url)
-    ) {
+    if (action.kind === 'link' && typeof action.url === 'string' && isExternalUrl(action.url)) {
         return 'info';
     }
     return 'neutral';

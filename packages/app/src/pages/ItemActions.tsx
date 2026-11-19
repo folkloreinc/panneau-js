@@ -6,6 +6,7 @@ import { type ItemAction, asksConfirmation } from '@panneau/core';
 import { getActionLabel, listsMessages } from '@panneau/intl';
 import { ConfirmDialog, type ListActionEvent, getActionIcon, getActionTone } from '@panneau/lists';
 import type { Action, Item } from '@panneau/protocol';
+import { isExternalUrl } from '@panneau/protocol/runtime';
 import { Button, LinkButton, usePanneauIntl, useToast } from '@panneau/ui';
 
 export interface ItemActionsProps {
@@ -33,11 +34,6 @@ const SECONDARY = { variant: 'secondary' } as const;
 function buttonStyle(action: Action) {
     const tone = getActionTone(action);
     return tone === 'neutral' ? SECONDARY : ({ tone, appearance: 'outline' } as const);
-}
-
-/** Whether a link leaves the admin: it opens in a new tab. */
-function isExternal(href: string): boolean {
-    return /^https?:\/\//.test(href);
 }
 
 /**
@@ -104,7 +100,7 @@ export function ItemActions({
                 ...actions.filter(({ action }) => action.destructive === true),
             ].map(({ action, href }) => {
                 const label = getActionLabel(action, intl);
-                const external = href !== null && isExternal(href);
+                const external = href !== null && isExternalUrl(href);
                 const icon = external ? ExternalLink : getActionIcon(action);
                 return href !== null ? (
                     <LinkButton

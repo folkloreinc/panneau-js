@@ -1,5 +1,6 @@
 import { getActionLabel } from '@panneau/intl';
 import type { Action } from '@panneau/protocol';
+import { isExternalUrl } from '@panneau/protocol/runtime';
 import { Button, LinkButton, Tooltip, usePanneauIntl } from '@panneau/ui';
 
 import styles from './Actions.module.css';
@@ -23,11 +24,6 @@ export interface ActionButtonProps {
     iconOnly?: boolean;
     /** Accessible label, when the label alone isn't enough (`Edit Ada Lovelace`). */
     'aria-label'?: string;
-}
-
-/** Whether a link leaves the admin: it opens in a new tab. */
-function isExternal(href: string): boolean {
-    return /^https?:\/\//.test(href);
 }
 
 /** An action as a button, or as a link for a `link` action with a URL. */
@@ -61,7 +57,7 @@ export function ActionButton({
                 tone={tone}
                 appearance={appearance}
                 {...(icon !== undefined ? { icon } : {})}
-                external={isExternal(href)}
+                external={isExternalUrl(href)}
                 aria-label={name}
                 className={onlyIcon ? styles.iconOnly : undefined}
             >
