@@ -227,6 +227,7 @@ export const Action: z.ZodObject<{
         display: z.ZodOptional<z.ZodString>;
         fields: z.ZodOptional<z.ZodArray<typeof Field>>;
         types: z.ZodOptional<z.ZodArray<BlockType>>;
+        typeSet: z.ZodOptional<z.ZodString>;
         settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     }, z.core.$loose>>>;
     layout: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -1400,7 +1401,8 @@ export const Definition: z.ZodObject<{
             check: z.ZodOptional<z.ZodBoolean>;
             display: z.ZodOptional<z.ZodString>;
             fields: z.ZodOptional<z.ZodArray<Field>>;
-            types: z.ZodOptional<z.ZodArray<BlockType>>;
+            types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
+            typeSet: z.ZodOptional<z.ZodString>;
             settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         }, z.core.$loose>>;
         form: z.ZodOptional<z.ZodObject<{
@@ -1695,7 +1697,8 @@ export const Definition: z.ZodObject<{
                 check: z.ZodOptional<z.ZodBoolean>;
                 display: z.ZodOptional<z.ZodString>;
                 fields: z.ZodOptional<z.ZodArray<Field>>;
-                types: z.ZodOptional<z.ZodArray<BlockType>>;
+                types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
+                typeSet: z.ZodOptional<z.ZodString>;
                 settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
             }, z.core.$loose>>>;
             layout: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -2021,6 +2024,12 @@ export const Definition: z.ZodObject<{
         }, z.core.$loose>>;
         settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     }, z.core.$loose>>;
+    blockTypeSets: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        label: z.ZodString;
+        icon: z.ZodOptional<z.ZodString>;
+        fields: z.ZodArray<Field>;
+    }, z.core.$loose>>>>;
     pages: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
         component: z.ZodString;
         path: z.ZodOptional<z.ZodString>;
@@ -3063,6 +3072,7 @@ export const Field: z.ZodObject<{
     display: z.ZodOptional<z.ZodString>;
     fields: z.ZodOptional<z.ZodArray<typeof Field>>;
     types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
+    typeSet: z.ZodOptional<z.ZodString>;
     settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
 }, z.core.$loose>;
 
@@ -4506,6 +4516,7 @@ export const namedSchemas: {
         display: z.ZodOptional<z.ZodString>;
         fields: z.ZodOptional<z.ZodArray<typeof Field>>;
         types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
+        typeSet: z.ZodOptional<z.ZodString>;
         settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     }, z.core.$loose>;
     RichTextStyle: z.ZodObject<{
@@ -4981,6 +4992,7 @@ export const namedSchemas: {
             display: z.ZodOptional<z.ZodString>;
             fields: z.ZodOptional<z.ZodArray<typeof Field>>;
             types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
+            typeSet: z.ZodOptional<z.ZodString>;
             settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         }, z.core.$loose>>>;
         layout: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -5523,6 +5535,7 @@ export const namedSchemas: {
             display: z.ZodOptional<z.ZodString>;
             fields: z.ZodOptional<z.ZodArray<typeof Field>>;
             types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
+            typeSet: z.ZodOptional<z.ZodString>;
             settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         }, z.core.$loose>>;
         form: z.ZodOptional<z.ZodObject<{
@@ -5818,6 +5831,7 @@ export const namedSchemas: {
                 display: z.ZodOptional<z.ZodString>;
                 fields: z.ZodOptional<z.ZodArray<typeof Field>>;
                 types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
+                typeSet: z.ZodOptional<z.ZodString>;
                 settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
             }, z.core.$loose>>>;
             layout: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -7639,6 +7653,7 @@ export const namedSchemas: {
                 display: z.ZodOptional<z.ZodString>;
                 fields: z.ZodOptional<z.ZodArray<typeof Field>>;
                 types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
+                typeSet: z.ZodOptional<z.ZodString>;
                 settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
             }, z.core.$loose>>;
             form: z.ZodOptional<z.ZodObject<{
@@ -7934,6 +7949,7 @@ export const namedSchemas: {
                     display: z.ZodOptional<z.ZodString>;
                     fields: z.ZodOptional<z.ZodArray<typeof Field>>;
                     types: z.ZodOptional<z.ZodArray<typeof BlockType>>;
+                    typeSet: z.ZodOptional<z.ZodString>;
                     settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
                 }, z.core.$loose>>>;
                 layout: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -8259,6 +8275,12 @@ export const namedSchemas: {
             }, z.core.$loose>>;
             settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         }, z.core.$loose>>;
+        blockTypeSets: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            label: z.ZodString;
+            icon: z.ZodOptional<z.ZodString>;
+            fields: z.ZodArray<typeof Field>;
+        }, z.core.$loose>>>>;
         pages: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
             component: z.ZodString;
             path: z.ZodOptional<z.ZodString>;
@@ -12200,6 +12222,9 @@ export function renderedCropSize(transform: Pick<MediaTransform, 'crop' | 'rotat
 export const RESERVED_ROUTE_SEGMENTS: readonly ["resources", "pages", "media", "search", "account", "auth"];
 
 // @public
+export function resolveBlockTypeSets(definition: Definition, path?: string): ValidationIssue[];
+
+// @public
 export function resolveLinkNewTab(newTab: LinkNewTab, link: {
     type?: unknown;
     url?: unknown;
@@ -12410,6 +12435,7 @@ export const Resource: z.ZodObject<{
         display: z.ZodOptional<z.ZodString>;
         fields: z.ZodOptional<z.ZodArray<typeof Field>>;
         types: z.ZodOptional<z.ZodArray<BlockType>>;
+        typeSet: z.ZodOptional<z.ZodString>;
         settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     }, z.core.$loose>>;
     form: z.ZodOptional<z.ZodObject<{
@@ -12705,6 +12731,7 @@ export const Resource: z.ZodObject<{
             display: z.ZodOptional<z.ZodString>;
             fields: z.ZodOptional<z.ZodArray<typeof Field>>;
             types: z.ZodOptional<z.ZodArray<BlockType>>;
+            typeSet: z.ZodOptional<z.ZodString>;
             settings: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         }, z.core.$loose>>>;
         layout: z.ZodOptional<z.ZodArray<z.ZodObject<{

@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { RESERVED_ROUTE_SEGMENTS } from '../constants';
 import { PROTOCOL_VERSION } from '../version';
 import { Abilities, Id } from './common';
+import { BlockType } from './field';
 import { Resource } from './resource';
 import { DefinitionTheme } from './theme';
 import { OverviewPeriod, Widget } from './widget';
@@ -238,6 +239,10 @@ export const Definition = z
         }),
         api: z.looseObject({ baseUrl: z.string() }),
         resources: z.array(Resource),
+        blockTypeSets: z.record(z.string().min(1), z.array(BlockType)).optional().meta({
+            description:
+                'Lists of block types shared by `repeater` fields, by key (decision 0093): a repeater names one with `typeSet` rather than repeating its `types`, such as the blocks of every type of page. Their block types can hold repeaters that name other sets, never their own.',
+        }),
         pages: z.record(z.string(), Page).optional(),
         menus: z.record(z.string(), z.array(MenuItem)).optional(),
         routes: z.record(z.string(), z.string()).optional().meta({

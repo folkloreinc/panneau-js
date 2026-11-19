@@ -1,5 +1,6 @@
 import type { z } from 'zod';
 
+import { resolveBlockTypeSets } from './blockTypeSets';
 import { lintDefinition } from './lint';
 import { BootConfig } from './schemas/boot';
 import { Definition } from './schemas/definition';
@@ -77,7 +78,7 @@ function checkFieldSettings(fields: readonly Field[], path: string): ValidationI
 
 /**
  * Validates a definition, as returned by `GET /definition`: against the schema, then the
- * references between its parts (see `lintDefinition()`), and the settings of field types that
+ * shared block types, which it resolves (see `resolveBlockTypeSets()`), the references between its parts (see `lintDefinition()`), and the settings of field types that
  * the protocol describes (`RichTextSettings`, `DurationSettings`, `DateRangeSettings`,
  * `MoneySettings`, `LinkSettings`, `AddressSettings`).
  */
@@ -87,6 +88,7 @@ export function validateDefinition(input: unknown): ValidationResult<Definition>
         return result;
     }
     const issues = [
+        ...resolveBlockTypeSets(result.data),
         ...lintDefinition(result.data),
         ...result.data.resources.flatMap((resource, index) => [
             ...checkFieldSettings(resource.fields, `resources.${String(index)}.fields`),
@@ -109,16 +111,20 @@ export function validateDefinition(input: unknown): ValidationResult<Definition>
 
 /**
  * Validates a boot config, as a server writes it in the page: against the schema, then the
- * references between the parts of its inlined definition, if any.
+ * shared block types of its inlined definition, which it resolves, and the references between
+ * its parts, if any.
  */
 export function validateBootConfig(input: unknown): ValidationResult<BootConfig> {
     const result = validate(BootConfig, input);
     if (!result.success || result.data.definition === undefined) {
         return result;
     }
-    const issues = lintDefinition(result.data.definition).map((issue) => ({
-        ...issue,
-        path: issue.path === '' ? 'definition' : `definition.${issue.path}`,
-    }));
+    const issues = [
+        ...resolveBlockTypeSets(result.data.definition, 'definition'),
+        ...lintDefinition(result.data.definition).map((issue) => ({
+            ...issue,
+            path: issue.path === '' ? 'definition' : `definition.${issue.path}`,
+        })),
+    ];
     return issues.length > 0 ? { success: false, issues } : result;
 }

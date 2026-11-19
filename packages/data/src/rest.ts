@@ -7,6 +7,7 @@ import {
     PROBLEM_CONTENT_TYPE,
     type Problem,
     formatContextHeader,
+    resolveBlockTypeSets,
     toAggregateParams,
     toSearchParams,
     toSearchQueryParams,
@@ -185,6 +186,11 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
             const result = validate(Definition, body);
             if (!result.success) {
                 throw new InvalidResponseError('The definition is invalid.', result.issues);
+            }
+            // The repeaters that name a set of shared block types get its types (decision 0093)
+            const issues = resolveBlockTypeSets(result.data);
+            if (issues.length > 0) {
+                throw new InvalidResponseError('The definition is invalid.', issues);
             }
             return result.data;
         },

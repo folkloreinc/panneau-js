@@ -97,3 +97,4 @@ Laravel-specific decisions live in [`laravel-panneau/docs/decisions`](https://gi
 | [0089](0089-combined-widgets.md)                                  | Combined widgets: a metric, several lines, a table of numbers                        | Proposed                          |
 | [0090](0090-agents-work-through-tools-as-their-user.md)           | AI agents work in a Panneau through tools of the protocol, as their user             | Proposed                          |
 | [0091](0091-actions-in-their-tones.md)                            | Actions in their tones                                                               | Proposed                          |
+| [0093](0093-shared-block-types.md)                                | Shared block types                                                                   | Proposed                          |
