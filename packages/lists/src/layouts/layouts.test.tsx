@@ -169,7 +169,8 @@ describe('the thumbnails of the table', () => {
         expect(screen.queryByRole('checkbox')).toBeNull();
         await userEvent.click(screen.getByRole('button', { name: 'Select' }));
         await userEvent.click(screen.getByRole('checkbox', { name: 'Select Blog' }));
-        expect(screen.getByRole('status')).toHaveTextContent('1 item selected');
+        // A status of its own, beside the one of the results
+        expect(screen.getByText('1 item selected').closest('[role="status"]')).not.toBeNull();
         await userEvent.click(screen.getByRole('button', { name: 'Done' }));
         expect(screen.queryByRole('checkbox')).toBeNull();
         expect(screen.queryByText('1 item selected')).toBeNull();
@@ -272,9 +273,11 @@ describe('the calendar', () => {
                 calendar={calendar}
             />,
         );
-        expect(screen.getByRole('status')).toHaveTextContent(
-            'The calendar shows 2 of 12 items. Filter the list to see the others.',
-        );
+        expect(
+            screen
+                .getByText('The calendar shows 2 of 12 items. Filter the list to see the others.')
+                .closest('[role="status"]'),
+        ).not.toBeNull();
         expect(screen.queryByRole('navigation', { name: 'Pagination' })).toBeNull();
     });
 });

@@ -50,6 +50,7 @@ export function CardsLayout({
                                 data-selected={selected || undefined}
                                 data-current={current || undefined}
                                 data-highlighted={highlighted || undefined}
+                                data-item-id={item.id}
                                 data-leaving={leaving || undefined}
                                 inert={leaving || undefined}
                             >

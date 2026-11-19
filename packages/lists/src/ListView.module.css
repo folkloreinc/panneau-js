@@ -88,3 +88,13 @@
         margin-inline-start: 0;
     }
 }
+
+/* The status message of the results: read by screen readers, not shown (they see the list). */
+.status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}

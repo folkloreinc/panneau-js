@@ -1,6 +1,6 @@
 # 0017: Actions
 
-- Status: accepted, amended by [0040](0040-row-links-and-open-mode.md): `show`, `edit`, `duplicate` and `delete` exist on every resource without being declared, shown by the abilities of each item
+- Status: accepted, amended by [0040](0040-row-links-and-open-mode.md): `show`, `edit`, `duplicate` and `delete` exist on every resource without being declared, shown by the abilities of each item; and by [0095](0095-focus-and-announcements-in-lists.md): the confirmation of a destructive action opens on "Cancel"
 - Date: 2026-10-14
 
 ## Context
