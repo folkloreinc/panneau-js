@@ -1,13 +1,11 @@
-import { ExternalLink } from 'lucide-react';
 import { useState } from 'react';
 
 import { type ActionOutcome, type ActionTarget, useActionRunner } from '@panneau/actions';
 import { type ItemAction, asksConfirmation } from '@panneau/core';
 import { getActionLabel, listsMessages } from '@panneau/intl';
-import { ConfirmDialog, type ListActionEvent, getActionIcon, getActionTone } from '@panneau/lists';
+import { ActionButton, ConfirmDialog, type ListActionEvent } from '@panneau/lists';
 import type { Action, Item } from '@panneau/protocol';
-import { isExternalUrl } from '@panneau/protocol/runtime';
-import { Button, LinkButton, usePanneauIntl, useToast } from '@panneau/ui';
+import { usePanneauIntl, useToast } from '@panneau/ui';
 
 export interface ItemActionsProps {
     /** The id of the resource. */
@@ -22,18 +20,6 @@ export interface ItemActionsProps {
     runAction?: (target: ActionTarget) => Promise<ActionOutcome | false>;
     /** Called once an action has run, has been queued or has navigated. */
     onRun?: (action: Action, outcome: ActionOutcome) => void;
-}
-
-/**
- * An action is outlined in its tone (decision 0091), as one that destroys is in the danger color
- * (decision 0088): its page on the site in `info`, an action that declares a tone in it. The
- * others are secondary buttons.
- */
-const SECONDARY = { variant: 'secondary' } as const;
-
-function buttonStyle(action: Action) {
-    const tone = getActionTone(action);
-    return tone === 'neutral' ? SECONDARY : ({ tone, appearance: 'outline' } as const);
 }
 
 /**
@@ -98,33 +84,18 @@ export function ItemActions({
             {[
                 ...actions.filter(({ action }) => action.destructive !== true),
                 ...actions.filter(({ action }) => action.destructive === true),
-            ].map(({ action, href }) => {
-                const label = getActionLabel(action, intl);
-                const external = href !== null && isExternalUrl(href);
-                const icon = external ? ExternalLink : getActionIcon(action);
-                return href !== null ? (
-                    <LinkButton
-                        key={action.id}
-                        href={href}
-                        {...buttonStyle(action)}
-                        {...(icon !== undefined ? { icon } : {})}
-                        external={external}
-                    >
-                        {label}
-                    </LinkButton>
-                ) : (
-                    <Button
-                        key={action.id}
-                        {...buttonStyle(action)}
-                        {...(icon !== undefined ? { icon } : {})}
-                        isPending={pending === action.id}
-                        isDisabled={pending !== null && pending !== action.id}
-                        onPress={() => run(action)}
-                    >
-                        {label}
-                    </Button>
-                );
-            })}
+            ].map(({ action, href }) => (
+                <ActionButton
+                    key={action.id}
+                    action={action}
+                    href={href}
+                    size="md"
+                    inHeader
+                    isPending={pending === action.id}
+                    isDisabled={pending !== null && pending !== action.id}
+                    onPress={() => run(action)}
+                />
+            ))}
             <ConfirmDialog
                 event={confirming}
                 onConfirm={(event) => void execute(event.action)}
