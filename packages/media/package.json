@@ -1,6 +1,6 @@
 {
     "name": "@panneau/media",
-    "version": "5.0.0-alpha.43",
+    "version": "5.0.0-alpha.44",
     "description": "The media of Panneau: the media field, which makes media of uploads and follows their ingest.",
     "type": "module",
     "license": "MIT",
@@ -48,12 +48,12 @@
         "react-intl": "^12.0.0"
     },
     "dependencies": {
-        "@panneau/core": "5.0.0-alpha.43",
-        "@panneau/data": "5.0.0-alpha.43",
-        "@panneau/fields": "5.0.0-alpha.43",
-        "@panneau/intl": "5.0.0-alpha.43",
-        "@panneau/protocol": "5.0.0-alpha.43",
-        "@panneau/ui": "5.0.0-alpha.43",
+        "@panneau/core": "5.0.0-alpha.44",
+        "@panneau/data": "5.0.0-alpha.44",
+        "@panneau/fields": "5.0.0-alpha.44",
+        "@panneau/intl": "5.0.0-alpha.44",
+        "@panneau/protocol": "5.0.0-alpha.44",
+        "@panneau/ui": "5.0.0-alpha.44",
         "lucide-react": "^1.57.0"
     }
 }

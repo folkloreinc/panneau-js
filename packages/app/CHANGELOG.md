@@ -1,5 +1,27 @@
 # @panneau/app
 
+## 5.0.0-alpha.44
+
+### Minor Changes
+
+- 333cb75: Empty states, avatars, tiles, button groups and breadcrumbs (decision 0092). `@panneau/ui` exports `EmptyState` (an icon, a title, a description and actions, in two sizes), `Avatar` and `AvatarGroup` (a picture, or initials on a tint of a chart color picked from the name, with a ring in a tone and a status in words for a state of the person), `Tile` and `TileGroup` (a media, a title, a description and actions, and the whole tile a link with `href`), `ButtonGroup` (attached buttons, and split buttons with a `MenuTrigger`) and `Breadcrumbs` (with the middle crumbs folded into a menu by `maxItems`), with their component tokens. `TextArea` takes a `header` and a `footer`, drawn inside its box. `@panneau/intl` has their messages, in English and French. Empty lists and lists without a match, and widgets of the dashboard without data, show an `EmptyState`; the user's menu shows the user's initials in the color of their name.
+- 70ac183: Rows that show one thing are drawn with `Tile` and `TileGroup` (decision 0092): the chosen items of a relation field, the items of the dashboard's list widgets, the passkeys of the account page, and the chosen files of a media field. A row with a link is a link as a whole. Their own stable classes are removed: `.panneau-relation-field-card`, `-card-actions`, `-card-description`, `-card-label`, `-card-text`, `-cards`, `-link` and `-option-thumbnail`; `.panneau-dashboard-item`, `-item-description` and `-item-text`; `.panneau-pages-passkey`, `-passkey-name` and `-passkeys`; `.panneau-media-field-item` and `-thumbnail`. Restyle them with the tile's tokens and its `.panneau-tile` and `.panneau-tile-group` classes.
+
+### Patch Changes
+
+- Updated dependencies [333cb75]
+- Updated dependencies [70ac183]
+- Updated dependencies [07c2ed8]
+  - @panneau/ui@5.0.0-alpha.44
+  - @panneau/intl@5.0.0-alpha.44
+  - @panneau/lists@5.0.0-alpha.44
+  - @panneau/fields@5.0.0-alpha.44
+  - @panneau/protocol@5.0.0-alpha.44
+  - @panneau/data@5.0.0-alpha.44
+  - @panneau/actions@5.0.0-alpha.44
+  - @panneau/forms@5.0.0-alpha.44
+  - @panneau/core@5.0.0-alpha.44
+
 ## 5.0.0-alpha.43
 
 ### Minor Changes
