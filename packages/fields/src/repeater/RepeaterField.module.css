@@ -70,7 +70,7 @@
 
 .toggle:focus-visible {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: 1px;
+    outline-offset: calc(var(--panneau-focus-offset) / 2);
 }
 
 .chevron {

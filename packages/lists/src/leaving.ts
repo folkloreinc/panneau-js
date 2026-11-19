@@ -1,5 +1,7 @@
 import { type RefObject, useEffect, useState } from 'react';
 
+import { prefersReducedMotion } from '@panneau/ui';
+
 import type { ListItem } from './types';
 
 /** Reads a CSS time (`0.2s`, `200ms`, or a list of them) as the longest, in milliseconds. */
@@ -107,8 +109,7 @@ export function useLeavingItems(
             }
         };
         element?.addEventListener('animationend', onAnimationEnd);
-        const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
-        const duration = reduced ? 0 : getLeaveDuration(element);
+        const duration = prefersReducedMotion() ? 0 : getLeaveDuration(element);
         // Only in case the animation doesn't end: hidden, or interrupted
         const timeout = window.setTimeout(leave, duration > 0 ? duration + 100 : 0);
         return () => {

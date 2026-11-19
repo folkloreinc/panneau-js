@@ -135,6 +135,8 @@
     --panneau-row-padding-y: 0.5rem;
     --panneau-target-size: 1.5rem;
     --panneau-focus-width: 2px;
+    /* The gap between a control and its focus ring. */
+    --panneau-focus-offset: 2px;
 
     /* Motion and layers */
     /* Durations: quick for controls and overlays, slow for panels that move across the page. */
@@ -145,6 +147,11 @@
     --panneau-ease-in: cubic-bezier(0.55, 0, 1, 0.45);
     --panneau-z-overlay: 1000;
     --panneau-z-toast: 1100;
+
+    /* Layout: the space at the bottom of the window that the frame of the app takes (a dock), or
+     * that the toasts keep free. What sticks or floats at the bottom stays above it. Layouts set
+     * it; themes don't. */
+    --panneau-frame-bottom: 0px;
 
     color-scheme: light;
 }
@@ -485,7 +492,7 @@
 
 :where(.root) :where(:focus-visible) {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: 2px;
+    outline-offset: var(--panneau-focus-offset);
 }
 
 /*

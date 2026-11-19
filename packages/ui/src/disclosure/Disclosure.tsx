@@ -16,6 +16,11 @@ export interface DisclosureProps {
     title: ReactNode;
     /** Content after the title, in the button: a count of errors. */
     titleEnd?: ReactNode;
+    /**
+     * Content at the end of the header, outside the button: controls that act on the section, such
+     * as a period. They stay visible while it is collapsed.
+     */
+    headerEnd?: ReactNode;
     /** Heading level of the title. Defaults to 3. */
     headingLevel?: 2 | 3 | 4 | 5 | 6;
     children?: ReactNode;
@@ -32,6 +37,7 @@ export interface DisclosureProps {
 export function Disclosure({
     title,
     titleEnd,
+    headerEnd,
     headingLevel = 3,
     children,
     className,
@@ -39,18 +45,28 @@ export function Disclosure({
     panelClassName,
     ...props
 }: DisclosureProps) {
+    const heading = (
+        <Heading level={headingLevel} className={styles.heading}>
+            <Button slot="trigger" className={cx(styles.trigger, triggerClassName)}>
+                <Icon icon={ChevronRight} className={styles.chevron} />
+                <span className={styles.title}>{title}</span>
+                {titleEnd !== undefined ? <> {titleEnd}</> : null}
+            </Button>
+        </Heading>
+    );
     return (
         <AriaDisclosure
             {...props}
             className={cx('panneau-disclosure', styles.disclosure, className)}
         >
-            <Heading level={headingLevel} className={styles.heading}>
-                <Button slot="trigger" className={cx(styles.trigger, triggerClassName)}>
-                    <Icon icon={ChevronRight} className={styles.chevron} />
-                    <span className={styles.title}>{title}</span>
-                    {titleEnd !== undefined ? <> {titleEnd}</> : null}
-                </Button>
-            </Heading>
+            {headerEnd !== undefined && headerEnd !== null ? (
+                <div className={styles.header}>
+                    {heading}
+                    {headerEnd}
+                </div>
+            ) : (
+                heading
+            )}
             <DisclosurePanel className={cx(styles.panel, panelClassName)}>
                 <div className={styles.panelContent}>{children}</div>
             </DisclosurePanel>

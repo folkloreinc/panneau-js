@@ -46,20 +46,8 @@
 }
 
 .brand[data-focus-visible] {
-    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
-}
-
-.logo {
-    display: inline-grid;
-    flex: none;
-    place-items: center;
-    width: 1.75rem;
-    height: 1.75rem;
-    border-radius: var(--panneau-radius-md);
-    background: var(--panneau-sidebar-logo-bg, var(--panneau-color-accent));
-    color: var(--panneau-sidebar-logo-color, var(--panneau-color-accent-text));
-    font-size: var(--panneau-font-size-sm);
-    line-height: 1;
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 0;
 }
 
 .name {
@@ -115,29 +103,6 @@
     justify-content: center;
     min-width: 0;
     margin-top: var(--panneau-shell-inset, var(--panneau-space-2));
-}
-
-/* Keyboard users jump past the navigation. */
-.skipLink {
-    position: absolute;
-    top: var(--panneau-space-2);
-    left: var(--panneau-space-2);
-    z-index: 100;
-    padding: var(--panneau-space-2) var(--panneau-space-3);
-    border-radius: var(--panneau-radius-md);
-    background: var(--panneau-color-accent);
-    color: var(--panneau-color-accent-text);
-    font-weight: var(--panneau-font-weight-medium);
-    text-decoration: none;
-}
-
-.skipLink:not(:focus) {
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
 }
 
 @container panneau-root (min-width: 64rem) {
