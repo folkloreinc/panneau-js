@@ -173,6 +173,45 @@ describe('createRelationSource: ids and creation', () => {
         expect(list).toHaveBeenCalledTimes(1);
     });
 
+    it('asks for an id once, also when fields ask for it apart, while its request is in flight', async () => {
+        const answers: (() => void)[] = [];
+        const list = vi.fn(
+            (_resource: string, query?: ListQuery) =>
+                new Promise<{ data: Item[] }>((resolve) => {
+                    // Answered when the test says so, not after some time
+                    answers.push(() =>
+                        resolve({
+                            data: ((query?.filter?.[IDS_FILTER] ?? []) as string[]).map((id) =>
+                                item(id, { name: `Tag ${id}` }),
+                            ),
+                        }),
+                    );
+                }),
+        );
+        const source = createRelationSource({ list }, { definition });
+        const first = source.resolve?.('tags', ['1', '2'], { signal });
+        // A field that asks later, once the first request has gone
+        await vi.waitFor(() => expect(list).toHaveBeenCalledTimes(1));
+        const second = source.resolve?.('tags', ['2', '3'], { signal });
+        await vi.waitFor(() => expect(list).toHaveBeenCalledTimes(2));
+        expect(list.mock.calls.map(([, query]) => query?.filter?.[IDS_FILTER])).toEqual([
+            ['1', '2'],
+            ['3'],
+        ]);
+        answers.forEach((answer) => answer());
+        await expect(first).resolves.toEqual([
+            { id: '1', label: 'Tag 1' },
+            { id: '2', label: 'Tag 2' },
+        ]);
+        await expect(second).resolves.toEqual([
+            { id: '2', label: 'Tag 2' },
+            { id: '3', label: 'Tag 3' },
+        ]);
+        // Then from the items it keeps, without a request
+        await source.resolve?.('tags', ['1', '3'], { signal });
+        expect(list).toHaveBeenCalledTimes(2);
+    });
+
     it('asks for the ids by groups of IDS_FILTER_LIMIT', async () => {
         const list = vi.fn(async (_resource: string, query?: ListQuery) => ({
             data: ((query?.filter?.[IDS_FILTER] ?? []) as string[]).map((id) =>
