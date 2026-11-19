@@ -1208,6 +1208,7 @@ export const Definition: z.ZodObject<{
         }, z.core.$loose>;
         description: z.ZodOptional<z.ZodString>;
         icon: z.ZodOptional<z.ZodString>;
+        parent: z.ZodOptional<z.ZodString>;
         itemTitle: z.ZodOptional<z.ZodString>;
         itemSubtitle: z.ZodOptional<z.ZodString>;
         itemImage: z.ZodOptional<z.ZodString>;
@@ -2034,6 +2035,9 @@ export const Definition: z.ZodObject<{
         component: z.ZodString;
         path: z.ZodOptional<z.ZodString>;
         label: z.ZodOptional<z.ZodString>;
+        parent: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+            resource: z.ZodString;
+        }, z.core.$loose>]>>;
         props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         params: z.ZodOptional<z.ZodArray<z.ZodString>>;
         abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
@@ -5341,6 +5345,7 @@ export const namedSchemas: {
         }, z.core.$loose>;
         description: z.ZodOptional<z.ZodString>;
         icon: z.ZodOptional<z.ZodString>;
+        parent: z.ZodOptional<z.ZodString>;
         itemTitle: z.ZodOptional<z.ZodString>;
         itemSubtitle: z.ZodOptional<z.ZodString>;
         itemImage: z.ZodOptional<z.ZodString>;
@@ -6221,6 +6226,9 @@ export const namedSchemas: {
         component: z.ZodString;
         path: z.ZodOptional<z.ZodString>;
         label: z.ZodOptional<z.ZodString>;
+        parent: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+            resource: z.ZodString;
+        }, z.core.$loose>]>>;
         props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
         params: z.ZodOptional<z.ZodArray<z.ZodString>>;
         abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
@@ -7459,6 +7467,7 @@ export const namedSchemas: {
             }, z.core.$loose>;
             description: z.ZodOptional<z.ZodString>;
             icon: z.ZodOptional<z.ZodString>;
+            parent: z.ZodOptional<z.ZodString>;
             itemTitle: z.ZodOptional<z.ZodString>;
             itemSubtitle: z.ZodOptional<z.ZodString>;
             itemImage: z.ZodOptional<z.ZodString>;
@@ -8285,6 +8294,9 @@ export const namedSchemas: {
             component: z.ZodString;
             path: z.ZodOptional<z.ZodString>;
             label: z.ZodOptional<z.ZodString>;
+            parent: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+                resource: z.ZodString;
+            }, z.core.$loose>]>>;
             props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
             params: z.ZodOptional<z.ZodArray<z.ZodString>>;
             abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
@@ -11772,6 +11784,9 @@ export const Page: z.ZodObject<{
     component: z.ZodString;
     path: z.ZodOptional<z.ZodString>;
     label: z.ZodOptional<z.ZodString>;
+    parent: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodObject<{
+        resource: z.ZodString;
+    }, z.core.$loose>]>>;
     props: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     params: z.ZodOptional<z.ZodArray<z.ZodString>>;
     abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
@@ -12241,6 +12256,7 @@ export const Resource: z.ZodObject<{
     }, z.core.$loose>;
     description: z.ZodOptional<z.ZodString>;
     icon: z.ZodOptional<z.ZodString>;
+    parent: z.ZodOptional<z.ZodString>;
     itemTitle: z.ZodOptional<z.ZodString>;
     itemSubtitle: z.ZodOptional<z.ZodString>;
     itemImage: z.ZodOptional<z.ZodString>;

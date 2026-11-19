@@ -467,12 +467,13 @@ Built-in actions use reserved ids:
     "home": { "component": "dashboard" }, // the home route
     "activity": { "component": "dashboard", "label": "Activity", "widgets": [ … ] }, // a dashboard page
     "usage": { "component": "usage", "label": "Usage", "props": { "period": "month" } },
-    "job": { "component": "job", "label": "Job", "params": ["id"] }, // {basePath}/pages/job/{id}
+    "job": { "component": "job", "label": "Job", "params": ["id"], "parent": { "resource": "jobs" } }, // {basePath}/pages/job/{id}
 }
 ```
 
 - The component gets the page's `props`, the definition, and `params`: the values of the path segments that `params` names ([decisions/0038](decisions/0038-pages-with-params.md)). A page takes exactly its params.
 - A route reference can name a page: `{ "route": "job", "params": { "id": "4f2a" } }`, when `routes` has no route of that name. Menus don't link to pages with params.
+- **`parent`** ([0093](decisions/0093-breadcrumbs-in-the-page-header.md)): what the page belongs to, another page (`"parent": "activity"`) or the list of a resource (`"parent": { "resource": "jobs" }`). A resource can name a page as its `parent` too, such as the dashboard page that a log is reached from. Clients show the parents above the title of the page, and keep the nearest one in the menus current when the page or the resource isn't there. `lintDefinition()` checks that a parent exists, isn't `home` nor a page with `params`, and that no chain comes back to where it started.
 - **`abilities`** ([0046](decisions/0046-abilities-in-the-ui.md)): `{ "view": false }` leaves the page out of menus, and its route shows a forbidden state. `pages.home` with `view: false` falls back to the built-in home. Without it, a page is allowed. A backend can also leave out a page the user should not know about.
 
 ### Dashboard

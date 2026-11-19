@@ -59,6 +59,37 @@
     content: '';
 }
 
+/* With two parents or more (decision 0093): the breadcrumbs from 48rem of the root, and below it,
+   a link to the nearest parent. */
+.wideOnly {
+    display: none;
+}
+
+@container panneau-root (min-width: 48rem) {
+    .wideOnly {
+        display: block;
+    }
+
+    .narrowOnly {
+        display: none;
+    }
+}
+
+/* A title that loads: a line of the heading's height. */
+.titleSkeleton {
+    max-width: 100%;
+}
+
+/* What a title that loads says to screen readers: not shown. */
+.hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
 .back[data-hovered] {
     color: var(--panneau-color-text);
 }

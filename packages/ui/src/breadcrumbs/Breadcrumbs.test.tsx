@@ -26,6 +26,23 @@ describe('Breadcrumbs', () => {
         expect(nav.querySelectorAll('svg[aria-hidden="true"]')).toHaveLength(2);
     });
 
+    it('draws a skeleton for a label that loads, which says so to screen readers', () => {
+        render(
+            <Breadcrumbs
+                items={[
+                    { id: 'activity', label: 'Activity', href: '/pages/activity' },
+                    { id: 'emails', label: 'Emails sent', href: '/resources/emails' },
+                    { id: 'email', label: undefined },
+                ]}
+            />,
+        );
+        const nav = screen.getByRole('navigation');
+        const current = within(nav).getByText('Loading…').closest('[aria-current]');
+        expect(current).toHaveAttribute('aria-current', 'page');
+        expect(nav.querySelector('.panneau-skeleton')).toHaveAttribute('aria-hidden', 'true');
+        expect(within(nav).getByRole('link', { name: 'Emails sent' })).toBeInTheDocument();
+    });
+
     it('goes through the router', async () => {
         const navigate = vi.fn();
         render(

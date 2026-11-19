@@ -59,3 +59,47 @@ export const Folded: Story = {
         await userEvent.keyboard('{Escape}');
     },
 };
+
+/** A crumb whose label loads, such as the title of an item, is a skeleton. */
+export const Loading: Story = {
+    args: {
+        items: [
+            { id: 'activity', label: 'Activity', href: '/pages/activity' },
+            { id: 'emails', label: 'Emails sent', href: '/resources/emails' },
+            { id: 'email', label: undefined },
+        ],
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByRole('link', { name: 'Emails sent' })).toBeVisible();
+        await expect(canvas.getByText('Loading…').closest('[aria-current]')).toHaveAttribute(
+            'aria-current',
+            'page',
+        );
+    },
+};
+
+/** In a narrow column, the label of the current page is cut first: the parents stay whole. */
+export const Narrow: Story = {
+    args: {
+        items: [
+            { id: 'activity', label: 'Activity', href: '/pages/activity' },
+            { id: 'emails', label: 'Emails sent', href: '/resources/emails' },
+            { id: 'email', label: 'To Ada Lovelace, about the reading group of next Thursday' },
+        ],
+    },
+    decorators: [
+        (Story) => (
+            <div style={{ width: '18rem' }}>
+                <Story />
+            </div>
+        ),
+    ],
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const parent = canvas.getByText('Emails sent');
+        await expect(parent.scrollWidth).toBeLessThanOrEqual(parent.clientWidth);
+        const current = canvas.getByText(/^To Ada Lovelace/);
+        await expect(current.scrollWidth).toBeGreaterThan(current.clientWidth);
+    },
+};

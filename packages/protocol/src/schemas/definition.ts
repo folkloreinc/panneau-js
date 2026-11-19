@@ -128,6 +128,13 @@ export const Page = z.looseObject({
         .meta({ description: 'A page provided by a plugin, or a built-in page.' }),
     path: z.string().optional().meta({ description: 'Path of a custom page.' }),
     label: z.string().optional(),
+    parent: z
+        .union([z.string().min(1), z.looseObject({ resource: z.string().min(1) })])
+        .optional()
+        .meta({
+            description:
+                'What the page belongs to (decision 0093): another page of `pages`, or the list of a resource (`{ "resource": "jobs" }`). The app shows it above the title of the page, and keeps it current in the menus when the page is not in them. Not `home`, nor a page with `params`.',
+        }),
     props: z.record(z.string(), z.unknown()).optional(),
     params: z
         .array(z.string().regex(/^[A-Za-z_][A-Za-z0-9_]*$/))

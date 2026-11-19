@@ -2,9 +2,19 @@ import { ChevronLeft } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-aria-components';
 
-import { LinkButton as ButtonLink, Heading, Icon } from '@panneau/ui';
+import { appMessages } from '@panneau/intl';
+import {
+    Breadcrumbs,
+    LinkButton as ButtonLink,
+    Heading,
+    Icon,
+    Skeleton,
+    usePanneauIntl,
+} from '@panneau/ui';
 
 import { cx } from '../cx';
+import { usePageParents } from '../pageRoute';
+import type { PageParent } from '../parents';
 import styles from './pages.module.css';
 
 export interface PageLayoutProps {
@@ -32,27 +42,95 @@ export function PageLayout({ width = 'default', className, children }: PageLayou
 export interface PageHeaderProps {
     /** The title, in the page's only `h1`. */
     title: ReactNode;
-    /** A link to the parent page, above the title. */
+    /**
+     * The parents of the page, from the top (decision 0093): a link to the nearest one above the
+     * title, or with two or more, the breadcrumbs of all of them and of the page, from 48rem of the
+     * root. Defaults to the parents of the route the app renders; `[]` shows none.
+     */
+    parents?: readonly PageParent[];
+    /** The label of the page in its breadcrumbs, when `title` isn't a string. */
+    crumbLabel?: string;
+    /** The title loads, such as the title of an item: it is a skeleton, and its crumb too. */
+    isLoading?: boolean;
+    /**
+     * A link to the parent page, above the title.
+     *
+     * @deprecated Use `parents`, with the parent in it: `parents={[back]}`.
+     */
     back?: { href: string; label: string };
     /** Buttons and links at the end of the header. */
     actions?: ReactNode;
 }
 
+/** The most crumbs in the header: the first parent, "…", the nearest parent and the page. */
+const MAX_CRUMBS = 4;
+
 /**
- * The header of a page: its title, a link to its parent page above it, and its actions at the end,
- * as the pages of resources have it.
+ * The header of a page: its title, its parents above it, and its actions at the end, as the pages
+ * of resources have it. One parent is a link to it. Two or more are breadcrumbs, from 48rem of the
+ * root, and a link to the nearest one below (decision 0093).
  */
-export function PageHeader({ title, back, actions }: PageHeaderProps) {
+export function PageHeader({
+    title,
+    parents,
+    crumbLabel,
+    isLoading = false,
+    back,
+    actions,
+}: PageHeaderProps) {
+    const intl = usePanneauIntl();
+    const routeParents = usePageParents();
+    const list = parents ?? (back !== undefined ? [back] : routeParents);
+    const nearest = list.at(-1);
+    const label =
+        crumbLabel ??
+        (typeof title === 'string' || typeof title === 'number' ? String(title) : undefined);
+    // A page without a label of its own shows the link to its nearest parent at every width.
+    const hasTrail = list.length > 1 && (isLoading || label !== undefined);
+    const backLink =
+        nearest !== undefined ? (
+            <Link href={nearest.href} className={cx(styles.back, hasTrail && styles.narrowOnly)}>
+                <Icon icon={ChevronLeft} size="sm" />
+                {nearest.label ?? (
+                    <>
+                        <Skeleton width="6rem" />
+                        <span className={styles.hidden}>
+                            {intl.formatMessage(appMessages.loading)}
+                        </span>
+                    </>
+                )}
+            </Link>
+        ) : null;
     return (
         <header className={styles.header}>
             <div className={styles.headerTitle}>
-                {back !== undefined ? (
-                    <Link href={back.href} className={styles.back}>
-                        <Icon icon={ChevronLeft} size="sm" />
-                        {back.label}
-                    </Link>
+                {hasTrail ? (
+                    <Breadcrumbs
+                        className={styles.wideOnly}
+                        maxItems={MAX_CRUMBS}
+                        items={[
+                            ...list.map((parent) => ({
+                                id: parent.href,
+                                label: parent.label,
+                                href: parent.href,
+                            })),
+                            { id: 'panneau-current-page', label: isLoading ? undefined : label },
+                        ]}
+                    />
                 ) : null}
-                <Heading level={1}>{title}</Heading>
+                {backLink}
+                <Heading level={1}>
+                    {isLoading ? (
+                        <>
+                            <Skeleton width="16rem" className={styles.titleSkeleton} />
+                            <span className={styles.hidden}>
+                                {intl.formatMessage(appMessages.loading)}
+                            </span>
+                        </>
+                    ) : (
+                        title
+                    )}
+                </Heading>
             </div>
             {actions !== undefined ? <div className={styles.headerActions}>{actions}</div> : null}
         </header>

@@ -362,7 +362,83 @@ export function lintDefinition(definition: DefinitionInput): ValidationIssue[] {
         });
     });
     checkDashboards(definition, issues);
+    checkParents(definition, issues);
     return issues;
+}
+
+/**
+ * The `parent` of resources and pages (decision 0093): a page of `pages` that the app can link
+ * to, or for a page, a resource of the definition, and no chain that comes back to where it
+ * started.
+ */
+function checkParents(definition: DefinitionInput, issues: ValidationIssue[]) {
+    const pages = definition.pages ?? {};
+    const resourceIds = new Set(definition.resources.map((resource) => resource.id));
+    const checkPage = (page: string, path: string) => {
+        const target = pages[page];
+        if (target === undefined) {
+            issues.push({ path, message: `No page \`${page}\`.` });
+        } else if (page === HOME_PAGE) {
+            issues.push({ path, message: 'The home page is never a parent.' });
+        } else if ((target.params ?? []).length > 0) {
+            issues.push({
+                path,
+                message: `The page \`${page}\` has \`params\`: no link leads to it.`,
+            });
+        }
+    };
+    // Each resource and page by a key, and the key of its parent
+    const parentOf = new Map<string, string>();
+    definition.resources.forEach((resource, index) => {
+        if (resource.parent !== undefined) {
+            checkPage(resource.parent, `resources.${index}.parent`);
+            parentOf.set(`resource:${resource.id}`, `page:${resource.parent}`);
+        }
+    });
+    Object.entries(pages).forEach(([id, page]) => {
+        if (page.parent === undefined) {
+            return;
+        }
+        const path = `pages.${id}.parent`;
+        if (typeof page.parent === 'string') {
+            if (page.parent === id) {
+                issues.push({ path, message: 'A page is not its own parent.' });
+                return;
+            }
+            checkPage(page.parent, path);
+            parentOf.set(`page:${id}`, `page:${page.parent}`);
+        } else {
+            if (!resourceIds.has(page.parent.resource)) {
+                issues.push({
+                    path: `${path}.resource`,
+                    message: `No resource \`${page.parent.resource}\`.`,
+                });
+            }
+            parentOf.set(`page:${id}`, `resource:${page.parent.resource}`);
+        }
+    });
+    // A chain that comes back to where it started: reported once, on the first of its members
+    const reported = new Set<string>();
+    parentOf.forEach((_, start) => {
+        const seen: string[] = [start];
+        let current = parentOf.get(start);
+        while (current !== undefined && current !== start && !seen.includes(current)) {
+            seen.push(current);
+            current = parentOf.get(current);
+        }
+        if (current !== start || seen.some((key) => reported.has(key))) {
+            return;
+        }
+        seen.forEach((key) => reported.add(key));
+        const [kind, id] = start.split(':') as [string, string];
+        const index = definition.resources.findIndex((resource) => resource.id === id);
+        issues.push({
+            path: kind === 'page' ? `pages.${id}.parent` : `resources.${String(index)}.parent`,
+            message: `The parents of \`${id}\` come back to it: ${[...seen, start]
+                .map((key) => `\`${key.split(':')[1] ?? ''}\``)
+                .join(' → ')}.`,
+        });
+    });
 }
 
 /**

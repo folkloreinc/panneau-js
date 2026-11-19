@@ -7,7 +7,6 @@ import { getCreatableTypes } from '@panneau/protocol/runtime';
 import { Icon, getNamedIcon, usePanneauIntl } from '@panneau/ui';
 
 import { useDocumentTitle } from '../documentTitle';
-import { capitalize } from '../navigation';
 import { routePath } from '../routes';
 import { PageHeader, PageLayout } from './PageHeader';
 import styles from './pages.module.css';
@@ -15,25 +14,20 @@ import styles from './pages.module.css';
 export interface ResourceTypesPageProps {
     resolved: ResolvedResource;
     basePath: string;
-    locale: string;
 }
 
 /**
  * The create route of a resource with types (decision 0077): a card for each type the user can
  * create, which opens its form.
  */
-export function ResourceTypesPage({ resolved, basePath, locale }: ResourceTypesPageProps) {
+export function ResourceTypesPage({ resolved, basePath }: ResourceTypesPageProps) {
     const intl = usePanneauIntl();
     const { resource } = resolved;
     const title = intl.formatMessage(appMessages.create, { resource: resource.label.singular });
-    const back = {
-        href: routePath({ name: 'resource.index', resource: resource.id }, basePath),
-        label: capitalize(resource.label.plural, locale),
-    };
-    useDocumentTitle([title, back.label]);
+    useDocumentTitle([title]);
     return (
         <PageLayout width="narrow">
-            <PageHeader title={title} back={back} />
+            <PageHeader title={title} />
             <p className={styles.intro}>
                 {intl.formatMessage(appMessages.chooseType, {
                     resource: resource.label.singular,
