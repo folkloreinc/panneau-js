@@ -1,6 +1,6 @@
 # 0050: The account page
 
-- Status: proposed
+- Status: accepted, amended by [0086](0086-one-user-menu.md): the user's name opens their menu, where "Profile" links to the account page
 - Date: 2026-11-03
 - Issues: [#204](https://github.com/folkloreinc/panneau-js/issues/204), [folkloreinc/laravel-panneau#161](https://github.com/folkloreinc/laravel-panneau/issues/161)
 - Changes: the link to the user's profile in the sidebar ([0012](0012-authentication.md) planned an account page with the security settings); `GET` and `PATCH /account` of `openapi.json`

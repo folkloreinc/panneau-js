@@ -1,6 +1,6 @@
 # 0045: A current context, picked in the app and sent with every request
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-03
 - Issue: [#182](https://github.com/folkloreinc/panneau-js/issues/182), [folkloreinc/laravel-panneau#147](https://github.com/folkloreinc/laravel-panneau/issues/147)
 - Changes: the client routes of [0019](0019-app-entry.md), which get a prefix

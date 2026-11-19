@@ -1,6 +1,6 @@
 # 0080: A media library page, the picker's library outside a dialog
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-17
 - Issue: [#295](https://github.com/folkloreinc/panneau-js/issues/295)
 - Amends: [0027](0027-media-picker.md), which made the picker a dialog only

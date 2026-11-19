@@ -1,6 +1,6 @@
 # 0062: Toasts at the bottom, one per thing, and only when the page doesn't say it
 
-- Status: proposed
+- Status: accepted, amended by [0066](0066-a-create-goes-back-to-the-list.md): the toast after a create, and the list that shows the new item
 - Date: 2026-11-04
 - Issue: [#229](https://github.com/folkloreinc/panneau-js/issues/229)
 

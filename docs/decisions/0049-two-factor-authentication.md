@@ -1,6 +1,6 @@
 # 0049: Two-factor authentication, required for some users, and password confirmation
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-03
 - Issues: [#203](https://github.com/folkloreinc/panneau-js/issues/203), [folkloreinc/laravel-panneau#160](https://github.com/folkloreinc/laravel-panneau/issues/160)
 - Changes: `POST /auth/login` and `POST /auth/two-factor/challenge`, sketched in [0012](0012-authentication.md) and left out of [0037](0037-login-page-token-and-logout.md); the `/account/two-factor` endpoints that `docs/protocol.md` listed

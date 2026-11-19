@@ -1,6 +1,6 @@
 # 0088: Actions that destroy come last, outlined
 
-- Status: proposed, amended the same day: last and outlined in the header, instead of a menu, and rows as before (see [Amendment](#amendment-one-place-for-the-actions-of-an-item))
+- Status: accepted, amended the same day: last and outlined in the header, instead of a menu, and rows as before (see [Amendment](#amendment-one-place-for-the-actions-of-an-item))
 - Date: 2026-11-18
 - Issue: [#322](https://github.com/folkloreinc/panneau-js/issues/322)
 - Amends: the header of an item in [0040](0040-row-links-and-open-mode.md)

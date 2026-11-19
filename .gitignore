@@ -56,3 +56,4 @@ node_modules
 .claude
 /storybook-static
 /playground-dist
+*.tsbuildinfo
