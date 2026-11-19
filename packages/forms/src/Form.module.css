@@ -174,7 +174,7 @@
 
 .summary:focus {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: 2px;
+    outline-offset: var(--panneau-focus-offset);
 }
 
 .summaryList {
@@ -198,7 +198,7 @@
 
 .summaryLink:focus-visible {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: 2px;
+    outline-offset: var(--panneau-focus-offset);
 }
 
 @container panneau-form (max-width: 36rem) {

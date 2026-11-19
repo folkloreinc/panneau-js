@@ -135,6 +135,8 @@
     --panneau-row-padding-y: 0.5rem;
     --panneau-target-size: 1.5rem;
     --panneau-focus-width: 2px;
+    /* The gap between a control and its focus ring. */
+    --panneau-focus-offset: 2px;
 
     /* Motion and layers */
     /* Durations: quick for controls and overlays, slow for panels that move across the page. */
@@ -485,7 +487,7 @@
 
 :where(.root) :where(:focus-visible) {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: 2px;
+    outline-offset: var(--panneau-focus-offset);
 }
 
 /*

@@ -32,7 +32,7 @@
 
 .region[data-focus-visible] {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: 4px;
+    outline-offset: calc(var(--panneau-focus-offset) * 2);
 }
 
 /* On a phone, the whole width at the bottom (or the top). */
@@ -194,7 +194,7 @@
 
 .toast[data-focus-visible] {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: 2px;
+    outline-offset: var(--panneau-focus-offset);
 }
 
 /*

@@ -63,7 +63,7 @@
 
 .radio[data-focus-visible] .circle {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: 2px;
+    outline-offset: var(--panneau-focus-offset);
 }
 
 .text {
@@ -166,7 +166,7 @@
 /* A card shows the focus ring around itself, instead of around its radio. */
 .card[data-focus-visible] {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: 2px;
+    outline-offset: var(--panneau-focus-offset);
 }
 
 .card[data-focus-visible] .circle {
@@ -265,7 +265,7 @@
     position: relative;
     z-index: 1;
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: 2px;
+    outline-offset: var(--panneau-focus-offset);
 }
 
 .ends {
