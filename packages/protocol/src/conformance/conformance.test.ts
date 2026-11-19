@@ -886,6 +886,54 @@ describe('runConformance', () => {
         expect(ids?.issues?.[0]).toMatch(/^filter\[ids\]\[\] of .+ listed /);
     });
 
+    it('reports a backend that ignores fields or doesn’t cap perPage', async () => {
+        const backend = createBackend();
+        const passing = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: backend.fetch,
+        });
+        const statuses = Object.fromEntries(
+            passing.checks.map((check) => [check.id, check.status]),
+        );
+        expect(statuses).toMatchObject({ 'list.fields': 'passed', 'list.per-page': 'passed' });
+        // A backend that also gives the title of items, as laravel-panneau does
+        const withTitle = (input: string, init?: RequestInit) => {
+            const url = new URL(input);
+            const fields = url.searchParams.get('fields');
+            if (fields !== null) {
+                url.searchParams.set('fields', `${fields},title`);
+            }
+            return backend.fetch(url.toString(), init);
+        };
+        const titled = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: withTitle,
+        });
+        expect(titled.checks.find((check) => check.id === 'list.fields')?.status).toBe('passed');
+        // A backend that gives every field, and as many items as asked for
+        const careless = async (input: string, init?: RequestInit) => {
+            const url = new URL(input);
+            const perPage = Number(url.searchParams.get('perPage') ?? '20');
+            url.searchParams.delete('fields');
+            const response = await backend.fetch(url.toString(), init);
+            if (perPage <= 100 || !response.ok) {
+                return response;
+            }
+            const body = (await response.json()) as { data: unknown[]; meta: object };
+            return Response.json({ ...body, meta: { ...body.meta, perPage } });
+        };
+        const report = await runConformance({
+            baseUrl: 'http://panneau.test/panneau/api',
+            fetch: careless,
+        });
+        const fields = report.checks.find((check) => check.id === 'list.fields');
+        expect(fields?.status).toBe('failed');
+        expect(fields?.issues?.[0]).toMatch(/^fields=status also gave the values of /);
+        const perPage = report.checks.find((check) => check.id === 'list.per-page');
+        expect(perPage?.status).toBe('failed');
+        expect(perPage?.issues?.[0]).toMatch(/^perPage=101 answered meta.perPage 101/);
+    });
+
     it('reports a backend that ignores the bounds of a range filter', async () => {
         const backend = createBackend();
         // A backend that only knows `filter[id]` and `filter[id][]`.

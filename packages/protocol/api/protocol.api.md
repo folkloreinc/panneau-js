@@ -3682,6 +3682,9 @@ export function matchesFilterRange(value: unknown, range: FilterRange): boolean;
 // @public
 export function matchesRatio(width: number, height: number, ratio: number | string): boolean;
 
+// @public
+export const MAX_PER_PAGE = 100;
+
 // @public (undocumented)
 export const MediaInfo: z.ZodObject<{
     type: z.ZodString;

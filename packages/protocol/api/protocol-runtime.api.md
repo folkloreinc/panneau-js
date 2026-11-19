@@ -520,6 +520,9 @@ export function matchesFilterRange(value: unknown, range: FilterRange): boolean;
 export function matchesRatio(width: number, height: number, ratio: number | string): boolean;
 
 // @public
+export const MAX_PER_PAGE = 100;
+
+// @public
 export interface MediaLibrariesDefinition {
     // (undocumented)
     resources: readonly {

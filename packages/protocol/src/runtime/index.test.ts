@@ -105,6 +105,7 @@ describe('@panneau/protocol/runtime', () => {
             'IDS_FILTER_LIMIT',
             'ITEM_ACTION_ABILITIES',
             'ITEM_TYPE_KEY',
+            'MAX_PER_PAGE',
             'OVERVIEW_PERIODS',
             'PASSWORD_CONFIRMATION_PROBLEM_TYPE',
             'PERIOD_PARAM',

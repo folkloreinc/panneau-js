@@ -127,6 +127,7 @@ export {
     type UseFormResult,
     useForm,
     useFormField,
+    useFormSelector,
 } from './react/useForm';
 export { type UseListResult, useList } from './react/useList';
 export { type Values, isEqual, setValue } from './values';

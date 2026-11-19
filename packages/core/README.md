@@ -55,7 +55,7 @@ Values live in a `FormStore`. The default one is local; a shared store (Yjs) can
 
 ### Reading the state in components
 
-Components read the state they subscribed to (what `useForm()` returns, or `useSyncExternalStore(form.subscribe, form.getState)`) with pure selectors:
+Components read the state with pure selectors. `useFormSelector(form, select)` subscribes a component to a slice of the state: it renders again when that slice changes, not on every keystroke. What `useForm()` returns, or `useSyncExternalStore(form.subscribe, form.getState)`, is the whole state, which changes on every keystroke. The selectors:
 
 | Selector                                   | Returns                                                                                             |
 | ------------------------------------------ | --------------------------------------------------------------------------------------------------- |
@@ -66,11 +66,12 @@ Components read the state they subscribed to (what `useForm()` returns, or `useS
 
 ```tsx
 function TitleField({ form }: { form: Form }) {
-    const state = useSyncExternalStore(form.subscribe, form.getState, form.getState);
-    const errors = selectErrors(state, 'title', { nested: true });
+    const errors = useFormSelector(form, (state) => selectErrors(state, 'title', { nested: true }));
     // …
 }
 ```
+
+A slice must be the same value for the same state: a primitive, or what the selectors return. `selectValue()` returns the value as stored, and `selectErrors()` the same array while the errors stay the same (an empty one is always the same). A new object or array on every call renders the component again and again.
 
 The form's methods that read the state (`form.getValue()`, `form.getErrors()`, `form.countErrors()`, `form.isVisible()`) are **not React APIs**: the React Compiler memoizes calls by their arguments, and these arguments don't change when the state does, so the results go stale (the error of a field doesn't show after a blur). Use them outside of components: in event handlers, effects, tests or plain scripts.
 

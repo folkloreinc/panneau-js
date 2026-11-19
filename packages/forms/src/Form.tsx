@@ -1,8 +1,15 @@
-import { type FormOptions, resolveFields, useForm, usePanneau } from '@panneau/core';
+import { useLayoutEffect, useState } from 'react';
+
+import { type FormOptions, createForm, resolveFields, usePanneau } from '@panneau/core';
 import type { Field, LayoutNode } from '@panneau/protocol';
 
 import { FormView, type FormViewProps } from './FormView';
 import { useFormatRuleFailure } from './formatError';
+
+// Not `[]` in the component: the React Compiler doesn't memoize what is computed from an array
+// made before a hook, and the whole form would render again with the component
+const NO_LAYOUT: readonly LayoutNode[] = [];
+const NO_LOCALES: readonly string[] = [];
 
 export interface FormProps
     extends
@@ -16,7 +23,7 @@ export interface FormProps
 
 /**
  * A form from a list of fields and an `onSubmit`, with or without a definition. It creates its
- * state with `useForm()` of `@panneau/core`: values, validation with the portable rules, server
+ * state with `createForm()` of `@panneau/core`: values, validation with the portable rules, server
  * errors (`422`) and version conflicts (`412`) from what `onSubmit` throws. Rule messages are
  * translated with react-intl.
  *
@@ -26,7 +33,7 @@ export interface FormProps
  */
 export function Form({
     fields,
-    layout = [],
+    layout = NO_LAYOUT,
     values,
     version,
     mode,
@@ -41,8 +48,8 @@ export function Form({
     const formMode = mode ?? (version !== undefined && version !== null ? 'update' : 'create');
     const resolved = resolveFields(fields, layout, { mode: formMode });
     const formatRuleFailure = useFormatRuleFailure(resolved.fields);
-    const formLocales = locales ?? definition?.locales ?? [];
-    const { form } = useForm({
+    const formLocales = locales ?? definition?.locales ?? NO_LOCALES;
+    const options: FormOptions = {
         fields: resolved.fields,
         locales: [...formLocales],
         formatError: formatError ?? formatRuleFailure,
@@ -51,6 +58,17 @@ export function Form({
         mode: formMode,
         ...(store !== undefined ? { store } : {}),
         ...(onSubmit !== undefined ? { onSubmit } : {}),
+    };
+    // As `useForm()` does, without subscribing to the state: the parts of the form subscribe to
+    // the slices they show, so that a change doesn't render the whole form again
+    const [form] = useState(() => createForm(options));
+    useLayoutEffect(() => {
+        form.setOptions({
+            fields: options.fields,
+            locales: options.locales,
+            formatError: options.formatError,
+            onSubmit: options.onSubmit,
+        });
     });
     return (
         <FormView

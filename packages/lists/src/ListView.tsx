@@ -35,6 +35,7 @@ import { InlineCell } from './inline/InlineCell';
 import { getInlineField } from './inline/editable';
 import { builtInLayouts } from './layouts/builtIn';
 import { getCalendarTimeZone } from './layouts/calendarDays';
+import { getLayoutComponents, resolveListLayout } from './layouts/resolve';
 import { useLeavingItems, withLeavingItems } from './leaving';
 import { messages } from './messages';
 import { countSelected, getPageSelection, isItemSelected } from './selection';
@@ -278,23 +279,15 @@ export function ListView({
     const count = total ?? pageItems.length;
     const sort = query.sort ?? [];
 
-    const allLayouts: Record<string, ListLayoutEntry> = {
-        ...builtInLayouts,
-        ...(Object.fromEntries(plugins.listLayouts) as Record<string, ListLayoutEntry>),
-        ...layoutComponents,
-    };
-    // Layouts without a component (a plugin's that isn't installed) are left out, and so are the
-    // gallery without images and the calendar without a calendar.
-    const available = layoutsProp.filter(
-        (id) =>
-            allLayouts[id] !== undefined &&
-            (id !== 'gallery' || itemImage !== undefined) &&
-            (id !== 'calendar' || calendar !== null),
-    );
-    const layouts = available.length > 0 ? available : ['table'];
-    const chosenLayout =
-        view.layout !== undefined && layouts.includes(view.layout) ? view.layout : undefined;
-    const layout = controlledLayout ?? chosenLayout ?? layouts[0] ?? 'table';
+    const allLayouts = getLayoutComponents(plugins.listLayouts, layoutComponents);
+    const { layouts, layout } = resolveListLayout({
+        components: allLayouts,
+        layouts: layoutsProp,
+        chosen: view.layout,
+        controlled: controlledLayout,
+        itemImage,
+        calendar,
+    });
     const columns = getShownColumns(allColumns, view.columns);
     const Layout = allLayouts[layout] ?? builtInLayouts.table;
     const inCalendar = layout === 'calendar' && calendar !== null;

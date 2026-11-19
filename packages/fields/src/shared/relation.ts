@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 
 import type { Definition, Item, ListQuery } from '@panneau/protocol';
-import { getImageUrl, getItemImageField } from '@panneau/protocol/runtime';
+import {
+    IDS_FILTER,
+    IDS_FILTER_LIMIT,
+    getImageUrl,
+    getItemImageField,
+} from '@panneau/protocol/runtime';
 
 /**
  * A related item: its id, and a label to show it. The value of a relation field. Its card also
@@ -37,13 +42,21 @@ export interface RelationSource {
     /**
      * The references of items by id, for values that are only ids (`"12"`, `["12", "13"]`), as a
      * product's own API gives them. In any order; ids it doesn't find are left out, and keep their
-     * id as label. Without it, fields show the ids.
+     * id as label. Without it, fields show the ids. Each field asks for its own ids: a source that
+     * gets them from a backend groups the requests of the fields of a form (as
+     * `createRelationSource()` does).
      */
     resolve?(
         resource: string,
         ids: readonly string[],
         options: { signal: AbortSignal },
     ): Promise<RelationReference[]>;
+    /**
+     * The reference of an item that the source already has, without a request: fields show it at
+     * once, rather than its id until `resolve()` answers. `null` for an id that the source didn't
+     * find, `undefined` for an id it doesn't know.
+     */
+    peek?(resource: string, id: string): RelationReference | null | undefined;
     /**
      * Creates an item from the text typed in the picker, which offers "Create “…”" when this
      * method exists. It can open a dialog, and resolves with the reference of the new item, or with
@@ -62,17 +75,25 @@ export interface RelationSource {
     getItemHref?(resource: string, id: string): string | null;
 }
 
-/** What `createRelationSource()` needs from an adapter: the `list()`, `get()` and `create()` of `@panneau/data`. */
+/** What `createRelationSource()` needs from an adapter: the `list()` and `create()` of `@panneau/data`. */
 export interface RelationListAdapter {
+    /** Searches items (`q`), and gets them by id (`filter[ids]`), for `resolve()`. */
     list(
         resource: string,
         query?: ListQuery,
         options?: { signal?: AbortSignal },
     ): Promise<{ data: Item[] }>;
-    /** One item, for `resolve()`. Without it, the source doesn't resolve ids. */
-    get?(resource: string, id: string, options?: { signal?: AbortSignal }): Promise<Item>;
     /** Creates an item, for `create()`. */
     create?(resource: string, values: Record<string, unknown>): Promise<Item>;
+}
+
+/**
+ * Where `createRelationSource()` keeps the items it gets by id, such as the item queries of a
+ * query client: `resolve()` only asks for the items it doesn't have, and adds those it gets.
+ */
+export interface RelationItemCache {
+    get(resource: string, id: string): Item | undefined;
+    set(resource: string, item: Item): void;
 }
 
 export interface RelationSourceOptions {
@@ -91,6 +112,11 @@ export interface RelationSourceOptions {
     create?: boolean | ((text: string, resource: string) => Record<string, unknown> | null);
     /** Where an item opens, for the link of its card, such as its page in the app. */
     getItemHref?: (resource: string, id: string) => string | null;
+    /**
+     * Where the items that `resolve()` gets are kept, such as the item queries of the app's query
+     * client. Defaults to a cache of the source's own.
+     */
+    items?: RelationItemCache;
 }
 
 function labelOf(value: unknown, locale?: string): string | null {
@@ -106,14 +132,46 @@ function labelOf(value: unknown, locale?: string): string | null {
     return null;
 }
 
+const keyOf = (resource: string, id: string) => `${resource}\u0000${id}`;
+
+/** A cache of items for the life of a relation source, without the `items` option. */
+function createItemCache(): RelationItemCache {
+    const items = new Map<string, Item>();
+    return {
+        get: (resource, id) => items.get(keyOf(resource, id)),
+        set: (resource, item) => items.set(keyOf(resource, item.id), item),
+    };
+}
+
+/** Splits ids into groups of at most `size`. */
+function chunk(ids: readonly string[], size: number): string[][] {
+    const chunks: string[][] = [];
+    for (let start = 0; start < ids.length; start += size) {
+        chunks.push(ids.slice(start, start + size));
+    }
+    return chunks;
+}
+
 /**
  * A relation source over an adapter, such as the `DataAdapter` of `@panneau/data`: a search is a
- * list query with `q`, ids are resolved with `get()`, and, with the `create` option, items are
- * created with `create()`. Labels come from the resource's `itemTitle`.
+ * list query with `q`, and, with the `create` option, items are created with `create()`. Labels
+ * come from the resource's `itemTitle`.
+ *
+ * `resolve()` gets the items it doesn't have yet with one list query on their ids
+ * (`filter[ids]`, by groups of `IDS_FILTER_LIMIT`), for the ids that every field of a form asks
+ * for at once, and keeps them in `items`. Its requests are shared by the fields that ask for the
+ * same ids: one field's `signal` doesn't abort them.
  */
 export function createRelationSource(
     adapter: RelationListAdapter,
-    { definition = null, perPage = 20, getLabel, create, getItemHref }: RelationSourceOptions = {},
+    {
+        definition = null,
+        perPage = 20,
+        getLabel,
+        create,
+        getItemHref,
+        items = createItemCache(),
+    }: RelationSourceOptions = {},
 ): RelationSource {
     const resourceOf = (resource: string) =>
         definition?.resources.find((candidate) => candidate.id === resource);
@@ -177,17 +235,80 @@ export function createRelationSource(
     if (getItemHref !== undefined) {
         source.getItemHref = getItemHref;
     }
-    const { get, create: createItem } = adapter;
-    if (get !== undefined) {
-        source.resolve = async (resource, ids, { signal }) => {
-            const results = await Promise.allSettled(
-                ids.map((id) => get.call(adapter, resource, id, { signal })),
-            );
-            return results.flatMap((result) =>
-                result.status === 'fulfilled' ? [toReference(result.value, resource)] : [],
-            );
-        };
-    }
+
+    // Ids that a list query on ids didn't return: the source doesn't ask for them again.
+    const missing = new Set<string>();
+    // Ids being asked for, and the request that answers them.
+    const pending = new Map<string, Promise<void>>();
+    // The ids of each resource waiting for the next request, which goes once every field has asked.
+    const queued = new Map<string, { ids: string[]; sent: Promise<void> }>();
+
+    const fetchIds = async (resource: string, ids: readonly string[]) => {
+        await Promise.all(
+            chunk(ids, IDS_FILTER_LIMIT).map((group) =>
+                adapter
+                    .list(resource, { filter: { [IDS_FILTER]: group }, perPage: group.length })
+                    .then(
+                        ({ data }) => {
+                            data.filter((item) => group.includes(item.id)).forEach((item) =>
+                                items.set(resource, item),
+                            );
+                            group
+                                .filter((id) => items.get(resource, id) === undefined)
+                                .forEach((id) => missing.add(keyOf(resource, id)));
+                        },
+                        () => {
+                            // Asked for again the next time a field shows these ids.
+                        },
+                    ),
+            ),
+        );
+        ids.forEach((id) => pending.delete(keyOf(resource, id)));
+    };
+
+    const request = (resource: string, ids: readonly string[]) => {
+        const fresh = ids.filter(
+            (id, index) =>
+                ids.indexOf(id) === index &&
+                items.get(resource, id) === undefined &&
+                !missing.has(keyOf(resource, id)) &&
+                !pending.has(keyOf(resource, id)),
+        );
+        if (fresh.length > 0) {
+            let batch = queued.get(resource);
+            if (batch === undefined) {
+                const waiting: string[] = [];
+                // After the fields that render together have asked for their ids.
+                const sent = Promise.resolve().then(() => {
+                    queued.delete(resource);
+                    return fetchIds(resource, waiting);
+                });
+                batch = { ids: waiting, sent };
+                queued.set(resource, batch);
+            }
+            const { ids: waiting, sent } = batch;
+            waiting.push(...fresh);
+            fresh.forEach((id) => pending.set(keyOf(resource, id), sent));
+        }
+        return Promise.all(ids.map((id) => pending.get(keyOf(resource, id))));
+    };
+
+    source.resolve = async (resource, ids) => {
+        await request(resource, ids);
+        return ids.flatMap((id) => {
+            const item = items.get(resource, id);
+            return item !== undefined ? [toReference(item, resource)] : [];
+        });
+    };
+    source.peek = (resource, id) => {
+        const item = items.get(resource, id);
+        if (item !== undefined) {
+            return toReference(item, resource);
+        }
+        return missing.has(keyOf(resource, id)) ? null : undefined;
+    };
+
+    const { create: createItem } = adapter;
     if (create !== undefined && create !== false && createItem !== undefined) {
         source.canCreate = (resource) =>
             resourceOf(resource)?.abilities?.create !== false && valuesOf('', resource) !== null;
@@ -235,53 +356,6 @@ export function toReferences(value: unknown): RelationReference[] {
     });
 }
 
-interface ResolvedReferences {
-    /** References by resource and id: `null` for ids that the source didn't find. */
-    references: Map<string, RelationReference | null>;
-    /** Requests in flight, so that fields with the same ids share one. */
-    pending: Map<string, Promise<void>>;
-}
-
-const resolved = new WeakMap<RelationSource, ResolvedReferences>();
-
-function resolvedOf(source: RelationSource): ResolvedReferences {
-    let entry = resolved.get(source);
-    if (entry === undefined) {
-        entry = { references: new Map(), pending: new Map() };
-        resolved.set(source, entry);
-    }
-    return entry;
-}
-
-const keyOf = (resource: string, id: string) => `${resource}\u0000${id}`;
-
-/** Resolves the ids that no request has resolved or is resolving yet, and waits for all of them. */
-function resolveIds(source: RelationSource, resource: string, ids: readonly string[]) {
-    const { references, pending } = resolvedOf(source);
-    const fresh = ids.filter((id) => !pending.has(keyOf(resource, id)));
-    if (fresh.length > 0 && source.resolve !== undefined) {
-        // Shared by every field that asks for these ids: it isn't aborted when one unmounts.
-        const request = source
-            .resolve(resource, fresh, { signal: new AbortController().signal })
-            .then(
-                (found) => {
-                    fresh.forEach((id) =>
-                        references.set(
-                            keyOf(resource, id),
-                            found.find((candidate) => candidate.id === id) ?? null,
-                        ),
-                    );
-                },
-                () => {
-                    // Tried again the next time a field shows these ids.
-                    fresh.forEach((id) => pending.delete(keyOf(resource, id)));
-                },
-            );
-        fresh.forEach((id) => pending.set(keyOf(resource, id), request));
-    }
-    return Promise.all(ids.map((id) => pending.get(keyOf(resource, id))));
-}
-
 /**
  * Whether a reference needs `resolve()`: a plain id (its label is its id), or a reference without
  * the description or the image that the items of its resource have (decision 0067).
@@ -296,57 +370,73 @@ function needsResolving(reference: RelationReference, detailed: boolean): boolea
 /**
  * Relation references with what the source knows of them: plain ids (`"12"`) get their labels, and
  * references of a resource whose items have a description or an image (`describe()`) get them, from
- * the source's `resolve()`, once per source, resource and id. They stay as they are until then, or
- * when the source doesn't find them.
+ * the source: at once from `peek()`, or else from `resolve()`, once per field, resource and id.
+ * They stay as they are until then, or when the source doesn't find them.
  */
 export function useRelationReferences(
     source: RelationSource | null,
     resource: string,
     references: readonly RelationReference[],
 ): RelationReference[] {
-    const cache = source !== null ? resolvedOf(source).references : null;
-    const [found, setFound] = useState<Readonly<Record<string, RelationReference>>>({});
+    // What `resolve()` answered for this source: `null` for ids it didn't find.
+    const [resolved, setResolved] = useState<{
+        source: RelationSource | null;
+        references: Readonly<Record<string, RelationReference | null>>;
+    }>({ source, references: {} });
+    const found = resolved.source === source ? resolved.references : {};
     const info = source?.describe?.(resource) ?? null;
     const detailed = info?.image === true || info?.description === true;
+    const knownOf = (id: string): RelationReference | null | undefined => {
+        const key = keyOf(resource, id);
+        return key in found ? found[key] : source?.peek?.(resource, id);
+    };
     const missing =
-        source?.resolve !== undefined && cache !== null
+        source?.resolve !== undefined
             ? references
                   .filter((reference) => needsResolving(reference, detailed))
                   .map((reference) => reference.id)
-                  .filter((id) => !cache.has(keyOf(resource, id)))
+                  .filter((id, index, ids) => ids.indexOf(id) === index)
+                  .filter((id) => knownOf(id) === undefined)
             : [];
     const missingKey = missing.join('\u0000');
 
     useEffect(() => {
         const ids = missingKey === '' ? [] : missingKey.split('\u0000');
-        if (source === null || cache === null || ids.length === 0) {
+        if (source?.resolve === undefined || ids.length === 0) {
             return undefined;
         }
-        let active = true;
-        void resolveIds(source, resource, ids).then(() => {
-            if (!active) {
-                return;
-            }
-            const next: Record<string, RelationReference> = {};
-            ids.forEach((id) => {
-                const reference = cache.get(keyOf(resource, id));
-                if (reference !== undefined && reference !== null) {
-                    next[keyOf(resource, id)] = reference;
+        const controller = new AbortController();
+        source.resolve(resource, ids, { signal: controller.signal }).then(
+            (answer) => {
+                if (controller.signal.aborted) {
+                    return;
                 }
-            });
-            setFound((current) => ({ ...current, ...next }));
-        });
-        return () => {
-            active = false;
-        };
-    }, [source, cache, resource, missingKey]);
+                const next = Object.fromEntries(
+                    ids.map((id) => [
+                        keyOf(resource, id),
+                        answer.find((candidate) => candidate.id === id) ?? null,
+                    ]),
+                );
+                setResolved((current) => ({
+                    source,
+                    references: {
+                        ...(current.source === source ? current.references : {}),
+                        ...next,
+                    },
+                }));
+            },
+            () => {
+                // Asked for again the next time the field shows these ids.
+            },
+        );
+        return () => controller.abort();
+    }, [source, resource, missingKey]);
 
     return references.map((reference) => {
         if (!needsResolving(reference, detailed)) {
             return reference;
         }
-        const known =
-            found[keyOf(resource, reference.id)] ?? cache?.get(keyOf(resource, reference.id));
+        const known = knownOf(reference.id);
         if (known === undefined || known === null) {
             return reference;
         }

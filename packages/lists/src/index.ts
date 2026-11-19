@@ -52,6 +52,12 @@ export { builtInLayouts } from './layouts/builtIn';
 export { ItemDetails, type ItemDetailsColumn, type ItemDetailsProps } from './ItemDetails';
 export { List, type ListProps } from './List';
 export { ListView, type ListViewProps } from './ListView';
+export {
+    type ListFieldsOptions,
+    type UseListFieldsOptions,
+    getListFields,
+    useListFields,
+} from './listFields';
 export { listsPlugin } from './plugin';
 export { type LocalQueryOptions, type LocalQueryResult, applyListQuery } from './query';
 export { countSelected, getPageSelection, isItemSelected } from './selection';

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { MAX_PER_PAGE } from '../constants';
 import { Option } from './common';
 
 export const Column = z
@@ -57,9 +58,9 @@ export const ListCalendar = z.looseObject({
         description:
             "The id of the list's `date-range` filter on that field, through which the calendar asks for the days around a month. Defaults to the field's name.",
     }),
-    perPage: z.number().int().positive().optional().meta({
+    perPage: z.number().int().positive().max(MAX_PER_PAGE).optional().meta({
         description:
-            'How many items the calendar asks for a month, in one request. Defaults to 100.',
+            'How many items the calendar asks for a month, in one request. Defaults to 100, the most a page has.',
     }),
 });
 
@@ -99,8 +100,14 @@ export const ListDefinition = z.looseObject({
         description:
             'The layouts the list offers, the first being the default. Built in: `table`, `cards`, `gallery` (on the `itemImage` of the resource) and `calendar` (with `calendar`).',
     }),
-    perPage: z.number().int().positive().optional(),
-    perPageOptions: z.array(z.number().int().positive()).optional(),
+    perPage: z
+        .number()
+        .int()
+        .positive()
+        .max(MAX_PER_PAGE)
+        .optional()
+        .meta({ description: 'Items per page. At most 100: backends cap `perPage` there.' }),
+    perPageOptions: z.array(z.number().int().positive().max(MAX_PER_PAGE)).optional(),
     pagination: z.enum(['pages', 'cursor']).optional().meta({
         description:
             "`pages` (the default): numbered pages, with a total. `cursor`: the list follows `nextCursor` of each page with the `cursor` parameter, without page numbers, for large lists that the backend can't count (decision 0039).",

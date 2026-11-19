@@ -35,6 +35,29 @@ describe('form selectors', () => {
         expect(selectErrors(state, 'status')).toEqual([]);
     });
 
+    it('returns the same arrays for the same errors', () => {
+        const state = createState();
+        expect(selectErrors(state, 'title', { nested: true })).toBe(
+            selectErrors(state, 'title', { nested: true }),
+        );
+        // A path with one error, nested or not, returns the array of the state
+        expect(selectErrors(state, 'seo.description')).toBe(state.errors['seo.description']);
+        expect(selectErrors(state, 'seo', { nested: true })).toBe(state.errors['seo.description']);
+        // Without any, the same empty array
+        expect(selectErrors(state, 'status')).toBe(
+            selectErrors(state, 'missing', { nested: true }),
+        );
+        // An `errors` object that only looks the same is another state
+        const copy = createState({ errors: { ...state.errors } });
+        expect(selectErrors(copy, 'title', { nested: true })).not.toBe(
+            selectErrors(state, 'title', { nested: true }),
+        );
+    });
+
+    it("reads no errors at a path named like an object's property", () => {
+        expect(selectErrors(createState(), 'constructor')).toEqual([]);
+    });
+
     it('counts the paths with errors within some paths', () => {
         const state = createState();
         expect(selectErrorCount(state, ['title'])).toBe(2);
