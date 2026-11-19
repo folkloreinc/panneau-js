@@ -1,6 +1,6 @@
 # 0097: One way to resolve plugin entries
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-19
 - Changes: the registry entries of lists ([0022](0022-lists-render-core-state.md)), and the built-in widget types of the dashboard ([0064](0064-dashboard-widgets.md))
 
@@ -61,7 +61,7 @@ A plugin (`PanneauPlugin`, `packages/core/src/plugins.ts`) gives components by k
     | `previews`    | `ComponentType<PreviewProps>`         | `@panneau/core`    |
     | `pages`       | `ComponentType<PageProps>`            | `@panneau/core`    |
 
-- **An entry, not only its props**: a field entry also carries what lists read from it (the `summarize` of a compound field, [0065](0065-compound-fields.md)), so the map types entries.
+- **The map types entries, not their props**: a field entry also carries what lists read from it (the `summarize` of a compound field, [0065](0065-compound-fields.md)), which a map of props would have to type apart.
 - **`PanneauPlugin` and `PluginRegistry` derive from the map**: `{ [K in PluginKind]?: Record<string, PluginKinds[K]> }`, and `ReadonlyMap<string, PluginKinds[K]>` for each kind, beside `commands`, `locales` and `themes`. `PluginComponent` and the casts go. A plugin that gives a field with the props of a display fails to type-check where it is declared.
 - **The kinds a project sees are those of the packages it imports**: an app that only uses `@panneau/fields` and `@panneau/forms` has no `widgets`. A kind no package declares can't be given.
 - `PageProps` moves to `@panneau/core`, beside `WidgetProps` and `PreviewProps`, and is exported: the values of the page's `props`, its `params`, and the definition.
@@ -78,7 +78,7 @@ A plugin (`PanneauPlugin`, `packages/core/src/plugins.ts`) gives components by k
 
     `getEntries()` is for the readers that need every entry of a kind: the layout switch of a list, the menu of panels.
 
-- **One order for every kind, the last wins: built-ins, then plugins in their order, then the props of the component that renders them** (`components` of `Form`, `displays`, `layoutComponents` and `filterControls` of `ListView`, `clientActions` of `ActionRunnerProvider`). It is the order of `fields` today. For `actions`, `previews` and `components`, which have no built-ins, nothing changes. For `pages`, a plugin's `dashboard` keeps replacing the built-in one.
+- **One order for every kind, the last wins: built-ins, then plugins in their order, then the props of the component that renders them** (`components` of `Form`, `displays`, `layoutComponents` and `filterControls` of `ListView`, `clientActions` of `ActionRunnerProvider`). It is the order of `fields`, `displays`, `listLayouts` and `actions` today: a page that renders a `Form` with its own `components` means them, over what any plugin registers. For `actions`, `previews` and `components`, which have no built-ins, nothing changes. For `pages`, a plugin's `dashboard` keeps replacing the built-in one.
 - **A missing entry is `undefined`**, and each kind keeps saying what it draws in its place, as today (a field as text, a page or a preview as a warning, a widget as an empty card). In development, `resolveEntry()` warns once per kind and type, so that a filter that falls back to `text` no longer does it silently.
 - The built-ins stay where they are (`builtInFields`, `builtInDisplays`…) and are passed as `builtIn`: a project that uses one package doesn't load the registries of the others. `fieldsPlugin`, `listsPlugin` and the others stay, for projects that register the built-ins as plugins: same entries, same result.
 
@@ -90,13 +90,13 @@ A plugin (`PanneauPlugin`, `packages/core/src/plugins.ts`) gives components by k
 ### A registry of built-in widgets
 
 - **`builtInWidgets` replaces the `switch` of `app/src/dashboard/Dashboard.tsx`**: `{ stat, series, list, breakdown, metric, table }`, each a component with `WidgetProps` and what it needs of the dashboard (its period, its currency), in `@panneau/app`.
-- **A plugin can replace a built-in widget type** (`stat`), as it can replace a field. This amends 0064, where the built-in types stayed built in and the `dashboard` page was what a plugin replaced. The data of a built-in type is still checked against its schema (`checkWidgetData()`) before the widget gets it, whoever draws it.
+- **A plugin can replace a built-in widget type** (`stat`), as it can replace a field. This amends 0064, where the built-in types stayed built in and the `dashboard` page was what a plugin replaced. The data of a built-in type is still checked against the protocol's schema of that type (`checkWidgetData()`) before the widget gets it, whoever draws it: a plugin that wants other data declares another type.
 - `isBuiltInWidgetType()` stays the protocol's list of the types every frontend draws; `drawn` in `DashboardWidget` asks the resolved entries.
 
 ### One id convention
 
 - **A plugin id is `{vendor}.{name}`**, in lowercase with dashes inside each part: `panneau.fields`, `panneau.lists`, `panneau.media`, `panneau.editor`, `panneau.credits`, `folklore.pages`, `urbania.newsletter`. `panneau.` is for the plugins of this repository.
-- The four built-in plugins with a dash (`panneau-fields`, `panneau-lists`, `panneau-media`, `panneau-editor`) take the dotted id. An id only has to be unique (`createPluginRegistry()` throws on a duplicate), and nothing reads it otherwise, so the change only breaks a project that registered two of them on purpose. It goes in the changeset.
+- **The four built-in plugins with a dash** (`panneau-fields`, `panneau-lists`, `panneau-media`, `panneau-editor`) **take the dotted id now, without aliases**. An id only has to be unique (`createPluginRegistry()` throws on a duplicate), and nothing reads it otherwise, so the change only breaks a project that registered two of them on purpose. It goes in the changeset.
 - Every built-in plugin is declared with `definePlugin()`, which returns the plugin with its kinds typed, so the three ways of typing them become one.
 
 ### What stays not extensible, on purpose
@@ -130,12 +130,5 @@ The docs page lists these, with the reason, so that a project doesn't look for a
 - `@panneau/core`: `PluginKinds`, `PluginKind`, `resolveEntry()`, `getEntries()`, `useEntry()`, `useEntries()`, `PageProps`. `PluginComponent` and `PluginComponentKind` are deprecated for one minor, then removed. `PanneauPlugin` and `PluginRegistry` keep their shape for the existing kinds.
 - `@panneau/fields`, `@panneau/lists`, `@panneau/actions`, `@panneau/forms`: augment `PluginKinds`, read their kinds through `resolveEntry()`/`getEntries()`, without casts. `@panneau/lists` adds the `filters` kind.
 - `@panneau/app`: `builtInWidgets` in place of the `switch`; the `Shell` resolves pages the same way.
-- The built-in plugins take dotted ids and `definePlugin()`. A breaking change for a project that relies on their ids, in the changeset.
+- The built-in plugins take dotted ids, without aliases, and `definePlugin()`. A breaking change for a project that relies on their ids, in the changeset.
 - The implementation comes after [#349](https://github.com/folkloreinc/panneau-js/issues/349), which removes the deprecated APIs of every package, so that it doesn't deprecate names about to go.
-
-## Open questions
-
-- **Props of the component over plugins.** The props win today for `fields`, `displays`, `listLayouts` and `actions`, and stay last here: a page that renders a `Form` with its own `components` means them. The other order (plugins last, so that a project's plugin wins over a package's props) would let a project override what a package of its own passes; it would change four kinds instead of three.
-- **Entries or props in the map.** Typing entries keeps the statics of field entries (`summarize`); typing props would be simpler to augment, and would type the statics apart.
-- **A built-in widget replaced by a plugin** keeps the checks of the built-in type's data. A plugin that wants other data for a built-in type needs another type.
-- **Renaming the four built-in ids** could wait for a major version, with the dotted ids as aliases until then; `createPluginRegistry()` would then treat an id and its alias as the same plugin.

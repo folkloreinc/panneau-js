@@ -1,6 +1,6 @@
 # 0064: The widgets of the dashboard
 
-- Status: accepted, amended by [0084](0084-overviews.md): dashboard pages, summaries above lists, and widgets that count a resource; and by [0085](0085-readable-line-charts.md): the line of the `series` widget
+- Status: accepted, amended by [0084](0084-overviews.md): dashboard pages, summaries above lists, and widgets that count a resource; and by [0085](0085-readable-line-charts.md): the line of the `series` widget; and by [0097](0097-one-way-to-resolve-plugin-entries.md): a plugin can replace a built-in widget type, whose data is still checked
 - Date: 2026-11-04
 - Changes: the built-in widgets of [0015](0015-dashboards-and-search.md)
 
