@@ -1,5 +1,5 @@
 import { Inbox, ListChecks, SearchX } from 'lucide-react';
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import type { List, ResolvedCalendar } from '@panneau/core';
 import {
@@ -30,6 +30,7 @@ import type { ActionIcons } from './actions/icons';
 import { getShownColumns } from './columns';
 import { cx } from './cx';
 import { FilterChips, FilterControls, useFilterLabels } from './filters/Filters';
+import { moveFocusFromLeaving } from './focus';
 import { getImageUrl } from './images';
 import { InlineCell } from './inline/InlineCell';
 import { getInlineField } from './inline/editable';
@@ -275,7 +276,16 @@ export function ListView({
         saved[item.id]?.base === item ? (saved[item.id]?.item ?? item) : item,
     );
     // Items that left the list (deleted, or out of its filters) fade out before they go.
-    const leaving = useLeavingItems(items, JSON.stringify(query));
+    const content = useRef<HTMLDivElement>(null);
+    const leaving = useLeavingItems(items, JSON.stringify(query), content);
+    // The element that last had the focus in the list, which a browser can move to the body once
+    // its item is inert.
+    const lastFocus = useRef<Element | null>(null);
+    useLayoutEffect(() => {
+        if (leaving.leaving.length > 0 && content.current !== null) {
+            moveFocusFromLeaving(content.current, lastFocus.current);
+        }
+    }, [leaving.leaving]);
     const count = total ?? pageItems.length;
     const sort = query.sort ?? [];
 
@@ -301,6 +311,27 @@ export function ListView({
         ),
     );
     const hasQuery = Object.keys(filterValues).length > 0 || (query.q ?? '') !== '';
+
+    // One polite message of the results, once those of a new search, filter or page are shown:
+    // how many items, or that none match. Not for a sort, which shows the same items.
+    const resultsKey = JSON.stringify({ ...query, sort: undefined });
+    const [results, setResults] = useState({ key: resultsKey, waiting: false, message: '' });
+    if (results.key !== resultsKey) {
+        setResults({ key: resultsKey, waiting: true, message: results.message });
+    } else if (results.waiting && !isLoading && items !== undefined && error === null) {
+        setResults({
+            key: resultsKey,
+            waiting: false,
+            message:
+                items.length === 0 && !inCalendar
+                    ? intl.formatMessage(hasQuery ? messages.noResults : messages.empty)
+                    : total === undefined && cursors !== undefined
+                      ? intl.formatMessage(messages.resultsOnPage, { count: items.length })
+                      : intl.formatMessage(messages.resultsCount, {
+                            count: total ?? items.length,
+                        }),
+        });
+    }
 
     const grouped = groupListActions(actionsProp);
     // Actions placed in the menu also apply to selections, from the toolbar (once each).
@@ -793,7 +824,24 @@ export function ListView({
                     ) : null}
                 </div>
             ) : null}
-            <div className={styles.body} aria-busy={isLoading && items !== undefined}>
+            {/* Once the skeleton, which says the items load, is gone */}
+            {items !== undefined ? (
+                <span className={styles.status} role="status">
+                    {results.message}
+                </span>
+            ) : null}
+            <div
+                ref={content}
+                className={styles.body}
+                role="group"
+                aria-label={label}
+                aria-busy={isLoading && items !== undefined}
+                // The focus of an item that left the list, when no other item is left
+                tabIndex={-1}
+                onFocus={(event) => {
+                    lastFocus.current = event.target;
+                }}
+            >
                 {body}
             </div>
             {inCalendar ? null : cursors !== undefined && error === null ? (

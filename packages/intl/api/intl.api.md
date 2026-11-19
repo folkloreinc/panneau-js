@@ -841,6 +841,12 @@ export const listsMessages: {
     empty: PanneauMessage<Record<never, never>>;
     secretValue: PanneauMessage<Record<never, never>>;
     noResults: PanneauMessage<Record<never, never>>;
+    resultsCount: PanneauMessage<    {
+    count: number;
+    }>;
+    resultsOnPage: PanneauMessage<    {
+    count: number;
+    }>;
     loading: PanneauMessage<Record<never, never>>;
     loadingItem: PanneauMessage<Record<never, never>>;
     loadFailed: PanneauMessage<Record<never, never>>;

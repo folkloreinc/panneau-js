@@ -276,3 +276,50 @@ export const FilterAndPublish: Story = {
         await expect(within(table).getAllByRole('row')[1]).toHaveTextContent('Team');
     },
 };
+
+/**
+ * Deletes a page from its row: the confirmation opens on "Cancel" (decision 0095), and once the
+ * page leaves, the focus is on the same button of the next row.
+ */
+export const DeleteFromARow: Story = {
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        const table = await canvas.findByRole('table', { name: 'Pages' });
+        await waitFor(() => expect(within(table).getAllByRole('row')).toHaveLength(21));
+
+        await userEvent.click(canvas.getByRole('button', { name: 'Supprimer: Accessibility' }));
+        const dialog = await body.findByRole('alertdialog');
+        await waitFor(() =>
+            expect(within(dialog).getByRole('button', { name: 'Cancel' })).toHaveFocus(),
+        );
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Supprimer' }));
+
+        await waitFor(() => expect(canvas.getByRole('navigation')).toHaveTextContent('of 23'));
+        await waitFor(() =>
+            expect(canvasElement.ownerDocument.activeElement).toBe(
+                canvas.getByRole('button', { name: 'Supprimer: Blog' }),
+            ),
+        );
+        await waitFor(() => expect(table.querySelector('[data-leaving]')).toBeNull());
+        await expect(table).not.toHaveTextContent('Accessibility');
+        await expect(canvas.getByRole('button', { name: 'Supprimer: Blog' })).toHaveFocus();
+    },
+};
+
+/** A search announces how many items it finds, in the status message of the list. */
+export const SearchAnnouncesResults: Story = {
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const table = await canvas.findByRole('table', { name: 'Pages' });
+        await waitFor(() => expect(within(table).getAllByRole('row')).toHaveLength(21));
+        const status = () =>
+            canvas.getAllByRole('status').find((element) => element.closest('table') === null);
+        await userEvent.type(canvas.getByRole('searchbox', { name: 'Search' }), 'press');
+        await waitFor(() => expect(status()).toHaveTextContent(/^1 item$/));
+        await userEvent.type(canvas.getByRole('searchbox', { name: 'Search' }), 'zzz');
+        await waitFor(() =>
+            expect(status()).toHaveTextContent('No items match the search or the filters.'),
+        );
+    },
+};

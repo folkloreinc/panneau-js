@@ -180,7 +180,9 @@ export interface ListLayoutProps {
     /**
      * Whether the item left the list, such as one just deleted (decision 0081): it shows for a
      * moment while it fades out. The layout gives its element the `leaving` class of
-     * `@panneau/lists`' highlight, `data-leaving`, and makes it inert.
+     * `@panneau/lists`' highlight, `data-leaving`, and makes it inert. The element of every item
+     * has `data-item-id`, its id: the focus that was in an item that leaves goes to the item
+     * after it, or before it.
      */
     isLeaving?: ((item: ListItem) => boolean) | undefined;
     /** Whether items have checkboxes. */
