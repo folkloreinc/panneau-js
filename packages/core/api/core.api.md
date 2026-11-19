@@ -18,6 +18,7 @@ import type { Item } from '@panneau/protocol';
 import { JSX } from 'react';
 import type { LayoutNode } from '@panneau/protocol';
 import type { ListQuery } from '@panneau/protocol';
+import type { OverviewPeriodOption } from '@panneau/protocol/runtime';
 import type { Page } from '@panneau/protocol';
 import type { Problem } from '@panneau/protocol';
 import { ReactNode } from 'react';
@@ -110,7 +111,10 @@ export const DEFAULT_CALENDAR_PER_PAGE = 100;
 export const DEFAULT_PER_PAGE = 20;
 
 // @public
-export function definePlugin(plugin: PanneauPlugin): PanneauPlugin;
+export function definePlugin<Plugin extends PanneauPlugin>(plugin: Plugin): Plugin;
+
+// @public
+export type EntryOverrides<Kind extends PluginKind> = Readonly<Record<string, PluginKinds[Kind]>> | ReadonlyMap<string, PluginKinds[Kind]>;
 
 // @public
 export function fillActionUrl(action: Action, item?: ActionItem): string | null;
@@ -207,6 +211,9 @@ export function getCommands(sources: readonly CommandSource[], context: CommandC
 
 // @public
 export function getDefaultValues(fields: readonly Field[], values?: Values): Values;
+
+// @public
+export function getEntries<Kind extends PluginKind>(registry: PluginRegistry, kind: Kind, input?: ResolveEntryOptions<Kind>): ReadonlyMap<string, PluginKinds[Kind]>;
 
 // @public (undocumented)
 export interface GetErrorsOptions {
@@ -398,6 +405,14 @@ export type MessagesLoader = Messages | (() => Promise<Messages | {
 }>);
 
 // @public
+export interface PageProps {
+    basePath: string;
+    definition: Definition;
+    id: string;
+    params: Readonly<Record<string, string>>;
+}
+
+// @public
 export interface PanneauContextValue {
     // (undocumented)
     definition: Definition | null;
@@ -409,21 +424,12 @@ export interface PanneauContextValue {
 }
 
 // @public
-export interface PanneauPlugin {
-    actions?: Record<string, PluginComponent>;
-    commands?: CommandSource;
-    components?: Record<string, PluginComponent>;
-    displays?: Record<string, PluginComponent>;
-    fields?: Record<string, PluginComponent>;
+export type PanneauPlugin = PluginEntries & {
     id: string;
-    listLayouts?: Record<string, PluginComponent>;
+    commands?: CommandSource;
     locales?: Record<string, MessagesLoader>;
-    pages?: Record<string, PluginComponent>;
-    panels?: Record<string, PluginComponent>;
-    previews?: Record<string, PluginComponent>;
     themes?: Record<string, Theme>;
-    widgets?: Record<string, PluginComponent>;
-}
+};
 
 // @public
 export function PanneauProvider(input: PanneauProviderProps): JSX.Element;
@@ -443,38 +449,36 @@ export function partitionByAction(action: Action, items: readonly Item[]): {
     skipped: Item[];
 };
 
-// @public
+// @public @deprecated
 export type PluginComponent = ComponentType<any>;
 
-// @public
-export type PluginComponentKind = 'fields' | 'displays' | 'listLayouts' | 'actions' | 'pages' | 'widgets' | 'components' | 'panels' | 'previews';
+// @public @deprecated
+export type PluginComponentKind = PluginKind;
 
 // @public
-export interface PluginRegistry {
-    // (undocumented)
-    actions: ReadonlyMap<string, PluginComponent>;
-    commands: readonly CommandSource[];
-    // (undocumented)
-    components: ReadonlyMap<string, PluginComponent>;
-    // (undocumented)
-    displays: ReadonlyMap<string, PluginComponent>;
-    // (undocumented)
-    fields: ReadonlyMap<string, PluginComponent>;
-    // (undocumented)
-    listLayouts: ReadonlyMap<string, PluginComponent>;
-    locales: ReadonlyMap<string, readonly MessagesLoader[]>;
-    // (undocumented)
-    pages: ReadonlyMap<string, PluginComponent>;
-    // (undocumented)
-    panels: ReadonlyMap<string, PluginComponent>;
-    plugins: readonly PanneauPlugin[];
-    // (undocumented)
-    previews: ReadonlyMap<string, PluginComponent>;
-    // (undocumented)
-    themes: ReadonlyMap<string, Theme>;
-    // (undocumented)
-    widgets: ReadonlyMap<string, PluginComponent>;
+export type PluginEntries = {
+    readonly [Kind in PluginKind]?: Readonly<Record<string, PluginKinds[Kind]>>;
+};
+
+// @public
+export type PluginKind = keyof PluginKinds;
+
+// @public
+export interface PluginKinds {
+    pages: ComponentType<WithDefinitionProps<PageProps>>;
+    previews: ComponentType<PreviewProps>;
+    widgets: ComponentType<WidgetProps>;
 }
+
+// @public
+export type PluginRegistry = {
+    readonly [Kind in PluginKind]: ReadonlyMap<string, PluginKinds[Kind]>;
+} & {
+    plugins: readonly PanneauPlugin[];
+    commands: readonly CommandSource[];
+    locales: ReadonlyMap<string, readonly MessagesLoader[]>;
+    themes: ReadonlyMap<string, Theme>;
+};
 
 // @public
 export interface PreviewProps {
@@ -553,6 +557,15 @@ export interface ResolvedResource {
     list: ResolvedList;
     // (undocumented)
     resource: Resource;
+}
+
+// @public
+export function resolveEntry<Kind extends PluginKind>(registry: PluginRegistry, kind: Kind, type: string, input?: ResolveEntryOptions<Kind>): PluginKinds[Kind] | undefined;
+
+// @public
+export interface ResolveEntryOptions<Kind extends PluginKind> {
+    builtIn?: EntryOverrides<Kind> | undefined;
+    overrides?: EntryOverrides<Kind> | undefined;
 }
 
 // @public
@@ -657,6 +670,12 @@ export { Theme }
 export type UpdatableFormOptions = Pick<FormOptions, 'fields' | 'locales' | 'formatError' | 'onSubmit'>;
 
 // @public
+export function useEntries<Kind extends PluginKind>(kind: Kind, options?: ResolveEntryOptions<Kind>): ReadonlyMap<string, PluginKinds[Kind]>;
+
+// @public
+export function useEntry<Kind extends PluginKind>(kind: Kind, type: string | null | undefined, options?: ResolveEntryOptions<Kind>): PluginKinds[Kind] | undefined;
+
+// @public
 export function useForm(options: FormOptions): UseFormResult;
 
 // @public
@@ -710,12 +729,20 @@ export function useResource(id: string, formOptions?: ResolveFormOptions): Resol
 export type Values = Record<string, unknown>;
 
 // @public
+export function warnMissingEntry(kind: string, type: string): void;
+
+// @public
 export interface WidgetProps {
+    currency?: string | undefined;
     data: unknown;
     // (undocumented)
     definition: Definition;
+    period?: OverviewPeriodOption | null | undefined;
     widget: Widget;
 }
+
+// @public
+export type WithDefinitionProps<Props> = Props & Readonly<Record<string, any>>;
 
 // (No @packageDocumentation comment for this package)
 

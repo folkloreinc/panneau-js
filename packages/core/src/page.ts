@@ -8,6 +8,7 @@ import type { Definition } from '@panneau/protocol';
 export interface PageProps {
     /** The id of the page in `pages`. */
     id: string;
+    /** The definition of the app. */
     definition: Definition;
     /** The values of the page's `params`, from its path. */
     params: Readonly<Record<string, string>>;

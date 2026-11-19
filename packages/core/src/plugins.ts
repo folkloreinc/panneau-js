@@ -245,7 +245,10 @@ export function getEntries<Kind extends PluginKind>(
 /** Whether warnings for developers are on: not in a production build. */
 function isDevelopment(): boolean {
     try {
-        // Replaced by the bundler of the app; undefined in a browser without it.
+        // Replaced by the bundler of the app, which only replaces this exact expression: undefined
+        // in a browser without one. The package has no Node types, which some of its configs add.
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment -- see above
+        // @ts-ignore
         return process.env.NODE_ENV !== 'production';
     } catch {
         return false;

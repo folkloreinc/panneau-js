@@ -17,6 +17,7 @@ import {
     selectVisible,
     useEntry,
     useFormSelector,
+    warnMissingEntry,
 } from '@panneau/core';
 import { NestedField, isWideField } from '@panneau/fields';
 import type { Field, LayoutNode } from '@panneau/protocol';
@@ -232,6 +233,10 @@ export function SidebarNode({ node, fields, storageKey }: SidebarNodeProps) {
         </div>
     );
     const Panel = node.panel !== undefined ? panels.get(node.panel) : undefined;
+    if (node.panel !== undefined && Panel === undefined) {
+        // Its children, in the panel
+        warnMissingEntry('panels', node.panel);
+    }
     const children = (node.children ?? []).length > 0 ? content : null;
     return (
         <AsidePanel

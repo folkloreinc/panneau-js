@@ -28,7 +28,9 @@ function EditPage({ item, onSave }) {
 
 ## Plugins
 
-`definePlugin()` declares what a plugin adds, keyed by the names the definition uses: `fields`, `displays`, `listLayouts`, `actions` (handlers of `client` actions), `pages`, `widgets`, `components` (layout nodes), `locales` and `themes`. A widget of a plugin gets `WidgetProps`: the widget, its data from `GET /dashboard/widgets/{widget}`, and the definition; the dashboard draws its card, skeleton and error ([decision 0064](../../docs/decisions/0064-dashboard-widgets.md)).
+`definePlugin()` declares what a plugin adds, keyed by the names the definition uses: entries of the kinds of `PluginKinds` (`fields`, `displays`, `filters`, `listLayouts`, `actions`, `components`, `panels`, `pages`, `widgets`, `previews`), and `commands`, `locales` and `themes`. Its id is `{vendor}.{name}` (`folklore.pages`). Each package declares the kinds it renders, by augmenting `PluginKinds`, so the entries are typed by their props ([decision 0097](../../docs/decisions/0097-one-way-to-resolve-plugin-entries.md)). [Extending Panneau](../../docs/extending.md) describes every kind.
+
+`resolveEntry(registry, kind, type, { builtIn, overrides })` and `getEntries()`, or `useEntry()` and `useEntries()` in components, read a kind in one order: the built-ins, then the plugins, then the overrides of the component that renders it. A type that nothing gives is `undefined`, with a warning in development (`warnMissingEntry()`). A widget gets `WidgetProps`, a page `PageProps`, a preview `PreviewProps`.
 
 `resolveTheme(definition.theme, registry.themes)` returns the theme of the admin: the themes of plugins that the definition's theme `extends`, by id, then its own tokens, tones and variants. `Theme` is the theme of `@panneau/ui` as plain data, the `Theme` schema of `@panneau/protocol`.
 
