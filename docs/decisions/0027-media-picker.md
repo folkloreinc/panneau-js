@@ -1,6 +1,6 @@
 # 0027: A media picker on a source that products can implement
 
-- Status: accepted
+- Status: accepted, amended by [0080](0080-a-media-library-page.md): the picker's library also on a page of its own, outside a dialog
 - Date: 2026-10-22
 - Issue: [#91](https://github.com/folkloreinc/panneau-js/issues/91)
 - Amends: [0026](0026-media-libraries.md), for a `media` field that allows several libraries

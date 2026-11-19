@@ -1,6 +1,6 @@
 # 0079: Collapsible groups and emphasized entries in menus
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-17
 - Builds on: [0046](0046-abilities-in-the-ui.md) (menus by abilities), [0076](0076-a-dock-in-place-of-the-sidebar.md) (the dock)
 - Part of: [#6](https://github.com/folkloreinc/panneau-js/issues/6), 5.x (the interface)

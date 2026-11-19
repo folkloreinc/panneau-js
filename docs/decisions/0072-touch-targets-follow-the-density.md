@@ -1,6 +1,6 @@
 # 0072: Touch targets follow the density
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-09
 - Amends: [0024](0024-theme-model.md), section 5 (Density)
 

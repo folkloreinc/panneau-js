@@ -29,6 +29,9 @@ jobs:
             - name: Check formatting
               run: npm run format:check
 
+            - name: Check the status of decisions
+              run: node scripts/verify.js --decisions
+
             - name: Lint
               run: npm run lint
 

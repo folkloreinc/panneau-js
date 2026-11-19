@@ -1,6 +1,6 @@
 # 0074: One aside, next to lists and forms
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-09
 - Amends: [0028](0028-item-panel.md) (the layout of the item panel and its tokens), and the `sidebar` node of form layouts ([protocol](../protocol.md#form-layout))
 - Part of: [#6](https://github.com/folkloreinc/panneau-js/issues/6), 5.x (Sidebars, a general principle)

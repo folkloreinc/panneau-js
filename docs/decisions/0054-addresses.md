@@ -1,6 +1,6 @@
 # 0054: Postal addresses
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-04
 - Issue: [#199](https://github.com/folkloreinc/panneau-js/issues/199)
 - Builds on: the `country` and `region` types of [0047](0047-countries-regions-and-phone-numbers.md), and the address search of `location` ([0033](0033-more-field-types.md))

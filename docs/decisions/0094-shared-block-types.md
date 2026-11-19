@@ -1,6 +1,6 @@
 # 0094: Shared block types
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-19
 - Extends: [0077](0077-resource-types.md) (the types of a resource)
 - Part of: 5.x (the protocol)

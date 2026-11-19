@@ -1,6 +1,6 @@
 # 0052: OAuth providers on the login page
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-03
 - Issues: [#5](https://github.com/folkloreinc/panneau-js/issues/5), [folkloreinc/laravel-panneau#34](https://github.com/folkloreinc/laravel-panneau/issues/34)
 - Changes: `auth.providers` and `GET /auth/providers/{provider}/redirect`, sketched in [0012](0012-authentication.md); the links of providers that [0037](0037-login-page-token-and-logout.md) put on the login page

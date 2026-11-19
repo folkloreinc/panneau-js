@@ -1,6 +1,6 @@
 # 0092: Empty states, avatars, tiles, button groups, breadcrumbs, and text areas with a header and a footer
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-19
 - Issue: [#337](https://github.com/folkloreinc/panneau-js/issues/337)
 - Builds on: [0005](0005-styling-and-theming.md), [0020](0020-default-theme-and-icons.md), [0024](0024-theme-model.md)

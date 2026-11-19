@@ -1,6 +1,6 @@
 # 0037: The login page of the app, a login with a token, and the logout
 
-- Status: accepted
+- Status: accepted, amended by [0086](0086-one-user-menu.md): "Log out" is in the user's menu
 - Date: 2026-10-30
 - Issues: [#136](https://github.com/folkloreinc/panneau-js/issues/136), [#137](https://github.com/folkloreinc/panneau-js/issues/137)
 - Changes: what the app does when the session ends in `panneau` mode, in [0019](0019-app-entry.md); the login of [0012](0012-authentication.md), which assumed an email and a password

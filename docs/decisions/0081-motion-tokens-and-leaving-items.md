@@ -1,6 +1,6 @@
 # 0081: Motion tokens, and items that fade out of a list
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-17
 - Changes: the toasts of [0062](0062-toasts.md), the motion token of [0020](0020-default-theme-and-icons.md), and the highlight of lists ([0066](0066-a-create-goes-back-to-the-list.md))
 
