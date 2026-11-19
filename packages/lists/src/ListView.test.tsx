@@ -74,7 +74,7 @@ describe('List', () => {
         expect(status).toBeDefined();
         const search = screen.getByRole('searchbox', { name: 'Search' });
         await user.type(search, 'blog');
-        await waitFor(() => expect(status).toHaveTextContent(/^1 item$/));
+        await waitFor(() => expect(status.textContent).toBe('1 item'));
         await user.type(search, 'zzz');
         await waitFor(() =>
             expect(status).toHaveTextContent('No items match the search or the filters.'),

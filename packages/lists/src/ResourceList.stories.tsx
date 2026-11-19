@@ -316,7 +316,7 @@ export const SearchAnnouncesResults: Story = {
         const status = () =>
             canvas.getAllByRole('status').find((element) => element.closest('table') === null);
         await userEvent.type(canvas.getByRole('searchbox', { name: 'Search' }), 'press');
-        await waitFor(() => expect(status()).toHaveTextContent(/^1 item$/));
+        await waitFor(() => expect(status()?.textContent).toBe('1 item'));
         await userEvent.type(canvas.getByRole('searchbox', { name: 'Search' }), 'zzz');
         await waitFor(() =>
             expect(status()).toHaveTextContent('No items match the search or the filters.'),
