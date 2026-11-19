@@ -1,5 +1,5 @@
 import type { QueryClient } from '@tanstack/react-query';
-import { StrictMode } from 'react';
+import { StrictMode, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import type { PanneauPlugin } from '@panneau/core';
@@ -9,8 +9,8 @@ import type { BootConfig, BootConfigInput } from '@panneau/protocol';
 import type { NamedIconLoader } from '@panneau/ui';
 import { lucideIconLoader } from '@panneau/ui/named-icons';
 
-import { Panneau, type UnauthorizedContext } from './Panneau';
-import { parseBootConfig, readBootConfig } from './boot';
+import { BootScreen, Panneau, type PanneauProps, type UnauthorizedContext } from './Panneau';
+import { readBootConfigInput } from './bootInput';
 
 /** Options of `createPanneauApp()`. */
 export interface PanneauAppOptions {
@@ -56,15 +56,66 @@ export interface PanneauAppOptions {
 
 /** A mounted app. */
 export interface PanneauApp {
-    /** The boot config, validated, with defaults applied. */
-    config: BootConfig;
+    /**
+     * The boot config, once validated, with defaults applied (decision 0096). It rejects when the
+     * boot config is invalid, with the invalid paths, while the app shows an error page.
+     */
+    config: Promise<BootConfig>;
     /** Unmounts the app from its element. */
     unmount(): void;
 }
 
 /**
- * Mounts the Panneau admin panel in an element of the page. Throws when the boot config is
- * missing or invalid.
+ * Validates a boot config with the schemas of the protocol, which load with Zod on first use, out
+ * of the JavaScript the page loads up front (decision 0096).
+ */
+async function validateLater(input: unknown): Promise<BootConfig> {
+    return (await import('./boot')).parseBootConfig(input);
+}
+
+/** The locale of a boot config before it is validated, for the skeleton of the shell. */
+function readLocale(input: unknown): string | undefined {
+    const locale =
+        typeof input === 'object' && input !== null && 'locale' in input ? input.locale : undefined;
+    return typeof locale === 'string' ? locale : undefined;
+}
+
+/** `<Panneau>` once its boot config is validated: the skeleton of the shell until then. */
+function BootedPanneau({
+    config,
+    locale,
+    ...props
+}: Omit<PanneauProps, 'config'> & { config: Promise<BootConfig>; locale: string | undefined }) {
+    const [booted, setBooted] = useState<{ config: BootConfig } | 'failed' | null>(null);
+    useEffect(() => {
+        let current = true;
+        config.then(
+            (validated) => {
+                if (current) {
+                    setBooted({ config: validated });
+                }
+            },
+            () => {
+                if (current) {
+                    setBooted('failed');
+                }
+            },
+        );
+        return () => {
+            current = false;
+        };
+    }, [config]);
+    if (booted === null || booted === 'failed') {
+        return <BootScreen locale={locale} failed={booted === 'failed'} />;
+    }
+    return <Panneau {...props} config={booted.config} />;
+}
+
+/**
+ * Mounts the Panneau admin panel in an element of the page. Throws when the page has no boot
+ * config, or when it isn't JSON. The boot config is validated once the schemas of the protocol have
+ * loaded (decision 0096): the app shows the skeleton of the shell until then, and an error page
+ * when it is invalid, with the invalid paths in the console and in the rejection of `config`.
  *
  * ```ts
  * import { createPanneauApp } from '@panneau/app';
@@ -78,12 +129,21 @@ export function createPanneauApp({
     iconLoader = lucideIconLoader,
     ...props
 }: PanneauAppOptions): PanneauApp {
-    const config =
-        input !== undefined ? parseBootConfig(input) : readBootConfig(element.ownerDocument);
+    const raw: unknown = input !== undefined ? input : readBootConfigInput(element.ownerDocument);
+    const config = validateLater(raw);
+    // Handled here, so that a project that doesn't read `config` gets one error, not two
+    config.catch((error: unknown) => {
+        console.error(error);
+    });
     const root = createRoot(element);
     root.render(
         <StrictMode>
-            <Panneau {...props} config={config} iconLoader={iconLoader} />
+            <BootedPanneau
+                {...props}
+                config={config}
+                locale={readLocale(raw)}
+                iconLoader={iconLoader}
+            />
         </StrictMode>,
     );
     return { config, unmount: () => root.unmount() };

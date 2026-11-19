@@ -1,20 +1,16 @@
 import {
-    ActionResult,
-    ActionRun,
     CONTEXT_HEADER,
-    Definition,
     type ListQuery,
     PROBLEM_CONTENT_TYPE,
     type Problem,
     formatContextHeader,
-    resolveBlockTypeSets,
     toAggregateParams,
     toSearchParams,
     toSearchQueryParams,
     toWidgetDataParams,
-    validate,
 } from '@panneau/protocol';
 import type {
+    ActionRun,
     ContextOption,
     EmbedResponse,
     FieldCheckResponse,
@@ -31,10 +27,15 @@ import type {
     WebAuthnOptions,
 } from '@panneau/protocol';
 
-import type { ActionResponse, DataAdapter, LoginResult } from './adapter';
-import { type ApiError, InvalidResponseError, NetworkError, createApiError } from './errors';
+import type { DataAdapter, LoginResult } from './adapter';
+import { type ApiError, NetworkError, createApiError } from './errors';
 import { readProblem, readRetryAfter } from './problem';
 import { createPresignedUploads } from './uploads';
+
+/** The checks of the responses, with the schemas of the protocol, loaded on first use. */
+function loadResponseChecks() {
+    return import('./responses');
+}
 
 export interface RestAdapterOptions {
     /** URL of the API, as `api.baseUrl` in the definition (`/panneau/api`). */
@@ -182,17 +183,12 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
 
     return {
         async getDefinition({ signal } = {}) {
-            const body = await json<unknown>({ path: '/definition', signal });
-            const result = validate(Definition, body);
-            if (!result.success) {
-                throw new InvalidResponseError('The definition is invalid.', result.issues);
-            }
-            // The repeaters that name a set of shared block types get its types (decision 0094)
-            const issues = resolveBlockTypeSets(result.data);
-            if (issues.length > 0) {
-                throw new InvalidResponseError('The definition is invalid.', issues);
-            }
-            return result.data;
+            // The schemas load while the request runs
+            const [body, { checkDefinition }] = await Promise.all([
+                json<unknown>({ path: '/definition', signal }),
+                loadResponseChecks(),
+            ]);
+            return checkDefinition(body);
         },
 
         list(resource, query: ListQuery = {}, { signal } = {}) {
@@ -247,18 +243,8 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
                 signal,
             });
             const body: unknown = response.status === 204 ? {} : await response.json();
-            if (response.status === 202) {
-                const run = validate(ActionRun, (body as { run?: unknown }).run);
-                if (!run.success) {
-                    throw new InvalidResponseError('The action run is invalid.', run.issues);
-                }
-                return { run: run.data } satisfies ActionResponse;
-            }
-            const result = validate(ActionResult, body);
-            if (!result.success) {
-                throw new InvalidResponseError('The action result is invalid.', result.issues);
-            }
-            return { result: result.data } satisfies ActionResponse;
+            const { checkActionResponse } = await loadResponseChecks();
+            return checkActionResponse(response.status, body);
         },
         async getActionRun(id, { signal } = {}) {
             return (await json<{ run: ActionRun }>({ path: `/actions/runs/${encode(id)}`, signal }))
