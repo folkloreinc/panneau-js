@@ -8,12 +8,12 @@ import { IconButton, useCommandShortcut, usePanneauIntl, useToastOffset } from '
 
 import { type AppRoute, routePath } from '../routes';
 import { ActionRunsButton } from './ActionRunsButton';
-import { CONTENT_ID } from './AppLayout';
 import { ContextPickerPill } from './ContextPicker';
 import { Dock } from './Dock';
 import styles from './DockLayout.module.css';
 import { GoTo } from './GoTo';
 import type { ColorSchemePreference } from './UserMenu';
+import { CONTENT_ID, SiteLogo, SkipLink } from './frame';
 import { useRouteFocus } from './useRouteFocus';
 
 export interface DockLayoutProps {
@@ -60,14 +60,10 @@ export function DockLayout({
 
     return (
         <div className={styles.layout}>
-            <a href={`#${CONTENT_ID}`} className={styles.skipLink}>
-                {intl.formatMessage(appMessages.skipToContent)}
-            </a>
+            <SkipLink />
             <header className={styles.topBar}>
                 <Link href={routePath({ name: 'home' }, basePath)} className={styles.brand}>
-                    <span className={styles.logo} aria-hidden="true">
-                        {definition.name.charAt(0).toLocaleUpperCase(definition.locale)}
-                    </span>
+                    <SiteLogo definition={definition} />
                     <span className={styles.name}>{definition.name}</span>
                 </Link>
                 <ContextPickerPill className={styles.context} />

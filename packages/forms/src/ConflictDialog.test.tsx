@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import type { Field, Item } from '@panneau/protocol';
 
+import { ConflictDialog } from './ConflictDialog';
 import { Form } from './Form';
 import { problemError, renderForm } from './__fixtures__/render';
 
@@ -112,5 +113,34 @@ describe('version conflicts', () => {
             within(dialog).getByRole('button', { name: 'Load the current version' }),
         );
         expect(onReload).toHaveBeenCalled();
+    });
+
+    it('labels the changes of each dialog with its own heading', () => {
+        const dialog = (
+            <ConflictDialog
+                isOpen
+                fields={FIELDS}
+                values={{ title: 'Old', featured: false, tags: null }}
+                current={CURRENT}
+                onReload={() => undefined}
+                onOverwrite={() => undefined}
+            />
+        );
+        renderForm(
+            <>
+                {dialog}
+                {dialog}
+            </>,
+        );
+        // The second modal hides the first from assistive technologies: count both.
+        const headings = screen.getAllByRole('heading', {
+            name: 'Values that differ',
+            hidden: true,
+        });
+        expect(headings).toHaveLength(2);
+        expect(new Set(headings.map((heading) => heading.id)).size).toBe(2);
+        for (const heading of headings) {
+            expect(heading.closest('section')).toHaveAttribute('aria-labelledby', heading.id);
+        }
     });
 });

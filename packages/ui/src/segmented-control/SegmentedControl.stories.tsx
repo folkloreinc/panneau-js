@@ -52,6 +52,28 @@ export const WithIcons: Story = {
     },
 };
 
+/** Only the icons, in square segments: the labels are their names and their tooltips. */
+export const HiddenLabels: Story = {
+    args: {
+        'aria-label': 'Layout',
+        hideLabels: true,
+        defaultValue: 'grid',
+        options: [
+            { value: 'grid', label: 'Grid', icon: LayoutGrid },
+            { value: 'list', label: 'List', icon: List },
+            { value: 'rows', label: 'Rows', icon: Rows3 },
+        ],
+    },
+    play: async ({ canvasElement, args }) => {
+        const canvas = within(canvasElement);
+        const list = canvas.getByRole('radio', { name: 'List' });
+        await expect(list).not.toHaveTextContent('List');
+        await userEvent.click(list);
+        await expect(args.onChange).toHaveBeenCalledWith('list');
+        await expect(list).toBeChecked();
+    },
+};
+
 export const DisabledOption: Story = {
     args: {
         options: [

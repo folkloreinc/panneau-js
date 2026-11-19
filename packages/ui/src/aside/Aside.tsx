@@ -1,4 +1,4 @@
-import { ChevronDown, Maximize2, Minimize2, X } from 'lucide-react';
+import { ChevronRight, Maximize2, Minimize2, X } from 'lucide-react';
 import { type KeyboardEvent, type ReactNode, type Ref, createContext, use } from 'react';
 import {
     Button as AriaButton,
@@ -275,7 +275,7 @@ export function AsidePanel({
                 <AriaButton slot="trigger" className={styles.panelTrigger}>
                     <span className={styles.panelTitle}>{title}</span>
                     {titleEnd}
-                    <Icon icon={ChevronDown} className={styles.chevron} />
+                    <Icon icon={ChevronRight} className={styles.chevron} />
                 </AriaButton>
             </AriaHeading>
             <DisclosurePanel className={styles.panelContent}>{children}</DisclosurePanel>

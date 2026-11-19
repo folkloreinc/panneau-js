@@ -56,7 +56,7 @@
 
 .button[data-focus-visible] {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: -2px;
+    outline-offset: calc(-1 * var(--panneau-focus-width));
 }
 
 /* As wide as the calendar, not as the field. */
@@ -87,7 +87,7 @@
 
 .navButton[data-focus-visible] {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: -2px;
+    outline-offset: calc(-1 * var(--panneau-focus-width));
 }
 
 .navButton[data-disabled] {
@@ -171,7 +171,7 @@
 
 .cell[data-focus-visible] {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: 1px;
+    outline-offset: calc(var(--panneau-focus-offset) / 2);
 }
 
 .time {

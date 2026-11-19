@@ -1,12 +1,12 @@
 /* The tags as chips in the control, before the input. */
 
 .control.control {
-    --panneau-tags-input-padding-y: 0.1875rem;
+    --_panneau-tags-input-padding-y: 0.1875rem;
 
     flex-wrap: wrap;
     gap: var(--panneau-space-1);
     height: auto;
-    padding-block: var(--panneau-tags-input-padding-y);
+    padding-block: var(--_panneau-tags-input-padding-y);
 }
 
 .group {
@@ -35,7 +35,7 @@
 
 .tag[data-focus-visible] {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: 1px;
+    outline-offset: calc(var(--panneau-focus-offset) / 2);
 }
 
 /* Half a target of the density: the tag stays inside the control. */
@@ -68,6 +68,6 @@
     min-width: 6rem;
     min-height: calc(
         var(--panneau-control-height) - 2 * var(--panneau-border-width) - 2 *
-            var(--panneau-tags-input-padding-y)
+            var(--_panneau-tags-input-padding-y)
     );
 }

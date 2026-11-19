@@ -37,7 +37,7 @@
 
 .linked:has(.link[data-focus-visible]) {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: -1px;
+    outline-offset: calc(-1 * var(--panneau-border-width));
 }
 
 .media {

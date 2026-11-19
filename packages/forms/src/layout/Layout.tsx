@@ -316,7 +316,7 @@ function LayoutNodeView({
                         <div
                             key={index}
                             className={styles.cell}
-                            style={{ '--panneau-span': child.width ?? 12 } as CSSProperties}
+                            style={{ '--_panneau-span': child.width ?? 12 } as CSSProperties}
                         >
                             <LayoutNodeView node={child} fields={fields} />
                         </div>

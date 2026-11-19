@@ -4,7 +4,7 @@
     .panel {
         min-height: min(
             40rem,
-            calc(100dvh - 2 * var(--panneau-space-4) - var(--panneau-frame-bottom, 0px))
+            calc(100dvh - 2 * var(--panneau-space-4) - var(--panneau-frame-bottom))
         );
     }
 }
@@ -49,7 +49,8 @@
 }
 
 .previewLink[data-focus-visible] {
-    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 0;
 }
 
 /* The page of the site, as tall as the panel allows. */
