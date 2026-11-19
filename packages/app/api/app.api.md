@@ -107,7 +107,7 @@ export function Panneau(input: PanneauProps): JSX.Element;
 
 // @public
 export interface PanneauApp {
-    config: BootConfig;
+    config: Promise<BootConfig>;
     unmount(): void;
 }
 

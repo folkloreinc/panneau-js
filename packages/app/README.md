@@ -51,6 +51,7 @@ export default defineConfig({
 - Add `@vitejs/plugin-react` to the Vite config, and the entry to its inputs.
 - Keep `optimizeLocales` to the app's languages: React Aria otherwise bundles its strings in about 35 of them. It has the same plugin for webpack (`optimizeLocales.webpack()`), Rollup and esbuild.
 - The entry imports no CSS and no theme: packages import their own styles, and themes come from plugins.
+- `createPanneauApp()` throws when the page has no boot config, or when it isn't JSON. It validates the boot config once the schemas of `@panneau/protocol` have loaded, with Zod, after the first paint: the skeleton of the shell shows until then, and an error page when the boot config is invalid, with the invalid paths in the console. `app.config` is a promise of the validated config ([decisions/0096](../../docs/decisions/0096-the-boot-config-is-validated-after-the-first-paint.md)). `readBootConfig()`, for `<Panneau>`, validates synchronously.
 - The messages of plugins (`locales`) are loaded in the locale of the definition before the shell renders.
 - The home route renders `pages.home` of the definition, a page of a plugin, or the cards of the resources without it.
 - A page of the definition with `params` (`"params": ["id"]`) is at `/pages/{page}/{id}`, and its component gets `params`. Route references (`{ "route": "job", "params": { "id": … } }`) can name it ([decisions/0038](../../docs/decisions/0038-pages-with-params.md)).

@@ -1,4 +1,6 @@
-import { BOOT_CONFIG_ELEMENT_ID, type BootConfig, validateBootConfig } from '@panneau/protocol';
+import { type BootConfig, validateBootConfig } from '@panneau/protocol';
+
+import { readBootConfigInput } from './bootInput';
 
 /** Validates a boot config, and throws an error that lists what is invalid. */
 export function parseBootConfig(input: unknown): BootConfig {
@@ -18,22 +20,5 @@ export function parseBootConfig(input: unknown): BootConfig {
  * is missing, or when its content isn't a valid boot config.
  */
 export function readBootConfig(target: Document = document): BootConfig {
-    const element = target.getElementById(BOOT_CONFIG_ELEMENT_ID);
-    if (element === null) {
-        throw new Error(
-            `The page has no Panneau boot config: add <script type="application/json" id="${BOOT_CONFIG_ELEMENT_ID}">, or pass \`config\` to createPanneauApp().`,
-        );
-    }
-    let input: unknown;
-    try {
-        input = JSON.parse(element.textContent);
-    } catch (error) {
-        throw new Error(
-            `The Panneau boot config in #${BOOT_CONFIG_ELEMENT_ID} is not valid JSON.`,
-            {
-                cause: error,
-            },
-        );
-    }
-    return parseBootConfig(input);
+    return parseBootConfig(readBootConfigInput(target));
 }
