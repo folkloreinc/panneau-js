@@ -119,6 +119,7 @@ describe('EmbedField', () => {
         );
         const duration = screen.getByText('1:02:03');
         expect(duration.tagName).toBe('TIME');
+        expect(document.querySelector('img')).toHaveAttribute('loading', 'lazy');
         expect(duration).toHaveAttribute('datetime', 'PT1H2M3S');
         expect(screen.getByRole('link', { name: 'Open in a new window' })).toHaveAttribute(
             'target',

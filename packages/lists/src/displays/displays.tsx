@@ -392,7 +392,7 @@ export function EmbedDisplay({ value }: DisplayProps) {
     return (
         <a className={`${styles.link} ${styles.media}`} href={url} target="_blank" rel="noreferrer">
             {typeof thumbnailUrl === 'string' ? (
-                <img className={styles.thumbnail} src={thumbnailUrl} alt="" />
+                <img className={styles.thumbnail} src={thumbnailUrl} alt="" loading="lazy" />
             ) : null}
             <span className={styles.text} data-clamp="">
                 {typeof title === 'string' ? title : url.replace(/^https?:\/\//, '')}

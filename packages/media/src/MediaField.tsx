@@ -541,7 +541,15 @@ export function MediaField(props: MediaFieldProps) {
                                         .filter((part) => part !== null)
                                         .join(' · ')}
                                     {...(typeof item.media?.thumbnailUrl === 'string'
-                                        ? { media: <img src={item.media.thumbnailUrl} alt="" /> }
+                                        ? {
+                                              media: (
+                                                  <img
+                                                      src={item.media.thumbnailUrl}
+                                                      alt=""
+                                                      loading="lazy"
+                                                  />
+                                              ),
+                                          }
                                         : { icon: FileImage })}
                                     actions={
                                         canUpload || canPick ? (
