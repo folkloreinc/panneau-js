@@ -34,6 +34,7 @@ import {
     Button,
     Card,
     ChartLegend,
+    EmptyState,
     LineChart,
     LoadingRegion,
     Skeleton,
@@ -384,7 +385,7 @@ function BreakdownBody({ widget, data, currency }: BodyProps<BreakdownWidgetData
     return (
         <Card title={widget.label} className={styles.widget}>
             {data.items.length === 0 && (other === null || other <= 0) ? (
-                <p className={styles.empty}>{intl.formatMessage(appMessages.widgetEmpty)}</p>
+                <EmptyState size="sm" title={intl.formatMessage(appMessages.widgetEmpty)} />
             ) : (
                 <div className={styles.series}>
                     {data.total !== undefined && data.total !== null ? (
@@ -511,9 +512,10 @@ function TableBody({ widget, data }: BodyProps<TableWidgetData>) {
             }
         >
             {data.rows.length === 0 ? (
-                <p className={styles.empty}>
-                    {data.empty ?? intl.formatMessage(appMessages.widgetEmpty)}
-                </p>
+                <EmptyState
+                    size="sm"
+                    title={data.empty ?? intl.formatMessage(appMessages.widgetEmpty)}
+                />
             ) : (
                 <div className={styles.tableScroll}>
                     <table className={styles.table}>
@@ -616,9 +618,10 @@ function ListBody({ widget, data }: { widget: Widget; data: ListWidgetData }) {
             }
         >
             {data.items.length === 0 ? (
-                <p className={styles.empty}>
-                    {data.empty ?? intl.formatMessage(appMessages.widgetEmpty)}
-                </p>
+                <EmptyState
+                    size="sm"
+                    title={data.empty ?? intl.formatMessage(appMessages.widgetEmpty)}
+                />
             ) : (
                 <ul className={styles.items}>
                     {data.items.map((item, index) => (

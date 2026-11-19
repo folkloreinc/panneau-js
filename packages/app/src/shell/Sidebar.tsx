@@ -213,7 +213,7 @@ export function Sidebar({
     const userLabel = getUserMenuLabel(definition, intl);
     const avatar =
         user !== null ? (
-            <UserAvatar user={user} locale={definition.locale} className={styles.avatar} />
+            <UserAvatar user={user} />
         ) : (
             <span className={styles.avatar} aria-hidden="true">
                 <Icon icon={UserRound} size="sm" />
