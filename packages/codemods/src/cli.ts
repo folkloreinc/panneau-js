@@ -2,15 +2,20 @@
 import { parseArgs } from 'node:util';
 
 import { formatReport, runCodemods } from './run';
+import { CODEMODS, type Codemod } from './transform';
 
-export const USAGE = `Usage: panneau-codemods v4-to-v5 <paths...> [--dry] [--json]
+export const USAGE = `Usage: panneau-codemods <codemod> <paths...> [--dry] [--json]
 
-Moves the JS of a Panneau 4 project to Panneau 5: the container of the app becomes the plugin of the
-project, custom field components get their entry, and imports of @panneau/* 4 are rewritten. What
-can't be rewritten is reported, and marked with a // TODO(panneau-5) comment.
+Codemods:
+  v4-to-v5         Moves the JS of a Panneau 4 project to Panneau 5: the container of the app
+                   becomes the plugin of the project, custom field components get their entry,
+                   and imports of @panneau/* 4 are rewritten. What can't be rewritten is reported,
+                   and marked with a // TODO(panneau-5) comment.
+  button-variants  Replaces variant="primary|secondary|ghost|danger" of Button, LinkButton and
+                   IconButton with the tone and appearance it stood for (Panneau 5 alphas).
 
-  <paths>   Files and folders: the container of the app, its field components, and the entry
-            written by \`php artisan panneau:install --upgrade\`. Folders are read recursively.
+  <paths>   Files and folders, read recursively. For v4-to-v5: the container of the app, its
+            field components, and the entry written by \`php artisan panneau:install --upgrade\`.
   --dry     Report what would change, and write nothing.
   --json    Print the result as JSON.`;
 
@@ -40,11 +45,16 @@ export async function runCli(
         log(USAGE);
         return 0;
     }
-    if (command !== 'v4-to-v5' || paths.length === 0) {
+    if (!CODEMODS.includes(command as Codemod) || paths.length === 0) {
         log(USAGE);
         return 2;
     }
-    const result = await runCodemods({ paths, dry: values.dry, cwd });
+    const result = await runCodemods({
+        paths,
+        dry: values.dry,
+        cwd,
+        codemod: command as Codemod,
+    });
     log(values.json ? JSON.stringify(result, null, 2) : formatReport(result, { dry: values.dry }));
     return result.findings.some((finding) => finding.rule === 'parse') ? 1 : 0;
 }

@@ -5,6 +5,9 @@
 ```ts
 
 // @public
+export type Codemod = 'v4-to-v5' | 'button-variants';
+
+// @public
 export interface Finding {
     file: string;
     line: number | null;
@@ -29,6 +32,7 @@ export function runCodemods(input: RunOptions): Promise<RunResult>;
 
 // @public (undocumented)
 export interface RunOptions {
+    codemod?: Codemod;
     cwd?: string;
     dry?: boolean;
     paths: readonly string[];
@@ -50,7 +54,7 @@ export interface SourcesResult {
 }
 
 // @public
-export function transformSources(sources: ReadonlyMap<string, string>, cwd?: string): SourcesResult;
+export function transformSources(sources: ReadonlyMap<string, string>, cwd?: string, codemod?: Codemod): SourcesResult;
 
 // (No @packageDocumentation comment for this package)
 

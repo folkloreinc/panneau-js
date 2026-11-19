@@ -2,7 +2,7 @@ import { readFile, readdir, stat, writeFile } from 'node:fs/promises';
 import { extname, join, relative, resolve } from 'node:path';
 
 import type { Finding } from './context';
-import { EXTENSIONS, transformSources } from './transform';
+import { type Codemod, EXTENSIONS, transformSources } from './transform';
 
 /** Folders the codemods never read. */
 const IGNORED = new Set(['node_modules', 'vendor', 'dist', 'build', 'public', '.git']);
@@ -35,6 +35,8 @@ export interface RunOptions {
     dry?: boolean;
     /** The folder that paths and findings are relative to. Defaults to the current one. */
     cwd?: string;
+    /** Which codemod runs. Defaults to `v4-to-v5`. */
+    codemod?: Codemod;
 }
 
 export interface RunResult {
@@ -45,11 +47,12 @@ export interface RunResult {
     findings: Finding[];
 }
 
-/** Runs the codemods from Panneau 4 to Panneau 5 on files and folders. */
+/** Runs a codemod on files and folders: by default, the codemods from Panneau 4 to Panneau 5. */
 export async function runCodemods({
     paths,
     dry = false,
     cwd = process.cwd(),
+    codemod = 'v4-to-v5',
 }: RunOptions): Promise<RunResult> {
     const files: string[] = [];
     for (const path of paths) {
@@ -60,7 +63,7 @@ export async function runCodemods({
     for (const file of unique) {
         sources.set(file, await readFile(file, 'utf8'));
     }
-    const { outputs, findings } = transformSources(sources, cwd);
+    const { outputs, findings } = transformSources(sources, cwd, codemod);
     if (!dry) {
         for (const [file, output] of outputs) {
             await writeFile(file, output);
