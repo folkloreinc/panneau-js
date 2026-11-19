@@ -1,4 +1,4 @@
-import { type KeyboardEvent, type ReactNode, useRef, useState } from 'react';
+import { type KeyboardEvent, type ReactNode, type RefObject, useRef, useState } from 'react';
 
 import {
     type Form,
@@ -7,6 +7,7 @@ import {
     getProblem,
     resolveFields,
     selectVisible,
+    useFormSelector,
     useLeaveGuard,
     usePanneau,
     usePlugins,
@@ -16,6 +17,7 @@ import {
     type FieldEntry,
     FieldsProvider,
     type RelationSource,
+    type RevealRegistry,
     type UploadSource,
     builtInFields,
 } from '@panneau/fields';
@@ -31,24 +33,34 @@ import {
     useToastOffset,
 } from '@panneau/ui';
 
-import { ConflictDialog } from './ConflictDialog';
+import { ConflictDialog, type ConflictDialogProps } from './ConflictDialog';
 import { ErrorSummary } from './ErrorSummary';
 import styles from './Form.module.css';
 import { FormBinding } from './FormBinding';
 import { FormSkeleton } from './FormSkeleton';
-import {
-    ErrorSectionsContext,
-    FormContext,
-    RevealContext,
-    createRevealRegistry,
-    useFormState,
-} from './context';
+import { ErrorSectionsContext, FormContext, RevealContext, createRevealRegistry } from './context';
 import { cx } from './cx';
 import { FieldFlow, LayoutNodes, SidebarNode } from './layout/Layout';
 import { messages } from './messages';
 import { SaveContext, SaveControls, type SaveState, SummaryContext } from './panels/SaveControls';
 import { type FormPanelComponent, PanelsContext, builtInPanels } from './panels/panels';
 import { useBeforeUnloadGuard, useLeaveConfirmation } from './unsaved';
+
+// Defaults shared by every render: the React Compiler doesn't memoize what is computed from an
+// array made before a hook, and every render of the form would render all of its fields.
+const NO_LAYOUT: readonly LayoutNode[] = [];
+const NO_LOCALES: readonly string[] = [];
+const NO_VALUES: Record<string, unknown> = Object.freeze({});
+
+/** The conflict dialog, which follows the form's values while it is open only. */
+function FormConflictDialog({
+    form,
+    isOpen,
+    ...props
+}: Omit<ConflictDialogProps, 'values'> & { form: Form }) {
+    const values = useFormSelector(form, (state) => (isOpen ? state.values : NO_VALUES));
+    return <ConflictDialog isOpen={isOpen} values={values} {...props} />;
+}
 
 export interface FormViewProps {
     /** The form state, from `useForm()` or `createForm()` of `@panneau/core`. */
@@ -175,6 +187,86 @@ function isUnplacedField(node: LayoutNode | undefined, placed: ReadonlySet<strin
     return node?.type === 'field' && node.name !== undefined && !placed.has(node.name);
 }
 
+/**
+ * Scrolls to the field of a path in a form, and focuses it. It waits for the tab, section or
+ * locale of the field to open: a few frames at most.
+ */
+function showField(root: RefObject<HTMLElement | null>, path: string, frames: number): void {
+    const element = root.current !== null ? findFieldElement(root.current, path) : null;
+    if (element === null) {
+        return;
+    }
+    if (element.closest('[hidden]') !== null && frames > 0) {
+        requestAnimationFrame(() => showField(root, path, frames - 1));
+        return;
+    }
+    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    element.scrollIntoView?.({ block: 'center', behavior: reduced ? 'auto' : 'smooth' });
+    const target =
+        element.querySelector<HTMLElement>('[aria-invalid="true"]') ??
+        element.querySelector<HTMLElement>(FOCUSABLE);
+    target?.focus({ preventScroll: true });
+}
+
+/**
+ * The fields and the layout of a form, resolved in its mode (the required mark of a password
+ * required on create shows on create only), the nodes of its main column, its visible sidebars,
+ * and the names of its fields in order.
+ *
+ * A hook of its own for the React Compiler: it takes what a hook returns as frozen. Computed in
+ * `FormView`, the handlers that read it (submit, conflict) made the compiler compute it again on
+ * every render of the form, which then rendered all of its fields again.
+ */
+function useFormLayout(form: Form, fields: readonly Field[], layout: readonly LayoutNode[]) {
+    // Which sidebars are visible, in order, as a string (`10`): it only changes when one shows or
+    // hides
+    const sidebarsShown = useFormSelector(form, (state) =>
+        layout
+            .filter((node) => node.type === 'sidebar')
+            .map((node) => (selectVisible(state, node) ? '1' : '0'))
+            .join(''),
+    );
+    const resolved = resolveFields(fields, layout, { mode: form.mode });
+    const main = resolved.layout.filter((node) => node.type !== 'sidebar');
+    // The fields that the layout doesn't place come last: they flow in columns
+    const placed = new Set(getLayoutFieldNames(layout));
+    let split = main.length;
+    while (split > 0 && isUnplacedField(main[split - 1], placed)) {
+        split -= 1;
+    }
+    // Sidebars are never pruned: those of the resolved layout are those of the layout, in order
+    const sidebar = resolved.layout
+        .filter((node) => node.type === 'sidebar')
+        .filter((_, index) => sidebarsShown[index] === '1');
+    return {
+        resolved,
+        laidOut: main.slice(0, split),
+        flow: main.slice(split),
+        sidebar,
+        order: [
+            ...getLayoutFieldNames(main),
+            ...getLayoutFieldNames(sidebar.flatMap((node) => node.children ?? [])),
+        ],
+    };
+}
+
+/**
+ * The ref of a form's element, and `goTo()`, which opens the tab, section or locale of a path,
+ * then scrolls to its field and focuses it.
+ *
+ * A hook of its own for the React Compiler: in `FormView`, the ref, which `goTo()` reads, made one
+ * scope of everything from the ref to the markup, hooks included, and the compiler memoized
+ * nothing. Every render of the form then rendered all of its fields.
+ */
+function useGoToField(registry: RevealRegistry) {
+    const root = useRef<HTMLFormElement>(null);
+    const goTo = (path: string) => {
+        registry.reveal(path);
+        requestAnimationFrame(() => showField(root, path, 3));
+    };
+    return { root, goTo };
+}
+
 /** Whether a key press saves: ⌘ Enter on Apple platforms, Ctrl Enter elsewhere. */
 function isSaveShortcut(event: KeyboardEvent, apple: boolean): boolean {
     return (
@@ -199,7 +291,7 @@ function isSaveShortcut(event: KeyboardEvent, apple: boolean): boolean {
 export function FormView({
     form,
     fields,
-    layout = [],
+    layout = NO_LAYOUT,
     locales,
     relationSource,
     uploadSource,
@@ -227,11 +319,20 @@ export function FormView({
     const toasts = useToast();
     const { definition } = usePanneau();
     const plugins = usePlugins();
-    const state = useFormState(form);
+    // Slices of the form state, so that a keystroke doesn't render the whole form again: fields
+    // subscribe to their own (`FormBinding`)
+    const dirty = useFormSelector(form, (state) => state.dirty);
+    const status = useFormSelector(form, (state) => state.status);
+    // The errors after a failed submit, for the summary: the form doesn't follow them otherwise
+    const summaryErrors = useFormSelector(form, (state) =>
+        state.status === 'invalid' && state.submitCount > 0 ? state.errors : null,
+    );
+    const submitError = useFormSelector(form, (state) => state.error);
+    const conflict = useFormSelector(form, (state) => state.conflict);
     const [registry] = useState(createRevealRegistry);
+    const { root, goTo } = useGoToField(registry);
     const [errorSections] = useState(createRevealRegistry);
     const [resolving, setResolving] = useState(false);
-    const root = useRef<HTMLFormElement>(null);
     const footer = useRef<HTMLDivElement>(null);
     const hasFooter = submitLabel !== null || actions !== undefined;
     // Toasts rise above the footer, which sticks to the bottom of the page.
@@ -239,35 +340,17 @@ export function FormView({
     // "Saved" in the footer, from the last submit or from before the form started over, until the
     // values change.
     const [savedShown, setSavedShown] = useState(saved);
-    if (savedShown && state.dirty) {
+    if (savedShown && dirty) {
         setSavedShown(false);
     }
-    const guarded = guardUnsavedChanges && state.dirty;
+    const guarded = guardUnsavedChanges && dirty;
     useBeforeUnloadGuard(guarded);
     // Leaving through the app's router asks first, in a dialog
     const leave = useLeaveConfirmation(guarded);
     useLeaveGuard(guarded, leave.confirmLeave);
 
-    // In the mode of the form, as its rules are checked: the required mark of a password
-    // required on create shows on create only
-    const formLocales = locales ?? definition?.locales ?? [];
-    const resolved = resolveFields(fields, layout, { mode: form.mode });
-    const main = resolved.layout.filter((node) => node.type !== 'sidebar');
-    // The fields that the layout doesn't place come last: they flow in columns
-    const placed = new Set(getLayoutFieldNames(layout));
-    let split = main.length;
-    while (split > 0 && isUnplacedField(main[split - 1], placed)) {
-        split -= 1;
-    }
-    const flow = main.slice(split);
-    const laidOut = main.slice(0, split);
-    const sidebar = resolved.layout.filter(
-        (node) => node.type === 'sidebar' && selectVisible(state, node),
-    );
-    const order = [
-        ...getLayoutFieldNames(main),
-        ...getLayoutFieldNames(sidebar.flatMap((node) => node.children ?? [])),
-    ];
+    const formLocales = locales ?? definition?.locales ?? NO_LOCALES;
+    const { resolved, laidOut, flow, sidebar, order } = useFormLayout(form, fields, layout);
     const panelEntries = new Map<string, FormPanelComponent>([
         ...Object.entries(builtInPanels),
         ...(plugins.panels as ReadonlyMap<string, FormPanelComponent>),
@@ -280,29 +363,6 @@ export function FormView({
         ...builtInFields,
         ...(Object.fromEntries(plugins.fields) as Record<string, FieldEntry>),
         ...components,
-    };
-
-    /** Opens the tab, section or locale of a path, then scrolls to its field and focuses it. */
-    const goTo = (path: string) => {
-        registry.reveal(path);
-        // Wait for the tab, section or locale to open before scrolling: a few frames at most.
-        const show = (frames: number) => {
-            const element = root.current !== null ? findFieldElement(root.current, path) : null;
-            if (element === null) {
-                return;
-            }
-            if (element.closest('[hidden]') !== null && frames > 0) {
-                requestAnimationFrame(() => show(frames - 1));
-                return;
-            }
-            const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-            element.scrollIntoView?.({ block: 'center', behavior: reduced ? 'auto' : 'smooth' });
-            const target =
-                element.querySelector<HTMLElement>('[aria-invalid="true"]') ??
-                element.querySelector<HTMLElement>(FOCUSABLE);
-            target?.focus({ preventScroll: true });
-        };
-        requestAnimationFrame(() => show(3));
     };
 
     const handle = (result: SubmitResult | null) => {
@@ -331,7 +391,7 @@ export function FormView({
     };
 
     const resolve = async (choice: 'reload' | 'overwrite') => {
-        if (choice === 'reload' && state.conflict?.current === null && onReload !== undefined) {
+        if (choice === 'reload' && conflict?.current === null && onReload !== undefined) {
             onReload();
             return;
         }
@@ -358,22 +418,23 @@ export function FormView({
         event.currentTarget.requestSubmit();
     };
 
-    const problem = state.status === 'error' ? getProblem(state.error) : null;
+    const problem = status === 'error' ? getProblem(submitError) : null;
     const errorDetail =
         problem?.detail ??
-        (problem === null && state.error instanceof Error ? state.error.message : undefined);
-    const showSummary = state.status === 'invalid' && state.submitCount > 0;
-    const orderedErrors = showSummary ? orderErrors(order, state.errors, formLocales) : {};
+        (problem === null && submitError instanceof Error ? submitError.message : undefined);
+    const showSummary = summaryErrors !== null;
+    const orderedErrors =
+        summaryErrors !== null ? orderErrors(order, summaryErrors, formLocales) : {};
     const save: SaveState = {
         status:
-            state.status === 'error'
+            status === 'error'
                 ? 'error'
-                : state.dirty
+                : dirty
                   ? 'unsaved'
-                  : savedShown && state.status !== 'submitting'
+                  : savedShown && status !== 'submitting'
                     ? 'saved'
                     : null,
-        isSubmitting: state.status === 'submitting',
+        isSubmitting: status === 'submitting',
         actions,
         submitLabel: submitLabel === undefined ? intl.formatMessage(messages.save) : submitLabel,
     };
@@ -434,7 +495,7 @@ export function FormView({
                                                 )}
                                             />
                                         ) : null}
-                                        {state.status === 'error' ? (
+                                        {status === 'error' ? (
                                             <Alert
                                                 tone="danger"
                                                 role="alert"
@@ -493,11 +554,11 @@ export function FormView({
                                             </div>
                                         ) : null}
                                     </form>
-                                    <ConflictDialog
-                                        isOpen={state.status === 'conflict' || resolving}
+                                    <FormConflictDialog
+                                        form={form}
+                                        isOpen={status === 'conflict' || resolving}
                                         fields={resolved.fields}
-                                        values={state.values}
-                                        current={state.conflict?.current ?? null}
+                                        current={conflict?.current ?? null}
                                         isPending={resolving}
                                         onReload={() => void resolve('reload')}
                                         onOverwrite={() => void resolve('overwrite')}

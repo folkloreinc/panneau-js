@@ -13,6 +13,7 @@ import {
     getLayoutFieldNames,
     selectErrorCount,
     selectVisible,
+    useFormSelector,
     usePlugins,
 } from '@panneau/core';
 import { NestedField, isWideField } from '@panneau/fields';
@@ -30,7 +31,7 @@ import {
 } from '@panneau/ui';
 
 import styles from '../Form.module.css';
-import { ErrorSectionsContext, RevealContext, useFormContext, useFormState } from '../context';
+import { ErrorSectionsContext, RevealContext, useFormContext } from '../context';
 import { cx } from '../cx';
 import { messages } from '../messages';
 import { BESIDE_ONLY_PANELS, PanelsContext } from '../panels/panels';
@@ -48,7 +49,7 @@ function containsPath(names: readonly string[], path: string): boolean {
 
 function ErrorBadge({ form, names }: { form: Form; names: readonly string[] }) {
     const intl = usePanneauIntl();
-    const count = selectErrorCount(useFormState(form), names);
+    const count = useFormSelector(form, (state) => selectErrorCount(state, names));
     if (count === 0) {
         return null;
     }
@@ -59,14 +60,22 @@ function ErrorBadge({ form, names }: { form: Form; names: readonly string[] }) {
     );
 }
 
+// Not `[]` in a component: the React Compiler doesn't memoize what is computed from an array made
+// before a hook
+const NO_NODES: readonly LayoutNode[] = [];
+
 function TabsNode({ node, fields }: { node: LayoutNode; fields: ReadonlyMap<string, Field> }) {
     const form = useFormContext();
-    const state = useFormState(form);
     const registry = use(RevealContext);
     const id = useId();
-    const tabs = (node.children ?? []).filter(
-        (child) => child.type === 'tab' && selectVisible(state, child),
+    const children = node.children ?? NO_NODES;
+    // Which children are visible tabs, as a string (`101`): it only changes when one shows or hides
+    const shown = useFormSelector(form, (state) =>
+        children
+            .map((child) => (child.type === 'tab' && selectVisible(state, child) ? '1' : '0'))
+            .join(''),
     );
+    const tabs = children.filter((_, index) => shown[index] === '1');
     const names = tabs.map((tab) => getLayoutFieldNames(tab.children ?? []));
     const [selected, setSelected] = useState<string>(`${id}-0`);
 
@@ -276,6 +285,13 @@ function ComponentNode({ node, fields }: { node: LayoutNode; fields: ReadonlyMap
     return createElement(Component, { ...node.props, node, form, fields, children });
 }
 
+/** A field at the top of the form: the form's values are the object it belongs to. */
+function FieldNode({ field }: { field: Field }) {
+    const form = useFormContext();
+    const values = useFormSelector(form, (state) => state.values);
+    return <NestedField field={field} path={field.name} parentValue={values} />;
+}
+
 function LayoutNodeView({
     node,
     fields,
@@ -284,16 +300,14 @@ function LayoutNodeView({
     fields: ReadonlyMap<string, Field>;
 }) {
     const form = useFormContext();
-    const state = useFormState(form);
-    if (!selectVisible(state, node)) {
+    const visible = useFormSelector(form, (state) => selectVisible(state, node));
+    if (!visible) {
         return null;
     }
     switch (node.type) {
         case 'field': {
             const field = node.name !== undefined ? fields.get(node.name) : undefined;
-            return field !== undefined ? (
-                <NestedField field={field} path={field.name} parentValue={state.values} />
-            ) : null;
+            return field !== undefined ? <FieldNode field={field} /> : null;
         }
         case 'row':
             return (

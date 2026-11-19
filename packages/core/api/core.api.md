@@ -122,7 +122,7 @@ export function findResource(definition: Definition, id: string): Resource | und
 export interface Form {
     blur(path: string): void;
     countErrors(paths: readonly string[]): number;
-    getErrors(path: string, options?: GetErrorsOptions): string[];
+    getErrors(path: string, options?: GetErrorsOptions): readonly string[];
     // (undocumented)
     getState(): FormState;
     getValue(path: string): unknown;
@@ -596,7 +596,7 @@ export interface Router {
 export function selectErrorCount(state: FormState, paths: readonly string[]): number;
 
 // @public
-export function selectErrors(state: FormState, path: string, options?: GetErrorsOptions): string[];
+export function selectErrors(state: FormState, path: string, options?: GetErrorsOptions): readonly string[];
 
 // @public
 export function selectItemActions(actions: readonly Action[], item: ActionItem, surface: ItemSurface, input?: ItemActionsOptions): ItemAction[];
@@ -651,7 +651,7 @@ export function useFormField(form: Form, path: string): UseFormFieldResult;
 
 // @public (undocumented)
 export interface UseFormFieldResult {
-    errors: string[];
+    errors: readonly string[];
     // (undocumented)
     onBlur: () => void;
     // (undocumented)
@@ -666,6 +666,9 @@ export interface UseFormFieldResult {
 export interface UseFormResult extends FormState {
     form: Form;
 }
+
+// @public
+export function useFormSelector<T>(form: Form, select: (state: FormState) => T): T;
 
 // @public
 export function useLeaveGuard(active: boolean, guard: LeaveGuard): void;
