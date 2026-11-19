@@ -301,13 +301,15 @@ describe('RelationField', () => {
             />,
             { relationSource: source },
         );
+        // Each field also searches the source for its picker, after a delay: only the requests of
+        // ids count here, whenever those searches go.
+        const idRequests = () =>
+            list.mock.calls.filter(([, query]) => query?.filter?.[IDS_FILTER] !== undefined);
         expect(await screen.findByText('Margaret Hamilton')).toBeInTheDocument();
         expect(screen.getAllByText('Grace Hopper')).toHaveLength(2);
-        expect(list).toHaveBeenCalledTimes(1);
-        expect(list).toHaveBeenCalledWith('authors', {
-            filter: { [IDS_FILTER]: ['1', '2', '3', '404'] },
-            perPage: 4,
-        });
+        expect(idRequests()).toEqual([
+            ['authors', { filter: { [IDS_FILTER]: ['1', '2', '3', '404'] }, perPage: 4 }],
+        ]);
         // Shown again, the fields have their labels at once, without a request
         unmount();
         renderField(
@@ -320,7 +322,7 @@ describe('RelationField', () => {
             { relationSource: source },
         );
         expect(screen.getByText('Ada Lovelace')).toBeInTheDocument();
-        expect(list).toHaveBeenCalledTimes(1);
+        expect(idRequests()).toHaveLength(1);
     });
 
     it('creates an item from the typed text, with the source', async () => {
