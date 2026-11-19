@@ -53,6 +53,8 @@ export interface ConfirmDialogProps {
  * Asks before running an action (decision 0017): the action's `confirm` title and message (an ICU
  * message with `{count}`), or default ones, and how many selected items will be skipped: those of
  * the current page that don't allow it, or the backend's count for every item matching a query.
+ * It opens with the focus on "Cancel" for a destructive action, and on the confirming button
+ * otherwise (decision 0095).
  */
 export function ConfirmDialog({ event, preview = null, onConfirm, onCancel }: ConfirmDialogProps) {
     const intl = usePanneauIntl();
@@ -61,6 +63,7 @@ export function ConfirmDialog({ event, preview = null, onConfirm, onCancel }: Co
     }
     const { action, count } = event;
     const loading = preview?.status === 'loading';
+    const destructive = action.destructive === true;
     const skipped = preview?.status === 'done' ? preview.skipped : event.skipped.length;
     const confirm = typeof action.confirm === 'object' ? action.confirm : {};
     const label = getActionLabel(action, intl);
@@ -83,13 +86,15 @@ export function ConfirmDialog({ event, preview = null, onConfirm, onCancel }: Co
             }
             footer={
                 <>
-                    <Button variant="ghost" onPress={onCancel}>
+                    {/* The safe choice has the focus when the action destroys (decision 0095) */}
+                    <Button variant="ghost" autoFocus={destructive} onPress={onCancel}>
                         {confirm.cancelLabel ?? intl.formatMessage(messages.cancel)}
                     </Button>
+                    {/* Pending while the dry run counts: it keeps the focus, and ignores presses */}
                     <Button
-                        variant={action.destructive === true ? 'danger' : 'primary'}
-                        autoFocus
-                        isDisabled={loading}
+                        variant={destructive ? 'danger' : 'primary'}
+                        autoFocus={!destructive}
+                        isPending={loading}
                         onPress={() => onConfirm(event)}
                     >
                         {confirm.confirmLabel ?? label}

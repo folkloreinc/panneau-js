@@ -170,6 +170,14 @@ export const listsMessages = {
         id: 'panneau.lists.noResults',
         defaultMessage: 'No items match the search or the filters.',
     }),
+    resultsCount: defineMessage<{ count: number }>({
+        id: 'panneau.lists.resultsCount',
+        defaultMessage: '{count, plural, =0 {No items} one {# item} other {# items}}',
+    }),
+    resultsOnPage: defineMessage<{ count: number }>({
+        id: 'panneau.lists.resultsOnPage',
+        defaultMessage: '{count, plural, one {# item on this page} other {# items on this page}}',
+    }),
     loading: defineMessage({
         id: 'panneau.lists.loading',
         defaultMessage: 'Loading the items…',
