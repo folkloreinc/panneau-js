@@ -1,6 +1,5 @@
 import { File, ImageOff, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-aria-components';
 
 import {
     Button,
@@ -8,6 +7,8 @@ import {
     Fieldset,
     Icon,
     IconButton,
+    Tile,
+    TileGroup,
     getNamedIcon,
     usePanneauIntl,
 } from '@panneau/ui';
@@ -138,30 +139,29 @@ function References({
     );
 }
 
-/** The square before the label of a card or an option: the item's image, or the resource's icon. */
+/** The icon of an item without an image: a broken image when its resource has images. */
+function placeholderIcon(info: RelationResourceInfo | null) {
+    return info?.image === true
+        ? ImageOff
+        : info?.icon !== undefined
+          ? getNamedIcon(info.icon)
+          : File;
+}
+
+/** The square before the label of an option: the item's image, or the resource's icon. */
 function Thumbnail({
     reference,
     info,
-    className,
 }: {
     reference: RelationReference;
     info: RelationResourceInfo | null;
-    className?: string;
 }) {
     return (
-        <span className={cx(styles.thumbnail, className)} aria-hidden="true">
+        <span className={styles.thumbnail} aria-hidden="true">
             {reference.imageUrl !== undefined ? (
                 <img src={reference.imageUrl} alt="" loading="lazy" />
             ) : (
-                <Icon
-                    icon={
-                        info?.image === true
-                            ? ImageOff
-                            : info?.icon !== undefined
-                              ? getNamedIcon(info.icon)
-                              : File
-                    }
-                />
+                <Icon icon={placeholderIcon(info)} />
             )}
         </span>
     );
@@ -183,9 +183,9 @@ interface CardsProps {
 }
 
 /**
- * The chosen items, as cards (decision 0067): the image of each one, or its resource's icon, its
- * label, linked to the item when the source says where it opens, its description, and the buttons
- * that change or remove it.
+ * The chosen items, as tiles (decisions 0067 and 0092): the image of each one, or its resource's
+ * icon, its label, linked to the item when the source says where it opens, its description, and
+ * the buttons that change or remove it.
  */
 function RelationCards({
     references,
@@ -199,29 +199,20 @@ function RelationCards({
     'aria-label': ariaLabel,
 }: CardsProps) {
     return (
-        <ul className={styles.cards} aria-label={ariaLabel}>
-            {references.map((reference) => {
-                const href = getHref(reference);
-                return (
-                    <li key={reference.id} className={styles.card} data-relation-card="">
-                        <Thumbnail reference={reference} info={info} />
-                        <span className={styles.cardText}>
-                            {href !== null ? (
-                                // Through React Aria: an app's `RouterProvider` opens it with its router
-                                <Link href={href} className={cx(styles.cardLabel, styles.link)}>
-                                    {reference.label}
-                                </Link>
-                            ) : (
-                                <span className={styles.cardLabel}>{reference.label}</span>
-                            )}
-                            {reference.description !== undefined ? (
-                                <span className={styles.cardDescription}>
-                                    {reference.description}
-                                </span>
-                            ) : null}
-                        </span>
-                        {onChange !== undefined || onRemove !== undefined ? (
-                            <span className={styles.cardActions}>
+        <TileGroup appearance="outline" label={ariaLabel}>
+            {references.map((reference) => (
+                <Tile
+                    key={reference.id}
+                    title={reference.label}
+                    description={reference.description}
+                    // Through React Aria: an app's `RouterProvider` opens it with its router
+                    href={getHref(reference) ?? undefined}
+                    {...(reference.imageUrl !== undefined
+                        ? { media: <img src={reference.imageUrl} alt="" loading="lazy" /> }
+                        : { icon: placeholderIcon(info) })}
+                    actions={
+                        onChange !== undefined || onRemove !== undefined ? (
+                            <>
                                 {onChange !== undefined ? (
                                     <Button
                                         size="sm"
@@ -240,12 +231,12 @@ function RelationCards({
                                         onPress={() => onRemove(reference)}
                                     />
                                 ) : null}
-                            </span>
-                        ) : null}
-                    </li>
-                );
-            })}
-        </ul>
+                            </>
+                        ) : undefined
+                    }
+                />
+            ))}
+        </TileGroup>
     );
 }
 
@@ -298,7 +289,7 @@ export function RelationField(props: RelationFieldProps) {
             return;
         }
         focusNext.current = null;
-        const cards = container.current?.querySelectorAll('[data-relation-card]') ?? [];
+        const cards = container.current?.querySelectorAll('.panneau-tile') ?? [];
         const card = target !== 'picker' ? cards[Math.min(target, cards.length - 1)] : undefined;
         const element =
             card !== undefined
@@ -383,13 +374,7 @@ export function RelationField(props: RelationFieldProps) {
                 ...(item.description !== undefined ? { description: item.description } : {}),
                 ...(info?.image === true || item.imageUrl !== undefined
                     ? {
-                          prefix: (
-                              <Thumbnail
-                                  reference={item}
-                                  info={info}
-                                  className={styles.optionThumbnail}
-                              />
-                          ),
+                          prefix: <Thumbnail reference={item} info={info} />,
                       }
                     : {}),
             })),
