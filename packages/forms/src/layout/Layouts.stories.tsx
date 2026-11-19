@@ -187,7 +187,9 @@ export const WithoutLayout: Story = {
             true,
         );
         const name = canvas.getByRole('textbox', { name: 'Name' });
-        await expect(sameRow(canvas.getByRole('textbox', { name: 'Phone' }), name)).toBe(true);
+        // The phone field loads its code first
+        const phone = await canvas.findByRole('textbox', { name: 'Phone' });
+        await expect(sameRow(phone, name)).toBe(true);
         // A text area takes the whole row.
         const notes = canvas.getByRole('textbox', { name: 'Notes' });
         await expect(notes.getBoundingClientRect().width).toBeGreaterThan(

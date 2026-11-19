@@ -61,7 +61,7 @@ describe('SlugField', () => {
         expect(screen.getByRole('textbox', { name: 'Slug' })).toHaveValue('ete');
     });
 
-    it('reads its source from the parent value', () => {
+    it('reads its source from the parent value', async () => {
         renderField(
             <DefinitionField
                 field={{
@@ -77,7 +77,7 @@ describe('SlugField', () => {
                 onChange={() => undefined}
             />,
         );
-        expect(screen.getByRole('button', { name: 'Generate from title' })).toBeDisabled();
+        expect(await screen.findByRole('button', { name: 'Generate from title' })).toBeDisabled();
         expect(screen.getByText('/')).toBeInTheDocument();
     });
 

@@ -241,7 +241,7 @@ describe('TelField', () => {
         expect(extension()).toHaveValue('12');
     });
 
-    it('renders from a definition, with the country of its settings', () => {
+    it('renders from a definition, with the country of its settings', async () => {
         renderField(
             <DefinitionField
                 field={{ name: 'phone', type: 'tel', label: 'Phone', settings: { country: 'CA' } }}
@@ -251,7 +251,7 @@ describe('TelField', () => {
                 readOnly
             />,
         );
-        expect(screen.getByRole('textbox', { name: 'Phone' })).toHaveValue('(514) 555-0199');
+        expect(await screen.findByRole('textbox', { name: 'Phone' })).toHaveValue('(514) 555-0199');
         expect(screen.getByRole('button', { name: /Country of the number/ })).toBeDisabled();
     });
 

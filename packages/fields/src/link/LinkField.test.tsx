@@ -67,7 +67,7 @@ describe('links', () => {
 describe('LinkField', () => {
     it('takes a URL, a label per locale, and a new tab', async () => {
         const onChange = renderLink({}, { locales: ['fr', 'en'] });
-        expect(screen.getByRole('radio', { name: 'URL' })).toBeChecked();
+        expect(await screen.findByRole('radio', { name: 'URL' })).toBeChecked();
         await userEvent.type(screen.getByRole('textbox', { name: /^URL/ }), 'https://example.com');
         expect(onChange).toHaveBeenLastCalledWith({
             type: 'url',

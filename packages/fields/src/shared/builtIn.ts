@@ -1,43 +1,31 @@
 import { fr } from '@panneau/intl';
 
-import { AddressFieldEntry } from '../address/AddressField';
 import { BooleanFieldEntry } from '../boolean/BooleanField';
-import { ColorFieldEntry } from '../color/ColorField';
-import { CountryFieldEntry } from '../country/CountryField';
 import { DateFieldEntry } from '../date/DateField';
-import { DateRangeFieldEntry } from '../daterange/DateRangeField';
 import { DateTimeFieldEntry } from '../datetime/DateTimeField';
-import { DurationFieldEntry } from '../duration/DurationField';
 import { EmailFieldEntry } from '../email/EmailField';
-import { EmbedFieldEntry } from '../embed/EmbedField';
-import { FileFieldEntry } from '../file/FileField';
 import { GroupFieldEntry } from '../group/GroupField';
-import { JsonFieldEntry } from '../json/JsonField';
-import { LinkFieldEntry } from '../link/LinkField';
-import { LocationFieldEntry } from '../location/LocationField';
-import { MoneyFieldEntry } from '../money/MoneyField';
 import { NumberFieldEntry } from '../number/NumberField';
 import { RangeFieldEntry } from '../range/RangeField';
-import { RegionFieldEntry } from '../region/RegionField';
 import { RelationFieldEntry } from '../relation/RelationField';
 import { RepeaterFieldEntry } from '../repeater/RepeaterField';
 import { SelectFieldEntry } from '../select/SelectField';
-import { SlugFieldEntry } from '../slug/SlugField';
 import { TagsFieldEntry } from '../tags/TagsField';
-import { TelFieldEntry } from '../tel/TelField';
 import { TextFieldEntry } from '../text/TextField';
 import { TextAreaFieldEntry } from '../textarea/TextAreaField';
 import { TimeFieldEntry } from '../time/TimeField';
 import { UrlFieldEntry } from '../url/UrlField';
+import { lazyFieldEntry } from './lazy';
 import type { FieldEntry } from './types';
 
 /**
- * The entries of the built-in field types. `richtext` and `media` come with their plugins
- * (`@panneau/editor` and `@panneau/media`): without them, `DefinitionField` renders a placeholder.
- * `file` uploads through the upload source of the fields context, or gives the files themselves.
- * `embed`, `location` and `address` use its embed source and its maps; `location` loads Leaflet
- * when shown. `link` searches its pages with the relation source, and picks its files with the
- * `media` entry.
+ * The entries of the built-in field types. Those with heavy code (a phone number's metadata, a
+ * map, the countries…) load it on first use, with the skeleton of the field until then (#346).
+ * `richtext` and `media` come with their plugins (`@panneau/editor` and `@panneau/media`): without
+ * them, `DefinitionField` renders a placeholder. `file` uploads through the upload source of the
+ * fields context, or gives the files themselves. `embed`, `location` and `address` use its embed
+ * source and its maps; `location` loads Leaflet when shown. `link` searches its pages with the
+ * relation source, and picks its files with the `media` entry.
  */
 export const builtInFields: Readonly<Record<string, FieldEntry>> = {
     text: TextFieldEntry,
@@ -50,25 +38,35 @@ export const builtInFields: Readonly<Record<string, FieldEntry>> = {
     select: SelectFieldEntry,
     email: EmailFieldEntry,
     url: UrlFieldEntry,
-    color: ColorFieldEntry,
-    slug: SlugFieldEntry,
-    file: FileFieldEntry,
+    color: lazyFieldEntry(async () => (await import('../color/ColorField')).ColorFieldEntry),
+    slug: lazyFieldEntry(async () => (await import('../slug/SlugField')).SlugFieldEntry),
+    file: lazyFieldEntry(async () => (await import('../file/FileField')).FileFieldEntry),
     relation: RelationFieldEntry,
     group: GroupFieldEntry,
     repeater: RepeaterFieldEntry,
-    tel: TelFieldEntry,
+    tel: lazyFieldEntry(async () => (await import('../tel/TelField')).TelFieldEntry),
     range: RangeFieldEntry,
-    duration: DurationFieldEntry,
-    json: JsonFieldEntry,
+    duration: lazyFieldEntry(
+        async () => (await import('../duration/DurationField')).DurationFieldEntry,
+    ),
+    json: lazyFieldEntry(async () => (await import('../json/JsonField')).JsonFieldEntry),
     tags: TagsFieldEntry,
-    embed: EmbedFieldEntry,
-    location: LocationFieldEntry,
-    country: CountryFieldEntry,
-    region: RegionFieldEntry,
-    address: AddressFieldEntry,
-    link: LinkFieldEntry,
-    daterange: DateRangeFieldEntry,
-    money: MoneyFieldEntry,
+    embed: lazyFieldEntry(async () => (await import('../embed/EmbedField')).EmbedFieldEntry),
+    location: lazyFieldEntry(
+        async () => (await import('../location/LocationField')).LocationFieldEntry,
+    ),
+    country: lazyFieldEntry(
+        async () => (await import('../country/CountryField')).CountryFieldEntry,
+    ),
+    region: lazyFieldEntry(async () => (await import('../region/RegionField')).RegionFieldEntry),
+    address: lazyFieldEntry(
+        async () => (await import('../address/AddressField')).AddressFieldEntry,
+    ),
+    link: lazyFieldEntry(async () => (await import('../link/LinkField')).LinkFieldEntry),
+    daterange: lazyFieldEntry(
+        async () => (await import('../daterange/DateRangeField')).DateRangeFieldEntry,
+    ),
+    money: lazyFieldEntry(async () => (await import('../money/MoneyField')).MoneyFieldEntry),
 };
 
 /**
