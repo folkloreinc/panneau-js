@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import type { Field, Filter, Media, MediaType, TableColumn } from '@panneau/core';
+import type { ActionValue, Field, Filter, Media, MediaType, TableColumn } from '@panneau/core';
 import { useQuery } from '@panneau/core/hooks';
 import Buttons from '@panneau/element-buttons';
 import Grid from '@panneau/element-grid';
@@ -37,6 +37,14 @@ const DEFAULT_LAYOUTS: LayoutItem[] = [
     },
 ];
 const DEFAULT_UPPY_CONFIG: UseUppyOptions = {};
+
+// The delete and restore actions call their `action` with their value: the media of the row, or
+// the selected medias when the action applies to a selection
+function getMediasIds(value: ActionValue): (string | number)[] {
+    return (Array.isArray(value) ? value : [value])
+        .map((it) => it?.id ?? null)
+        .filter((id) => id !== null);
+}
 
 interface LayoutItem {
     id: string;
@@ -203,17 +211,22 @@ function MediasBrowser({
         }
     };
 
-    const onTrashMedia = (id: string | number) =>
-        mediaDestroy(id)
+    const onTrashMedias = (value: ActionValue) => {
+        const ids = getMediasIds(value);
+        return Promise.all(ids.map((id) => mediaDestroy(id)))
             .then(() => {
                 const newSelectedItems = (selectedItems || []).filter(
-                    ({ id: itemId = null }) => itemId !== id,
+                    ({ id: itemId = null }) => !ids.includes(itemId),
                 );
                 if (onSelectionChange !== null) {
                     onSelectionChange(newSelectedItems.length > 0 ? newSelectedItems : null);
                 }
             })
             .then(() => reload());
+    };
+
+    const onRestoreMedias = (value: ActionValue) =>
+        Promise.all(getMediasIds(value).map((id) => mediaRestore(id))).then(() => reload());
 
     const [uploadedMedias, setUploadedMedias] = useState<Media[] | null>(null);
     const [uploadProcessing, setUploadProcessing] = useState(false);
@@ -334,11 +347,7 @@ function MediasBrowser({
                           actions: (actions || [])
                               .reduce((acc, action) => {
                                   if (action === 'delete') {
-                                      acc.push({
-                                          id: 'restore',
-                                          component: 'restore',
-                                          action: (ids) => mediaRestore(ids[0]).then(reload),
-                                      });
+                                      acc.push('restore');
                                   }
                                   acc.push(action);
                                   return acc;
@@ -527,7 +536,10 @@ function MediasBrowser({
                                 getDeletePropsFromValue: () => ({
                                     disabled: destroying,
                                     icon: showTrashed ? 'trash-fill' : 'trash',
-                                    action: (ids) => onTrashMedia(ids[0]),
+                                    action: onTrashMedias,
+                                }),
+                                getRestorePropsFromValue: () => ({
+                                    action: onRestoreMedias,
                                 }),
                                 getEditPropsFromValue: (it) => ({
                                     href: null,
