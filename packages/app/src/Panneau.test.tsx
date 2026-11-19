@@ -244,14 +244,14 @@ describe('Panneau', () => {
             expect(document.title).toBe('Overview · Test site');
         });
 
-        it('shows the cards of the resources for the built-in dashboard', () => {
+        it('shows the cards of the resources for the built-in dashboard', async () => {
             renderPanneau({
                 config: createBootConfig({
                     definition: createDefinition({ pages: { home: { component: 'dashboard' } } }),
                 }),
             });
             expect(
-                within(screen.getByRole('main')).getByRole('link', { name: 'Pages' }),
+                await within(screen.getByRole('main')).findByRole('link', { name: 'Pages' }),
             ).toHaveAttribute('href', '/panneau/resources/pages');
         });
 
@@ -357,8 +357,10 @@ describe('Panneau', () => {
                 onUnauthorized,
             });
             await act(() => queryClient.refetchQueries({ queryKey: queryKeys.definition() }));
+            // The skeleton of the login page while its code loads (#346)
+            expect(screen.getByRole('status')).toHaveTextContent('Loading');
+            expect(await screen.findByRole('heading', { name: 'Log in' })).toBeInTheDocument();
             expect(screen.queryByRole('link', { name: 'Log in' })).not.toBeInTheDocument();
-            expect(screen.getByRole('heading', { name: 'Log in' })).toBeInTheDocument();
             expect(onUnauthorized).toHaveBeenCalledExactlyOnceWith({ loginUrl: null });
         });
 
