@@ -1,3 +1,4 @@
+import { definePlugin } from '@panneau/core';
 import type { FieldEntry } from '@panneau/fields';
 
 import { MediaFieldEntry } from './MediaField';
@@ -10,7 +11,7 @@ import { MediaFieldEntry } from './MediaField';
 export const mediaPlugin: {
     id: string;
     fields: Readonly<Record<string, FieldEntry>>;
-} = {
-    id: 'panneau-media',
+} = definePlugin({
+    id: 'panneau.media',
     fields: { media: MediaFieldEntry, image: MediaFieldEntry },
-};
+});

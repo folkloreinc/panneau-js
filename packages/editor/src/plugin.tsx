@@ -40,7 +40,7 @@ export function createEditorPlugin({
         );
     }
     return {
-        id: 'panneau-editor',
+        id: 'panneau.editor',
         fields: {
             richtext:
                 extensions === undefined && buttons === undefined

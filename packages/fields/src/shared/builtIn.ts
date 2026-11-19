@@ -76,13 +76,15 @@ export const builtInFields: Readonly<Record<string, FieldEntry>> = {
  * The built-in fields as a `@panneau/core` plugin: their entries, and the French messages of
  * every Panneau package (`@panneau/ui`, `@panneau/fields`, `@panneau/forms`…, from
  * `@panneau/intl`), loaded on first use. Pass it before the plugins that override a type.
+ * `@panneau/fields` doesn't depend on `@panneau/core`: the plugin is typed as `definePlugin()`
+ * would type it.
  */
 export const fieldsPlugin: {
     id: string;
     fields: Readonly<Record<string, FieldEntry>>;
     locales: Readonly<Record<string, () => Promise<Record<string, string>>>>;
 } = {
-    id: 'panneau-fields',
+    id: 'panneau.fields',
     fields: builtInFields,
     locales: { fr: () => loadPanneauMessages('fr') },
 };

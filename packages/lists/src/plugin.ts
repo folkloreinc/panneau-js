@@ -1,3 +1,4 @@
+import { definePlugin } from '@panneau/core';
 import { loadPanneauMessages } from '@panneau/intl';
 
 import { builtInDisplays } from './displays/displays';
@@ -14,9 +15,9 @@ export const listsPlugin: {
     displays: Readonly<Record<string, DisplayEntry>>;
     listLayouts: Readonly<Record<string, ListLayoutEntry>>;
     locales: Readonly<Record<string, () => Promise<Record<string, string>>>>;
-} = {
-    id: 'panneau-lists',
+} = definePlugin({
+    id: 'panneau.lists',
     displays: builtInDisplays,
     listLayouts: builtInLayouts,
     locales: { fr: () => loadPanneauMessages('fr') },
-};
+});
