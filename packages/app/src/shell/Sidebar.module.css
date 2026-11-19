@@ -163,8 +163,8 @@
     transition: transform var(--panneau-duration);
 }
 
-.sectionToggle[aria-expanded='false'] .sectionChevron {
-    transform: rotate(-90deg);
+.sectionToggle[aria-expanded='true'] .sectionChevron {
+    transform: rotate(90deg);
 }
 
 .list {

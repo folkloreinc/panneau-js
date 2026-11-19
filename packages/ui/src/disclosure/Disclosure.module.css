@@ -26,6 +26,11 @@
     outline-offset: 2px;
 }
 
+/*
+ * The one convention of chevrons that show and hide content: a chevron to the right (to the end),
+ * turned down once the content is shown. The sidebar's groups, the panels of Aside and the
+ * repeater's items follow it.
+ */
 .chevron {
     color: var(--panneau-color-text-muted);
     transition: transform var(--panneau-duration);
@@ -51,4 +56,17 @@
 .heading {
     margin: 0;
     font: inherit;
+}
+
+/* The title, and the controls of `headerEnd` after it. */
+.header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--panneau-space-3);
+}
+
+.header > .heading {
+    flex: 1 1 auto;
+    min-width: 0;
 }

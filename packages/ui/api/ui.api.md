@@ -703,6 +703,7 @@ export interface DisclosureProps {
     className?: string;
     // (undocumented)
     defaultExpanded?: boolean;
+    headerEnd?: ReactNode;
     headingLevel?: 2 | 3 | 4 | 5 | 6;
     // (undocumented)
     id?: string;

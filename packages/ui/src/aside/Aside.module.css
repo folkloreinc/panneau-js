@@ -236,8 +236,8 @@
     transition: transform var(--panneau-duration);
 }
 
-.panel:not([data-expanded]) .chevron {
-    transform: rotate(-90deg);
+.panel[data-expanded] .chevron {
+    transform: rotate(90deg);
 }
 
 /* A panel with a title, which can't be collapsed. */

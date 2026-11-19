@@ -1,5 +1,5 @@
 import {
-    ChevronDown,
+    ChevronRight,
     ChevronsUpDown,
     PanelLeftClose,
     PanelLeftOpen,
@@ -89,7 +89,7 @@ function NavSection({ section, rail, holdsCurrent, children }: NavSectionProps) 
                         onPress={() => setChoice(open ? 'closed' : 'open')}
                     >
                         <span className={styles.label}>{label}</span>
-                        <Icon icon={ChevronDown} size="sm" className={styles.sectionChevron} />
+                        <Icon icon={ChevronRight} size="sm" className={styles.sectionChevron} />
                     </Button>
                 ) : (
                     <span className={styles.sectionLabel} aria-hidden={rail}>
