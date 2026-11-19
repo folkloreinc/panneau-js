@@ -2,6 +2,7 @@ import { type ReactNode, useState } from 'react';
 import { ToggleButton, ToggleButtonGroup } from 'react-aria-components';
 
 import { Icon, type IconComponent } from '../icon/Icon';
+import { Tooltip } from '../tooltip/Tooltip';
 import { cx } from '../utils/cx';
 import styles from './SegmentedControl.module.css';
 
@@ -28,6 +29,11 @@ export interface SegmentedControlProps {
     size?: 'sm' | 'md';
     /** Takes the width of its container, with segments of equal width. */
     fullWidth?: boolean;
+    /**
+     * Shows only the icon of each option, in a square segment. The label becomes its accessible
+     * name and a tooltip, so it must be a string (or come with a `textValue`).
+     */
+    hideLabels?: boolean;
     isDisabled?: boolean;
     className?: string;
     segmentClassName?: string;
@@ -45,6 +51,7 @@ export function SegmentedControl({
     onChange,
     size = 'md',
     fullWidth = false,
+    hideLabels = false,
     isDisabled,
     className,
     segmentClassName,
@@ -75,23 +82,38 @@ export function SegmentedControl({
                 styles.group,
                 styles[size],
                 fullWidth && styles.fullWidth,
+                hideLabels && styles.iconOnly,
                 className,
             )}
         >
-            {options.map((option) => (
-                <ToggleButton
-                    key={option.value}
-                    id={option.value}
-                    isDisabled={option.isDisabled}
-                    {...(option.textValue !== undefined ? { 'aria-label': option.textValue } : {})}
-                    className={cx('panneau-segment', styles.segment, segmentClassName)}
-                >
-                    {option.icon !== undefined ? (
-                        <Icon icon={option.icon} size={size === 'sm' ? 'sm' : 'md'} />
-                    ) : null}
-                    {option.label}
-                </ToggleButton>
-            ))}
+            {options.map((option) => {
+                const name =
+                    option.textValue ??
+                    (typeof option.label === 'string' ? option.label : undefined);
+                const segment = (
+                    <ToggleButton
+                        key={option.value}
+                        id={option.value}
+                        isDisabled={option.isDisabled}
+                        {...(name !== undefined && (hideLabels || option.textValue !== undefined)
+                            ? { 'aria-label': name }
+                            : {})}
+                        className={cx('panneau-segment', styles.segment, segmentClassName)}
+                    >
+                        {option.icon !== undefined ? (
+                            <Icon icon={option.icon} size={size === 'sm' ? 'sm' : 'md'} />
+                        ) : null}
+                        {hideLabels ? null : option.label}
+                    </ToggleButton>
+                );
+                return hideLabels ? (
+                    <Tooltip key={option.value} content={option.label}>
+                        {segment}
+                    </Tooltip>
+                ) : (
+                    segment
+                );
+            })}
         </ToggleButtonGroup>
     );
 }

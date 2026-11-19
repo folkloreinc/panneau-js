@@ -1210,6 +1210,7 @@ export interface SegmentedControlProps {
     className?: string;
     defaultValue?: string;
     fullWidth?: boolean;
+    hideLabels?: boolean;
     // (undocumented)
     isDisabled?: boolean;
     // (undocumented)

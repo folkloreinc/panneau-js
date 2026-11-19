@@ -59,6 +59,11 @@
     flex: 1 1 0;
 }
 
+.iconOnly .segment {
+    aspect-ratio: 1;
+    padding: 0;
+}
+
 .segment[data-hovered] {
     color: var(--panneau-segmented-control-segment-color-hover, var(--panneau-color-text));
     background-color: var(--panneau-segmented-control-segment-bg-hover, transparent);
