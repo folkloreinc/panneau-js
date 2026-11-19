@@ -40,6 +40,7 @@ export function isAllowedOn(action: Action, item: ListItem): boolean {
 /**
  * The link of a `link` action for an item: its `url` template with `{id}` (and other `{field}`
  * values of the item) filled in, or `null` for an action with a `route` or without an item.
+ * Internal: outside of this package, use `fillActionUrl()` of `@panneau/core`, which it calls.
  */
 export function getActionHref(action: Action, item?: ListItem): string | null {
     return fillActionUrl(action, item);

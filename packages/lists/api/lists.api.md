@@ -190,9 +190,6 @@ export type FilterEntry = ComponentType<FilterControlProps>;
 export function GalleryLayout(input: ListLayoutProps): JSX.Element;
 
 // @public
-export function getActionHref(action: Action, item?: ListItem): string | null;
-
-// @public
 export function getActionIcon(action: Action, icons?: ActionIcons): IconComponent | undefined;
 
 // @public
