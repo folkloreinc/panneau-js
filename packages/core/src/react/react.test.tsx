@@ -7,10 +7,11 @@ import { createDefinition, getResource } from '../__fixtures__/definition';
 import { resolveForm } from '../definition/form';
 import { resolveList } from '../definition/list';
 import type { Form } from '../form/form';
+import { createForm } from '../form/form';
 import { createMemoryRouter } from '../list/router';
 import { definePlugin } from '../plugins';
 import { PanneauProvider, usePanneau, usePlugins, useResource } from './provider';
-import { useForm, useFormField } from './useForm';
+import { useForm, useFormField, useFormSelector } from './useForm';
 import { useList } from './useList';
 
 const TextField = () => null;
@@ -146,6 +147,38 @@ describe('useForm', () => {
         await userEvent.click(screen.getByRole('button', { name: 'Save' }));
         expect(first).not.toHaveBeenCalled();
         expect(second).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe('useFormSelector', () => {
+    it('renders again when its slice of the state changes only', () => {
+        const form = createForm({
+            fields: [
+                { name: 'title', type: 'text' },
+                { name: 'body', type: 'text', rules: [{ rule: 'required' }] },
+            ],
+        });
+        let titleRenders = 0;
+        let bodyRenders = 0;
+        const title = renderHook(() => {
+            titleRenders += 1;
+            return useFormField(form, 'title');
+        });
+        const dirty = renderHook(() => useFormSelector(form, (state) => state.dirty));
+        renderHook(() => {
+            bodyRenders += 1;
+            return useFormField(form, 'body');
+        });
+        act(() => form.setValue('title', 'Home'));
+        act(() => form.setValue('title', 'Homepage'));
+        expect(title.result.current.value).toBe('Homepage');
+        expect(dirty.result.current).toBe(true);
+        expect(titleRenders).toBe(3);
+        expect(bodyRenders).toBe(1);
+        // Its errors show
+        act(() => form.blur('body'));
+        expect(bodyRenders).toBe(2);
+        expect(titleRenders).toBe(3);
     });
 });
 

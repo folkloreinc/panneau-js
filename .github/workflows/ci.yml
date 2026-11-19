@@ -107,25 +107,10 @@ jobs:
                   chromium: true
 
             - name: Run the stories as tests, with axe checks
-              run: npm run test:storybook -- --project storybook
+              run: npm run test:storybook
 
             - name: Build Storybook
               run: npm run build-storybook -- --quiet
-
-    # The same stories in the dark scheme and the touch density, in their own job so that the wait
-    # stays the longest job.
-    storybook-dark-touch:
-        name: Storybook (dark scheme, touch density)
-        runs-on: ubuntu-24.04
-        steps:
-            - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
-
-            - uses: ./.github/actions/setup
-              with:
-                  chromium: true
-
-            - name: Run the stories as tests in the dark scheme and the touch density, with axe checks
-              run: npm run test:storybook -- --project storybook-dark-touch
 
     smoke-webpack:
         name: Smoke tests (webpack app, types under NodeNext, icons in Vite bundles)

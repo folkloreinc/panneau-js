@@ -89,6 +89,29 @@ describe('createForm', () => {
         expect(Object.keys(form.getState().errors)).toEqual(['seo.description']);
     });
 
+    it('keeps the errors that stay the same from one state to the next', () => {
+        const form = setup({
+            fields: [
+                { name: 'title', type: 'text', rules: [{ rule: 'required' }] },
+                { name: 'summary', type: 'text', rules: [{ rule: 'max', value: 3 }] },
+                { name: 'body', type: 'text' },
+            ],
+            values: { title: '', summary: 'Too long', body: '' },
+        });
+        form.validate();
+        const before = form.getState().errors;
+        expect(Object.keys(before)).toEqual(['title', 'summary']);
+        // Another value changes: the same errors object
+        form.setValue('body', 'Text');
+        expect(form.getState().errors).toBe(before);
+        // An error goes away: the other one keeps its array
+        form.setValue('summary', 'Ok');
+        const after = form.getState().errors;
+        expect(after).not.toBe(before);
+        expect(after).toEqual({ title: before.title });
+        expect(after.title).toBe(before.title);
+    });
+
     it('formats errors with formatError', () => {
         const form = setup({ formatError: (failure, path) => `${path}: ${failure.rule}` });
         form.setValue('title.en', '');

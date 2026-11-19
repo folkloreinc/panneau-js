@@ -125,7 +125,7 @@ export interface Form {
      * Errors at a path. Not a React API: components use `selectErrors(state, path, options)` (see
      * {@link Form}).
      */
-    getErrors(path: string, options?: GetErrorsOptions): string[];
+    getErrors(path: string, options?: GetErrorsOptions): readonly string[];
     /**
      * The number of paths with errors within the given paths, for counts on tabs and sections. Not
      * a React API: components use `selectErrorCount(state, paths)` (see {@link Form}).
@@ -163,6 +163,28 @@ export function getDefaultValues(fields: readonly Field[], values: Values = {}):
                 : result,
         values,
     );
+}
+
+/**
+ * The next errors, with the arrays of the previous ones where their messages didn't change, and
+ * the previous object itself when nothing changed: the selectors then return the same slices, and
+ * fields subscribed to them don't render again.
+ */
+function shareErrors(
+    previous: Record<string, string[]>,
+    next: Record<string, string[]>,
+): Record<string, string[]> {
+    const shared = Object.fromEntries(
+        Object.entries(next).map(([path, messages]) => {
+            const before = Object.hasOwn(previous, path) ? previous[path] : undefined;
+            return [path, before !== undefined && isEqual(before, messages) ? before : messages];
+        }),
+    );
+    const paths = Object.keys(shared);
+    return paths.length === Object.keys(previous).length &&
+        paths.every((path) => Object.hasOwn(previous, path) && previous[path] === shared[path])
+        ? previous
+        : shared;
 }
 
 function mergeErrors(...sources: Record<string, string[]>[]): Record<string, string[]> {
@@ -222,18 +244,26 @@ export function createForm(options: FormOptions): Form {
         );
     };
 
-    const compute = (values: Values): FormState => ({
-        values,
-        initialValues,
-        version,
-        dirty: !isEqual(values, initialValues),
-        errors: mergeErrors(clientErrors(values, submitCount > 0), serverErrors),
-        touched,
-        status,
-        conflict,
-        error,
-        submitCount,
-    });
+    // The errors of the last state, which the next one keeps where they didn't change
+    let shownErrors: Record<string, string[]> = {};
+    const compute = (values: Values): FormState => {
+        shownErrors = shareErrors(
+            shownErrors,
+            mergeErrors(clientErrors(values, submitCount > 0), serverErrors),
+        );
+        return {
+            values,
+            initialValues,
+            version,
+            dirty: !isEqual(values, initialValues),
+            errors: shownErrors,
+            touched,
+            status,
+            conflict,
+            error,
+            submitCount,
+        };
+    };
 
     let state = compute(store.getValues());
 

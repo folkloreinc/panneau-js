@@ -1,11 +1,10 @@
 import { useId, useState } from 'react';
 
-import { type Form, type FormState, selectValue } from '@panneau/core';
+import { type Form, selectValue, useFormSelector } from '@panneau/core';
 import type { Field, Option } from '@panneau/protocol';
 import { Badge, Button, type Tone, usePanneauIntl } from '@panneau/ui';
 
 import styles from '../Form.module.css';
-import { useFormState } from '../context';
 import type { LayoutComponentProps } from '../layout/Layout';
 import { messages } from '../messages';
 import type { FormPanelProps } from '../panels/panels';
@@ -40,18 +39,20 @@ interface PublicationNames {
     status: string;
 }
 
-/** The state of the publication of the form's item, from the values of its fields. */
+/**
+ * The state of the publication of the form's item, from the values of its fields, and these
+ * values. It renders again when they change only.
+ */
 function usePublicationSummary(
     form: Form,
     fields: ReadonlyMap<string, Field>,
     { published, publishedAt, status }: PublicationNames,
-): { summary: PublicationState; state: FormState; live: boolean } {
+): { summary: PublicationState; live: boolean; isPublished: unknown; statusValue: unknown } {
     const intl = usePanneauIntl();
-    const state = useFormState(form);
     const [now] = useState(() => Date.now());
-    const isPublished = selectValue(state, published);
-    const date = toDate(selectValue(state, publishedAt));
-    const statusValue = selectValue(state, status);
+    const isPublished = useFormSelector(form, (state) => selectValue(state, published));
+    const date = toDate(useFormSelector(form, (state) => selectValue(state, publishedAt)));
+    const statusValue = useFormSelector(form, (state) => selectValue(state, status));
     const option: Option | undefined = fields
         .get(status)
         ?.options?.find((candidate) => String(candidate.value) === String(statusValue));
@@ -92,7 +93,7 @@ function usePublicationSummary(
             tone: (option.tone as Tone | undefined) ?? 'neutral',
         };
     }
-    return { summary, state, live };
+    return { summary, live, isPublished, statusValue };
 }
 
 /**
@@ -179,11 +180,12 @@ export function PublicationPanel({
     draftStatus = 'draft',
 }: PublicationPanelProps) {
     const intl = usePanneauIntl();
-    const { summary, state, live } = usePublicationSummary(form, fields, {
+    const { summary, live, isPublished, statusValue } = usePublicationSummary(form, fields, {
         published,
         publishedAt,
         status,
     });
+    const isSubmitting = useFormSelector(form, (state) => state.status === 'submitting');
     const publishedField = fields.get(published);
     const statusField = fields.get(status);
     const dateField = fields.get(publishedAt);
@@ -192,9 +194,9 @@ export function PublicationPanel({
     const byFlag = publishedField !== undefined;
     const byStatus = !byFlag && hasStatus(publishedStatus);
     const isLive = byFlag
-        ? selectValue(state, published) === true
+        ? isPublished === true
         : byStatus
-          ? String(selectValue(state, status)) === publishedStatus
+          ? String(statusValue) === publishedStatus
           : live;
     const toggle = () => {
         if (byFlag) {
@@ -221,7 +223,7 @@ export function PublicationPanel({
                     type="submit"
                     tone={isLive ? 'neutral' : 'accent'}
                     appearance={isLive ? 'outline' : 'solid'}
-                    isPending={state.status === 'submitting'}
+                    isPending={isSubmitting}
                     onPress={toggle}
                 >
                     {intl.formatMessage(

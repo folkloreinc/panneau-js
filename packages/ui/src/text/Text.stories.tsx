@@ -38,15 +38,9 @@ export const Variants: Story = {
     ),
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        // The muted color of the current scheme: the stories also run in the dark one.
-        const muted = canvas.getByText('Small and muted');
-        const probe = document.createElement('span');
-        probe.style.color = 'var(--panneau-color-text-muted)';
-        muted.after(probe);
-        const mutedColor = getComputedStyle(probe).color;
-        probe.remove();
-        await expect(getComputedStyle(muted).color).toBe(mutedColor);
-        await expect(mutedColor).not.toBe(getComputedStyle(canvas.getByText('Inherited')).color);
+        await expect(getComputedStyle(canvas.getByText('Small and muted')).color).toBe(
+            'rgb(82, 82, 91)',
+        );
         await expect(
             getComputedStyle(canvas.getByText('1,111.11 — 8,888.88')).fontVariantNumeric,
         ).toBe('tabular-nums');

@@ -728,8 +728,6 @@ All paths are relative to `api.baseUrl`.
 
     A measure or a group in another format, or that names a field the aggregates don't declare, is a `422` problem, with `errors` keyed by `measure` or `group`.
 
-- **Limits.** A backend can refuse an aggregate it would compute over too many items, such as one it can't compute in its database: a `422` problem, with the message keyed by `measure` or `group`, which the client shows; the user narrows the filters. It can also limit how often a user asks for aggregates: a `429`, with `Retry-After` in seconds.
-
 - **Without a group,** a `stat`: `{ "value": 12 }`.
 - **By a period,** a `series`: `{ "period": "day", "points": [{ "date": "2026-10-05", "value": 4 }], "total": 12 }`.
     - One point per period, at 0 when it has no items, each `date` the first day of its period: the day, the Monday of the week (ISO 8601), the first day of the month.

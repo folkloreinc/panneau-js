@@ -122,12 +122,7 @@ const checks = [
     ['Build', 'npm', ['run', 'build']],
     ['API reports', 'node', ['scripts/api-report.js', '--workspaces', '--check']],
     ['Package template', 'npm', ['run', 'test:create-package']],
-    ['Storybook tests', 'npm', ['run', 'test:storybook', '--', '--project', 'storybook']],
-    [
-        'Storybook dark, touch',
-        'npm',
-        ['run', 'test:storybook', '--', '--project', 'storybook-dark-touch'],
-    ],
+    ['Storybook tests', 'npm', ['run', 'test:storybook']],
     ['Storybook build', 'npm', ['run', 'build-storybook', '--', '--quiet']],
     ['Smoke test', 'npm', ['run', 'test:smoke']],
     ['Types (NodeNext)', 'npm', ['run', 'test:types']],

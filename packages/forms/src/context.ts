@@ -14,7 +14,11 @@ export function useFormContext(): Form {
     return form;
 }
 
-/** The state of a form, updated on every change. */
+/**
+ * The state of a form, updated on every change: the component renders again on every keystroke.
+ * Components that show a part of the state subscribe to it with `useFormSelector()` of
+ * `@panneau/core`.
+ */
 export function useFormState(form: Form): FormState {
     return useSyncExternalStore(form.subscribe, form.getState, form.getState);
 }

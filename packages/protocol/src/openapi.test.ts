@@ -93,7 +93,7 @@ describe('OpenAPI document', () => {
             'group',
         ]);
         expect(Object.keys(aggregate?.get?.responses ?? {})).toEqual(
-            expect.arrayContaining(['200', '403', '404', '422', '429']),
+            expect.arrayContaining(['200', '403', '404', '422']),
         );
         expect(JSON.stringify(aggregate?.get?.responses?.['200'])).toContain(
             '#/components/schemas/BreakdownWidgetData',
