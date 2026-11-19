@@ -1,0 +1,75 @@
+/*
+ * The buttons are the children of the group: a MenuTrigger or a TooltipTrigger around one of them
+ * draws nothing of its own. They overlap by the width of their border, so that two borders make
+ * one line, and the hovered or focused one comes on top.
+ */
+.buttonGroup {
+    display: inline-flex;
+    flex: none;
+    align-items: stretch;
+    isolation: isolate;
+}
+
+.buttonGroup > :global(.panneau-button) {
+    position: relative;
+    border-radius: 0;
+}
+
+.buttonGroup > :global(.panneau-button)[data-hovered],
+.buttonGroup > :global(.panneau-button)[data-focus-visible] {
+    z-index: 1;
+}
+
+.buttonGroup > :global(.panneau-button) + :global(.panneau-button) {
+    margin-inline-start: calc(var(--panneau-button-border-width, var(--panneau-border-width)) * -1);
+}
+
+.buttonGroup > :global(.panneau-button):first-child {
+    border-start-start-radius: var(--panneau-button-radius, var(--panneau-radius-md));
+    border-end-start-radius: var(--panneau-button-radius, var(--panneau-radius-md));
+}
+
+.buttonGroup > :global(.panneau-button):last-child {
+    border-start-end-radius: var(--panneau-button-radius, var(--panneau-radius-md));
+    border-end-end-radius: var(--panneau-button-radius, var(--panneau-radius-md));
+}
+
+/* Two solid buttons side by side are parted by a line. */
+.buttonGroup > :global(.panneau-button-solid) + :global(.panneau-button-solid) {
+    border-inline-start-color: var(
+        --panneau-button-group-separator-color,
+        color-mix(in srgb, currentcolor 30%, transparent)
+    );
+}
+
+.vertical {
+    flex-direction: column;
+}
+
+.vertical > :global(.panneau-button) + :global(.panneau-button) {
+    margin-inline-start: 0;
+    margin-block-start: calc(var(--panneau-button-border-width, var(--panneau-border-width)) * -1);
+}
+
+.vertical > :global(.panneau-button):first-child,
+.vertical > :global(.panneau-button):last-child {
+    border-radius: 0;
+}
+
+.vertical > :global(.panneau-button):first-child {
+    border-start-start-radius: var(--panneau-button-radius, var(--panneau-radius-md));
+    border-start-end-radius: var(--panneau-button-radius, var(--panneau-radius-md));
+}
+
+.vertical > :global(.panneau-button):last-child {
+    border-end-start-radius: var(--panneau-button-radius, var(--panneau-radius-md));
+    border-end-end-radius: var(--panneau-button-radius, var(--panneau-radius-md));
+}
+
+.vertical > :global(.panneau-button-solid) + :global(.panneau-button-solid) {
+    border-inline-start-color: transparent;
+    border-block-start-color: var(
+        --panneau-button-group-separator-color,
+        color-mix(in srgb, currentcolor 30%, transparent)
+    );
+}

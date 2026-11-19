@@ -6,3 +6,41 @@
     line-height: var(--panneau-line-height);
     resize: vertical;
 }
+
+/* With a header or a footer, the box is a group around them and the text. */
+.box.box {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+    cursor: text;
+}
+
+.text.text {
+    display: block;
+    min-height: calc(var(--panneau-control-height) * 2);
+    padding: var(--panneau-space-2) var(--panneau-space-3);
+    line-height: var(--panneau-line-height);
+    resize: vertical;
+}
+
+.header,
+.footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    min-height: var(--panneau-control-height-sm);
+    padding: var(--panneau-space-1) var(--panneau-space-2) var(--panneau-space-1)
+        var(--panneau-space-3);
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-text-muted);
+    cursor: default;
+}
+
+.header {
+    border-bottom: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
+.footer {
+    border-top: var(--panneau-border-width) solid var(--panneau-color-border);
+}

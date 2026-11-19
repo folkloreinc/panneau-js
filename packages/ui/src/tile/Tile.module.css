@@ -1,0 +1,169 @@
+.tile {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-tile-gap, var(--panneau-space-3));
+    min-width: 0;
+    padding: var(--panneau-tile-padding-y, var(--panneau-space-3))
+        var(--panneau-tile-padding-x, var(--panneau-space-3));
+    color: var(--panneau-color-text);
+    border: var(--panneau-border-width) solid transparent;
+    border-radius: var(--panneau-tile-radius, var(--panneau-radius-lg));
+    transition: background-color var(--panneau-duration);
+}
+
+.sm {
+    gap: var(--panneau-space-2);
+    padding-block: var(--panneau-tile-padding-y-sm, var(--panneau-space-2));
+    font-size: var(--panneau-font-size-sm);
+}
+
+.plain {
+    background-color: transparent;
+}
+
+.outline {
+    background-color: var(--panneau-color-surface);
+    border-color: var(--panneau-tile-border-color, var(--panneau-color-border));
+}
+
+.subtle {
+    background-color: var(--panneau-tile-subtle-bg, var(--panneau-color-surface-sunken));
+}
+
+.linked:has(.link[data-hovered]) {
+    background-color: var(--panneau-tile-hover-bg, var(--panneau-color-hover));
+}
+
+.linked:has(.link[data-focus-visible]) {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: -1px;
+}
+
+.media {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: var(--panneau-tile-media-size, 2.5rem);
+    height: var(--panneau-tile-media-size, 2.5rem);
+}
+
+.sm .media {
+    width: var(--panneau-tile-media-size-sm, 2rem);
+    height: var(--panneau-tile-media-size-sm, 2rem);
+}
+
+.media > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--panneau-radius-md);
+}
+
+.icon {
+    color: var(--panneau-tile-icon-color, var(--panneau-color-text-muted));
+    background-color: var(--panneau-tile-icon-bg, var(--panneau-color-surface-sunken));
+    border-radius: var(--panneau-tile-icon-radius, var(--panneau-radius-md));
+}
+
+.content {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+}
+
+.title {
+    overflow: hidden;
+    font-weight: var(--panneau-tile-title-font-weight, var(--panneau-font-weight-medium));
+    line-height: var(--panneau-line-height-tight);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.link {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    outline: none;
+}
+
+/* The link's hit area covers the tile; the actions sit above it. */
+.link::after {
+    position: absolute;
+    inset: 0;
+    content: '';
+    border-radius: inherit;
+}
+
+.description {
+    overflow: hidden;
+    font-size: var(--panneau-font-size-sm);
+    line-height: var(--panneau-line-height-tight);
+    color: var(--panneau-tile-description-color, var(--panneau-color-text-muted));
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sm .description {
+    font-size: var(--panneau-font-size-xs);
+}
+
+.children {
+    margin-top: var(--panneau-space-1);
+    font-size: var(--panneau-font-size-sm);
+}
+
+.actions {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--panneau-space-1);
+}
+
+/* TileGroup: a list, with a line between its tiles. */
+.group {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.group > .tile + .tile {
+    border-top-color: var(--panneau-tile-border-color, var(--panneau-color-border));
+}
+
+.group > .tile {
+    border-radius: 0;
+}
+
+.group > .tile:first-child {
+    border-start-start-radius: inherit;
+    border-start-end-radius: inherit;
+}
+
+.group > .tile:last-child {
+    border-end-start-radius: inherit;
+    border-end-end-radius: inherit;
+}
+
+.groupOutline {
+    overflow: hidden;
+    background-color: var(--panneau-color-surface);
+    border: var(--panneau-border-width) solid
+        var(--panneau-tile-border-color, var(--panneau-color-border));
+    border-radius: var(--panneau-tile-radius, var(--panneau-radius-lg));
+}
+
+.groupOutline > .tile.outline {
+    border-color: transparent;
+}
+
+.groupOutline > .tile.outline + .tile.outline {
+    border-top-color: var(--panneau-tile-border-color, var(--panneau-color-border));
+}

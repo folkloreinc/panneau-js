@@ -1,7 +1,10 @@
 import { alertTokens } from '../alert/tokens';
 import { asideTokens } from '../aside/tokens';
+import { avatarTokens } from '../avatar/tokens';
 import { badgeTokens } from '../badge/tokens';
 import { barChartTokens } from '../bar-chart/tokens';
+import { breadcrumbsTokens } from '../breadcrumbs/tokens';
+import { buttonGroupTokens } from '../button-group/tokens';
 import { buttonTokens } from '../button/tokens';
 import { cardTokens } from '../card/tokens';
 import { checkboxTokens } from '../checkbox/tokens';
@@ -11,6 +14,7 @@ import { calendarTokens } from '../date-picker/calendarTokens';
 import { dialogTokens } from '../dialog/tokens';
 import { disclosureTokens } from '../disclosure/tokens';
 import { dividerTokens } from '../divider/tokens';
+import { emptyStateTokens } from '../empty-state/tokens';
 import { inputTokens } from '../field/inputTokens';
 import { fieldTokens } from '../field/tokens';
 import { gridTokens } from '../grid/tokens';
@@ -35,6 +39,7 @@ import { statTokens } from '../stat/tokens';
 import { switchTokens } from '../switch/tokens';
 import { tabsTokens } from '../tabs/tokens';
 import { textTokens } from '../text/tokens';
+import { tileTokens } from '../tile/tokens';
 import { toastTokens } from '../toast/tokens';
 import { tooltipTokens } from '../tooltip/tokens';
 import { selectedTokens } from './selectedTokens';
@@ -46,9 +51,12 @@ import { selectedTokens } from './selectedTokens';
 export const componentTokens = Object.freeze({
     alert: alertTokens.tokens,
     aside: asideTokens.tokens,
+    avatar: avatarTokens.tokens,
     badge: badgeTokens.tokens,
     'bar-chart': barChartTokens.tokens,
+    breadcrumbs: breadcrumbsTokens.tokens,
     button: buttonTokens.tokens,
+    'button-group': buttonGroupTokens.tokens,
     calendar: calendarTokens.tokens,
     card: cardTokens.tokens,
     checkbox: checkboxTokens.tokens,
@@ -57,6 +65,7 @@ export const componentTokens = Object.freeze({
     dialog: dialogTokens.tokens,
     disclosure: disclosureTokens.tokens,
     divider: dividerTokens.tokens,
+    'empty-state': emptyStateTokens.tokens,
     field: fieldTokens.tokens,
     grid: gridTokens.tokens,
     heading: headingTokens.tokens,
@@ -82,6 +91,7 @@ export const componentTokens = Object.freeze({
     switch: switchTokens.tokens,
     tabs: tabsTokens.tokens,
     text: textTokens.tokens,
+    tile: tileTokens.tokens,
     toast: toastTokens.tokens,
     tooltip: tooltipTokens.tokens,
 });
