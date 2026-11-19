@@ -8,13 +8,17 @@ import type {
     EmailVerificationLinkPage as EmailVerificationLinkPageComponent,
     VerifyEmailPage as VerifyEmailPageComponent,
 } from './auth/VerifyEmailPage';
+import type {
+    Dashboard as DashboardComponent,
+    DashboardGrid as DashboardGridComponent,
+} from './dashboard/Dashboard';
+import { DashboardGridSkeleton, DashboardSkeleton } from './dashboard/DashboardSkeleton';
 import type { AccountPage as AccountPageComponent } from './pages/AccountPage';
 import { PageSkeleton } from './pages/PageSkeleton';
 
 // The pages off the path of lists and forms load on first use, with the skeleton of their shape
-// while their code loads (#346): the auth pages and the account page. The components below take
-// the props of the pages they load. The dashboards stay in the bundle: the summaries above lists
-// show their widgets.
+// while their code loads (#346): the auth pages, the account page and the dashboards, with the grid
+// of widgets of the summaries above lists. The components below take the props of what they load.
 
 const LazyLoginPage = lazy(async () => ({
     default: (await import('./auth/LoginPage')).LoginPage,
@@ -30,6 +34,12 @@ const LazyVerifyEmailPage = lazy(async () => ({
 }));
 const LazyEmailVerificationLinkPage = lazy(async () => ({
     default: (await import('./auth/VerifyEmailPage')).EmailVerificationLinkPage,
+}));
+const LazyDashboard = lazy(async () => ({
+    default: (await import('./dashboard/Dashboard')).Dashboard,
+}));
+const LazyDashboardGrid = lazy(async () => ({
+    default: (await import('./dashboard/Dashboard')).DashboardGrid,
 }));
 const LazyAccountPage = lazy(async () => ({
     default: (await import('./pages/AccountPage')).AccountPage,
@@ -83,6 +93,22 @@ export function AccountPage(props: ComponentProps<typeof AccountPageComponent>) 
     return (
         <Suspense fallback={<PageSkeleton width="narrow" />}>
             <LazyAccountPage {...props} />
+        </Suspense>
+    );
+}
+
+export function Dashboard(props: ComponentProps<typeof DashboardComponent>) {
+    return (
+        <Suspense fallback={<DashboardSkeleton definition={props.definition} page={props.page} />}>
+            <LazyDashboard {...props} />
+        </Suspense>
+    );
+}
+
+export function DashboardGrid(props: ComponentProps<typeof DashboardGridComponent>) {
+    return (
+        <Suspense fallback={<DashboardGridSkeleton widgets={props.widgets} />}>
+            <LazyDashboardGrid {...props} />
         </Suspense>
     );
 }

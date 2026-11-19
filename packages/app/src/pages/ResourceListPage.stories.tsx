@@ -100,15 +100,29 @@ const widgetOf = (canvasElement: HTMLElement, id: string) => {
     return within(element);
 };
 
+/**
+ * Finds in a widget, looked up again on each try: the grid of the summary loads its code first
+ * (#346), and its skeletons give way to the widgets.
+ */
+const findInWidget = <T,>(
+    canvasElement: HTMLElement,
+    id: string,
+    query: (widget: ReturnType<typeof within>) => T,
+) => waitFor(() => query(widgetOf(canvasElement, id)), { timeout: 5000 });
+
 /** The summary of the entries above their list: counts, a sum, a breakdown, and a widget of its own. */
 export const Summary: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         await expect(
-            await widgetOf(canvasElement, 'shown').findByRole('link', { name: /^Entries 6/ }),
+            await findInWidget(canvasElement, 'shown', (widget) =>
+                widget.getByRole('link', { name: /^Entries 6/ }),
+            ),
         ).toBeVisible();
         await expect(
-            await widgetOf(canvasElement, 'status').findByRole('link', { name: 'Accepted' }),
+            await findInWidget(canvasElement, 'status', (widget) =>
+                widget.getByRole('link', { name: 'Accepted' }),
+            ),
         ).toHaveAttribute('href', '/panneau/resources/entries?filter%5Bstatus%5D=accepted');
         await expect(await canvas.findByRole('table', { name: 'Entries' })).toBeVisible();
 
@@ -119,7 +133,9 @@ export const Summary: Story = {
         await expect(canvasElement.querySelector('[data-widget]')).toBeNull();
         await userEvent.click(toggle);
         await expect(
-            await widgetOf(canvasElement, 'shown').findByRole('link', { name: /^Entries 6/ }),
+            await findInWidget(canvasElement, 'shown', (widget) =>
+                widget.getByRole('link', { name: /^Entries 6/ }),
+            ),
         ).toBeVisible();
     },
 };
@@ -130,9 +146,11 @@ export const ListCollapsed: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         await expect(
-            await widgetOf(canvasElement, 'everything').findByRole('link', {
-                name: /^All entries 6/,
-            }),
+            await findInWidget(canvasElement, 'everything', (widget) =>
+                widget.getByRole('link', {
+                    name: /^All entries 6/,
+                }),
+            ),
         ).toBeVisible();
         await expect(canvas.queryByRole('table')).toBeNull();
         await userEvent.click(await canvas.findByRole('button', { name: 'Show the 6 entries' }));
@@ -148,15 +166,21 @@ export const FollowingAFilter: Story = {
     args: { search: 'filter%5Bstatus%5D=accepted' },
     play: async ({ canvasElement }) => {
         await expect(
-            await widgetOf(canvasElement, 'shown').findByRole('link', { name: /^Entries 3/ }),
+            await findInWidget(canvasElement, 'shown', (widget) =>
+                widget.getByRole('link', { name: /^Entries 3/ }),
+            ),
         ).toHaveAttribute('href', '/panneau/resources/entries?filter%5Bstatus%5D=accepted');
         await expect(
-            await widgetOf(canvasElement, 'everything').findByRole('link', {
-                name: /^All entries 6/,
-            }),
+            await findInWidget(canvasElement, 'everything', (widget) =>
+                widget.getByRole('link', {
+                    name: /^All entries 6/,
+                }),
+            ),
         ).toBeVisible();
         await expect(
-            await widgetOf(canvasElement, 'queue').findByText('Of the shown entries'),
+            await findInWidget(canvasElement, 'queue', (widget) =>
+                widget.getByText('Of the shown entries'),
+            ),
         ).toBeVisible();
     },
 };
@@ -187,16 +211,22 @@ export const Period: Story = {
         const control = await canvas.findByRole('radiogroup', { name: 'Period' });
         await expect(within(control).getByRole('radio', { name: '7 days' })).toBeChecked();
         await expect(
-            await widgetOf(canvasElement, 'shown').findByRole('link', { name: /^Entries 2/ }),
+            await findInWidget(canvasElement, 'shown', (widget) =>
+                widget.getByRole('link', { name: /^Entries 2/ }),
+            ),
         ).toBeVisible();
         await expect(
-            await widgetOf(canvasElement, 'everything').findByRole('link', {
-                name: /^All entries 4/,
-            }),
+            await findInWidget(canvasElement, 'everything', (widget) =>
+                widget.getByRole('link', {
+                    name: /^All entries 4/,
+                }),
+            ),
         ).toBeVisible();
         await userEvent.click(within(control).getByRole('radio', { name: '30 days' }));
         await expect(
-            await widgetOf(canvasElement, 'shown').findByRole('link', { name: /^Entries 3/ }),
+            await findInWidget(canvasElement, 'shown', (widget) =>
+                widget.getByRole('link', { name: /^Entries 3/ }),
+            ),
         ).toBeVisible();
         const table = await canvas.findByRole('table', { name: 'Entries' });
         await waitFor(() => expect(within(table).getAllByRole('row')).toHaveLength(4));

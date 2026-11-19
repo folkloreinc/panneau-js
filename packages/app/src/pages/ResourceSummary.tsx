@@ -7,9 +7,9 @@ import type { Definition, Resource, ResourceSummary as Summary } from '@panneau/
 import { type WidgetListQuery, followsPeriod } from '@panneau/protocol/runtime';
 import { Icon, usePanneauIntl, usePreference } from '@panneau/ui';
 
-import { DashboardGrid } from '../dashboard/Dashboard';
 import { PeriodControl } from '../dashboard/PeriodControl';
 import type { PeriodState } from '../dashboard/period';
+import { DashboardGrid } from '../lazyPages';
 import styles from './ResourceSummary.module.css';
 
 /** Whether the summary is shown, as the browser remembers it. */
