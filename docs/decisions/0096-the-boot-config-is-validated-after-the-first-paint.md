@@ -1,4 +1,4 @@
-# 0095: The boot config is validated after the first paint
+# 0096: The boot config is validated after the first paint
 
 - Status: accepted
 - Date: 2026-11-19

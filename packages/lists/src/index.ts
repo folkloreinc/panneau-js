@@ -1,4 +1,5 @@
-export { type ListActions, getActionHref, groupListActions, isAllowedOn } from './actions/actions';
+export { type ListActions, groupListActions, isAllowedOn } from './actions/actions';
+export { ActionButton, type ActionButtonProps } from './actions/ActionButton';
 export {
     ConfirmDialog,
     type ConfirmDialogProps,

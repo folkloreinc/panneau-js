@@ -57,7 +57,7 @@ export interface PanneauAppOptions {
 /** A mounted app. */
 export interface PanneauApp {
     /**
-     * The boot config, once validated, with defaults applied (decision 0095). It rejects when the
+     * The boot config, once validated, with defaults applied (decision 0096). It rejects when the
      * boot config is invalid, with the invalid paths, while the app shows an error page.
      */
     config: Promise<BootConfig>;
@@ -67,7 +67,7 @@ export interface PanneauApp {
 
 /**
  * Validates a boot config with the schemas of the protocol, which load with Zod on first use, out
- * of the JavaScript the page loads up front (decision 0095).
+ * of the JavaScript the page loads up front (decision 0096).
  */
 async function validateLater(input: unknown): Promise<BootConfig> {
     return (await import('./boot')).parseBootConfig(input);
@@ -114,7 +114,7 @@ function BootedPanneau({
 /**
  * Mounts the Panneau admin panel in an element of the page. Throws when the page has no boot
  * config, or when it isn't JSON. The boot config is validated once the schemas of the protocol have
- * loaded (decision 0095): the app shows the skeleton of the shell until then, and an error page
+ * loaded (decision 0096): the app shows the skeleton of the shell until then, and an error page
  * when it is invalid, with the invalid paths in the console and in the rejection of `config`.
  *
  * ```ts

@@ -578,7 +578,7 @@ function Loading({ error, onRetry }: { error: unknown; onRetry: () => void }) {
 }
 
 /**
- * The app before its boot config is validated (decision 0095): the skeleton of the shell, or an
+ * The app before its boot config is validated (decision 0096): the skeleton of the shell, or an
  * error page when the boot config is invalid, whose issues are in the console.
  */
 export function BootScreen({

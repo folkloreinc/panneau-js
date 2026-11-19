@@ -1,4 +1,4 @@
-import { act, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Archive } from 'lucide-react';
 import type { ReactElement } from 'react';
@@ -63,6 +63,28 @@ describe('List', () => {
         expect(rowTitles()[0]).toContain('Contact');
         await user.click(within(header).getByRole('button'));
         expect(header).toHaveAttribute('aria-sort', 'none');
+    });
+
+    it('says how many items a search finds, or that none match, in one polite message', async () => {
+        const user = userEvent.setup();
+        renderList(<List columns={columns} items={pages} search />);
+        const status = screen
+            .getAllByRole('status')
+            .find((element) => element.textContent === '') as HTMLElement;
+        expect(status).toBeDefined();
+        const search = screen.getByRole('searchbox', { name: 'Search' });
+        await user.type(search, 'blog');
+        await waitFor(() => expect(status.textContent).toBe('1 item'));
+        await user.type(search, 'zzz');
+        await waitFor(() =>
+            expect(status).toHaveTextContent('No items match the search or the filters.'),
+        );
+        // Only one message: the empty state itself isn't a status
+        expect(
+            screen
+                .getAllByRole('status')
+                .filter((element) => element.textContent?.includes('No items match')),
+        ).toEqual([status]);
     });
 
     it('searches once the user stops typing, and shows the search as a chip', async () => {
@@ -354,7 +376,11 @@ describe('ListView', () => {
         );
         const dialog = await screen.findByRole('alertdialog', { name: 'Publish?' });
         expect(dialog).toHaveTextContent('Checking which items allow it…');
-        expect(within(dialog).getByRole('button', { name: 'Publish' })).toBeDisabled();
+        // Pending, not disabled: it has the focus, and ignores presses (decision 0095)
+        const confirm = within(dialog).getByRole('button', { name: 'Publish' });
+        await waitFor(() => expect(confirm).toHaveFocus());
+        await user.click(confirm);
+        expect(onAction).not.toHaveBeenCalled();
         act(() => answer({ skipped: 12 }));
         await waitFor(() =>
             expect(dialog).toHaveTextContent(
@@ -984,6 +1010,77 @@ describe('ListView leaving items', () => {
             expect(container).not.toHaveTextContent('Contact');
         },
     );
+
+    it('removes an item when its animation ends', () => {
+        const list = createList();
+        const { container, rerender } = renderList(
+            <ListView list={list} columns={columns} items={pages} />,
+        );
+        rerender(wrap(<ListView list={list} columns={columns} items={pages.slice(1)} />));
+        const leaving = container.querySelector('[data-leaving]');
+        expect(leaving).not.toBeNull();
+        // Another animation in the item doesn't remove it
+        const animationEnd = (element: Element | null | undefined, animationName: string) =>
+            fireEvent(
+                element as Element,
+                Object.assign(new Event('animationend', { bubbles: true }), { animationName }),
+            );
+        animationEnd(leaving, 'spin');
+        expect(container.querySelector('[data-leaving]')).not.toBeNull();
+        // In a table, the cells fade out
+        animationEnd(leaving?.querySelector('td'), '_leave_1a2b');
+        expect(container.querySelector('[data-leaving]')).toBeNull();
+    });
+
+    it.each(['table', 'cards'] as const)(
+        'moves the focus of an item that leaves to the next one, the previous one, or the list, in %s',
+        (layout) => {
+            const list = createList();
+            const view = (items: readonly ListItem[]) => (
+                <ListView
+                    list={list}
+                    columns={columns}
+                    items={items}
+                    layout={layout}
+                    getItemHref={(item) => `/pages/${item.id}`}
+                />
+            );
+            const { container, rerender } = renderList(view(pages));
+            const [about, , blog] = pages as [ListItem, ListItem, ListItem];
+            screen.getByRole('link', { name: 'Contact' }).focus();
+            rerender(wrap(view([about, blog])));
+            expect(screen.getByRole('link', { name: 'Blog' })).toHaveFocus();
+
+            // The last item: the one before it
+            rerender(wrap(view([about])));
+            expect(screen.getByRole('link', { name: 'About us' })).toHaveFocus();
+
+            // The only item: the list, which says it is empty
+            rerender(wrap(view([])));
+            expect(screen.getByRole('group', { name: 'Items' })).toHaveFocus();
+            expect(container).toHaveTextContent('No items yet');
+        },
+    );
+
+    it('leaves the focus alone when it isn’t in the item that leaves', () => {
+        const list = createList();
+        const { rerender } = renderList(
+            <>
+                <button type="button">Elsewhere</button>
+                <ListView list={list} columns={columns} items={pages} />
+            </>,
+        );
+        screen.getByRole('button', { name: 'Elsewhere' }).focus();
+        rerender(
+            wrap(
+                <>
+                    <button type="button">Elsewhere</button>
+                    <ListView list={list} columns={columns} items={pages.slice(1)} />
+                </>,
+            ),
+        );
+        expect(screen.getByRole('button', { name: 'Elsewhere' })).toHaveFocus();
+    });
 
     it('replaces the items at once when the query changes', () => {
         const list = createList();

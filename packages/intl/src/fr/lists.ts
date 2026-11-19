@@ -65,6 +65,10 @@ export const listsFr: Record<string, string> = {
     'panneau.lists.empty': 'Aucun élément pour l’instant.',
     'panneau.lists.secretValue': 'Valeur masquée',
     'panneau.lists.noResults': 'Aucun élément ne correspond à la recherche ou aux filtres.',
+    'panneau.lists.resultsCount':
+        '{count, plural, =0 {Aucun élément} one {# élément} other {# éléments}}',
+    'panneau.lists.resultsOnPage':
+        '{count, plural, one {# élément sur cette page} other {# éléments sur cette page}}',
     'panneau.lists.loading': 'Chargement des éléments…',
     'panneau.lists.loadingItem': 'Chargement de l’élément…',
     'panneau.lists.loadFailed': 'Les éléments n’ont pas pu être chargés.',

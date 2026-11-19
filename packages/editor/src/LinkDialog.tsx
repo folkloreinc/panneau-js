@@ -3,17 +3,13 @@ import { isAllowedUri } from '@tiptap/extension-link';
 import { useId, useState } from 'react';
 
 import { editorMessages as messages } from '@panneau/intl';
+import { isExternalUrl } from '@panneau/protocol/runtime';
 import { Button, Checkbox, Dialog, TextInput, usePanneauIntl } from '@panneau/ui';
 
 import styles from './RichTextField.module.css';
 import type { NewTabLinks } from './settings';
 
 const NEW_TAB_REL = ['noopener', 'noreferrer'];
-
-/** Whether a URL points to another site: `https://…` or `//…`, as CKEditor decides it. */
-export function isExternalUrl(url: string): boolean {
-    return /^(https?:)?\/\//i.test(url.trim());
-}
 
 /** The `target` and `rel` of a link, keeping the relations that aren't about the new tab. */
 export function getLinkTarget(newTab: boolean, rel: string | null) {

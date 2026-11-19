@@ -30,6 +30,28 @@ import type { Selection as Selection_2 } from '@panneau/protocol';
 import { Tone } from '@panneau/ui';
 
 // @public
+export function ActionButton(input: ActionButtonProps): JSX.Element;
+
+// @public (undocumented)
+export interface ActionButtonProps {
+    'aria-label'?: string;
+    // (undocumented)
+    action: Action;
+    href: string | null;
+    iconOnly?: boolean;
+    icons?: ActionIcons | undefined;
+    inHeader?: boolean;
+    // (undocumented)
+    isDisabled?: boolean;
+    // (undocumented)
+    isPending?: boolean;
+    // (undocumented)
+    onPress: () => void;
+    // (undocumented)
+    size?: 'sm' | 'md';
+}
+
+// @public
 export type ActionIcons = Readonly<Record<string, IconComponent>>;
 
 // @public
@@ -166,9 +188,6 @@ export type FilterEntry = ComponentType<FilterControlProps>;
 
 // @public
 export function GalleryLayout(input: ListLayoutProps): JSX.Element;
-
-// @public
-export function getActionHref(action: Action, item?: ListItem): string | null;
 
 // @public
 export function getActionIcon(action: Action, icons?: ActionIcons): IconComponent | undefined;

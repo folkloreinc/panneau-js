@@ -135,7 +135,7 @@ describe('createPanneauApp', () => {
         expect(() => createPanneauApp({ element })).toThrow(/no Panneau boot config/);
     });
 
-    it('shows the skeleton of the shell while it validates the boot config (decision 0095)', async () => {
+    it('shows the skeleton of the shell while it validates the boot config (decision 0096)', async () => {
         act(() => {
             app = createPanneauApp({
                 element,

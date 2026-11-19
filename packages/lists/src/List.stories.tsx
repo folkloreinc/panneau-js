@@ -158,8 +158,11 @@ export const Default: Story = {
 
         await userEvent.type(canvas.getByRole('searchbox', { name: 'Search' }), 'grace');
         // Grace Hopper is an editor.
+        // The empty state, and the status message of the results, which says the same
         await expect(
-            await canvas.findByText('No items match the search or the filters.'),
+            await canvas.findByText('No items match the search or the filters.', {
+                selector: ':not([role="status"])',
+            }),
         ).toBeVisible();
         await userEvent.click(
             canvas.getAllByRole('button', { name: 'Clear all' })[0] as HTMLElement,

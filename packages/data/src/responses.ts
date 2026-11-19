@@ -11,7 +11,7 @@ import type { ActionResponse } from './adapter';
 import { InvalidResponseError } from './errors';
 
 // The checks of the responses that need the schemas of the protocol: the REST adapter loads them
-// with an `import()`, with Zod, out of the JavaScript the page loads up front (decision 0095).
+// with an `import()`, with Zod, out of the JavaScript the page loads up front (decision 0096).
 
 /** A definition from `GET /definition`, validated, with its shared block types resolved. */
 export function checkDefinition(body: unknown): Definition {
