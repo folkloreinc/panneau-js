@@ -37,7 +37,11 @@ describe('the English messages of the rules of @panneau/core', () => {
                 ]),
             );
             expect(ruleMessages[key]?.(values), key).toBe(
-                intl.formatMessage(descriptor, formatted),
+                // Untyped: each message takes its own values
+                intl.formatMessage(
+                    { id: descriptor.id, defaultMessage: descriptor.defaultMessage },
+                    formatted,
+                ),
             );
         });
     });
