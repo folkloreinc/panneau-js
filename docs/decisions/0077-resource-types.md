@@ -1,6 +1,6 @@
 # 0077: Resource types
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-09
 - Changes: `types` of a resource in the [protocol](../protocol.md#resource), which only had an `id`, a `label` and `fields`
 - Part of: [#6](https://github.com/folkloreinc/panneau-js/issues/6), 5.x; the backend is [folkloreinc/laravel-panneau#138](https://github.com/folkloreinc/laravel-panneau/issues/138)

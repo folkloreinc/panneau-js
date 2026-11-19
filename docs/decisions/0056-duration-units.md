@@ -1,6 +1,6 @@
 # 0056: Durations in a declared unit, with days
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-04
 - Issue: [#211](https://github.com/folkloreinc/panneau-js/issues/211)
 - Changes: the `duration` values of [0033](0033-more-field-types.md)

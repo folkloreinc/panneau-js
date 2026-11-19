@@ -1,6 +1,6 @@
 # 0053: Date ranges and money
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-04
 - Issues: [#198](https://github.com/folkloreinc/panneau-js/issues/198), [#200](https://github.com/folkloreinc/panneau-js/issues/200)
 - Changes: the `calendar` of lists ([0044](0044-gallery-and-calendar.md)), and makes the `timeZone` setting of `datetime` part of the protocol

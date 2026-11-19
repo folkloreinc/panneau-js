@@ -1,6 +1,6 @@
 # 0084: Overviews: dashboard pages, summaries above lists, and widgets that count a resource
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-17
 - Builds on: [0064](0064-dashboard-widgets.md) (the widgets of the dashboard), [0053](0053-date-ranges-and-money.md) (date ranges)
 - Changes: the "Stats and charts" item of the roadmap, which put the widgets of a resource next to its list

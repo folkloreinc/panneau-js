@@ -1,6 +1,6 @@
 # 0076: A dock, in place of the sidebar
 
-- Status: proposed
+- Status: accepted, amended by [0086](0086-one-user-menu.md): the user's tab opens the same menu as the sidebar's
 - Date: 2026-11-09
 - Builds on: the first version of the shell ([roadmap](../roadmap.md)), [0029](0029-go-to-palette.md) (the "Go to…" palette), [0045](0045-current-context.md) (the current context), [0050](0050-account-page.md) (the account page)
 - Part of: [#6](https://github.com/folkloreinc/panneau-js/issues/6), 5.x (the interface)

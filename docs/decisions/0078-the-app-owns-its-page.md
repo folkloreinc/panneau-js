@@ -1,6 +1,6 @@
 # 0078: The app owns its page
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-10
 - Builds on: [0005](0005-styling-and-theming.md) (styles scoped to the root), [0019](0019-app-entry.md) (the app entry)
 - Part of: [#6](https://github.com/folkloreinc/panneau-js/issues/6), 5.x (the interface)

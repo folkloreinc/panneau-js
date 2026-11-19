@@ -1,6 +1,6 @@
 # 0051: Passkeys
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-03
 - Issues: [#206](https://github.com/folkloreinc/panneau-js/issues/206), [folkloreinc/laravel-panneau#163](https://github.com/folkloreinc/laravel-panneau/issues/163)
 - Changes: `POST /auth/passkeys/options` and `POST /auth/passkeys/login`, sketched in [0012](0012-authentication.md); the account page of [0050](0050-account-page.md), which gets its passkeys

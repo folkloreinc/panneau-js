@@ -1,6 +1,6 @@
 # 0060: Row actions are colored icons, and a menu last
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-04
 - Changes: the menu of rows of [0040](0040-row-links-and-open-mode.md)
 

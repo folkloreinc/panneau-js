@@ -1,6 +1,6 @@
 # 0063: "Undo" instead of a confirmation
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-05
 - Issue: [#230](https://github.com/folkloreinc/panneau-js/issues/230), and [folkloreinc/laravel-panneau#179](https://github.com/folkloreinc/laravel-panneau/issues/179)
 - Changes: the confirmations of [0017](0017-actions.md), and the change in place of [0043](0043-inline-editing.md), which left its undo for later

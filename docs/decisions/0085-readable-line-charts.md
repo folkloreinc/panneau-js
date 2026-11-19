@@ -1,6 +1,6 @@
 # 0085: Line charts that read without a pointer
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-17
 - Changes: the line of the `series` widget of [0064](0064-dashboard-widgets.md)
 

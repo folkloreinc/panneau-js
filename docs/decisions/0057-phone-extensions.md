@@ -1,6 +1,6 @@
 # 0057: Phone extensions
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-04
 - Changes: the `tel` values of [0047](0047-countries-regions-and-phone-numbers.md)
 

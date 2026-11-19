@@ -1,6 +1,6 @@
 # 0082: Items open in their form, and the panel is a choice of the resource
 
-- Status: proposed
+- Status: accepted
 - Date: 2026-11-17
 - Issue: [#306](https://github.com/folkloreinc/panneau-js/issues/306)
 - Supersedes: the default of `open` in [0040](0040-row-links-and-open-mode.md) (`"panel"`), and what titles link to in [0028](0028-item-panel.md)
