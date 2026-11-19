@@ -30,7 +30,10 @@ import styles from './RelationField.module.css';
 /** The id of the "Create “…”" option of the picker. */
 const CREATE_ID = '\u0000create';
 
-/** Results of a search in a relation source, as it types. */
+/**
+ * Results of a search in a relation source, as it types: the empty query at once, a typed one once
+ * the user pauses (`delay`). Nothing, and not loading, while `enabled` is false.
+ */
 export function useRelationSearch(
     source: RelationSource | null,
     resource: string,
@@ -49,28 +52,35 @@ export function useRelationSearch(
             return undefined;
         }
         const controller = new AbortController();
-        const timer = setTimeout(() => {
-            setState((current) => ({ ...current, key, isLoading: true }));
-            source
-                .search(resource, query, { signal: controller.signal })
-                .then((items) => {
-                    if (!controller.signal.aborted) {
-                        setState({ key, items, isLoading: false });
-                    }
-                })
-                .catch(() => {
-                    if (!controller.signal.aborted) {
-                        setState({ key, items: [], isLoading: false });
-                    }
-                });
-        }, delay);
+        // The first options at once; what is typed once the user pauses
+        const timer = setTimeout(
+            () => {
+                setState((current) => ({ ...current, key, isLoading: true }));
+                source
+                    .search(resource, query, { signal: controller.signal })
+                    .then((items) => {
+                        if (!controller.signal.aborted) {
+                            setState({ key, items, isLoading: false });
+                        }
+                    })
+                    .catch(() => {
+                        if (!controller.signal.aborted) {
+                            setState({ key, items: [], isLoading: false });
+                        }
+                    });
+            },
+            query === '' ? 0 : delay,
+        );
         return () => {
             clearTimeout(timer);
             controller.abort();
         };
     }, [source, resource, query, key, enabled, delay]);
 
-    return { items: state.items, isLoading: state.isLoading || state.key !== key };
+    return {
+        items: state.items,
+        isLoading: enabled && (state.isLoading || state.key !== key),
+    };
 }
 
 /** Props of both single and multiple relation fields. */
@@ -298,11 +308,19 @@ export function RelationField(props: RelationFieldProps) {
         element?.focus();
     });
     const editable = source !== null && disabled !== true && readOnly !== true;
+    // The picker searches once it is about to be used: the field has the focus, the pointer is
+    // over it, or it opens. A form of many relation fields doesn't search for each one.
+    const [wanted, setWanted] = useState(false);
+    const want = () => {
+        if (!wanted) {
+            setWanted(true);
+        }
+    };
     const { items: found, isLoading: searching } = useRelationSearch(
         source,
         resource,
         query ?? '',
-        { enabled: editable },
+        { enabled: editable && wanted },
     );
     const sourceCreate = source?.create;
     const create =
@@ -394,6 +412,12 @@ export function RelationField(props: RelationFieldProps) {
         }
     };
     const pickerProps = {
+        onFocus: want,
+        onOpenChange: (open: boolean) => {
+            if (open) {
+                want();
+            }
+        },
         'aria-label': comboLabel,
         inputValue: query ?? '',
         onInputChange: setQuery,
@@ -437,7 +461,7 @@ export function RelationField(props: RelationFieldProps) {
         const set = (next: RelationReference[]) => onChange?.(next.length > 0 ? next : null);
         return (
             <Fieldset {...chrome} description={description}>
-                <div ref={container} className={styles.multiple}>
+                <div ref={container} className={styles.multiple} onPointerEnter={want}>
                     {selected.length > 0 && compact ? (
                         <References
                             references={selected}
@@ -490,6 +514,12 @@ export function RelationField(props: RelationFieldProps) {
                 descriptionClassName={descriptionClassName}
                 errorsClassName={errorsClassName}
                 {...(controlClassName !== undefined ? { controlClassName } : {})}
+                onFocus={want}
+                onOpenChange={(open) => {
+                    if (open) {
+                        want();
+                    }
+                }}
                 {...(props['aria-label'] !== undefined
                     ? { 'aria-label': props['aria-label'] }
                     : {})}
@@ -542,6 +572,7 @@ export function RelationField(props: RelationFieldProps) {
             <div
                 ref={container}
                 className={styles.single}
+                onPointerEnter={want}
                 // Escape, once the picker has nothing to close or clear, keeps the item
                 onKeyDown={(event) => {
                     if (event.key === 'Escape' && changing && current !== null) {
