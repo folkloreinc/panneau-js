@@ -75,6 +75,7 @@ export { type NamedIconLoader, getNamedIcon, loadNamedIcon } from './icon/namedI
 export { IconButton, type IconButtonProps } from './icon-button/IconButton';
 export { usePanneauIntl } from './intl/usePanneauIntl';
 export { cx } from './utils/cx';
+export { prefersReducedMotion } from './utils/motion';
 export { usePreference } from './utils/preference';
 export {
     Menu,

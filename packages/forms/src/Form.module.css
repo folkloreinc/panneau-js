@@ -21,7 +21,7 @@
 }
 
 .cell {
-    grid-column: span var(--panneau-span, 12);
+    grid-column: span var(--_panneau-span, 12);
     min-width: 0;
 }
 
@@ -105,7 +105,7 @@
 /* Sticks to the bottom of the window, above what the frame of the app puts there (a dock). */
 .footer {
     position: sticky;
-    bottom: var(--panneau-frame-bottom, 0px);
+    bottom: var(--panneau-frame-bottom);
     z-index: 1;
     display: flex;
     flex-wrap: wrap;
@@ -174,7 +174,7 @@
 
 .summary:focus {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: 2px;
+    outline-offset: var(--panneau-focus-offset);
 }
 
 .summaryList {
@@ -198,7 +198,7 @@
 
 .summaryLink:focus-visible {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: 2px;
+    outline-offset: var(--panneau-focus-offset);
 }
 
 @container panneau-form (max-width: 36rem) {

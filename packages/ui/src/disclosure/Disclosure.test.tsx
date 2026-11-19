@@ -29,4 +29,17 @@ describe('Disclosure', () => {
         expect(screen.getByRole('heading', { level: 2 })).toBeInTheDocument();
         expect(screen.getByRole('button')).toHaveAttribute('aria-expanded', 'true');
     });
+
+    it('keeps the controls of headerEnd outside the button, also while collapsed', () => {
+        render(
+            <Disclosure title="Summary" headerEnd={<button type="button">This month</button>}>
+                Content
+            </Disclosure>,
+        );
+        const trigger = screen.getByRole('button', { name: 'Summary' });
+        const control = screen.getByRole('button', { name: 'This month' });
+        expect(trigger).toHaveAttribute('aria-expanded', 'false');
+        expect(trigger).not.toContainElement(control);
+        expect(control).toBeVisible();
+    });
 });

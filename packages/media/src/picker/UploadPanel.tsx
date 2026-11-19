@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { type ReactNode, useId } from 'react';
 
 import { FilePicker, UploadList, type UseUploadsResult, formatSize } from '@panneau/fields';
 import { mediaMessages as messages } from '@panneau/intl';
@@ -38,6 +38,7 @@ export function UploadPanel({
     uploaded,
 }: UploadPanelProps) {
     const intl = usePanneauIntl();
+    const uploadedId = useId();
     const types =
         accept !== null && accept.length > 0
             ? describeAccept(accept, intl)
@@ -71,8 +72,8 @@ export function UploadPanel({
                 </Alert>
             ) : null}
             {uploaded !== null ? (
-                <section className={styles.uploaded} aria-labelledby="panneau-picker-uploaded">
-                    <Heading level={3} size={4} id="panneau-picker-uploaded">
+                <section className={styles.uploaded} aria-labelledby={uploadedId}>
+                    <Heading level={3} size={4} id={uploadedId}>
                         {intl.formatMessage(messages.pickerAddedTo, { library })}
                     </Heading>
                     {uploaded}

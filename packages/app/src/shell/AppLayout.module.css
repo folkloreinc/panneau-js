@@ -42,7 +42,8 @@
 
 .topBarName[data-focus-visible] {
     border-radius: var(--panneau-radius-sm);
-    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 0;
 }
 
 .sidebar {
@@ -105,28 +106,6 @@
 }
 
 /* Keyboard users jump past the navigation. */
-.skipLink {
-    position: absolute;
-    top: var(--panneau-space-2);
-    left: var(--panneau-space-2);
-    z-index: 100;
-    padding: var(--panneau-space-2) var(--panneau-space-3);
-    border-radius: var(--panneau-radius-md);
-    background: var(--panneau-color-accent);
-    color: var(--panneau-color-accent-text);
-    font-weight: var(--panneau-font-weight-medium);
-    text-decoration: none;
-}
-
-.skipLink:not(:focus) {
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-}
-
 @keyframes fade {
     from {
         opacity: 0;

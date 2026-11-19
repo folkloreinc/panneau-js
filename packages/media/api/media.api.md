@@ -4,6 +4,7 @@
 
 ```ts
 
+import { ComponentTokens } from '@panneau/ui';
 import type { DataAdapter } from '@panneau/data';
 import type { Definition } from '@panneau/protocol';
 import type { Field } from '@panneau/protocol';
@@ -29,6 +30,9 @@ export function getImageOptions(field: Field): ImageOptions;
 export function getLibrary(definition: Pick<Definition, 'resources'> | null, resource: string | readonly string[] | undefined): Definition['resources'][number] | null;
 
 // @public
+export const imageEditorTokens: ComponentTokens<"image-editor", "panneau-image-editor-stage" | "panneau-image-editor-stage-pattern">;
+
+// @public
 export function ImageField(props: ImageFieldProps): JSX.Element;
 
 // @public
@@ -50,6 +54,12 @@ export function isProcessing(reference: MediaReference): boolean;
 
 // @public
 export type MediaAdapter = Pick<DataAdapter, 'create' | 'get'>;
+
+// @public
+export const mediaComponentTokens: Readonly<{
+    'media-picker': Readonly<Record<"panneau-media-picker-card-size" | "panneau-media-picker-card-size-sm", string>>;
+    'image-editor': Readonly<Record<"panneau-image-editor-stage" | "panneau-image-editor-stage-pattern", string>>;
+}>;
 
 // @public
 export function MediaField(props: MediaFieldProps): JSX.Element;
@@ -86,6 +96,9 @@ export interface MediaPage {
     nextCursor: string | null;
     total?: number | null;
 }
+
+// @public
+export const mediaPickerTokens: ComponentTokens<"media-picker", "panneau-media-picker-card-size" | "panneau-media-picker-card-size-sm">;
 
 // @public
 export const mediaPlugin: {

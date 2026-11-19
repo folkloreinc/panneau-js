@@ -96,7 +96,8 @@
 
 .back[data-focus-visible],
 .card[data-focus-visible] {
-    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 0;
 }
 
 .intro {

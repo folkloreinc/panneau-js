@@ -139,7 +139,7 @@
 
 .sort:focus-visible {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: 1px;
+    outline-offset: calc(var(--panneau-focus-offset) / 2);
 }
 
 /* The arrow of a column that sorts shows on hover and focus, and always on the sorted column.

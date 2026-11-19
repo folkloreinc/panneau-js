@@ -16,6 +16,7 @@ export {
     toMediaReferences,
 } from './MediaField';
 export { mediaPlugin } from './plugin';
+export { imageEditorTokens, mediaComponentTokens, mediaPickerTokens } from './tokens';
 export {
     type MediaLibrary,
     type MediaSourceAdapter,

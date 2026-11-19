@@ -10,7 +10,7 @@
 
 .swatch:focus-within {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: 2px;
+    outline-offset: var(--panneau-focus-offset);
 }
 
 .picker {

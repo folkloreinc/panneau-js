@@ -1,10 +1,8 @@
 import { CalendarDays, Images, LayoutGrid, type LucideIcon, Rows3, Square } from 'lucide-react';
-import { ToggleButton, ToggleButtonGroup } from 'react-aria-components';
 
-import { Icon, Tooltip, usePanneauIntl } from '@panneau/ui';
+import { SegmentedControl, usePanneauIntl } from '@panneau/ui';
 
 import { messages } from '../messages';
-import styles from './Toolbar.module.css';
 
 const ICONS: Record<string, LucideIcon> = {
     table: Rows3,
@@ -29,33 +27,16 @@ export function LayoutSwitch({ layouts, value, onChange }: LayoutSwitchProps) {
         calendar: intl.formatMessage(messages.layoutCalendar),
     };
     return (
-        <ToggleButtonGroup
+        <SegmentedControl
             aria-label={intl.formatMessage(messages.layout)}
-            selectionMode="single"
-            disallowEmptySelection
-            selectedKeys={[value]}
-            onSelectionChange={(keys) => {
-                const [next] = [...keys];
-                if (next !== undefined) {
-                    onChange(String(next));
-                }
-            }}
-            className={styles.layouts}
-        >
-            {layouts.map((layout) => {
-                const label = labels[layout] ?? layout;
-                return (
-                    <Tooltip key={layout} content={label}>
-                        <ToggleButton
-                            id={layout}
-                            aria-label={label}
-                            className={styles.layoutButton}
-                        >
-                            <Icon icon={ICONS[layout] ?? Square} />
-                        </ToggleButton>
-                    </Tooltip>
-                );
-            })}
-        </ToggleButtonGroup>
+            hideLabels
+            options={layouts.map((layout) => ({
+                value: layout,
+                label: labels[layout] ?? layout,
+                icon: ICONS[layout] ?? Square,
+            }))}
+            value={value}
+            onChange={onChange}
+        />
     );
 }
