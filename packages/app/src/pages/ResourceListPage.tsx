@@ -12,7 +12,7 @@ import {
 import { useResourceItem, useResourceList, useUpdateItem } from '@panneau/data/query';
 import { useFormatRuleFailure } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
-import { ListView, getPagingProps } from '@panneau/lists';
+import { ListView, getPagingProps, useListFields } from '@panneau/lists';
 import type { RouteReference } from '@panneau/protocol';
 import {
     getCreatableTypes,
@@ -101,9 +101,24 @@ export function ResourceListPage({
         list: definitionList,
         remember: { key: `${basePath}:${definition?.user?.id ?? ''}:${resource.id}` },
     });
-    const { data, error, isFetching, refetch } = useResourceList(resource.id, query, {
-        placeholderData: (previous) => previous,
+    // The layouts of the definition, or the table and the cards without any
+    const layouts =
+        resource.list?.layouts !== undefined ? definitionList.layouts : ['table', 'cards'];
+    const itemImage = getItemImageField(resource);
+    // Only the fields the list shows: its columns and what its layout needs
+    const fields = useListFields({
+        list,
+        columns: definitionList.columns,
+        layouts,
+        itemTitle: resource.itemTitle,
+        itemImage,
+        calendar: definitionList.calendar,
     });
+    const { data, error, isFetching, refetch } = useResourceList(
+        resource.id,
+        fields !== undefined ? { ...query, fields } : query,
+        { placeholderData: (previous) => previous },
+    );
     // The summary above the list (decision 0084), which the user can hide. A resource whose list
     // comes second opens on its summary, its list folded under it, unless the URL asks for some
     // items (a link of a widget, a filtered list) or an item.
@@ -343,13 +358,8 @@ export function ResourceListPage({
                         onRetry={() => void refetch()}
                         fields={getVisibleFields(resource.fields)}
                         itemTitle={resource.itemTitle}
-                        itemImage={getItemImageField(resource)}
-                        // The layouts of the definition, or the table and the cards without any
-                        layouts={
-                            resource.list?.layouts !== undefined
-                                ? definitionList.layouts
-                                : ['table', 'cards']
-                        }
+                        itemImage={itemImage}
+                        layouts={layouts}
                         perPageOptions={[10, 20, 50, 100]}
                         // Titles open the panel, with the list's query, or the form (`open` of the resource)
                         getItemHref={(item) => getItemPath(resource, item, basePath, search)}

@@ -87,6 +87,45 @@ describe('query hooks', () => {
         expect(result.current.data?.data.map((item) => item.id)).toEqual(['1']);
     });
 
+    it('keep lists and items fresh for 30 seconds, until a mutation invalidates them', async () => {
+        const { wrapper, backend, client } = setup();
+        const useRead = () => ({
+            list: useResourceList('pages', { page: 1 }),
+            item: useResourceItem('pages', '1'),
+        });
+        const first = renderHook(useRead, { wrapper });
+        await waitFor(() => expect(first.result.current.item.isSuccess).toBe(true));
+        await waitFor(() => expect(first.result.current.list.isSuccess).toBe(true));
+        const count = backend.requests.length;
+        first.unmount();
+
+        // Shown again, as when coming back to the page or to the tab: nothing is fetched
+        const second = renderHook(useRead, { wrapper });
+        expect(second.result.current.list.isStale).toBe(false);
+        expect(second.result.current.item.isStale).toBe(false);
+        expect(backend.requests).toHaveLength(count);
+
+        const update = renderHook(() => useUpdateItem('pages'), { wrapper });
+        await act(() =>
+            update.result.current.mutateAsync({ id: '1', values: { status: 'draft' } }),
+        );
+        // The list shown is fetched again
+        await waitFor(() =>
+            expect(
+                backend.requests
+                    .slice(count)
+                    .some(
+                        (request) =>
+                            request.method === 'GET' &&
+                            new URL(request.url).pathname.endsWith('/resources/pages'),
+                    ),
+            ).toBe(true),
+        );
+        expect(client.getQueryState(queryKeys.list('pages', { page: 1 }))?.isInvalidated).toBe(
+            false,
+        );
+    });
+
     it('search the searchable resources, once enabled', async () => {
         const { wrapper, backend } = setup();
         const { result, rerender } = renderHook(

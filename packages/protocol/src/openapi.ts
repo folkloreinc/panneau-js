@@ -6,6 +6,7 @@ import {
     CONTEXT_HEADER,
     CONTEXT_PROBLEM_TYPE,
     EMAIL_UNVERIFIED_PROBLEM_TYPE,
+    MAX_PER_PAGE,
     PASSWORD_CONFIRMATION_PROBLEM_TYPE,
     TWO_FACTOR_REQUIRED_PROBLEM_TYPE,
 } from './constants';
@@ -80,7 +81,11 @@ const queryParameter = (name: string, description: string, schema: JsonObject): 
 
 const listParameters = [
     queryParameter('page', 'Page number, from 1.', { type: 'integer', minimum: 1 }),
-    queryParameter('perPage', 'Items per page.', { type: 'integer', minimum: 1 }),
+    queryParameter('perPage', 'Items per page, at most 100: a backend caps it there.', {
+        type: 'integer',
+        minimum: 1,
+        maximum: MAX_PER_PAGE,
+    }),
     queryParameter(
         'cursor',
         'Lists whose `pagination` is `cursor`: the `nextCursor` (or `previousCursor`) of a page, instead of `page`.',
@@ -100,7 +105,11 @@ const listParameters = [
         schema: { type: 'object', additionalProperties: true },
     },
     queryParameter('q', 'Search.', { type: 'string' }),
-    queryParameter('fields', 'Comma-separated fields to include in each item.', { type: 'string' }),
+    queryParameter(
+        'fields',
+        'Comma-separated fields to include in each item. Items still have their `id`, `version`, `abilities` and `type`, and a backend can also give the values of the `itemTitle` and `itemImage` fields of the resource.',
+        { type: 'string' },
+    ),
 ];
 
 /** The parameters of `GET /resources/{resource}/aggregate`: the filters and search of the list. */

@@ -42,7 +42,17 @@ export function definitionQueryOptions(
     });
 }
 
-/** Query options of a page of items. The previous page stays shown while the next one loads. */
+/**
+ * How long lists and items stay fresh: coming back to the tab or to a page within this time
+ * doesn't fetch them again. The mutations of the hooks and the results of actions invalidate them
+ * (`invalidateLists()`, `invalidateActionResult()`).
+ */
+const ITEMS_STALE_TIME = 30_000;
+
+/**
+ * Query options of a page of items. The previous page stays shown while the next one loads. Fresh
+ * for 30 seconds.
+ */
 export function resourceListQueryOptions(
     adapter: DataAdapter,
     resource: string,
@@ -52,10 +62,11 @@ export function resourceListQueryOptions(
         queryKey: queryKeys.list(resource, query),
         queryFn: ({ signal }) => adapter.list(resource, query, { signal }),
         placeholderData: keepPreviousData,
+        staleTime: ITEMS_STALE_TIME,
     });
 }
 
-/** Query options of one item. */
+/** Query options of one item. Fresh for 30 seconds. */
 export function resourceItemQueryOptions(
     adapter: DataAdapter,
     resource: string,
@@ -64,6 +75,7 @@ export function resourceItemQueryOptions(
     return queryOptions({
         queryKey: queryKeys.item(resource, id),
         queryFn: ({ signal }) => adapter.get(resource, id, { signal }),
+        staleTime: ITEMS_STALE_TIME,
     });
 }
 

@@ -16,7 +16,7 @@ import type { FilterValue } from '@panneau/protocol';
 import { getImageUrl } from '@panneau/protocol/runtime';
 import { IconComponent } from '@panneau/ui';
 import { JSX } from 'react';
-import type { List as List_2 } from '@panneau/core';
+import { List as List_2 } from '@panneau/core';
 import { ListOptions } from '@panneau/core';
 import type { ListQuery } from '@panneau/protocol';
 import type { ListResponse } from '@panneau/protocol';
@@ -24,7 +24,7 @@ import type { ListSelection } from '@panneau/core';
 import type { ListState } from '@panneau/core';
 import type { Option as Option_2 } from '@panneau/protocol';
 import { ReactNode } from 'react';
-import type { ResolvedCalendar } from '@panneau/core';
+import { ResolvedCalendar } from '@panneau/core';
 import type { RuleFailure } from '@panneau/protocol';
 import type { Selection as Selection_2 } from '@panneau/protocol';
 import { Tone } from '@panneau/ui';
@@ -179,6 +179,9 @@ export function getActionTone(action: Action): Tone;
 export { getImageUrl }
 
 // @public
+export function getListFields(input: ListFieldsOptions): string[] | undefined;
+
+// @public
 export function getLocalizedValue(value: unknown, locale: string): unknown;
 
 // @public
@@ -285,6 +288,16 @@ export interface ListColumn {
     sortable?: boolean;
     // (undocumented)
     width?: number | string;
+}
+
+// @public (undocumented)
+export interface ListFieldsOptions {
+    builtIn?: boolean;
+    calendar?: Pick<ResolvedCalendar, 'field'> | null | undefined;
+    columns: readonly ListColumn[];
+    itemImage?: string | undefined;
+    itemTitle?: string | undefined;
+    layout: string;
 }
 
 // @public
@@ -492,6 +505,24 @@ export function toText(value: unknown, locale: string): string;
 
 // @public
 export function UrlDisplay(input: DisplayProps): JSX.Element;
+
+// @public
+export function useListFields(input: UseListFieldsOptions): string[] | undefined;
+
+// @public (undocumented)
+export interface UseListFieldsOptions {
+    // (undocumented)
+    calendar?: Pick<ResolvedCalendar, 'field'> | null | undefined;
+    columns: readonly ListColumn[];
+    // (undocumented)
+    itemImage?: string | undefined;
+    // (undocumented)
+    itemTitle?: string | undefined;
+    layout?: string | undefined;
+    layoutComponents?: Readonly<Record<string, ListLayoutEntry>> | undefined;
+    layouts?: readonly string[];
+    list: List_2;
+}
 
 // @public
 export function useListState(list: List_2): ListState;

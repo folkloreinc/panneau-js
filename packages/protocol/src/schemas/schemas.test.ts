@@ -26,6 +26,28 @@ describe('Definition', () => {
         expect(result).toEqual({ success: true, data: expect.anything() });
     });
 
+    it('caps the page sizes of a list at 100, as backends do', () => {
+        const list = (perPage: number) => {
+            const definition = createDefinition();
+            const [pages] = definition.resources;
+            if (pages !== undefined) {
+                pages.list = {
+                    perPage,
+                    perPageOptions: [perPage],
+                    calendar: { field: 'published_at', perPage },
+                };
+            }
+            return Definition.safeParse(definition);
+        };
+        expect(list(100).success).toBe(true);
+        const issues = list(101).error?.issues.map((issue) => issue.path.join('.'));
+        expect(issues?.sort()).toEqual([
+            'resources.0.list.calendar.perPage',
+            'resources.0.list.perPage',
+            'resources.0.list.perPageOptions.0',
+        ]);
+    });
+
     it('keeps properties it does not know, so later versions can add some', () => {
         const definition = { ...createDefinition(), futureOption: { enabled: true } };
         const parsed = Definition.parse(definition);

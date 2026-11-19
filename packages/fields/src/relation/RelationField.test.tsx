@@ -2,9 +2,16 @@ import { act, renderHook, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import type { ListQuery } from '@panneau/protocol';
+import { IDS_FILTER } from '@panneau/protocol/runtime';
+
 import { Controlled, renderField } from '../__fixtures__/render';
 import { DefinitionField } from '../shared/DefinitionField';
-import type { RelationReference, RelationSource } from '../shared/relation';
+import {
+    type RelationReference,
+    type RelationSource,
+    createRelationSource,
+} from '../shared/relation';
 import { RelationField, useRelationSearch } from './RelationField';
 
 const AUTHORS: RelationReference[] = [
@@ -251,9 +258,69 @@ describe('RelationField', () => {
         expect(await screen.findByText('Ada Lovelace')).toBeInTheDocument();
         // An id the source doesn't find keeps its id as label.
         expect(screen.getByRole('button', { name: 'Remove 404' })).toBeInTheDocument();
-        // The two fields share their requests: "2" is resolved once.
-        const asked = resolve.mock.calls.flatMap(([, ids]) => ids);
-        expect(asked.filter((id) => id === '2')).toHaveLength(1);
+        // Each field asks for its own ids, once
+        expect(resolve).toHaveBeenCalledTimes(2);
+    });
+
+    it('resolves the ids of a repeater of relations in one request, with createRelationSource()', async () => {
+        const list = vi.fn(async (_resource: string, query?: ListQuery) => ({
+            data: AUTHORS.filter((author) =>
+                ((query?.filter?.[IDS_FILTER] ?? []) as string[]).includes(author.id),
+            ).map(({ id, label }) => ({ id, version: null, abilities: {}, name: label })),
+        }));
+        const source = createRelationSource(
+            { list },
+            {
+                definition: {
+                    resources: [
+                        {
+                            id: 'authors',
+                            label: { singular: 'author', plural: 'authors' },
+                            fields: [{ name: 'name', type: 'text' }],
+                            itemTitle: 'name',
+                        },
+                    ],
+                },
+            },
+        );
+        const ids = ['1', '2', '3', '2', '404'];
+        const { unmount } = renderField(
+            <DefinitionField
+                field={{
+                    name: 'credits',
+                    type: 'repeater',
+                    label: 'Credits',
+                    fields: [
+                        { name: 'author', type: 'relation', label: 'Author', resource: 'authors' },
+                    ],
+                    settings: { collapsible: false },
+                }}
+                path="credits"
+                value={ids.map((author) => ({ author }))}
+                onChange={() => undefined}
+            />,
+            { relationSource: source },
+        );
+        expect(await screen.findByText('Margaret Hamilton')).toBeInTheDocument();
+        expect(screen.getAllByText('Grace Hopper')).toHaveLength(2);
+        expect(list).toHaveBeenCalledTimes(1);
+        expect(list).toHaveBeenCalledWith('authors', {
+            filter: { [IDS_FILTER]: ['1', '2', '3', '404'] },
+            perPage: 4,
+        });
+        // Shown again, the fields have their labels at once, without a request
+        unmount();
+        renderField(
+            <DefinitionField
+                field={{ name: 'author', type: 'relation', label: 'Author', resource: 'authors' }}
+                path="author"
+                value="1"
+                onChange={() => undefined}
+            />,
+            { relationSource: source },
+        );
+        expect(screen.getByText('Ada Lovelace')).toBeInTheDocument();
+        expect(list).toHaveBeenCalledTimes(1);
     });
 
     it('creates an item from the typed text, with the source', async () => {

@@ -49,12 +49,16 @@ export function RelationFieldEntry(props: FieldEntryProps): JSX.Element;
 export type RelationFieldProps = SingleRelationFieldProps | MultipleRelationFieldProps;
 
 // @public
+export interface RelationItemCache {
+    // (undocumented)
+    get(resource: string, id: string): Item | undefined;
+    // (undocumented)
+    set(resource: string, item: Item): void;
+}
+
+// @public
 export interface RelationListAdapter {
     create?(resource: string, values: Record<string, unknown>): Promise<Item>;
-    get?(resource: string, id: string, options?: {
-        signal?: AbortSignal;
-    }): Promise<Item>;
-    // (undocumented)
     list(resource: string, query?: ListQuery, options?: {
         signal?: AbortSignal;
     }): Promise<{
@@ -79,6 +83,7 @@ export interface RelationSource {
     // Warning: (ae-forgotten-export) The symbol "RelationResourceInfo" needs to be exported by the entry point index.d.ts
     describe?(resource: string): RelationResourceInfo | null;
     getItemHref?(resource: string, id: string): string | null;
+    peek?(resource: string, id: string): RelationReference | null | undefined;
     resolve?(resource: string, ids: readonly string[], options: {
         signal: AbortSignal;
     }): Promise<RelationReference[]>;
@@ -93,6 +98,7 @@ export interface RelationSourceOptions {
     definition?: (Pick<Definition, 'resources'> & Partial<Pick<Definition, 'locales'>>) | null;
     getItemHref?: (resource: string, id: string) => string | null;
     getLabel?: (item: Item, resource: string) => string;
+    items?: RelationItemCache;
     perPage?: number;
 }
 

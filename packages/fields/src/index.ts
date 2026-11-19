@@ -20,6 +20,7 @@ export {
     isRequired,
 } from './shared/entry';
 export {
+    type RelationItemCache,
     type RelationListAdapter,
     type RelationReference,
     type RelationSource,

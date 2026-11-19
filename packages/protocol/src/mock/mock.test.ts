@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
 import { createDefinition } from '../__fixtures__/definition';
-import { EMAIL_UNVERIFIED_PROBLEM_TYPE, TWO_FACTOR_REQUIRED_PROBLEM_TYPE } from '../constants';
+import {
+    EMAIL_UNVERIFIED_PROBLEM_TYPE,
+    MAX_PER_PAGE,
+    TWO_FACTOR_REQUIRED_PROBLEM_TYPE,
+} from '../constants';
 import { ListResponse } from '../schemas';
 import { type MockMail, type MockUser, createExampleDefinition, createMockBackend } from './index';
 
@@ -153,6 +157,38 @@ describe('createMockBackend', () => {
             await backend.fetch(`/panneau/api/resources/pages?${params}&filter[ids][]=missing`)
         ).json()) as { data: { id: string }[] };
         expect(filtered.data.map((item) => item.id).sort()).toEqual([...ids].sort());
+    });
+
+    it('gives the fields a list asks for only, with what every item has', async () => {
+        const backend = createBackend();
+        const list = (await (
+            await backend.fetch('/panneau/api/resources/pages?fields=status&sort=id')
+        ).json()) as { data: Record<string, unknown>[] };
+        expect(list.data[0]).toEqual({
+            id: '1',
+            version: '1',
+            abilities: expect.any(Object),
+            status: 'published',
+        });
+        // An item has all its fields
+        const item = (await (await backend.fetch('/panneau/api/resources/pages/1')).json()) as {
+            data: Record<string, unknown>;
+        };
+        expect(item.data).toHaveProperty('title');
+    });
+
+    it('caps the page size at 100', async () => {
+        const backend = createMockBackend({
+            definition: createDefinition(),
+            items: {
+                pages: Array.from({ length: 120 }, (_, index) => ({ title: { fr: `${index}` } })),
+            },
+        });
+        const list = ListResponse.parse(
+            await (await backend.fetch('/panneau/api/resources/pages?perPage=500')).json(),
+        );
+        expect(list.data).toHaveLength(MAX_PER_PAGE);
+        expect(list.meta).toMatchObject({ perPage: MAX_PER_PAGE, lastPage: 2 });
     });
 
     it('duplicates an item under a new id, with every built-in item action allowed', async () => {
