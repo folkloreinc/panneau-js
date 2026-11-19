@@ -166,6 +166,29 @@ describe('Dashboard', () => {
         expect(await answers.findByText('129')).toBeInTheDocument();
     });
 
+    it('lets a plugin replace a built-in widget type, with its data checked', async () => {
+        const BigStat = ({ data }: WidgetProps) => (
+            <p>{`Big ${String((data as { value: number }).value)}`}</p>
+        );
+        const plugins = [definePlugin({ id: 'test.big-stat', widgets: { stat: BigStat } })];
+        const { unmount } = renderDashboard({ plugins });
+        expect(await widget('answers').findByText('Big 128')).toBeInTheDocument();
+        unmount();
+        // Data in the wrong shape for a stat still fails, whoever draws it
+        renderDashboard({
+            plugins,
+            widgets: {
+                ...DASHBOARD_DATA,
+                answers: () =>
+                    new Response(JSON.stringify({ value: 'many' }), {
+                        headers: { 'Content-Type': 'application/json' },
+                    }),
+            },
+        });
+        expect(await widget('answers').findByText('This widget couldn’t load.')).toBeVisible();
+        expect(widget('answers').queryByText(/^Big /)).toBeNull();
+    });
+
     it('shows the error of data in the wrong shape', async () => {
         renderDashboard({
             widgets: {

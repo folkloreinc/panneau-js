@@ -1,8 +1,14 @@
-import { type CSSProperties, Component, type ReactNode, createElement } from 'react';
+import {
+    type CSSProperties,
+    Component,
+    type ComponentType,
+    type ReactNode,
+    createElement,
+} from 'react';
 import { Link } from 'react-aria-components';
 import type { FormatNumberOptions } from 'react-intl';
 
-import { usePanneau, usePlugins } from '@panneau/core';
+import { type WidgetProps, getEntries, resolveEntry, usePanneau, usePlugins } from '@panneau/core';
 import { appMessages } from '@panneau/intl';
 import type {
     BreakdownWidgetData,
@@ -15,6 +21,7 @@ import type {
     Widget,
 } from '@panneau/protocol';
 import {
+    type BuiltInWidgetType,
     HOME_PAGE,
     type OverviewPeriodOption,
     WIDGET_METRIC_MAX_PARTS,
@@ -657,6 +664,33 @@ function ListBody({ widget, data }: { widget: Widget; data: ListWidgetData }) {
     );
 }
 
+/**
+ * The built-in widget types (decision 0097), which plugins can replace by their type: each draws
+ * its own card. Their data is checked against the protocol's schema of the type before they get
+ * it, whoever draws them.
+ */
+export const builtInWidgets: Readonly<Record<BuiltInWidgetType, ComponentType<WidgetProps>>> = {
+    stat: ({ widget, data, currency }) => (
+        <StatBody widget={widget} data={data as StatWidgetData} currency={currency} />
+    ),
+    series: ({ widget, data, currency }) => (
+        <SeriesBody widget={widget} data={data as SeriesWidgetData} currency={currency} />
+    ),
+    list: ({ widget, data }) => <ListBody widget={widget} data={data as ListWidgetData} />,
+    breakdown: ({ widget, data, currency }) => (
+        <BreakdownBody widget={widget} data={data as BreakdownWidgetData} currency={currency} />
+    ),
+    metric: ({ widget, data, currency, period }) => (
+        <MetricBody
+            widget={widget}
+            data={data as MetricWidgetData}
+            currency={currency}
+            period={period}
+        />
+    ),
+    table: ({ widget, data }) => <TableBody widget={widget} data={data as TableWidgetData} />,
+};
+
 function WidgetBody({
     widget,
     content,
@@ -678,55 +712,25 @@ function WidgetBody({
     if (content.status === 'hidden') {
         return null;
     }
-    switch (widget.type) {
-        case 'stat':
-            return (
-                <StatBody
-                    widget={widget}
-                    data={content.data as StatWidgetData}
-                    currency={content.currency}
-                />
-            );
-        case 'series':
-            return (
-                <SeriesBody
-                    widget={widget}
-                    data={content.data as SeriesWidgetData}
-                    currency={content.currency}
-                />
-            );
-        case 'list':
-            return <ListBody widget={widget} data={content.data as ListWidgetData} />;
-        case 'breakdown':
-            return (
-                <BreakdownBody
-                    widget={widget}
-                    data={content.data as BreakdownWidgetData}
-                    currency={content.currency}
-                />
-            );
-        case 'metric':
-            return (
-                <MetricBody
-                    widget={widget}
-                    data={content.data as MetricWidgetData}
-                    currency={content.currency}
-                    period={period}
-                />
-            );
-        case 'table':
-            return <TableBody widget={widget} data={content.data as TableWidgetData} />;
-        default: {
-            const Plugin = plugins.widgets.get(widget.type);
-            return (
-                <Card title={widget.label} className={styles.widget}>
-                    {Plugin !== undefined
-                        ? createElement(Plugin, { widget, data: content.data, definition })
-                        : null}
-                </Card>
-            );
-        }
-    }
+    // A plugin's widget, or a built-in one, which a plugin can replace (decision 0097)
+    const Entry = resolveEntry(plugins, 'widgets', widget.type, { builtIn: builtInWidgets });
+    const props: WidgetProps = {
+        widget,
+        data: content.data,
+        definition,
+        currency: content.currency,
+        period,
+    };
+    // The built-in widgets draw their own card; the dashboard draws the card of the others
+    return Entry !== undefined &&
+        isBuiltInWidgetType(widget.type) &&
+        Entry === builtInWidgets[widget.type] ? (
+        createElement(Entry, props)
+    ) : (
+        <Card title={widget.label} className={styles.widget}>
+            {Entry !== undefined ? createElement(Entry, props) : null}
+        </Card>
+    );
 }
 
 function DashboardWidget({
@@ -739,7 +743,7 @@ function DashboardWidget({
 }: Omit<DashboardGridProps, 'widgets'> & { widget: Widget }) {
     const intl = usePanneauIntl();
     const plugins = usePlugins();
-    const drawn = isBuiltInWidgetType(widget.type) || plugins.widgets.has(widget.type);
+    const drawn = getEntries(plugins, 'widgets', { builtIn: builtInWidgets }).has(widget.type);
     const content = useWidgetContent({
         widget,
         page,

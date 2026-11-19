@@ -3,7 +3,7 @@ import { cleanup, render, screen, waitFor, within } from '@testing-library/react
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { type PanneauPlugin, definePlugin } from '@panneau/core';
+import { type PageProps, type PanneauPlugin, definePlugin } from '@panneau/core';
 import { createRestAdapter } from '@panneau/data';
 import { type DefinitionInput, validateBootConfig } from '@panneau/protocol';
 import { createMockBackend } from '@panneau/protocol/mock';
@@ -595,8 +595,8 @@ describe('the app shell', () => {
     });
 
     describe('a page with params', () => {
-        function JobPage({ params, title }: { params: { id: string }; title: string }) {
-            return <h1>{`${title} ${params.id}`}</h1>;
+        function JobPage({ params, title = '' }: PageProps & { title?: string }) {
+            return <h1>{`${title} ${params.id ?? ''}`}</h1>;
         }
         const plugins = [definePlugin({ id: 'jobs', pages: { job: JobPage } })];
         const overrides: Partial<DefinitionInput> = {

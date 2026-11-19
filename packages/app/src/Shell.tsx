@@ -1,16 +1,17 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { createElement, useEffect, useState } from 'react';
+import { type ComponentType, createElement, useEffect, useState } from 'react';
 import { RouterProvider } from 'react-aria-components';
 
 import { ActionRunnerProvider } from '@panneau/actions';
 import {
+    type PageProps as CorePageProps,
     LeaveGuardsProvider,
     canViewPage,
     createLeaveGuards,
     findResource,
     resolveResource,
+    useEntry,
     usePanneau,
-    usePlugins,
 } from '@panneau/core';
 import { invalidateActionResult, useDataAdapter } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
@@ -57,10 +58,20 @@ interface PageProps {
 }
 
 /**
- * A page of the definition's `pages`: a plugin's component, with the page's props, the definition,
- * and the values of its `params` from the path. The built-in `dashboard`, which plugins can
- * replace, is the widgets of the page (decisions 0064 and 0084): on the home page, those of
- * `definition.dashboard` without its own, or the cards of the resources without any.
+ * The built-in pages (decision 0097), which plugins can replace: the `dashboard`, the widgets of
+ * the page (decisions 0064 and 0084). On the home page, those of `definition.dashboard` without
+ * its own, or the cards of the resources without any.
+ */
+export const builtInPages: Readonly<Record<string, ComponentType<CorePageProps>>> = {
+    dashboard: ({ id, definition, basePath }) => (
+        <Dashboard definition={definition} basePath={basePath} page={id} />
+    ),
+};
+
+/**
+ * A page of the definition's `pages`: the component of a plugin or a built-in one, with the
+ * page's props, its id, the definition, the base path and the values of its `params` from the
+ * path.
  */
 function DefinitionPage({
     id,
@@ -76,16 +87,14 @@ function DefinitionPage({
     params?: Record<string, string>;
 }) {
     const intl = usePanneauIntl();
-    const plugins = usePlugins();
-    const Component = plugins.pages.get(page.component);
+    const Component = useEntry('pages', page.component, { builtIn: builtInPages });
+    const props: CorePageProps = { id, definition, basePath, params };
     // Before the page: a page that sets its own title sets it last
     return (
         <>
             <DocumentTitle parts={[page.label]} />
             {Component !== undefined ? (
-                createElement(Component, { ...page.props, definition, params })
-            ) : page.component === 'dashboard' ? (
-                <Dashboard definition={definition} basePath={basePath} page={id} />
+                createElement(Component, { ...page.props, ...props })
             ) : (
                 <Alert tone="warning">
                     {intl.formatMessage(appMessages.missingPage, {

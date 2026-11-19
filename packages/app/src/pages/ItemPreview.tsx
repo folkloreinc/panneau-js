@@ -2,7 +2,7 @@ import { ExternalLink } from 'lucide-react';
 import { createElement } from 'react';
 import { Link } from 'react-aria-components';
 
-import { usePlugins } from '@panneau/core';
+import { resolveEntry, usePlugins } from '@panneau/core';
 import { useItemPreview } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
 import type { Item, Resource } from '@panneau/protocol';
@@ -89,7 +89,7 @@ export function ItemPreview({ resource, item, title, locale }: ItemPreviewProps)
         return <IframePreview resource={resource} item={item} title={title} />;
     }
     const name = preview.component ?? '';
-    const Component = plugins.previews.get(name);
+    const Component = resolveEntry(plugins, 'previews', name);
     if (Component === undefined) {
         return (
             <Alert tone="warning">

@@ -5,7 +5,7 @@ import { act } from 'react';
 import { useIntl } from 'react-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { type PanneauPlugin, definePlugin } from '@panneau/core';
+import { type PageProps, type PanneauPlugin, definePlugin } from '@panneau/core';
 import {
     type DataAdapter,
     ForbiddenError,
@@ -215,7 +215,7 @@ describe('Panneau', () => {
     });
 
     describe('the home route', () => {
-        function Overview({ title }: { title: string }) {
+        function Overview({ title }: PageProps & { title?: string }) {
             return <h1>{title}</h1>;
         }
         const plugins = [definePlugin({ id: 'overview', pages: { overview: Overview } })];
