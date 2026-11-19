@@ -12,7 +12,6 @@ import { usePanneauIntl } from '@panneau/ui';
 
 import { useDocumentTitle } from '../documentTitle';
 import { navigate } from '../location';
-import { capitalize } from '../navigation';
 import { useRecordRecentItem } from '../recentItems';
 import { routePath } from '../routes';
 import { ErrorPage, getErrorPageKind } from './ErrorPage';
@@ -100,11 +99,9 @@ export function ResourceFormPage({
               }
             : null,
     );
-    const back = {
-        href: routePath({ name: 'resource.index', resource: resource.id }, basePath),
-        label: capitalize(resource.label.plural, definition.locale),
-    };
-    useDocumentTitle([title, back.label]);
+    // Where the page goes once its item is created or removed
+    const listHref = routePath({ name: 'resource.index', resource: resource.id }, basePath);
+    useDocumentTitle([title]);
     // The actions of the item, as its row and its panel show them, but `edit`: this page
     const { run, isSupported } = useItemActionRunner(resource, {
         basePath,
@@ -133,7 +130,7 @@ export function ResourceFormPage({
                     void itemQuery.refetch().then(({ error }) => {
                         if (error instanceof NotFoundError) {
                             // In place of the item's page, which Back can't return to
-                            navigate(back.href, { replace: true });
+                            navigate(listHref, { replace: true });
                         }
                     });
                 }}
@@ -216,7 +213,7 @@ export function ResourceFormPage({
                         title: getItemTitle(saved, resource.itemTitle, definition.locale),
                         href: getItemPath(resource, saved, basePath),
                     });
-                    navigate(back.href, { replace: true });
+                    navigate(listHref, { replace: true });
                 }
             }}
             onReload={() => void itemQuery.refetch()}
@@ -240,9 +237,11 @@ export function ResourceFormPage({
             }}
         >
             <PageLayout width={hasSidebar ? 'default' : 'narrow'}>
+                {/* Its parents are those of its route, the list last (decision 0093). The title of
+                    an item that loads is a skeleton, and so is its crumb. */}
                 <PageHeader
                     title={title}
-                    back={back}
+                    isLoading={mode === 'update' && item === undefined}
                     actions={hasActionsPanel ? undefined : itemActions}
                 />
                 {content}

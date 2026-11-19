@@ -39,7 +39,7 @@ const meta = {
     title: 'App/Resource types page',
     component: ResourceTypesPage,
     parameters: { layout: 'padded' },
-    args: { resolved: resolveResource(pages), basePath: '/admin', locale: 'en' },
+    args: { resolved: resolveResource(pages), basePath: '/admin' },
     decorators: [
         (Story) => (
             <RouterProvider navigate={() => undefined}>

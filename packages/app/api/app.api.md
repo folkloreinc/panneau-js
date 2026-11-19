@@ -73,10 +73,14 @@ export function PageHeader(input: PageHeaderProps): JSX.Element;
 // @public (undocumented)
 export interface PageHeaderProps {
     actions?: ReactNode;
+    // @deprecated
     back?: {
         href: string;
         label: string;
     };
+    crumbLabel?: string;
+    isLoading?: boolean;
+    parents?: readonly PageParent[];
     title: ReactNode;
 }
 
@@ -90,6 +94,12 @@ export interface PageLayoutProps {
     // (undocumented)
     className?: string;
     width?: 'default' | 'narrow';
+}
+
+// @public
+export interface PageParent {
+    href: string;
+    label: string | undefined;
 }
 
 // @public

@@ -22,6 +22,11 @@
     min-width: 0;
 }
 
+/* The parents keep their labels: the current page, last, is cut first (its title is under it). */
+.item:not(:last-child) {
+    flex-shrink: 0;
+}
+
 .link {
     display: inline-flex;
     min-width: 0;
@@ -63,4 +68,19 @@
 
 .separator:dir(rtl) {
     scale: -1 1;
+}
+
+/* A label that loads: the height of a line of the crumbs. */
+.skeleton {
+    max-width: 100%;
+}
+
+/* What a crumb that loads says to screen readers: not shown. */
+.hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
 }

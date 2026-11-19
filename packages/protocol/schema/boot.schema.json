@@ -234,6 +234,10 @@
                 "icon": {
                     "type": "string"
                 },
+                "parent": {
+                    "type": "string",
+                    "minLength": 1
+                },
                 "itemTitle": {
                     "type": "string"
                 },
@@ -2228,6 +2232,27 @@
                 },
                 "label": {
                     "type": "string"
+                },
+                "parent": {
+                    "anyOf": [
+                        {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "resource": {
+                                    "type": "string",
+                                    "minLength": 1
+                                }
+                            },
+                            "required": [
+                                "resource"
+                            ],
+                            "additionalProperties": {}
+                        }
+                    ]
                 },
                 "props": {
                     "type": "object",

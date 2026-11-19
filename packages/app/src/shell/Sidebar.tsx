@@ -29,6 +29,7 @@ import {
     getProfilePath,
     isCurrent,
 } from '../navigation';
+import { getMenuRoute } from '../parents';
 import { type AppRoute, routePath } from '../routes';
 import { ActionRunsButton } from './ActionRunsButton';
 import { ContextPicker, ContextPickerButton } from './ContextPicker';
@@ -154,6 +155,8 @@ export function Sidebar({
     const intl = usePanneauIntl();
     const home = getHomeLink(intl.formatMessage(appMessages.home), basePath);
     const entries = getNavigation(definition, basePath);
+    // What the links show as current: the route, or its nearest parent in them (decision 0093)
+    const menuRoute = getMenuRoute(definition, [home, ...entries], route);
     // Groups and the links between separators each get their own list.
     const sections: Section[] = [{ key: 'home', links: [home] }];
     entries.forEach((entry: NavEntry) => {
@@ -178,7 +181,7 @@ export function Sidebar({
     });
 
     const renderLink = (link: NavLink) => {
-        const current = isCurrent(link.target, route);
+        const current = isCurrent(link.target, menuRoute);
         const external = link.target.kind === 'url' && link.target.external;
         const element = (
             <Link
@@ -314,7 +317,7 @@ export function Sidebar({
                             section={section}
                             rail={collapsed}
                             holdsCurrent={section.links.some((link) =>
-                                isCurrent(link.target, route),
+                                isCurrent(link.target, menuRoute),
                             )}
                         >
                             {section.links.map(renderLink)}

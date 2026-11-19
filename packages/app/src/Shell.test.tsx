@@ -689,6 +689,110 @@ describe('the app shell', () => {
         );
     });
 
+    it('shows the parents of a page above its title: a link to one, breadcrumbs from two (decision 0093)', async () => {
+        const definition = createDefinition();
+        // The authors are under the dashboard page "Activity", and out of the menus
+        const resources = definition.resources.map((resource) =>
+            resource.id === 'authors'
+                ? { ...resource, itemTitle: 'name', parent: 'activity' }
+                : resource,
+        );
+        renderApp({
+            resources,
+            pages: { activity: { component: 'dashboard', label: 'Activity' } },
+            menus: {
+                main: [
+                    { type: 'resource', resource: 'pages' },
+                    { type: 'page', page: 'activity' },
+                ],
+            },
+        });
+        const user = userEvent.setup();
+
+        // The list of the authors: one parent, the dashboard page, current in the menus
+        await user.click(screen.getByRole('link', { name: /Authors/ }));
+        const main = () => within(screen.getByRole('main'));
+        await waitFor(() =>
+            expect(main().getByRole('heading', { level: 1, name: 'Authors' })).toBeInTheDocument(),
+        );
+        expect(main().getByRole('link', { name: 'Activity' })).toHaveAttribute(
+            'href',
+            '/panneau/pages/activity',
+        );
+        expect(main().queryByRole('navigation', { name: 'Breadcrumbs' })).toBeNull();
+        expect(navigation().getByRole('link', { name: 'Activity' })).toHaveAttribute(
+            'aria-current',
+            'page',
+        );
+        await waitFor(() => expect(document.title).toBe('Authors · Activity · Test site'));
+
+        // An author: two parents, as breadcrumbs, and a link to the nearest one on narrow roots
+        await user.click(await main().findByRole('link', { name: 'Ada' }));
+        await waitFor(() =>
+            expect(main().getByRole('heading', { level: 1, name: 'Ada' })).toBeInTheDocument(),
+        );
+        const crumbs = main().getByRole('navigation', { name: 'Breadcrumbs' });
+        expect(
+            within(crumbs)
+                .getAllByRole('listitem')
+                .map((item) => item.textContent),
+        ).toEqual(['Activity', 'Authors', 'Ada']);
+        expect(within(crumbs).getByText('Ada').closest('[aria-current]')).toHaveAttribute(
+            'aria-current',
+            'page',
+        );
+        expect(
+            main()
+                .getAllByRole('link', { name: 'Authors' })
+                .map((link) => link.getAttribute('href')),
+        ).toEqual(['/panneau/resources/authors', '/panneau/resources/authors']);
+        expect(navigation().getByRole('link', { name: 'Activity' })).toHaveAttribute(
+            'aria-current',
+            'page',
+        );
+        await waitFor(() => expect(document.title).toBe('Ada · Authors · Activity · Test site'));
+    });
+
+    it('shows a skeleton for the title of an item and its crumb while it loads (decision 0093)', async () => {
+        const definition = createDefinition();
+        const resources = definition.resources.map((resource) =>
+            resource.id === 'authors'
+                ? { ...resource, itemTitle: 'name', parent: 'activity' }
+                : resource,
+        );
+        window.history.replaceState(null, '', '/panneau/resources/authors/1/edit');
+        // The item answers once released
+        const resolvers: { release?: () => void } = {};
+        const held = new Promise<undefined>((resolve) => {
+            resolvers.release = () => resolve(undefined);
+        });
+        renderApp(
+            { resources, pages: { activity: { component: 'dashboard', label: 'Activity' } } },
+            [],
+            (backend) => {
+                const fetch = backend.fetch;
+                backend.fetch = async (input, init) => {
+                    if (String(input).endsWith('/resources/authors/1')) {
+                        await held;
+                    }
+                    return fetch(input, init);
+                };
+            },
+        );
+        const main = within(screen.getByRole('main'));
+        const crumbs = main.getByRole('navigation', { name: 'Breadcrumbs' });
+        expect(main.getByRole('heading', { level: 1 })).toHaveTextContent('Loading…');
+        expect(within(crumbs).getByText('Loading…').closest('[aria-current]')).toHaveAttribute(
+            'aria-current',
+            'page',
+        );
+        resolvers.release?.();
+        await waitFor(() =>
+            expect(main.getByRole('heading', { level: 1, name: 'Ada' })).toBeInTheDocument(),
+        );
+        expect(within(crumbs).getByText('Ada')).toBeInTheDocument();
+    });
+
     it('shows the actions placed in form on the edit page of an item, runs them, and leaves the page of a deleted item', async () => {
         const user = userEvent.setup();
         window.history.replaceState(null, '', '/panneau/resources/pages/1/edit');

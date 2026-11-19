@@ -156,7 +156,8 @@ describe('Panneau', () => {
             adapter: createAdapter(() => Promise.reject(new Error('Not called.'))),
             config: createBootConfig({ definition: createDefinition() }),
         });
-        expect(screen.getByRole('heading', { name: 'Edit the page' })).toBeInTheDocument();
+        // While the item loads, its title is a skeleton (decision 0093)
+        expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Loading…');
         expect(
             within(screen.getByRole('main')).getByRole('link', { name: 'Pages' }),
         ).toHaveAttribute('href', '/panneau/resources/pages');

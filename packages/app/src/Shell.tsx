@@ -28,6 +28,7 @@ import { Dashboard } from './dashboard/Dashboard';
 import { DocumentTitle } from './documentTitle';
 import { getInterfaceLocales, withNext } from './interfaceLocales';
 import { loadPage, navigate, setHistoryGuard, usePathname } from './location';
+import { PageRouteContext } from './pageRoute';
 import { AccountPage } from './pages/AccountPage';
 import { ContextPage } from './pages/ContextPage';
 import { ErrorPage } from './pages/ErrorPage';
@@ -196,7 +197,6 @@ function Page({ definition, basePath, route }: PageProps & { route: AppRoute }) 
                             key={resource.id}
                             resolved={resolved}
                             basePath={basePath}
-                            locale={definition.locale}
                         />
                     );
                 }
@@ -340,7 +340,9 @@ export function Shell({
                             homeHref={routePath({ name: 'home' }, basePath)}
                             path={pathname}
                         >
-                            <Page definition={definition} basePath={basePath} route={route} />
+                            <PageRouteContext value={{ route, basePath }}>
+                                <Page definition={definition} basePath={basePath} route={route} />
+                            </PageRouteContext>
                         </PageErrorBoundary>
                     </Layout>
                 </ActionRunnerProvider>

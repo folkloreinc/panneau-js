@@ -10,13 +10,15 @@ import { Icon } from '../icon/Icon';
 import { messages } from '../intl/messages';
 import { usePanneauIntl } from '../intl/usePanneauIntl';
 import { Menu, MenuItem, MenuTrigger } from '../menu/Menu';
+import { Skeleton } from '../skeleton/Skeleton';
 import { cx } from '../utils/cx';
 import styles from './Breadcrumbs.module.css';
 
 /** A page in `Breadcrumbs`. */
 export interface BreadcrumbItem {
     id: string | number;
-    label: string;
+    /** `undefined` while it loads, such as the title of an item: the crumb is a skeleton. */
+    label: string | undefined;
     /** Where the crumb goes, through the app's router. The last one, the current page, has none. */
     href?: string | undefined;
 }
@@ -53,12 +55,15 @@ function getCrumbs(items: readonly BreadcrumbItem[], maxItems: number | undefine
 
 /**
  * Where a page is among its parents: a link to each one, and the current page last. With
- * `maxItems`, the middle ones fold into a menu.
+ * `maxItems`, the middle ones fold into a menu. A crumb whose label loads is a skeleton, and says
+ * that it loads to screen readers: the region of the page that loads announces it (decision 0034).
+ * When the line is too short, the label of the current page is cut first.
  */
 export function Breadcrumbs({ items, maxItems, label, className }: BreadcrumbsProps) {
     const intl = usePanneauIntl();
     const name = label ?? intl.formatMessage(messages.breadcrumbs);
     const crumbs = getCrumbs(items, maxItems);
+    const loading = intl.formatMessage(messages.loading);
     return (
         <nav aria-label={name} className={cx('panneau-breadcrumbs', styles.breadcrumbs, className)}>
             <AriaBreadcrumbs aria-label={name} className={styles.list}>
@@ -85,7 +90,7 @@ export function Breadcrumbs({ items, maxItems, label, className }: BreadcrumbsPr
                                     <Menu>
                                         {crumb.items.map((item) => (
                                             <MenuItem key={item.id} id={item.id} href={item.href}>
-                                                {item.label}
+                                                {item.label ?? loading}
                                             </MenuItem>
                                         ))}
                                     </Menu>
@@ -101,9 +106,16 @@ export function Breadcrumbs({ items, maxItems, label, className }: BreadcrumbsPr
                             className={styles.item}
                         >
                             <Link href={last ? undefined : crumb.item.href} className={styles.link}>
-                                <span className={styles.label} title={crumb.item.label}>
-                                    {crumb.item.label}
-                                </span>
+                                {crumb.item.label !== undefined ? (
+                                    <span className={styles.label} title={crumb.item.label}>
+                                        {crumb.item.label}
+                                    </span>
+                                ) : (
+                                    <>
+                                        <Skeleton width="8rem" className={styles.skeleton} />
+                                        <span className={styles.hidden}>{loading}</span>
+                                    </>
+                                )}
                             </Link>
                             {separator}
                         </AriaBreadcrumb>

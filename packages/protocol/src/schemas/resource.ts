@@ -96,6 +96,10 @@ export const Resource = z
         label: z.looseObject({ singular: z.string(), plural: z.string() }),
         description: z.string().optional(),
         icon: z.string().optional(),
+        parent: z.string().min(1).optional().meta({
+            description:
+                'The page of `pages` that the list of the resource belongs to (decision 0093), such as the dashboard page that a log is reached from: the app shows it above the title of the list and of its items, and keeps it current in the menus when the resource is not in them. Not `home`, nor a page with `params`.',
+        }),
         itemTitle: z
             .string()
             .optional()

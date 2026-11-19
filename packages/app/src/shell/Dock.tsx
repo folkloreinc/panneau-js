@@ -22,6 +22,7 @@ import {
     getProfilePath,
     isCurrent,
 } from '../navigation';
+import { getMenuRoute } from '../parents';
 import { type AppRoute, routePath } from '../routes';
 import { ActionRunsButton } from './ActionRunsButton';
 import styles from './Dock.module.css';
@@ -130,6 +131,8 @@ export function Dock({
             entry.type === 'group' && entry.label === undefined ? entry.children : [entry],
         ),
     ];
+    // What the entries show as current: the route, or its nearest parent in them (decision 0093)
+    const menuRoute = getMenuRoute(definition, entries, route);
     // On a phone: the first entries, then "More" with the others, without separators.
     const onPhone = new Set<string>();
     const more: (NavLink | NavGroup)[] = [];
@@ -167,11 +170,11 @@ export function Dock({
                                 className={cx(!onPhone.has(entry.key) && styles.wideOnly)}
                             >
                                 {entry.type === 'link' ? (
-                                    <LinkItem link={entry} route={route} />
+                                    <LinkItem link={entry} route={menuRoute} />
                                 ) : (
                                     <GroupItem
                                         group={{ ...entry, label: entry.label ?? '' }}
-                                        route={route}
+                                        route={menuRoute}
                                     />
                                 )}
                             </li>
@@ -185,9 +188,9 @@ export function Dock({
                                     data-current={
                                         more.some((entry) =>
                                             entry.type === 'link'
-                                                ? isCurrent(entry.target, route)
+                                                ? isCurrent(entry.target, menuRoute)
                                                 : entry.children.some((link) =>
-                                                      isCurrent(link.target, route),
+                                                      isCurrent(link.target, menuRoute),
                                                   ),
                                         ) || undefined
                                     }

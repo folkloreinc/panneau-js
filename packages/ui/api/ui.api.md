@@ -243,8 +243,7 @@ export interface BreadcrumbItem {
     href?: string | undefined;
     // (undocumented)
     id: string | number;
-    // (undocumented)
-    label: string;
+    label: string | undefined;
 }
 
 // @public
