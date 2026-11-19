@@ -53,6 +53,7 @@ import { HomePage } from '../pages/HomePage';
 import { PageHeader, PageLayout } from '../pages/PageHeader';
 import pageStyles from '../pages/pages.module.css';
 import styles from './Dashboard.module.css';
+import { widthOf } from './DashboardSkeleton';
 import { PeriodControl } from './PeriodControl';
 import { type PeriodState, useDashboardPeriod } from './period';
 import { type WidgetContent, type WidgetSummary, useWidgetContent } from './widgetContent';
@@ -62,11 +63,6 @@ export interface DashboardProps {
     basePath: string;
     /** The id of the page in `pages` (decision 0084): `home`, the home page, by default. */
     page?: string;
-}
-
-/** Columns of the grid of 12 a widget takes, without a `width`. */
-function widthOf(widget: Widget): number {
-    return widget.width ?? (widget.type === 'stat' ? 3 : widget.type === 'metric' ? 4 : 6);
 }
 
 /** Keeps a widget that throws while it draws from taking the others down. */

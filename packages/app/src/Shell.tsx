@@ -24,10 +24,9 @@ import {
 } from '@panneau/protocol/runtime';
 import { Alert, usePanneauIntl, useToast } from '@panneau/ui';
 
-import { Dashboard } from './dashboard/Dashboard';
 import { DocumentTitle } from './documentTitle';
 import { getInterfaceLocales, withNext } from './interfaceLocales';
-import { AccountPage } from './lazyPages';
+import { AccountPage, Dashboard } from './lazyPages';
 import { loadPage, navigate, setHistoryGuard, usePathname } from './location';
 import { PageRouteContext } from './pageRoute';
 import { ContextPage } from './pages/ContextPage';
