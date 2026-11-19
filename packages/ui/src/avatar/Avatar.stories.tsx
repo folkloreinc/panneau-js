@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { Badge } from '../badge/Badge';
 import { Avatar } from './Avatar';
@@ -65,8 +65,8 @@ export const BrokenPicture: Story = {
     args: { src: '/missing-avatar.jpg', label: 'Ada Lovelace' },
     play: async ({ canvasElement }) => {
         const avatar = within(canvasElement).getByRole('img', { name: 'Ada Lovelace' });
+        await waitFor(() => expect(avatar.querySelector('img')).toBeNull());
         await expect(avatar).toHaveTextContent('AL');
-        await expect(avatar.querySelector('img')).toBeNull();
     },
 };
 

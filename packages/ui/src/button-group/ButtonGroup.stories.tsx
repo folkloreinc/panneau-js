@@ -9,7 +9,7 @@ import {
     Pencil,
     Trash2,
 } from 'lucide-react';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { Button } from '../button/Button';
 import { LinkButton } from '../button/LinkButton';
@@ -71,7 +71,9 @@ export const SplitButton: Story = {
         const canvas = within(canvasElement);
         await userEvent.click(canvas.getByRole('button', { name: 'More ways to publish' }));
         const menu = await within(canvasElement.ownerDocument.body).findByRole('menu');
-        await expect(within(menu).getByRole('menuitem', { name: 'Schedule' })).toBeVisible();
+        await waitFor(() =>
+            expect(within(menu).getByRole('menuitem', { name: 'Schedule' })).toBeVisible(),
+        );
         await userEvent.keyboard('{Escape}');
     },
 };
