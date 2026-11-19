@@ -35,9 +35,7 @@ export const CreditsFieldEntry: CompoundFieldEntry;
 // @public
 export const creditsPlugin: {
     id: string;
-    fields: {
-        credits: CompoundFieldEntry;
-    };
+    fields: Readonly<Record<string, FieldEntry>>;
 };
 
 // @public

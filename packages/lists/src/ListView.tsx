@@ -284,7 +284,7 @@ export function ListView({
     const count = total ?? pageItems.length;
     const sort = query.sort ?? [];
 
-    const allLayouts = getLayoutComponents(plugins.listLayouts, layoutComponents);
+    const allLayouts = getLayoutComponents(plugins, layoutComponents);
     const { layouts, layout } = resolveListLayout({
         components: allLayouts,
         layouts: layoutsProp,

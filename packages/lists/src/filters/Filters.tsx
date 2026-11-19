@@ -1,6 +1,7 @@
 import { X } from 'lucide-react';
 import { useState } from 'react';
 
+import { resolveEntry, usePlugins } from '@panneau/core';
 import type { Field, Filter, FilterValue } from '@panneau/protocol';
 import { IDS_FILTER } from '@panneau/protocol/runtime';
 import { Button, IconButton, usePanneauIntl } from '@panneau/ui';
@@ -43,7 +44,10 @@ export interface FilterControlsProps extends FilterContext {
     values: Readonly<Record<string, FilterValue>>;
     onChange: (id: string, value: FilterValue | undefined) => void;
     onLabel: (filter: string, value: string, label: string) => void;
-    /** Controls by filter type, over the built-in ones. */
+    /**
+     * Controls by filter type, over the built-in ones and those of the plugins (the `filters`
+     * kind, decision 0097).
+     */
     controls?: Readonly<Record<string, FilterEntry>> | undefined;
 }
 
@@ -59,6 +63,7 @@ export function FilterControls({
     labels,
 }: FilterControlsProps) {
     const intl = usePanneauIntl();
+    const plugins = usePlugins();
     return (
         <div
             role="group"
@@ -66,8 +71,12 @@ export function FilterControls({
             className={styles.filters}
         >
             {filters.map((filter) => {
+                // A type that nothing gives is a text filter, with a warning in development
                 const Control =
-                    controls?.[filter.type] ?? builtInFilters[filter.type] ?? builtInFilters.text;
+                    resolveEntry(plugins, 'filters', filter.type, {
+                        builtIn: builtInFilters,
+                        overrides: controls,
+                    }) ?? builtInFilters.text;
                 if (Control === undefined) {
                     return null;
                 }

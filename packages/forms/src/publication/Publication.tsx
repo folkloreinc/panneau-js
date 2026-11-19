@@ -1,6 +1,6 @@
 import { useId, useState } from 'react';
 
-import { type Form, selectValue, useFormSelector } from '@panneau/core';
+import { type Form, definePlugin, selectValue, useFormSelector } from '@panneau/core';
 import type { Field, Option } from '@panneau/protocol';
 import { Badge, Button, type Tone, usePanneauIntl } from '@panneau/ui';
 
@@ -236,8 +236,8 @@ export function PublicationPanel({
 }
 
 /** The `publication` layout component and panel, as a `@panneau/core` plugin. */
-export const publicationPlugin = {
+export const publicationPlugin = definePlugin({
     id: 'panneau.publication',
     components: { publication: Publication },
     panels: { publication: PublicationPanel },
-};
+});

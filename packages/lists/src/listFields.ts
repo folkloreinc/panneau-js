@@ -93,7 +93,7 @@ export function useListFields({
 }: UseListFieldsOptions): string[] | undefined {
     const { view } = useListState(list);
     const plugins = usePlugins();
-    const components = getLayoutComponents(plugins.listLayouts, layoutComponents);
+    const components = getLayoutComponents(plugins, layoutComponents);
     const { layout } = resolveListLayout({
         components,
         layouts,

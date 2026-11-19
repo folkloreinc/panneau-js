@@ -25,7 +25,13 @@ import {
     statusField,
 } from './__fixtures__/pages';
 import { renderList } from './__fixtures__/render';
-import type { DisplayProps, ListColumn, ListInlineEditHandler, ListItem } from './types';
+import type {
+    DisplayProps,
+    FilterControlProps,
+    ListColumn,
+    ListInlineEditHandler,
+    ListItem,
+} from './types';
 
 function rowTitles() {
     return screen
@@ -705,6 +711,49 @@ describe('ListView', () => {
             />,
         );
         expect(screen.getByRole('link', { name: 'About us' })).toHaveAttribute('href', '/pages/1');
+    });
+});
+
+describe('ListView filters of plugins', () => {
+    it('draws the filter control of a plugin, by filter type (the filters kind)', async () => {
+        const user = userEvent.setup();
+        const list = createList();
+        const Region = ({ label, onChange }: FilterControlProps) => (
+            <button type="button" onClick={() => onChange('qc')}>
+                {`${label}: Québec`}
+            </button>
+        );
+        renderList(
+            <PanneauProvider
+                plugins={[definePlugin({ id: 'test.regions', filters: { region: Region } })]}
+            >
+                <ListView
+                    list={list}
+                    columns={columns}
+                    items={pages}
+                    filters={[{ id: 'region', type: 'region', label: 'Region' }]}
+                />
+            </PanneauProvider>,
+        );
+        await user.click(screen.getByRole('button', { name: 'Region: Québec' }));
+        expect(list.getState().query.filter).toEqual({ region: 'qc' });
+    });
+
+    it('draws a text filter for a type that nothing gives, with a warning', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        renderList(
+            <ListView
+                list={createList()}
+                columns={columns}
+                items={pages}
+                filters={[{ id: 'tree', type: 'tree-of-categories', label: 'Category' }]}
+            />,
+        );
+        expect(screen.getByRole('textbox', { name: 'Category' })).toBeInTheDocument();
+        expect(warn).toHaveBeenCalledWith(
+            expect.stringMatching(/"filters" for "tree-of-categories"/),
+        );
+        warn.mockRestore();
     });
 });
 

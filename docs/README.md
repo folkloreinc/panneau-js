@@ -40,6 +40,7 @@ It must also serve two kinds of projects:
 | [architecture.md](architecture.md)   | Layers, packages, extension points, and how projects use them               |
 | [protocol.md](protocol.md)           | The definition format and the HTTP API between frontend and backend (draft) |
 | [packages.md](packages.md)           | Target packages, package template, API reports, porting from `legacy/`      |
+| [extending.md](extending.md)         | Plugins: every kind, its props, what can be replaced, and what can't        |
 | [roadmap.md](roadmap.md)             | Phases, what ships in 5.0 and what comes in 5.x, open questions             |
 | [migration.md](migration.md)         | Migration strategy and order for current projects                           |
 | [decisions/](decisions/)             | Architecture decision records                                               |

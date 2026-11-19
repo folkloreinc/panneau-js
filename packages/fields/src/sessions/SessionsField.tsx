@@ -2,6 +2,7 @@ import styles from '../compound/Compound.module.css';
 import { type CompoundFieldEntry, defineCompoundField, restParts } from '../compound/compound';
 import { formatDateRange, getDateRangeSettings } from '../daterange/range';
 import { toReferences } from '../shared/relation';
+import type { FieldEntry } from '../shared/types';
 
 const PLACED = ['dates', 'venue'];
 
@@ -44,7 +45,7 @@ export const SessionsFieldEntry: CompoundFieldEntry = defineCompoundField({
 });
 
 /** The `sessions` type, as a `@panneau/core` plugin. */
-export const sessionsPlugin = {
+export const sessionsPlugin: { id: string; fields: Readonly<Record<string, FieldEntry>> } = {
     id: 'panneau.sessions',
     fields: { sessions: SessionsFieldEntry },
 };

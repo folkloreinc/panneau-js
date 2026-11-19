@@ -5,7 +5,16 @@ import type { Definition } from '@panneau/protocol';
 import { type ResolveFormOptions } from '../definition/form';
 import { type ResolvedResource, findResource, resolveResource } from '../definition/resource';
 import type { Router } from '../list/router';
-import { type PanneauPlugin, type PluginRegistry, createPluginRegistry } from '../plugins';
+import {
+    type PanneauPlugin,
+    type PluginKind,
+    type PluginKinds,
+    type PluginRegistry,
+    type ResolveEntryOptions,
+    createPluginRegistry,
+    getEntries,
+    resolveEntry,
+} from '../plugins';
 
 /** What `PanneauProvider` gives to the hooks below it. */
 export interface PanneauContextValue {
@@ -64,6 +73,33 @@ export function usePanneau(): PanneauContextValue {
 /** The plugins of the closest `PanneauProvider`, merged. */
 export function usePlugins(): PluginRegistry {
     return usePanneau().plugins;
+}
+
+/**
+ * The entry of a kind for a type, from the plugins of the closest `PanneauProvider`, with the
+ * built-ins and the overrides of the component that renders it (`resolveEntry()`, decision 0097).
+ * `undefined` without one: pass `undefined` as type when there is nothing to resolve.
+ */
+export function useEntry<Kind extends PluginKind>(
+    kind: Kind,
+    type: string | null | undefined,
+    options: ResolveEntryOptions<Kind> = {},
+): PluginKinds[Kind] | undefined {
+    const plugins = usePlugins();
+    return type !== null && type !== undefined
+        ? resolveEntry(plugins, kind, type, options)
+        : undefined;
+}
+
+/**
+ * Every entry of a kind, from the plugins of the closest `PanneauProvider`, with the built-ins
+ * and the overrides of the component that renders them (`getEntries()`, decision 0097).
+ */
+export function useEntries<Kind extends PluginKind>(
+    kind: Kind,
+    options: ResolveEntryOptions<Kind> = {},
+): ReadonlyMap<string, PluginKinds[Kind]> {
+    return getEntries(usePlugins(), kind, options);
 }
 
 /**

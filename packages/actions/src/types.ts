@@ -67,3 +67,10 @@ export interface ClientActionProps {
 
 /** A handler of `client` actions. */
 export type ClientActionHandler = ComponentType<ClientActionProps>;
+
+declare module '@panneau/core' {
+    interface PluginKinds {
+        /** Handlers of `client` actions, by the action's `component`. */
+        actions: ClientActionHandler;
+    }
+}

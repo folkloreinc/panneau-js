@@ -1,5 +1,6 @@
 import styles from '../compound/Compound.module.css';
 import { type CompoundFieldEntry, defineCompoundField, restParts } from '../compound/compound';
+import type { FieldEntry } from '../shared/types';
 import { formatCredit } from './credits';
 
 const PLACED = ['person', 'name', 'roles', 'featured'];
@@ -31,7 +32,7 @@ export const CreditsFieldEntry: CompoundFieldEntry = defineCompoundField({
 });
 
 /** The `credits` type, as a `@panneau/core` plugin. */
-export const creditsPlugin = {
+export const creditsPlugin: { id: string; fields: Readonly<Record<string, FieldEntry>> } = {
     id: 'panneau.credits',
     fields: { credits: CreditsFieldEntry },
 };

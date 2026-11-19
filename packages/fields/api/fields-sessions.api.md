@@ -54,9 +54,7 @@ export const SessionsFieldEntry: CompoundFieldEntry;
 // @public
 export const sessionsPlugin: {
     id: string;
-    fields: {
-        sessions: CompoundFieldEntry;
-    };
+    fields: Readonly<Record<string, FieldEntry>>;
 };
 
 // (No @packageDocumentation comment for this package)
