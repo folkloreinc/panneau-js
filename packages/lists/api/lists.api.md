@@ -341,7 +341,7 @@ export const listsPlugin: {
     id: string;
     displays: Readonly<Record<string, DisplayEntry>>;
     listLayouts: Readonly<Record<string, ListLayoutEntry>>;
-    locales: Readonly<Record<string, Record<string, string>>>;
+    locales: Readonly<Record<string, () => Promise<Record<string, string>>>>;
 };
 
 // @public

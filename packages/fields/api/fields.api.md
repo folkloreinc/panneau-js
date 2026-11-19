@@ -217,7 +217,7 @@ export interface FieldsContextValue {
 export const fieldsPlugin: {
     id: string;
     fields: Readonly<Record<string, FieldEntry>>;
-    locales: Readonly<Record<string, Record<string, string>>>;
+    locales: Readonly<Record<string, () => Promise<Record<string, string>>>>;
 };
 
 // @public

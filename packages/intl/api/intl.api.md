@@ -722,6 +722,9 @@ export function getActionLabel(action: {
 export function getDefaultMessages(group: object): MessageCatalog;
 
 // @public
+export function getLoadedPanneauMessages(locale: string): MessageCatalog | undefined;
+
+// @public
 export function getPanneauMessages(locale: string): MessageCatalog;
 
 // @public
@@ -869,6 +872,9 @@ export const listsMessages: {
     extension: string;
     }>;
 };
+
+// @public
+export function loadPanneauMessages(locale: string): Promise<MessageCatalog>;
 
 // @public
 export const mediaMessages: {

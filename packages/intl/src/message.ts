@@ -1,5 +1,8 @@
 import type { TypedMessageDescriptor } from 'react-intl';
 
+/** Messages by id, as react-intl's `IntlProvider` takes them. */
+export type MessageCatalog = Record<string, string>;
+
 /** The values a message takes: `{ count: number }` for `{count, plural, …}`. */
 export type PanneauMessageValues = Record<
     string,
