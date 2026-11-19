@@ -14,7 +14,7 @@ import {
     partitionByAction,
 } from './abilities';
 import { getLayoutFieldNames, resolveFields, resolveForm } from './form';
-import { getItemActions } from './itemActions';
+import { fillActionUrl, getItemActions } from './itemActions';
 import { asksConfirmation, getOpenMode, getResourceActions, resolveList } from './list';
 import { findResource, resolveResource } from './resource';
 
@@ -495,6 +495,30 @@ describe('resolveResource', () => {
             })),
         };
         expect(resolveResource(singletons).abilities.create).toBe(false);
+    });
+});
+
+describe('fillActionUrl', () => {
+    it('fills the URL template of a link with the item', () => {
+        const edit: Action = {
+            id: 'edit',
+            label: 'Edit',
+            kind: 'link',
+            url: '/pages/{id}/edit',
+            scope: ['item'],
+        };
+        expect(fillActionUrl(edit, { id: 'a/b' })).toBe('/pages/a%2Fb/edit');
+        expect(
+            fillActionUrl(
+                { id: 'publish', label: 'Publish', kind: 'server', scope: ['item'] },
+                {
+                    id: '1',
+                },
+            ),
+        ).toBeNull();
+        expect(
+            fillActionUrl({ ...edit, url: undefined, route: 'pages.edit' }, { id: '1' }),
+        ).toBeNull();
     });
 });
 
