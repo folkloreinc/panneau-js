@@ -32,35 +32,14 @@
     gap: var(--panneau-space-3);
 }
 
+/* The tiles of a list widget: their text lines up with the title of the card, and their
+   hover fills the card's padding. */
 .items {
-    display: flex;
-    flex-direction: column;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+    margin: calc(var(--panneau-space-2) * -1) calc(var(--panneau-space-3) * -1);
+    border-radius: var(--panneau-radius-md);
 }
 
-.item {
-    display: flex;
-    align-items: center;
-    gap: var(--panneau-space-3);
-    min-width: 0;
-    padding-block: var(--panneau-space-2);
-    border-top: var(--panneau-border-width) solid var(--panneau-color-border);
-}
-
-.item:first-child {
-    padding-block-start: 0;
-    border-top: 0;
-}
-
-.itemText {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    min-width: 0;
-}
-
+/* The label of a row of a table widget. */
 .itemTitle {
     overflow: hidden;
     color: var(--panneau-color-text);
@@ -82,15 +61,11 @@ a.itemTitle[data-hovered] {
     border-radius: var(--panneau-radius-sm);
 }
 
-.itemDescription,
-.itemMeta {
-    font-size: var(--panneau-font-size-sm);
-    color: var(--panneau-color-text-muted);
-}
-
 .itemMeta {
     flex-shrink: 0;
+    font-size: var(--panneau-font-size-sm);
     font-variant-numeric: var(--panneau-font-numeric);
+    color: var(--panneau-color-text-muted);
 }
 
 .seeAll {
