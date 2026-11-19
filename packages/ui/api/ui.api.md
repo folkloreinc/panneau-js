@@ -588,6 +588,9 @@ export interface ContainerProps extends HTMLAttributes<HTMLElement> {
 }
 
 // @public
+export function cx(...classNames: (string | false | null | undefined)[]): string;
+
+// @public
 export function DatePicker(input: DatePickerProps): JSX.Element;
 
 // @public (undocumented)

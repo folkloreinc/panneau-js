@@ -7,7 +7,7 @@ import { Alert, Button, Heading, Text, usePanneauIntl } from '@panneau/ui';
 
 import { StatusBadge, Thumbnail } from './MediaGrid';
 import styles from './MediaPicker.module.css';
-import { extensionOf, formatDuration, isProcessingMedia } from './format';
+import { extensionOf, formatPlaybackTime, isProcessingMedia } from './format';
 import type { PickerMedia } from './types';
 
 export interface MediaDetailsProps {
@@ -76,7 +76,7 @@ export function MediaDetails({
     if (typeof media.duration === 'number') {
         properties.push([
             intl.formatMessage(messages.pickerDuration),
-            formatDuration(media.duration),
+            formatPlaybackTime(media.duration),
         ]);
     }
     if (typeof item.createdAt === 'string') {

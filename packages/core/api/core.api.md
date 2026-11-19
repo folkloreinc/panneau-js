@@ -593,6 +593,19 @@ export interface Router {
 }
 
 // @public
+export const ruleMessages: Readonly<Record<string, (values: RuleMessageValues) => string>>;
+
+// @public
+export interface RuleMessageValues {
+    // (undocumented)
+    providers?: readonly string[];
+    // (undocumented)
+    ratios?: readonly string[];
+    // (undocumented)
+    value?: number | string;
+}
+
+// @public
 export function selectErrorCount(state: FormState, paths: readonly string[]): number;
 
 // @public
