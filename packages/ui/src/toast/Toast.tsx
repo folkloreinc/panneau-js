@@ -27,6 +27,7 @@ import { usePanneauIntl } from '../intl/usePanneauIntl';
 import { toneClass } from '../theme/toneClass';
 import type { Tone } from '../theme/tones';
 import { cx } from '../utils/cx';
+import { prefersReducedMotion } from '../utils/motion';
 import styles from './Toast.module.css';
 
 /** @deprecated Use `Tone`. */
@@ -200,8 +201,7 @@ export function useToastOffset(ref: RefObject<HTMLElement | null>, active = true
  * system asks for less motion.
  */
 export function wrapToastUpdate(update: () => void): void {
-    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
-    if (reduced || typeof document.startViewTransition !== 'function') {
+    if (prefersReducedMotion() || typeof document.startViewTransition !== 'function') {
         update();
         return;
     }

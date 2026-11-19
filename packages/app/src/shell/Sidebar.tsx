@@ -35,6 +35,7 @@ import { ActionRunsButton } from './ActionRunsButton';
 import { ContextPicker, ContextPickerButton } from './ContextPicker';
 import styles from './Sidebar.module.css';
 import { type ColorSchemePreference, UserAvatar, UserMenu, getUserMenuLabel } from './UserMenu';
+import { SiteLogo } from './frame';
 import { getHomeLink, getLinkIcon } from './links';
 
 /** A group of the sidebar, opened or closed by the user (decision 0079). */
@@ -253,9 +254,7 @@ export function Sidebar({
                     aria-label={collapsed ? definition.name : undefined}
                     onPress={onNavigate}
                 >
-                    <span className={styles.logo} aria-hidden="true">
-                        {definition.name.charAt(0).toLocaleUpperCase(definition.locale)}
-                    </span>
+                    <SiteLogo definition={definition} />
                     <span className={styles.label}>{definition.name}</span>
                 </Link>
                 {onToggle !== undefined ? (

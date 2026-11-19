@@ -1,3 +1,5 @@
+import { useId } from 'react';
+
 import { getItemValues, isEqual } from '@panneau/core';
 import type { Field, Item } from '@panneau/protocol';
 import { Button, Dialog, usePanneauIntl } from '@panneau/ui';
@@ -87,6 +89,7 @@ export function ConflictDialog({
 }: ConflictDialogProps) {
     const intl = usePanneauIntl();
     const format = useFormatValue();
+    const changesId = useId();
     const theirs =
         current !== null
             ? getItemValues(
@@ -125,8 +128,8 @@ export function ConflictDialog({
                 {theirs === null ? (
                     <p className={styles.muted}>{intl.formatMessage(messages.conflictUnknown)}</p>
                 ) : changed.length > 0 ? (
-                    <section aria-labelledby="panneau-conflict-changes">
-                        <h3 id="panneau-conflict-changes" className={styles.heading}>
+                    <section aria-labelledby={changesId}>
+                        <h3 id={changesId} className={styles.heading}>
                             {intl.formatMessage(messages.conflictChanges)}
                         </h3>
                         <dl className={styles.changes}>

@@ -1138,6 +1138,9 @@ export interface PopoverProps extends Omit<PopoverProps_2, 'className' | 'style'
 }
 
 // @public
+export function prefersReducedMotion(): boolean;
+
+// @public
 export function Prose(input: ProseProps): JSX.Element;
 
 // @public (undocumented)

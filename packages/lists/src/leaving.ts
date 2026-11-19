@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { prefersReducedMotion } from '@panneau/ui';
+
 import type { ListItem } from './types';
 
 /** How long an item that left the list stays, fading out: `--panneau-duration-slow`. */
@@ -60,10 +62,9 @@ export function useLeavingItems(
         if (leaving.length === 0) {
             return undefined;
         }
-        const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
         const timeout = window.setTimeout(
             () => setState((current) => ({ ...current, leaving: [] })),
-            reduced ? 0 : LEAVE_DURATION,
+            prefersReducedMotion() ? 0 : LEAVE_DURATION,
         );
         return () => window.clearTimeout(timeout);
     }, [leaving]);
