@@ -6,7 +6,7 @@ import {
     parseAggregateGroup,
     toAggregateParams,
 } from '../aggregates';
-import { CONTEXT_HEADER, CONTEXT_PROBLEM_TYPE, IDS_FILTER } from '../constants';
+import { CONTEXT_HEADER, CONTEXT_PROBLEM_TYPE, IDS_FILTER, MAX_PER_PAGE } from '../constants';
 import { formatContextHeader } from '../context';
 import {
     HOME_PAGE,
@@ -774,6 +774,56 @@ export async function runConformance(options: ConformanceOptions): Promise<Confo
             check.expect(
                 got.length === wanted.length && wanted.every((id) => got.includes(id)),
                 `filter[ids][] of ${wanted.join(', ')} listed ${got.length > 0 ? got.join(', ') : 'no items'}.`,
+            );
+        },
+    );
+
+    await run('list.per-page', 'GET /resources/{resource} caps perPage at 100', async (check) => {
+        if (resource === null) {
+            check.skip('No resource to test.');
+            return;
+        }
+        const reply = await request(`${resourcePath()}?perPage=${MAX_PER_PAGE + 1}`);
+        if (!check.expectStatus(reply, 200)) {
+            return;
+        }
+        const list = check.expectSchema(ListResponse, reply.body, 'The list');
+        if (list === null) {
+            return;
+        }
+        check.expect(
+            list.meta.perPage <= MAX_PER_PAGE && list.data.length <= MAX_PER_PAGE,
+            `perPage=${MAX_PER_PAGE + 1} answered meta.perPage ${list.meta.perPage} and ${list.data.length} items, more than ${MAX_PER_PAGE}.`,
+        );
+    });
+
+    await run(
+        'list.fields',
+        'GET /resources/{resource} gives the fields asked for only (fields)',
+        async (check) => {
+            const fields = (resource as Resource | null)?.fields ?? [];
+            const asked = (resource as Resource | null)?.itemTitle ?? fields[0]?.name;
+            if (resource === null || asked === undefined || fields.length < 2) {
+                check.skip('The resource has fewer than 2 fields.');
+                return;
+            }
+            const reply = await request(
+                `${resourcePath()}?${toSearchParams({ perPage: 5, fields: [asked] })}`,
+            );
+            if (!check.expectStatus(reply, 200)) {
+                return;
+            }
+            // Items still have their id, version and abilities
+            const list = check.expectSchema(ListResponse, reply.body, 'The list with fields');
+            const others = fields.map((field) => field.name).filter((name) => name !== asked);
+            const extra = [
+                ...new Set(
+                    (list?.data ?? []).flatMap((item) => others.filter((name) => name in item)),
+                ),
+            ];
+            check.expect(
+                extra.length === 0,
+                `fields=${asked} also gave the values of ${extra.join(', ')}.`,
             );
         },
     );

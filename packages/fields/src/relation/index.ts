@@ -8,6 +8,7 @@ export {
     useRelationSearch,
 } from './RelationField';
 export {
+    type RelationItemCache,
     type RelationListAdapter,
     type RelationReference,
     type RelationSource,

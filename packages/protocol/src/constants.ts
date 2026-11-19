@@ -41,6 +41,12 @@ export const IDS_FILTER = 'ids';
 export const IDS_FILTER_LIMIT = 100;
 
 /**
+ * A page of a list has at most this many items: a backend caps `perPage` there, and lists offer
+ * no more. Lists ask for a whole calendar month or for every id of `filter[ids]` within it.
+ */
+export const MAX_PER_PAGE = 100;
+
+/**
  * Built-in item actions, in their default order (decision 0040). Every resource has them without
  * declaring them, and clients show each one on the items whose abilities allow it
  * (`ITEM_ACTION_ABILITIES`). A resource's `itemActions` picks some of them, in its order.

@@ -1416,6 +1416,58 @@ describe('the app shell', () => {
         expect(window.location.search).toBe('?sort=-title');
     });
 
+    it('asks for the fields of the columns of a list only, and for whole items in the panel', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        let fetch: ReturnType<typeof vi.fn> | null = null;
+        renderApp(
+            {
+                resources: [
+                    {
+                        id: 'pages',
+                        label: { singular: 'page', plural: 'pages' },
+                        open: 'panel',
+                        itemTitle: 'title',
+                        fields: [
+                            { name: 'title', type: 'text', label: 'Title' },
+                            { name: 'status', type: 'text', label: 'Status' },
+                            { name: 'body', type: 'textarea', label: 'Body' },
+                        ],
+                        list: {
+                            columns: [
+                                { field: 'title' },
+                                { field: 'status' },
+                                { field: 'body', hidden: true },
+                            ],
+                        },
+                    },
+                ],
+            },
+            [],
+            (backend) => {
+                const [about] = backend.items('pages');
+                Object.assign(about ?? {}, { status: 'draft', body: 'Who we are.' });
+                fetch = vi.spyOn(backend, 'fetch') as unknown as ReturnType<typeof vi.fn>;
+            },
+        );
+        const table = await screen.findByRole('table', { name: 'Pages' });
+        expect(await within(table).findByText('draft')).toBeInTheDocument();
+        const urls = () =>
+            (fetch?.mock.calls ?? []).map(([input]) => new URL(String(input), 'http://test'));
+        const lists = urls().filter((url) => url.pathname === '/panneau/api/resources/pages');
+        expect(lists.length).toBeGreaterThan(0);
+        // Sorted by name, so that moving a column asks for nothing
+        expect(lists.map((url) => url.searchParams.get('fields'))).toEqual(
+            lists.map(() => 'status,title'),
+        );
+
+        await user.click(within(table).getByRole('link', { name: 'About us' }));
+        const panel = await screen.findByRole('region', { name: 'Details of the page' });
+        expect(await within(panel).findByText('Who we are.')).toBeInTheDocument();
+        const item = urls().find((url) => url.pathname === '/panneau/api/resources/pages/1');
+        expect(item?.searchParams.has('fields')).toBe(false);
+    });
+
     it('shows a calendar, which asks for the days around its month', async () => {
         const user = userEvent.setup();
         window.history.replaceState(

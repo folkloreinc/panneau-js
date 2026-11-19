@@ -702,7 +702,7 @@ All paths are relative to `api.baseUrl`.
 
 **List query parameters:**
 
-- `page`, `perPage`
+- `page`, `perPage`: at most 100 items a page (`MAX_PER_PAGE`); a backend caps a larger `perPage` there, and says it in `meta.perPage`
 - `cursor`: for a list whose `pagination` is `cursor`, the `nextCursor` (or `previousCursor`) of a page, instead of `page` ([0039](decisions/0039-cursor-pagination.md))
 - `sort=-published_at,title`: comma-separated, `-` for descending
 - `filter[{id}]`: the value of a filter of the list's definition, keyed by its `id`:
@@ -715,7 +715,7 @@ All paths are relative to `api.baseUrl`.
     A backend ignores the filters it doesn't declare, but `ids`. In an action's query selection, the same values are JSON: `"filter": { "published_at": { "from": "2026-01-01" } }`.
 
 - `q`: search
-- `fields`: requested fields, so lists can ask for less
+- `fields=title,status`: the fields to give the values of, so lists ask for the fields they show (their columns, the title and the image of items, the field of the calendar). Items still have their `id`, `version`, `abilities`, their `type` ([0077](decisions/0077-resource-types.md)) and, in a media library, `media`. Without it, items have every field. Clients get by with a backend that ignores it.
 
 #### Aggregates
 

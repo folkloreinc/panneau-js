@@ -5,6 +5,7 @@ import {
     IDS_FILTER,
     IDS_FILTER_LIMIT,
     ITEM_ACTION_ABILITIES,
+    MAX_PER_PAGE,
     UNDO_LIMIT,
     isBuiltInItemAction,
 } from '../constants';
@@ -385,6 +386,29 @@ function withOwnTransform(resource: ResourceInput, item: Item): Item {
 function allows(item: Item, actionId: string): boolean {
     const ability = isBuiltInItemAction(actionId) ? ITEM_ACTION_ABILITIES[actionId] : actionId;
     return item.abilities[ability] === true && item.abilities[actionId] !== false;
+}
+
+/**
+ * An item with the values of the fields of `fields` only, when the list asks for some, and what
+ * every item has: its id, version, abilities, type (decision 0077) and `media` (a media item).
+ */
+function pickFields(
+    resource: ResourceInput,
+    item: Item,
+    fields: readonly string[] | undefined,
+): Item {
+    if (fields === undefined || fields.length === 0) {
+        return item;
+    }
+    return Object.fromEntries(
+        Object.entries(item).filter(
+            ([key]) =>
+                RESERVED_KEYS.has(key) ||
+                key === ITEM_TYPE_KEY ||
+                (key === 'media' && resource.kind === 'media') ||
+                fields.includes(key),
+        ),
+    ) as Item;
 }
 
 /** The names of the fields of a resource whose ability is `false` (decision 0046). */
@@ -1034,8 +1058,15 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                     return problem(403, 'This resource can’t be listed.');
                 }
                 const query = fromSearchParams(url.searchParams);
-                const perPage = query.perPage ?? resource.list?.perPage ?? 20;
+                // A page has at most 100 items, whatever it asks for.
+                const perPage = Math.min(
+                    query.perPage ?? resource.list?.perPage ?? 20,
+                    MAX_PER_PAGE,
+                );
                 const page = query.page ?? 1;
+                // Items with the fields asked for only, and what every item has
+                const show = (item: Item) =>
+                    pickFields(resource, present(resource, item), query.fields);
                 const sort = query.sort ?? resource.list?.defaultSort?.split(',');
                 const matching = applyQuery(scoped, {
                     ...query,
@@ -1052,7 +1083,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                     const offset = Number(cursor.slice(1));
                     const end = offset + perPage;
                     return json(200, {
-                        data: matching.slice(offset, end).map((item) => present(resource, item)),
+                        data: matching.slice(offset, end).map(show),
                         meta: {
                             perPage,
                             nextCursor: end < matching.length ? `o${String(end)}` : null,
@@ -1062,9 +1093,7 @@ export function createMockBackend(options: MockBackendOptions): MockBackend {
                     });
                 }
                 return json(200, {
-                    data: matching
-                        .slice((page - 1) * perPage, page * perPage)
-                        .map((item) => present(resource, item)),
+                    data: matching.slice((page - 1) * perPage, page * perPage).map(show),
                     meta: {
                         page,
                         perPage,

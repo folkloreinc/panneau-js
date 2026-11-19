@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { createRelationSource, toReferences } from './relation';
+import type { Item, ListQuery } from '@panneau/protocol';
+import { IDS_FILTER, IDS_FILTER_LIMIT } from '@panneau/protocol/runtime';
+
+import { type RelationListAdapter, createRelationSource, toReferences } from './relation';
 
 describe('createRelationSource', () => {
     it('searches with a list query, labelled by the itemTitle of the resource', async () => {
@@ -141,27 +144,84 @@ describe('createRelationSource: ids and creation', () => {
     });
     const signal = new AbortController().signal;
 
-    it('resolves ids with get(), and leaves out those it doesn’t find', async () => {
-        const get = vi.fn(async (_resource: string, id: string) => {
-            if (id === '404') {
-                throw new Error('Not found.');
-            }
-            return item(id, { name: `Tag ${id}` });
-        });
-        const source = createRelationSource(
-            { list: async () => ({ data: [] }), get },
-            { definition },
-        );
-        await expect(source.resolve?.('tags', ['1', '404', '2'], { signal })).resolves.toEqual([
-            { id: '1', label: 'Tag 1' },
-            { id: '2', label: 'Tag 2' },
+    it('resolves the ids of every field in one list query, and keeps the items', async () => {
+        const list = vi.fn(async (_resource: string, query?: ListQuery) => ({
+            data: ((query?.filter?.[IDS_FILTER] ?? []) as string[])
+                .filter((id) => id !== '404')
+                .map((id) => item(id, { name: `Tag ${id}` })),
+        }));
+        const source = createRelationSource({ list }, { definition });
+        const [first, second] = await Promise.all([
+            source.resolve?.('tags', ['1', '404'], { signal }),
+            source.resolve?.('tags', ['2', '1'], { signal }),
         ]);
-        expect(get).toHaveBeenCalledWith('tags', '1', { signal });
+        expect(first).toEqual([{ id: '1', label: 'Tag 1' }]);
+        expect(second).toEqual([
+            { id: '2', label: 'Tag 2' },
+            { id: '1', label: 'Tag 1' },
+        ]);
+        expect(list).toHaveBeenCalledTimes(1);
+        expect(list).toHaveBeenCalledWith('tags', {
+            filter: { [IDS_FILTER]: ['1', '404', '2'] },
+            perPage: 3,
+        });
+        // The source has them now, and remembers the ids it didn't find
+        expect(source.peek?.('tags', '2')).toEqual({ id: '2', label: 'Tag 2' });
+        expect(source.peek?.('tags', '404')).toBeNull();
+        expect(source.peek?.('tags', '3')).toBeUndefined();
+        await source.resolve?.('tags', ['1', '2', '404'], { signal });
+        expect(list).toHaveBeenCalledTimes(1);
     });
 
-    it('doesn’t resolve or create without the adapter methods and the option', () => {
+    it('asks for the ids by groups of IDS_FILTER_LIMIT', async () => {
+        const list = vi.fn(async (_resource: string, query?: ListQuery) => ({
+            data: ((query?.filter?.[IDS_FILTER] ?? []) as string[]).map((id) =>
+                item(id, { name: `Tag ${id}` }),
+            ),
+        }));
+        const source = createRelationSource({ list }, { definition });
+        const ids = Array.from({ length: IDS_FILTER_LIMIT + 5 }, (_, index) => String(index + 1));
+        await expect(source.resolve?.('tags', ids, { signal })).resolves.toHaveLength(ids.length);
+        expect(list.mock.calls.map(([, query]) => query?.perPage)).toEqual([IDS_FILTER_LIMIT, 5]);
+    });
+
+    it('reads and fills the cache of items it is given', async () => {
+        const cached = new Map<string, Item>([['tags/1', item('1', { name: 'Cached' })]]);
+        const items = {
+            get: (resource: string, id: string) => cached.get(`${resource}/${id}`),
+            set: vi.fn((resource: string, value: Item) =>
+                cached.set(`${resource}/${value.id}`, value),
+            ),
+        };
+        const list = vi.fn(async () => ({ data: [item('2', { name: 'Fetched' })] }));
+        const source = createRelationSource({ list }, { definition, items });
+        expect(source.peek?.('tags', '1')).toEqual({ id: '1', label: 'Cached' });
+        await expect(source.resolve?.('tags', ['1', '2'], { signal })).resolves.toEqual([
+            { id: '1', label: 'Cached' },
+            { id: '2', label: 'Fetched' },
+        ]);
+        expect(list).toHaveBeenCalledWith('tags', {
+            filter: { [IDS_FILTER]: ['2'] },
+            perPage: 1,
+        });
+        expect(items.set).toHaveBeenCalledWith('tags', item('2', { name: 'Fetched' }));
+    });
+
+    it('asks again for ids whose request failed', async () => {
+        const list = vi
+            .fn<RelationListAdapter['list']>()
+            .mockRejectedValueOnce(new Error('Offline.'))
+            .mockResolvedValue({ data: [item('1', { name: 'Tag 1' })] });
+        const source = createRelationSource({ list }, { definition });
+        await expect(source.resolve?.('tags', ['1'], { signal })).resolves.toEqual([]);
+        expect(source.peek?.('tags', '1')).toBeUndefined();
+        await expect(source.resolve?.('tags', ['1'], { signal })).resolves.toEqual([
+            { id: '1', label: 'Tag 1' },
+        ]);
+    });
+
+    it('doesn’t create without the adapter’s create() and the option', () => {
         const source = createRelationSource({ list: async () => ({ data: [] }) }, { definition });
-        expect(source.resolve).toBeUndefined();
         expect(source.create).toBeUndefined();
         const withCreate = createRelationSource(
             { list: async () => ({ data: [] }), create: async () => item('1', {}) },
