@@ -44,7 +44,7 @@ Other branches (`master`, `v2.0`, `v0.x`, `feature/*`) are not maintained.
 - TypeScript 6, `strict` with `noUncheckedIndexedAccess` (`tsconfig.base.json`).
 - Builds use Vite in library mode: ESM only, one file per module, with `.d.ts` files from `tsc`. Use the shared config in `config/vite.package.ts`.
 - Tests use Vitest, plus Testing Library for components (`environment: 'jsdom'`). Test files sit next to the code: `*.test.ts(x)`.
-- Every component has stories next to it (`*.stories.tsx`), with play functions for its interactions. A component that loads content also has a loading story, whose play function checks `aria-busy` and the status message. Storybook 10 runs them as tests in Chromium through its Vitest addon, with axe checks: an accessibility violation fails CI.
+- Every component has stories next to it (`*.stories.tsx`), with play functions for its interactions. A component that loads content also has a loading story, whose play function checks `aria-busy` and the status message. Storybook 10 runs them as tests in Chromium through its Vitest addon, with axe checks, a second time in the dark scheme and the `touch` density: an accessibility violation fails CI. A play function that checks a color reads it from the tokens, not a light-scheme value.
 - Components style themselves with CSS Modules that read the `--panneau-*` tokens ([decision 0020](docs/decisions/0020-default-theme-and-icons.md)), and render inside `PanneauRoot`. Icons come from Lucide only.
 - Lint with ESLint (flat config, typescript-eslint `strict`, React Hooks). Format with Prettier.
 
@@ -60,7 +60,7 @@ npm run api         # update the API reports (packages/*/api/), after a public A
 npm run api:check   # fail if an API report is out of date
 npm run format      # Prettier
 npm run storybook   # Storybook, on http://localhost:6006
-npm run test:storybook  # every story as a test in Chromium: play functions and axe checks
+npm run test:storybook  # every story as a test in Chromium, play functions and axe checks, also in the dark scheme and touch density
 npm run test:smoke  # after a build: the packed packages in a webpack app (flklr), rendered in Chromium
 npm run test:types  # after a build: the packed packages' types in a NodeNext project, without skipLibCheck
 npm run test:icons  # after a build: Lucide icons only in the Vite bundles of apps that use them
@@ -80,7 +80,7 @@ npm run test:create-package                  # check the template: create, lint,
 - **Every change comes with tests.** A bug fix adds a regression test that fails without the fix.
 - Run `npm run verify` before pushing: it runs the checks of CI locally, and prints the time of each one.
 - Open a pull request to `v5.x` with `Closes #<issue>` or `Part of #<issue>` and the checks you ran. **Merge only when CI is green.**
-- **CI** (`.github/workflows/ci.yml`) runs every check on every pull request and on every push to `v5.x`, in parallel jobs: format, lint and changeset; typecheck; tests; build and API reports; package template; Storybook; smoke tests (webpack, the types of the packed packages under NodeNext, Lucide icons in Vite bundles). The shared setup (Node, `npm ci`, Chromium) is in `.github/actions/setup`. Keep each job short: the wait is the longest job. A new check gets its own job, or goes in the job it fits, and in `scripts/verify.js`.
+- **CI** (`.github/workflows/ci.yml`) runs every check on every pull request and on every push to `v5.x`, in parallel jobs: format, lint and changeset; typecheck; tests; build and API reports; package template; Storybook; Storybook in the dark scheme and the touch density; smoke tests (webpack, the types of the packed packages under NodeNext, Lucide icons in Vite bundles). The shared setup (Node, `npm ci`, Chromium) is in `.github/actions/setup`. Keep each job short: the wait is the longest job. A new check gets its own job, or goes in the job it fits, and in `scripts/verify.js`.
 - **Releases** are only published by the Release workflow (`.github/workflows/release.yml`), which runs on every push to `v5.x`:
     - while changesets are pending, it opens or updates the "Version packages" pull request, and publishes nothing;
     - **merging that pull request releases**: the next run builds and packs the new versions in a read-only job, then a separate job publishes the tarballs to npm, from the `npm` environment (the only job with `id-token: write`), and tags them.
