@@ -418,22 +418,8 @@
 }
 
 .empty {
-    display: grid;
     flex: 1 1 auto;
-    align-content: center;
-    justify-items: center;
-    gap: var(--panneau-space-3);
-    padding: var(--panneau-space-6) var(--panneau-space-4);
-    text-align: center;
-}
-
-.empty > h3,
-.empty > p {
-    margin: 0;
-}
-
-.emptyIcon {
-    color: var(--panneau-color-text-muted);
+    justify-content: center;
 }
 
 .skeletonCard {
