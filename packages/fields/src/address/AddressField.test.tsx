@@ -86,7 +86,7 @@ describe('formatAddress', () => {
 describe('AddressField', () => {
     it('sets the country of a new address with its first part', async () => {
         const onChange = renderAddress({ settings: { country: 'CA' } });
-        expect(screen.getByRole('group', { name: 'Address' })).toBeInTheDocument();
+        expect(await screen.findByRole('group', { name: 'Address' })).toBeInTheDocument();
         expect(screen.getByRole('combobox', { name: 'Country' })).toHaveValue('Canada');
         await userEvent.type(screen.getByRole('textbox', { name: 'City' }), 'Laval');
         expect(onChange).toHaveBeenLastCalledWith({ city: 'Laval', country: 'CA' });

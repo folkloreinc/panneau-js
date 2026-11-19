@@ -367,6 +367,9 @@ export function isWideField(field: Field): boolean;
 export function kindOfMime(mime: string | null | undefined): FileKind;
 
 // @public
+export function lazyFieldEntry(load: () => Promise<FieldEntry>): FieldEntry;
+
+// @public
 export interface MapsConfig {
     // (undocumented)
     geocoding?: GeocodingSource;

@@ -39,7 +39,7 @@ describe('JsonField', () => {
         expect(input).toHaveValue('{\n  "a": 2\n}');
     });
 
-    it('renders from a definition', () => {
+    it('renders from a definition', async () => {
         renderField(
             <DefinitionField
                 field={{ name: 'data', type: 'json', label: 'Data' }}
@@ -48,6 +48,6 @@ describe('JsonField', () => {
                 onChange={() => undefined}
             />,
         );
-        expect(screen.getByRole('textbox', { name: 'Data' })).toHaveValue('[\n  1,\n  2\n]');
+        expect(await screen.findByRole('textbox', { name: 'Data' })).toHaveValue('[\n  1,\n  2\n]');
     });
 });

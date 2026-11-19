@@ -90,7 +90,7 @@ describe('DateRangeField', () => {
                 onChange={onChange}
             />,
         );
-        await userEvent.click(screen.getByRole('switch', { name: 'All day' }));
+        await userEvent.click(await screen.findByRole('switch', { name: 'All day' }));
         expect(onChange).toHaveBeenLastCalledWith({
             start: '2026-11-04',
             end: '2026-11-05',

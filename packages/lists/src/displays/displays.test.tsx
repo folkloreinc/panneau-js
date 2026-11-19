@@ -7,7 +7,8 @@ import type { Field } from '@panneau/protocol';
 
 import { renderList } from '../__fixtures__/render';
 import type { DisplayEntry } from '../types';
-import { DurationDisplay, RegionDisplay, TelDisplay, builtInDisplays } from './displays';
+import { TelDisplay } from './TelDisplay';
+import { DurationDisplay, RegionDisplay, builtInDisplays } from './displays';
 
 function renderDisplay(display: string, value: unknown, field: Field | null = null): HTMLElement {
     const Display = builtInDisplays[display] as DisplayEntry;
@@ -146,8 +147,11 @@ describe('displays', () => {
         expect(renderDisplay('file', null)).toHaveTextContent('—');
     });
 
-    it('shows E.164 numbers with their flags in their international format', () => {
+    it('shows E.164 numbers with their flags in their international format', async () => {
         const cell = renderDisplay('tel', '+15145550199');
+        // The number as it is, while the metadata of phone numbers loads (#346)
+        expect(cell).toHaveTextContent('+15145550199');
+        await waitFor(() => expect(cell.querySelector('a')).not.toBeNull());
         expect(cell.querySelector('a')).toHaveAttribute('href', 'tel:+15145550199');
         expect(cell).toHaveTextContent('🇨🇦+1 514 555 0199');
         expect(screen.getByText('🇨🇦')).toHaveAttribute('aria-hidden', 'true');

@@ -99,7 +99,7 @@ describe('RegionField', () => {
         expect(screen.getByRole('textbox', { name: 'Region' })).toHaveValue('Bayern');
     });
 
-    it('takes its country from the field that `from` names, or from its settings', () => {
+    it('takes its country from the field that `from` names, or from its settings', async () => {
         renderField(
             <GroupField
                 label="Address"
@@ -116,7 +116,7 @@ describe('RegionField', () => {
                 value={{ country: 'US', state: 'CA' }}
             />,
         );
-        expect(screen.getByRole('combobox', { name: 'State' })).toHaveValue('California');
+        expect(await screen.findByRole('combobox', { name: 'State' })).toHaveValue('California');
     });
 
     it('falls back on the country of its settings', () => {

@@ -24,7 +24,7 @@ describe('ColorField', () => {
         expect(onChange).toHaveBeenCalledWith('#ff0000');
     });
 
-    it('picks a color with the browser picker', () => {
+    it('picks a color with the browser picker', async () => {
         const onChange = vi.fn();
         renderField(
             <DefinitionField
@@ -34,7 +34,9 @@ describe('ColorField', () => {
                 onChange={onChange}
             />,
         );
-        fireEvent.change(screen.getByLabelText('Pick a color'), { target: { value: '#123456' } });
+        fireEvent.change(await screen.findByLabelText('Pick a color'), {
+            target: { value: '#123456' },
+        });
         expect(onChange).toHaveBeenCalledWith('#123456');
     });
 });

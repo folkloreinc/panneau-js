@@ -1,0 +1,11 @@
+/* A field whose code loads: its label, then a block of the height of its control. */
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-2);
+}
+
+.label {
+    font-size: var(--panneau-font-size-sm);
+}

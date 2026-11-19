@@ -30,10 +30,26 @@ The page writes the boot config next to the root element ([protocol.md](../../do
 
 ```bash
 npm install @panneau/app@^5.0.0-alpha.0 react react-dom @tanstack/react-query
-npm install --save-dev vite @vitejs/plugin-react
+npm install --save-dev vite @vitejs/plugin-react @react-aria/optimize-locales-plugin
+```
+
+```ts
+// vite.config.ts
+import optimizeLocales from '@react-aria/optimize-locales-plugin';
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+    plugins: [
+        react(),
+        // React Aria's strings in the languages of the app only: about 200 KB less to load.
+        optimizeLocales.vite({ locales: ['en-US', 'fr-FR'] }),
+    ],
+});
 ```
 
 - Add `@vitejs/plugin-react` to the Vite config, and the entry to its inputs.
+- Keep `optimizeLocales` to the app's languages: React Aria otherwise bundles its strings in about 35 of them. It has the same plugin for webpack (`optimizeLocales.webpack()`), Rollup and esbuild.
 - The entry imports no CSS and no theme: packages import their own styles, and themes come from plugins.
 - The messages of plugins (`locales`) are loaded in the locale of the definition before the shell renders.
 - The home route renders `pages.home` of the definition, a page of a plugin, or the cards of the resources without it.

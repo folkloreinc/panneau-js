@@ -83,6 +83,7 @@ import {
     - **Creating from the picker.** When the source has `create(resource, text)`, the picker offers "Create “…”" for a text that matches no item, and adds the new item. `createRelationSource(adapter, { create: true })` creates it with the adapter's `create()`, with the text as its `itemTitle` (in every locale when it is localized), on the resources that allow `create`; a function gives other values. A field's `onCreate` prop replaces the source's, and can open a dialog with a full form: it resolves with the new reference, or `null`. `onCreate={null}` turns creating off.
 - **Files** upload through the `uploadSource` of the provider (below). Without one, the value holds the files themselves.
 - **Plugin slot:** a type without an entry, such as `richtext` and `media` without their plugins (`@panneau/editor`, `@panneau/media`), renders a placeholder that names it. A plugin that provides the type replaces it.
+- **Loaded on first use.** The entries of `builtInFields` with heavy code (`tel` and the metadata of phone numbers, `location`, `address`, `link`, `embed`, `file`, `country`, `region`, `color`, `json`, `daterange`, `duration`, `money`) load it the first time a form shows one, with the skeleton of the field until then. `lazyFieldEntry()` does the same for the type of a plugin: `lazyFieldEntry(async () => (await import('./ChartField')).ChartFieldEntry)`. The entries of the subpaths (`TelFieldEntry`…) are the components themselves.
 
 ### Compound fields
 

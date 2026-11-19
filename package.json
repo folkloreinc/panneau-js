@@ -36,6 +36,7 @@
         "test:smoke": "node scripts/smoke-webpack.js",
         "test:types": "node scripts/smoke-types.js",
         "test:icons": "node scripts/smoke-icons.js",
+        "test:bundle-size": "node scripts/bundle-size.js",
         "verify": "node scripts/verify.js",
         "playground": "vite --config playground/vite.config.ts",
         "build-playground": "vite build --config playground/vite.config.ts --outDir ../playground-dist --emptyOutDir"
@@ -47,6 +48,7 @@
         "@formatjs/icu-messageformat-parser": "^3.5.21",
         "@internationalized/date": "^3.12.4",
         "@microsoft/api-extractor": "^7.59.4",
+        "@react-aria/optimize-locales-plugin": "^2.1.0",
         "@rolldown/plugin-babel": "^0.2.4",
         "@storybook/addon-a11y": "^10.6.2",
         "@storybook/addon-vitest": "^10.6.2",

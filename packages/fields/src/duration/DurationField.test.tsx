@@ -107,7 +107,7 @@ describe('DurationField', () => {
         expect(onChange).toHaveBeenLastCalledWith(3930);
     });
 
-    it('hides the seconds with a precision of minutes', () => {
+    it('hides the seconds with a precision of minutes', async () => {
         renderField(
             <DefinitionField
                 field={{
@@ -121,7 +121,7 @@ describe('DurationField', () => {
                 onChange={() => undefined}
             />,
         );
-        expect(screen.getByRole('textbox', { name: 'Hours' })).toHaveValue('1');
+        expect(await screen.findByRole('textbox', { name: 'Hours' })).toHaveValue('1');
         expect(screen.getByRole('textbox', { name: 'Minutes' })).toHaveValue('30');
         expect(screen.queryByRole('textbox', { name: 'Seconds' })).toBeNull();
     });
