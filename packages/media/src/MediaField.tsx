@@ -21,7 +21,16 @@ import {
 import { fieldsMessages, mediaMessages as messages } from '@panneau/intl';
 import type { Definition, Field, Item, MediaInfo, MediaReference } from '@panneau/protocol';
 import { getMediaLibraries } from '@panneau/protocol/runtime';
-import { Badge, Button, Fieldset, IconButton, Spinner, usePanneauIntl } from '@panneau/ui';
+import {
+    Badge,
+    Button,
+    Fieldset,
+    IconButton,
+    Spinner,
+    Tile,
+    TileGroup,
+    usePanneauIntl,
+} from '@panneau/ui';
 
 import { ImageItem, editedImageOf } from './ImageItem';
 import styles from './MediaField.module.css';
@@ -514,53 +523,53 @@ export function MediaField(props: MediaFieldProps) {
                         ))}
                     </ul>
                 ) : media.length > 0 ? (
-                    <ul className={styles.media}>
+                    <TileGroup appearance="outline">
                         {media.map((item) => {
                             const name = item.label ?? item.id;
                             const size = item.media?.size;
+                            const status = statusBadge(item);
                             return (
-                                <li key={keyOf(item, resource)} className={styles.item}>
-                                    <span className={styles.thumbnail}>
-                                        {typeof item.media?.thumbnailUrl === 'string' ? (
-                                            <img src={item.media.thumbnailUrl} alt="" />
-                                        ) : (
-                                            <FileImage aria-hidden />
-                                        )}
-                                    </span>
-                                    <span className={styles.details}>
-                                        <span className={styles.name}>{name}</span>
-                                        <span className={styles.meta}>
-                                            {item.media !== undefined ? (
-                                                <span>{item.media.type}</span>
-                                            ) : null}
-                                            {typeof size === 'number' ? (
-                                                <span>{formatSize(size, intl.locale)}</span>
-                                            ) : null}
-                                            {statusBadge(item)}
-                                        </span>
-                                    </span>
-                                    {canUpload || canPick ? (
-                                        <IconButton
-                                            icon={X}
-                                            size="sm"
-                                            label={intl.formatMessage(fieldsMessages.removeFile, {
-                                                name,
-                                            })}
-                                            onPress={() =>
-                                                set(
-                                                    latest.current.filter(
-                                                        (entry) =>
-                                                            keyOf(entry, resource) !==
-                                                            keyOf(item, resource),
-                                                    ),
-                                                )
-                                            }
-                                        />
-                                    ) : null}
-                                </li>
+                                <Tile
+                                    key={keyOf(item, resource)}
+                                    title={name}
+                                    description={[
+                                        item.media?.type ?? null,
+                                        typeof size === 'number'
+                                            ? formatSize(size, intl.locale)
+                                            : null,
+                                    ]
+                                        .filter((part) => part !== null)
+                                        .join(' · ')}
+                                    {...(typeof item.media?.thumbnailUrl === 'string'
+                                        ? { media: <img src={item.media.thumbnailUrl} alt="" /> }
+                                        : { icon: FileImage })}
+                                    actions={
+                                        canUpload || canPick ? (
+                                            <IconButton
+                                                icon={X}
+                                                size="sm"
+                                                label={intl.formatMessage(
+                                                    fieldsMessages.removeFile,
+                                                    { name },
+                                                )}
+                                                onPress={() =>
+                                                    set(
+                                                        latest.current.filter(
+                                                            (entry) =>
+                                                                keyOf(entry, resource) !==
+                                                                keyOf(item, resource),
+                                                        ),
+                                                    )
+                                                }
+                                            />
+                                        ) : undefined
+                                    }
+                                >
+                                    {status}
+                                </Tile>
                             );
                         })}
-                    </ul>
+                    </TileGroup>
                 ) : creating.length === 0 && upload.items.length === 0 ? (
                     <span className={styles.none}>
                         {intl.formatMessage(

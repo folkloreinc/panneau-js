@@ -42,6 +42,8 @@ import {
     Stat,
     type StatChange,
     Text,
+    Tile,
+    TileGroup,
     type Tone,
     usePanneauIntl,
 } from '@panneau/ui';
@@ -138,13 +140,15 @@ function WidgetSkeleton({ widget }: { widget: Widget }) {
                 ) : widget.type === 'breakdown' ? (
                     <BarChart label={widget.label ?? ''} />
                 ) : widget.type === 'list' || widget.type === 'table' ? (
-                    <ul className={styles.items}>
+                    <TileGroup className={styles.items}>
                         {[0, 1, 2].map((index) => (
-                            <li key={index} className={styles.item}>
-                                <Skeleton width={`${70 - index * 15}%`} />
-                            </li>
+                            <Tile
+                                key={index}
+                                size="sm"
+                                title={<Skeleton width={`${70 - index * 15}%`} />}
+                            />
                         ))}
-                    </ul>
+                    </TileGroup>
                 ) : (
                     <Skeleton shape="rect" height="6rem" />
                 )}
@@ -623,34 +627,35 @@ function ListBody({ widget, data }: { widget: Widget; data: ListWidgetData }) {
                     title={data.empty ?? intl.formatMessage(appMessages.widgetEmpty)}
                 />
             ) : (
-                <ul className={styles.items}>
-                    {data.items.map((item, index) => (
-                        <li key={index} className={styles.item}>
-                            <div className={styles.itemText}>
-                                {item.url !== undefined && item.url !== null ? (
-                                    <Link href={item.url} className={styles.itemTitle}>
-                                        {item.title}
-                                    </Link>
-                                ) : (
-                                    <span className={styles.itemTitle}>{item.title}</span>
-                                )}
-                                {item.description !== undefined && item.description !== null ? (
-                                    <span className={styles.itemDescription}>
-                                        {item.description}
-                                    </span>
-                                ) : null}
-                            </div>
-                            {item.meta !== undefined && item.meta !== null ? (
-                                <span className={styles.itemMeta}>{item.meta}</span>
-                            ) : null}
-                            {item.badge !== undefined && item.badge !== null ? (
-                                <Badge tone={(item.badge.tone ?? 'neutral') as Tone}>
-                                    {item.badge.label}
-                                </Badge>
-                            ) : null}
-                        </li>
-                    ))}
-                </ul>
+                <TileGroup className={styles.items}>
+                    {data.items.map((item, index) => {
+                        const meta = item.meta ?? null;
+                        const badge = item.badge ?? null;
+                        return (
+                            <Tile
+                                key={index}
+                                size="sm"
+                                title={item.title}
+                                description={item.description}
+                                href={item.url ?? undefined}
+                                actions={
+                                    meta !== null || badge !== null ? (
+                                        <>
+                                            {meta !== null ? (
+                                                <span className={styles.itemMeta}>{meta}</span>
+                                            ) : null}
+                                            {badge !== null ? (
+                                                <Badge tone={(badge.tone ?? 'neutral') as Tone}>
+                                                    {badge.label}
+                                                </Badge>
+                                            ) : null}
+                                        </>
+                                    ) : undefined
+                                }
+                            />
+                        );
+                    })}
+                </TileGroup>
             )}
         </Card>
     );
