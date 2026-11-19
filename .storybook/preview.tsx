@@ -2,6 +2,7 @@ import type { Decorator, Preview } from '@storybook/react-vite';
 // Bootstrap's CSS, only rendered with the Bootstrap theme, to check Panneau next to it.
 import bootstrapCss from 'bootstrap/dist/css/bootstrap.min.css?inline';
 import { IntlProvider } from 'react-intl';
+import { configure } from 'storybook/test';
 
 import { panneauMessages } from '@panneau/intl';
 import {
@@ -14,6 +15,11 @@ import {
 import { lucideIconLoader } from '@panneau/ui/named-icons';
 
 import { referenceTheme } from '../packages/ui/src/theme/__fixtures__/referenceTheme';
+
+// As in the unit tests (`config/vitest.setup.ts`): the first story of a file in a run waits for
+// its modules to be transformed, which can take more than the default second of `findBy…` and
+// `waitFor` on a busy machine.
+configure({ asyncUtilTimeout: 5000 });
 
 /**
  * Themes of the toolbar: the default one, Bootstrap's (with Bootstrap's CSS), and the reference
