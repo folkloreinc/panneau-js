@@ -1165,6 +1165,18 @@ export const uiMessages: {
     chartDate: PanneauMessage<Record<never, never>>;
     statChangeUp: PanneauMessage<Record<never, never>>;
     statChangeDown: PanneauMessage<Record<never, never>>;
+    avatarStatus: PanneauMessage<    {
+    name: string;
+    status: string;
+    }>;
+    avatarMore: PanneauMessage<    {
+    count: number;
+    }>;
+    avatarOthers: PanneauMessage<    {
+    count: number;
+    }>;
+    breadcrumbs: PanneauMessage<Record<never, never>>;
+    moreBreadcrumbs: PanneauMessage<Record<never, never>>;
 };
 
 // @public
