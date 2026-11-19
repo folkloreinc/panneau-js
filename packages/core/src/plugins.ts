@@ -242,13 +242,20 @@ export function getEntries<Kind extends PluginKind>(
     return new Map([...entriesOf(builtIn), ...plugins, ...entriesOf(overrides)]);
 }
 
-/** Whether warnings for developers are on: not in a production build. */
+/**
+ * `process.env.NODE_ENV`, as the bundler of an app replaces it. Declared here, so that the package
+ * doesn't need the types of Node: in a browser, `process` doesn't exist.
+ */
+declare const process: { env: { NODE_ENV?: string } };
+
+/**
+ * Whether warnings for developers are on: not in a production build. The bundler of the app
+ * replaces the exact expression `process.env.NODE_ENV`, so it is written as is, without `?.` or
+ * `typeof process`, which it would leave and which would turn the warnings off in development.
+ * Without a bundler, in a browser, `process` doesn't exist: no warnings.
+ */
 function isDevelopment(): boolean {
     try {
-        // Replaced by the bundler of the app, which only replaces this exact expression: undefined
-        // in a browser without one. The package has no Node types, which some of its configs add.
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment -- see above
-        // @ts-ignore
         return process.env.NODE_ENV !== 'production';
     } catch {
         return false;

@@ -93,6 +93,11 @@ describe('plugins', () => {
         resolveEntry(registry, 'widgets', 'calendar-heatmap');
         expect(warn).toHaveBeenCalledTimes(1);
         vi.unstubAllEnvs();
+        // In a browser without a bundler, where `process` doesn't exist: no warning, no error
+        vi.stubGlobal('process', undefined);
+        expect(resolveEntry(registry, 'widgets', 'treemap')).toBeUndefined();
+        vi.unstubAllGlobals();
+        expect(warn).toHaveBeenCalledTimes(1);
         warn.mockRestore();
     });
 
