@@ -20,7 +20,7 @@ const root = resolve(import.meta.dirname, '..');
 const work = resolve(root, '.tmp/bundle-size');
 
 // Raise a budget only with a reason in the pull request.
-const BUDGET = { minified: 1600 * 1024, gzip: 500 * 1024 };
+const BUDGET = { minified: 1610 * 1024, gzip: 505 * 1024 };
 
 const report = process.argv.includes('--report');
 

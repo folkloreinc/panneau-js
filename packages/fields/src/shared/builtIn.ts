@@ -10,6 +10,7 @@ import { RangeFieldEntry } from '../range/RangeField';
 import { RelationFieldEntry } from '../relation/RelationField';
 import { RepeaterFieldEntry } from '../repeater/RepeaterField';
 import { SelectFieldEntry } from '../select/SelectField';
+import { SlugFieldEntry } from '../slug/SlugField';
 import { TagsFieldEntry } from '../tags/TagsField';
 import { TextFieldEntry } from '../text/TextField';
 import { TextAreaFieldEntry } from '../textarea/TextAreaField';
@@ -39,7 +40,9 @@ export const builtInFields: Readonly<Record<string, FieldEntry>> = {
     email: EmailFieldEntry,
     url: UrlFieldEntry,
     color: lazyFieldEntry(async () => (await import('../color/ColorField')).ColorFieldEntry),
-    slug: lazyFieldEntry(async () => (await import('../slug/SlugField')).SlugFieldEntry),
+    // In the bundle: a slug follows its source from when it shows, and the source is often typed
+    // first
+    slug: SlugFieldEntry,
     file: lazyFieldEntry(async () => (await import('../file/FileField')).FileFieldEntry),
     relation: RelationFieldEntry,
     group: GroupFieldEntry,
