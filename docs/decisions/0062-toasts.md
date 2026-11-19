@@ -14,7 +14,7 @@ Toasts showed at the top right of the screen, where the page keeps its header an
 
 > Changed by [0066](0066-a-create-goes-back-to-the-list.md): they rise above what sticks to the bottom only while it covers the bottom of the viewport.
 
-- **At the bottom, centered**, by default. They rise above what sticks to the bottom of the page, such as the footer of a form: that element calls `useToastOffset(ref)`, and its height becomes the `--panneau-bottom-offset` of the region.
+- **At the bottom, centered**, by default. They rise above what sticks to the bottom of the page, such as the footer of a form: that element calls `useToastOffset(ref)`, and its height becomes the `--panneau-frame-bottom` of the region (first named `--panneau-bottom-offset`; one variable with the dock's since [#353](https://github.com/folkloreinc/panneau-js/issues/353)).
 - `PanneauRoot` takes a `toastPlacement`, for a project that wants them elsewhere: `bottom` (the default), `bottom-end` or `top-end`.
 - On a phone, they take the whole width, at the bottom (or the top with `top-end`).
 - They appear from below (from above at the top), without motion when the system asks for less.

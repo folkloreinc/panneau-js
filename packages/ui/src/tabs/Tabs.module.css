@@ -71,7 +71,7 @@
 
 .tab[data-focus-visible] {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: -2px;
+    outline-offset: calc(-1 * var(--panneau-focus-width));
     border-radius: var(--panneau-radius-sm);
 }
 
@@ -82,7 +82,7 @@
 
 .panel[data-focus-visible] {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
-    outline-offset: 2px;
+    outline-offset: var(--panneau-focus-offset);
 }
 
 .panel[data-inert],

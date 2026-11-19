@@ -74,7 +74,7 @@ function NodeSkeleton({
                         <div
                             key={index}
                             className={styles.cell}
-                            style={{ '--panneau-span': child.width ?? 12 } as CSSProperties}
+                            style={{ '--_panneau-span': child.width ?? 12 } as CSSProperties}
                         >
                             <NodeSkeleton node={child} fields={fields} />
                         </div>

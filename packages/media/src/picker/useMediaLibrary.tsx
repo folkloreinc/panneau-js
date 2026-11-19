@@ -8,7 +8,7 @@ import {
     Alert,
     Button,
     Dialog,
-    Heading,
+    EmptyState,
     LoadingRegion,
     SegmentedControl,
     Select,
@@ -481,42 +481,42 @@ export function useMediaLibrary({
         );
     } else if (state.items.length === 0 && isDefaultQuery(state.query)) {
         libraryContent = (
-            <div className={styles.empty}>
-                <Images aria-hidden size={48} strokeWidth={1.25} className={styles.emptyIcon} />
-                <Heading level={3} size={4}>
-                    {intl.formatMessage(messages.pickerEmpty, { library })}
-                </Heading>
-                {source.canCreate ? (
-                    <>
-                        <Text muted size="sm">
-                            {intl.formatMessage(messages.pickerEmptyUpload, { library })}
-                        </Text>
+            <EmptyState
+                className={styles.empty}
+                icon={Images}
+                headingLevel={3}
+                title={intl.formatMessage(messages.pickerEmpty, { library })}
+                description={
+                    source.canCreate
+                        ? intl.formatMessage(messages.pickerEmptyUpload, { library })
+                        : intl.formatMessage(messages.pickerEmptyReadOnly)
+                }
+                actions={
+                    source.canCreate ? (
                         <Button variant="primary" onPress={() => setTab('upload')}>
                             {intl.formatMessage(messages.pickerUploadFiles)}
                         </Button>
-                    </>
-                ) : (
-                    <Text muted size="sm">
-                        {intl.formatMessage(messages.pickerEmptyReadOnly)}
-                    </Text>
-                )}
-            </div>
+                    ) : undefined
+                }
+            />
         );
     } else if (state.items.length === 0) {
         libraryContent = (
-            <div className={styles.empty}>
-                <SearchX aria-hidden size={48} strokeWidth={1.25} className={styles.emptyIcon} />
-                <Heading level={3} size={4}>
-                    {intl.formatMessage(messages.pickerNoResults)}
-                </Heading>
-                <Button
-                    onPress={() =>
-                        browser.setQuery({ ...state.query, q: '', type: null, filter: {} })
-                    }
-                >
-                    {intl.formatMessage(messages.pickerClearSearch)}
-                </Button>
-            </div>
+            <EmptyState
+                className={styles.empty}
+                icon={SearchX}
+                headingLevel={3}
+                title={intl.formatMessage(messages.pickerNoResults)}
+                actions={
+                    <Button
+                        onPress={() =>
+                            browser.setQuery({ ...state.query, q: '', type: null, filter: {} })
+                        }
+                    >
+                        {intl.formatMessage(messages.pickerClearSearch)}
+                    </Button>
+                }
+            />
         );
     } else {
         libraryContent = (

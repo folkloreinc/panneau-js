@@ -33,19 +33,6 @@
     outline: none;
 }
 
-.logo {
-    display: inline-grid;
-    flex: none;
-    place-items: center;
-    width: 1.75rem;
-    height: 1.75rem;
-    border-radius: var(--panneau-radius-md);
-    background: var(--panneau-sidebar-logo-bg, var(--panneau-color-accent));
-    color: var(--panneau-sidebar-logo-color, var(--panneau-color-accent-text));
-    font-size: var(--panneau-font-size-sm);
-    line-height: 1;
-}
-
 .toggle {
     flex: none;
     color: var(--panneau-color-text-muted);
@@ -75,7 +62,8 @@
 }
 
 .goTo[data-focus-visible] {
-    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 0;
 }
 
 .goToSearch {
@@ -155,7 +143,8 @@
 }
 
 .sectionToggle[data-focus-visible] {
-    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 0;
 }
 
 .sectionChevron {
@@ -163,8 +152,8 @@
     transition: transform var(--panneau-duration);
 }
 
-.sectionToggle[aria-expanded='false'] .sectionChevron {
-    transform: rotate(-90deg);
+.sectionToggle[aria-expanded='true'] .sectionChevron {
+    transform: rotate(90deg);
 }
 
 .list {
@@ -231,7 +220,8 @@
 
 .link[data-focus-visible],
 .brand[data-focus-visible] {
-    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 0;
 }
 
 .linkIcon {
@@ -283,7 +273,8 @@
 }
 
 .user[data-focus-visible] {
-    box-shadow: 0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: 0;
 }
 
 .userChevron {
