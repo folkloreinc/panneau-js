@@ -31,7 +31,7 @@ A: **the boot config is validated after the first paint.**
 
 ## Consequences
 
-- A minimal app loads about 175 KB less JavaScript before its first paint (1551 KB to 1376 KB minified, 488 KB to 445 KB gzip). Zod is in the chunks it loads next, with the definition.
+- A minimal app loads about 185 KB less JavaScript before its first paint (1514 KB to 1328 KB minified, 486 KB to 427 KB gzip). Zod is in the chunks it loads next, with the definition.
 - An entry that read `app.config` awaits it. The entry that `panneau:install` of `laravel-panneau` writes doesn't read it.
 - The definition's request starts once the boot config is validated: the schemas load first, in one chunk. Starting it in parallel would need the adapter before the boot config is known valid.
 - An invalid boot config no longer stops the entry's code after `createPanneauApp()`: it shows an error page in place of the app.
