@@ -256,6 +256,10 @@ export const Field = z
                 .optional()
                 .meta({ description: '`repeater`: typed blocks, each with its own fields.' });
         },
+        typeSet: z.string().min(1).optional().meta({
+            description:
+                "`repeater`: the key of its block types in the definition's `blockTypeSets`, in place of `types` (decision 0094). Clients resolve it into `types` when they read the definition.",
+        }),
         settings: z.record(z.string(), z.unknown()).optional(),
     })
     .meta({ description: 'A field of a form.' });

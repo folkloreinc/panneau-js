@@ -1,3 +1,4 @@
+export { resolveBlockTypeSets } from './blockTypeSets';
 export * from './runtime';
 export * from './schemas';
 export {
