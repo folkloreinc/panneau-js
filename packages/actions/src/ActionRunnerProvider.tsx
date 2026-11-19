@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect, useEffectEvent, useRef, useState } from 'react';
 
-import { usePanneau } from '@panneau/core';
+import { resolveEntry, usePanneau } from '@panneau/core';
 import { getActionLabel } from '@panneau/intl';
 import type { ActionResult, ActionRun, RouteReference } from '@panneau/protocol';
 import { usePanneauIntl, useToast } from '@panneau/ui';
@@ -381,10 +381,7 @@ export function ActionRunnerProvider({
         }
         if (action.kind === 'client') {
             const name = action.component ?? '';
-            const Handler =
-                (clientActions !== undefined && Object.hasOwn(clientActions, name)
-                    ? clientActions[name]
-                    : undefined) ?? (plugins.actions.get(name) as ClientActionHandler | undefined);
+            const Handler = resolveEntry(plugins, 'actions', name, { overrides: clientActions });
             if (Handler === undefined) {
                 return Promise.reject(
                     new Error(`No handler for the client action "${action.id}" (${name}).`),

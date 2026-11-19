@@ -7,6 +7,7 @@ import type { Field, LayoutNode } from '@panneau/protocol';
 
 import { Form } from '../Form';
 import { renderForm } from '../__fixtures__/render';
+import type { LayoutComponentProps } from './Layout';
 
 const FIELDS: Field[] = [
     { name: 'title', type: 'text', label: 'Title', rules: [{ rule: 'required' }] },
@@ -193,7 +194,10 @@ describe('Form layout', () => {
         const plugin = definePlugin({
             id: 'preview',
             components: {
-                preview: ({ label }: { label: string }) => <p>Preview: {label}</p>,
+                // Its props come from the definition: unchecked, so optional
+                preview: ({ label }: LayoutComponentProps & { label?: string }) => (
+                    <p>Preview: {label}</p>
+                ),
             },
         });
         renderForm(

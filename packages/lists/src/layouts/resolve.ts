@@ -1,3 +1,5 @@
+import { type PluginRegistry, getEntries } from '@panneau/core';
+
 import type { ListLayoutEntry } from '../types';
 import { builtInLayouts } from './builtIn';
 
@@ -16,14 +18,12 @@ export interface ListLayoutOptions {
 
 /** Layouts by id: the built-in ones, then those of the plugins, then those given. */
 export function getLayoutComponents(
-    plugins: Iterable<readonly [string, unknown]>,
+    plugins: PluginRegistry,
     components: Readonly<Record<string, ListLayoutEntry>> | undefined,
 ): Record<string, ListLayoutEntry> {
-    return {
-        ...builtInLayouts,
-        ...(Object.fromEntries(plugins) as Record<string, ListLayoutEntry>),
-        ...components,
-    };
+    return Object.fromEntries(
+        getEntries(plugins, 'listLayouts', { builtIn: builtInLayouts, overrides: components }),
+    );
 }
 
 /**

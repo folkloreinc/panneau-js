@@ -1,6 +1,6 @@
 import type { ComponentType, ReactNode } from 'react';
 
-import type { FileKind } from '@panneau/fields';
+import type { FieldEntry, FileKind } from '@panneau/fields';
 import type {
     Abilities,
     Action,
@@ -220,3 +220,19 @@ export interface ListLayoutProps {
 
 /** A list layout, by id (`table`, `cards`). */
 export type ListLayoutEntry = ComponentType<ListLayoutProps>;
+
+declare module '@panneau/core' {
+    interface PluginKinds {
+        /** Components that display a value in lists, by display (`date`, `page-slug`). */
+        displays: DisplayEntry;
+        /** List layouts, by id (`table`, `cards`). */
+        listLayouts: ListLayoutEntry;
+        /** Filter controls, by filter type (`select`, `date-range`). */
+        filters: FilterEntry;
+        /**
+         * Field components, by field type. Lists read the summaries of compound fields from them
+         * (decision 0065). Also declared by `@panneau/forms`, which renders them.
+         */
+        fields: FieldEntry;
+    }
+}

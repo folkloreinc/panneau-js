@@ -1,5 +1,6 @@
 import {
     type CSSProperties,
+    type ComponentType,
     type ReactNode,
     createElement,
     use,
@@ -10,11 +11,12 @@ import {
 
 import {
     type Form,
+    type WithDefinitionProps,
     getLayoutFieldNames,
     selectErrorCount,
     selectVisible,
+    useEntry,
     useFormSelector,
-    usePlugins,
 } from '@panneau/core';
 import { NestedField, isWideField } from '@panneau/fields';
 import type { Field, LayoutNode } from '@panneau/protocol';
@@ -253,6 +255,13 @@ export function SidebarNode({ node, fields, storageKey }: SidebarNodeProps) {
     );
 }
 
+declare module '@panneau/core' {
+    interface PluginKinds {
+        /** Components of `component` nodes of form layouts, by the node's `component`. */
+        components: ComponentType<WithDefinitionProps<LayoutComponentProps>>;
+    }
+}
+
 /** What the component of a `component` node of a form layout gets, with the node's `props`. */
 export interface LayoutComponentProps {
     node: LayoutNode;
@@ -270,8 +279,7 @@ export interface LayoutComponentProps {
  */
 function ComponentNode({ node, fields }: { node: LayoutNode; fields: ReadonlyMap<string, Field> }) {
     const form = useFormContext();
-    const { components } = usePlugins();
-    const Component = node.component !== undefined ? components.get(node.component) : undefined;
+    const Component = useEntry('components', node.component);
     const children =
         node.children !== undefined && node.children.length > 0 ? (
             <div className={styles.stack}>

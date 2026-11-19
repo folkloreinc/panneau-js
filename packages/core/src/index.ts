@@ -95,6 +95,7 @@ export {
     type PluginRegistry,
     type ResolveEntryOptions,
     type Theme,
+    type WithDefinitionProps,
     createPluginRegistry,
     definePlugin,
     getEntries,

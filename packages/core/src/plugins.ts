@@ -39,7 +39,7 @@ export type PluginComponent = ComponentType<any>;
  */
 export interface PluginKinds {
     /** Pages, by component name (`dashboard`). */
-    pages: ComponentType<PageProps>;
+    pages: ComponentType<WithDefinitionProps<PageProps>>;
     /**
      * Dashboard widgets, by widget type (`map`, or a built-in type such as `stat` that it
      * replaces). The dashboard draws the card around the widget of a plugin.
@@ -51,6 +51,13 @@ export interface PluginKinds {
      */
     previews: ComponentType<PreviewProps>;
 }
+
+/**
+ * Props of an entry that also gets the `props` of the definition (a page, a component or a panel
+ * of a form layout): unchecked data, which the component reads as its own props.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- the definition's props are data, unchecked
+export type WithDefinitionProps<Props> = Props & Readonly<Record<string, any>>;
 
 /** A kind of entries a plugin can give: a key of `PluginKinds`. */
 export type PluginKind = keyof PluginKinds;

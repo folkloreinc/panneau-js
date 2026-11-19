@@ -1,5 +1,6 @@
 import { type ComponentType, type ReactNode, createContext, use } from 'react';
 
+import type { WithDefinitionProps } from '@panneau/core';
 import type { Form } from '@panneau/core';
 import type { Field, LayoutNode } from '@panneau/protocol';
 
@@ -22,6 +23,16 @@ export interface FormPanelProps {
 
 /** A component of a panel: built in, of a plugin, or of `Form`'s `panels`. */
 export type FormPanelComponent = ComponentType<FormPanelProps>;
+
+declare module '@panneau/core' {
+    interface PluginKinds {
+        /**
+         * Panels of the sidebar of forms, by name, for `sidebar` nodes with a `panel` (decision
+         * 0075). They replace the built-in panels of the same name.
+         */
+        panels: ComponentType<WithDefinitionProps<FormPanelProps>>;
+    }
+}
 
 /**
  * The `save` panel: the state of the form, its actions and its Save button. It shows beside the

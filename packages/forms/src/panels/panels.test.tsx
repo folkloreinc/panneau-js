@@ -19,7 +19,8 @@ function sidebar() {
     return screen.getByRole('region', { name: 'Sidebar' });
 }
 
-function WordCount({ form, children, unit }: FormPanelProps & { unit: string }) {
+// `unit` comes from the props of the node in the definition: unchecked, so optional
+function WordCount({ form, children, unit = 'words' }: FormPanelProps & { unit?: string }) {
     const title = selectValue(useFormState(form), 'title');
     return (
         <>

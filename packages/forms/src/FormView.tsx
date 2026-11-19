@@ -3,6 +3,7 @@ import { type KeyboardEvent, type ReactNode, type RefObject, useRef, useState } 
 import {
     type Form,
     type SubmitResult,
+    getEntries,
     getLayoutFieldNames,
     getProblem,
     resolveFields,
@@ -61,6 +62,17 @@ function FormConflictDialog({
 }: Omit<ConflictDialogProps, 'values'> & { form: Form }) {
     const values = useFormSelector(form, (state) => (isOpen ? state.values : NO_VALUES));
     return <ConflictDialog isOpen={isOpen} values={values} {...props} />;
+}
+
+declare module '@panneau/core' {
+    interface PluginKinds {
+        /**
+         * Field components, by field type (`text`, `page-slug`). They replace the built-in field of
+         * the same type. Declared by `@panneau/forms` and `@panneau/lists`, which render them:
+         * `@panneau/fields` doesn't depend on `@panneau/core`.
+         */
+        fields: FieldEntry;
+    }
 }
 
 export interface FormViewProps {
@@ -354,19 +366,16 @@ export function FormView({
 
     const formLocales = locales ?? definition?.locales ?? NO_LOCALES;
     const { resolved, laidOut, flow, sidebar, order } = useFormLayout(form, fields, layout);
-    const panelEntries = new Map<string, FormPanelComponent>([
-        ...Object.entries(builtInPanels),
-        ...(plugins.panels as ReadonlyMap<string, FormPanelComponent>),
-        ...Object.entries(panels ?? {}),
-    ]);
+    const panelEntries = getEntries(plugins, 'panels', {
+        builtIn: builtInPanels,
+        overrides: panels,
+    });
     // Beside the form, the `save` and `errors` panels take the place of the footer and of the
     // summary at the top (decision 0075)
     const hasPanel = (name: string) => sidebar.some((node) => node.panel === name);
-    const entries: Record<string, FieldEntry> = {
-        ...builtInFields,
-        ...(Object.fromEntries(plugins.fields) as Record<string, FieldEntry>),
-        ...components,
-    };
+    const entries: Record<string, FieldEntry> = Object.fromEntries(
+        getEntries(plugins, 'fields', { builtIn: builtInFields, overrides: components }),
+    );
 
     const handle = (result: SubmitResult | null) => {
         if (result === null) {

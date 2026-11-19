@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { usePlugins } from '@panneau/core';
+import { getEntries, usePlugins, warnMissingEntry } from '@panneau/core';
 import { summarizeCompound } from '@panneau/fields';
 import { isCompoundField } from '@panneau/protocol/runtime';
 import { usePanneauIntl } from '@panneau/ui';
@@ -21,19 +21,22 @@ export function useRenderValue(
 ): (item: ListItem, column: ListColumn) => ReactNode {
     const intl = usePanneauIntl();
     const plugins = usePlugins();
-    const allDisplays: Record<string, DisplayEntry> = {
-        ...builtInDisplays,
-        ...(Object.fromEntries(plugins.displays) as Record<string, DisplayEntry>),
-        ...displays,
-    };
+    const allDisplays: Readonly<Record<string, DisplayEntry>> = Object.fromEntries(
+        getEntries(plugins, 'displays', { builtIn: builtInDisplays, overrides: displays }),
+    );
     return (item, column) => {
         if (column.render !== undefined) {
             return column.render(item);
         }
+        const display = column.display ?? null;
         const own =
-            column.display !== undefined && column.display !== null
-                ? allDisplays[column.display]
+            display !== null && Object.hasOwn(allDisplays, display)
+                ? allDisplays[display]
                 : undefined;
+        if (display !== null && own === undefined) {
+            // Shown as text, or as the summary of a compound field
+            warnMissingEntry('displays', display);
+        }
         const field = column.field ?? null;
         if (own === undefined && field !== null && isCompoundField(field)) {
             const value = getColumnValue(item, column, intl.locale);
