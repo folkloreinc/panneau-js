@@ -1,6 +1,8 @@
 import classNames from 'classnames';
 import { type ReactNode, useCallback, useEffect, useId, useMemo, useState } from 'react';
 
+import { useModal } from '@panneau/core/contexts';
+
 import ModalPortal from './ModalPortal';
 
 export interface ModalProps {
@@ -28,6 +30,17 @@ function Modal({
 }: ModalProps) {
     const backupId = useId();
     const finalId = id || backupId;
+
+    // <Modals> renders a single backdrop under all the modals, so a modal opened over another one
+    // with a backdrop (ex.: a confirmation over a form) needs its own to dim the modal under it
+    const { modals = null } = useModal();
+    const modalIndex = (modals || []).findIndex(({ id: modalId }) => modalId === finalId);
+    const modalsUnder = modalIndex !== -1 ? (modals || []).slice(0, modalIndex) : modals || [];
+    const withStackedBackdrop =
+        !withoutBackdrop &&
+        modalsUnder.some(
+            ({ withoutBackdrop: modalWithoutBackdrop = false }) => !modalWithoutBackdrop,
+        );
     const data = useMemo(
         () => ({
             title,
@@ -98,6 +111,10 @@ function Modal({
                 tabIndex={-1}
                 onTransitionEnd={onTransitionEnd}
             >
+                {withStackedBackdrop ? (
+                    // Under the content of the modal, faded in and out with it
+                    <div className="modal-backdrop show z-n1" />
+                ) : null}
                 {children}
             </div>
         </ModalPortal>
