@@ -48,7 +48,7 @@ describe('createPanneauApp', () => {
             app = createPanneauApp({ element });
         });
 
-        expect(app?.config.basePath).toBe('/panneau');
+        expect((await app?.config)?.basePath).toBe('/panneau');
         expect(await screen.findByRole('heading', { name: 'Test site' })).toBeInTheDocument();
         const [url, init] = fetch.mock.calls[0] ?? [];
         expect(url).toBe('/panneau/api/definition');
@@ -77,7 +77,7 @@ describe('createPanneauApp', () => {
         expect(onUnauthorized).toHaveBeenCalledExactlyOnceWith({ loginUrl: '/login' });
     });
 
-    it('uses the adapter, plugins and config it is given', () => {
+    it('uses the adapter, plugins and config it is given', async () => {
         const adapter = { getDefinition: vi.fn() } as Partial<DataAdapter> as DataAdapter;
 
         act(() => {
@@ -89,7 +89,7 @@ describe('createPanneauApp', () => {
             });
         });
 
-        const navigation = screen.getByRole('navigation', { name: 'Main navigation' });
+        const navigation = await screen.findByRole('navigation', { name: 'Main navigation' });
         expect(within(navigation).getByRole('link', { name: 'Pages' })).toHaveAttribute(
             'href',
             '/resources/pages',
@@ -111,7 +111,9 @@ describe('createPanneauApp', () => {
         act(() => {
             app = createPanneauApp({ element, config: createBootConfig({ definition }) });
         });
-        const card = within(screen.getByRole('main')).getByRole('link', { name: 'Authors' });
+        const card = within(await screen.findByRole('main')).getByRole('link', {
+            name: 'Authors',
+        });
         // A chunk of its own, after Lucide's list of icons: slow on a busy CI runner.
         await waitFor(() => expect(card.querySelector('svg.lucide-users')).not.toBeNull(), {
             timeout: 5000,
@@ -129,20 +131,48 @@ describe('createPanneauApp', () => {
         await waitFor(() => expect(iconLoader).toHaveBeenCalledWith('users'));
     });
 
-    it('throws when the boot config is missing or invalid', () => {
+    it('throws when the page has no boot config', () => {
         expect(() => createPanneauApp({ element })).toThrow(/no Panneau boot config/);
-        expect(() =>
-            createPanneauApp({ element, config: { ...createBootConfig(), protocol: 2 } as never }),
-        ).toThrow(/- protocol: /);
     });
 
-    it('unmounts', () => {
+    it('shows the skeleton of the shell while it validates the boot config (decision 0095)', async () => {
         act(() => {
             app = createPanneauApp({
                 element,
                 config: createBootConfig({ definition: createDefinition() }),
             });
         });
+        expect(screen.getByRole('status')).toHaveTextContent('Loading');
+        await app?.config;
+        expect(
+            await screen.findByRole('navigation', { name: 'Main navigation' }),
+        ).toBeInTheDocument();
+    });
+
+    it('shows an error page, and rejects its config, when the boot config is invalid', async () => {
+        const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        act(() => {
+            app = createPanneauApp({
+                element,
+                config: { ...createBootConfig(), protocol: 2 } as never,
+            });
+        });
+        await expect(app?.config).rejects.toThrow(/- protocol: /);
+        expect(await screen.findByRole('heading', { level: 1 })).toBeInTheDocument();
+        expect(error).toHaveBeenCalledWith(
+            expect.objectContaining({ message: expect.stringMatching(/- protocol: /) }),
+        );
+        error.mockRestore();
+    });
+
+    it('unmounts', async () => {
+        act(() => {
+            app = createPanneauApp({
+                element,
+                config: createBootConfig({ definition: createDefinition() }),
+            });
+        });
+        await act(() => app?.config);
         expect(element).not.toBeEmptyDOMElement();
         act(() => app?.unmount());
         app = undefined;

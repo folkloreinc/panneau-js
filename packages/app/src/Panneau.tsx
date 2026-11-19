@@ -578,6 +578,32 @@ function Loading({ error, onRetry }: { error: unknown; onRetry: () => void }) {
 }
 
 /**
+ * The app before its boot config is validated (decision 0095): the skeleton of the shell, or an
+ * error page when the boot config is invalid, whose issues are in the console.
+ */
+export function BootScreen({
+    locale,
+    failed = false,
+}: {
+    locale?: string | undefined;
+    failed?: boolean;
+}) {
+    return (
+        <PanneauRoot {...(locale !== undefined ? { locale } : {})} className={styles.root}>
+            {failed ? (
+                <div className={styles.frame}>
+                    <div className={styles.panel}>
+                        <ErrorPage kind="error" />
+                    </div>
+                </div>
+            ) : (
+                <ShellSkeleton />
+            )}
+        </PanneauRoot>
+    );
+}
+
+/**
  * The Panneau admin panel, for a React app that renders it itself. `createPanneauApp()` mounts it
  * in an element of the page. The adapter, the query client and the locales of the plugins are
  * read on the first render.
