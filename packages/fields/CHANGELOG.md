@@ -1,5 +1,48 @@
 # @panneau/fields
 
+## 5.0.0-alpha.45
+
+### Minor Changes
+
+- 9dc08d7: Lists ask for the fields they show, and relation fields resolve their ids in one request. `@panneau/lists`: `useListFields()` gives the fields that a `ListView` shows of its items (its columns shown, the title and the image of items, the field of the calendar), and `getListFields()` computes them, for the `fields` of the list query; `undefined` with a column that has `render` or a layout that isn't built in. `@panneau/app`: the list of a resource sends them. `@panneau/fields`: `createRelationSource().resolve()` asks for the ids of every field of a form in one list query on `filter[ids]` (by groups of 100), instead of a `get()` per id, keeps the items in its new `items` option (the item queries of the query client, in the app), and has a new `peek()`, the reference of an item it already has; `useRelationReferences()` no longer keeps a cache of its own, and `RelationListAdapter` no longer has `get()`. `@panneau/data`: lists and items stay fresh for 30 seconds, until a mutation invalidates them. `@panneau/protocol`: `MAX_PER_PAGE` (100), the most items a page has: `perPage`, `perPageOptions` and `calendar.perPage` of a list are at most 100, the mock backend caps `perPage` there and gives the fields of `fields` only, and the conformance checks both (`list.per-page`, `list.fields`, where a backend can also give the values of `itemTitle` and `itemImage`).
+- 3117891: Panneau's messages load on first use, in the language the app shows (#346): a minimal app goes from 1600 KB to 1544 KB minified (499 KB to 485 KB gzip). `@panneau/intl`: `loadPanneauMessages(locale)` loads the messages of every package for a locale with an `import()` the first time, and `getLoadedPanneauMessages(locale)` returns them once loaded. `@panneau/ui`: `PanneauRoot` loads them, and renders in English until then, without the English catalog. `@panneau/app`: the app waits for them with the messages of the plugins. `@panneau/fields` and `@panneau/lists`: `locales.fr` of `fieldsPlugin` and `listsPlugin` is a loader. The thumbnails of the embed display, the embed field and the media field load when scrolled to (`loading="lazy"`).
+- db712f6: One way to resolve plugin entries (decision 0097).
+  
+  **Breaking: the ids of the built-in plugins.** `panneau-fields`, `panneau-lists`, `panneau-media` and `panneau-editor` are now `panneau.fields`, `panneau.lists`, `panneau.media` and `panneau.editor`, without aliases. A plugin id is `{vendor}.{name}`. Nothing reads an id but the check that ids are unique, so this only breaks a project that relies on those strings.
+  
+  **Breaking for types: the props of the definition are unchecked.** The components and panels of form layouts, and pages, get the `props` of the definition as `WithDefinitionProps<…>`. A component that required one of them (`({ label }: { label: string })`) no longer type-checks: declare them optional, beside the props of its kind (`LayoutComponentProps & { label?: string }`).
+  
+  `@panneau/core`: `PluginKinds` types the entries of each kind, and packages add theirs by declaration merging. `PanneauPlugin` and `PluginRegistry` derive from it, and `definePlugin()` keeps the type of the plugin. `resolveEntry()`, `getEntries()`, `useEntry()` and `useEntries()` read every kind in one order: built-ins, plugins, then the overrides of the component that renders them, with a warning in development when nothing gives an entry (`warnMissingEntry()`). `PageProps` (the id of a page, the definition, the base path and the params) joins `WidgetProps`, which gets the `currency` and the `period` of built-in widgets. `PluginComponent` and `PluginComponentKind` are deprecated.
+  
+  `@panneau/forms` declares `fields`, `components` and `panels`; `@panneau/lists` `fields`, `displays`, `listLayouts` and the new `filters`, the filter controls of plugins by filter type; `@panneau/actions` `actions`. `@panneau/app`: a plugin can replace a built-in widget type (`stat`), whose data is still checked against the protocol, and the built-in `dashboard` page. `docs/extending.md` describes every kind.
+- f8ae53c: The deprecated APIs are removed before the first beta, so that 5.0.0 ships without them. To migrate a project that started on an alpha:
+  
+  - **Buttons:** `variant="primary"`, `secondary`, `ghost` and `danger` of `Button`, `LinkButton` and `IconButton` are gone, with the `ButtonVariant` type. Run `npx @panneau/codemods@alpha button-variants resources/js` (`--dry` first): it gives each button the `tone` and the `appearance` the alias stood for (`primary` is `tone="accent"`, `ghost` is `appearance="ghost"`, `danger` is `tone="danger"`, `secondary` is the default), and reports what it can't read, such as a `variant` in an object of props. `variant` now only names a variant of the theme.
+  - **Tones:** `AlertTone`, `BadgeTone` and `ToastTone` of `@panneau/ui` are gone: use `Tone`.
+  - **Messages:** `@panneau/fields/locales`, `@panneau/forms/locales` and `@panneau/ui/locales` are gone: use `en`, `fr` or `withPanneauMessages()` of `@panneau/intl`, which hold the messages of every package.
+  - **Pages:** `LinkButton` of `@panneau/app` is gone: use `LinkButton` of `@panneau/ui`, with `tone="accent"` and an icon component (`icon={Plus}`). `back` of `PageHeader` is gone: use `parents={[back]}`.
+  
+  `@panneau/codemods` has the `button-variants` codemod (`panneau-codemods button-variants <paths>`, or `runCodemods({ codemod: 'button-variants' })`). Inside the packages, every button takes a `tone` and an `appearance`, and a lint rule forbids the aliases.
+- 323fdeb: Less JavaScript to load before the first page (#346): a minimal app goes from 2082 KB to 1600 KB minified (609 KB to 499 KB gzip). `@panneau/app`: the auth pages and the account page load on first use, with the skeleton of their shape until then, and the README's setup adds `@react-aria/optimize-locales-plugin` to the Vite config, to keep React Aria's strings to the app's languages. `@panneau/fields`: the entries of `builtInFields` with heavy code (`tel` and the metadata of phone numbers, `location`, `address`, `link`, `embed`, `file`, `country`, `region`, `color`, `json`, `daterange`, `duration`, `money`) load on first use, with the skeleton of the field until then; `lazyFieldEntry()` does the same for the types of plugins. `@panneau/lists`: the `tel` display loads with the first number shown, which shows as it is until then.
+
+### Patch Changes
+
+- 003b237: Relation fields search their source only once their picker is about to be used: when the field gets the focus, when the pointer comes over it, or when the picker opens. A form with many relation fields no longer sends a search for each one as it opens. `useRelationSearch()` searches the empty query at once, debounces typed ones, and isn't loading while it isn't enabled.
+- 44ba63b: One copy of the shared helpers. A protocol-relative link (`//example.com`) opens in a new tab from a row and from the header of an item, as it does from the editor: every package decides with `isExternalUrl()` of `@panneau/protocol/runtime`. `@panneau/lists`: `ActionButton` is public, and takes `inHeader` (the color of the action, outlined, with the icon of an external link), which the actions of an item in `@panneau/app` now use. `getActionHref()` is no longer public: use `fillActionUrl()` of `@panneau/core`. `@panneau/ui`: `cx()` is public, the one `cx` of every package. `@panneau/core`: `ruleMessages` holds the English messages of the rules by the keys of `@panneau/intl` (`panneau.forms.rule.<key>`), `crop` included, and `formatRuleFailure()` uses them: numbers are formatted (`1,200`) and lists take a serial comma (`YouTube, Vimeo, or Spotify`). `@panneau/media`: the picker's own `formatDuration` is now `formatPlaybackTime`, apart from `formatDuration()` of `@panneau/fields/duration`.
+- Updated dependencies [0bbbeea]
+- Updated dependencies [b4d79ec]
+- Updated dependencies [e0865af]
+- Updated dependencies [9dc08d7]
+- Updated dependencies [3117891]
+- Updated dependencies [5fcdf58]
+- Updated dependencies [9e17345]
+- Updated dependencies [f8ae53c]
+- Updated dependencies [44ba63b]
+- Updated dependencies [0f82abf]
+  - @panneau/protocol@5.0.0-alpha.45
+  - @panneau/ui@5.0.0-alpha.45
+  - @panneau/intl@5.0.0-alpha.45
+
 ## 5.0.0-alpha.44
 
 ### Minor Changes

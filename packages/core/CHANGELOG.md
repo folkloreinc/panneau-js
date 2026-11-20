@@ -1,5 +1,30 @@
 # @panneau/core
 
+## 5.0.0-alpha.45
+
+### Minor Changes
+
+- ecfec65: A keystroke in a form no longer renders every field. `@panneau/forms`: each field subscribes to its own value, errors and visibility, the form to its status, and the layout to what it shows, so a change renders the field that changed and the fields of the same object (its block, or the top of the form: they get it as `parentValue`), not the fields of other blocks. Before, every field rendered on every keystroke. `@panneau/core`: `useFormSelector(form, select)` subscribes a component to a slice of a form's state, and `useFormField()` uses it. `state.errors` keeps the same object, and the same array for each path, while the errors stay the same, and `selectErrors()` returns the same array for the same errors (an empty one is always the same): its return type and that of `form.getErrors()` are now `readonly string[]`.
+- 1e60706: A required field inside a hidden tab or section no longer blocks the save (decision 0098). `resolveFields()` and `resolveForm()` of `@panneau/core`, which are public, now give each field the `visibleWhen` of the layout nodes that hold it, combined with its own (`all` of them, `any` of the places of a field placed twice): forms neither show nor validate a field whose tab or section is hidden. The definition sent by the backend doesn't change, but the fields these functions give may have a `visibleWhen` that the definition's don't. The protocol now says that a field in a hidden node is hidden: backends don't validate it nor save its value (laravel-panneau follows in its own release).
+- db712f6: One way to resolve plugin entries (decision 0097).
+  
+  **Breaking: the ids of the built-in plugins.** `panneau-fields`, `panneau-lists`, `panneau-media` and `panneau-editor` are now `panneau.fields`, `panneau.lists`, `panneau.media` and `panneau.editor`, without aliases. A plugin id is `{vendor}.{name}`. Nothing reads an id but the check that ids are unique, so this only breaks a project that relies on those strings.
+  
+  **Breaking for types: the props of the definition are unchecked.** The components and panels of form layouts, and pages, get the `props` of the definition as `WithDefinitionProps<…>`. A component that required one of them (`({ label }: { label: string })`) no longer type-checks: declare them optional, beside the props of its kind (`LayoutComponentProps & { label?: string }`).
+  
+  `@panneau/core`: `PluginKinds` types the entries of each kind, and packages add theirs by declaration merging. `PanneauPlugin` and `PluginRegistry` derive from it, and `definePlugin()` keeps the type of the plugin. `resolveEntry()`, `getEntries()`, `useEntry()` and `useEntries()` read every kind in one order: built-ins, plugins, then the overrides of the component that renders them, with a warning in development when nothing gives an entry (`warnMissingEntry()`). `PageProps` (the id of a page, the definition, the base path and the params) joins `WidgetProps`, which gets the `currency` and the `period` of built-in widgets. `PluginComponent` and `PluginComponentKind` are deprecated.
+  
+  `@panneau/forms` declares `fields`, `components` and `panels`; `@panneau/lists` `fields`, `displays`, `listLayouts` and the new `filters`, the filter controls of plugins by filter type; `@panneau/actions` `actions`. `@panneau/app`: a plugin can replace a built-in widget type (`stat`), whose data is still checked against the protocol, and the built-in `dashboard` page. `docs/extending.md` describes every kind.
+- 44ba63b: One copy of the shared helpers. A protocol-relative link (`//example.com`) opens in a new tab from a row and from the header of an item, as it does from the editor: every package decides with `isExternalUrl()` of `@panneau/protocol/runtime`. `@panneau/lists`: `ActionButton` is public, and takes `inHeader` (the color of the action, outlined, with the icon of an external link), which the actions of an item in `@panneau/app` now use. `getActionHref()` is no longer public: use `fillActionUrl()` of `@panneau/core`. `@panneau/ui`: `cx()` is public, the one `cx` of every package. `@panneau/core`: `ruleMessages` holds the English messages of the rules by the keys of `@panneau/intl` (`panneau.forms.rule.<key>`), `crop` included, and `formatRuleFailure()` uses them: numbers are formatted (`1,200`) and lists take a serial comma (`YouTube, Vimeo, or Spotify`). `@panneau/media`: the picker's own `formatDuration` is now `formatPlaybackTime`, apart from `formatDuration()` of `@panneau/fields/duration`.
+
+### Patch Changes
+
+- Updated dependencies [0bbbeea]
+- Updated dependencies [b4d79ec]
+- Updated dependencies [9dc08d7]
+- Updated dependencies [0f82abf]
+  - @panneau/protocol@5.0.0-alpha.45
+
 ## 5.0.0-alpha.44
 
 ### Patch Changes
