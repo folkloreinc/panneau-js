@@ -1,4 +1,4 @@
-import type { Field, LayoutNode, Resource, Rule } from '@panneau/protocol';
+import type { Condition, Field, LayoutNode, Resource, Rule } from '@panneau/protocol';
 import { getTypeFields } from '@panneau/protocol/runtime';
 
 import { canUpdateField, canViewField } from './abilities';
@@ -58,6 +58,53 @@ function pruneLayout(
     });
 }
 
+/**
+ * The conditions of the nodes around each field of a layout, from the root, the field's own node
+ * included: one list for each place of the field.
+ */
+function nodeConditions(
+    nodes: readonly LayoutNode[],
+    around: readonly Condition[] = [],
+    places = new Map<string, Condition[][]>(),
+): Map<string, Condition[][]> {
+    nodes.forEach((node) => {
+        const conditions =
+            node.visibleWhen !== undefined ? [...around, node.visibleWhen] : [...around];
+        if (node.type === 'field' && node.name !== undefined) {
+            places.set(node.name, [...(places.get(node.name) ?? []), conditions]);
+        }
+        nodeConditions(node.children ?? [], conditions, places);
+    });
+    return places;
+}
+
+function allOf(conditions: readonly Condition[]): Condition {
+    return conditions.length === 1 && conditions[0] !== undefined
+        ? conditions[0]
+        : { all: [...conditions] };
+}
+
+/**
+ * A field with the conditions of the layout nodes that hold it (decision 0098): hidden in a node
+ * that is hidden, as if it had the condition itself, so that forms neither show nor validate it.
+ * A field in several places shows when one of them does.
+ */
+function withNodeConditions(
+    field: Field,
+    places: ReadonlyMap<string, readonly Condition[][]>,
+): Field {
+    const placed = places.get(field.name);
+    if (placed === undefined || placed.some((conditions) => conditions.length === 0)) {
+        return field;
+    }
+    const ofNodes = placed.length === 1 ? allOf(placed[0] ?? []) : { any: placed.map(allOf) };
+    return {
+        ...field,
+        visibleWhen:
+            field.visibleWhen !== undefined ? { all: [ofNodes, field.visibleWhen] } : ofNodes,
+    };
+}
+
 /** The rules that apply in the mode, without their `mode`. */
 function resolveRules(rules: readonly Rule[], mode: FormMode): Rule[] {
     return rules.flatMap((rule) => {
@@ -94,7 +141,9 @@ function resolveFieldRules(field: Field, mode: FormMode): Field {
  * Resolves fields and a layout into a form. Fields the current user can't see
  * (`abilities.view: false`) are left out, and those they can't edit (`abilities.update: false`)
  * are read-only (decision 0046). Fields that only items give (`notInForm`) are left out too, even
- * when the layout names them (decision 0071).
+ * when the layout names them (decision 0071). A field inside layout nodes with `visibleWhen` gets
+ * their conditions in its own (decision 0098): forms hide it and don't validate it when one of
+ * them is false. The definition itself doesn't change.
  */
 export function resolveFields(
     fields: readonly Field[],
@@ -118,13 +167,15 @@ export function resolveFields(
         }
         return [withRules];
     });
-    const fieldsByName = new Map(resolved.map((field) => [field.name, field]));
-    const pruned = pruneLayout(layout, fieldsByName);
+    const pruned = pruneLayout(layout, new Map(resolved.map((field) => [field.name, field])));
+    const places = nodeConditions(pruned);
+    const placed = resolved.map((field) => withNodeConditions(field, places));
+    const fieldsByName = new Map(placed.map((field) => [field.name, field]));
     const referenced = referencedNames(pruned);
-    const appended: LayoutNode[] = resolved
+    const appended: LayoutNode[] = placed
         .filter((field) => !referenced.has(field.name))
         .map((field) => ({ type: 'field', name: field.name }));
-    return { fields: resolved, fieldsByName, layout: [...pruned, ...appended] };
+    return { fields: placed, fieldsByName, layout: [...pruned, ...appended] };
 }
 
 /** Resolves the form of a resource: its fields (plus those of the item's type) and its layout. */

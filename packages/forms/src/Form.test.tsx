@@ -134,6 +134,44 @@ describe('Form without a definition', () => {
         );
     });
 
+    it('saves without the required fields of a hidden section (decision 0098)', async () => {
+        const onSubmit = vi.fn();
+        renderForm(
+            <Form
+                fields={[
+                    { name: 'title', type: 'text', label: 'Title' },
+                    { name: 'event', type: 'boolean', label: 'Event' },
+                    {
+                        name: 'starts_on',
+                        type: 'date',
+                        label: 'Starts on',
+                        rules: [{ rule: 'required' }],
+                    },
+                ]}
+                layout={[
+                    { type: 'field', name: 'title' },
+                    { type: 'field', name: 'event' },
+                    {
+                        type: 'section',
+                        label: 'Dates',
+                        visibleWhen: { field: 'event', equals: true },
+                        children: [{ type: 'field', name: 'starts_on' }],
+                    },
+                ]}
+                values={{ title: 'News' }}
+                onSubmit={onSubmit}
+            />,
+        );
+        expect(screen.queryByText('Starts on')).not.toBeInTheDocument();
+        await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
+        // Shown, the section's field is required
+        await userEvent.click(screen.getByRole('checkbox', { name: 'Event' }));
+        await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+        expect(await screen.findByRole('alert')).toHaveTextContent('1 error prevents saving');
+        expect(onSubmit).toHaveBeenCalledTimes(1);
+    });
+
     it('saves a required file chosen without direct uploads', async () => {
         const onSubmit = vi.fn();
         const onSubmitted = vi.fn();
