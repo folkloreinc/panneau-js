@@ -87,6 +87,8 @@ export function ImageItem({
             <TransformedImage
                 image={image}
                 transform={reference.transform}
+                // The thumbnail, drawn at the size of the original: the original is for the editor.
+                previewUrl={reference.media?.thumbnailUrl}
                 alt=""
                 fit={tile ? 'slice' : 'meet'}
                 className={tile ? styles.tilePreview : styles.preview}

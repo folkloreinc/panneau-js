@@ -4,9 +4,10 @@ import type { EditedImage } from '../editor/types';
 
 // Images drawn in SVG, for the editor's tests and stories: no network, and subjects to crop.
 
-const svg = (width: number, height: number, content: string) =>
+// `size` is the size of the file, when it isn't the size of the drawing: a thumbnail.
+const svg = (width: number, height: number, content: string, size = { width, height }) =>
     `data:image/svg+xml,${encodeURIComponent(
-        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${String(width)} ${String(height)}" width="${String(width)}" height="${String(height)}">${content}</svg>`,
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${String(width)} ${String(height)}" width="${String(size.width)}" height="${String(size.height)}" preserveAspectRatio="none">${content}</svg>`,
     )}`;
 
 /** A harbour at dawn: a lighthouse on the right third, the sun above it, boats on the left. */
@@ -71,6 +72,12 @@ export const harbour: EditedImage = {
     width: 4000,
     height: 3000,
 };
+
+/** The harbour's thumbnail: the whole image, 400 × 300. */
+export const harbourThumbnail = svg(4000, 3000, harbourScene, { width: 400, height: 300 });
+
+/** A square thumbnail of the harbour, 300 × 300: not the proportions of the original. */
+export const harbourSquareThumbnail = svg(4000, 3000, harbourScene, { width: 300, height: 300 });
 
 /**
  * A portrait stored sideways (4032 × 3024), which its library turns upright with its own

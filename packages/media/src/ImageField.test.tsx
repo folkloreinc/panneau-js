@@ -6,7 +6,13 @@ import { PanneauProvider } from '@panneau/core';
 import type { Definition, Field, MediaReference } from '@panneau/protocol';
 
 import { ImageField, MediaFieldEntry, getImageOptions } from './MediaField';
-import { harbour, harbourBanner, hiker, referenceTo } from './__fixtures__/images';
+import {
+    harbour,
+    harbourBanner,
+    harbourThumbnail,
+    hiker,
+    referenceTo,
+} from './__fixtures__/images';
 import { createMemorySource, libraryMedia } from './__fixtures__/mediaSources';
 import { Controlled, renderInRoot } from './__fixtures__/render';
 
@@ -199,6 +205,38 @@ describe('ImageField', () => {
 
         expect(screen.getByText('Cropped for this use')).toBeInTheDocument();
         expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    });
+
+    it('draws the crop over the thumbnail, and leaves the original to the editor', async () => {
+        const reference = referenceTo(harbour, 'med_h', { transform: harbourBanner });
+        const { container } = renderInRoot(
+            <ImageField
+                label="Cover"
+                resource="media"
+                adapter={null}
+                sources={[]}
+                value={{
+                    ...reference,
+                    media: { ...reference.media, type: 'image', thumbnailUrl: harbourThumbnail },
+                }}
+                onChange={() => undefined}
+            />,
+        );
+        const hrefs = () =>
+            Array.from(document.querySelectorAll('image'), (image) => image.getAttribute('href'));
+
+        const preview = container.querySelector('li svg');
+        expect(preview?.getAttribute('viewBox')).toBe('1100 600 2800 1575');
+        const image = preview?.querySelector('image');
+        expect(image?.getAttribute('width')).toBe('4000');
+        expect(image?.getAttribute('height')).toBe('3000');
+        expect(hrefs()).toEqual([harbourThumbnail]);
+
+        await userEvent.click(screen.getByRole('button', { name: 'Edit harbour at dawn' }));
+        const editor = screen.getByRole('dialog', { name: 'Edit image' });
+        expect(
+            Array.from(editor.querySelectorAll('image'), (drawn) => drawn.getAttribute('href')),
+        ).toContain(harbour.url);
     });
 });
 
