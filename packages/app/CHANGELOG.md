@@ -1,5 +1,26 @@
 # @panneau/app
 
+## 5.0.0-alpha.46
+
+### Patch Changes
+
+- 0e4d88a: Search the related resource in the `relation` filters of resource lists: the app now gives a relation source to the fields context of every page (lists and their filters, item panels, forms), not just to forms.
+- b146a56: Opening an item no longer reflows its list: the item panel of list pages goes over the list, on its right, at every width, so a table stays a table and keeps its columns (#366, decision 0099). `AsideLayout` takes `placement="overlay"` for this; forms keep their aside beside them.
+  
+  The list page no longer takes the whole width while an item is open, and loses its `panneau-pages-with-panel` class.
+- Updated dependencies [0e4d88a]
+- Updated dependencies [f4f816c]
+- Updated dependencies [b146a56]
+  - @panneau/lists@5.0.0-alpha.46
+  - @panneau/ui@5.0.0-alpha.46
+  - @panneau/actions@5.0.0-alpha.46
+  - @panneau/fields@5.0.0-alpha.46
+  - @panneau/forms@5.0.0-alpha.46
+  - @panneau/core@5.0.0-alpha.46
+  - @panneau/data@5.0.0-alpha.46
+  - @panneau/intl@5.0.0-alpha.46
+  - @panneau/protocol@5.0.0-alpha.46
+
 ## 5.0.0-alpha.45
 
 ### Minor Changes

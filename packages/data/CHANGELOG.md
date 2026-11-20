@@ -1,5 +1,11 @@
 # @panneau/data
 
+## 5.0.0-alpha.46
+
+### Patch Changes
+
+- @panneau/protocol@5.0.0-alpha.46
+
 ## 5.0.0-alpha.45
 
 ### Minor Changes

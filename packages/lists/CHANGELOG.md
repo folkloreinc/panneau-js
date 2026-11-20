@@ -1,5 +1,19 @@
 # @panneau/lists
 
+## 5.0.0-alpha.46
+
+### Patch Changes
+
+- 0e4d88a: Search the related resource in the `relation` filters of resource lists: the app now gives a relation source to the fields context of every page (lists and their filters, item panels, forms), not just to forms.
+- f4f816c: Keep the thumb of a checked `Switch` inside its track in right-to-left text, and read `prefers-reduced-motion` with `prefersReducedMotion()` in `ListView`.
+- Updated dependencies [f4f816c]
+- Updated dependencies [b146a56]
+  - @panneau/ui@5.0.0-alpha.46
+  - @panneau/fields@5.0.0-alpha.46
+  - @panneau/core@5.0.0-alpha.46
+  - @panneau/intl@5.0.0-alpha.46
+  - @panneau/protocol@5.0.0-alpha.46
+
 ## 5.0.0-alpha.45
 
 ### Minor Changes

@@ -1,5 +1,19 @@
 # @panneau/media
 
+## 5.0.0-alpha.46
+
+### Patch Changes
+
+- e864d98: The preview of an `image` field draws the media's `thumbnailUrl`, stretched to the size of the original so that its crop is the same, instead of loading the original. The original is only loaded when the image editor opens, or when the thumbnail doesn't load or doesn't have the proportions of the original.
+- Updated dependencies [f4f816c]
+- Updated dependencies [b146a56]
+  - @panneau/ui@5.0.0-alpha.46
+  - @panneau/fields@5.0.0-alpha.46
+  - @panneau/core@5.0.0-alpha.46
+  - @panneau/data@5.0.0-alpha.46
+  - @panneau/intl@5.0.0-alpha.46
+  - @panneau/protocol@5.0.0-alpha.46
+
 ## 5.0.0-alpha.45
 
 ### Minor Changes

@@ -1,5 +1,15 @@
 # @panneau/ui
 
+## 5.0.0-alpha.46
+
+### Patch Changes
+
+- f4f816c: Keep the thumb of a checked `Switch` inside its track in right-to-left text, and read `prefers-reduced-motion` with `prefersReducedMotion()` in `ListView`.
+- b146a56: Opening an item no longer reflows its list: the item panel of list pages goes over the list, on its right, at every width, so a table stays a table and keeps its columns (#366, decision 0099). `AsideLayout` takes `placement="overlay"` for this; forms keep their aside beside them.
+  
+  The list page no longer takes the whole width while an item is open, and loses its `panneau-pages-with-panel` class.
+- @panneau/intl@5.0.0-alpha.46
+
 ## 5.0.0-alpha.45
 
 ### Minor Changes
