@@ -5,7 +5,7 @@
 ```ts
 
 // @public
-export type Codemod = 'v4-to-v5' | 'button-variants';
+export type Codemod = 'v4-to-v5' | 'button-variants' | 'list-view-props';
 
 // @public
 export interface Finding {

@@ -34,6 +34,23 @@ The codemod leaves out what the button has without them (a neutral button is out
 | `@panneau/codemods` | `runCodemods()` (files on disk), `transformSources()` (sources in memory), `formatReport()` and `runCli()`, with the codemod to run (`v4-to-v5` by default, or `button-variants`) |
 | `panneau-codemods`  | The command (`bin`)                                                                                                                                                               |
 
+## ListView props
+
+The alphas of Panneau 5 gave `ListView` and `List` of `@panneau/lists` their actions, layouts and inline edits as separate props. Panneau 5.0 groups them into three objects. `list-view-props` rewrites them:
+
+```bash
+npx @panneau/codemods@alpha list-view-props resources/js --dry
+npx @panneau/codemods@alpha list-view-props resources/js
+```
+
+| Props of the alphas                                                    | 5.0                                                       |
+| ---------------------------------------------------------------------- | --------------------------------------------------------- |
+| `actions`, `onAction`, `previewAction`, `actionIcons`, `primaryAction` | `actions={{ available, onRun, preview, icons, primary }}` |
+| `inlineEdit`, `onInlineEdit`, `formatError`                            | `inline={{ fields, onEdit, formatError }}`                |
+| `layouts`, `layout`, `onLayoutChange`, `layoutComponents`              | `layouts={{ available, current, onChange, components }}`  |
+
+Each group takes the place of its first prop. Props spread on the component (`{...list}`) are reported: they may hold props of the alphas.
+
 ## Why jscodeshift
 
 The codemods are built on [jscodeshift](https://github.com/facebook/jscodeshift), the tool of the React and Next.js codemods:
