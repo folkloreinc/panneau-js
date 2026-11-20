@@ -5,10 +5,29 @@ import { expect, screen, userEvent, waitFor, within } from 'storybook/test';
 import type { MediaReference } from '@panneau/protocol';
 
 import { ImageField } from './MediaField';
-import { harbour, harbourBanner, hiker, referenceTo } from './__fixtures__/images';
+import {
+    harbour,
+    harbourBanner,
+    harbourSquareThumbnail,
+    harbourThumbnail,
+    hiker,
+    referenceTo,
+} from './__fixtures__/images';
 import { createMemorySource, libraryMedia } from './__fixtures__/mediaSources';
 
 const cover = referenceTo(harbour, 'med_h', { transform: harbourBanner });
+
+/** The cover, with a thumbnail smaller than the original. */
+const withThumbnail = (thumbnailUrl: string): MediaReference => ({
+    ...cover,
+    media: { ...cover.media, type: 'image', thumbnailUrl },
+});
+
+/** The URLs of the images a part of the page draws. */
+const drawnUrls = (element: Element) =>
+    Array.from(element.querySelectorAll('image, img'), (image) =>
+        image instanceof HTMLImageElement ? image.src : image.getAttribute('href'),
+    );
 
 /** An image field with its value in state, on a library of the fixtures. */
 function Cover({
@@ -71,6 +90,50 @@ export const WithImage: Story = {
         await expect(canvas.getByText('Cropped for this use')).toBeVisible();
         await expect(canvas.getByText('16:9 or 1:1')).toBeVisible();
         await expect(canvas.getByText(/2,?800 × 1,?575 · 16:9/)).toBeVisible();
+    },
+};
+
+/**
+ * The image has a thumbnail: its preview draws it, at the size of the original, with the same crop.
+ * The original is only loaded by the editor.
+ */
+export const WithThumbnail: Story = {
+    render: () => <Cover initial={withThumbnail(harbourThumbnail)} />,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const preview = canvasElement.querySelector('li svg');
+        await expect(preview).not.toBeNull();
+        // The crop of the original, drawn over the thumbnail stretched to the original's size.
+        await expect(preview?.getAttribute('viewBox')).toBe('1100 600 2800 1575');
+        const image = preview?.querySelector('image');
+        await expect(image?.getAttribute('width')).toBe('4000');
+        await expect(image?.getAttribute('height')).toBe('3000');
+        await expect(canvas.getByText(/2,?800 × 1,?575 · 16:9/)).toBeVisible();
+        // The thumbnail has the proportions of the original: it stays, once it has loaded.
+        await new Promise((resolve) => {
+            const loaded = new Image();
+            loaded.onload = resolve;
+            loaded.src = harbourThumbnail;
+        });
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        await expect(drawnUrls(canvasElement.ownerDocument.body)).toEqual([harbourThumbnail]);
+
+        await userEvent.click(canvas.getByRole('button', { name: 'Edit harbour at dawn' }));
+        const dialog = await screen.findByRole('dialog', { name: 'Edit image' });
+        await expect(drawnUrls(dialog)).toContain(harbour.url);
+        await expect(drawnUrls(dialog)).not.toContain(harbourThumbnail);
+    },
+};
+
+/** A thumbnail without the proportions of the original: the preview draws the original. */
+export const WithSquareThumbnail: Story = {
+    render: () => <Cover initial={withThumbnail(harbourSquareThumbnail)} />,
+    play: async ({ canvasElement }) => {
+        await waitFor(() =>
+            expect(drawnUrls(canvasElement.querySelector('li svg') ?? canvasElement)).toEqual([
+                harbour.url,
+            ]),
+        );
     },
 };
 
