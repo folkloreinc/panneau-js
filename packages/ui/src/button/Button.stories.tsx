@@ -20,7 +20,7 @@ export const Secondary: Story = {
     },
 };
 
-/** The deprecated `variant` aliases, kept during the alpha: see the Tones stories for tone × appearance. */
+/** Common buttons: an accent action, the neutral default, ghost and danger. See the Tones stories for every tone × appearance. */
 export const Variants: Story = {
     render: (args) => (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -67,10 +67,12 @@ export const TonesAndAppearances: Story = {
     ),
 };
 
+/** A pending button keeps its size and its name, which assistive technologies announce with it. */
 export const Pending: Story = {
     args: { tone: 'accent', isPending: true },
     play: async ({ args, canvasElement }) => {
-        const button = within(canvasElement).getByRole('button');
+        const button = within(canvasElement).getByRole('button', { name: 'Save' });
+        await expect(button).toHaveAttribute('aria-disabled', 'true');
         await userEvent.click(button);
         await expect(args.onPress).not.toHaveBeenCalled();
     },

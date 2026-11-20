@@ -126,8 +126,10 @@
     min-width: 0;
 }
 
+/* The spinner takes the place of the content, which keeps the size of the button and, unlike
+   `visibility: hidden`, stays in the accessibility tree: it names the button while it is pending. */
 .pending .content {
-    visibility: hidden;
+    opacity: 0;
 }
 
 .spinner {
