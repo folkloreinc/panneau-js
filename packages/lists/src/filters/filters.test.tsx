@@ -106,6 +106,21 @@ describe('filters', () => {
         expect(within(chips).getByText('Ada Lovelace')).toBeInTheDocument();
     });
 
+    it('says a relation filter can’t search without a relation source (#292)', () => {
+        renderList(
+            <ListView
+                list={createList()}
+                columns={columns}
+                items={items}
+                filters={[{ id: 'author', type: 'relation', resource: 'authors', label: 'Author' }]}
+            />,
+        );
+        expect(screen.getByRole('group', { name: 'Author' })).toHaveTextContent(
+            'Items can’t be searched here.',
+        );
+        expect(screen.queryByRole('combobox', { name: 'Author' })).toBeNull();
+    });
+
     it('resolves the labels of related ids from the query, for the chip and the picker', async () => {
         const source: RelationSource = {
             search: () => Promise.resolve([]),

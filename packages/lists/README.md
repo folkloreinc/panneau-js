@@ -108,7 +108,7 @@ An action shows the icon it names (`"icon": "send"`, through `getNamedIcon()` of
 
 Lists confirm an action when it has `confirm` (its title and message are ICU messages with `{count}`), or when some selected items don't allow it. An `undoable` action runs without a confirmation, unless it sets one, up to `UNDO_LIMIT` items (100), counted from the selection or the dry run: its toast offers "Undo" instead (`asksConfirmation()` of `@panneau/core`, [decision 0063](../../docs/decisions/0063-undo-instead-of-a-confirmation.md)). A value changed in place says so in a toast whose "Undo" saves the previous value the same way, with the version the save got. For every item matching a query, they only know the current page: with `actions.preview` (`useActionPreview()` of `@panneau/actions`), an action that declares `dryRun` asks the backend first, and the confirmation gives its count of skipped items. Then they call `actions.onRun` with the action, its scope, the item or the `Selection` of the protocol, the count and the skipped items. A promise shows the action as pending; when it rejects, a toast says that it failed. After a selection action, the selection is cleared.
 
-A `relation` filter keeps ids in the query (`filter[author]=7`). Its chip and picker show the labels of the items it picked, and those of ids from the URL once the relation source's `resolve()` gives them.
+A `relation` filter keeps ids in the query (`filter[author]=7`). It searches with the relation source of the fields context, which `@panneau/app` gives on every page; without one, it says items can't be searched. Its chip and picker show the labels of the items it picked, and those of ids from the URL once the relation source's `resolve()` gives them.
 
 ## Plugins
 

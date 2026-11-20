@@ -58,6 +58,7 @@ import { loadPage, navigate, usePathname } from './location';
 import { usePluginMessages } from './messages';
 import { usePageStyles } from './pageStyles';
 import { ErrorPage, getErrorPageKind } from './pages/ErrorPage';
+import { createAppRelationSource } from './relationSource';
 import {
     type AppRoute,
     contextPath,
@@ -484,8 +485,18 @@ function Content({
                 <PanneauProvider plugins={plugins} definition={definition} router={router}>
                     <DataAdapterProvider adapter={scoped}>
                         <CurrentContextProvider value={currentContext}>
-                            {/* What `embed` and `location` fields need, in every form */}
-                            <FieldsProvider embedSource={createEmbedSource(scoped)} maps={maps}>
+                            {/* What `embed`, `location` and `relation` fields need, on every page:
+                                forms, the filters of lists, details (#292) */}
+                            <FieldsProvider
+                                embedSource={createEmbedSource(scoped)}
+                                relationSource={createAppRelationSource(
+                                    scoped,
+                                    definition,
+                                    queryClient,
+                                    url.basePath,
+                                )}
+                                maps={maps}
+                            >
                                 <Shell
                                     definition={definition}
                                     basePath={url.basePath}
