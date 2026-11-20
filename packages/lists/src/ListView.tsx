@@ -13,7 +13,15 @@ import {
 import { getFileKind } from '@panneau/fields';
 import { getActionLabel } from '@panneau/intl';
 import type { Action, Field, Filter, RuleFailure } from '@panneau/protocol';
-import { Alert, Button, Checkbox, EmptyState, usePanneauIntl, useToast } from '@panneau/ui';
+import {
+    Alert,
+    Button,
+    Checkbox,
+    EmptyState,
+    prefersReducedMotion,
+    usePanneauIntl,
+    useToast,
+} from '@panneau/ui';
 
 import { ListSkeleton } from './ListSkeleton';
 import styles from './ListView.module.css';
@@ -704,8 +712,10 @@ export function ListView({
             return;
         }
         const element = root.current?.querySelector<HTMLElement>('[data-highlighted]');
-        const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-        element?.scrollIntoView?.({ block: 'nearest', behavior: reduced ? 'auto' : 'smooth' });
+        element?.scrollIntoView?.({
+            block: 'nearest',
+            behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+        });
     }, [highlightShown, highlightedItemId]);
 
     return (

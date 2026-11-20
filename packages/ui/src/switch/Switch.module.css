@@ -36,7 +36,7 @@
 .thumb {
     position: absolute;
     top: calc((var(--panneau-switch-height, 1.25rem) - var(--panneau-switch-thumb-size, 1rem)) / 2);
-    left: calc(
+    inset-inline-start: calc(
         (var(--panneau-switch-height, 1.25rem) - var(--panneau-switch-thumb-size, 1rem)) / 2
     );
     width: var(--panneau-switch-thumb-size, 1rem);
@@ -66,6 +66,7 @@
     );
 }
 
+/* The thumb starts at the inline start (the right in RTL), so it travels to the left. */
 .control[data-selected] .thumb:dir(rtl) {
     transform: translateX(
         calc(
