@@ -20,15 +20,17 @@ import {
 } from './transforms/fieldEntries';
 import { transformFields } from './transforms/fields';
 import { transformImports } from './transforms/imports';
+import { transformListViewProps } from './transforms/listViewProps';
 
 /**
  * The codemods: `v4-to-v5` moves a Panneau 4 project to Panneau 5; `button-variants` replaces the
  * aliases of `variant` on buttons (`primary`, `secondary`, `ghost`, `danger`) with a `tone` and an
- * `appearance`, for code written against the first alphas of Panneau 5.
+ * `appearance`; `list-view-props` groups the props of `ListView` and `List` into `actions`,
+ * `inline` and `layouts`. The last two are for code written against the alphas of Panneau 5.
  */
-export type Codemod = 'v4-to-v5' | 'button-variants';
+export type Codemod = 'v4-to-v5' | 'button-variants' | 'list-view-props';
 
-export const CODEMODS: readonly Codemod[] = ['v4-to-v5', 'button-variants'];
+export const CODEMODS: readonly Codemod[] = ['v4-to-v5', 'button-variants', 'list-view-props'];
 
 /** Extensions of the files the codemods read. */
 export const EXTENSIONS: readonly string[] = ['.js', '.jsx', '.mjs', '.ts', '.tsx'];
@@ -210,10 +212,14 @@ export function transformFile(
     };
     const plugin = codemod === 'v4-to-v5' ? transformContainer(api) : null;
     let output: string;
-    if (codemod === 'button-variants') {
-        // Only a file with a rewritten button is printed again: recast reprints some untouched
+    if (codemod === 'button-variants' || codemod === 'list-view-props') {
+        // Only a file with a rewritten component is printed again: recast reprints some untouched
         // expressions once the tree is traversed.
-        output = transformButtonVariants(api) ? root.toSource({ quote: 'single' }) : source;
+        const rewrote =
+            codemod === 'button-variants'
+                ? transformButtonVariants(api)
+                : transformListViewProps(api);
+        output = rewrote ? root.toSource({ quote: 'single' }) : source;
     } else if (plugin !== null) {
         output = plugin;
     } else {

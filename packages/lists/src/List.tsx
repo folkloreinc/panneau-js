@@ -33,7 +33,9 @@ export function List({ items, perPage = 20, defaultSort = [], router, ...props }
         defaults: {
             perPage,
             sort: defaultSort,
-            ...(props.layouts?.[0] !== undefined ? { layout: props.layouts[0] } : {}),
+            ...(props.layouts?.available?.[0] !== undefined
+                ? { layout: props.layouts.available[0] }
+                : {}),
             ...(props.calendar !== null && props.calendar !== undefined
                 ? { calendar: { ...props.calendar, perPage: DEFAULT_CALENDAR_PER_PAGE } }
                 : {}),

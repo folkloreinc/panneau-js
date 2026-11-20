@@ -347,8 +347,18 @@ export function ResourceListPage({
             >
                 {listShown ? (
                     <ListView
-                        {...definitionList}
-                        actions={filterActions(definitionList.actions, isSupported)}
+                        columns={definitionList.columns}
+                        filters={definitionList.filters}
+                        search={definitionList.search}
+                        selectable={definitionList.selectable}
+                        calendar={definitionList.calendar}
+                        actions={{
+                            available: filterActions(definitionList.actions, isSupported),
+                            // The main action of rows keeps its label: what the title opens
+                            primary: getOpenMode(resource) === 'edit' ? 'edit' : 'show',
+                            onRun: runAction,
+                            preview: previewAction,
+                        }}
                         aria-label={title}
                         list={list}
                         items={data?.data}
@@ -359,7 +369,7 @@ export function ResourceListPage({
                         fields={getVisibleFields(resource.fields)}
                         itemTitle={resource.itemTitle}
                         itemImage={itemImage}
-                        layouts={layouts}
+                        layouts={{ available: layouts }}
                         perPageOptions={[10, 20, 50, 100]}
                         // Titles open the panel, with the list's query, or the form (`open` of the resource)
                         getItemHref={(item) => getItemPath(resource, item, basePath, search)}
@@ -369,18 +379,16 @@ export function ResourceListPage({
                         })}
                         currentItemId={selectedId}
                         highlightedItemId={highlightedId}
-                        // The main action of rows keeps its label: what the title opens
-                        primaryAction={getOpenMode(resource) === 'edit' ? 'edit' : 'show'}
-                        onAction={runAction}
-                        previewAction={previewAction}
-                        onInlineEdit={({ item, field, value }) =>
-                            update.mutateAsync({
-                                id: item.id,
-                                values: { [field.name]: value },
-                                version: typeof item.version === 'string' ? item.version : null,
-                            })
-                        }
-                        formatError={formatError}
+                        inline={{
+                            fields: definitionList.inlineEdit,
+                            onEdit: ({ item, field, value }) =>
+                                update.mutateAsync({
+                                    id: item.id,
+                                    values: { [field.name]: value },
+                                    version: typeof item.version === 'string' ? item.version : null,
+                                }),
+                            formatError,
+                        }}
                     />
                 ) : null}
             </AsideLayout>

@@ -35,17 +35,19 @@ function Members() {
             error={error}
             search
             filters={[{ id: 'role', type: 'select', options: roles }]}
-            actions={[
-                {
-                    id: 'remove',
-                    label: 'Remove',
-                    kind: 'server',
-                    scope: ['item', 'selection'],
-                    destructive: true,
-                    confirm: true,
-                },
-            ]}
-            onAction={({ action, item, selection }) => api.run(action.id, item?.id ?? selection)}
+            actions={{
+                available: [
+                    {
+                        id: 'remove',
+                        label: 'Remove',
+                        kind: 'server',
+                        scope: ['item', 'selection'],
+                        destructive: true,
+                        confirm: true,
+                    },
+                ],
+                onRun: ({ action, item, selection }) => api.run(action.id, item?.id ?? selection),
+            }}
         />
     );
 }
@@ -55,7 +57,7 @@ With every item at hand, `List` does the query in memory: `<List columns={column
 
 ## From a definition
 
-`resolveList()` of `@panneau/core` gives the props of a resource's list:
+`resolveList()` of `@panneau/core` gives what the list of a resource shows:
 
 ```tsx
 const { resource, list: resolved } = useResource('pages');
@@ -63,17 +65,28 @@ const { query, list } = useList({ list: resolved });
 const { data, isFetching, error } = useResourceList('pages', query); // @panneau/data/query
 
 <ListView
-    {...resolved}
     list={list}
     items={data?.data}
     total={data?.meta.total}
     isLoading={isFetching}
     error={error}
+    columns={resolved.columns}
+    filters={resolved.filters}
+    search={resolved.search}
+    selectable={resolved.selectable}
+    calendar={resolved.calendar}
+    perPageOptions={resolved.perPageOptions}
+    layouts={{ available: resolved.layouts }}
+    actions={{ available: resolved.actions, onRun: (event) => runAction(event) }}
+    inline={{ fields: resolved.inlineEdit, onEdit: saveField }}
     fields={resource.fields}
     itemTitle={resource.itemTitle}
-    onAction={(event) => runAction(event)}
 />;
 ```
+
+Props are grouped by what they are about: `actions` (`available`, `onRun`, `preview`, `icons`, `primary`), `inline` (`fields`, `onEdit`, `formatError`) and `layouts` (`available`, `current`, `onChange`, `components`). The props of the alphas (`onAction`, `previewAction`, `layout`, `inlineEdit`…) move to them with `npx @panneau/codemods@alpha list-view-props` ([codemods](../codemods)).
+
+````
 
 ## What a list does
 
@@ -82,28 +95,28 @@ const { data, isFetching, error } = useResourceList('pages', query); // @panneau
 | Columns    | `item[id]` shown with a display: the column's `display`, else text. Localized values in the UI's locale. `render` for a cell of its own                                                                                                                                                                                                                                                                                                                        |
 | Displays   | `text`, `textarea`, `slug`, `richtext`, `number`, `boolean`, `date`, `datetime`, `time`, `select`, `relation`, `url`, `email`, `color`, `media`                                                                                                                                                                                                                                                                                                                |
 | Columns    | A "Columns" menu shows, hides and orders them: `hidden` columns are shown when the user picks them, and `hideable: false` ones always are. In the view of the list state                                                                                                                                                                                                                                                                                       |
-| Layouts    | `table`, `cards`, `gallery` (on `itemImage`) and `calendar` (with `calendar`), the first of `layouts` being the default, in the view of the list state. With `itemImage`, the table starts each title with a thumbnail ([0061](../../docs/decisions/0061-item-images-in-lists.md)). On narrow lists, table rows stack and show the label of each value, and the calendar lists its days with items ([0044](../../docs/decisions/0044-gallery-and-calendar.md)) |
+| Layouts    | `table`, `cards`, `gallery` (on `itemImage`) and `calendar` (with `calendar`), the first of `layouts.available` being the default, in the view of the list state. With `itemImage`, the table starts each title with a thumbnail ([0061](../../docs/decisions/0061-item-images-in-lists.md)). On narrow lists, table rows stack and show the label of each value, and the calendar lists its days with items ([0044](../../docs/decisions/0044-gallery-and-calendar.md)) |
 | Sorting    | Sortable column headers (`aria-sort`), and a select for cards and phones                                                                                                                                                                                                                                                                                                                                                                                       |
 | Filters    | `text`, `select`, `toggle`, `date`, `date-range` (sent as bounds: `filter[id][from]`, `filter[id][to]`), `relation`, with chips for the active filters and the search                                                                                                                                                                                                                                                                                          |
 | Pagination | With `total`: the range, previous and next pages, and the page size (`perPageOptions`)                                                                                                                                                                                                                                                                                                                                                                         |
 | Selection  | Checkboxes, the page, then "select all N items", which selects every item matching the query, with exceptions                                                                                                                                                                                                                                                                                                                                                  |
 | Actions    | `row` (buttons), `menu` (the row's menu), `toolbar` (selection and resource actions), with `confirm`, hidden by abilities ([0011](../../docs/decisions/0011-permissions.md))                                                                                                                                                                                                                                                                                   |
-| Editing    | Columns of `inlineEdit` edit their field in place in the table (`text`, `number`, `select`, `boolean`, `date`), on items that can be updated: `onInlineEdit` saves the one field ([0043](../../docs/decisions/0043-inline-editing.md))                                                                                                                                                                                                                         |
+| Editing    | Columns of `inline.fields` edit their field in place in the table (`text`, `number`, `select`, `boolean`, `date`), on items that can be updated: `inline.onEdit` saves the one field ([0043](../../docs/decisions/0043-inline-editing.md))                                                                                                                                                                                                                         |
 | States     | Skeleton rows of the columns while `items` is `undefined`, an error with a retry, an empty message, and "no results" with a button that clears the filters                                                                                                                                                                                                                                                                                                     |
 
-An action shows the icon it names (`"icon": "send"`, through `getNamedIcon()` of `@panneau/ui`, which needs an `iconLoader` on `PanneauRoot`, such as `lucideIconLoader` of `@panneau/ui/named-icons`), or the icon of a built-in action (`edit`, `delete`…). Actions written in code can get icon components by id instead, which win over names: `actionIcons={{ archive: Archive }}`.
+An action shows the icon it names (`"icon": "send"`, through `getNamedIcon()` of `@panneau/ui`, which needs an `iconLoader` on `PanneauRoot`, such as `lucideIconLoader` of `@panneau/ui/named-icons`), or the icon of a built-in action (`edit`, `delete`…). Actions written in code can get icon components by id instead, which win over names: `actions={{ available, icons: { archive: Archive } }}`.
 
-Lists confirm an action when it has `confirm` (its title and message are ICU messages with `{count}`), or when some selected items don't allow it. An `undoable` action runs without a confirmation, unless it sets one, up to `UNDO_LIMIT` items (100), counted from the selection or the dry run: its toast offers "Undo" instead (`asksConfirmation()` of `@panneau/core`, [decision 0063](../../docs/decisions/0063-undo-instead-of-a-confirmation.md)). A value changed in place says so in a toast whose "Undo" saves the previous value the same way, with the version the save got. For every item matching a query, they only know the current page: with `previewAction` (`useActionPreview()` of `@panneau/actions`), an action that declares `dryRun` asks the backend first, and the confirmation gives its count of skipped items. Then they call `onAction` with the action, its scope, the item or the `Selection` of the protocol, the count and the skipped items. A promise shows the action as pending; when it rejects, a toast says that it failed. After a selection action, the selection is cleared.
+Lists confirm an action when it has `confirm` (its title and message are ICU messages with `{count}`), or when some selected items don't allow it. An `undoable` action runs without a confirmation, unless it sets one, up to `UNDO_LIMIT` items (100), counted from the selection or the dry run: its toast offers "Undo" instead (`asksConfirmation()` of `@panneau/core`, [decision 0063](../../docs/decisions/0063-undo-instead-of-a-confirmation.md)). A value changed in place says so in a toast whose "Undo" saves the previous value the same way, with the version the save got. For every item matching a query, they only know the current page: with `actions.preview` (`useActionPreview()` of `@panneau/actions`), an action that declares `dryRun` asks the backend first, and the confirmation gives its count of skipped items. Then they call `actions.onRun` with the action, its scope, the item or the `Selection` of the protocol, the count and the skipped items. A promise shows the action as pending; when it rejects, a toast says that it failed. After a selection action, the selection is cleared.
 
 A `relation` filter keeps ids in the query (`filter[author]=7`). Its chip and picker show the labels of the items it picked, and those of ids from the URL once the relation source's `resolve()` gives them.
 
 ## Plugins
 
-Displays and layouts are registry entries. Plugins of `PanneauProvider` add or replace them, and so do the `displays` and `layoutComponents` props:
+Displays and layouts are registry entries. Plugins of `PanneauProvider` add or replace them, and so do the `displays` prop and the `components` of `layouts`:
 
 ```tsx
 definePlugin({ id: 'my-site', displays: { 'page-slug': PageSlugDisplay } });
-```
+````
 
 A display gets `{ value, item, column, field }`. A layout gets the items, the columns, `renderValue(item, column)`, the selection and the actions (`ListLayoutProps`).
 

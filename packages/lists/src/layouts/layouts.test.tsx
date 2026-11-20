@@ -35,7 +35,9 @@ describe('the gallery', () => {
                     ][index],
                 }))}
                 itemImage="cover"
-                layouts={['gallery', 'table']}
+                layouts={{
+                    available: ['gallery', 'table'],
+                }}
             />,
         );
         const gallery = screen.getByRole('list', { name: 'Items' });
@@ -60,7 +62,9 @@ describe('the gallery', () => {
                     ][index],
                 }))}
                 itemImage="media"
-                layouts={['gallery', 'table']}
+                layouts={{
+                    available: ['gallery', 'table'],
+                }}
             />,
         );
         expect(container.querySelectorAll('img')).toHaveLength(0);
@@ -78,8 +82,12 @@ describe('the gallery', () => {
                 columns={columns}
                 items={pages.map((page) => ({ ...page, cover: 'https://example.com/a.jpg' }))}
                 itemImage="cover"
-                layouts={['gallery']}
-                actions={[publish]}
+                layouts={{
+                    available: ['gallery'],
+                }}
+                actions={{
+                    available: [publish],
+                }}
             />,
         );
         await userEvent.click(screen.getByRole('button', { name: 'Select' }));
@@ -92,7 +100,14 @@ describe('the gallery', () => {
 
     it('is left out without the image of items', () => {
         renderList(
-            <ListView list={createList()} columns={columns} items={pages} layouts={['gallery']} />,
+            <ListView
+                list={createList()}
+                columns={columns}
+                items={pages}
+                layouts={{
+                    available: ['gallery'],
+                }}
+            />,
         );
         expect(screen.getByRole('table', { name: 'Items' })).toBeInTheDocument();
     });
@@ -136,7 +151,9 @@ describe('the thumbnails of the table', () => {
                     cover: ['https://example.com/a.jpg', null, null][index],
                 }))}
                 itemImage="cover"
-                layouts={['table', 'gallery']}
+                layouts={{
+                    available: ['table', 'gallery'],
+                }}
             />,
         );
         const table = screen.getByRole('table', { name: 'Items' });
@@ -161,8 +178,12 @@ describe('the thumbnails of the table', () => {
                 list={createList()}
                 columns={columns}
                 items={pages}
-                layouts={['table']}
-                actions={[publish]}
+                layouts={{
+                    available: ['table'],
+                }}
+                actions={{
+                    available: [publish],
+                }}
             />,
         );
         // Until then, rows read without a column of checkboxes before them.
@@ -178,7 +199,14 @@ describe('the thumbnails of the table', () => {
 
     it('are left out without the image of items', () => {
         const { container } = renderList(
-            <ListView list={createList()} columns={columns} items={pages} layouts={['table']} />,
+            <ListView
+                list={createList()}
+                columns={columns}
+                items={pages}
+                layouts={{
+                    available: ['table'],
+                }}
+            />,
         );
         expect(container.querySelectorAll('img, td svg')).toHaveLength(0);
     });
@@ -192,7 +220,9 @@ describe('the calendar', () => {
             <List
                 columns={eventColumns}
                 items={events}
-                layouts={['calendar', 'table']}
+                layouts={{
+                    available: ['calendar', 'table'],
+                }}
                 calendar={calendar}
                 filters={[{ id: 'published_on', type: 'date-range', label: 'Date' }]}
                 router={router}
@@ -232,7 +262,9 @@ describe('the calendar', () => {
             <List
                 columns={eventColumns}
                 items={festivals}
-                layouts={['calendar']}
+                layouts={{
+                    available: ['calendar'],
+                }}
                 calendar={{ field: 'dates', filter: 'dates' }}
                 filters={[{ id: 'dates', type: 'date-range', label: 'Dates' }]}
                 router={router}
@@ -269,7 +301,9 @@ describe('the calendar', () => {
                 columns={eventColumns}
                 items={events.slice(0, 2)}
                 total={12}
-                layouts={['calendar']}
+                layouts={{
+                    available: ['calendar'],
+                }}
                 calendar={calendar}
             />,
         );

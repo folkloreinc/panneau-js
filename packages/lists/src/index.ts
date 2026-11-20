@@ -52,7 +52,13 @@ export { TableLayout } from './layouts/TableLayout';
 export { builtInLayouts } from './layouts/builtIn';
 export { ItemDetails, type ItemDetailsColumn, type ItemDetailsProps } from './ItemDetails';
 export { List, type ListProps } from './List';
-export { ListView, type ListViewProps } from './ListView';
+export {
+    ListView,
+    type ListViewActions,
+    type ListViewInline,
+    type ListViewLayouts,
+    type ListViewProps,
+} from './ListView';
 export {
     type ListFieldsOptions,
     type UseListFieldsOptions,
@@ -81,6 +87,8 @@ export type {
     ListActionPreviewer,
     ListColumn,
     ListCalendarProps,
+    ListInlineEditEvent,
+    ListInlineEditHandler,
     ListItem,
     ListLayoutEntry,
     ListLayoutProps,

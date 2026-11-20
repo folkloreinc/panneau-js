@@ -446,7 +446,7 @@ import { lucideIconLoader } from '@panneau/ui/named-icons';
 </PanneauRoot>;
 ```
 
-- **Loading icons by name is opt-in.** `lucideIconLoader` loads any Lucide icon, one chunk per icon the first time it renders, but bundlers emit a chunk for every Lucide icon (about 1,900) and the map of them in the runtime of every page. So it lives in its own entry point, `@panneau/ui/named-icons`: apps that only pass icon components (`icon={Send}`, `actionIcons`) don't pay for it.
+- **Loading icons by name is opt-in.** `lucideIconLoader` loads any Lucide icon, one chunk per icon the first time it renders, but bundlers emit a chunk for every Lucide icon (about 1,900) and the map of them in the runtime of every page. So it lives in its own entry point, `@panneau/ui/named-icons`: apps that only pass icon components (`icon={Send}`, the `icons` of a list's `actions`) don't pay for it.
 - An app can instead load only the icons its definitions use: `iconLoader={(name) => Promise.resolve(({ send: Send, archive: Archive })[name] ?? null)}`.
 - Without a loader, a named icon renders an empty space of the same size, with one warning in the console.
 - `getNamedIcon()` returns the same component for the same name, renders an empty space while the icon loads, and nothing for a name the loader doesn't know (with a warning).

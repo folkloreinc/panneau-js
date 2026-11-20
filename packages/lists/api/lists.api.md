@@ -320,6 +320,17 @@ export interface ListFieldsOptions {
 }
 
 // @public
+export interface ListInlineEditEvent {
+    field: Field;
+    item: ListItem;
+    // (undocumented)
+    value: unknown;
+}
+
+// @public
+export type ListInlineEditHandler = (event: ListInlineEditEvent) => Promise<ListItem>;
+
+// @public
 export interface ListItem {
     // (undocumented)
     [key: string]: unknown;
@@ -379,11 +390,35 @@ export const listsPlugin: {
 // @public
 export function ListView(input: ListViewProps): JSX.Element;
 
+// @public
+export interface ListViewActions {
+    available?: ListActions | undefined;
+    icons?: ActionIcons | undefined;
+    onRun?: ListActionHandler | undefined;
+    preview?: ListActionPreviewer | undefined;
+    primary?: string | null | undefined;
+}
+
+// @public
+export interface ListViewInline {
+    fields: readonly string[];
+    formatError?: ((failure: RuleFailure, path: string) => string) | undefined;
+    onEdit: ListInlineEditHandler;
+}
+
+// @public
+export interface ListViewLayouts {
+    available?: readonly string[] | undefined;
+    components?: Readonly<Record<string, ListLayoutEntry>> | undefined;
+    current?: string | undefined;
+    // (undocumented)
+    onChange?: ((layout: string) => void) | undefined;
+}
+
 // @public (undocumented)
 export interface ListViewProps {
     'aria-label'?: string;
-    actionIcons?: ActionIcons;
-    actions?: ListActions;
+    actions?: ListViewActions;
     calendar?: Pick<ResolvedCalendar, 'field' | 'filter'> | null | undefined;
     // (undocumented)
     className?: string;
@@ -400,30 +435,20 @@ export interface ListViewProps {
     fields?: readonly Field[];
     filterControls?: Readonly<Record<string, FilterEntry>>;
     filters?: readonly Filter[];
-    formatError?: (failure: RuleFailure, path: string) => string;
     getItemHref?: (item: ListItem) => string | null;
     getItemLabel?: (item: ListItem) => string;
     getLinkHref?: (action: Action, item: ListItem) => string | null;
     highlightedItemId?: string | null;
-    inlineEdit?: readonly string[];
+    inline?: ListViewInline;
     isLoading?: boolean;
     itemImage?: string | undefined;
     items: readonly ListItem[] | undefined;
     itemTitle?: string;
-    layout?: string;
-    layoutComponents?: Readonly<Record<string, ListLayoutEntry>>;
-    layouts?: readonly string[];
+    layouts?: ListViewLayouts;
     list: List_2;
-    onAction?: ListActionHandler;
-    // Warning: (ae-forgotten-export) The symbol "ListInlineEditHandler" needs to be exported by the entry point index.d.ts
-    onInlineEdit?: ListInlineEditHandler;
-    // (undocumented)
-    onLayoutChange?: (layout: string) => void;
     // (undocumented)
     onRetry?: () => void;
     perPageOptions?: readonly number[];
-    previewAction?: ListActionPreviewer;
-    primaryAction?: string | null;
     search?: boolean;
     selectable?: boolean;
     toolbar?: ReactNode;

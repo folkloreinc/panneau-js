@@ -58,8 +58,10 @@ function Pages() {
             columns={columns}
             items={items}
             search
-            actions={actions}
-            onAction={runAction}
+            actions={{
+                available: actions,
+                onRun: runAction,
+            }}
             router={null}
         />
     );

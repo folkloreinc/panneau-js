@@ -793,8 +793,10 @@ describe('useActionRunner', () => {
                     list={list}
                     columns={[{ id: 'status', label: 'Status' }]}
                     items={items}
-                    actions={[remove]}
-                    onAction={runAction}
+                    actions={{
+                        available: [remove],
+                        onRun: runAction,
+                    }}
                 />
             );
         }

@@ -19,7 +19,7 @@ export default definePlugin({
 
 - **Its id is `{vendor}.{name}`**, in lowercase: `folklore.pages`, `urbania.newsletter`. `panneau.` is for the plugins of Panneau (`panneau.fields`, `panneau.lists`, `panneau.media`, `panneau.editor`, `panneau.credits`, `panneau.sessions`, `panneau.publication`). Two plugins can't have the same id.
 - **Plugins go to the app** (`<Panneau plugins={[…]}>`, `createPanneauApp({ plugins })`), or to `PanneauProvider` when a project only uses the pieces. A nested provider adds its plugins to those of its parent.
-- **One order for every kind, the last wins: the built-ins, then the plugins in their order, then the props of the component that renders them** (`components` of `Form`, `displays`, `layoutComponents` and `filterControls` of `ListView`, `clientActions` of `ActionRunnerProvider`). A plugin replaces a built-in entry by giving its name.
+- **One order for every kind, the last wins: the built-ins, then the plugins in their order, then the props of the component that renders them** (`components` of `Form`, `displays`, `layouts.components` and `filterControls` of `ListView`, `clientActions` of `ActionRunnerProvider`). A plugin replaces a built-in entry by giving its name.
 - **A name that nothing gives** draws what its kind draws in its place, listed below, and warns once in development.
 
 ## Kinds

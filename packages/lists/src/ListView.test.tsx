@@ -174,7 +174,15 @@ describe('List', () => {
 
     it('shows cards, with a sort select', async () => {
         const user = userEvent.setup();
-        renderList(<List columns={columns} items={pages} layouts={['table', 'cards']} />);
+        renderList(
+            <List
+                columns={columns}
+                items={pages}
+                layouts={{
+                    available: ['table', 'cards'],
+                }}
+            />,
+        );
         await user.click(screen.getByRole('radio', { name: 'Cards' }));
         expect(screen.queryByRole('table')).not.toBeInTheDocument();
         const cards = screen.getByRole('list', { name: 'Items' });
@@ -269,7 +277,9 @@ describe('ListView', () => {
                 list={createList({ defaults: { perPage: 100 } })}
                 columns={columns}
                 items={undefined}
-                layout="cards"
+                layouts={{
+                    current: 'cards',
+                }}
             />,
         );
         expect(container.querySelectorAll('[aria-busy="true"] li')).toHaveLength(10);
@@ -321,8 +331,10 @@ describe('ListView', () => {
                 columns={columns}
                 items={pages.slice(1)}
                 total={40}
-                actions={[publish]}
-                onAction={onAction}
+                actions={{
+                    available: [publish],
+                    onRun: onAction,
+                }}
             />,
         );
         await user.click(screen.getByRole('button', { name: 'Select' }));
@@ -367,9 +379,11 @@ describe('ListView', () => {
                 columns={columns}
                 items={pages.slice(1)}
                 total={40}
-                actions={[{ ...publish, dryRun: true }]}
-                onAction={onAction}
-                previewAction={previewAction}
+                actions={{
+                    available: [{ ...publish, dryRun: true }],
+                    onRun: onAction,
+                    preview: previewAction,
+                }}
             />,
         );
         await user.click(screen.getByRole('button', { name: 'Select' }));
@@ -407,9 +421,11 @@ describe('ListView', () => {
                 columns={columns}
                 items={pages}
                 total={40}
-                actions={[{ ...publish, confirm: undefined, dryRun: true }]}
-                onAction={onAction}
-                previewAction={() => Promise.resolve({ skipped: 0 })}
+                actions={{
+                    available: [{ ...publish, confirm: undefined, dryRun: true }],
+                    onRun: onAction,
+                    preview: () => Promise.resolve({ skipped: 0 }),
+                }}
             />,
         );
         await user.click(screen.getByRole('button', { name: 'Select' }));
@@ -431,9 +447,11 @@ describe('ListView', () => {
                 columns={columns}
                 items={pages}
                 total={101}
-                actions={[undoable]}
-                onAction={onAction}
-                previewAction={() => Promise.resolve({ skipped: 0 })}
+                actions={{
+                    available: [undoable],
+                    onRun: onAction,
+                    preview: () => Promise.resolve({ skipped: 0 }),
+                }}
             />,
         );
         // One item: at once, "Undo" in its toast replaces the confirmation
@@ -461,8 +479,10 @@ describe('ListView', () => {
                 list={list}
                 columns={columns}
                 items={pages}
-                actions={[{ ...remove, placement: ['toolbar'] }]}
-                onAction={onAction}
+                actions={{
+                    available: [{ ...remove, placement: ['toolbar'] }],
+                    onRun: onAction,
+                }}
             />,
         );
         await user.click(screen.getByRole('button', { name: 'Select' }));
@@ -476,7 +496,14 @@ describe('ListView', () => {
     it('says how many selected items an action skips', async () => {
         const user = userEvent.setup();
         renderList(
-            <ListView list={createList()} columns={columns} items={pages} actions={[publish]} />,
+            <ListView
+                list={createList()}
+                columns={columns}
+                items={pages}
+                actions={{
+                    available: [publish],
+                }}
+            />,
         );
         await user.click(screen.getByRole('button', { name: 'Select' }));
         await user.click(screen.getByRole('checkbox', { name: 'Select every item of the page' }));
@@ -496,8 +523,10 @@ describe('ListView', () => {
                 list={createList()}
                 columns={columns}
                 items={pages}
-                actions={[publish, edit, remove]}
-                onAction={onAction}
+                actions={{
+                    available: [publish, edit, remove],
+                    onRun: onAction,
+                }}
                 selectable={false}
             />,
         );
@@ -527,8 +556,10 @@ describe('ListView', () => {
                 list={createList()}
                 columns={columns}
                 items={pages}
-                actions={[{ ...remove, confirm: { message: 'Delete this page?' } }]}
-                onAction={onAction}
+                actions={{
+                    available: [{ ...remove, confirm: { message: 'Delete this page?' } }],
+                    onRun: onAction,
+                }}
                 selectable={false}
             />,
         );
@@ -551,7 +582,9 @@ describe('ListView', () => {
                 list={createList()}
                 columns={columns}
                 items={items}
-                actions={[showLink, editLink]}
+                actions={{
+                    available: [showLink, editLink],
+                }}
                 getLinkHref={(action, item) => `/${action.id}/${item.id}`}
                 selectable={false}
             />,
@@ -576,7 +609,9 @@ describe('ListView', () => {
                 list={createList()}
                 columns={columns}
                 items={pages}
-                actions={[showLink, editLink]}
+                actions={{
+                    available: [showLink, editLink],
+                }}
                 getLinkHref={(action, item) =>
                     action.id === 'show'
                         ? `https://example.com/pages/${item.id}`
@@ -597,7 +632,9 @@ describe('ListView', () => {
                 list={createList()}
                 columns={columns}
                 items={pages}
-                actions={[editLink, { ...showLink, placement: ['menu'] }]}
+                actions={{
+                    available: [editLink, { ...showLink, placement: ['menu'] }],
+                }}
                 getLinkHref={(action, item) => (action.id === 'edit' ? `/edit/${item.id}` : null)}
                 selectable={false}
             />,
@@ -612,7 +649,9 @@ describe('ListView', () => {
                 list={createList()}
                 columns={columns}
                 items={pages}
-                actions={[editLink]}
+                actions={{
+                    available: [editLink],
+                }}
                 getLinkHref={(_action, item) => `/edit/${item.id}`}
                 selectable={false}
             />,
@@ -631,8 +670,10 @@ describe('ListView', () => {
                 list={createList()}
                 columns={columns}
                 items={pages}
-                actions={[publish]}
-                onAction={onAction}
+                actions={{
+                    available: [publish],
+                    onRun: onAction,
+                }}
             />,
         );
         await user.click(screen.getByRole('button', { name: 'Publish: Contact' }));
@@ -652,8 +693,10 @@ describe('ListView', () => {
                 columns={columns}
                 items={pages}
                 total={3}
-                actions={[exportAction]}
-                onAction={onAction}
+                actions={{
+                    available: [exportAction],
+                    onRun: onAction,
+                }}
             />,
         );
         expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
@@ -670,8 +713,10 @@ describe('ListView', () => {
                 columns={columns}
                 items={pages}
                 total={3}
-                actions={[{ ...exportAction, icon: 'file-down' }, remove]}
-                actionIcons={{ delete: Archive }}
+                actions={{
+                    available: [{ ...exportAction, icon: 'file-down' }, remove],
+                    icons: { delete: Archive },
+                }}
             />,
         );
         // The icon is a chunk of its own, and loading Lucide's list of icons can take more than a
@@ -694,7 +739,9 @@ describe('ListView', () => {
                 list={createList()}
                 columns={columns}
                 items={pages}
-                actions={[{ ...publish, abilities: { run: false } }]}
+                actions={{
+                    available: [{ ...publish, abilities: { run: false } }],
+                }}
             />,
         );
         expect(screen.queryByRole('button', { name: 'Publish: Contact' })).not.toBeInTheDocument();
@@ -761,7 +808,14 @@ describe('ListView toolbar', () => {
     it('shows an action placed in the toolbar and the menu once', async () => {
         const user = userEvent.setup();
         renderList(
-            <ListView list={createList()} columns={columns} items={pages} actions={[remove]} />,
+            <ListView
+                list={createList()}
+                columns={columns}
+                items={pages}
+                actions={{
+                    available: [remove],
+                }}
+            />,
         );
         await user.click(screen.getByRole('button', { name: 'Select' }));
         await user.click(screen.getByRole('checkbox', { name: 'Select Contact' }));
@@ -776,7 +830,9 @@ describe('ListView layouts', () => {
                 list={createList()}
                 columns={[{ id: 'status', label: 'Status' }]}
                 items={pages}
-                actions={[exportAction]}
+                actions={{
+                    available: [exportAction],
+                }}
             />,
         );
         expect(screen.getByRole('button', { name: 'Export' })).toBeInTheDocument();
@@ -788,7 +844,9 @@ describe('ListView layouts', () => {
                 list={createList()}
                 columns={columns}
                 items={pages}
-                layouts={['calendar', 'cards']}
+                layouts={{
+                    available: ['calendar', 'cards'],
+                }}
             />,
         );
         expect(screen.queryByRole('radiogroup', { name: 'Layout' })).not.toBeInTheDocument();
@@ -807,7 +865,9 @@ describe('ListView highlight', () => {
                     list={createList()}
                     columns={columns}
                     items={pages}
-                    layout={layout}
+                    layouts={{
+                        current: layout,
+                    }}
                     highlightedItemId={pages[1]?.id ?? null}
                 />,
             );
@@ -876,7 +936,9 @@ describe('ListView columns', () => {
                 list={createList({ router })}
                 columns={withAuthor}
                 items={pages}
-                layouts={['table', 'cards']}
+                layouts={{
+                    available: ['table', 'cards'],
+                }}
             />,
         );
         const cards = screen.getByRole('list', { name: 'Items' });
@@ -928,8 +990,10 @@ describe('ListView inline editing', () => {
                 list={createList()}
                 columns={editable}
                 items={people}
-                inlineEdit={['name', 'status', 'active']}
-                onInlineEdit={onInlineEdit}
+                inline={{
+                    fields: ['name', 'status', 'active'],
+                    onEdit: onInlineEdit,
+                }}
             />,
         );
 
@@ -1039,7 +1103,14 @@ describe('ListView leaving items', () => {
         async (layout) => {
             const list = createList();
             const { container, rerender } = renderList(
-                <ListView list={list} columns={columns} items={pages} layout={layout} />,
+                <ListView
+                    list={list}
+                    columns={columns}
+                    items={pages}
+                    layouts={{
+                        current: layout,
+                    }}
+                />,
             );
             rerender(
                 wrap(
@@ -1047,7 +1118,9 @@ describe('ListView leaving items', () => {
                         list={list}
                         columns={columns}
                         items={pages.filter((page) => page.id !== pages[1]?.id)}
-                        layout={layout}
+                        layouts={{
+                            current: layout,
+                        }}
                     />,
                 ),
             );
@@ -1090,7 +1163,9 @@ describe('ListView leaving items', () => {
                     list={list}
                     columns={columns}
                     items={items}
-                    layout={layout}
+                    layouts={{
+                        current: layout,
+                    }}
                     getItemHref={(item) => `/pages/${item.id}`}
                 />
             );

@@ -55,6 +55,68 @@ import { useListState } from './useListState';
 import { useRenderValue } from './useRenderValue';
 import { getColumnValue, toText } from './values';
 
+/** The actions of a `ListView`. */
+export interface ListViewActions {
+    /**
+     * The actions: a list (placed by their `placement`, or by scope), or grouped by placement as
+     * `resolveList()` does. Those the user can't run (`abilities.run`) are hidden.
+     */
+    available?: ListActions | undefined;
+    /** Runs an action, after its confirmation. */
+    onRun?: ListActionHandler | undefined;
+    /**
+     * Asks the backend how many items of a query selection ("Select all N items") an action will
+     * skip, before the confirmation: the list only knows the abilities of the current page. Only
+     * for actions with `dryRun`. `useActionPreview()` of `@panneau/actions` is one.
+     */
+    preview?: ListActionPreviewer | undefined;
+    /**
+     * Icons of actions by action id (`{ archive: Archive }`), for actions written in code. They
+     * win over the Lucide icon an action names (`"icon": "archive"`).
+     */
+    icons?: ActionIcons | undefined;
+    /**
+     * The id of the main action of rows, which keeps its label while the others show their icons
+     * (decision 0060): the one the title of an item opens, `edit` for a resource that opens its
+     * items in their form. Defaults to `show` when rows have it, else `edit`.
+     */
+    primary?: string | null | undefined;
+}
+
+/** The fields of a `ListView` that columns edit in place (decision 0043). */
+export interface ListViewInline {
+    /**
+     * The fields that columns edit in place (`inlineEdit` of the list), on the items that can be
+     * updated. Needs `onEdit`.
+     */
+    fields: readonly string[];
+    /** Saves a field edited in place, and resolves with the updated item. */
+    onEdit: ListInlineEditHandler;
+    /**
+     * The message of a portable rule that a value edited in place fails. Defaults to
+     * `formatRuleFailure()` of `@panneau/core`, in English; `useFormatRuleFailure()` of
+     * `@panneau/forms` translates them.
+     */
+    formatError?: ((failure: RuleFailure, path: string) => string) | undefined;
+}
+
+/** The layouts of a `ListView`. */
+export interface ListViewLayouts {
+    /** Layouts to choose from, the first one being the default. Defaults to `['table']`. */
+    available?: readonly string[] | undefined;
+    /** The layout, controlled. Without it, the layout is the view of the list state. */
+    current?: string | undefined;
+    onChange?: ((layout: string) => void) | undefined;
+    /** Layouts by id, over the built-in ones and those of the plugins. */
+    components?: Readonly<Record<string, ListLayoutEntry>> | undefined;
+}
+
+// Defaults made once: the React Compiler doesn't memoize what is computed from an array or an
+// object made before a hook
+const DEFAULT_LAYOUTS: readonly string[] = ['table'];
+const NO_INLINE_FIELDS: readonly string[] = [];
+const NO_OPTIONS: Readonly<Record<string, never>> = {};
+
 export interface ListViewProps {
     /** The list state of `@panneau/core` (`useList()`): query and selection. */
     list: List;
@@ -92,11 +154,8 @@ export interface ListViewProps {
     fields?: readonly Field[];
     /** Shows a search field (`q`). */
     search?: boolean;
-    /** Layouts to choose from, the first one being the default. Defaults to `['table']`. */
-    layouts?: readonly string[];
-    /** The layout, controlled. Without it, the layout is the view of the list state. */
-    layout?: string;
-    onLayoutChange?: (layout: string) => void;
+    /** The layouts of the list: those to choose from, the current one, and their components. */
+    layouts?: ListViewLayouts;
     /** Page sizes to choose from. */
     perPageOptions?: readonly number[];
     /**
@@ -104,24 +163,8 @@ export interface ListViewProps {
      * Defaults to whether there are selection actions.
      */
     selectable?: boolean;
-    /**
-     * Actions: a list (placed by their `placement`, or by scope), or grouped by placement as
-     * `resolveList()` does. Those the user can't run (`abilities.run`) are hidden.
-     */
-    actions?: ListActions;
-    /** Runs an action, after its confirmation. */
-    onAction?: ListActionHandler;
-    /**
-     * Asks the backend how many items of a query selection ("Select all N items") an action will
-     * skip, before the confirmation: the list only knows the abilities of the current page. Only
-     * for actions with `dryRun`. `useActionPreview()` of `@panneau/actions` is one.
-     */
-    previewAction?: ListActionPreviewer;
-    /**
-     * Icons of actions by action id (`{ archive: Archive }`), for actions written in code. They
-     * win over the Lucide icon an action names (`"icon": "archive"`).
-     */
-    actionIcons?: ActionIcons;
+    /** The actions of the list, what runs them, their icons and the main one of rows. */
+    actions?: ListViewActions;
     /** The field that titles items, for their label (`itemTitle` of the resource). */
     itemTitle?: string;
     /**
@@ -135,12 +178,6 @@ export interface ListViewProps {
      * state asks for its month when it is given the same calendar.
      */
     calendar?: Pick<ResolvedCalendar, 'field' | 'filter'> | null | undefined;
-    /**
-     * The id of the main action of rows, which keeps its label while the others show their icons
-     * (decision 0060): the one the title of an item opens, `edit` for a resource that opens its
-     * items in their form. Defaults to `show` when rows have it, else `edit`.
-     */
-    primaryAction?: string | null;
     /** The label of an item, for checkboxes and actions. Defaults to its title, then its id. */
     getItemLabel?: (item: ListItem) => string;
     /** A link to an item, on its title. */
@@ -163,23 +200,10 @@ export interface ListViewProps {
     highlightedItemId?: string | null;
     /** Displays by name, over the built-in ones and those of the plugins. */
     displays?: Readonly<Record<string, DisplayEntry>>;
-    /** Layouts by id, over the built-in ones and those of the plugins. */
-    layoutComponents?: Readonly<Record<string, ListLayoutEntry>>;
     /** Filter controls by filter type, over the built-in ones. */
     filterControls?: Readonly<Record<string, FilterEntry>>;
-    /**
-     * The fields that columns edit in place (`inlineEdit` of the list), on the items that can be
-     * updated, in the table (decision 0043). Needs `onInlineEdit`.
-     */
-    inlineEdit?: readonly string[];
-    /** Saves a field edited in place, and resolves with the updated item. */
-    onInlineEdit?: ListInlineEditHandler;
-    /**
-     * The message of a portable rule that a value edited in place fails. Defaults to
-     * `formatRuleFailure()` of `@panneau/core`, in English; `useFormatRuleFailure()` of
-     * `@panneau/forms` translates them.
-     */
-    formatError?: (failure: RuleFailure, path: string) => string;
+    /** Fields that columns edit in place, in the table (decision 0043), and how they are saved. */
+    inline?: ListViewInline;
     /** Content at the end of the toolbar, such as a button to create an item. */
     toolbar?: ReactNode;
     /** Shown when the list has no items, without filters or search. */
@@ -211,35 +235,42 @@ export function ListView({
     filters: filtersProp = [],
     fields = [],
     search = false,
-    layouts: layoutsProp = ['table'],
-    layout: controlledLayout,
-    onLayoutChange,
+    layouts: layoutOptions = NO_OPTIONS,
     perPageOptions,
     selectable: selectableProp,
-    actions: actionsProp,
-    onAction,
-    previewAction,
-    actionIcons,
+    actions: actionOptions = NO_OPTIONS,
     itemTitle,
     itemImage,
     calendar = null,
-    primaryAction: primaryActionProp,
     getItemLabel: getItemLabelProp,
     getItemHref,
     getLinkHref,
     currentItemId = null,
     highlightedItemId = null,
     displays,
-    layoutComponents,
     filterControls,
-    inlineEdit = [],
-    onInlineEdit,
-    formatError = formatRuleFailure,
+    inline,
     toolbar,
     emptyMessage,
     'aria-label': ariaLabel,
     className,
 }: ListViewProps) {
+    const {
+        available: layoutsProp = DEFAULT_LAYOUTS,
+        current: controlledLayout,
+        onChange: onLayoutChange,
+        components: layoutComponents,
+    }: ListViewLayouts = layoutOptions;
+    const {
+        available: actionsProp,
+        onRun: onAction,
+        preview: previewAction,
+        icons: actionIcons,
+        primary: primaryActionProp,
+    }: ListViewActions = actionOptions;
+    const inlineEdit = inline?.fields ?? NO_INLINE_FIELDS;
+    const onInlineEdit = inline?.onEdit;
+    const formatError = inline?.formatError ?? formatRuleFailure;
     const intl = usePanneauIntl();
     const toasts = useToast();
     const plugins = usePlugins();
