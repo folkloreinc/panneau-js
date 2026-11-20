@@ -21,3 +21,29 @@ export const Default: Story = {
 };
 
 export const Disabled: Story = { args: { isDisabled: true, defaultSelected: true } };
+
+export const RightToLeft: Story = {
+    args: { defaultSelected: true },
+    decorators: [
+        (StoryComponent) => (
+            <div dir="rtl">
+                <StoryComponent />
+            </div>
+        ),
+    ],
+    play: async ({ canvasElement }) => {
+        const toggle = within(canvasElement).getByRole('switch', { name: 'Notifications' });
+        await expect(toggle).toBeChecked();
+        const thumb = canvasElement.querySelector<HTMLElement>('[class*="thumb"]');
+        const track = thumb?.parentElement;
+        if (thumb === null || track === null || track === undefined) {
+            throw new Error('No thumb');
+        }
+        // Checked in RTL, the thumb is at the left end of the track, inside it.
+        const thumbBox = thumb.getBoundingClientRect();
+        const trackBox = track.getBoundingClientRect();
+        await expect(thumbBox.left).toBeGreaterThanOrEqual(trackBox.left);
+        await expect(thumbBox.right).toBeLessThanOrEqual(trackBox.right);
+        await expect(thumbBox.left - trackBox.left).toBeLessThan(trackBox.right - thumbBox.right);
+    },
+};
