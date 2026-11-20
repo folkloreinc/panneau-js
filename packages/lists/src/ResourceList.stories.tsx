@@ -145,7 +145,10 @@ function PagesList({ resource, adapter }: { resource: Resource; adapter: DataAda
     });
     return (
         <ListView
-            {...resolved}
+            columns={resolved.columns}
+            filters={resolved.filters}
+            search={resolved.search}
+            selectable={resolved.selectable}
             aria-label="Pages"
             list={list}
             items={data?.data}
@@ -155,16 +158,19 @@ function PagesList({ resource, adapter }: { resource: Resource; adapter: DataAda
             onRetry={() => void refetch()}
             fields={resource.fields}
             itemTitle={resource.itemTitle}
-            layouts={['table', 'cards']}
+            layouts={{ available: ['table', 'cards'] }}
             perPageOptions={[10, 20, 50]}
             getItemHref={(item) => `/pages/${item.id}/edit`}
-            onAction={async (event) => {
-                await runAction(adapter, event);
-                await client.invalidateQueries({ queryKey: queryKeys.lists('pages') });
-                toasts.show({
-                    title: `${event.action.label}: ${String(event.count)}`,
-                    tone: 'success',
-                });
+            actions={{
+                available: resolved.actions,
+                onRun: async (event) => {
+                    await runAction(adapter, event);
+                    await client.invalidateQueries({ queryKey: queryKeys.lists('pages') });
+                    toasts.show({
+                        title: `${event.action.label}: ${String(event.count)}`,
+                        tone: 'success',
+                    });
+                },
             }}
         />
     );

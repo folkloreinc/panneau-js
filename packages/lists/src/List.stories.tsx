@@ -124,7 +124,7 @@ const meta = {
             { id: 'role', type: 'select', label: 'Role' },
             { id: 'active', type: 'toggle', label: 'Active only' },
         ],
-        layouts: ['table', 'cards'],
+        layouts: { available: ['table', 'cards'] },
         perPageOptions: [10, 25],
         router: null,
     },
@@ -237,7 +237,7 @@ export const FiltersOnOneLine: Story = {
 };
 
 export const Cards: Story = {
-    args: { layouts: ['cards', 'table'] },
+    args: { layouts: { available: ['cards', 'table'] } },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         const cards = canvas.getByRole('list', { name: 'Members' });
@@ -253,7 +253,7 @@ export const Cards: Story = {
  * less motion).
  */
 export const HighlightedItem: Story = {
-    args: { highlightedItemId: '8', layouts: ['table', 'cards'] },
+    args: { highlightedItemId: '8', layouts: { available: ['table', 'cards'] } },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         const table = canvas.getByRole('table', { name: 'Members' });
@@ -315,13 +315,13 @@ function portrait(index: number): string {
 /** The gallery, on the `itemImage` of the items (decision 0044). Some members have no photo. */
 export const Gallery: Story = {
     args: {
-        layouts: ['gallery', 'table'],
+        layouts: { available: ['gallery', 'table'] },
         itemImage: 'photo',
         items: members.map((member, index) => ({
             ...member,
             photo: index % 4 === 3 ? null : { media: { thumbnailUrl: portrait(index) } },
         })),
-        actions,
+        actions: { available: actions },
     },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
@@ -339,7 +339,7 @@ export const Gallery: Story = {
  * placeholder for the members without a photo (decision 0061).
  */
 export const TableWithThumbnails: Story = {
-    args: { ...Gallery.args, layouts: ['table', 'gallery'] },
+    args: { ...Gallery.args, layouts: { available: ['table', 'gallery'] } },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         const table = canvas.getByRole('table', { name: 'Members' });
@@ -379,7 +379,7 @@ export const TableWithThumbnailsOnAPhone: Story = {
  */
 export const Calendar: Story = {
     args: {
-        layouts: ['calendar', 'table'],
+        layouts: { available: ['calendar', 'table'] },
         calendar: { field: 'joined_on', filter: 'joined_on' },
         filters: [{ id: 'role', type: 'select', label: 'Role' }],
         router: createMemoryRouter('month=2026-03'),
@@ -448,13 +448,15 @@ export const EditInPlace: Story = {
             ...member,
             abilities: { ...member.abilities, update: true },
         })),
-        inlineEdit: ['name', 'role', 'active', 'joined_on'],
-        onInlineEdit: fn(
-            ({ item, field, value }: { item: ListItem; field: Field; value: unknown }) =>
-                new Promise<ListItem>((resolve) => {
-                    setTimeout(() => resolve({ ...item, [field.name]: value }), 300);
-                }),
-        ),
+        inline: {
+            fields: ['name', 'role', 'active', 'joined_on'],
+            onEdit: fn(
+                ({ item, field, value }: { item: ListItem; field: Field; value: unknown }) =>
+                    new Promise<ListItem>((resolve) => {
+                        setTimeout(() => resolve({ ...item, [field.name]: value }), 300);
+                    }),
+            ),
+        },
         search: false,
         filters: [],
     },
@@ -470,7 +472,7 @@ export const EditInPlace: Story = {
         await expect(
             await canvas.findByRole('button', { name: 'Edit Name of Ada King' }),
         ).toHaveFocus();
-        await expect(args.onInlineEdit).toHaveBeenCalledTimes(1);
+        await expect(args.inline?.onEdit).toHaveBeenCalledTimes(1);
     },
 };
 
@@ -514,10 +516,12 @@ async function findRowAction(
 
 export const SelectionAndActions: Story = {
     args: {
-        actions,
-        // An icon component, for an action written in code.
-        actionIcons: { remove: UserMinus },
-        onAction: fn(),
+        actions: {
+            available: actions,
+            // An icon component, for an action written in code.
+            icons: { remove: UserMinus },
+            onRun: fn(),
+        },
         getItemHref: (item: ListItem) => `#/members/${item.id}`,
     },
     play: async ({ args, canvasElement }) => {
@@ -541,7 +545,7 @@ export const SelectionAndActions: Story = {
         );
         await userEvent.click(within(dialog).getByRole('button', { name: 'Remove' }));
         await waitFor(() =>
-            expect(args.onAction).toHaveBeenCalledWith(
+            expect(args.actions?.onRun).toHaveBeenCalledWith(
                 expect.objectContaining({
                     scope: 'selection',
                     count: 24,
@@ -561,7 +565,7 @@ export const SelectionAndActions: Story = {
             (await findRowAction(canvasElement, 'Remove', 'Grace Hopper')).querySelector('svg'),
         ).toHaveClass('lucide-user-minus');
         await userEvent.click(resend);
-        await expect(args.onAction).toHaveBeenLastCalledWith(
+        await expect(args.actions?.onRun).toHaveBeenLastCalledWith(
             expect.objectContaining({ scope: 'item', count: 1 }),
         );
     },
@@ -578,10 +582,12 @@ export const BuiltInLinks: Story = {
             ...member,
             abilities: { ...member.abilities, view: true, update: member.role !== 'owner' },
         })),
-        actions: [
-            { id: 'show', kind: 'link', scope: ['item'] },
-            { id: 'edit', kind: 'link', scope: ['item'] },
-        ],
+        actions: {
+            available: [
+                { id: 'show', kind: 'link', scope: ['item'] },
+                { id: 'edit', kind: 'link', scope: ['item'] },
+            ],
+        },
         getLinkHref: (action: Action, item: ListItem) =>
             action.id === 'edit' ? `#/members/${item.id}/edit` : `#/members/${item.id}`,
     },
@@ -669,9 +675,8 @@ export const RowActions: Story = {
     args: {
         columns: columns.filter((column) => column.id === 'name' || column.id === 'role'),
         items: builtInMembers,
-        actions: builtInActions,
+        actions: { available: builtInActions, onRun: fn() },
         getLinkHref,
-        onAction: fn(),
     },
     play: async ({ args, canvasElement }) => {
         const canvas = within(canvasElement);
@@ -735,10 +740,10 @@ export const RowActions: Story = {
         // `delete` asks first, as it did from the menu
         await userEvent.click(remove);
         const dialog = await body.findByRole('alertdialog');
-        await expect(args.onAction).not.toHaveBeenCalled();
+        await expect(args.actions?.onRun).not.toHaveBeenCalled();
         await userEvent.click(within(dialog).getByRole('button', { name: 'Delete' }));
         await waitFor(() =>
-            expect(args.onAction).toHaveBeenCalledWith(
+            expect(args.actions?.onRun).toHaveBeenCalledWith(
                 expect.objectContaining({ scope: 'item', count: 1 }),
             ),
         );
@@ -849,7 +854,7 @@ export const ManyRowActions: Story = {
                 suspend: true,
             },
         })),
-        actions: [...builtInActions, ...declaredActions],
+        actions: { available: [...builtInActions, ...declaredActions] },
     },
     decorators: [
         (Story) => (
@@ -883,7 +888,7 @@ export const ManyRowActions: Story = {
 export const RowActionsInANarrowList: Story = {
     args: {
         ...ManyRowActions.args,
-        actions: [...builtInActions, ...declaredActions.slice(0, 2)],
+        actions: { available: [...builtInActions, ...declaredActions.slice(0, 2)] },
     },
     decorators: [
         (Story) => (
@@ -911,7 +916,7 @@ export const RowActionsInANarrowList: Story = {
 export const RowActionsOnAPhone: Story = {
     args: {
         ...RowActions.args,
-        actions: [...builtInActions, ...declaredActions.slice(0, 2)],
+        actions: { available: [...builtInActions, ...declaredActions.slice(0, 2)] },
         items: ManyRowActions.args?.items ?? builtInMembers,
     },
     decorators: [
@@ -964,7 +969,14 @@ export const Loading: StoryObj<typeof ListView> = {
 /** The first page loads in the cards layout: cards of the columns. */
 export const LoadingCards: StoryObj<typeof ListView> = {
     render: () => (
-        <ListView list={loadingList} columns={columns} items={undefined} layout="cards" />
+        <ListView
+            list={loadingList}
+            columns={columns}
+            items={undefined}
+            layouts={{
+                current: 'cards',
+            }}
+        />
     ),
     play: async ({ canvasElement }) => {
         await expect(within(canvasElement).getByRole('status')).toBeInTheDocument();
