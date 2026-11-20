@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import type { Action, Item, Resource } from '@panneau/protocol';
+import type { Action, Field, Item, LayoutNode, Resource } from '@panneau/protocol';
+import { checkValues } from '@panneau/protocol/runtime';
 
 import { createDefinition, getResource } from '../__fixtures__/definition';
 import {
@@ -98,6 +99,69 @@ describe('resolveForm', () => {
         ]);
 
         expect(resolveFields(fields).fields).toEqual(fields);
+    });
+
+    it('gives fields the conditions of the layout nodes that hold them (decision 0098)', () => {
+        const event = { field: 'type', equals: 'event' };
+        const featured = { field: 'featured', equals: true };
+        const fields: Field[] = [
+            { name: 'type', type: 'select' },
+            { name: 'featured', type: 'boolean' },
+            { name: 'starts_at', type: 'datetime', rules: [{ rule: 'required' }] },
+            { name: 'until', type: 'date', visibleWhen: featured },
+            { name: 'venue', type: 'text' },
+            { name: 'title', type: 'text' },
+        ];
+        const layout: LayoutNode[] = [
+            {
+                type: 'tabs',
+                children: [
+                    { type: 'tab', label: 'Content', children: [{ type: 'field', name: 'title' }] },
+                    {
+                        type: 'tab',
+                        label: 'Event',
+                        visibleWhen: event,
+                        children: [
+                            { type: 'field', name: 'starts_at' },
+                            {
+                                type: 'section',
+                                visibleWhen: featured,
+                                children: [{ type: 'field', name: 'until' }],
+                            },
+                            { type: 'field', name: 'venue' },
+                        ],
+                    },
+                ],
+            },
+            // `venue` is also in a section of its own, for places
+            {
+                type: 'section',
+                visibleWhen: { field: 'type', equals: 'place' },
+                children: [{ type: 'field', name: 'venue' }],
+            },
+        ];
+        const form = resolveFields(fields, layout);
+        expect(form.fieldsByName.get('starts_at')?.visibleWhen).toEqual(event);
+        expect(form.fieldsByName.get('until')?.visibleWhen).toEqual({
+            all: [{ all: [event, featured] }, featured],
+        });
+        expect(form.fieldsByName.get('venue')?.visibleWhen).toEqual({
+            any: [event, { field: 'type', equals: 'place' }],
+        });
+        // Fields in no hidden node, or that the layout doesn't place, keep their own
+        expect(form.fieldsByName.get('title')?.visibleWhen).toBeUndefined();
+        expect(form.fieldsByName.get('type')?.visibleWhen).toBeUndefined();
+        expect(form.fields.find((field) => field.name === 'starts_at')).toBe(
+            form.fieldsByName.get('starts_at'),
+        );
+        // The definition itself doesn't change
+        expect(fields[2]?.visibleWhen).toBeUndefined();
+        // Hidden with its tab, a required field isn't validated
+        const values = { type: 'article', title: 'News' };
+        expect(checkValues(form.fields, values)).toEqual({});
+        expect(Object.keys(checkValues(form.fields, { ...values, type: 'event' }))).toEqual([
+            'starts_at',
+        ]);
     });
 
     it('adds the fields of an item type', () => {
