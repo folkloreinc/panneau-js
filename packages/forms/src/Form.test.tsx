@@ -212,6 +212,9 @@ describe('Form without a definition', () => {
     });
 
     it('shows the errors of the parts of an address and a link under their inputs', async () => {
+        // Their entries load on first use (#346): load their modules first, so that the first
+        // `import()` of a busy test run doesn't eat the time of the test.
+        await Promise.all([import('@panneau/fields/address'), import('@panneau/fields/link')]);
         const onSubmit = vi.fn();
         renderForm(
             <Form

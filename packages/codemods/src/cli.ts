@@ -13,6 +13,8 @@ Codemods:
                    and marked with a // TODO(panneau-5) comment.
   button-variants  Replaces variant="primary|secondary|ghost|danger" of Button, LinkButton and
                    IconButton with the tone and appearance it stood for (Panneau 5 alphas).
+  list-view-props  Groups the props of ListView and List into actions, inline and layouts
+                   objects (Panneau 5 alphas).
 
   <paths>   Files and folders, read recursively. For v4-to-v5: the container of the app, its
             field components, and the entry written by \`php artisan panneau:install --upgrade\`.

@@ -44,9 +44,7 @@ function Pages() {
             list={list}
             items={items}
             columns={columns}
-            actions={actions}
-            onAction={runAction}
-            previewAction={previewAction}
+            actions={{ available: actions, onRun: runAction, preview: previewAction }}
         />
     );
 }
@@ -71,7 +69,7 @@ function Pages() {
 
 **Undo** ([decision 0063](../../docs/decisions/0063-undo-instead-of-a-confirmation.md)). When a result has an `undo`, its toast has "Undo" for about 10 seconds: the runner runs that action of the resource on the items it lists, with its `params`, refreshes through `onResult`, and replaces the toast with a short one that says it was undone (or that it failed). The result of a queued run has no "Undo".
 
-**Dry runs.** `useActionPreview(resource)` is a list's `previewAction`. For an action that declares `dryRun`, on every item matching a query ("Select all N items"), it asks the backend what the action would do without running it (`"dryRun": true`), so that the list's confirmation says how many items will really be skipped: the list only knows the abilities of the current page. `previewAction(adapter, resource, target)` does the same outside of React.
+**Dry runs.** `useActionPreview(resource)` is the `preview` of a list's `actions`. For an action that declares `dryRun`, on every item matching a query ("Select all N items"), it asks the backend what the action would do without running it (`"dryRun": true`), so that the list's confirmation says how many items will really be skipped: the list only knows the abilities of the current page. `previewAction(adapter, resource, target)` does the same outside of React.
 
 The function resolves with what happened (`{ status: 'done', result }`, `{ status: 'queued', run }` or `{ status: 'navigated', to }`), with `false` when the user cancelled the parameters (a list then keeps its selection), and rejects when the action failed (a list then shows it in a toast).
 

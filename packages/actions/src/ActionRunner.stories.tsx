@@ -113,8 +113,10 @@ function Pages() {
                 { id: 'status', label: 'Status' },
             ]}
             items={items}
-            actions={actions}
-            onAction={runAction}
+            actions={{
+                available: actions,
+                onRun: runAction,
+            }}
             router={null}
         />
     );
@@ -327,8 +329,10 @@ function InUsePages() {
             columns={[{ id: 'title', label: 'Title' }]}
             // Built-in actions are offered on the items that allow them.
             items={items.map((item) => ({ ...item, abilities: { delete: true } }))}
-            actions={[remove]}
-            onAction={runAction}
+            actions={{
+                available: [remove],
+                onRun: runAction,
+            }}
             router={null}
         />
     );
