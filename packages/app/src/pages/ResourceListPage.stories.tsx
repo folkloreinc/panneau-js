@@ -19,9 +19,11 @@ import {
     DASHBOARD_ITEMS,
     SUMMARY_DATA,
     SUMMARY_WIDGETS,
+    createDashboardDefinition,
     createRecentItems,
     createSummaryDefinition,
 } from '../__fixtures__/dashboard';
+import { navigate, usePathname } from '../location';
 import { ResourceListPage } from './ResourceListPage';
 
 interface ListStoryProps {
@@ -230,5 +232,164 @@ export const Period: Story = {
         ).toBeVisible();
         const table = await canvas.findByRole('table', { name: 'Entries' });
         await waitFor(() => expect(within(table).getAllByRole('row')).toHaveLength(4));
+    },
+};
+
+/** The path of the list page of the entries, as the routes of the app give it. */
+const ENTRIES_PATH = '/panneau/resources/entries';
+
+/**
+ * The list of the entries with one open, as the show route renders it: the item follows the path,
+ * and its links and its panel move through the history of the app. The page sits where the shell
+ * leaves it, its navigation expanded.
+ */
+function ItemOpenStory() {
+    const [state] = useState(() => {
+        const dashboard = createDashboardDefinition();
+        const input = {
+            ...dashboard,
+            resources: dashboard.resources.map((resource) => ({
+                ...resource,
+                // Titles open the panel of the details, rather than the form
+                open: 'panel' as const,
+                list: {
+                    ...resource.list,
+                    columns: [
+                        { field: 'title' },
+                        { field: 'status' },
+                        { field: 'submitted_at' },
+                        { field: 'fee' },
+                    ],
+                },
+            })),
+        };
+        const parsed = validateDefinition(input);
+        if (!parsed.success) {
+            throw new Error('Invalid definition.');
+        }
+        const backend = createMockBackend({ definition: input, items: DASHBOARD_ITEMS });
+        const adapter = createRestAdapter({ baseUrl: '/panneau/api', fetch: backend.fetch });
+        return {
+            definition: parsed.data,
+            adapter,
+            router: createMemoryRouter(''),
+            queryClient: new QueryClient({ defaultOptions: { queries: { retry: false } } }),
+        };
+    });
+    const pathname = usePathname();
+    const selectedId = pathname.startsWith(`${ENTRIES_PATH}/`)
+        ? pathname.slice(ENTRIES_PATH.length + 1)
+        : null;
+    const resource = state.definition.resources[0];
+    if (resource === undefined) {
+        return null;
+    }
+    return (
+        <QueryClientProvider client={state.queryClient}>
+            <DataAdapterProvider adapter={state.adapter}>
+                <ActionRunnerProvider adapter={state.adapter}>
+                    <RouterProvider navigate={(href) => navigate(href)}>
+                        <PanneauProvider definition={state.definition} router={state.router}>
+                            <div
+                                style={{
+                                    padding: '2rem',
+                                    paddingInlineStart:
+                                        'calc(var(--panneau-sidebar-width, 15rem) + 2rem)',
+                                }}
+                            >
+                                <ResourceListPage
+                                    resolved={resolveResource(resource)}
+                                    basePath="/panneau"
+                                    locale="en"
+                                    selectedId={selectedId}
+                                />
+                            </div>
+                        </PanneauProvider>
+                    </RouterProvider>
+                </ActionRunnerProvider>
+            </DataAdapterProvider>
+        </QueryClientProvider>
+    );
+}
+
+const laptop = {
+    viewport: {
+        options: {
+            laptop: {
+                name: 'Laptop',
+                styles: { width: '1280px', height: '800px' },
+                type: 'desktop',
+            },
+        },
+    },
+};
+
+/** The widths of the columns of a table, from its headers. */
+const columnWidths = (table: HTMLElement) =>
+    [...table.querySelectorAll('thead th')].map((cell) => cell.getBoundingClientRect().width);
+
+/**
+ * An item open on a laptop (1280px), as #366 measured it: the panel goes over the list (decision
+ * 0099), so that the table stays a table and keeps its columns. Its row stays current, another
+ * row swaps the panel, and Escape closes it.
+ */
+export const ItemOpenOnALaptop: Story = {
+    render: () => <ItemOpenStory />,
+    parameters: laptop,
+    globals: { viewport: { value: 'laptop', isRotated: false } },
+    beforeEach: () => {
+        const previous = `${window.location.pathname}${window.location.search}`;
+        window.history.replaceState(window.history.state, '', ENTRIES_PATH);
+        return () => {
+            window.history.replaceState(window.history.state, '', previous);
+        };
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const table = await canvas.findByRole('table');
+        await waitFor(() =>
+            expect(within(table).getByRole('link', { name: 'Bridges at night' })).toBeVisible(),
+        );
+        // Closed: a table, with its headers
+        await expect(getComputedStyle(table).display).toBe('table');
+        const widths = columnWidths(table);
+
+        await userEvent.click(within(table).getByRole('link', { name: 'Bridges at night' }));
+        const panel = await canvas.findByRole('region', { name: 'Details of the entry' });
+        await expect(
+            await within(panel).findByRole('heading', { name: 'Bridges at night' }),
+        ).toBeInTheDocument();
+        // Open: still a table, its columns where they were, under the panel
+        await expect(getComputedStyle(table).display).toBe('table');
+        await expect(within(table).getAllByRole('columnheader')[0]).toBeVisible();
+        await expect(columnWidths(table)).toEqual(widths);
+        await expect(getComputedStyle(panel).position).toBe('fixed');
+        await expect(panel).toHaveFocus();
+        // Its row stays current
+        await expect(within(table).getByRole('link', { name: 'Bridges at night' })).toHaveAttribute(
+            'aria-current',
+            'page',
+        );
+
+        // Another visible row swaps the panel
+        await userEvent.click(within(table).getByRole('link', { name: 'City lights' }));
+        await expect(
+            await within(canvas.getByRole('region', { name: 'Details of the entry' })).findByRole(
+                'heading',
+                { name: 'City lights' },
+            ),
+        ).toBeInTheDocument();
+        await expect(within(table).getByRole('link', { name: 'City lights' })).toHaveAttribute(
+            'aria-current',
+            'page',
+        );
+        await expect(columnWidths(table)).toEqual(widths);
+
+        // Escape closes it, and the list doesn't move
+        await userEvent.keyboard('{Escape}');
+        await waitFor(() =>
+            expect(canvas.queryByRole('region', { name: 'Details of the entry' })).toBeNull(),
+        );
+        await expect(columnWidths(table)).toEqual(widths);
     },
 };

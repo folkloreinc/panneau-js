@@ -137,6 +137,52 @@ export const Overlay: Story = {
     },
 };
 
+/**
+ * Over the content at every width (decision 0099), for an aside that opens on demand next to a
+ * list: the content keeps its width when it opens or closes.
+ */
+export const OverlayWhenWide: Story = {
+    render: function Render(args) {
+        const [open, setOpen] = useState(false);
+        return (
+            <div style={{ maxWidth: '70rem' }}>
+                <AsideLayout
+                    placement="overlay"
+                    aside={
+                        open ? (
+                            <Aside
+                                {...args}
+                                title="Hello world"
+                                isWidenable
+                                onClose={() => setOpen(false)}
+                            >
+                                <Panels />
+                            </Aside>
+                        ) : null
+                    }
+                >
+                    <Button onPress={() => setOpen(true)}>Open</Button>
+                    <Content />
+                </AsideLayout>
+            </div>
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const row = canvas.getByText('Row 1');
+        const width = row.getBoundingClientRect().width;
+        await userEvent.click(canvas.getByRole('button', { name: 'Open' }));
+        const aside = canvas.getByRole('region', { name: 'Details' });
+        await expect(getComputedStyle(aside).position).toBe('fixed');
+        await expect(row.getBoundingClientRect().width).toBe(width);
+        // Over a wide layout, it can still be widened
+        await expect(canvas.getByRole('button', { name: 'Widen the panel' })).toBeVisible();
+        await userEvent.click(canvas.getByRole('button', { name: 'Close' }));
+        await expect(canvas.queryByRole('region', { name: 'Details' })).toBeNull();
+        await expect(row.getBoundingClientRect().width).toBe(width);
+    },
+};
+
 /** Its title while it loads. */
 export const Loading: Story = {
     args: { isLoading: true },

@@ -31,7 +31,6 @@ import {
     useToast,
 } from '@panneau/ui';
 
-import { cx } from '../cx';
 import { useSummaryPeriod } from '../dashboard/period';
 import { useDocumentTitle } from '../documentTitle';
 import { navigate } from '../location';
@@ -245,7 +244,7 @@ export function ResourceListPage({
         );
     }
     return (
-        <div className={cx(styles.page, selectedId !== null && styles.withPanel)}>
+        <div className={styles.page}>
             <PageHeader
                 title={title}
                 actions={
@@ -329,8 +328,9 @@ export function ResourceListPage({
                         : intl.formatMessage(appMessages.showList)}
                 </Button>
             ) : null}
+            {/* The panel goes over the list, so that opening an item doesn't reflow it (decision 0099) */}
             <AsideLayout
-                narrow="overlay"
+                placement="overlay"
                 aside={
                     selectedId !== null ? (
                         <ItemPanel

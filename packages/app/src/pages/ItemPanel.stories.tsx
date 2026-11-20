@@ -194,7 +194,7 @@ function Panel({
                         >
                             {/* Next to its list, as the list page places it */}
                             <AsideLayout
-                                narrow="overlay"
+                                placement="overlay"
                                 aside={
                                     <ItemPanel
                                         resolved={resolveResource(resource)}
