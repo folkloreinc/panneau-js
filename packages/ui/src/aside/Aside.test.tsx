@@ -135,4 +135,16 @@ describe('AsideLayout', () => {
         expect(screen.getByRole('textbox', { name: 'Search' })).toBe(input);
         expect(screen.getByRole('region', { name: 'Details' })).toBeInTheDocument();
     });
+
+    it('puts the aside over the content at every width with placement="overlay"', () => {
+        const { container } = render(
+            <AsideLayout aside={<Aside label="Details">Values</Aside>} placement="overlay">
+                <input aria-label="Search" />
+            </AsideLayout>,
+        );
+        const grid = container.querySelector('.panneau-aside-layout > div');
+        expect(grid?.className).toMatch(/overlay/);
+        expect(grid?.className).toMatch(/alwaysOverlay/);
+        expect(grid?.className).not.toMatch(/withAside/);
+    });
 });

@@ -34,6 +34,13 @@ export interface AsideLayoutProps {
      * for an aside that opens on demand and closes. Defaults to `below`.
      */
     narrow?: 'below' | 'overlay';
+    /**
+     * Where the aside goes when the layout is wide enough: `beside` the content from 56rem, or
+     * `overlay`, over the content on its right at every width, so that the content never reflows
+     * when the aside opens or closes, as the item panel of a list (decision 0099). `narrow` then
+     * changes nothing. Defaults to `beside`.
+     */
+    placement?: 'beside' | 'overlay';
     className?: string;
     mainClassName?: string;
 }
@@ -41,23 +48,27 @@ export interface AsideLayoutProps {
 /**
  * Places an aside next to the main content of a page or a form (decision 0074): beside it from
  * 56rem of the layout, below it or over it otherwise. Beside the content, the aside stays in view
- * as the page scrolls.
+ * as the page scrolls. With `placement="overlay"`, it is over the content at every width (decision
+ * 0099).
  */
 export function AsideLayout({
     children,
     aside,
     narrow = 'below',
+    placement = 'beside',
     className,
     mainClassName,
 }: AsideLayoutProps) {
+    const isOverlay = placement === 'overlay';
     const hasAside = aside !== undefined && aside !== null && aside !== false;
     return (
         <div className={cx('panneau-aside-layout', styles.layout, className)}>
             <div
                 className={cx(
                     styles.grid,
-                    hasAside && styles.withAside,
-                    narrow === 'overlay' && styles.overlay,
+                    hasAside && !isOverlay && styles.withAside,
+                    (isOverlay || narrow === 'overlay') && styles.overlay,
+                    isOverlay && styles.alwaysOverlay,
                 )}
             >
                 <div className={cx(styles.main, mainClassName)}>{children}</div>

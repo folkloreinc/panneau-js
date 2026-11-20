@@ -1,5 +1,6 @@
 /* The column next to the main content (decision 0074): below it or over it on narrow layouts,
-   beside it from 56rem of the layout, where it stays in view. */
+   beside it from 56rem of the layout, where it stays in view. An `alwaysOverlay` grid keeps it over
+   the content at every width (decision 0099): the rules of 56rem leave it out. */
 
 .layout {
     container: panneau-aside-layout / inline-size;
@@ -92,8 +93,7 @@
         grid-template-columns: minmax(0, 1fr) var(--panneau-aside-width-wide, 50%);
     }
 
-    .grid > .aside,
-    .grid.overlay > .aside {
+    .grid:not(.alwaysOverlay) > .aside {
         position: sticky;
         inset-block: var(--panneau-space-4) auto;
         z-index: auto;
@@ -107,14 +107,13 @@
         box-shadow: var(--panneau-aside-shadow, var(--panneau-shadow-sm));
     }
 
-    .grid > .aside:focus-visible,
-    .grid.overlay > .aside:focus-visible {
+    .grid:not(.alwaysOverlay) > .aside:focus-visible {
         box-shadow:
             var(--panneau-aside-shadow, var(--panneau-shadow-sm)),
             0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
     }
 
-    .grid > .aside .widen {
+    .grid:not(.alwaysOverlay) > .aside .widen {
         display: inline-flex;
     }
 }
@@ -185,11 +184,11 @@
 }
 
 @container panneau-aside-layout (min-width: 56rem) {
-    .panel[data-beside-only]:not(:empty) {
+    .grid:not(.alwaysOverlay) .panel[data-beside-only]:not(:empty) {
         display: flex;
     }
 
-    .panel:not(:empty) ~ .panel:not(:empty) {
+    .grid:not(.alwaysOverlay) .panel:not(:empty) ~ .panel:not(:empty) {
         margin-top: var(--panneau-aside-padding, var(--panneau-space-4));
         padding-top: var(--panneau-aside-padding, var(--panneau-space-4));
         border-top: var(--panneau-border-width) solid var(--panneau-color-border);

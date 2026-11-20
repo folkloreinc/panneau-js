@@ -10,11 +10,6 @@
     max-width: 64rem;
 }
 
-/* With the details of an item next to the list, the page takes the whole width. */
-.withPanel {
-    max-width: none;
-}
-
 .header {
     display: flex;
     flex-wrap: wrap;

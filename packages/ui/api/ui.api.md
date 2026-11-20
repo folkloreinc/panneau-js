@@ -91,6 +91,7 @@ export interface AsideLayoutProps {
     // (undocumented)
     mainClassName?: string;
     narrow?: 'below' | 'overlay';
+    placement?: 'beside' | 'overlay';
 }
 
 // @public
