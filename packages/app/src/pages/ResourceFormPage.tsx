@@ -1,16 +1,9 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
 import { type ResolvedResource, getItemActions, getItemValues, resolveForm } from '@panneau/core';
 import { NotFoundError } from '@panneau/data';
-import {
-    queryKeys,
-    useCreateItem,
-    useDataAdapter,
-    useResourceItem,
-    useUpdateItem,
-} from '@panneau/data/query';
-import { createFieldCheckSource, createRelationSource } from '@panneau/fields';
+import { useCreateItem, useDataAdapter, useResourceItem, useUpdateItem } from '@panneau/data/query';
+import { createFieldCheckSource } from '@panneau/fields';
 import { Form } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
 import type { Definition, Item, RouteReference } from '@panneau/protocol';
@@ -63,7 +56,6 @@ export function ResourceFormPage({
 }: ResourceFormPageProps) {
     const intl = usePanneauIntl();
     const adapter = useDataAdapter();
-    const queryClient = useQueryClient();
     // The version this page just saved: the form starts over from it, and still says "Saved".
     const [savedVersion, setSavedVersion] = useState<string | null>(null);
     const { resource } = resolved;
@@ -71,22 +63,6 @@ export function ResourceFormPage({
     const itemQuery = useResourceItem(resource.id, id);
     const createItem = useCreateItem(resource.id);
     const updateItem = useUpdateItem(resource.id);
-    // The cards of relation fields link to their items: the show route, which goes to the form of
-    // an item that opens there (decision 0067). The items of their ids are those of the item
-    // queries: the source only asks for those it doesn't have, and caches those it gets.
-    const relationSource = createRelationSource(adapter, {
-        definition,
-        items: {
-            get: (related, relatedId) =>
-                queryClient.getQueryData<Item>(queryKeys.item(related, relatedId)),
-            set: (related, relatedItem) =>
-                queryClient.setQueryData(queryKeys.item(related, relatedItem.id), relatedItem),
-        },
-        getItemHref: (related, relatedId) =>
-            definition.resources.some((candidate) => candidate.id === related)
-                ? routePath({ name: 'resource.show', resource: related, id: relatedId }, basePath)
-                : null,
-    });
     // Fields with `check`, such as slugs, check their value with the backend as it is typed
     const checkSource = createFieldCheckSource(adapter, resource.id, id);
     const item = itemQuery.data;
@@ -201,7 +177,6 @@ export function ResourceFormPage({
             version={item?.version ?? null}
             mode={mode}
             locales={definition.locales}
-            relationSource={relationSource}
             checkSource={checkSource}
             guardUnsavedChanges
             panels={PANELS}

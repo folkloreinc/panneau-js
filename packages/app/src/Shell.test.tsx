@@ -1510,6 +1510,66 @@ describe('the app shell', () => {
         expect(await screen.findByRole('link', { name: 'Contact' })).toBeInTheDocument();
     });
 
+    it('searches the related resource in a relation filter of a list, and applies it (#292)', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        let fetch: ReturnType<typeof vi.fn> | undefined;
+        renderApp(
+            {
+                resources: [
+                    {
+                        id: 'pages',
+                        label: { singular: 'page', plural: 'pages' },
+                        fields: [
+                            { name: 'title', type: 'text' },
+                            { name: 'author', type: 'relation', resource: 'authors' },
+                        ],
+                        list: {
+                            filters: [
+                                {
+                                    id: 'author',
+                                    type: 'relation',
+                                    resource: 'authors',
+                                    label: 'Author',
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        id: 'authors',
+                        label: { singular: 'author', plural: 'authors' },
+                        itemTitle: 'name',
+                        features: { search: true },
+                        fields: [{ name: 'name', type: 'text' }],
+                    },
+                ],
+            },
+            [],
+            (backend) => {
+                const [about] = backend.items('pages');
+                Object.assign(about ?? {}, { author: '1' });
+                fetch = vi.spyOn(backend, 'fetch') as unknown as ReturnType<typeof vi.fn>;
+            },
+        );
+        const table = await screen.findByRole('table', { name: 'Pages' });
+        expect(await within(table).findByText('Contact')).toBeInTheDocument();
+        // The picker searches the related resource, once the user pauses
+        const searches = () =>
+            (fetch?.mock.calls ?? [])
+                .map(([input]) => new URL(String(input), 'http://test'))
+                .filter((url) => url.pathname === '/panneau/api/resources/authors')
+                .map((url) => url.searchParams.get('q'));
+        await user.type(await screen.findByRole('combobox', { name: 'Author' }), 'Ad');
+        await waitFor(() => expect(searches()).toContain('Ad'));
+        await user.click(await screen.findByRole('option', { name: 'Ada' }));
+        await waitFor(() => expect(window.location.search).toBe('?filter%5Bauthor%5D=1'));
+        await waitFor(() => expect(within(table).queryByText('Contact')).toBeNull());
+        expect(within(table).getByText('About us')).toBeInTheDocument();
+        expect(screen.getByRole('list', { name: 'Active filters' })).toHaveTextContent(
+            'Author: Ada',
+        );
+    });
+
     it('shows the images of a media library in its gallery and its table, without itemImage', async () => {
         const user = userEvent.setup();
         window.history.replaceState(null, '', '/panneau/resources/pages');
