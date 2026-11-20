@@ -1,5 +1,17 @@
 # @panneau/protocol
 
+## 5.0.0-alpha.45
+
+### Minor Changes
+
+- b4d79ec: Breadcrumbs in the page header (decision 0093). `@panneau/protocol`: resources and pages take an optional `parent`, a page of `pages` (or for a page, a resource: `{ "resource": "jobs" }`), which `lintDefinition()` checks. `@panneau/ui`: a crumb of `Breadcrumbs` whose `label` is `undefined` is a skeleton, and the current page's label is cut before its parents'. `@panneau/app`: `PageHeader` takes `parents`, by default those of the route the app renders; one parent is the link above the title, two or more are breadcrumbs from 48rem of the root and a link to the nearest parent below it, with `crumbLabel` and `isLoading` (a skeleton for the title and its crumb). `back` is deprecated: use `parents={[back]}`. The title of an item's form is a skeleton while the item loads, the title of the tab names the parents, and a resource or a page that isn't in the menus keeps its nearest parent there current.
+- 9dc08d7: Lists ask for the fields they show, and relation fields resolve their ids in one request. `@panneau/lists`: `useListFields()` gives the fields that a `ListView` shows of its items (its columns shown, the title and the image of items, the field of the calendar), and `getListFields()` computes them, for the `fields` of the list query; `undefined` with a column that has `render` or a layout that isn't built in. `@panneau/app`: the list of a resource sends them. `@panneau/fields`: `createRelationSource().resolve()` asks for the ids of every field of a form in one list query on `filter[ids]` (by groups of 100), instead of a `get()` per id, keeps the items in its new `items` option (the item queries of the query client, in the app), and has a new `peek()`, the reference of an item it already has; `useRelationReferences()` no longer keeps a cache of its own, and `RelationListAdapter` no longer has `get()`. `@panneau/data`: lists and items stay fresh for 30 seconds, until a mutation invalidates them. `@panneau/protocol`: `MAX_PER_PAGE` (100), the most items a page has: `perPage`, `perPageOptions` and `calendar.perPage` of a list are at most 100, the mock backend caps `perPage` there and gives the fields of `fields` only, and the conformance checks both (`list.per-page`, `list.fields`, where a backend can also give the values of `itemTitle` and `itemImage`).
+
+### Patch Changes
+
+- 0bbbeea: `GET /resources/{resource}/aggregate` documents its limits: a `422` keyed by `measure` or `group` for an aggregate over too many items, and a `429` with `Retry-After` when a user asks too often.
+- 0f82abf: The conformance kit and the mock backend are split into one module per domain (auth, context, lists, search, aggregates, dashboards, uploads, actions…). Nothing changes for users: the same checks, with the same ids and in the same order, and the same responses.
+
 ## 5.0.0-alpha.44
 
 ### Minor Changes

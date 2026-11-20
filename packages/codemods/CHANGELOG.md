@@ -1,5 +1,25 @@
 # @panneau/codemods
 
+## 5.0.0-alpha.45
+
+### Minor Changes
+
+- 62b099c: `ListView` and `List` group their props by what they are about, before the API freezes in 5.0:
+  
+  - `actions={{ available, onRun, preview, icons, primary }}` takes the place of `actions`, `onAction`, `previewAction`, `actionIcons` and `primaryAction`;
+  - `inline={{ fields, onEdit, formatError }}` takes the place of `inlineEdit`, `onInlineEdit` and `formatError`;
+  - `layouts={{ available, current, onChange, components }}` takes the place of `layouts`, `layout`, `onLayoutChange` and `layoutComponents`.
+  
+  To migrate, run `npx @panneau/codemods@alpha list-view-props resources/js` (`--dry` first). It rewrites the props of `ListView` and `List`, and reports the props spread on them: spreading what `resolveList()` gives (`{...resolved}`) no longer fits, since its `actions`, `layouts` and `inlineEdit` go in the objects. Give its `columns`, `filters`, `search`, `selectable`, `calendar` and `perPageOptions` as props, and the rest in the objects. The types of the objects are exported: `ListViewActions`, `ListViewInline` and `ListViewLayouts`, with `ListInlineEditHandler` and `ListInlineEditEvent`.
+- f8ae53c: The deprecated APIs are removed before the first beta, so that 5.0.0 ships without them. To migrate a project that started on an alpha:
+  
+  - **Buttons:** `variant="primary"`, `secondary`, `ghost` and `danger` of `Button`, `LinkButton` and `IconButton` are gone, with the `ButtonVariant` type. Run `npx @panneau/codemods@alpha button-variants resources/js` (`--dry` first): it gives each button the `tone` and the `appearance` the alias stood for (`primary` is `tone="accent"`, `ghost` is `appearance="ghost"`, `danger` is `tone="danger"`, `secondary` is the default), and reports what it can't read, such as a `variant` in an object of props. `variant` now only names a variant of the theme.
+  - **Tones:** `AlertTone`, `BadgeTone` and `ToastTone` of `@panneau/ui` are gone: use `Tone`.
+  - **Messages:** `@panneau/fields/locales`, `@panneau/forms/locales` and `@panneau/ui/locales` are gone: use `en`, `fr` or `withPanneauMessages()` of `@panneau/intl`, which hold the messages of every package.
+  - **Pages:** `LinkButton` of `@panneau/app` is gone: use `LinkButton` of `@panneau/ui`, with `tone="accent"` and an icon component (`icon={Plus}`). `back` of `PageHeader` is gone: use `parents={[back]}`.
+  
+  `@panneau/codemods` has the `button-variants` codemod (`panneau-codemods button-variants <paths>`, or `runCodemods({ codemod: 'button-variants' })`). Inside the packages, every button takes a `tone` and an `appearance`, and a lint rule forbids the aliases.
+
 ## 5.0.0-alpha.44
 
 No changes in this release.

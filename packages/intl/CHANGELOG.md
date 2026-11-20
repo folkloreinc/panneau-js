@@ -1,5 +1,12 @@
 # @panneau/intl
 
+## 5.0.0-alpha.45
+
+### Minor Changes
+
+- e0865af: Focus and announcements in lists (decision 0095). `@panneau/lists`: the focus that was in an item that leaves a list goes to the same control of the next item, or of the previous one, or to the list (a group named like it) when it is left empty; an item that leaves goes when its fade ends (`animationend`), with a timer only when the animation doesn't end, instead of a copy of `--panneau-duration-slow`. The built-in layouts give each item's element `data-item-id`. `ConfirmDialog` opens on "Cancel" for a destructive action, and its confirming button is pending, not disabled, while the dry run counts, so it keeps the focus. `ListView` has one polite status message of its results, said after a new search, filter or page: how many items, or that none match. `@panneau/intl`: the messages `resultsCount` and `resultsOnPage` of lists, in English and in French.
+- 3117891: Panneau's messages load on first use, in the language the app shows (#346): a minimal app goes from 1600 KB to 1544 KB minified (499 KB to 485 KB gzip). `@panneau/intl`: `loadPanneauMessages(locale)` loads the messages of every package for a locale with an `import()` the first time, and `getLoadedPanneauMessages(locale)` returns them once loaded. `@panneau/ui`: `PanneauRoot` loads them, and renders in English until then, without the English catalog. `@panneau/app`: the app waits for them with the messages of the plugins. `@panneau/fields` and `@panneau/lists`: `locales.fr` of `fieldsPlugin` and `listsPlugin` is a loader. The thumbnails of the embed display, the embed field and the media field load when scrolled to (`loading="lazy"`).
+
 ## 5.0.0-alpha.44
 
 ### Minor Changes
