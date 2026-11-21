@@ -1,6 +1,6 @@
 {
     "name": "@panneau/actions",
-    "version": "4.1.4",
+    "version": "4.1.5",
     "description": "",
     "keywords": [
         "javascript"
@@ -54,7 +54,7 @@
         "@panneau/action-import": "^4.1.4",
         "@panneau/action-restore": "^4.1.4",
         "@panneau/action-show": "^4.1.4",
-        "@panneau/action-upload": "^4.1.4",
+        "@panneau/action-upload": "^4.1.5",
         "@panneau/core": "^4.1.4"
     },
     "devDependencies": {

@@ -1,34 +1,40 @@
 {
-    "version": "4.1.4",
-    "packages": [
-        "actions/*",
-        "displays/*",
-        "fields/*",
-        "forms/*",
-        "modals/*",
-        "elements/*",
-        "filters/*",
-        "lists/*",
-        "packages/*"
-    ],
-    "command": {
-        "publish": {
-            "allowBranch": [
-                "v0.4",
-                "v0.6",
-                "v1.0-react-router5",
-                "v2.0",
-                "v3.0",
-                "v4.0",
-                "feature/es-module"
-            ]
-        },
-        "bootstrap": {
-            "hoist": true,
-            "npmClientArgs": ["--no-package-lock", "--legacy-peer-deps"]
-        }
+  "version": "4.1.5",
+  "packages": [
+    "actions/*",
+    "displays/*",
+    "fields/*",
+    "forms/*",
+    "modals/*",
+    "elements/*",
+    "filters/*",
+    "lists/*",
+    "packages/*"
+  ],
+  "command": {
+    "publish": {
+      "allowBranch": [
+        "v0.4",
+        "v0.6",
+        "v1.0-react-router5",
+        "v2.0",
+        "v3.0",
+        "v4.0",
+        "feature/es-module"
+      ]
     },
     "bootstrap": {
-        "npmClientArgs": ["--no-package-lock", "--legacy-peer-deps"]
+      "hoist": true,
+      "npmClientArgs": [
+        "--no-package-lock",
+        "--legacy-peer-deps"
+      ]
     }
+  },
+  "bootstrap": {
+    "npmClientArgs": [
+      "--no-package-lock",
+      "--legacy-peer-deps"
+    ]
+  }
 }
