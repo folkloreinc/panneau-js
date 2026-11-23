@@ -1,9 +1,19 @@
+import { Suspense, lazy } from 'react';
+
 import type { Option } from '@panneau/protocol';
 import { Checkbox, Fieldset, type OptionValue, RadioGroup, Select } from '@panneau/ui';
 
-import { getFieldProps, getSetting, isString } from '../shared/entry';
+import { getFieldProps, getSetting, isBoolean, isString } from '../shared/entry';
 import type { FieldEntryProps, FieldProps } from '../shared/types';
 import styles from './SelectField.module.css';
+
+/** Selects with more options than this are searchable, unless their field says otherwise. */
+const SELECT_SEARCH_THRESHOLD = 10;
+
+// Loaded with the first searchable select: the first page of most apps has none.
+const SearchableSelect = lazy(async () => ({
+    default: (await import('./SearchableSelect')).SearchableSelect,
+}));
 
 export type { OptionValue };
 
@@ -21,6 +31,11 @@ export interface SingleSelectFieldProps extends SelectFieldBaseProps {
     onChange?: (value: OptionValue | null) => void;
     /** `select` (default): a dropdown. `radios`: every choice visible. */
     widget?: 'select' | 'radios';
+    /**
+     * The dropdown is a combo box whose options are filtered as the user types, with the same
+     * value. Defaults to `true` with more than 10 options.
+     */
+    search?: boolean;
 }
 
 export interface MultipleSelectFieldProps extends SelectFieldBaseProps {
@@ -152,7 +167,7 @@ export function SelectField(props: SelectFieldProps) {
             />
         );
     }
-    return (
+    const dropdown = (
         <Select
             {...chrome}
             options={options}
@@ -168,6 +183,29 @@ export function SelectField(props: SelectFieldProps) {
             {...(controlClassName !== undefined ? { triggerClassName: controlClassName } : {})}
         />
     );
+    if (props.search ?? options.length > SELECT_SEARCH_THRESHOLD) {
+        // The dropdown looks the same closed, until the combo box loads
+        return (
+            <Suspense fallback={dropdown}>
+                <SearchableSelect
+                    {...chrome}
+                    options={options}
+                    value={props.value ?? null}
+                    onChange={(value) => props.onChange?.(value)}
+                    required={required}
+                    disabled={disabled}
+                    readOnly={readOnly}
+                    placeholder={placeholder}
+                    name={name}
+                    id={id}
+                    autoFocus={autoFocus}
+                    {...(onBlur !== undefined ? { onBlur } : {})}
+                    controlClassName={controlClassName}
+                />
+            </Suspense>
+        );
+    }
+    return dropdown;
 }
 
 function isOptionValue(value: unknown): value is OptionValue {
@@ -175,12 +213,14 @@ function isOptionValue(value: unknown): value is OptionValue {
 }
 
 /**
- * The `select` type: `options`, `multiple`, and setting `widget` (`radios` for a single choice,
- * `checkboxes` for several).
+ * The `select` type: `options`, `multiple`, and settings `widget` (`radios` for a single choice,
+ * `checkboxes` for several) and `search` (a single choice in a combo box, by default with more
+ * than 10 options).
  */
 export function SelectFieldEntry(props: FieldEntryProps) {
     const { field } = props;
     const widget = getSetting(field, 'widget', isString);
+    const search = getSetting(field, 'search', isBoolean);
     const options = field.options ?? [];
     if (field.multiple === true) {
         const value = Array.isArray(props.value) ? props.value.filter(isOptionValue) : null;
@@ -202,6 +242,7 @@ export function SelectFieldEntry(props: FieldEntryProps) {
             value={isOptionValue(props.value) ? props.value : null}
             onChange={props.onChange}
             {...(widget === 'radios' ? { widget } : {})}
+            {...(search !== undefined ? { search } : {})}
         />
     );
 }

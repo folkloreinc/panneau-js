@@ -138,6 +138,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     - `neutral` and `muted` are both quiet, but don't say the same thing: "Draft" hasn't started, "Archived" is done with. `muted` has no fill, only a grey outline, so that what is over steps back from what is still alive. Projects coming from Panneau 4 map Bootstrap's `dark` to `muted`.
     - `accent` is never a state: it is the main action of a screen.
     - Sober by default: most states are `neutral`, and color is for what needs a look. Badges of states use the `subtle` appearance, never `solid`. A state is never shown by its color alone: its word is always there, and the same state has the same short word in every list of an admin. A number (a widget, the count of a group) takes a tone only when it calls for attention (overdue: 3), and stays neutral at 0.
+- **`select` settings** (`SelectSettings`, which `validateDefinition()` checks): `widget` shows every choice, as `radios` for a single choice or `checkboxes` for several. `search` makes the dropdown of a single choice a combo box, whose options are filtered as the user types: `true` always, `false` never, and without it the client chooses (Panneau: more than 10 options). The value is the same either way.
 - **`localized`** makes the value an object keyed by locale (`{ "fr": "…", "en": "…" }`). It replaces the separate `localized` field and the `*Localized` PHP classes of v1.
 - **`group`** has `fields`, for a nested object.
 - **`repeater`** has `fields`, or `types` for typed blocks, for an array. Clients collapse its items under their title; `settings.collapsible: false` keeps them expanded ([0068](decisions/0068-collapsed-items-and-lighter-controls.md)). A repeater can name a list of shared block types with `typeSet`, a key of the definition's `blockTypeSets`, rather than repeat its `types` ([0094](decisions/0094-shared-block-types.md)): the blocks of every type of page, or the blocks a block holds. Clients resolve it into `types` when they read the definition (`validateDefinition()`, `validateBootConfig()`, `resolveBlockTypeSets()`).
@@ -257,6 +258,22 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 
     - The type implies the checks of its parts: `in` on `link.type`; on `link.url`, `url` (an `http` or `https` URL), `email` (`mailto:` and an address), `tel` (`tel:` and E.164), the `pattern` of a type of the site, or `required`; `required` on `link.page`, `link.file`, and `link.label` with `"label": "required"`.
     - A backend sets `newTab` with `external`, and resolves the `url` of `page` and `file` links again: it ignores the one a client sends.
+
+- **`date` settings** (`DateSettings`, which `validateDefinition()` checks): `shortcuts` are buttons under the field that fill it with a date. `today`, `yesterday` and `tomorrow` are in the user's zone, with labels in their locale; an object is a date worked out from today, or from the `date` or `datetime` field that `from` names in the same object (the form, a group or a block), with its `label` and offsets `years`, `months`, `weeks` and `days`, whole numbers, negative to go back. A shortcut whose `from` is empty is disabled.
+
+    ```jsonc
+    {
+        "name": "ends_on",
+        "type": "date",
+        "settings": {
+            "shortcuts": [
+                "today",
+                { "label": "In a week", "weeks": 1 },
+                { "label": "A year after the start", "from": "starts_on", "years": 1 },
+            ],
+        },
+    }
+    ```
 
 - **`datetime` values** are ISO 8601 date-times. A value with an offset is an instant: clients write it in UTC (`2026-11-04T23:30:00Z`), and show it in `settings.timeZone`, an IANA zone (`America/Toronto`), or in the browser's zone without it. A value without an offset is kept as it is.
 - **`daterange` values** are a start and an end, `{ "start", "end" }` (`DateRangeValue`), or `null` ([0053](decisions/0053-date-ranges-and-money.md)). Its `settings` are `DateRangeSettings`, which `validateDefinition()` checks:

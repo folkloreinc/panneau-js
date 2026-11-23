@@ -313,6 +313,12 @@ export const fieldsMessages = {
         defaultMessage: 'Open in a new tab',
     }),
     allDay: defineMessage({ id: 'panneau.fields.allDay', defaultMessage: 'All day' }),
+    dateToday: defineMessage({ id: 'panneau.fields.dateToday', defaultMessage: 'Today' }),
+    dateYesterday: defineMessage({
+        id: 'panneau.fields.dateYesterday',
+        defaultMessage: 'Yesterday',
+    }),
+    dateTomorrow: defineMessage({ id: 'panneau.fields.dateTomorrow', defaultMessage: 'Tomorrow' }),
     timeZone: defineMessage({ id: 'panneau.fields.timeZone', defaultMessage: 'Time zone' }),
     noTimeZones: defineMessage({
         id: 'panneau.fields.noTimeZones',
