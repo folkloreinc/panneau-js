@@ -41,6 +41,7 @@ import {
 
 import { getInterfaceLocales } from '../interfaceLocales';
 import { type NavLink, capitalize, getNavigation } from '../navigation';
+import { getItemPath } from '../pages/itemLinks';
 import { getItemTitle } from '../pages/itemTitle';
 import { readRecentItems, useRecentScope } from '../recentItems';
 import { routePath } from '../routes';
@@ -94,7 +95,9 @@ function imageOf(item: Item, resource: Resource): string | undefined {
 /**
  * The "Go to…" palette of the app (decision 0029): recent items, navigation, "New {resource}",
  * the commands of plugins, the app's actions, then the results of the server's search, grouped by
- * resource. An item opens its edit form. "Search in" narrows the palette to the results of one
+ * resource. An item opens where its title opens in its list (`getItemPath()`, decision 0082): its
+ * form, or its panel when its resource opens there or the user can't update it. What matches the
+ * query is highlighted in labels. "Search in" narrows the palette to the results of one
  * resource, 20 of them, until Backspace in the empty field.
  */
 export function GoTo({
@@ -136,8 +139,6 @@ export function GoTo({
         }
         onOpenChange(open);
     };
-    const editPath = (resource: string, id: string) =>
-        routePath({ name: 'resource.edit', resource, id }, basePath);
 
     const recent: CommandPaletteItem[] = isOpen
         ? readRecentItems(basePath, user).flatMap((entry) => {
@@ -149,7 +150,9 @@ export function GoTo({
                             label: entry.title,
                             description: capitalize(resource.label.singular, locale),
                             icon: resource.icon !== undefined ? getNamedIcon(resource.icon) : Clock,
-                            href: editPath(entry.resource, entry.id),
+                            // Without its abilities (recorded before they were kept), the show
+                            // route, which goes to the form once the item says it can be updated
+                            href: getItemPath(resource, entry, basePath),
                         },
                     ]
                   : [];
@@ -308,7 +311,7 @@ export function GoTo({
                                       : undefined,
                               imageUrl: imageOf(item, resource),
                               icon,
-                              href: editPath(id, item.id),
+                              href: getItemPath(resource, item, basePath),
                           })),
                           ...more,
                       ],
@@ -381,6 +384,7 @@ export function GoTo({
             onScopeRemove={() => setScope(null)}
             status={status}
             groups={[...local, ...results]}
+            highlightMatches
         />
     );
 }
