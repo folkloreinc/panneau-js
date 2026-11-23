@@ -131,6 +131,14 @@ export const fieldsMessages = {
     search: defineMessage({ id: 'panneau.fields.search', defaultMessage: 'Search…' }),
     noRelation: defineMessage({ id: 'panneau.fields.noRelation', defaultMessage: 'None' }),
     noResults: defineMessage({ id: 'panneau.fields.noResults', defaultMessage: 'No results' }),
+    relationResults: defineMessage<{ count: number }>({
+        id: 'panneau.fields.relationResults',
+        defaultMessage: '{count, plural, one {# result} other {# results}}',
+    }),
+    relationResultsShown: defineMessage<{ shown: number; count: number }>({
+        id: 'panneau.fields.relationResultsShown',
+        defaultMessage: '{shown} of {count, plural, one {# result} other {# results}}',
+    }),
     createRelation: defineMessage<{ text: string }>({
         id: 'panneau.fields.createRelation',
         defaultMessage: 'Create “{text}”',
@@ -297,6 +305,12 @@ export const fieldsMessages = {
         defaultMessage: 'Open in a new tab',
     }),
     allDay: defineMessage({ id: 'panneau.fields.allDay', defaultMessage: 'All day' }),
+    dateToday: defineMessage({ id: 'panneau.fields.dateToday', defaultMessage: 'Today' }),
+    dateYesterday: defineMessage({
+        id: 'panneau.fields.dateYesterday',
+        defaultMessage: 'Yesterday',
+    }),
+    dateTomorrow: defineMessage({ id: 'panneau.fields.dateTomorrow', defaultMessage: 'Tomorrow' }),
     timeZone: defineMessage({ id: 'panneau.fields.timeZone', defaultMessage: 'Time zone' }),
     noTimeZones: defineMessage({
         id: 'panneau.fields.noTimeZones',

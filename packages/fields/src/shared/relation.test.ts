@@ -85,8 +85,13 @@ describe('createRelationSource', () => {
             icon: 'users',
             image: true,
             description: true,
+            status: false,
         });
-        expect(source.describe?.('pages')).toEqual({ image: false, description: false });
+        expect(source.describe?.('pages')).toEqual({
+            image: false,
+            description: false,
+            status: false,
+        });
         expect(source.describe?.('nope')).toBeNull();
         expect(source.getItemHref?.('authors', '1')).toBe('/authors/1');
     });
@@ -103,6 +108,158 @@ describe('createRelationSource', () => {
         await expect(
             source.search('users', '', { signal: new AbortController().signal }),
         ).resolves.toEqual([{ id: '1', label: 'a@b.c' }]);
+    });
+});
+
+const item = (id: string, values: Record<string, unknown> = {}): Item => ({
+    id,
+    version: null,
+    abilities: {},
+    ...values,
+});
+
+describe('createRelationSource: pages and statuses', () => {
+    const signal = new AbortController().signal;
+
+    it('gives the total and the next page of a list paged by numbers', async () => {
+        const list = vi.fn(async (_resource: string, query?: ListQuery) => ({
+            data: [item(String(query?.page))],
+            meta: { page: query?.page ?? 1, perPage: 1, total: 2, lastPage: 2 },
+        }));
+        const source = createRelationSource({ list }, { perPage: 1 });
+        const first = await source.searchPage?.('authors', 'a', { signal });
+        expect(first).toEqual({ items: [{ id: '1', label: '1' }], total: 2, next: 'p:2' });
+        expect(list).toHaveBeenLastCalledWith(
+            'authors',
+            { page: 1, perPage: 1, q: 'a' },
+            { signal },
+        );
+        const second = await source.searchPage?.('authors', 'a', { signal, next: 'p:2' });
+        expect(second).toEqual({ items: [{ id: '2', label: '2' }], total: 2, next: null });
+        expect(list).toHaveBeenLastCalledWith(
+            'authors',
+            { page: 2, perPage: 1, q: 'a' },
+            { signal },
+        );
+    });
+
+    it('follows the cursors of a list paged by cursors, which may not count', async () => {
+        const list = vi.fn(async (_resource: string, query?: ListQuery) => ({
+            data: [item(query?.cursor ?? 'first')],
+            meta: { perPage: 1, nextCursor: query?.cursor === undefined ? 'abc' : null },
+        }));
+        const source = createRelationSource({ list });
+        await expect(source.searchPage?.('logs', '', { signal })).resolves.toEqual({
+            items: [{ id: 'first', label: 'first' }],
+            total: null,
+            next: 'c:abc',
+        });
+        await expect(source.searchPage?.('logs', '', { signal, next: 'c:abc' })).resolves.toEqual({
+            items: [{ id: 'abc', label: 'abc' }],
+            total: null,
+            next: null,
+        });
+        expect(list).toHaveBeenLastCalledWith('logs', { cursor: 'abc', perPage: 20 }, { signal });
+    });
+
+    it('gives a page without a total nor a next one when the adapter gives no meta', async () => {
+        const source = createRelationSource({ list: async () => ({ data: [item('1')] }) });
+        await expect(source.searchPage?.('authors', '', { signal })).resolves.toEqual({
+            items: [{ id: '1', label: '1' }],
+        });
+    });
+
+    it('gives the status of items from the itemStatus of the resource, in the tone of its option', async () => {
+        const list = vi.fn(async () => ({
+            data: [
+                item('1', { state: 'draft' }),
+                item('2', { state: 'archived' }),
+                item('3', { state: 'unknown' }),
+                item('4', { state: null }),
+                item('5', { state: ['archived', 'draft'] }),
+            ],
+        }));
+        const source = createRelationSource(
+            { list },
+            {
+                definition: {
+                    resources: [
+                        {
+                            id: 'articles',
+                            label: { singular: 'a', plural: 'b' },
+                            itemStatus: 'state',
+                            fields: [
+                                {
+                                    name: 'state',
+                                    type: 'select',
+                                    options: [
+                                        { value: 'draft', label: 'Draft' },
+                                        { value: 'archived', label: 'Archived', tone: 'muted' },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            },
+        );
+        expect(source.describe?.('articles')).toMatchObject({ status: true });
+        await expect(source.search('articles', '', { signal })).resolves.toEqual([
+            { id: '1', label: '1', status: { label: 'Draft' } },
+            { id: '2', label: '2', status: { label: 'Archived', tone: 'muted' } },
+            // A value without its option shows as text
+            { id: '3', label: '3', status: { label: 'unknown' } },
+            { id: '4', label: '4' },
+            { id: '5', label: '5', status: { label: 'Archived', tone: 'muted' } },
+        ]);
+    });
+
+    it('reads the status field among the fields of the types of the resource', async () => {
+        const source = createRelationSource(
+            { list: async () => ({ data: [item('1', { type: 'event', phase: 'past' })] }) },
+            {
+                definition: {
+                    resources: [
+                        {
+                            id: 'pages',
+                            label: { singular: 'a', plural: 'b' },
+                            itemStatus: 'phase',
+                            fields: [],
+                            types: [
+                                {
+                                    id: 'event',
+                                    label: 'Event',
+                                    fields: [
+                                        {
+                                            name: 'phase',
+                                            type: 'select',
+                                            options: [
+                                                { value: 'past', label: 'Ended', tone: 'muted' },
+                                            ],
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            },
+        );
+        await expect(source.search('pages', '', { signal })).resolves.toEqual([
+            { id: '1', label: '1', status: { label: 'Ended', tone: 'muted' } },
+        ]);
+    });
+
+    it('describes resources without itemStatus as without a status', () => {
+        const source = createRelationSource(
+            { list: async () => ({ data: [] }) },
+            {
+                definition: {
+                    resources: [{ id: 'tags', label: { singular: 'a', plural: 'b' }, fields: [] }],
+                },
+            },
+        );
+        expect(source.describe?.('tags')).toMatchObject({ status: false });
     });
 });
 
@@ -318,6 +475,20 @@ describe('toReferences', () => {
         expect(
             toReferences({ id: 1, label: 'Ada', description: 'Writer', imageUrl: 'https://x' }),
         ).toEqual([{ id: '1', label: 'Ada', description: 'Writer', imageUrl: 'https://x' }]);
+    });
+
+    it('keeps the status of references', () => {
+        expect(
+            toReferences([
+                { id: '1', label: 'Ada', status: { label: 'Draft', tone: 'neutral' } },
+                { id: '2', label: 'Grace', status: { label: 'Archived' } },
+                { id: '3', label: 'Hedy', status: 'nope' },
+            ]),
+        ).toEqual([
+            { id: '1', label: 'Ada', status: { label: 'Draft', tone: 'neutral' } },
+            { id: '2', label: 'Grace', status: { label: 'Archived' } },
+            { id: '3', label: 'Hedy' },
+        ]);
     });
 
     it('reads references, ids and lists', () => {

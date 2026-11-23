@@ -429,6 +429,10 @@ export function ComboBox(input: ComboBoxProps): JSX.Element;
 
 // @public
 export interface ComboBoxItem {
+    badge?: {
+        label: string;
+        tone?: Tone | undefined;
+    } | undefined;
     // (undocumented)
     description?: string;
     // (undocumented)
@@ -445,12 +449,15 @@ export interface ComboBoxProps extends Omit<ComboBoxProps_2<ComboBoxItem>, 'clas
     // (undocumented)
     controlClassName?: string;
     emptyMessage?: string;
+    footer?: ReactNode;
     // (undocumented)
     inputClassName?: string;
     isLoading?: boolean;
+    isLoadingMore?: boolean | undefined;
     items: readonly ComboBoxItem[];
     // (undocumented)
     onChange?: (id: string | null) => void;
+    onLoadMore?: (() => void) | undefined;
     // (undocumented)
     placeholder?: string;
     // (undocumented)

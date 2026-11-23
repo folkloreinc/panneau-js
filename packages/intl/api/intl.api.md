@@ -511,6 +511,13 @@ export const fieldsMessages: {
     search: PanneauMessage<Record<never, never>>;
     noRelation: PanneauMessage<Record<never, never>>;
     noResults: PanneauMessage<Record<never, never>>;
+    relationResults: PanneauMessage<    {
+    count: number;
+    }>;
+    relationResultsShown: PanneauMessage<    {
+    shown: number;
+    count: number;
+    }>;
     createRelation: PanneauMessage<    {
     text: string;
     }>;
@@ -605,6 +612,9 @@ export const fieldsMessages: {
     linkLabel: PanneauMessage<Record<never, never>>;
     linkNewTab: PanneauMessage<Record<never, never>>;
     allDay: PanneauMessage<Record<never, never>>;
+    dateToday: PanneauMessage<Record<never, never>>;
+    dateYesterday: PanneauMessage<Record<never, never>>;
+    dateTomorrow: PanneauMessage<Record<never, never>>;
     timeZone: PanneauMessage<Record<never, never>>;
     noTimeZones: PanneauMessage<Record<never, never>>;
     moneyCurrency: PanneauMessage<Record<never, never>>;

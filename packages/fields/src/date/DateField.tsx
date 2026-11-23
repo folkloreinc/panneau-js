@@ -1,10 +1,12 @@
 import type { ReactNode } from 'react';
 
-import { DatePicker } from '@panneau/ui';
+import { DatePicker, usePanneauIntl } from '@panneau/ui';
 
 import { toCalendarDate } from '../shared/dates';
 import { getFieldProps, isString } from '../shared/entry';
+import { messages } from '../shared/messages';
 import type { FieldEntryProps, FieldProps } from '../shared/types';
+import { getDateShortcutSettings, resolveDateShortcuts } from './shortcuts';
 
 /** A button under a date field that fills it with a date. */
 export interface DateShortcut {
@@ -69,13 +71,32 @@ export function DateField({
     );
 }
 
-/** The `date` type. */
+const SHORTCUT_MESSAGES = {
+    today: messages.dateToday,
+    yesterday: messages.dateYesterday,
+    tomorrow: messages.dateTomorrow,
+};
+
+/**
+ * The `date` type: setting `shortcuts`, buttons that fill it with today, yesterday, tomorrow, or a
+ * date worked out from today or from another date field of the same object.
+ */
 export function DateFieldEntry(props: FieldEntryProps) {
+    const intl = usePanneauIntl();
+    const settings = getDateShortcutSettings(props.field.settings);
+    const shortcuts = resolveDateShortcuts(settings, props.parentValue).map((shortcut) => ({
+        label:
+            shortcut.name !== null
+                ? intl.formatMessage(SHORTCUT_MESSAGES[shortcut.name])
+                : shortcut.label,
+        value: shortcut.value,
+    }));
     return (
         <DateField
             {...getFieldProps(props)}
             value={isString(props.value) ? props.value : null}
             onChange={props.onChange}
+            {...(shortcuts.length > 0 ? { shortcuts } : {})}
         />
     );
 }

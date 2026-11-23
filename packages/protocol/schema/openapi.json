@@ -4566,6 +4566,89 @@
                 "additionalProperties": {},
                 "description": "The `settings` of a `duration` field. Its value is a whole number of `unit`, zero or more. A day is 24 hours."
             },
+            "DateShortcut": {
+                "anyOf": [
+                    {
+                        "type": "string",
+                        "enum": [
+                            "today",
+                            "yesterday",
+                            "tomorrow"
+                        ],
+                        "description": "Today, yesterday or tomorrow, in the zone of the user, with its label."
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "label": {
+                                "type": "string",
+                                "minLength": 1,
+                                "description": "The text of the button."
+                            },
+                            "from": {
+                                "description": "The name of a `date` or `datetime` field of the same object (the form, a group or a block) the date starts from: \"a year after the start\". The button is disabled while that field is empty. Without it, the date starts from today.",
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "days": {
+                                "description": "Days added to the date it starts from; negative to go back.",
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                            },
+                            "weeks": {
+                                "description": "Weeks added to the date it starts from; negative to go back.",
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                            },
+                            "months": {
+                                "description": "Months added to the date it starts from; negative to go back.",
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                            },
+                            "years": {
+                                "description": "Years added to the date it starts from; negative to go back.",
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                            }
+                        },
+                        "required": [
+                            "label"
+                        ],
+                        "additionalProperties": false,
+                        "description": "A date worked out from today, or from the field that `from` names: its `years`, `months`, `weeks` and `days` added in that order. A month added to January 31 gives the last day of February."
+                    }
+                ],
+                "description": "A button under a `date` field that fills it with a date."
+            },
+            "DateSettings": {
+                "type": "object",
+                "properties": {
+                    "shortcuts": {
+                        "description": "Buttons under the field that fill it with a date, in this order: `[\"today\", { \"label\": \"A year after the start\", \"from\": \"starts_on\", \"years\": 1 }]`.",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DateShortcut"
+                        }
+                    }
+                },
+                "additionalProperties": {},
+                "description": "The `settings` of a `date` field: shortcuts to fill it."
+            },
+            "SelectSettings": {
+                "type": "object",
+                "properties": {
+                    "search": {
+                        "description": "With `true`, the dropdown is a combo box whose options are filtered as the user types; with `false`, never. Without it, clients choose: a select with many options is searchable (Panneau: more than 10). Radios and checkboxes (`widget`) have no search.",
+                        "type": "boolean"
+                    }
+                },
+                "additionalProperties": {},
+                "description": "The `settings` of a `select` field."
+            },
             "LayoutNode": {
                 "type": "object",
                 "properties": {
@@ -5298,6 +5381,10 @@
                     },
                     "itemImage": {
                         "description": "The field that holds the image of an item (a media, a file or a URL), in search results, pickers, the gallery and the thumbnails of the table. Defaults to the item's `media` in a resource of kind `media` (decision 0061).",
+                        "type": "string"
+                    },
+                    "itemStatus": {
+                        "description": "The field that holds the state of an item (Draft, Archived), usually a `select` whose options have tones: its label, in its option's tone, shows as a badge next to the item's title in relation pickers and cards (decision 0103).",
                         "type": "string"
                     },
                     "open": {

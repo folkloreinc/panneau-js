@@ -1,6 +1,6 @@
 # 0067: Relation fields show their items as cards
 
-- Status: accepted
+- Status: accepted, extended by [0103](0103-the-status-of-an-item.md)
 - Date: 2026-11-05
 - Changes: how a `relation` field shows its value
 
