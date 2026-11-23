@@ -256,7 +256,7 @@ export const FilterAndPublish: Story = {
         await waitFor(() => expect(within(table).getAllByRole('row')).toHaveLength(21));
 
         // Drafts only (the options come from the status field).
-        await userEvent.click(canvas.getByRole('button', { name: /status/ }));
+        await userEvent.click(canvas.getByRole('button', { name: /Status/ }));
         await userEvent.click(await body.findByRole('option', { name: 'Brouillon' }));
         await waitFor(() => expect(canvas.getByRole('navigation')).toHaveTextContent('1–16 of 16'));
 

@@ -5,6 +5,7 @@ import { type FileKind, FileThumbnail } from '@panneau/fields';
 import { Checkbox, Icon, usePanneauIntl } from '@panneau/ui';
 
 import { RowActionsFit, fitContent, useRowActionsFit } from '../actions/fit';
+import { getColumnLabel } from '../columns';
 import { cx } from '../cx';
 import { messages } from '../messages';
 import type { ListColumn, ListLayoutProps } from '../types';
@@ -153,7 +154,7 @@ export function TableLayout({
                                                 )}
                                                 onClick={() => onSort(column)}
                                             >
-                                                {column.label ?? column.id}
+                                                {getColumnLabel(column)}
                                                 <span className={styles.sortIcon}>
                                                     <Icon
                                                         icon={
@@ -168,7 +169,7 @@ export function TableLayout({
                                                 </span>
                                             </button>
                                         ) : (
-                                            (column.label ?? column.id)
+                                            getColumnLabel(column)
                                         )}
                                     </th>
                                 );
@@ -261,7 +262,7 @@ export function TableLayout({
                                                 data-row-control={rendered !== content || undefined}
                                             >
                                                 <span className={styles.cellLabel}>
-                                                    {column.label ?? column.id}
+                                                    {getColumnLabel(column)}
                                                 </span>
                                                 {index === 0 && getItemImage !== undefined ? (
                                                     <span className={styles.withThumbnail}>

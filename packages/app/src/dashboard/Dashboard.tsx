@@ -11,6 +11,7 @@ import {
     getDashboardPeriod,
     getDashboardWidgets,
     isBuiltInWidgetType,
+    labelOrKey,
 } from '@panneau/protocol/runtime';
 import {
     Alert,
@@ -331,7 +332,7 @@ function PageDashboard({
     basePath,
 }: DashboardGridProps & { page: string }) {
     const intl = usePanneauIntl();
-    const title = definition.pages?.[page]?.label ?? page;
+    const title = labelOrKey(definition.pages?.[page]?.label, page);
     const options = getDashboardPeriod(definition, page)?.options;
     const period = useDashboardPeriod(getDashboardPeriod(definition, page), usePanneau().router);
     useDocumentTitle([title]);

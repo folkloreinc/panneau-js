@@ -279,6 +279,32 @@ describe('abilities of fields', () => {
 });
 
 describe('resolveList', () => {
+    it('labels a column without a label by its field, then by its key made readable', () => {
+        const list = resolveList({
+            id: 'posts',
+            label: { singular: 'post', plural: 'posts' },
+            fields: [
+                { name: 'published_at', type: 'date' },
+                { name: 'author_id', type: 'text', label: 'Écrit par' },
+                { name: 'slug', type: 'text' },
+            ],
+            list: {
+                columns: [
+                    { field: 'published_at' },
+                    { field: 'author_id' },
+                    { field: 'slug', label: '' },
+                    { id: 'updated_at' },
+                ],
+            },
+        });
+        expect(list.columns.map((column) => column.label)).toEqual([
+            'Published at',
+            'Écrit par',
+            '',
+            'Updated at',
+        ]);
+    });
+
     it('resolves columns from the fields they show', () => {
         const list = resolveList(getResource('pages'));
         expect(list.columns).toEqual([

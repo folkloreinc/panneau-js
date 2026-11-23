@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode } from 'react';
 
 import { isWideField } from '@panneau/fields';
 import type { Field, LayoutNode } from '@panneau/protocol';
+import { getFieldLabel } from '@panneau/protocol/runtime';
 import {
     Aside,
     AsideLayout,
@@ -46,7 +47,7 @@ function FieldSkeleton({ field }: { field: Field | undefined }) {
     }
     return (
         <div className={styles.skeletonField}>
-            <LabelSkeleton text={field?.label ?? field?.name} />
+            <LabelSkeleton text={field !== undefined ? getFieldLabel(field) : undefined} />
             <Skeleton
                 shape="rect"
                 height={HEIGHTS[field?.type ?? ''] ?? 'var(--panneau-control-height)'}

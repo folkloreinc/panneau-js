@@ -1,5 +1,6 @@
 import { canViewPage, findResource, resolveResource } from '@panneau/core';
 import type { Definition } from '@panneau/protocol';
+import { labelOrKey } from '@panneau/protocol/runtime';
 
 import { getListPathBack } from './listLocation';
 import { type NavEntry, capitalize, isCurrent } from './navigation';
@@ -103,7 +104,7 @@ export function getPageParents(
         if (parent.name === 'page') {
             return {
                 href: routePath(parent, basePath),
-                label: definition.pages?.[parent.page]?.label ?? parent.page,
+                label: labelOrKey(definition.pages?.[parent.page]?.label, parent.page),
             };
         }
         const resource = findResource(definition, parent.resource);
