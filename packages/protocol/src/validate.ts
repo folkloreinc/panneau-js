@@ -7,11 +7,13 @@ import { Definition } from './schemas/definition';
 import {
     AddressSettings,
     DateRangeSettings,
+    DateSettings,
     DurationSettings,
     type Field,
     LinkSettings,
     MoneySettings,
     RichTextSettings,
+    SelectSettings,
 } from './schemas/field';
 
 export interface ValidationIssue {
@@ -43,6 +45,8 @@ export function validate<T extends z.ZodType>(
 
 /** The schemas of the settings of the types that the protocol describes. */
 const SETTINGS: Readonly<Record<string, z.ZodType>> = {
+    date: DateSettings,
+    select: SelectSettings,
     richtext: RichTextSettings,
     duration: DurationSettings,
     daterange: DateRangeSettings,
@@ -52,8 +56,9 @@ const SETTINGS: Readonly<Record<string, z.ZodType>> = {
 };
 
 /**
- * Checks the settings of the fields whose type the protocol describes the settings of (`richtext`,
- * `duration`, `daterange`, `money`, `link`, `address`), nested ones included.
+ * Checks the settings of the fields whose type the protocol describes the settings of (`date`,
+ * `select`, `richtext`, `duration`, `daterange`, `money`, `link`, `address`), nested ones
+ * included.
  */
 function checkFieldSettings(fields: readonly Field[], path: string): ValidationIssue[] {
     return fields.flatMap((field, index) => {
@@ -79,8 +84,8 @@ function checkFieldSettings(fields: readonly Field[], path: string): ValidationI
 /**
  * Validates a definition, as returned by `GET /definition`: against the schema, then the
  * shared block types, which it resolves (see `resolveBlockTypeSets()`), the references between its parts (see `lintDefinition()`), and the settings of field types that
- * the protocol describes (`RichTextSettings`, `DurationSettings`, `DateRangeSettings`,
- * `MoneySettings`, `LinkSettings`, `AddressSettings`).
+ * the protocol describes (`DateSettings`, `SelectSettings`, `RichTextSettings`,
+ * `DurationSettings`, `DateRangeSettings`, `MoneySettings`, `LinkSettings`, `AddressSettings`).
  */
 export function validateDefinition(input: unknown): ValidationResult<Definition> {
     const result = validate(Definition, input);

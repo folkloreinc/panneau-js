@@ -16,11 +16,32 @@ export interface BrowseQuery {
 /** The pages of a source loaded for its query. */
 export interface BrowseState {
     query: BrowseQuery;
+    /** The media shown: the pinned ones first, then the pages loaded, without the pinned ones. */
     items: readonly PickerMedia[];
+    /**
+     * Ids of the media uploaded since the query last changed: shown first, whatever the sort,
+     * until the next search, filter or sort.
+     */
+    pinned: readonly string[];
     nextCursor: string | null;
     total: number | null;
     /** `idle` until the first page is asked for; `more` while the next page loads. */
     status: 'idle' | 'loading' | 'ready' | 'more' | 'error';
+}
+
+/**
+ * The items of a state with a page added: the first page replaces the pages loaded, the next ones
+ * follow them. Pinned media stay first, and a media is shown once.
+ */
+function withPage(
+    current: BrowseState,
+    page: readonly PickerMedia[],
+    first: boolean,
+): readonly PickerMedia[] {
+    const pinned = new Set(current.pinned);
+    const kept = first ? current.items.filter((item) => pinned.has(item.id)) : current.items;
+    const shown = new Set(kept.map((item) => item.id));
+    return [...kept, ...page.filter((item) => !shown.has(item.id))];
 }
 
 const EMPTY_QUERY: BrowseQuery = { q: '', type: null, sort: null, filter: {} };
@@ -32,7 +53,7 @@ const kept = new Map<
 >();
 
 function initialState(query: BrowseQuery): BrowseState {
-    return { query, items: [], nextCursor: null, total: null, status: 'idle' };
+    return { query, items: [], pinned: [], nextCursor: null, total: null, status: 'idle' };
 }
 
 function isEmpty(value: FilterValue | undefined): boolean {
@@ -84,8 +105,13 @@ export interface MediaBrowser {
     setQuery: (query: BrowseQuery) => void;
     loadMore: () => void;
     retry: () => void;
-    /** Updates media of a source in place, and adds the new ones (uploads) at the top. */
+    /** Updates media of a source in place. */
     upsert: (sourceId: string, media: readonly PickerMedia[]) => void;
+    /**
+     * Adds media just uploaded to a source, first, and keeps them first until its query changes,
+     * whatever its sort.
+     */
+    pin: (sourceId: string, media: readonly PickerMedia[]) => void;
     /** Where the user scrolled to in the source shown, to come back to it. */
     scrollTop: () => number;
     rememberScroll: (scrollTop: number) => void;
@@ -156,8 +182,7 @@ export function useMediaBrowser({
                         ? current
                         : {
                               ...current,
-                              items:
-                                  cursor === null ? page.items : [...current.items, ...page.items],
+                              items: withPage(current, page.items, cursor === null),
                               nextCursor: page.nextCursor,
                               total: page.total ?? null,
                               status: 'ready',
@@ -205,19 +230,32 @@ export function useMediaBrowser({
         },
         retry: () =>
             update(id, (current) =>
-                current.items.length > 0
+                // Media pinned before the first page came are not a page: it is asked again.
+                current.items.length > current.pinned.length
                     ? { ...current, status: 'ready' }
                     : { ...current, status: 'idle' },
             ),
         upsert: (sourceId, media) =>
             update(sourceId, (current) => {
                 const byId = new Map(media.map((entry) => [entry.id, entry]));
-                const known = new Set(current.items.map((entry) => entry.id));
-                const added = media.filter((entry) => !known.has(entry.id));
                 return {
                     ...current,
-                    items: [...added, ...current.items.map((entry) => byId.get(entry.id) ?? entry)],
-                    total: current.total === null ? null : current.total + added.length,
+                    items: current.items.map((entry) => byId.get(entry.id) ?? entry),
+                };
+            }),
+        pin: (sourceId, media) =>
+            update(sourceId, (current) => {
+                const ids = new Set(media.map((entry) => entry.id));
+                const known = new Set(current.items.map((entry) => entry.id));
+                const added = media.filter((entry) => !known.has(entry.id)).length;
+                return {
+                    ...current,
+                    items: [...media, ...current.items.filter((entry) => !ids.has(entry.id))],
+                    pinned: [
+                        ...media.map((entry) => entry.id),
+                        ...current.pinned.filter((id) => !ids.has(id)),
+                    ],
+                    total: current.total === null ? null : current.total + added,
                 };
             }),
         scrollTop: () => scroll.current?.get(id) ?? 0,

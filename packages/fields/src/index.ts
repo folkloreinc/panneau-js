@@ -72,6 +72,7 @@ export {
     isFileValue,
     toFiles,
 } from './file/FileField';
+export { FileDropZone, type FileDropZoneProps } from './upload/FileDropZone';
 export { FilePicker, type FilePickerProps } from './upload/FilePicker';
 export {
     type FileKind,

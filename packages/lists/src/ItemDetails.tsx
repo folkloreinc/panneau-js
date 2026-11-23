@@ -35,8 +35,10 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 /**
- * The values of one item, each with its label, shown with the displays of the lists: for the
- * details of an item next to its list, or anywhere a read-only view of it is needed. A column with
+ * The values of one item, each with its label, shown with the displays of the lists in their
+ * `details` variant, in full: for the details of an item next to its list, or anywhere a read-only
+ * view of it is needed. Relations link to their items, every media shows, and a localized value
+ * shows each of its locales. A column with
  * `columns` is a group, whose values are listed under its label. While the item loads, it draws
  * the labels with a skeleton of each value (decision 0034).
  */
@@ -48,7 +50,7 @@ export function ItemDetails({
     className,
 }: ItemDetailsProps) {
     const intl = usePanneauIntl();
-    const renderValue = useRenderValue(displays);
+    const renderValue = useRenderValue(displays, 'details');
     const renderEntries = (
         entryItem: ListItem | undefined,
         entryColumns: readonly ItemDetailsColumn[],

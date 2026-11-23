@@ -55,6 +55,24 @@ export const editorMessages = {
     linkApply: defineMessage({ id: 'panneau.editor.linkApply', defaultMessage: 'Apply' }),
     linkRemove: defineMessage({ id: 'panneau.editor.linkRemove', defaultMessage: 'Remove link' }),
     linkCancel: defineMessage({ id: 'panneau.editor.linkCancel', defaultMessage: 'Cancel' }),
+    linkType: defineMessage({ id: 'panneau.editor.linkType', defaultMessage: 'Link to' }),
+    linkTypePage: defineMessage({ id: 'panneau.editor.linkTypePage', defaultMessage: 'Page' }),
+    linkTypeUrl: defineMessage({ id: 'panneau.editor.linkTypeUrl', defaultMessage: 'URL' }),
+    linkPage: defineMessage({ id: 'panneau.editor.linkPage', defaultMessage: 'Page' }),
     /** Names HTML that the field keeps as it was written: an embed, a table. */
     html: defineMessage({ id: 'panneau.editor.html', defaultMessage: 'HTML kept as is' }),
+    // What kept HTML is, in words a writer knows
+    keptVideo: defineMessage({ id: 'panneau.editor.keptVideo', defaultMessage: 'Embedded video' }),
+    keptAudio: defineMessage({ id: 'panneau.editor.keptAudio', defaultMessage: 'Embedded audio' }),
+    keptImage: defineMessage({ id: 'panneau.editor.keptImage', defaultMessage: 'Image' }),
+    keptPost: defineMessage({ id: 'panneau.editor.keptPost', defaultMessage: 'Embedded post' }),
+    keptEmbed: defineMessage({
+        id: 'panneau.editor.keptEmbed',
+        defaultMessage: 'Embedded content',
+    }),
+    keptTable: defineMessage({ id: 'panneau.editor.keptTable', defaultMessage: 'Table' }),
+    keptForm: defineMessage({ id: 'panneau.editor.keptForm', defaultMessage: 'Form' }),
+    keptCode: defineMessage({ id: 'panneau.editor.keptCode', defaultMessage: 'Preformatted text' }),
+    keptScript: defineMessage({ id: 'panneau.editor.keptScript', defaultMessage: 'Script' }),
+    keptStyle: defineMessage({ id: 'panneau.editor.keptStyle', defaultMessage: 'Styles' }),
 };

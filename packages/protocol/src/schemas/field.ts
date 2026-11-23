@@ -4,6 +4,7 @@ import {
     ADDRESS_PARTS,
     BUILT_IN_LINK_TYPES,
     DATE_RANGE_OPEN_BOUNDS,
+    DATE_SHORTCUTS,
     DURATION_UNITS,
     PORTABLE_RULES,
     RICH_TEXT_STYLE_ELEMENTS,
@@ -209,7 +210,7 @@ export const Field = z
             .optional()
             .meta({
                 description:
-                    '`relation`: id of the related resource. `media`, `image`: id of a resource of kind `media`, or a list of them; without it, every library of the definition (decision 0027). `link`: the resources of its `page` links (decision 0055).',
+                    '`relation`: id of the related resource. `media`, `image`: id of a resource of kind `media`, or a list of them; without it, every library of the definition (decision 0027). `link`: the resources of its `page` links (decision 0055). `richtext`: the resources whose items its links can point to (decision 0107).',
             }),
         accept: z.array(z.string()).optional().meta({
             description:
@@ -436,6 +437,57 @@ export const DateRangeSettings = z
             'The `settings` of a `daterange` field: days or date-times, an "All day" switch, open bounds and the time zone of its date-times.',
     });
 
+const shortcutOffset = (unit: string) =>
+    z
+        .int()
+        .optional()
+        .meta({ description: `${unit} added to the date it starts from; negative to go back.` });
+
+/** A shortcut of a `date` field: a date worked out from today, or from another date field. */
+export const DateShortcut = z
+    .union([
+        z.enum(DATE_SHORTCUTS).meta({
+            description: 'Today, yesterday or tomorrow, in the zone of the user, with its label.',
+        }),
+        z
+            .strictObject({
+                label: z.string().min(1).meta({ description: 'The text of the button.' }),
+                from: z.string().min(1).optional().meta({
+                    description:
+                        'The name of a `date` or `datetime` field of the same object (the form, a group or a block) the date starts from: "a year after the start". The button is disabled while that field is empty. Without it, the date starts from today.',
+                }),
+                days: shortcutOffset('Days'),
+                weeks: shortcutOffset('Weeks'),
+                months: shortcutOffset('Months'),
+                years: shortcutOffset('Years'),
+            })
+            .meta({
+                description:
+                    'A date worked out from today, or from the field that `from` names: its `years`, `months`, `weeks` and `days` added in that order. A month added to January 31 gives the last day of February.',
+            }),
+    ])
+    .meta({ description: 'A button under a `date` field that fills it with a date.' });
+
+/** The `settings` of a `date` field. `validateDefinition()` checks them. */
+export const DateSettings = z
+    .looseObject({
+        shortcuts: z.array(DateShortcut).optional().meta({
+            description:
+                'Buttons under the field that fill it with a date, in this order: `["today", { "label": "A year after the start", "from": "starts_on", "years": 1 }]`.',
+        }),
+    })
+    .meta({ description: 'The `settings` of a `date` field: shortcuts to fill it.' });
+
+/** The `settings` of a `select` field. `validateDefinition()` checks them. */
+export const SelectSettings = z
+    .looseObject({
+        search: z.boolean().optional().meta({
+            description:
+                'With `true`, the dropdown is a combo box whose options are filtered as the user types; with `false`, never. Without it, clients choose: a select with many options is searchable (Panneau: more than 10). Radios and checkboxes (`widget`) have no search.',
+        }),
+    })
+    .meta({ description: 'The `settings` of a `select` field.' });
+
 /** The `settings` of a `money` field (decision 0053). `validateDefinition()` checks them. */
 export const MoneySettings = z
     .looseObject({
@@ -465,6 +517,12 @@ export type LinkTypeSetting = z.infer<typeof LinkTypeSetting>;
 export type LinkSettings = z.infer<typeof LinkSettings>;
 /** The `settings` of an `address` field. */
 export type AddressSettings = z.infer<typeof AddressSettings>;
+/** A shortcut of a `date` field. */
+export type DateShortcut = z.infer<typeof DateShortcut>;
+/** The `settings` of a `date` field. */
+export type DateSettings = z.infer<typeof DateSettings>;
+/** The `settings` of a `select` field. */
+export type SelectSettings = z.infer<typeof SelectSettings>;
 /** The `settings` of a `daterange` field. */
 export type DateRangeSettings = z.infer<typeof DateRangeSettings>;
 /** The `settings` of a `money` field. */

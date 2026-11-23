@@ -90,9 +90,15 @@ const MARK_TAGS = [
 /** The elements of `MARK_TAGS`: what a kept mark can be written as. */
 const MARK_NAMES = new Set(MARK_TAGS.map((tag) => tag.replace(/:.*$/, '')));
 
+/** What kept HTML is, as the editor names it to writers. */
+export type KeptHtmlKind =
+    'video' | 'audio' | 'image' | 'post' | 'embed' | 'table' | 'form' | 'code' | 'script' | 'style';
+
 export interface HtmlNodeOptions {
-    /** Names kept HTML in the editor, for assistive technologies: "HTML". */
+    /** Names kept HTML of no known kind (a `<div>`): "HTML kept as is". */
     label: string;
+    /** Names each kind of kept HTML: "Embedded video", "Table". Kinds left out use `label`. */
+    labels: Partial<Readonly<Record<KeptHtmlKind, string>>>;
     /** Class name of the element that stands for kept HTML in the editor. */
     className: string;
 }
@@ -120,15 +126,15 @@ export function restoreKeptHtml(root: ParentNode): void {
     });
 }
 
-/** `figure.media`: the element and its first class. */
+/** `figure.media`: the element and its first class, for developers. */
 function describe(element: Element): string {
     const name = element.tagName.toLowerCase();
     const className = element.classList[0];
     return className !== undefined ? `${name}.${className}` : name;
 }
 
-/** What kept HTML points to: the URL of its media or post, or the start of its text. */
-function summarize(element: Element): string {
+/** The URL that kept HTML points to: of its media or post. */
+function getSource(element: Element): string | null {
     const source = [element, ...Array.from(element.querySelectorAll('*'))]
         .map(
             (candidate) =>
@@ -139,16 +145,104 @@ function summarize(element: Element): string {
                 candidate.getAttribute('href'),
         )
         .find((value) => value !== null && value !== '');
-    if (source !== undefined && source !== null) {
+    return source ?? null;
+}
+
+/** What kept HTML points to: the URL of its media or post, or the start of its text. */
+function summarize(element: Element): string {
+    const source = getSource(element);
+    if (source !== null) {
         return source;
     }
     const text = (element.textContent ?? '').replace(/\s+/g, ' ').trim();
     return text.length > 80 ? `${text.slice(0, 80)}…` : text;
 }
 
+/** Providers of embeds that writers know by name, and what they embed. */
+const PROVIDERS: readonly { name: string; hosts: readonly string[]; kind: KeptHtmlKind }[] = [
+    { name: 'YouTube', hosts: ['youtube.com', 'youtu.be', 'youtube-nocookie.com'], kind: 'video' },
+    { name: 'Vimeo', hosts: ['vimeo.com'], kind: 'video' },
+    { name: 'Dailymotion', hosts: ['dailymotion.com', 'dai.ly'], kind: 'video' },
+    { name: 'TikTok', hosts: ['tiktok.com'], kind: 'video' },
+    { name: 'X', hosts: ['twitter.com', 'x.com'], kind: 'post' },
+    { name: 'Instagram', hosts: ['instagram.com'], kind: 'post' },
+    { name: 'Facebook', hosts: ['facebook.com'], kind: 'post' },
+    { name: 'Imgur', hosts: ['imgur.com'], kind: 'post' },
+    { name: 'SoundCloud', hosts: ['soundcloud.com'], kind: 'audio' },
+    { name: 'Spotify', hosts: ['spotify.com'], kind: 'audio' },
+];
+
+/** The provider of a URL, by its host and the hosts above it. */
+function getProvider(url: string | null) {
+    if (url === null) {
+        return undefined;
+    }
+    let host: string;
+    try {
+        host = new URL(url, 'https://localhost').hostname.toLowerCase();
+    } catch {
+        return undefined;
+    }
+    return PROVIDERS.find((provider) =>
+        provider.hosts.some((candidate) => host === candidate || host.endsWith(`.${candidate}`)),
+    );
+}
+
+const EMBED_TAGS = new Set(['iframe', 'embed', 'object', 'oembed']);
+const FORM_TAGS = new Set(['form', 'fieldset', 'input', 'select', 'textarea', 'button']);
+const IMAGE_TAGS = new Set(['img', 'picture', 'svg', 'canvas']);
+
+/** What kept HTML is, from its element, its class and its provider. `null` for a `<div>`. */
+function getKind(element: Element, providerKind: KeptHtmlKind | undefined): KeptHtmlKind | null {
+    const name = element.tagName.toLowerCase();
+    const has = (selector: string) => element.querySelector(selector) !== null;
+    if (name === 'blockquote') {
+        return 'post';
+    }
+    if (providerKind !== undefined && name !== 'a') {
+        return providerKind;
+    }
+    if (name === 'video' || name === 'audio') {
+        return name;
+    }
+    if (
+        EMBED_TAGS.has(name) ||
+        element.classList.contains('media') ||
+        element.hasAttribute('data-oembed-url') ||
+        has('iframe, embed, object, oembed, [data-oembed-url]')
+    ) {
+        return 'embed';
+    }
+    if (IMAGE_TAGS.has(name) || (name === 'figure' && has('img, picture, svg'))) {
+        return 'image';
+    }
+    if (name === 'table' || (name === 'figure' && has('table'))) {
+        return 'table';
+    }
+    if (FORM_TAGS.has(name)) {
+        return 'form';
+    }
+    if (name === 'pre') {
+        return 'code';
+    }
+    if (name === 'script' || name === 'noscript') {
+        return 'script';
+    }
+    return name === 'style' ? 'style' : null;
+}
+
+/** The words of an image: its text alternative, or its URL. */
+function describeImage(element: Element): string {
+    const image = element.matches('img') ? element : element.querySelector('img');
+    const alt = image?.getAttribute('alt')?.trim() ?? '';
+    return alt !== '' ? alt : summarize(element);
+}
+
 /**
- * Shows kept HTML in the editor without rendering it: its element and what it points to. Its
- * markup only goes back to the value.
+ * Shows kept HTML in the editor without rendering it: what it is in words ("Embedded video"),
+ * then its provider and what it points to. A video of a known provider shows a player, drawn by
+ * the editor, without loading anything. Its element and class are in a tooltip, for developers.
+ * Its markup only goes back to the value.
  */
 function createHtmlView(html: string, options: HtmlNodeOptions, inline: boolean) {
     const template = document.createElement('template');
@@ -158,20 +252,40 @@ function createHtmlView(html: string, options: HtmlNodeOptions, inline: boolean)
     dom.className = options.className;
     dom.contentEditable = 'false';
     dom.setAttribute('role', 'img');
-    const name = element !== null ? describe(element) : '';
-    const summary = element !== null ? summarize(element) : '';
+    const provider = element !== null ? getProvider(getSource(element)) : undefined;
+    const kind = element !== null ? getKind(element, provider?.kind) : null;
+    const label = (kind !== null ? options.labels[kind] : undefined) ?? options.label;
+    const summary =
+        element === null ? '' : kind === 'image' ? describeImage(element) : summarize(element);
     dom.setAttribute(
         'aria-label',
-        [options.label, name, summary].filter((part) => part !== '').join(', '),
+        [label, provider?.name ?? '', summary].filter((part) => part !== '').join(', '),
     );
-    const tag = document.createElement('code');
-    tag.textContent = name;
-    dom.append(tag);
-    if (summary !== '') {
-        const detail = document.createElement('span');
-        detail.textContent = summary;
-        dom.append(detail);
+    if (element !== null) {
+        dom.title = describe(element);
     }
+    if (kind !== null) {
+        dom.dataset.kind = kind;
+    }
+    if (!inline && kind === 'video' && provider !== undefined) {
+        const player = document.createElement('span');
+        player.dataset.player = '';
+        dom.append(player);
+    }
+    const text = document.createElement('span');
+    text.dataset.text = '';
+    const name = document.createElement('strong');
+    name.textContent = label;
+    text.append(name);
+    const detail = [provider?.name, summary].filter(
+        (part): part is string => part !== undefined && part !== '',
+    );
+    if (detail.length > 0) {
+        const line = document.createElement('span');
+        line.textContent = detail.join(' · ');
+        text.append(line);
+    }
+    dom.append(text);
     return { dom };
 }
 
@@ -203,7 +317,7 @@ export const HtmlBlock = Node.create<HtmlNodeOptions>({
     draggable: true,
 
     addOptions() {
-        return { label: 'HTML', className: '' };
+        return { label: 'HTML', labels: {}, className: '' };
     },
 
     addAttributes() {
@@ -239,7 +353,7 @@ export const HtmlInline = Node.create<HtmlNodeOptions>({
     selectable: true,
 
     addOptions() {
-        return { label: 'HTML', className: '' };
+        return { label: 'HTML', labels: {}, className: '' };
     },
 
     addAttributes() {

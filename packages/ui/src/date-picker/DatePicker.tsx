@@ -126,6 +126,8 @@ export interface DatePickerProps
      * other values of the form.
      */
     shortcuts?: readonly DatePickerShortcut[];
+    /** Content at the end of the control, before the calendar button: a time zone. */
+    end?: ReactNode;
 }
 
 /**
@@ -146,6 +148,7 @@ export function DatePicker({
     controlClassName,
     popoverClassName,
     shortcuts = [],
+    end,
     ...props
 }: DatePickerProps) {
     const invalid = errors.length > 0;
@@ -173,6 +176,7 @@ export function DatePicker({
                 <DateInput className={styles.input}>
                     {(segment) => <DateSegment segment={segment} className={styles.segment} />}
                 </DateInput>
+                {end !== undefined && end !== null ? <div className={styles.end}>{end}</div> : null}
                 {isReadOnly !== true ? (
                     <Button className={styles.button}>
                         <Icon icon={CalendarDays} />

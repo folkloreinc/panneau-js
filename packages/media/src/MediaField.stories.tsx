@@ -5,6 +5,7 @@ import { expect, screen, userEvent, waitFor, within } from 'storybook/test';
 import type { Item, MediaInfo, MediaReference } from '@panneau/protocol';
 
 import { type MediaAdapter, MediaField } from './MediaField';
+import { dragFiles, pasteFiles } from './__fixtures__/dataTransfer';
 import {
     createMemorySource,
     documentMedia,
@@ -152,6 +153,81 @@ export const Gallery: Story = {
         await expect(canvas.getAllByRole('listitem').map((tile) => tile.textContent ?? '')).toEqual(
             [expect.stringContaining('interview.mp4'), expect.stringContaining('poster.jpg')],
         );
+    },
+};
+
+/**
+ * Files can be dropped anywhere on the field, its media included: it shows and announces where
+ * they go while they are dragged over it, and says why a file is refused, as its button does.
+ */
+export const DropOnField: Story = {
+    render: function Render() {
+        const [adapter] = useState(createExampleAdapter);
+        const [value, setValue] = useState<MediaReference[] | null>([
+            reference({ type: 'image', size: 320_000 }, { id: 'med_0', label: 'poster.jpg' }),
+        ]);
+        return (
+            <MediaField
+                label="Gallery"
+                resource="media"
+                multiple
+                accept={['image/*']}
+                adapter={adapter}
+                uploadSource={null}
+                value={value}
+                onChange={setValue}
+            />
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const poster = canvas.getByText('poster.jpg');
+
+        dragFiles(poster, [new File(['image'], 'photo.jpg', { type: 'image/jpeg' })], {
+            drop: false,
+        });
+        await expect(await canvas.findByRole('status')).toHaveTextContent('Drop to upload');
+        await expect(canvas.getByText('Drop to upload')).toBeVisible();
+
+        dragFiles(poster, [new File(['image'], 'photo.jpg', { type: 'image/jpeg' })]);
+        await expect(await canvas.findByText('photo.jpg')).toBeVisible();
+        await waitFor(() => expect(canvas.queryByText('Drop to upload')).toBeNull());
+
+        dragFiles(poster, [new File(['pdf'], 'terms.pdf', { type: 'application/pdf' })]);
+        await expect(
+            await canvas.findByText('terms.pdf: this type of file is not accepted.'),
+        ).toBeVisible();
+    },
+};
+
+/** A file pasted while the focus is inside the field is uploaded, as one chosen or dropped. */
+export const PasteInField: Story = {
+    render: function Render() {
+        const [adapter] = useState(createExampleAdapter);
+        const [value, setValue] = useState<MediaReference[] | null>([
+            reference({ type: 'image', size: 320_000 }, { id: 'med_0', label: 'poster.jpg' }),
+        ]);
+        return (
+            <MediaField
+                label="Gallery"
+                resource="media"
+                multiple
+                adapter={adapter}
+                uploadSource={null}
+                value={value}
+                onChange={setValue}
+            />
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const remove = canvas.getByRole('button', { name: 'Remove poster.jpg' });
+        remove.focus();
+
+        await expect(
+            pasteFiles(remove, [new File(['image'], 'screenshot.jpg', { type: 'image/jpeg' })]),
+        ).toBe(false);
+        await expect(await canvas.findByText('screenshot.jpg')).toBeVisible();
     },
 };
 

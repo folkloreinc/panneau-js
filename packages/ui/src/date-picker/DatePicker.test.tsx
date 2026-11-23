@@ -99,6 +99,12 @@ describe('DatePicker', () => {
         expect(onChange).toHaveBeenLastCalledWith(new CalendarDateTime(2026, 10, 20, 11, 30));
     });
 
+    it('shows content at the end of its control', () => {
+        render(<DatePicker label="Published on" end={<span>Eastern Time</span>} />);
+        const group = screen.getByRole('group', { name: 'Published on' });
+        expect(within(group).getByText('Eastern Time')).toBeInTheDocument();
+    });
+
     it('shows its errors', () => {
         render(<DatePicker label="Published on" errors={['Too early.']} />);
         expect(screen.getByText('Too early.')).toBeInTheDocument();

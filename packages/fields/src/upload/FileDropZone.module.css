@@ -1,0 +1,43 @@
+.root {
+    min-width: 0;
+}
+
+.zone {
+    position: relative;
+    border-radius: var(--panneau-radius-md);
+}
+
+.zone[data-drop-target] {
+    outline: var(--panneau-border-width) dashed
+        var(--panneau-selected-bg, var(--panneau-color-accent));
+    outline-offset: var(--panneau-space-1);
+}
+
+/* Empty and hidden until files are dragged over the zone, but there, to be announced. */
+.overlay:empty {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.zone[data-drop-target] .overlay {
+    position: absolute;
+    inset: calc(-1 * var(--panneau-space-1));
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    padding: var(--panneau-space-3);
+    font-size: var(--panneau-font-size-sm);
+    font-weight: var(--panneau-font-weight-medium);
+    color: var(--panneau-color-text);
+    pointer-events: none;
+    background-color: color-mix(
+        in srgb,
+        var(--panneau-selected-subtle, var(--panneau-color-accent-subtle)) 90%,
+        transparent
+    );
+    border-radius: var(--panneau-radius-md);
+}

@@ -44,7 +44,11 @@ export const DateTimes: Story = {
     },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
+        // The zone of the place, by its name and its offset on that day
+        await expect(canvas.getByText('Eastern Time (UTC−5)')).toBeVisible();
         await userEvent.click(canvas.getByRole('switch', { name: 'All day' }));
+        // Days have no zone
+        await expect(canvas.queryByText('Eastern Time (UTC−5)')).toBeNull();
         await expect(canvas.getByText(/"allDay":true/)).toBeVisible();
         await expect(
             within(canvas.getByRole('group', { name: 'Start' })).getAllByRole('spinbutton'),

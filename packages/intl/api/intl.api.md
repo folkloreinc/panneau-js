@@ -423,7 +423,21 @@ export const editorMessages: {
     linkApply: PanneauMessage<Record<never, never>>;
     linkRemove: PanneauMessage<Record<never, never>>;
     linkCancel: PanneauMessage<Record<never, never>>;
+    linkType: PanneauMessage<Record<never, never>>;
+    linkTypePage: PanneauMessage<Record<never, never>>;
+    linkTypeUrl: PanneauMessage<Record<never, never>>;
+    linkPage: PanneauMessage<Record<never, never>>;
     html: PanneauMessage<Record<never, never>>;
+    keptVideo: PanneauMessage<Record<never, never>>;
+    keptAudio: PanneauMessage<Record<never, never>>;
+    keptImage: PanneauMessage<Record<never, never>>;
+    keptPost: PanneauMessage<Record<never, never>>;
+    keptEmbed: PanneauMessage<Record<never, never>>;
+    keptTable: PanneauMessage<Record<never, never>>;
+    keptForm: PanneauMessage<Record<never, never>>;
+    keptCode: PanneauMessage<Record<never, never>>;
+    keptScript: PanneauMessage<Record<never, never>>;
+    keptStyle: PanneauMessage<Record<never, never>>;
 };
 
 // @public
@@ -486,6 +500,9 @@ export const fieldsMessages: {
     map: PanneauMessage<    {
     label: string;
     }>;
+    mapZoomHint: PanneauMessage<    {
+    key: string;
+    }>;
     embedUrl: PanneauMessage<Record<never, never>>;
     embedLoading: PanneauMessage<Record<never, never>>;
     embedProviders: PanneauMessage<    {
@@ -532,6 +549,10 @@ export const fieldsMessages: {
     replaceFile: PanneauMessage<Record<never, never>>;
     dropHere: PanneauMessage<Record<never, never>>;
     dropZone: PanneauMessage<Record<never, never>>;
+    dropToUpload: PanneauMessage<Record<never, never>>;
+    onlyOneFile: PanneauMessage<    {
+    name: string;
+    }>;
     noFile: PanneauMessage<Record<never, never>>;
     removeFile: PanneauMessage<    {
     name: string;
@@ -609,6 +630,9 @@ export const fieldsMessages: {
     linkLabel: PanneauMessage<Record<never, never>>;
     linkNewTab: PanneauMessage<Record<never, never>>;
     allDay: PanneauMessage<Record<never, never>>;
+    dateToday: PanneauMessage<Record<never, never>>;
+    dateYesterday: PanneauMessage<Record<never, never>>;
+    dateTomorrow: PanneauMessage<Record<never, never>>;
     timeZone: PanneauMessage<Record<never, never>>;
     noTimeZones: PanneauMessage<Record<never, never>>;
     moneyCurrency: PanneauMessage<Record<never, never>>;
