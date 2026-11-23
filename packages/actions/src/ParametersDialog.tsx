@@ -1,26 +1,14 @@
-import { useLayoutEffect, useState } from 'react';
+import { type RefObject, useEffect, useRef } from 'react';
 
-import {
-    type FormOptions,
-    createForm,
-    resolveFields,
-    useFormSelector,
-    usePanneau,
-} from '@panneau/core';
-import { FormView, useFormatRuleFailure, useLeaveConfirmation } from '@panneau/forms';
+import { useFormSelector } from '@panneau/core';
+import { Form, useFormContext, useLeaveConfirmation } from '@panneau/forms';
 import { getActionLabel } from '@panneau/intl';
-import type { Action, LayoutNode } from '@panneau/protocol';
+import type { Action } from '@panneau/protocol';
 import { Button, Dialog, usePanneauIntl } from '@panneau/ui';
 
 import styles from './ActionRunner.module.css';
 import { messages } from './messages';
 import type { ActionOutcome } from './types';
-
-// Not `[]` in the component: the React Compiler doesn't memoize what is computed from an array
-// made before a hook
-const NO_FIELDS: NonNullable<Action['fields']> = [];
-const NO_LAYOUT: readonly LayoutNode[] = [];
-const NO_LOCALES: readonly string[] = [];
 
 export interface ParametersDialogProps {
     action: Action;
@@ -31,6 +19,39 @@ export interface ParametersDialogProps {
     onSubmit: (values: Record<string, unknown>) => Promise<ActionOutcome>;
     onDone: (outcome: ActionOutcome) => void;
     onCancel: () => void;
+}
+
+/**
+ * Cancel, inside the form: with changed values, it asks first, as leaving a form page does. The
+ * dialog asks it to close (Escape, a click outside) through `closeRef`.
+ */
+function CancelButton({
+    closeRef,
+    onCancel,
+}: {
+    closeRef: RefObject<(() => void) | null>;
+    onCancel: () => void;
+}) {
+    const intl = usePanneauIntl();
+    const form = useFormContext();
+    const dirty = useFormSelector(form, (state) => state.dirty);
+    const leave = useLeaveConfirmation(dirty);
+    const request = () => {
+        void leave.confirmLeave().then((confirmed) => {
+            if (confirmed) {
+                onCancel();
+            }
+        });
+    };
+    useEffect(() => {
+        closeRef.current = request;
+    });
+    return (
+        <>
+            <Button onPress={request}>{intl.formatMessage(messages.cancel)}</Button>
+            {leave.dialog}
+        </>
+    );
 }
 
 /**
@@ -49,69 +70,34 @@ export function ParametersDialog({
     onCancel,
 }: ParametersDialogProps) {
     const intl = usePanneauIntl();
-    const { definition } = usePanneau();
-    const fields = action.fields ?? NO_FIELDS;
-    const layout = action.layout ?? NO_LAYOUT;
-    // As `Form` does, with the form at hand: closing reads whether it has changed
-    const resolved = resolveFields(fields, layout, { mode: 'create' });
-    const formatRuleFailure = useFormatRuleFailure(resolved.fields);
-    const formLocales = locales ?? definition?.locales ?? NO_LOCALES;
-    const options: FormOptions = {
-        fields: resolved.fields,
-        locales: [...formLocales],
-        formatError: formatRuleFailure,
-        mode: 'create',
-        onSubmit: (values) => onSubmit(values),
-    };
-    const [form] = useState(() => createForm(options));
-    useLayoutEffect(() => {
-        form.setOptions({
-            fields: options.fields,
-            locales: options.locales,
-            formatError: options.formatError,
-            onSubmit: options.onSubmit,
-        });
-    });
-    const dirty = useFormSelector(form, (state) => state.dirty);
-    const leave = useLeaveConfirmation(dirty);
-    const close = () => {
-        void leave.confirmLeave().then((confirmed) => {
-            if (confirmed) {
-                onCancel();
-            }
-        });
-    };
-
+    const close = useRef<(() => void) | null>(null);
     const confirmLabel =
         typeof action.confirm === 'object' && action.confirm.confirmLabel !== undefined
             ? action.confirm.confirmLabel
             : getActionLabel(action, intl);
     return (
-        <>
-            <Dialog
-                isOpen
-                onOpenChange={(open) => {
-                    if (!open) {
-                        close();
-                    }
-                }}
-                title={getActionLabel(action, intl)}
-                size="md"
-            >
-                <FormView
-                    form={form}
-                    fields={resolved.fields}
-                    layout={layout}
-                    locales={formLocales}
-                    aria-label={getActionLabel(action, intl)}
-                    submitLabel={confirmLabel}
-                    actions={<Button onPress={close}>{intl.formatMessage(messages.cancel)}</Button>}
-                    onSubmitted={(outcome) => onDone(outcome as ActionOutcome)}
-                    showSavedToast={false}
-                    className={styles.parameters}
-                />
-            </Dialog>
-            {leave.dialog}
-        </>
+        <Dialog
+            isOpen
+            onOpenChange={(open) => {
+                if (!open) {
+                    (close.current ?? onCancel)();
+                }
+            }}
+            title={getActionLabel(action, intl)}
+            size="md"
+        >
+            <Form
+                fields={action.fields ?? []}
+                layout={action.layout ?? []}
+                {...(locales !== undefined ? { locales } : {})}
+                aria-label={getActionLabel(action, intl)}
+                submitLabel={confirmLabel}
+                actions={<CancelButton closeRef={close} onCancel={onCancel} />}
+                onSubmit={(values) => onSubmit(values)}
+                onSubmitted={(outcome) => onDone(outcome as ActionOutcome)}
+                showSavedToast={false}
+                className={styles.parameters}
+            />
+        </Dialog>
     );
 }
