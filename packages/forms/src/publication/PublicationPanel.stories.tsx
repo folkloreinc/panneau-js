@@ -41,6 +41,8 @@ interface PanelStoryArgs {
     fields: Field[];
     layout: LayoutNode[];
     values: Record<string, unknown>;
+    /** The version of the saved item: an update, whose Save needs changes. */
+    version?: string;
     onSubmit: (values: Record<string, unknown>) => Promise<unknown>;
 }
 
@@ -56,6 +58,7 @@ const meta = {
                 fields={args.fields}
                 layout={args.layout}
                 values={args.values}
+                {...(args.version !== undefined ? { version: args.version } : {})}
                 onSubmit={args.onSubmit}
             />
         </PanneauProvider>
@@ -116,6 +119,68 @@ export const UnpublishWithFlag: Story = {
         await expect(panel.getByRole('switch', { name: 'Published' })).not.toBeChecked();
         await expect(panel.getByText('Not published')).toBeVisible();
         await expect(await panel.findByRole('button', { name: 'Publish' })).toBeVisible();
+    },
+};
+
+/**
+ * A saved draft without other changes: Publish makes the change it saves. The badge says
+ * "Published" once the item is saved so, not before.
+ */
+export const PublishSavedItem: Story = {
+    args: {
+        version: '1',
+        onSubmit: fn(async (values: Record<string, unknown>) => ({
+            id: '1',
+            version: '2',
+            ...values,
+        })),
+    },
+    play: async ({ args, canvasElement }) => {
+        const panel = sidebarOf(canvasElement);
+        const badge = () =>
+            within(canvasElement)
+                .getByRole('region', { name: 'Sidebar' })
+                .querySelector('.panneau-badge');
+        await expect(badge()).toHaveTextContent('Draft');
+        await userEvent.click(panel.getByRole('button', { name: 'Publish' }));
+        await waitFor(() => expect(args.onSubmit).toHaveBeenCalledTimes(1));
+        await expect(await panel.findByRole('button', { name: 'Unpublish' })).toBeVisible();
+        await expect(badge()).toHaveTextContent('Published');
+        await expect(panel.queryByText('Unsaved changes')).toBeNull();
+    },
+};
+
+/**
+ * The backend refuses the save (`422`): the status and the date go back to what they were, and
+ * the title typed before stays.
+ */
+export const RefusedPublish: Story = {
+    args: {
+        version: '1',
+        onSubmit: fn(async (_values: Record<string, unknown>): Promise<Record<string, unknown>> => {
+            throw Object.assign(new Error('Invalid'), {
+                problem: {
+                    type: 'about:blank',
+                    title: 'Invalid',
+                    status: 422,
+                    errors: { title: ['This title is already used.'] },
+                },
+            });
+        }),
+    },
+    play: async ({ args, canvasElement }) => {
+        const canvas = within(canvasElement);
+        const panel = sidebarOf(canvasElement);
+        const title = canvas.getByRole('textbox', { name: 'Title' });
+        await userEvent.clear(title);
+        await userEvent.type(title, 'Winter');
+        await userEvent.click(panel.getByRole('button', { name: 'Publish' }));
+        await waitFor(() => expect(args.onSubmit).toHaveBeenCalledTimes(1));
+        await expect(await canvas.findByText('This title is already used.')).toBeVisible();
+        await expect(panel.getByRole('button', { name: /Status/ })).toHaveTextContent('Draft');
+        await expect(panel.getByRole('button', { name: 'Publish' })).toBeVisible();
+        await expect(panel.queryByText('Unsaved changes')).toBeNull();
+        await expect(title).toHaveValue('Winter');
     },
 };
 
