@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { createEditableRelationSource, exampleRelationSource } from '../__fixtures__/fields';
-import type { RelationReference, RelationSource } from '../shared/relation';
+import type { RelationReference, RelationSearchPage, RelationSource } from '../shared/relation';
 import { RelationField } from './RelationField';
 
 const meta = {
@@ -243,5 +243,163 @@ export const CreateFromThePicker: Story = {
         await expect(
             await canvas.findByRole('button', { name: 'Remove Hedy Lamarr' }),
         ).toBeVisible();
+    },
+};
+
+const STATUSES = [
+    { label: 'Published', tone: 'success' },
+    { label: 'Draft', tone: 'neutral' },
+    { label: 'Archived', tone: 'muted' },
+] as const;
+
+/** 45 articles, each with a status. */
+const ARTICLES: RelationReference[] = Array.from({ length: 45 }, (_, index) => ({
+    id: String(index + 1),
+    label: `Article ${String(index + 1)}`,
+    status: STATUSES[index % STATUSES.length],
+}));
+
+/**
+ * A source that gives its results by pages of 10, with their total (`searchPage()`), and the status
+ * of each item, as `createRelationSource()` does with a resource's `itemStatus`.
+ */
+const pagedSource: RelationSource = {
+    async search(resource, query, { signal }) {
+        return (await this.searchPage?.(resource, query, { signal }))?.items ?? [];
+    },
+    async searchPage(_resource, query, { signal, next }): Promise<RelationSearchPage> {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        signal.throwIfAborted();
+        const matches = ARTICLES.filter((article) =>
+            article.label.toLowerCase().includes(query.toLowerCase()),
+        );
+        const start = next !== undefined ? Number(next) : 0;
+        return {
+            items: matches.slice(start, start + 10),
+            total: matches.length,
+            next: start + 10 < matches.length ? String(start + 10) : null,
+        };
+    },
+    async resolve(_resource, ids) {
+        return ARTICLES.filter((article) => ids.includes(article.id));
+    },
+    describe: () => ({ icon: 'file-text', status: true }),
+};
+
+/**
+ * The picker says how many results there are, and loads the next ones as its list scrolls to the
+ * end (#436).
+ */
+export const ManyResults: Story = {
+    args: { source: pagedSource },
+    render: function Render(args) {
+        const [value, setValue] = useState<RelationReference | null>(null);
+        return (
+            <RelationField
+                resource="articles"
+                source={args.source ?? null}
+                label="Article"
+                value={value}
+                onChange={setValue}
+            />
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        await userEvent.click(canvas.getByRole('combobox', { name: 'Article' }));
+        const listbox = await body.findByRole('listbox');
+        // The first page, with how many results there are
+        await expect(await body.findByText(/^\d+ of 45 results$/)).toBeVisible();
+        // The next pages load as the list scrolls to its end
+        await waitFor(
+            () => {
+                listbox.scrollTop = listbox.scrollHeight;
+                expect(within(listbox).getAllByRole('option')).toHaveLength(45);
+            },
+            { timeout: 5000 },
+        );
+        await expect(body.getByText('45 results')).toBeVisible();
+        // A search counts its own results
+        await userEvent.type(canvas.getByRole('combobox', { name: 'Article' }), '4');
+        await expect(await body.findByText('10 results')).toBeVisible();
+    },
+};
+
+/** Each result and each card shows the status of its item, as a badge in its tone (#436). */
+export const Statuses: Story = {
+    args: { source: pagedSource },
+    render: function Render(args) {
+        const [value, setValue] = useState<RelationReference[] | null>([
+            { id: '2', label: 'Article 2' },
+            { id: '3', label: 'Article 3' },
+        ]);
+        return (
+            <RelationField
+                resource="articles"
+                source={args.source ?? null}
+                label="Related articles"
+                multiple
+                value={value}
+                onChange={setValue}
+            />
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        // The cards get the status of their items from the source
+        const cards = canvas.getByRole('group', { name: 'Related articles' });
+        await expect(await within(cards).findByText('Draft')).toHaveClass('panneau-tone-neutral');
+        await expect(within(cards).getByText('Archived')).toHaveClass('panneau-tone-muted');
+        // A result says its status with its description
+        await userEvent.click(canvas.getByRole('combobox', { name: 'Related articles' }));
+        const first = await body.findByRole('option', { name: 'Article 1' });
+        await expect(first).toHaveAccessibleDescription('Published');
+        await expect(
+            within(first).getByText('Published', { selector: '.panneau-badge' }),
+        ).toHaveClass('panneau-tone-success');
+        await userEvent.keyboard('{Escape}');
+    },
+};
+
+/**
+ * In a row of two half columns, the empty field takes the width of its column, as its card does
+ * once an item is picked: nothing moves (#410).
+ */
+export const FullWidth: Story = {
+    render: function Render(args) {
+        const [author, setAuthor] = useState<RelationReference | null>(null);
+        return (
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <RelationField
+                    resource="authors"
+                    source={args.source ?? null}
+                    label="Author"
+                    value={author}
+                    onChange={setAuthor}
+                />
+                <RelationField
+                    resource="authors"
+                    source={args.source ?? null}
+                    label="Editors"
+                    multiple
+                    value={null}
+                />
+            </div>
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const author = canvas.getByRole('group', { name: 'Author' });
+        const width = author.getBoundingClientRect().width;
+        const control = (name: string) =>
+            canvas.getByRole('combobox', { name }).closest('.panneau-combo-box');
+        await expect(control('Author')?.getBoundingClientRect().width).toBeCloseTo(width, 0);
+        await expect(control('Editors')?.getBoundingClientRect().width).toBeCloseTo(width, 0);
+        await userEvent.type(canvas.getByRole('combobox', { name: 'Author' }), 'hop');
+        await userEvent.click(await canvas.findByRole('option', { name: 'Grace Hopper' }));
+        const card = within(author).getByRole('listitem');
+        await expect(card.closest('ul')?.getBoundingClientRect().width).toBeCloseTo(width, 0);
     },
 };

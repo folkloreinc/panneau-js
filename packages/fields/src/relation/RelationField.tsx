@@ -2,6 +2,7 @@ import { File, ImageOff, X } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 
 import {
+    Badge,
     Button,
     ComboBox,
     Fieldset,
@@ -9,6 +10,7 @@ import {
     IconButton,
     Tile,
     TileGroup,
+    type Tone,
     getNamedIcon,
     usePanneauIntl,
     useUndoToast,
@@ -31,22 +33,68 @@ import styles from './RelationField.module.css';
 /** The id of the "Create “…”" option of the picker. */
 const CREATE_ID = '\u0000create';
 
+/** What `useRelationSearch()` gives: the results so far, how many there are, and the next ones. */
+export interface RelationSearchResults {
+    items: RelationReference[];
+    /** While the first results load. */
+    isLoading: boolean;
+    /** How many items match, when the source counts them (`searchPage()`), or else `null`. */
+    total: number | null;
+    /** Whether the source has more results than `items`. */
+    hasMore: boolean;
+    /** While the next results load. */
+    isLoadingMore: boolean;
+    /** Loads the next results, when there are more and none are loading. */
+    loadMore: () => void;
+}
+
+interface SearchState {
+    key: string;
+    items: RelationReference[];
+    total: number | null;
+    next: string | null;
+    isLoading: boolean;
+    isLoadingMore: boolean;
+}
+
+const EMPTY_SEARCH: SearchState = {
+    key: '',
+    items: [],
+    total: null,
+    next: null,
+    isLoading: false,
+    isLoadingMore: false,
+};
+
+/** A page of results, from `searchPage()` when the source has it, or else `search()`. */
+async function searchFrom(
+    source: RelationSource,
+    resource: string,
+    query: string,
+    options: { signal: AbortSignal; next?: string | undefined },
+): Promise<{ items: RelationReference[]; total: number | null; next: string | null }> {
+    if (source.searchPage === undefined) {
+        return { items: await source.search(resource, query, options), total: null, next: null };
+    }
+    const page = await source.searchPage(resource, query, options);
+    return { items: page.items, total: page.total ?? null, next: page.next ?? null };
+}
+
 /**
  * Results of a search in a relation source, as it types: the empty query at once, a typed one once
- * the user pauses (`delay`). Nothing, and not loading, while `enabled` is false.
+ * the user pauses (`delay`). Nothing, and not loading, while `enabled` is false. With a source that
+ * has `searchPage()`, it says how many items match, and `loadMore()` adds the next page.
  */
 export function useRelationSearch(
     source: RelationSource | null,
     resource: string,
     query: string,
     { enabled = true, delay = 250 }: { enabled?: boolean; delay?: number } = {},
-): { items: RelationReference[]; isLoading: boolean } {
-    const [state, setState] = useState<{
-        key: string;
-        items: RelationReference[];
-        isLoading: boolean;
-    }>({ key: '', items: [], isLoading: false });
+): RelationSearchResults {
+    const [state, setState] = useState<SearchState>(EMPTY_SEARCH);
     const key = `${resource}\u0000${query}`;
+    // The request of the next page, aborted when the search changes
+    const more = useRef<AbortController | null>(null);
 
     useEffect(() => {
         if (source === null || !enabled) {
@@ -57,16 +105,15 @@ export function useRelationSearch(
         const timer = setTimeout(
             () => {
                 setState((current) => ({ ...current, key, isLoading: true }));
-                source
-                    .search(resource, query, { signal: controller.signal })
-                    .then((items) => {
+                searchFrom(source, resource, query, { signal: controller.signal })
+                    .then(({ items, total, next }) => {
                         if (!controller.signal.aborted) {
-                            setState({ key, items, isLoading: false });
+                            setState({ ...EMPTY_SEARCH, key, items, total, next });
                         }
                     })
                     .catch(() => {
                         if (!controller.signal.aborted) {
-                            setState({ key, items: [], isLoading: false });
+                            setState({ ...EMPTY_SEARCH, key });
                         }
                     });
             },
@@ -75,12 +122,65 @@ export function useRelationSearch(
         return () => {
             clearTimeout(timer);
             controller.abort();
+            more.current?.abort();
+            more.current = null;
         };
     }, [source, resource, query, key, enabled, delay]);
 
+    const current = state.key === key;
+    const loadMore = () => {
+        const { next } = state;
+        if (
+            source === null ||
+            !current ||
+            next === null ||
+            state.isLoading ||
+            more.current !== null
+        ) {
+            return;
+        }
+        const controller = new AbortController();
+        more.current = controller;
+        setState((previous) => ({ ...previous, isLoadingMore: true }));
+        searchFrom(source, resource, query, { signal: controller.signal, next })
+            .then((page) => {
+                if (controller.signal.aborted) {
+                    return;
+                }
+                setState((previous) => ({
+                    ...previous,
+                    // An item that moved to the next page while the user scrolled shows once
+                    items: [
+                        ...previous.items,
+                        ...page.items.filter(
+                            (item) => !previous.items.some((entry) => entry.id === item.id),
+                        ),
+                    ],
+                    total: page.total ?? previous.total,
+                    next: page.next,
+                    isLoadingMore: false,
+                }));
+            })
+            .catch(() => {
+                if (!controller.signal.aborted) {
+                    // Scrolling to the end again asks for it again
+                    setState((previous) => ({ ...previous, isLoadingMore: false }));
+                }
+            })
+            .finally(() => {
+                if (more.current === controller) {
+                    more.current = null;
+                }
+            });
+    };
+
     return {
         items: state.items,
-        isLoading: enabled && (state.isLoading || state.key !== key),
+        isLoading: enabled && (state.isLoading || !current),
+        total: enabled && current ? state.total : null,
+        hasMore: enabled && current && state.next !== null,
+        isLoadingMore: enabled && current && state.isLoadingMore,
+        loadMore,
     };
 }
 
@@ -150,6 +250,16 @@ function References({
     );
 }
 
+/** The state of an item, as a badge in its tone (decision 0103). */
+function StatusBadge({ reference }: { reference: RelationReference }) {
+    if (reference.status === undefined) {
+        return null;
+    }
+    return (
+        <Badge tone={(reference.status.tone ?? 'neutral') as Tone}>{reference.status.label}</Badge>
+    );
+}
+
 /** The icon of an item without an image: a broken image when its resource has images. */
 function placeholderIcon(info: RelationResourceInfo | null) {
     return info?.image === true
@@ -195,8 +305,8 @@ interface CardsProps {
 
 /**
  * The chosen items, as tiles (decisions 0067 and 0092): the image of each one, or its resource's
- * icon, its label, linked to the item when the source says where it opens, its description, and
- * the buttons that change or remove it.
+ * icon, its label, linked to the item when the source says where it opens, its description, its
+ * status (decision 0103), and the buttons that change or remove it.
  */
 function RelationCards({
     references,
@@ -222,8 +332,11 @@ function RelationCards({
                         ? { media: <img src={reference.imageUrl} alt="" loading="lazy" /> }
                         : { icon: placeholderIcon(info) })}
                     actions={
-                        onChange !== undefined || onRemove !== undefined ? (
+                        onChange !== undefined ||
+                        onRemove !== undefined ||
+                        reference.status !== undefined ? (
                             <>
+                                <StatusBadge reference={reference} />
                                 {onChange !== undefined ? (
                                     <Button
                                         size="sm"
@@ -350,12 +463,14 @@ export function RelationField(props: RelationFieldProps) {
             setWanted(true);
         }
     };
-    const { items: found, isLoading: searching } = useRelationSearch(
-        source,
-        resource,
-        query ?? '',
-        { enabled: editable && wanted },
-    );
+    const {
+        items: found,
+        isLoading: searching,
+        total,
+        hasMore,
+        isLoadingMore,
+        loadMore,
+    } = useRelationSearch(source, resource, query ?? '', { enabled: editable && wanted });
     const sourceCreate = source?.create;
     const create =
         props.onCreate !== undefined
@@ -429,6 +544,14 @@ export function RelationField(props: RelationFieldProps) {
                           prefix: <Thumbnail reference={item} info={info} />,
                       }
                     : {}),
+                ...(item.status !== undefined
+                    ? {
+                          badge: {
+                              label: item.status.label,
+                              tone: (item.status.tone ?? 'neutral') as Tone,
+                          },
+                      }
+                    : {}),
             })),
         ...(offersCreate
             ? [{ id: CREATE_ID, label: intl.formatMessage(messages.createRelation, { text }) }]
@@ -459,6 +582,19 @@ export function RelationField(props: RelationFieldProps) {
         isRequired: required,
         placeholder,
         emptyMessage: intl.formatMessage(messages.noResults),
+        // The next results as the list scrolls to its end, and how many there are
+        ...(hasMore ? { onLoadMore: loadMore, isLoadingMore } : {}),
+        ...(total !== null && !searching
+            ? {
+                  footer:
+                      found.length < total
+                          ? intl.formatMessage(messages.relationResultsShown, {
+                                shown: found.length,
+                                count: total,
+                            })
+                          : intl.formatMessage(messages.relationResults, { count: total }),
+              }
+            : {}),
         ...(onBlur !== undefined ? { onBlur: () => onBlur() } : {}),
         ...(name !== undefined ? { name } : {}),
         ...(id !== undefined ? { id } : {}),
@@ -635,6 +771,7 @@ export function RelationField(props: RelationFieldProps) {
                     <div className={styles.picker}>
                         <ComboBox
                             {...pickerProps}
+                            className={styles.combo}
                             items={options(current !== null ? [current] : [])}
                             value={null}
                             onChange={(itemId) =>

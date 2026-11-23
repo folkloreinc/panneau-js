@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { PanneauRoot } from '../root/PanneauRoot';
 import { ComboBox, type ComboBoxItem } from './ComboBox';
@@ -83,5 +83,97 @@ describe('ComboBox', () => {
     it('shows its errors', () => {
         render(<ComboBox label="Author" items={AUTHORS} errors={['Pick an author.']} />);
         expect(screen.getByRole('combobox')).toHaveAttribute('aria-invalid', 'true');
+    });
+
+    it('shows the badge of an item at the end of its row, read with its description', async () => {
+        render(
+            <PanneauRoot>
+                <ComboBox
+                    label="Article"
+                    items={[
+                        {
+                            id: '1',
+                            label: 'Summer',
+                            description: 'Travel',
+                            badge: { label: 'Draft', tone: 'neutral' },
+                        },
+                        { id: '2', label: 'Winter', badge: { label: 'Archived', tone: 'muted' } },
+                    ]}
+                />
+            </PanneauRoot>,
+        );
+        await userEvent.click(screen.getByRole('button', { name: /Show options/ }));
+        const summer = await screen.findByRole('option', { name: 'Summer' });
+        expect(summer).toHaveAccessibleDescription('Travel, Draft');
+        expect(screen.getByRole('option', { name: 'Winter' })).toHaveAccessibleDescription(
+            'Archived',
+        );
+        const badge = summer.querySelector('.panneau-badge');
+        expect(badge).toHaveTextContent('Draft');
+        expect(badge).toHaveClass('panneau-tone-neutral');
+        expect(badge?.parentElement).toHaveAttribute('aria-hidden', 'true');
+    });
+
+    it('shows a footer under its items', async () => {
+        render(
+            <PanneauRoot>
+                <ComboBox label="Author" items={AUTHORS} footer="2 of 40 results" />
+            </PanneauRoot>,
+        );
+        await userEvent.click(screen.getByRole('button', { name: /Show options/ }));
+        expect(await screen.findByText('2 of 40 results')).toBeInTheDocument();
+    });
+
+    describe('loading more', () => {
+        afterEach(() => {
+            vi.unstubAllGlobals();
+        });
+
+        it('loads more items once the end of the list shows', async () => {
+            // The end of the list is in view at once
+            vi.stubGlobal(
+                'IntersectionObserver',
+                class {
+                    constructor(
+                        private readonly callback: (entries: { isIntersecting: boolean }[]) => void,
+                    ) {}
+                    observe() {
+                        this.callback([{ isIntersecting: true }]);
+                    }
+                    disconnect() {}
+                },
+            );
+            const onLoadMore = vi.fn();
+            render(
+                <PanneauRoot>
+                    <ComboBox
+                        label="Author"
+                        items={AUTHORS}
+                        onLoadMore={onLoadMore}
+                        isLoadingMore
+                    />
+                </PanneauRoot>,
+            );
+            await userEvent.click(screen.getByRole('button', { name: /Show options/ }));
+            expect(await screen.findByRole('option', { name: 'Ada Lovelace' })).toBeInTheDocument();
+            expect(onLoadMore).toHaveBeenCalled();
+            // A spinner while they load
+            expect(
+                screen.getByRole('listbox').querySelector('[role="progressbar"]'),
+            ).not.toBeNull();
+        });
+
+        it('shows its items without IntersectionObserver', async () => {
+            vi.stubGlobal('IntersectionObserver', undefined);
+            const onLoadMore = vi.fn();
+            render(
+                <PanneauRoot>
+                    <ComboBox label="Author" items={AUTHORS} onLoadMore={onLoadMore} />
+                </PanneauRoot>,
+            );
+            await userEvent.click(screen.getByRole('button', { name: /Show options/ }));
+            expect(await screen.findAllByRole('option')).toHaveLength(2);
+            expect(onLoadMore).not.toHaveBeenCalled();
+        });
     });
 });

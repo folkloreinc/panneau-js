@@ -34,3 +34,46 @@
     line-height: 1;
     color: var(--panneau-color-text);
 }
+
+/* The badge of an item's state, at the end of its row. */
+.badge {
+    flex: 0 0 auto;
+    display: inline-flex;
+}
+
+/* Read by assistive technologies only: the badge's word, with the description. */
+.hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/* The spinner at the end of the list, while the next items load. */
+.loadMore {
+    display: flex;
+    justify-content: center;
+    padding: var(--panneau-space-1);
+}
+
+/* With a footer, the list scrolls above it. */
+.popover.popover {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.listBox.listBox {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+}
+
+.footer {
+    padding: var(--panneau-space-2) var(--panneau-space-3);
+    font-size: var(--panneau-font-size-xs);
+    color: var(--panneau-color-text-muted);
+    border-top: var(--panneau-border-width) solid var(--panneau-color-border);
+}

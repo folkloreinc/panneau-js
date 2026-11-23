@@ -1212,6 +1212,7 @@ export const Definition: z.ZodObject<{
         itemTitle: z.ZodOptional<z.ZodString>;
         itemSubtitle: z.ZodOptional<z.ZodString>;
         itemImage: z.ZodOptional<z.ZodString>;
+        itemStatus: z.ZodOptional<z.ZodString>;
         open: z.ZodOptional<z.ZodUnion<readonly [z.ZodEnum<{
             edit: "edit";
             panel: "panel";
@@ -5352,6 +5353,7 @@ export const namedSchemas: {
         itemTitle: z.ZodOptional<z.ZodString>;
         itemSubtitle: z.ZodOptional<z.ZodString>;
         itemImage: z.ZodOptional<z.ZodString>;
+        itemStatus: z.ZodOptional<z.ZodString>;
         open: z.ZodOptional<z.ZodUnion<readonly [z.ZodEnum<{
             edit: "edit";
             panel: "panel";
@@ -7474,6 +7476,7 @@ export const namedSchemas: {
             itemTitle: z.ZodOptional<z.ZodString>;
             itemSubtitle: z.ZodOptional<z.ZodString>;
             itemImage: z.ZodOptional<z.ZodString>;
+            itemStatus: z.ZodOptional<z.ZodString>;
             open: z.ZodOptional<z.ZodUnion<readonly [z.ZodEnum<{
                 edit: "edit";
                 panel: "panel";
@@ -12263,6 +12266,7 @@ export const Resource: z.ZodObject<{
     itemTitle: z.ZodOptional<z.ZodString>;
     itemSubtitle: z.ZodOptional<z.ZodString>;
     itemImage: z.ZodOptional<z.ZodString>;
+    itemStatus: z.ZodOptional<z.ZodString>;
     open: z.ZodOptional<z.ZodUnion<readonly [z.ZodEnum<{
         edit: "edit";
         panel: "panel";

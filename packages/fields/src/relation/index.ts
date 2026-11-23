@@ -10,9 +10,13 @@ export {
 export {
     type RelationItemCache,
     type RelationListAdapter,
+    type RelationListMeta,
     type RelationReference,
+    type RelationResourceInfo,
+    type RelationSearchPage,
     type RelationSource,
     type RelationSourceOptions,
+    type RelationStatus,
     createRelationSource,
     useRelationReferences,
 } from '../shared/relation';
