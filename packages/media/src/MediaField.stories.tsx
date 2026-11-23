@@ -109,7 +109,10 @@ export const Ingest: Story = {
     },
 };
 
-/** Media of a multiple value, one of which failed to process. */
+/**
+ * Media of a multiple value, one of which failed to process. Removing one offers "Undo" in a toast
+ * (decision 0063), which puts it back at its place.
+ */
 export const Gallery: Story = {
     render: function Render() {
         const [adapter] = useState(createExampleAdapter);
@@ -137,6 +140,18 @@ export const Gallery: Story = {
         await userEvent.click(canvas.getByRole('button', { name: 'Remove broken.jpg' }));
         await expect(canvas.queryByText('broken.jpg')).not.toBeInTheDocument();
         await expect(canvas.getByText('poster.jpg')).toBeVisible();
+
+        const body = within(canvasElement.ownerDocument.body);
+        await userEvent.click(canvas.getByRole('button', { name: 'Remove interview.mp4' }));
+        await expect(await body.findByText('“interview.mp4” removed')).toBeInTheDocument();
+        const [undo] = (await body.findAllByRole('button', { name: 'Undo' })).filter((button) =>
+            button.closest('.panneau-toast')?.textContent?.includes('interview.mp4'),
+        );
+        await userEvent.click(undo as HTMLElement);
+        await expect(await body.findByText('“interview.mp4” put back')).toBeInTheDocument();
+        await expect(canvas.getAllByRole('listitem').map((tile) => tile.textContent ?? '')).toEqual(
+            [expect.stringContaining('interview.mp4'), expect.stringContaining('poster.jpg')],
+        );
     },
 };
 

@@ -438,6 +438,12 @@ export const fieldsMessages: {
     removeItem: PanneauMessage<    {
     index: number;
     }>;
+    removed: PanneauMessage<    {
+    name: string;
+    }>;
+    restored: PanneauMessage<    {
+    name: string;
+    }>;
     moveUp: PanneauMessage<    {
     index: number;
     }>;
@@ -1137,6 +1143,7 @@ export type PanneauMessageValues = Record<string, string | number | boolean | Da
 // @public
 export const uiMessages: {
     close: PanneauMessage<Record<never, never>>;
+    undo: PanneauMessage<Record<never, never>>;
     loading: PanneauMessage<Record<never, never>>;
     notifications: PanneauMessage<Record<never, never>>;
     selectPlaceholder: PanneauMessage<Record<never, never>>;

@@ -1,5 +1,5 @@
 import { FileImage, Images, X } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 import { usePanneau } from '@panneau/core';
 import type { DataAdapter } from '@panneau/data';
@@ -30,6 +30,7 @@ import {
     Tile,
     TileGroup,
     usePanneauIntl,
+    useUndoToast,
 } from '@panneau/ui';
 
 import { ImageItem, editedImageOf } from './ImageItem';
@@ -315,6 +316,35 @@ export function MediaField(props: MediaFieldProps) {
         }
     };
 
+    // "Undo" after a removal (decision 0063): the media goes back at its place, in the latest value
+    const undoToast = useUndoToast();
+    const fieldId = useId();
+    const remove = (item: MediaReference) => {
+        const key = keyOf(item, resource);
+        const index = latest.current.findIndex((entry) => keyOf(entry, resource) === key);
+        const next = latest.current[index + 1];
+        const following = next !== undefined ? keyOf(next, resource) : null;
+        set(latest.current.filter((entry) => keyOf(entry, resource) !== key));
+        const name = item.label ?? item.id;
+        undoToast?.(
+            {
+                title: intl.formatMessage(fieldsMessages.removed, { name }),
+                undoneTitle: intl.formatMessage(fieldsMessages.restored, { name }),
+                onUndo: () => {
+                    const now = latest.current;
+                    if (now.some((entry) => keyOf(entry, resource) === key)) {
+                        return;
+                    }
+                    // Before the media that followed it, or at its index
+                    const before = now.findIndex((entry) => keyOf(entry, resource) === following);
+                    const at = before !== -1 ? before : Math.min(Math.max(index, 0), now.length);
+                    set(multiple ? now.toSpliced(at, 0, item) : [item]);
+                },
+            },
+            { key: `${fieldId}-${key}` },
+        );
+    };
+
     /** Adds picked media: a single pick replaces the media, several are added to the list, once. */
     const add = (picked: readonly MediaReference[]) => {
         const known = new Set(latest.current.map((entry) => keyOf(entry, resource)));
@@ -507,18 +537,7 @@ export function MediaField(props: MediaFieldProps) {
                                         ? () => setEditing({ key: keyOf(item, resource) })
                                         : null
                                 }
-                                onRemove={
-                                    canUpload || canPick
-                                        ? () =>
-                                              set(
-                                                  latest.current.filter(
-                                                      (entry) =>
-                                                          keyOf(entry, resource) !==
-                                                          keyOf(item, resource),
-                                                  ),
-                                              )
-                                        : null
-                                }
+                                onRemove={canUpload || canPick ? () => remove(item) : null}
                             />
                         ))}
                     </ul>
@@ -560,15 +579,7 @@ export function MediaField(props: MediaFieldProps) {
                                                     fieldsMessages.removeFile,
                                                     { name },
                                                 )}
-                                                onPress={() =>
-                                                    set(
-                                                        latest.current.filter(
-                                                            (entry) =>
-                                                                keyOf(entry, resource) !==
-                                                                keyOf(item, resource),
-                                                        ),
-                                                    )
-                                                }
+                                                onPress={() => remove(item)}
                                             />
                                         ) : undefined
                                     }

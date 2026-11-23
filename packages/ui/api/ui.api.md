@@ -1726,6 +1726,13 @@ export interface TooltipProps {
 }
 
 // @public
+export interface UndoToastContent {
+    onUndo: () => void;
+    title: string;
+    undoneTitle: string;
+}
+
+// @public
 export function useCommandShortcut(onToggle: () => void, input?: {
     isOpen?: boolean;
     enabled?: boolean;
@@ -1745,6 +1752,9 @@ export function useToast(): Toasts;
 
 // @public
 export function useToastOffset(ref: RefObject<HTMLElement | null>, active?: boolean): void;
+
+// @public
+export function useUndoToast(): ((content: UndoToastContent, options?: Pick<ToastOptions, 'key'>) => string) | null;
 
 // (No @packageDocumentation comment for this package)
 
