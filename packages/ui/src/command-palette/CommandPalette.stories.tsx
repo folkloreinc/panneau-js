@@ -50,7 +50,15 @@ const groups: CommandPaletteGroup[] = [
     },
 ];
 
-function Palette({ results = false, scoped = false }: { results?: boolean; scoped?: boolean }) {
+function Palette({
+    results = false,
+    scoped = false,
+    highlightMatches = false,
+}: {
+    results?: boolean;
+    scoped?: boolean;
+    highlightMatches?: boolean;
+}) {
     const [isOpen, setOpen] = useState(true);
     const [query, setQuery] = useState('');
     const [scope, setScope] = useState<string | null>(scoped ? 'Articles' : null);
@@ -90,6 +98,7 @@ function Palette({ results = false, scoped = false }: { results?: boolean; scope
                 status={
                     scope !== null && query.length < 2 ? 'Type at least 2 characters.' : undefined
                 }
+                highlightMatches={highlightMatches}
             />
         </RouterProvider>
     );
@@ -129,6 +138,30 @@ export const WithServerResults: Story = {
         await expect(
             body.getByRole('menuitem', { name: /Bike lanes, one year later/ }),
         ).toBeInTheDocument();
+    },
+};
+
+/**
+ * With `highlightMatches`: the first match of each word of the query is marked in labels, without
+ * case or accents. Screen readers read the labels as they are.
+ */
+export const HighlightedMatches: Story = {
+    args: { results: true, highlightMatches: true },
+    play: async ({ canvasElement }) => {
+        const body = within(canvasElement.ownerDocument.body);
+        await userEvent.type(await body.findByRole('searchbox', { name: 'Go to…' }), 'bike YEAR');
+        const result = await body.findByRole('menuitem', { name: 'Bike lanes, one year later' });
+        const marks = [...result.querySelectorAll('mark')];
+        await expect(marks.map((mark) => mark.textContent)).toEqual(['Bike', 'year']);
+        await expect(marks[0]).toHaveAttribute('role', 'presentation');
+
+        await userEvent.clear(body.getByRole('searchbox', { name: 'Go to…' }));
+        await userEvent.type(body.getByRole('searchbox', { name: 'Go to…' }), 'new art');
+        const item = body.getByRole('menuitem', { name: 'New article' });
+        await expect([...item.querySelectorAll('mark')].map((mark) => mark.textContent)).toEqual([
+            'New',
+            'art',
+        ]);
     },
 };
 

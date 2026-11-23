@@ -9,7 +9,12 @@ import {
     useList,
     usePanneau,
 } from '@panneau/core';
-import { useResourceItem, useResourceList, useUpdateItem } from '@panneau/data/query';
+import {
+    usePrefetchItem,
+    useResourceItem,
+    useResourceList,
+    useUpdateItem,
+} from '@panneau/data/query';
 import { useFormatRuleFailure } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
 import { ListView, getPagingProps, useListFields } from '@panneau/lists';
@@ -33,6 +38,7 @@ import {
 
 import { useSummaryPeriod } from '../dashboard/period';
 import { useDocumentTitle } from '../documentTitle';
+import { getListKey, rememberListSearch } from '../listLocation';
 import { navigate } from '../location';
 import { capitalize } from '../navigation';
 import { routePath } from '../routes';
@@ -96,10 +102,8 @@ export function ResourceListPage({
     const { definition, router } = usePanneau();
     // The view of the list (filters, sort, layout, columns) is remembered for the user, in this
     // browser (decision 0042).
-    const { query, list } = useList({
-        list: definitionList,
-        remember: { key: `${basePath}:${definition?.user?.id ?? ''}:${resource.id}` },
-    });
+    const listKey = getListKey(basePath, definition?.user?.id, resource.id);
+    const { query, list } = useList({ list: definitionList, remember: { key: listKey } });
     // The layouts of the definition, or the table and the cards without any
     const layouts =
         resource.list?.layouts !== undefined ? definitionList.layouts : ['table', 'cards'];
@@ -144,6 +148,7 @@ export function ResourceListPage({
     const previewAction = useActionPreview(resource.id);
     // Fields edited in place are saved alone, with the version of the item (decision 0043).
     const update = useUpdateItem(resource.id);
+    const prefetchItem = usePrefetchItem(resource.id);
     const formatError = useFormatRuleFailure(resource.fields);
     const title = capitalize(resource.label.plural, locale);
     // The item that the create page just created: the list highlights it once it shows it, without
@@ -194,11 +199,7 @@ export function ResourceListPage({
         return () => clearTimeout(timer);
     }, [createdSettled]);
     // The item of the panel, which the panel fetches too
-    const {
-        data: selected,
-        isError: selectedError,
-        errorUpdateCount: selectedErrors,
-    } = useResourceItem(resource.id, selectedId);
+    const { data: selected } = useResourceItem(resource.id, selectedId);
     useDocumentTitle([
         selectedId !== null
             ? (getItemTitle(selected, resource.itemTitle, locale) ?? selectedId)
@@ -207,9 +208,13 @@ export function ResourceListPage({
     ]);
     // The list keeps its query in the URL: the panel opens and closes without losing it.
     const search = window.location.search;
+    // Links back to the list, from its items, show it as it is now (decision 0102)
+    useEffect(() => rememberListSearch(listKey, search), [listKey, search]);
     const indexPath = routePath({ name: 'resource.index', resource: resource.id }, basePath);
     // Unless the resource opens items in the panel, the show route of an item that can be updated
     // goes to its form (decision 0082), with the hash of the link. One that can't stays in the panel.
+    // Until the item says which, the list stays and the panel shows its skeleton: the list isn't
+    // rendered again when one of its items opens (#422), and a link to an item shows the page.
     const redirect =
         selectedId !== null && selected !== undefined && opensInForm(resource, selected.abilities)
             ? `${routePath({ name: 'resource.edit', resource: resource.id, id: selectedId }, basePath)}${window.location.hash}`
@@ -219,17 +224,8 @@ export function ResourceListPage({
             navigate(redirect, { replace: true });
         }
     }, [redirect]);
-    // Until the item says whether it opens in its form, the page waits, rather than showing the
-    // list and its panel for an instant. Once it failed, the panel shows the error: its refetch
-    // doesn't make the page wait again.
-    if (
-        redirect !== null ||
-        (getOpenMode(resource) === 'edit' &&
-            selectedId !== null &&
-            selected === undefined &&
-            !selectedError &&
-            selectedErrors === 0)
-    ) {
+    // The page leaves for the form of the item
+    if (redirect !== null) {
         return null;
     }
     // A list that never loaded: the error page, in place of the page. Once it has items, an error
@@ -373,6 +369,8 @@ export function ResourceListPage({
                         perPageOptions={[10, 20, 50, 100]}
                         // Titles open the panel, with the list's query, or the form (`open` of the resource)
                         getItemHref={(item) => getItemPath(resource, item, basePath, search)}
+                        // Hovering or focusing a title loads its item, so it opens from the cache
+                        onItemIntent={(item) => prefetchItem(item.id)}
                         getLinkHref={createLinkResolver(resource, basePath, {
                             search,
                             resolveRoute,

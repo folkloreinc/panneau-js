@@ -726,6 +726,7 @@ export const formsMessages: {
         }>;
         publish: PanneauMessage<Record<never, never>>;
         unpublish: PanneauMessage<Record<never, never>>;
+        unsaved: PanneauMessage<Record<never, never>>;
     };
 };
 
