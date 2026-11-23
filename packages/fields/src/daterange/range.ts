@@ -1,5 +1,7 @@
 import type { DateRangeOpenBound } from '@panneau/protocol/runtime';
 
+import { formatTimeZone } from '../shared/timeZones';
+
 /**
  * A `daterange` value as a field holds it (decision 0053): days (`2026-11-04`) or date-times with
  * an offset, either `null` while it is empty, with `allDay` for an all-day range and the `timeZone`
@@ -127,7 +129,8 @@ export type FormattedDateRange =
 /**
  * A range in the format of a locale, with `Intl.DateTimeFormat.formatRange`: `Nov 4 – 6, 2026`,
  * `Nov 4, 2026, 7:30 – 9:00 PM`. Date-times show in the zone of the value, or the field's, with
- * the zone's short name when it isn't the browser's. `null` for an empty or invalid value.
+ * the zone's name and offset when it isn't the browser's (`…, Eastern Time (UTC−5)`). `null` for
+ * an empty or invalid value.
  */
 export function formatDateRange(
     value: unknown,
@@ -154,7 +157,6 @@ export function formatDateRange(
                   hour: 'numeric',
                   minute: '2-digit',
                   ...(zone !== undefined ? { timeZone: zone } : {}),
-                  ...(zone !== undefined && zone !== local ? { timeZoneName: 'short' } : {}),
               }),
     });
     const dates = bounds.map((bound) => (bound !== null ? toDate(bound) : null));
@@ -162,19 +164,27 @@ export function formatDateRange(
         return null;
     }
     const [from, to] = dates;
+    const first = from ?? to;
+    const named =
+        !days && zone !== undefined && zone !== local && first !== null && first !== undefined
+            ? (text: string) => `${text}, ${formatTimeZone(zone, locale, first)}`
+            : (text: string) => text;
     if (from !== null && from !== undefined && to !== null && to !== undefined) {
         try {
-            return { kind: 'range', text: format.formatRange(from, to) };
+            return { kind: 'range', text: named(format.formatRange(from, to)) };
         } catch {
             // An end before its start, which some engines refuse to format as a range.
-            return { kind: 'range', text: `${format.format(from)} – ${format.format(to)}` };
+            return {
+                kind: 'range',
+                text: named(`${format.format(from)} – ${format.format(to)}`),
+            };
         }
     }
     if (from !== null && from !== undefined) {
-        return { kind: 'from', text: format.format(from) };
+        return { kind: 'from', text: named(format.format(from)) };
     }
     if (to !== null && to !== undefined) {
-        return { kind: 'until', text: format.format(to) };
+        return { kind: 'until', text: named(format.format(to)) };
     }
     return null;
 }

@@ -5,6 +5,12 @@
     gap: var(--panneau-space-2);
 }
 
+/* The map, and the hint to zoom over it. */
+.mapFrame {
+    position: relative;
+    z-index: 0;
+}
+
 .map {
     position: relative;
     z-index: 0;
@@ -18,6 +24,35 @@
 .map:focus-visible {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
     outline-offset: calc(var(--panneau-focus-offset) / 2);
+}
+
+/* Over the map, while the wheel scrolls the page: how to zoom it. */
+.zoomHint {
+    position: absolute;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--panneau-space-4);
+    pointer-events: none;
+    background-color: color-mix(in srgb, var(--panneau-color-surface) 60%, transparent);
+    border-radius: var(--panneau-radius-md);
+    opacity: 0;
+    transition: opacity var(--panneau-duration) var(--panneau-ease-out);
+}
+
+.zoomHint[data-visible] {
+    opacity: 1;
+}
+
+.zoomHintText {
+    padding: var(--panneau-space-2) var(--panneau-space-3);
+    color: var(--panneau-color-text);
+    text-align: center;
+    background-color: var(--panneau-color-surface);
+    border-radius: var(--panneau-radius-md);
+    box-shadow: var(--panneau-shadow-sm);
 }
 
 /* A pin: a round head pointing down at the point. */
@@ -51,4 +86,9 @@
 
 .remove {
     flex: none;
+}
+
+/* Leaflet's credits: their links are underlined, not told apart by their color alone. */
+.map :global(.leaflet-control-attribution a) {
+    text-decoration: underline;
 }

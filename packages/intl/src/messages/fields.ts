@@ -83,6 +83,10 @@ export const fieldsMessages = {
         id: 'panneau.fields.map',
         defaultMessage: 'Map: {label}. Click to place the point, or drag the marker.',
     }),
+    mapZoomHint: defineMessage<{ key: string }>({
+        id: 'panneau.fields.mapZoomHint',
+        defaultMessage: 'To zoom, scroll while holding {key}, or click the map first.',
+    }),
     embedUrl: defineMessage({ id: 'panneau.fields.embedUrl', defaultMessage: 'URL' }),
     embedLoading: defineMessage({
         id: 'panneau.fields.embedLoading',

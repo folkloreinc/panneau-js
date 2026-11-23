@@ -74,3 +74,41 @@ export const WithShortcuts: Story = {
         await expect(canvas.getByText('2027-10-15')).toBeInTheDocument();
     },
 };
+
+/**
+ * Date-times name the zone they are typed in, with its offset on that day: the same zone is
+ * UTC−4 in October and UTC−5 in November.
+ */
+export const TimeZones: Story = {
+    render: function Render() {
+        const [october, setOctober] = useState<string | null>('2026-10-15T13:30:00Z');
+        const [november, setNovember] = useState<string | null>('2026-11-15T13:30:00Z');
+        return (
+            <div style={{ display: 'grid', gap: '1rem', maxWidth: '28rem' }}>
+                <DateTimeField
+                    label="Opens at"
+                    timeZone="America/Toronto"
+                    value={october}
+                    onChange={setOctober}
+                />
+                <DateTimeField
+                    label="Closes at"
+                    timeZone="America/Toronto"
+                    value={november}
+                    onChange={setNovember}
+                />
+                <DateTimeField label="Starts at (wall time)" value="2026-10-15T09:30:00" />
+            </div>
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const opens = canvas.getByRole('group', { name: 'Opens at' });
+        await expect(within(opens).getByText('Eastern Time (UTC−4)')).toBeVisible();
+        const closes = canvas.getByRole('group', { name: 'Closes at' });
+        await expect(within(closes).getByText('Eastern Time (UTC−5)')).toBeVisible();
+        // A value without an offset is in no zone
+        const wall = canvas.getByRole('group', { name: 'Starts at (wall time)' });
+        await expect(within(wall).queryByText(/UTC/)).toBeNull();
+    },
+};

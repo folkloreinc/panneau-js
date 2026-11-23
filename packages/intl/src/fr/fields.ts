@@ -35,6 +35,8 @@ export const fieldsFr: Record<string, string> = {
     'panneau.fields.address': 'Adresse',
     'panneau.fields.removePoint': 'Retirer le point',
     'panneau.fields.map': 'Carte : {label}. Cliquez pour placer le point, ou déplacez le marqueur.',
+    'panneau.fields.mapZoomHint':
+        'Pour zoomer, faites défiler en maintenant {key}, ou cliquez d’abord sur la carte.',
     'panneau.fields.embedUrl': 'URL',
     'panneau.fields.embedLoading': 'Chargement de l’aperçu…',
     'panneau.fields.embedProviders': 'Fournisseurs acceptés : {providers}.',

@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -80,5 +80,33 @@ describe('LocationField', () => {
         renderLocation(vi.fn(), { initial: { lat: 1, lng: 2 } });
         expect(screen.queryByRole('combobox', { name: 'Search an address' })).toBeNull();
         expect(await screen.findByRole('textbox', { name: 'Longitude' })).toHaveValue('2');
+    });
+
+    it('lets the wheel scroll the page until the map is focused, or with ⌘ or Ctrl', async () => {
+        renderLocation(vi.fn(), { initial: { lat: 1, lng: 2 } });
+        const map = await screen.findByRole('application', { name: /Map: Place/ });
+        const hint = screen.getByText(/To zoom, scroll while holding/);
+        // Leaflet listens to the wheel on the map
+        const leaflet = vi.fn();
+        map.addEventListener('wheel', leaflet);
+        const inside = map.firstElementChild ?? map;
+
+        fireEvent.wheel(inside, { deltaY: 100 });
+        expect(leaflet).not.toHaveBeenCalled();
+        expect(hint.parentElement).toHaveAttribute('data-visible', 'true');
+
+        fireEvent.wheel(inside, { deltaY: 100, ctrlKey: true });
+        fireEvent.wheel(inside, { deltaY: 100, metaKey: true });
+        expect(leaflet).toHaveBeenCalledTimes(2);
+
+        map.focus();
+        fireEvent.focus(map);
+        expect(hint.parentElement).not.toHaveAttribute('data-visible');
+        fireEvent.wheel(inside, { deltaY: 100 });
+        expect(leaflet).toHaveBeenCalledTimes(3);
+
+        fireEvent.blur(map);
+        fireEvent.wheel(inside, { deltaY: 100 });
+        expect(leaflet).toHaveBeenCalledTimes(3);
     });
 });

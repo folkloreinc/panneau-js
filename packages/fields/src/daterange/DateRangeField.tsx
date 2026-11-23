@@ -10,6 +10,7 @@ import {
 import { DateRangePicker, Switch, usePanneauIntl } from '@panneau/ui';
 
 import { CodeComboBox } from '../shared/CodeComboBox';
+import { TimeZoneLabel } from '../shared/TimeZoneLabel';
 import { fromDateTime, toCalendarDate as parseDay, toDateTime } from '../shared/dates';
 import { getFieldProps } from '../shared/entry';
 import { messages } from '../shared/messages';
@@ -161,6 +162,25 @@ export function DateRangeField({
             </Switch>
         ) : undefined;
 
+    // The zone the date-times are in, named with its offset at the start (`Eastern Time
+    // (UTC−4)`). Bounds without an offset are wall times, in no zone.
+    const shownBounds = current !== null ? [toBound(current.start), toBound(current.end)] : [];
+    const firstBound = shownBounds.find((bound) => bound !== null) ?? null;
+    const zoneLabel =
+        !days && (firstBound === null || 'timeZone' in firstBound) ? (
+            <TimeZoneLabel
+                zone={zone}
+                date={firstBound !== null && 'timeZone' in firstBound ? firstBound.toDate() : null}
+            />
+        ) : undefined;
+    const endContent =
+        allDaySwitch !== undefined || zoneLabel !== undefined ? (
+            <>
+                {zoneLabel}
+                {allDaySwitch}
+            </>
+        ) : undefined;
+
     return (
         <div className={styles.field}>
             <DateRangePicker
@@ -187,8 +207,8 @@ export function DateRangeField({
                       }
                     : {})}
                 {...(hourCycle !== undefined ? { hourCycle } : {})}
-                hideTimeZone={zone === local}
-                {...(allDaySwitch !== undefined ? { end: allDaySwitch } : {})}
+                hideTimeZone
+                {...(endContent !== undefined ? { end: endContent } : {})}
                 isRequired={required}
                 isDisabled={disabled}
                 isReadOnly={readOnly}
