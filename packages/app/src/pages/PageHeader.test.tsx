@@ -99,4 +99,20 @@ describe('PageHeader (decision 0093)', () => {
             'page',
         );
     });
+
+    it('puts its actions on the row of the title, outside its column (#423)', () => {
+        renderHeader({
+            title: 'Ada',
+            parents: [{ href: '/panneau/resources/authors', label: 'Authors' }],
+            actions: <button type="button">Delete</button>,
+        });
+        const title = screen.getByRole('heading', { level: 1 });
+        const actions = screen.getByRole('button', { name: 'Delete' }).parentElement;
+        // The title, its parents and the actions are the cells of the header, which places them
+        expect(title.parentElement?.tagName).toBe('HEADER');
+        expect(actions?.parentElement).toBe(title.parentElement);
+        expect(screen.getByRole('link', { name: 'Authors' }).parentElement?.parentElement).toBe(
+            title.parentElement,
+        );
+    });
 });

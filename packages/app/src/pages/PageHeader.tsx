@@ -12,8 +12,10 @@ import styles from './pages.module.css';
 
 export interface PageLayoutProps {
     /**
-     * The width of the page: `default` for lists, the home page and forms with a sidebar,
-     * `narrow` for other forms and details. The page is centered in the window either way.
+     * The width of the content of the page: `default` for lists, the home page and forms with a
+     * sidebar, `narrow` for other forms and details. The page and its header keep the same column
+     * either way, so the header doesn't move from page to page: a `narrow` page narrows what comes
+     * after its header, from the start of the column.
      */
     width?: 'default' | 'narrow';
     className?: string;
@@ -45,7 +47,10 @@ export interface PageHeaderProps {
     crumbLabel?: string;
     /** The title loads, such as the title of an item: it is a skeleton, and its crumb too. */
     isLoading?: boolean;
-    /** Buttons and links at the end of the header. */
+    /**
+     * Buttons and links at the end of the header, on the row of the title: their place doesn't
+     * depend on its length, which wraps. Under the title below 48rem of the root.
+     */
     actions?: ReactNode;
 }
 
@@ -53,8 +58,8 @@ export interface PageHeaderProps {
 const MAX_CRUMBS = 4;
 
 /**
- * The header of a page: its title, its parents above it, and its actions at the end, as the pages
- * of resources have it. One parent is a link to it. Two or more are breadcrumbs, from 48rem of the
+ * The header of a page: its title, its parents above it, and its actions at the end of the title's
+ * row, in the same place whatever the length of the title, as the pages of resources have it. One parent is a link to it. Two or more are breadcrumbs, from 48rem of the
  * root, and a link to the nearest one below (decision 0093).
  */
 export function PageHeader({
@@ -87,37 +92,43 @@ export function PageHeader({
                 )}
             </Link>
         ) : null;
+    const hasParents = hasTrail || backLink !== null;
     return (
         <header className={styles.header}>
-            <div className={styles.headerTitle}>
-                {hasTrail ? (
-                    <Breadcrumbs
-                        className={styles.wideOnly}
-                        maxItems={MAX_CRUMBS}
-                        items={[
-                            ...list.map((parent) => ({
-                                id: parent.href,
-                                label: parent.label,
-                                href: parent.href,
-                            })),
-                            { id: 'panneau-current-page', label: isLoading ? undefined : label },
-                        ]}
-                    />
-                ) : null}
-                {backLink}
-                <Heading level={1}>
-                    {isLoading ? (
-                        <>
-                            <Skeleton width="16rem" className={styles.titleSkeleton} />
-                            <span className={styles.hidden}>
-                                {intl.formatMessage(appMessages.loading)}
-                            </span>
-                        </>
-                    ) : (
-                        title
-                    )}
-                </Heading>
-            </div>
+            {hasParents ? (
+                <div className={styles.headerParents}>
+                    {hasTrail ? (
+                        <Breadcrumbs
+                            className={styles.wideOnly}
+                            maxItems={MAX_CRUMBS}
+                            items={[
+                                ...list.map((parent) => ({
+                                    id: parent.href,
+                                    label: parent.label,
+                                    href: parent.href,
+                                })),
+                                {
+                                    id: 'panneau-current-page',
+                                    label: isLoading ? undefined : label,
+                                },
+                            ]}
+                        />
+                    ) : null}
+                    {backLink}
+                </div>
+            ) : null}
+            <Heading level={1} className={styles.headerTitle}>
+                {isLoading ? (
+                    <>
+                        <Skeleton width="16rem" className={styles.titleSkeleton} />
+                        <span className={styles.hidden}>
+                            {intl.formatMessage(appMessages.loading)}
+                        </span>
+                    </>
+                ) : (
+                    title
+                )}
+            </Heading>
             {actions !== undefined ? <div className={styles.headerActions}>{actions}</div> : null}
         </header>
     );
