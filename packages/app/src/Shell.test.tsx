@@ -374,7 +374,12 @@ describe('the app shell', () => {
             const main = within(screen.getByRole('main'));
             await main.findByRole('link', { name: 'Ada' });
             await user.click(main.getByRole('link', { name: 'New author' }));
-            await user.type(await screen.findByRole('textbox', { name: 'Name' }), 'Zora');
+            // The new page takes the focus on its title in the next frame: typing before it would
+            // lose the keys that follow, depending on when that frame comes (#457)
+            await waitFor(() =>
+                expect(screen.getByRole('heading', { level: 1, name: 'New author' })).toHaveFocus(),
+            );
+            await user.type(screen.getByRole('textbox', { name: 'Name' }), 'Zora');
             await user.click(screen.getByRole('button', { name: 'Save' }));
             await waitFor(() =>
                 expect(window.location.pathname).toBe('/panneau/resources/authors'),
