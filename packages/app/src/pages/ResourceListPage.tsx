@@ -194,11 +194,7 @@ export function ResourceListPage({
         return () => clearTimeout(timer);
     }, [createdSettled]);
     // The item of the panel, which the panel fetches too
-    const {
-        data: selected,
-        isError: selectedError,
-        errorUpdateCount: selectedErrors,
-    } = useResourceItem(resource.id, selectedId);
+    const { data: selected } = useResourceItem(resource.id, selectedId);
     useDocumentTitle([
         selectedId !== null
             ? (getItemTitle(selected, resource.itemTitle, locale) ?? selectedId)
@@ -210,6 +206,8 @@ export function ResourceListPage({
     const indexPath = routePath({ name: 'resource.index', resource: resource.id }, basePath);
     // Unless the resource opens items in the panel, the show route of an item that can be updated
     // goes to its form (decision 0082), with the hash of the link. One that can't stays in the panel.
+    // Until the item says which, the list stays and the panel shows its skeleton: the list isn't
+    // rendered again when one of its items opens (#422), and a link to an item shows the page.
     const redirect =
         selectedId !== null && selected !== undefined && opensInForm(resource, selected.abilities)
             ? `${routePath({ name: 'resource.edit', resource: resource.id, id: selectedId }, basePath)}${window.location.hash}`
@@ -219,17 +217,8 @@ export function ResourceListPage({
             navigate(redirect, { replace: true });
         }
     }, [redirect]);
-    // Until the item says whether it opens in its form, the page waits, rather than showing the
-    // list and its panel for an instant. Once it failed, the panel shows the error: its refetch
-    // doesn't make the page wait again.
-    if (
-        redirect !== null ||
-        (getOpenMode(resource) === 'edit' &&
-            selectedId !== null &&
-            selected === undefined &&
-            !selectedError &&
-            selectedErrors === 0)
-    ) {
+    // The page leaves for the form of the item
+    if (redirect !== null) {
         return null;
     }
     // A list that never loaded: the error page, in place of the page. Once it has items, an error

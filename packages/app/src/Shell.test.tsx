@@ -154,6 +154,102 @@ describe('the app shell', () => {
         expect(await screen.findByRole('textbox', { name: /title/i })).toHaveValue('Contact');
     });
 
+    describe('opening an item from its list (#422)', () => {
+        /** Counts the requests of the list of a resource, without those of its items. */
+        function countListRequests(resource: string) {
+            const requests: string[] = [];
+            const fetch = (inner: typeof window.fetch) =>
+                (async (input, init) => {
+                    const url = new URL(
+                        input instanceof Request ? input.url : String(input),
+                        window.location.href,
+                    );
+                    if (url.pathname === `/panneau/api/resources/${resource}`) {
+                        requests.push(url.search);
+                    }
+                    return inner(input, init);
+                }) satisfies typeof window.fetch;
+            return { requests, fetch };
+        }
+
+        async function expectListKept(resource: string, title: string, region: string) {
+            const user = userEvent.setup();
+            const table = await screen.findByRole('table');
+            const link = await within(table).findByRole('link', { name: title });
+            const rows = within(table).getAllByRole('row');
+            await user.click(link);
+            const panel = await screen.findByRole('region', { name: region });
+            expect(await within(panel).findAllByText(title)).not.toHaveLength(0);
+            // The same table and the same rows: the list wasn't rendered again
+            expect(screen.getByRole('table')).toBe(table);
+            expect(within(table).getAllByRole('row')).toEqual(rows);
+            await user.keyboard('{Escape}');
+            expect(window.location.pathname).toBe(`/panneau/resources/${resource}`);
+            expect(screen.queryByRole('region', { name: region })).toBeNull();
+            expect(screen.getByRole('table')).toBe(table);
+            expect(within(table).getAllByRole('row')).toEqual(rows);
+        }
+
+        it('keeps the list and its rows mounted, and doesn’t fetch it again', async () => {
+            window.history.replaceState(null, '', '/panneau/resources/pages');
+            const { requests, fetch } = countListRequests('pages');
+            renderApp({}, [], undefined, { fetch });
+            await expectListKept('pages', 'Contact', 'Details of the page');
+            expect(requests).toHaveLength(1);
+        });
+
+        it('keeps the list mounted while an item that opens in its form loads, and can’t be updated', async () => {
+            window.history.replaceState(null, '', '/panneau/resources/authors');
+            const { requests, fetch } = countListRequests('authors');
+            renderApp(
+                {
+                    resources: [
+                        {
+                            id: 'authors',
+                            label: { singular: 'author', plural: 'authors' },
+                            itemTitle: 'name',
+                            fields: [{ name: 'name', type: 'text', label: 'Name' }],
+                        },
+                    ],
+                },
+                [],
+                (backend) => {
+                    const [ada] = backend.items('authors');
+                    if (ada !== undefined) {
+                        ada.abilities = { ...ada.abilities, update: false };
+                    }
+                },
+                { fetch },
+            );
+            await expectListKept('authors', 'Ada', 'Details of the author');
+            expect(requests).toHaveLength(1);
+        });
+
+        it('shows the skeletons of the list and of the panel when the item’s URL loads', async () => {
+            window.history.replaceState(null, '', '/panneau/resources/authors/1');
+            renderApp({
+                resources: [
+                    {
+                        id: 'authors',
+                        label: { singular: 'author', plural: 'authors' },
+                        itemTitle: 'name',
+                        fields: [{ name: 'name', type: 'text', label: 'Name' }],
+                    },
+                ],
+            });
+            // Before the item says whether it opens in its form: the page, not nothing
+            expect(screen.getByRole('heading', { name: 'Authors', level: 1 })).toBeInTheDocument();
+            const panel = screen.getByRole('region', { name: 'Details of the author' });
+            expect(panel.querySelector('[aria-busy="true"]')).not.toBeNull();
+            expect(
+                screen.getByRole('main').querySelectorAll('[aria-busy="true"]').length,
+            ).toBeGreaterThan(1);
+            await waitFor(() =>
+                expect(window.location.pathname).toBe('/panneau/resources/authors/1/edit'),
+            );
+        });
+    });
+
     it('opens the panel of the show route over its list, and closes it without losing the query', async () => {
         const user = userEvent.setup();
         window.history.replaceState(null, '', '/panneau/resources/pages/1?sort=-title');
