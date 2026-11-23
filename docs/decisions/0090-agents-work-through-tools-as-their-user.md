@@ -1,6 +1,6 @@
 # 0090: AI agents work in a Panneau through tools of the protocol, as their user
 
-- Status: proposed
+- Status: proposed, amended by [0106](0106-five-tools-for-agents.md): five tools instead of nine, one description of a resource, and the order of delivery
 - Date: 2026-11-18
 - Part of: [#6](https://github.com/folkloreinc/panneau-js/issues/6), 5.x (AI agents (MCP))
 - Laravel side: [laravel-panneau decision 0022](https://github.com/folkloreinc/laravel-panneau/blob/v5.x/docs/decisions/0022-agents-on-laravel-mcp-and-laravel-ai.md)
