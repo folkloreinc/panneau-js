@@ -89,6 +89,11 @@ export function ConfirmDialog(input: ConfirmDialogProps): JSX.Element | null;
 // @public (undocumented)
 export interface ConfirmDialogProps {
     event: ListActionEvent | null;
+    itemLabel?: string | undefined;
+    labels?: {
+        readonly singular: string;
+        readonly plural: string;
+    } | undefined;
     // (undocumented)
     onCancel: () => void;
     // (undocumented)
@@ -472,6 +477,10 @@ export interface ListViewProps {
     // (undocumented)
     onRetry?: () => void;
     perPageOptions?: readonly number[];
+    resourceLabel?: {
+        readonly singular: string;
+        readonly plural: string;
+    } | undefined;
     search?: boolean;
     selectable?: boolean;
     toolbar?: ReactNode;

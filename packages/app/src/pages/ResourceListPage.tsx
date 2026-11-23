@@ -359,6 +359,7 @@ export function ResourceListPage({
                         onRetry={() => void refetch()}
                         fields={getVisibleFields(resource.fields)}
                         itemTitle={resource.itemTitle}
+                        resourceLabel={resource.label}
                         itemImage={itemImage}
                         itemStatus={resource.itemStatus}
                         layouts={{ available: layouts }}

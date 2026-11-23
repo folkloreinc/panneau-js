@@ -900,6 +900,13 @@ export const listsMessages: {
     count: number;
     action: string;
     }>;
+    confirmDeleteTitle: PanneauMessage<    {
+    subject: string;
+    }>;
+    confirmMessageFor: PanneauMessage<    {
+    action: string;
+    subject: string;
+    }>;
     confirmSkipped: PanneauMessage<    {
     count: number;
     }>;

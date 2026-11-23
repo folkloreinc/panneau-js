@@ -403,6 +403,32 @@ describe('createMockBackend', () => {
         expect(backend.items('pages').map((item) => item.id)).toEqual(['1', '3']);
     });
 
+    it('names what it deleted in the message of a delete, as backends should (#411)', async () => {
+        const backend = createMockBackend({
+            definition: createDefinition(),
+            items: {
+                pages: [
+                    { title: { fr: 'Accueil' } },
+                    { title: { fr: 'À propos' } },
+                    { title: { fr: 'Contact' } },
+                    { status: 'draft' },
+                ],
+            },
+        });
+        const remove = async (ids: string[]) => {
+            const response = await backend.fetch(
+                '/panneau/api/resources/pages/actions/delete',
+                json({ selection: { ids } }, { method: 'POST' }),
+            );
+            return ((await response.json()) as { message?: string }).message;
+        };
+        // One item by its title, several by the resource's plural, one without a title by its
+        // singular
+        expect(await remove(['2'])).toBe('“À propos” deleted.');
+        expect(await remove(['1', '3'])).toBe('2 pages deleted.');
+        expect(await remove(['4'])).toBe('Page deleted.');
+    });
+
     it('keeps a trash for an undoable delete: its result says how to undo it, and restore puts the items back', async () => {
         const definition = createDefinition();
         definition.resources[0]?.actions?.push({
