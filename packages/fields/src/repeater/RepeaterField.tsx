@@ -269,11 +269,18 @@ export function RepeaterField({
     // Where the focus goes once the list changed: a button of an item that moved, or the header
     // of an item put back. The item may only show once its value comes back from the form.
     const list = useRef<HTMLOListElement>(null);
-    const focusNext = useRef<{ key: number; tool: 'up' | 'down' | 'header' } | null>(null);
+    const focusNext = useRef<{
+        key: number;
+        index: number;
+        tool: 'up' | 'down' | 'header';
+    } | null>(null);
     useEffect(() => {
         const target = focusNext.current;
+        // Once the item shows at its new place
         const item =
-            target !== null ? list.current?.querySelector(`[data-key="${target.key}"]`) : null;
+            target !== null && keys[target.index] === target.key
+                ? list.current?.querySelector(`[data-key="${target.key}"]`)
+                : null;
         if (target === null || item === null || item === undefined) {
             return;
         }
@@ -320,6 +327,7 @@ export function RepeaterField({
         const tool = from < to ? 'down' : 'up';
         focusNext.current = {
             key: keyAt(from),
+            index: to,
             tool: to === 0 ? 'down' : to === items.length - 1 ? 'up' : tool,
         };
     };
@@ -367,7 +375,7 @@ export function RepeaterField({
                         next: current.tracked.next,
                     });
                     current.onChange?.(next);
-                    focusNext.current = { key, tool: 'header' };
+                    focusNext.current = { key, index: at, tool: 'header' };
                 },
             },
             { key: `${id}-${key}` },
