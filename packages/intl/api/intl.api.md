@@ -836,6 +836,9 @@ export const listsMessages: {
     sortDescending: PanneauMessage<    {
     column: string;
     }>;
+    sortedBy: PanneauMessage<    {
+    sort: string;
+    }>;
     layout: PanneauMessage<Record<never, never>>;
     layoutTable: PanneauMessage<Record<never, never>>;
     layoutCards: PanneauMessage<Record<never, never>>;
@@ -852,6 +855,7 @@ export const listsMessages: {
     shown: number;
     }>;
     columns: PanneauMessage<Record<never, never>>;
+    moreOptions: PanneauMessage<Record<never, never>>;
     moveColumnUp: PanneauMessage<    {
     column: string;
     }>;

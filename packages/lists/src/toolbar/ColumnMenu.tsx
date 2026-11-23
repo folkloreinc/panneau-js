@@ -1,10 +1,19 @@
 import { ArrowDown, ArrowUp, Columns3 } from 'lucide-react';
 
-import { Button, Checkbox, IconButton, Popover, PopoverTrigger, usePanneauIntl } from '@panneau/ui';
+import {
+    Button,
+    Checkbox,
+    Dialog,
+    IconButton,
+    Popover,
+    PopoverTrigger,
+    usePanneauIntl,
+} from '@panneau/ui';
 
 import { messages } from '../messages';
 import type { ListColumn } from '../types';
 import styles from './Toolbar.module.css';
+import { ToolbarButton } from './ToolbarButton';
 
 export interface ColumnMenuProps {
     /** Every column of the list, in the order of the definition. */
@@ -21,11 +30,8 @@ function labelOf(column: ListColumn): string {
     return typeof column.label === 'string' ? column.label : column.id;
 }
 
-/**
- * A button that opens the columns of a list: a checkbox to show or hide each one, buttons to
- * move the shown ones, and a reset to the columns of the definition (decision 0042).
- */
-export function ColumnMenu({ columns, shown, onChange, onReset }: ColumnMenuProps) {
+/** The columns of a list, to show, hide and order, in a popover or a dialog. */
+function ColumnChooser({ columns, shown, onChange, onReset }: ColumnMenuProps) {
     const intl = usePanneauIntl();
     const ids = shown.map((column) => column.id);
     // The shown columns first, in their order, then the others, where showing one adds it.
@@ -39,73 +45,103 @@ export function ColumnMenu({ columns, shown, onChange, onReset }: ColumnMenuProp
         }
     };
     return (
+        <div className={styles.columns}>
+            <ul className={styles.columnList}>
+                {ordered.map((column) => {
+                    const index = ids.indexOf(column.id);
+                    const isShown = index !== -1;
+                    const label = labelOf(column);
+                    return (
+                        <li key={column.id} className={styles.column}>
+                            <Checkbox
+                                isSelected={isShown}
+                                // The last column shown stays: a list shows something.
+                                isDisabled={
+                                    column.hideable === false || (isShown && ids.length === 1)
+                                }
+                                onChange={(selected) =>
+                                    onChange(
+                                        selected
+                                            ? [...ids, column.id]
+                                            : ids.filter((id) => id !== column.id),
+                                    )
+                                }
+                                className={styles.columnLabel}
+                            >
+                                {label}
+                            </Checkbox>
+                            {isShown ? (
+                                <span className={styles.columnMoves}>
+                                    <IconButton
+                                        icon={ArrowUp}
+                                        size="sm"
+                                        label={intl.formatMessage(messages.moveColumnUp, {
+                                            column: label,
+                                        })}
+                                        showTooltip={false}
+                                        isDisabled={index === 0}
+                                        onPress={() => move(index, -1)}
+                                    />
+                                    <IconButton
+                                        icon={ArrowDown}
+                                        size="sm"
+                                        label={intl.formatMessage(messages.moveColumnDown, {
+                                            column: label,
+                                        })}
+                                        showTooltip={false}
+                                        isDisabled={index === ids.length - 1}
+                                        onPress={() => move(index, 1)}
+                                    />
+                                </span>
+                            ) : null}
+                        </li>
+                    );
+                })}
+            </ul>
+            <Button
+                size="sm"
+                appearance="ghost"
+                isDisabled={onReset === null}
+                onPress={() => onReset?.()}
+            >
+                {intl.formatMessage(messages.resetColumns)}
+            </Button>
+        </div>
+    );
+}
+
+/**
+ * A button that opens the columns of a list: a checkbox to show or hide each one, buttons to
+ * move the shown ones, and a reset to the columns of the definition (decision 0042).
+ */
+export function ColumnMenu(props: ColumnMenuProps) {
+    const intl = usePanneauIntl();
+    const label = intl.formatMessage(messages.columns);
+    return (
         <PopoverTrigger>
-            <Button icon={Columns3}>{intl.formatMessage(messages.columns)}</Button>
-            <Popover placement="bottom end" aria-label={intl.formatMessage(messages.columns)}>
-                <div className={styles.columns}>
-                    <ul className={styles.columnList}>
-                        {ordered.map((column) => {
-                            const index = ids.indexOf(column.id);
-                            const isShown = index !== -1;
-                            const label = labelOf(column);
-                            return (
-                                <li key={column.id} className={styles.column}>
-                                    <Checkbox
-                                        isSelected={isShown}
-                                        // The last column shown stays: a list shows something.
-                                        isDisabled={
-                                            column.hideable === false ||
-                                            (isShown && ids.length === 1)
-                                        }
-                                        onChange={(selected) =>
-                                            onChange(
-                                                selected
-                                                    ? [...ids, column.id]
-                                                    : ids.filter((id) => id !== column.id),
-                                            )
-                                        }
-                                        className={styles.columnLabel}
-                                    >
-                                        {label}
-                                    </Checkbox>
-                                    {isShown ? (
-                                        <span className={styles.columnMoves}>
-                                            <IconButton
-                                                icon={ArrowUp}
-                                                size="sm"
-                                                label={intl.formatMessage(messages.moveColumnUp, {
-                                                    column: label,
-                                                })}
-                                                showTooltip={false}
-                                                isDisabled={index === 0}
-                                                onPress={() => move(index, -1)}
-                                            />
-                                            <IconButton
-                                                icon={ArrowDown}
-                                                size="sm"
-                                                label={intl.formatMessage(messages.moveColumnDown, {
-                                                    column: label,
-                                                })}
-                                                showTooltip={false}
-                                                isDisabled={index === ids.length - 1}
-                                                onPress={() => move(index, 1)}
-                                            />
-                                        </span>
-                                    ) : null}
-                                </li>
-                            );
-                        })}
-                    </ul>
-                    <Button
-                        size="sm"
-                        appearance="ghost"
-                        isDisabled={onReset === null}
-                        onPress={() => onReset?.()}
-                    >
-                        {intl.formatMessage(messages.resetColumns)}
-                    </Button>
-                </div>
+            <ToolbarButton icon={Columns3} label={label} />
+            <Popover placement="bottom end" aria-label={label}>
+                <ColumnChooser {...props} />
             </Popover>
         </PopoverTrigger>
+    );
+}
+
+/** The columns of a list in a dialog, opened from the menu of a narrow toolbar. */
+export function ColumnDialog({
+    isOpen,
+    onOpenChange,
+    ...props
+}: ColumnMenuProps & { isOpen: boolean; onOpenChange: (isOpen: boolean) => void }) {
+    const intl = usePanneauIntl();
+    return (
+        <Dialog
+            title={intl.formatMessage(messages.columns)}
+            size="sm"
+            isOpen={isOpen}
+            onOpenChange={onOpenChange}
+        >
+            <ColumnChooser {...props} />
+        </Dialog>
     );
 }

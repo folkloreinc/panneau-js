@@ -172,7 +172,7 @@ describe('List', () => {
         expect(pagination).toHaveTextContent('1–45 of 45');
     });
 
-    it('shows cards, with a sort select', async () => {
+    it('shows cards, with a sort menu', async () => {
         const user = userEvent.setup();
         renderList(
             <List
@@ -188,9 +188,13 @@ describe('List', () => {
         const cards = screen.getByRole('list', { name: 'Items' });
         expect(within(cards).getAllByRole('listitem')).toHaveLength(3);
         expect(within(cards).getAllByRole('listitem')[0]).toHaveTextContent('StatusPublished');
-        await user.click(screen.getByRole('button', { name: /Sort by/ }));
-        await user.click(await screen.findByRole('option', { name: 'Title, descending' }));
+        await user.click(screen.getByRole('button', { name: 'Sort by' }));
+        await user.click(await screen.findByRole('menuitemradio', { name: 'Title, descending' }));
         expect(within(cards).getAllByRole('listitem')[0]).toHaveTextContent('Contact');
+        // The button says the sort: the column, and its direction in its name
+        expect(
+            screen.getByRole('button', { name: 'Sort by: Title, descending' }),
+        ).toHaveTextContent('Title');
     });
 
     it('uses the displays of plugins and of props', () => {
@@ -820,6 +824,117 @@ describe('ListView toolbar', () => {
         await user.click(screen.getByRole('button', { name: 'Select' }));
         await user.click(screen.getByRole('checkbox', { name: 'Select Contact' }));
         expect(screen.getAllByRole('button', { name: 'Delete' })).toHaveLength(1);
+    });
+});
+
+describe('ListView toolbar controls', () => {
+    const calendar = { field: 'published_on', filter: 'published_on' };
+    const sortable = columns.map((column) => ({ ...column, sortable: true }));
+    // The names of the toolbar's controls, in their order, up to the layout switch
+    // The names of the controls at the end of the toolbar, in their order: its buttons, and the
+    // layout switch as a whole
+    const controls = () =>
+        [
+            ...(document
+                .querySelector('[class*="toolbarEnd"]')
+                ?.querySelectorAll('button, [role="radiogroup"]') ?? []),
+        ]
+            .filter(
+                (element) =>
+                    element.getAttribute('role') === 'radiogroup' ||
+                    element.closest('[role="radiogroup"]') === null,
+            )
+            .map((element) => element.getAttribute('aria-label') ?? element.textContent);
+
+    it('shows only the controls each layout uses, before the layout switch', async () => {
+        const user = userEvent.setup();
+        renderList(
+            <ListView
+                list={createList({ router: createMemoryRouter('month=2026-03') })}
+                columns={sortable}
+                items={pages}
+                calendar={calendar}
+                layouts={{ available: ['table', 'cards', 'calendar'] }}
+                actions={{ available: [exportAction, remove] }}
+            />,
+        );
+        expect(controls()).toEqual(['Export', 'Sort by', 'Columns', 'Select', 'Layout']);
+        await user.click(screen.getByRole('radio', { name: 'Cards' }));
+        expect(controls()).toEqual(['Export', 'Sort by', 'Columns', 'Select', 'Layout']);
+        // The calendar is in date order, shows titles and selects nothing
+        await user.click(screen.getByRole('radio', { name: 'Calendar' }));
+        expect(controls()).toEqual(['Export', 'Layout']);
+    });
+
+    it('shows Columns and Select as icon buttons, with their names as tooltips', async () => {
+        const user = userEvent.setup();
+        renderList(
+            <ListView
+                list={createList()}
+                columns={columns}
+                items={pages}
+                actions={{ available: [remove] }}
+            />,
+        );
+        const columnsButton = screen.getByRole('button', { name: 'Columns' });
+        expect(columnsButton).not.toHaveTextContent('Columns');
+        await user.hover(columnsButton);
+        expect(await screen.findByRole('tooltip')).toHaveTextContent('Columns');
+        const select = screen.getByRole('button', { name: 'Select' });
+        expect(select).not.toHaveTextContent('Select');
+        // Selecting, it says what pressing it does, and keeps the focus
+        await user.click(select);
+        const done = screen.getByRole('button', { name: 'Done' });
+        expect(done).toBe(select);
+        expect(done).toHaveTextContent('Done');
+        expect(done).toHaveFocus();
+    });
+
+    it('keeps the controls in one row on a phone, with the less used ones in a menu', async () => {
+        const user = userEvent.setup();
+        const rect = vi
+            .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+            .mockReturnValue(DOMRect.fromRect({ width: 360, height: 600 }));
+        const onRun = vi.fn();
+        // Cards chosen on a wider screen
+        const router = createMemoryRouter('layout=cards');
+        try {
+            renderList(
+                <ListView
+                    list={createList({ router })}
+                    columns={sortable}
+                    items={pages}
+                    layouts={{ available: ['table', 'cards'] }}
+                    actions={{ available: [exportAction, remove], onRun }}
+                />,
+            );
+            // The table shows its rows as cards: the switch has no cards, and here no other layout
+            expect(screen.getByRole('table', { name: 'Items' })).toBeInTheDocument();
+            expect(screen.queryByRole('radiogroup', { name: 'Layout' })).not.toBeInTheDocument();
+            expect(controls()).toEqual(['Select', 'More options']);
+            expect(screen.queryByRole('button', { name: 'Export' })).not.toBeInTheDocument();
+
+            await user.click(screen.getByRole('button', { name: 'More options' }));
+            const menu = await screen.findByRole('menu', { name: 'More options' });
+            await user.click(
+                within(menu).getByRole('menuitemradio', { name: 'Title, descending' }),
+            );
+            expect(router.getSearch()).toBe('sort=-title&layout=cards');
+
+            await user.click(screen.getByRole('button', { name: 'More options' }));
+            await user.click(await screen.findByRole('menuitem', { name: 'Export' }));
+            expect(onRun).toHaveBeenCalledWith(
+                expect.objectContaining({ action: exportAction, scope: 'resource' }),
+            );
+
+            await user.click(screen.getByRole('button', { name: 'More options' }));
+            await user.click(await screen.findByRole('menuitem', { name: 'Columns' }));
+            const dialog = await screen.findByRole('dialog', { name: 'Columns' });
+            await user.click(within(dialog).getByRole('checkbox', { name: 'Status' }));
+            expect(router.getSearch()).toContain('columns=title%2Cpublished_on');
+        } finally {
+            rect.mockRestore();
+        }
     });
 });
 

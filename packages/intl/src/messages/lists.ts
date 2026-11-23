@@ -76,6 +76,10 @@ export const listsMessages = {
         id: 'panneau.lists.sortDescending',
         defaultMessage: '{column}, descending',
     }),
+    sortedBy: defineMessage<{ sort: string }>({
+        id: 'panneau.lists.sortedBy',
+        defaultMessage: 'Sort by: {sort}',
+    }),
     layout: defineMessage({ id: 'panneau.lists.layout', defaultMessage: 'Layout' }),
     layoutTable: defineMessage({ id: 'panneau.lists.layoutTable', defaultMessage: 'Table' }),
     layoutCards: defineMessage({ id: 'panneau.lists.layoutCards', defaultMessage: 'Cards' }),
@@ -101,6 +105,7 @@ export const listsMessages = {
             'The calendar shows the first {shown, plural, one {# item} other {# items}}. Filter the list to see the others.',
     }),
     columns: defineMessage({ id: 'panneau.lists.columns', defaultMessage: 'Columns' }),
+    moreOptions: defineMessage({ id: 'panneau.lists.moreOptions', defaultMessage: 'More options' }),
     moveColumnUp: defineMessage<{ column: string }>({
         id: 'panneau.lists.moveColumnUp',
         defaultMessage: 'Move {column} up',

@@ -28,6 +28,7 @@ export const listsFr: Record<string, string> = {
     'panneau.lists.defaultSort': 'Par défaut',
     'panneau.lists.sortAscending': '{column}, croissant',
     'panneau.lists.sortDescending': '{column}, décroissant',
+    'panneau.lists.sortedBy': 'Trier par : {sort}',
     'panneau.lists.layout': 'Affichage',
     'panneau.lists.layoutTable': 'Tableau',
     'panneau.lists.layoutCards': 'Cartes',
@@ -41,6 +42,7 @@ export const listsFr: Record<string, string> = {
     'panneau.lists.calendarMoreUnknown':
         'Le calendrier montre {shown, plural, one {le premier élément} other {les # premiers éléments}}. Filtrez la liste pour voir les autres.',
     'panneau.lists.columns': 'Colonnes',
+    'panneau.lists.moreOptions': 'Plus d’options',
     'panneau.lists.moveColumnUp': 'Monter {column}',
     'panneau.lists.moveColumnDown': 'Descendre {column}',
     'panneau.lists.resetColumns': 'Colonnes par défaut',

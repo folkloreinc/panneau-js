@@ -23,16 +23,38 @@
     width: 6rem;
 }
 
-.sort {
-    width: 14rem;
-    max-width: 100%;
+/* A button of the toolbar with only its icon, as an icon button is (#424). Doubled: more specific
+ * than the button's own padding, whatever the CSS order. */
+.iconOnly.iconOnly {
+    width: var(--panneau-control-height);
+    padding: 0;
+}
+
+/* The column of the sort, cut when it is long: the button stays in the toolbar's row. */
+.sortValue {
+    max-width: 10rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* The controls of a list's toolbar: those that come and go with the layout or the selection come
+ * first, so that the layout switch, at the end, stays where it is (#412). */
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: flex-end;
+    gap: var(--panneau-space-2);
+}
+
+/* On a phone, one row, from the start: the layout switch first, then what comes and goes. */
+.controls[data-narrow] {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
 }
 
 @container panneau-list (max-width: 40rem) {
-    .sort {
-        width: 100%;
-    }
-
     /* The search takes the row, next to the button of the filters. */
     .search {
         flex: 1 1 10rem;
