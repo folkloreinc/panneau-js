@@ -1,10 +1,19 @@
+import { Suspense, lazy } from 'react';
+
 import type { Option } from '@panneau/protocol';
 import { Checkbox, Fieldset, type OptionValue, RadioGroup, Select } from '@panneau/ui';
 
 import { getFieldProps, getSetting, isBoolean, isString } from '../shared/entry';
 import type { FieldEntryProps, FieldProps } from '../shared/types';
-import { SELECT_SEARCH_THRESHOLD, SearchableSelect } from './SearchableSelect';
 import styles from './SelectField.module.css';
+
+/** Selects with more options than this are searchable, unless their field says otherwise. */
+const SELECT_SEARCH_THRESHOLD = 10;
+
+// Loaded with the first searchable select: the first page of most apps has none.
+const SearchableSelect = lazy(async () => ({
+    default: (await import('./SearchableSelect')).SearchableSelect,
+}));
 
 export type { OptionValue };
 
@@ -158,26 +167,7 @@ export function SelectField(props: SelectFieldProps) {
             />
         );
     }
-    if (props.search ?? options.length > SELECT_SEARCH_THRESHOLD) {
-        return (
-            <SearchableSelect
-                {...chrome}
-                options={options}
-                value={props.value ?? null}
-                onChange={(value) => props.onChange?.(value)}
-                required={required}
-                disabled={disabled}
-                readOnly={readOnly}
-                placeholder={placeholder}
-                name={name}
-                id={id}
-                autoFocus={autoFocus}
-                {...(onBlur !== undefined ? { onBlur } : {})}
-                controlClassName={controlClassName}
-            />
-        );
-    }
-    return (
+    const dropdown = (
         <Select
             {...chrome}
             options={options}
@@ -193,6 +183,29 @@ export function SelectField(props: SelectFieldProps) {
             {...(controlClassName !== undefined ? { triggerClassName: controlClassName } : {})}
         />
     );
+    if (props.search ?? options.length > SELECT_SEARCH_THRESHOLD) {
+        // The dropdown looks the same closed, until the combo box loads
+        return (
+            <Suspense fallback={dropdown}>
+                <SearchableSelect
+                    {...chrome}
+                    options={options}
+                    value={props.value ?? null}
+                    onChange={(value) => props.onChange?.(value)}
+                    required={required}
+                    disabled={disabled}
+                    readOnly={readOnly}
+                    placeholder={placeholder}
+                    name={name}
+                    id={id}
+                    autoFocus={autoFocus}
+                    {...(onBlur !== undefined ? { onBlur } : {})}
+                    controlClassName={controlClassName}
+                />
+            </Suspense>
+        );
+    }
+    return dropdown;
 }
 
 function isOptionValue(value: unknown): value is OptionValue {

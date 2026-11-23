@@ -104,7 +104,7 @@ export const Searchable: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         const body = within(canvasElement.ownerDocument.body);
-        const input = canvas.getByRole('combobox', { name: 'Language' });
+        const input = await canvas.findByRole('combobox', { name: 'Language' });
         const dropdown = canvas.getByRole('button', { name: /Format/ });
         // Closed, it reads as the dropdown next to it
         await expect(input).toHaveAttribute('placeholder', 'Select…');

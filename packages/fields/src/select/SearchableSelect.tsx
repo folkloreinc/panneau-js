@@ -7,9 +7,6 @@ import { ComboBox, type OptionValue, usePanneauIntl } from '@panneau/ui';
 import { messages } from '../shared/messages';
 import type { FieldProps } from '../shared/types';
 
-/** Selects with more options than this are searchable, unless their field says otherwise. */
-export const SELECT_SEARCH_THRESHOLD = 10;
-
 export interface SearchableSelectProps extends Omit<FieldProps<never>, 'value' | 'onChange'> {
     options: readonly Option[];
     value: OptionValue | null;

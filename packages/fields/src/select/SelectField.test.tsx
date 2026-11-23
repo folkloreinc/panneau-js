@@ -128,7 +128,7 @@ describe('SelectField', () => {
                     onChange={onChange}
                 />,
             );
-            const input = screen.getByRole('combobox', { name: 'Month' });
+            const input = await screen.findByRole('combobox', { name: 'Month' });
             expect(input).toHaveAttribute('placeholder', 'Select…');
             await userEvent.type(input, 'ju');
             expect(screen.getAllByRole('option').map((option) => option.textContent)).toEqual([
@@ -151,14 +151,14 @@ describe('SelectField', () => {
                     errors={['Pick a month.']}
                 />,
             );
-            const input = screen.getByRole('combobox', { name: 'Month' });
+            const input = await screen.findByRole('combobox', { name: 'Month' });
             expect(input).toHaveValue('March');
             expect(input.closest('[data-invalid]')).not.toBeNull();
             await userEvent.clear(input);
             expect(onChange).toHaveBeenLastCalledWith(null);
         });
 
-        it('follows the search setting of the field', () => {
+        it('follows the search setting of the field', async () => {
             renderField(
                 <>
                     <DefinitionField
@@ -187,9 +187,9 @@ describe('SelectField', () => {
                     />
                 </>,
             );
+            expect(await screen.findByRole('combobox', { name: 'Status' })).toHaveValue('Draft');
             expect(screen.getByRole('button', { name: /Month/ })).toBeInTheDocument();
             expect(screen.queryByRole('combobox', { name: 'Month' })).toBeNull();
-            expect(screen.getByRole('combobox', { name: 'Status' })).toHaveValue('Draft');
         });
     });
 });
