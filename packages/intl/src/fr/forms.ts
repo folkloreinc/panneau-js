@@ -19,6 +19,10 @@ export const formsFr: Record<string, string> = {
     'panneau.forms.conflictChanges': 'Valeurs différentes',
     'panneau.forms.conflictUnknown':
         'La version actuelle n’a pas été envoyée : chargez-la pour voir ce qui a changé.',
+    'panneau.forms.newerTitle': 'Une version plus récente de cet élément a été enregistrée',
+    'panneau.forms.newerMessage':
+        'Vos modifications sont conservées. Comparez-les avec elle avant d’enregistrer.',
+    'panneau.forms.reviewNewer': 'Comparer',
     'panneau.forms.yours': 'La vôtre',
     'panneau.forms.current': 'Actuelle',
     'panneau.forms.empty': '(vide)',

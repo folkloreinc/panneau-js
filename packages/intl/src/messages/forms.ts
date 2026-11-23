@@ -53,6 +53,18 @@ export const formsMessages = {
         id: 'panneau.forms.conflictUnknown',
         defaultMessage: 'The current version wasn’t sent: load it to see what changed.',
     }),
+    newerTitle: defineMessage({
+        id: 'panneau.forms.newerTitle',
+        defaultMessage: 'A newer version of this item was saved',
+    }),
+    newerMessage: defineMessage({
+        id: 'panneau.forms.newerMessage',
+        defaultMessage: 'Your changes are kept. Compare them with it before you save.',
+    }),
+    reviewNewer: defineMessage({
+        id: 'panneau.forms.reviewNewer',
+        defaultMessage: 'Compare',
+    }),
     yours: defineMessage({ id: 'panneau.forms.yours', defaultMessage: 'Yours' }),
     current: defineMessage({ id: 'panneau.forms.current', defaultMessage: 'Current' }),
     empty: defineMessage({ id: 'panneau.forms.empty', defaultMessage: '(empty)' }),

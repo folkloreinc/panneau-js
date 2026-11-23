@@ -16,6 +16,11 @@ function renderApp(
     plugins: PanneauPlugin[] = [],
     // Changes the items of the backend before the app fetches them
     prepare?: (backend: ReturnType<typeof createMockBackend>) => void,
+    options: {
+        queryClient?: QueryClient;
+        /** Wraps the backend's `fetch`, to hold or watch requests. */
+        fetch?: (fetch: typeof window.fetch) => typeof window.fetch;
+    } = {},
 ) {
     const definition = createDefinition({
         menus: { main: [{ type: 'resources' }, { type: 'link', label: 'Site', url: '/' }] },
@@ -39,8 +44,14 @@ function renderApp(
     render(
         <Panneau
             config={result.data}
-            adapter={createRestAdapter({ baseUrl: '/panneau/api', fetch: backend.fetch })}
-            queryClient={new QueryClient({ defaultOptions: { queries: { retry: false } } })}
+            adapter={createRestAdapter({
+                baseUrl: '/panneau/api',
+                fetch: options.fetch?.(backend.fetch) ?? backend.fetch,
+            })}
+            queryClient={
+                options.queryClient ??
+                new QueryClient({ defaultOptions: { queries: { retry: false } } })
+            }
             iconLoader={null}
             plugins={plugins}
             onUnauthorized={vi.fn()}
@@ -243,6 +254,102 @@ describe('the app shell', () => {
         expect(screen.queryByRole('alertdialog')).toBeNull();
         await user.type(screen.getByRole('textbox', { name: /name/i }), '!');
         expect(within(form).getByRole('status')).toHaveTextContent('Unsaved changes');
+    });
+
+    describe('when the item of a form gets a new version', () => {
+        /** Someone else saves the author, then the app fetches it again (focus, an action). */
+        async function saveElsewhere(
+            backend: ReturnType<typeof createMockBackend>,
+            queryClient: QueryClient,
+        ) {
+            await backend.fetch('/panneau/api/resources/authors/1', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: 'Ada King' }),
+            });
+            await queryClient.invalidateQueries();
+        }
+
+        it('takes it in a form without unsaved changes, which stays where it is', async () => {
+            const user = userEvent.setup();
+            window.history.replaceState(null, '', '/panneau/resources/authors/1/edit');
+            const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+            const backend = renderApp({}, [], undefined, { queryClient });
+            const field = await screen.findByRole('textbox', { name: /name/i });
+            expect(field).toHaveValue('Ada');
+            await user.click(field);
+            await saveElsewhere(backend, queryClient);
+            await waitFor(() => expect(field).toHaveValue('Ada King'));
+            // The same form: the field keeps the focus
+            expect(field).toHaveFocus();
+            expect(screen.queryByText('A newer version of this item was saved')).toBeNull();
+        });
+
+        it('keeps unsaved changes, and offers to compare them with it', async () => {
+            const user = userEvent.setup();
+            window.history.replaceState(null, '', '/panneau/resources/authors/1/edit');
+            const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+            const backend = renderApp({}, [], undefined, { queryClient });
+            const field = await screen.findByRole('textbox', { name: /name/i });
+            await user.type(field, ' Lovelace');
+            await saveElsewhere(backend, queryClient);
+
+            const notice = (
+                await screen.findByText('A newer version of this item was saved')
+            ).closest<HTMLElement>('[role="status"]');
+            if (notice === null) {
+                throw new Error('The notice is not a status');
+            }
+            const form = screen.getByRole('form');
+            expect(screen.getByRole('textbox', { name: /name/i })).toHaveValue('Ada Lovelace');
+            expect(within(form).getByText('Unsaved changes')).toBeInTheDocument();
+
+            await user.click(within(notice).getByRole('button', { name: 'Compare' }));
+            const dialog = await screen.findByRole('alertdialog', {
+                name: 'Someone else saved this item',
+            });
+            expect(dialog).toHaveTextContent('Ada Lovelace');
+            expect(dialog).toHaveTextContent('Ada King');
+            await user.click(
+                within(dialog).getByRole('button', { name: 'Load the current version' }),
+            );
+            await waitFor(() => expect(screen.queryByRole('alertdialog')).toBeNull());
+            expect(screen.getByRole('textbox', { name: /name/i })).toHaveValue('Ada King');
+            expect(screen.queryByText('A newer version of this item was saved')).toBeNull();
+        });
+
+        it('keeps what is typed while it saves', async () => {
+            const user = userEvent.setup();
+            window.history.replaceState(null, '', '/panneau/resources/authors/1/edit');
+            // The update waits until the test lets it through
+            let release: () => void = () => undefined;
+            const held = new Promise<void>((resolve) => (release = resolve));
+            const backend = renderApp({}, [], undefined, {
+                fetch: (fetch) => async (input, init) => {
+                    if (init?.method === 'PATCH') {
+                        await held;
+                    }
+                    return fetch(input, init);
+                },
+            });
+            const field = await screen.findByRole('textbox', { name: /name/i });
+            await user.type(field, ' Lovelace');
+            await user.click(screen.getByRole('button', { name: 'Save' }));
+            await user.type(screen.getByRole('textbox', { name: /name/i }), '!');
+            release();
+
+            await waitFor(() => expect(backend.items('authors')[0]?.name).toBe('Ada Lovelace'));
+            const form = screen.getByRole('form');
+            await waitFor(() =>
+                expect(within(form).queryByRole('button', { name: /saving/i })).toBeNull(),
+            );
+            expect(screen.getByRole('textbox', { name: /name/i })).toHaveValue('Ada Lovelace!');
+            expect(within(form).getByText('Unsaved changes')).toBeInTheDocument();
+            // What was saved is clean
+            await user.type(screen.getByRole('textbox', { name: /name/i }), '{Backspace}');
+            await waitFor(() => expect(within(form).queryByText('Unsaved changes')).toBeNull());
+            expect(screen.queryByText('A newer version of this item was saved')).toBeNull();
+        });
     });
 
     it('shows a page for paths that match nothing', () => {
