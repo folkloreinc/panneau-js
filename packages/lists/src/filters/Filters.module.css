@@ -5,9 +5,75 @@
     gap: var(--panneau-space-3);
 }
 
+/* The filters shown in the toolbar, and the button of the others. A narrow list shows the
+ * button of every filter instead (`.compact`). */
+.bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--panneau-space-3);
+    min-width: 0;
+}
+
+.compact {
+    display: none;
+}
+
+.more {
+    min-width: 14rem;
+    max-width: min(24rem, 90vw);
+}
+
+.count {
+    margin-inline-start: var(--panneau-space-1);
+}
+
+.item {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--panneau-space-1);
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* A filter with a value: its input in the tones of what is selected, which a theme can change.
+ * Its clear button says it too, without color. */
+.active {
+    --panneau-input-border-color: var(--panneau-selected-bg, var(--panneau-color-accent));
+    --panneau-input-bg: var(--panneau-selected-subtle, var(--panneau-color-accent-subtle));
+}
+
+.clear {
+    flex: none;
+}
+
 .control {
     width: 12rem;
     max-width: 100%;
+}
+
+/* One control under the other: in the popover of "More filters", and in the sheet. */
+.stacked {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.stacked .item {
+    width: 100%;
+}
+
+.stacked .item > :first-child {
+    flex: 1 1 auto;
+}
+
+.stacked .control,
+.stacked .range {
+    width: 100%;
+}
+
+.stacked .rangeInputs > :not(.rangeDash) {
+    flex: 1 1 0;
+    width: auto;
 }
 
 /* On the line of the controls, below the labels of the other filters. The switch's own wrapper
@@ -71,15 +137,14 @@
     color: var(--panneau-color-text-muted);
 }
 
+/* A narrow list (a phone): every filter is behind one button, so the first items show on the
+ * first screen. */
 @container panneau-list (max-width: 40rem) {
-    .filters,
-    .control,
-    .range {
-        width: 100%;
+    .bar {
+        display: none;
     }
 
-    .rangeInputs > :not(.rangeDash) {
-        flex: 1 1 0;
-        width: auto;
+    .compact {
+        display: block;
     }
 }

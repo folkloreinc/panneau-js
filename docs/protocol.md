@@ -62,11 +62,15 @@ The protocol is the only contract between a Panneau frontend and its backend. It
             { "field": "published_at", "display": "date" },
             { "field": "author", "hidden": true }, // shown when the user chooses it
         ],
-        "filters": [ { "id": "status", "type": "select", "options": [...] } ],
+        "filters": [
+            { "id": "status", "type": "select", "options": [...], "primary": true }, // shown first
+            { "id": "author", "type": "relation", "resource": "authors" }, // behind "More filters"
+        ],
         "sorts": [ "title", "-published_at" ],
         "defaultSort": "-published_at",
         "layouts": [ "table", "cards" ],
         "perPage": 20,
+        "perPageOptions": [ 10, 20, 50, 100 ], // the page sizes the user chooses from, the default
         "inlineEdit": [ "title", "status" ],
         "aggregates": { "sum": [ "price" ], "groupBy": [ "status" ], "dates": [ "published_at" ] }
     },
@@ -81,6 +85,8 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 }
 ```
 
+- **The filters of a list** show first in its toolbar when they have `"primary": true`; the others are behind a "More filters" button, with the count of those that are active. Without any filter that sets it, the first 3 show first, and `"primary": false` always puts a filter behind the button. The setting is on the filter, as `hidden` is on a column: it reads where the filter is declared, and moving filters around doesn't change which ones show. A filter with a value always shows it, as a chip under the toolbar, and in a narrow list (a phone), every filter is behind one "Filters" button.
+- **The page sizes of a list**, `perPageOptions`, are those the user chooses from, with `perPage`: 10, 20, 50 and 100 by default, at most 100 each. A page size the browser remembers for the list ([0042](decisions/0042-list-view-columns-and-remembered-view.md)) that the list no longer offers falls back to `perPage`; a link with `perPage` still opens that page size.
 - **`types`** ([0077](decisions/0077-resource-types.md)): the types of the items, each with fields of its own (`ResourceType`: `id`, `label`, `description`, `icon`, `fields`, `abilities`). Every item has a `type` among their ids, set when it is created. Its fields are those of the resource, then those of its type, in forms, details and validation; type fields are named apart from the resource's, and none is named `type`. `form.layout` can name the fields of every type: each form leaves out those of the other types.
     - `abilities.create: false` keeps a type out of the choices when creating, and the backend refuses to create one (a singleton such as the home page).
     - To show and filter by type, the backend declares a `select` field `type`, with the types as its options and `notInForm: true`, and a `select` filter `type`.

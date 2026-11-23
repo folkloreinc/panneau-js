@@ -47,6 +47,10 @@ export const Filter = z.looseObject({
     resource: z.string().optional(),
     multiple: z.boolean().optional(),
     default: z.unknown().optional(),
+    primary: z.boolean().optional().meta({
+        description:
+            'Shown first, in the toolbar of the list. The others are behind "More filters". Without any filter that sets it, the first 3 are shown first. `false` always puts a filter behind "More filters". A filter with a value always shows it, as a chip.',
+    }),
 });
 
 export const ListCalendar = z.looseObject({
@@ -107,7 +111,10 @@ export const ListDefinition = z.looseObject({
         .max(MAX_PER_PAGE)
         .optional()
         .meta({ description: 'Items per page. At most 100: backends cap `perPage` there.' }),
-    perPageOptions: z.array(z.number().int().positive().max(MAX_PER_PAGE)).optional(),
+    perPageOptions: z.array(z.number().int().positive().max(MAX_PER_PAGE)).optional().meta({
+        description:
+            'The page sizes the user chooses from, with `perPage`. Defaults to 10, 20, 50 and 100. A page size the browser remembers that is no longer offered falls back to `perPage`.',
+    }),
     pagination: z.enum(['pages', 'cursor']).optional().meta({
         description:
             "`pages` (the default): numbered pages, with a total. `cursor`: the list follows `nextCursor` of each page with the `cursor` parameter, without page numbers, for large lists that the backend can't count (decision 0039).",

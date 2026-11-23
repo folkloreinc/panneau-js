@@ -1265,7 +1265,10 @@
                 "multiple": {
                     "type": "boolean"
                 },
-                "default": {}
+                "default": {},
+                "primary": {
+                    "type": "boolean"
+                }
             },
             "required": [
                 "id",

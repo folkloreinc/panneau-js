@@ -1461,6 +1461,7 @@ export const Definition: z.ZodObject<{
                 resource: z.ZodOptional<z.ZodString>;
                 multiple: z.ZodOptional<z.ZodBoolean>;
                 default: z.ZodOptional<z.ZodUnknown>;
+                primary: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>>>;
             sorts: z.ZodOptional<z.ZodArray<z.ZodString>>;
             defaultSort: z.ZodOptional<z.ZodString>;
@@ -3121,6 +3122,7 @@ export const Filter: z.ZodObject<{
     resource: z.ZodOptional<z.ZodString>;
     multiple: z.ZodOptional<z.ZodBoolean>;
     default: z.ZodOptional<z.ZodUnknown>;
+    primary: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -3559,6 +3561,7 @@ export const ListDefinition: z.ZodObject<{
         resource: z.ZodOptional<z.ZodString>;
         multiple: z.ZodOptional<z.ZodBoolean>;
         default: z.ZodOptional<z.ZodUnknown>;
+        primary: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>>>;
     sorts: z.ZodOptional<z.ZodArray<z.ZodString>>;
     defaultSort: z.ZodOptional<z.ZodString>;
@@ -4703,6 +4706,7 @@ export const namedSchemas: {
         resource: z.ZodOptional<z.ZodString>;
         multiple: z.ZodOptional<z.ZodBoolean>;
         default: z.ZodOptional<z.ZodUnknown>;
+        primary: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>;
     ListCalendar: z.ZodObject<{
         field: z.ZodString;
@@ -4744,6 +4748,7 @@ export const namedSchemas: {
             resource: z.ZodOptional<z.ZodString>;
             multiple: z.ZodOptional<z.ZodBoolean>;
             default: z.ZodOptional<z.ZodUnknown>;
+            primary: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>>>;
         sorts: z.ZodOptional<z.ZodArray<z.ZodString>>;
         defaultSort: z.ZodOptional<z.ZodString>;
@@ -5601,6 +5606,7 @@ export const namedSchemas: {
                 resource: z.ZodOptional<z.ZodString>;
                 multiple: z.ZodOptional<z.ZodBoolean>;
                 default: z.ZodOptional<z.ZodUnknown>;
+                primary: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>>>;
             sorts: z.ZodOptional<z.ZodArray<z.ZodString>>;
             defaultSort: z.ZodOptional<z.ZodString>;
@@ -7723,6 +7729,7 @@ export const namedSchemas: {
                     resource: z.ZodOptional<z.ZodString>;
                     multiple: z.ZodOptional<z.ZodBoolean>;
                     default: z.ZodOptional<z.ZodUnknown>;
+                    primary: z.ZodOptional<z.ZodBoolean>;
                 }, z.core.$loose>>>;
                 sorts: z.ZodOptional<z.ZodArray<z.ZodString>>;
                 defaultSort: z.ZodOptional<z.ZodString>;
@@ -12512,6 +12519,7 @@ export const Resource: z.ZodObject<{
             resource: z.ZodOptional<z.ZodString>;
             multiple: z.ZodOptional<z.ZodBoolean>;
             default: z.ZodOptional<z.ZodUnknown>;
+            primary: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>>>;
         sorts: z.ZodOptional<z.ZodArray<z.ZodString>>;
         defaultSort: z.ZodOptional<z.ZodString>;

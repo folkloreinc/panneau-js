@@ -32,7 +32,8 @@ import { type ListActions, groupListActions, hasScope, isAllowedOn } from './act
 import type { ActionIcons } from './actions/icons';
 import { getShownColumns } from './columns';
 import { cx } from './cx';
-import { FilterChips, FilterControls, useFilterLabels } from './filters/Filters';
+import { FilterBar } from './filters/FilterBar';
+import { FilterChips, useFilterLabels } from './filters/Filters';
 import { moveFocusFromLeaving } from './focus';
 import { getImageUrl } from './images';
 import { InlineCell } from './inline/InlineCell';
@@ -156,7 +157,11 @@ export interface ListViewProps {
     /** An error while loading: an alert with a retry replaces the items. */
     error?: Error | null;
     onRetry?: () => void;
-    /** Filter controls, with chips for the active filters. */
+    /**
+     * Filter controls, with chips for the active filters. Those with `primary` show first (or the
+     * first 3), the others behind "More filters"; a narrow list shows them all behind one
+     * "Filters" button.
+     */
     filters?: readonly Filter[];
     /** Fields of the items, for the labels and options of filters that are not columns. */
     fields?: readonly Field[];
@@ -730,7 +735,7 @@ export function ListView({
                             />
                         ) : null}
                         {filters.length > 0 ? (
-                            <FilterControls
+                            <FilterBar
                                 filters={filters}
                                 values={filterValues}
                                 onChange={(id, value) => list.setFilter(id, value)}

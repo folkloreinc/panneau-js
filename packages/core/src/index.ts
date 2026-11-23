@@ -29,6 +29,7 @@ export {
 export {
     DEFAULT_CALENDAR_PER_PAGE,
     DEFAULT_PER_PAGE,
+    DEFAULT_PER_PAGE_OPTIONS,
     type ResolvedCalendar,
     type ResolvedColumn,
     type ResolvedList,

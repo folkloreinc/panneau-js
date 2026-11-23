@@ -14,6 +14,7 @@ import {
     Item,
     LinkSettings,
     LinkValue,
+    ListDefinition,
     ListResponse,
     MediaTransform,
     Problem,
@@ -78,6 +79,17 @@ describe('Definition', () => {
         expect(Filter.safeParse({ id: 'ids', type: 'text' }).success).toBe(false);
         expect(Filter.safeParse({ id: 'idsx', type: 'text' }).success).toBe(true);
         expect(Filter.safeParse({ id: 'status', type: 'select' }).success).toBe(true);
+    });
+
+    it('says which filters show first, and the page sizes of a list', () => {
+        expect(Filter.safeParse({ id: 'status', type: 'select', primary: true }).success).toBe(
+            true,
+        );
+        expect(Filter.safeParse({ id: 'status', type: 'select', primary: 'yes' }).success).toBe(
+            false,
+        );
+        expect(ListDefinition.safeParse({ perPageOptions: [25, 50] }).success).toBe(true);
+        expect(ListDefinition.safeParse({ perPageOptions: [0] }).success).toBe(false);
     });
 
     it('refuses duplicate resource ids', () => {
