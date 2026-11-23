@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { UserMinus } from 'lucide-react';
+import type { CSSProperties } from 'react';
+import { RouterProvider } from 'react-aria-components';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { createList, createMemoryRouter } from '@panneau/core';
@@ -14,6 +16,68 @@ import type { ListColumn, ListItem } from './types';
 async function settledBackground(element: Element): Promise<string> {
     await Promise.all(element.getAnimations().map((animation) => animation.finished));
     return getComputedStyle(element).backgroundColor;
+}
+
+/** The channels of a computed color, `rgb()` or `color(srgb …)`, from 0 to 1. */
+function parseColor(value: string): [number, number, number, number] {
+    const rgb = /rgba?\(([\d.]+),? ([\d.]+),? ([\d.]+)(?:,? \/? ?([\d.]+))?\)/.exec(value);
+    if (rgb !== null) {
+        return [
+            Number(rgb[1]) / 255,
+            Number(rgb[2]) / 255,
+            Number(rgb[3]) / 255,
+            rgb[4] !== undefined ? Number(rgb[4]) : 1,
+        ];
+    }
+    const srgb = /color\(srgb ([\d.e-]+) ([\d.e-]+) ([\d.e-]+)(?: \/ ([\d.]+))?\)/.exec(value);
+    if (srgb !== null) {
+        return [
+            Number(srgb[1]),
+            Number(srgb[2]),
+            Number(srgb[3]),
+            srgb[4] !== undefined ? Number(srgb[4]) : 1,
+        ];
+    }
+    throw new Error(`Unknown color: ${value}`);
+}
+
+/** The relative luminance of a color over an opaque one. */
+function luminanceOver(color: string, under: string): number {
+    const [r, g, b, a] = parseColor(color);
+    const [ur, ug, ub] = parseColor(under);
+    const linear = (channel: number) =>
+        channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+    const [lr, lg, lb] = [r * a + ur * (1 - a), g * a + ug * (1 - a), b * a + ub * (1 - a)].map(
+        linear,
+    ) as [number, number, number];
+    return 0.2126 * lr + 0.7152 * lg + 0.0722 * lb;
+}
+
+/** The contrast of a color with the opaque one under it. */
+function contrastOver(color: string, under: string): number {
+    const [top, bottom] = [luminanceOver(color, under), luminanceOver(under, under)];
+    return (Math.max(top, bottom) + 0.05) / (Math.min(top, bottom) + 0.05);
+}
+
+/** The value of a color token, computed where `element` is. */
+function tokenColor(element: Element, token: string): string {
+    const probe = element.ownerDocument.createElement('span');
+    probe.style.backgroundColor = `var(${token})`;
+    element.append(probe);
+    const color = getComputedStyle(probe).backgroundColor;
+    probe.remove();
+    return color;
+}
+
+/** A length token in pixels, computed where `element` is. */
+function tokenPixels(element: Element, token: string): number {
+    const probe = element.ownerDocument.createElement('span');
+    probe.style.position = 'absolute';
+    probe.style.height = `var(${token})`;
+    element.append(probe);
+    const height = probe.getBoundingClientRect().height;
+    probe.remove();
+    return height;
 }
 
 const roleField: Field = {
@@ -945,6 +1009,195 @@ export const Empty: Story = {
         items: [],
         emptyMessage: 'Nobody has joined the workspace yet.',
         toolbar: <Button tone="accent">Invite</Button>,
+    },
+};
+
+/**
+ * A long list under a bar that sticks to the top of the window, as the app's on a small screen
+ * (`--panneau-frame-top`): the selection bar sticks under it, and the header of the table under the
+ * selection bar, while the page scrolls (#443).
+ */
+export const StickyHeaderAndSelection: Story = {
+    args: {
+        perPage: 25,
+        perPageOptions: [25],
+        actions: { available: actions, onRun: fn() },
+    },
+    decorators: [
+        (Story) => (
+            <div style={{ '--panneau-frame-top': '3rem' } as CSSProperties}>
+                <div
+                    data-testid="frame-top"
+                    style={{
+                        position: 'sticky',
+                        top: 0,
+                        zIndex: 1,
+                        height: '3rem',
+                        background: 'var(--panneau-color-surface-sunken)',
+                    }}
+                />
+                <Story />
+                <div style={{ height: '50vh' }} />
+            </div>
+        ),
+    ],
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const scroller = canvasElement.ownerDocument.scrollingElement as HTMLElement;
+        const table = canvas.getByRole('table', { name: 'Members' });
+        const header = within(table).getAllByRole('columnheader')[0] as HTMLElement;
+        await expect(getComputedStyle(header).position).toBe('sticky');
+        const frameTop = tokenPixels(table, '--panneau-frame-top');
+        await expect(frameTop).toBeGreaterThan(0);
+
+        // Scrolled past the top of the table, its header sticks under the frame
+        scroller.scrollTop += table.getBoundingClientRect().top + 400;
+        await waitFor(() =>
+            expect(Math.round(header.getBoundingClientRect().top)).toBe(Math.round(frameTop)),
+        );
+        scroller.scrollTop = 0;
+
+        // With a selection, the bar sticks under the frame, and the header under the bar
+        await userEvent.click(canvas.getByRole('button', { name: 'Select' }));
+        await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Grace Hopper' }));
+        const bar = canvas.getByText('1 item selected').parentElement as HTMLElement;
+        scroller.scrollTop += table.getBoundingClientRect().top + 400;
+        await waitFor(() =>
+            expect(Math.round(bar.getBoundingClientRect().top)).toBe(Math.round(frameTop)),
+        );
+        await waitFor(() =>
+            expect(Math.round(header.getBoundingClientRect().top)).toBe(
+                Math.round(bar.getBoundingClientRect().bottom),
+            ),
+        );
+        // Its actions are still at hand
+        await expect(canvas.getByRole('button', { name: 'Remove' })).toBeVisible();
+        // Nothing of the list goes over the frame
+        const frame = canvas.getByTestId('frame-top');
+        const { left, bottom } = frame.getBoundingClientRect();
+        await expect(canvasElement.ownerDocument.elementFromPoint(left + 10, bottom - 2)).toBe(
+            frame,
+        );
+        scroller.scrollTop = 0;
+    },
+};
+
+/** On a phone, rows are cards, without a header: the selection bar still sticks (#443). */
+export const StickySelectionOnAPhone: Story = {
+    ...StickyHeaderAndSelection,
+    decorators: [
+        (Story) => (
+            <div style={{ maxWidth: 360 }}>
+                <Story />
+                <div style={{ height: '50vh' }} />
+            </div>
+        ),
+    ],
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const scroller = canvasElement.ownerDocument.scrollingElement as HTMLElement;
+        const table = canvas.getByRole('table', { name: 'Members' });
+        await userEvent.click(canvas.getByRole('button', { name: 'Select' }));
+        await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Grace Hopper' }));
+        const bar = canvas.getByText('1 item selected').parentElement as HTMLElement;
+        scroller.scrollTop += table.getBoundingClientRect().top + 600;
+        const frameTop = tokenPixels(table, '--panneau-frame-top');
+        await waitFor(() =>
+            expect(Math.round(bar.getBoundingClientRect().top)).toBe(Math.round(frameTop)),
+        );
+        await expect(canvas.getByRole('button', { name: 'Remove' })).toBeVisible();
+        scroller.scrollTop = 0;
+    },
+};
+
+const navigate = fn();
+
+/**
+ * A click on a row, outside its controls, opens its item as its title does; in select mode, it
+ * selects it. The title stays the only link of the row (#443).
+ */
+export const RowsOpenTheirItem: Story = {
+    args: {
+        actions: { available: actions, onRun: fn() },
+        getItemHref: (item: ListItem) => `#/members/${item.id}`,
+    },
+    decorators: [
+        (Story) => (
+            <RouterProvider navigate={navigate}>
+                <Story />
+            </RouterProvider>
+        ),
+    ],
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        navigate.mockClear();
+        const row = canvas.getByRole('link', { name: 'Grace Hopper' }).closest('tr') as HTMLElement;
+        await expect(getComputedStyle(row).cursor).toBe('pointer');
+        // Not a link, nor a tab stop, itself
+        await expect(row).not.toHaveAttribute('role');
+        await expect(row).not.toHaveAttribute('tabindex');
+        await userEvent.click(within(row).getByText('Editor'));
+        await expect(navigate).toHaveBeenCalledTimes(1);
+        await expect(navigate.mock.calls[0]?.[0]).toBe('#/members/2');
+
+        // Its actions stay its own
+        navigate.mockClear();
+        await userEvent.click(
+            await findRowAction(canvasElement, 'Resend the invitation', 'Grace Hopper'),
+        );
+        await expect(navigate).not.toHaveBeenCalled();
+
+        // In select mode, a click selects
+        await userEvent.click(canvas.getByRole('button', { name: 'Select' }));
+        await userEvent.click(within(row).getByText('Editor'));
+        await expect(canvas.getByRole('checkbox', { name: 'Select Grace Hopper' })).toBeChecked();
+        await expect(navigate).not.toHaveBeenCalled();
+    },
+};
+
+/**
+ * A selected row reads darker than a hovered one, in both schemes and every theme (#405): its
+ * color is further from the surface than the hover color.
+ */
+export const SelectedRows: Story = {
+    args: {
+        actions: { available: actions, onRun: fn() },
+        getItemHref: (item: ListItem) => `#/members/${item.id}`,
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await userEvent.click(canvas.getByRole('button', { name: 'Select' }));
+        await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Grace Hopper' }));
+        const table = canvas.getByRole('table', { name: 'Members' });
+        const row = canvas.getByRole('link', { name: 'Grace Hopper' }).closest('tr') as HTMLElement;
+        const surface = tokenColor(table, '--panneau-color-surface');
+        const hover = tokenColor(table, '--panneau-color-hover');
+        const selected = getComputedStyle(row).backgroundColor;
+        await expect(contrastOver(selected, surface)).toBeGreaterThan(
+            contrastOver(hover, surface) * 1.05,
+        );
+    },
+};
+
+/** An empty list with an action to create its first item (#443). */
+export const EmptyWithAnAction: Story = {
+    args: {
+        items: [],
+        emptyMessage: 'Nobody has joined the workspace yet.',
+        emptyAction: { label: 'Invite a member', href: '#/members/invite' },
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByRole('link', { name: 'Invite a member' })).toHaveAttribute(
+            'href',
+            '#/members/invite',
+        );
+        // Emptied by a search, the list offers to clear it instead
+        await userEvent.type(canvas.getByRole('searchbox', { name: 'Search' }), 'grace');
+        await waitFor(() =>
+            expect(canvas.queryByRole('link', { name: 'Invite a member' })).toBeNull(),
+        );
+        await expect(canvas.getAllByRole('button', { name: 'Clear all' })[0]).toBeVisible();
     },
 };
 

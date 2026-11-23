@@ -1646,6 +1646,25 @@ describe('the app shell', () => {
             expect(screen.queryByRole('link', { name: 'New author' })).toBeNull();
         });
 
+        it('offers nothing to create in an empty list of a resource without `create`', async () => {
+            window.history.replaceState(null, '', '/panneau/resources/tags');
+            renderApp({
+                resources: [
+                    {
+                        id: 'tags',
+                        label: { singular: 'tag', plural: 'tags' },
+                        itemTitle: 'name',
+                        fields: [{ name: 'name', type: 'text', label: 'Name' }],
+                        abilities: { viewAny: true, create: false },
+                    },
+                ],
+            });
+            const list = await screen.findByRole('group', { name: 'Tags' });
+            expect(await within(list).findByText('No items yet.')).toBeInTheDocument();
+            expect(within(list).queryByRole('link')).toBeNull();
+            expect(within(list).queryByRole('button')).toBeNull();
+        });
+
         it('shows the forbidden state on a page the user can’t open, and the built-in home for `pages.home`', async () => {
             window.history.replaceState(null, '', '/panneau/pages/stats');
             const stats = definePlugin({
@@ -2216,6 +2235,39 @@ describe('resource types (decision 0077)', () => {
         renderTypedApp(types.slice(0, 2));
         expect(screen.getByRole('heading', { name: 'New Event' })).toBeInTheDocument();
         expect(screen.getByRole('textbox', { name: 'Venue' })).toBeInTheDocument();
+    });
+
+    it('offers to create the first item of an empty list, with the menu of its types (#443)', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/authors');
+        const { unmount } = renderTypedApp();
+        // Authors have no items: the empty list links to the form, as the header of the page does
+        const empty = await screen.findByRole('group', { name: 'Authors' });
+        expect(await within(empty).findByText('No items yet.')).toBeInTheDocument();
+        expect(within(empty).getByRole('link', { name: 'New author' })).toHaveAttribute(
+            'href',
+            '/panneau/resources/authors/create',
+        );
+        unmount();
+
+        // Posts with types, and none yet: the menu of the types
+        window.history.replaceState(null, '', '/panneau/resources/posts');
+        renderApp({
+            resources: [
+                {
+                    id: 'posts',
+                    label: { singular: 'post', plural: 'posts' },
+                    itemTitle: 'title',
+                    fields: [{ name: 'title', type: 'text', label: 'Title' }],
+                    types,
+                },
+            ],
+        });
+        const list = await screen.findByRole('group', { name: 'Posts' });
+        await within(list).findByText('No items yet.');
+        await user.click(within(list).getByRole('button', { name: 'New post' }));
+        const menu = await screen.findByRole('menu', { name: 'New post' });
+        expect(within(menu).getAllByRole('menuitem')).toHaveLength(2);
     });
 
     it('refuses a type that can’t be created, and doesn’t find one that doesn’t exist', async () => {
