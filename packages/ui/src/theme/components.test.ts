@@ -3,7 +3,7 @@ import { join, relative } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { componentTokens } from './components';
-import { SEMANTIC_TOKENS } from './semanticTokens';
+import { FALLBACK_SEMANTIC_TOKENS, SEMANTIC_TOKENS } from './semanticTokens';
 
 const source = join(import.meta.dirname, '..');
 /** Every package: their stylesheets read the tokens of `@panneau/ui` too. */
@@ -132,5 +132,19 @@ describe('component tokens', () => {
                 .map(({ name }) => `${path}: --${name}`),
         );
         expect([...new Set(unknown)]).toEqual([]);
+    });
+});
+
+describe('semantic tokens read with a fallback', () => {
+    it('are always read with the token they default to as the fallback', () => {
+        const problems = files.flatMap(({ path, vars }) =>
+            vars.flatMap(({ name, fallback }) => {
+                const expected = (FALLBACK_SEMANTIC_TOKENS as Record<string, string>)[name];
+                return expected !== undefined && fallback !== expected
+                    ? [`${path}: --${name} falls back to ${fallback}, not ${expected}`]
+                    : [];
+            }),
+        );
+        expect(problems).toEqual([]);
     });
 });
