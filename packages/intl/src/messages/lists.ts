@@ -42,6 +42,16 @@ export const listsMessages = {
     any: defineMessage({ id: 'panneau.lists.any', defaultMessage: 'Any' }),
     from: defineMessage({ id: 'panneau.lists.from', defaultMessage: 'From' }),
     to: defineMessage({ id: 'panneau.lists.to', defaultMessage: 'To' }),
+    moreFilters: defineMessage({ id: 'panneau.lists.moreFilters', defaultMessage: 'More filters' }),
+    activeFilterCount: defineMessage<{ count: number }>({
+        id: 'panneau.lists.activeFilterCount',
+        defaultMessage: '{count, plural, one {# active} other {# active}}',
+    }),
+    clearFilter: defineMessage<{ filter: string }>({
+        id: 'panneau.lists.clearFilter',
+        defaultMessage: 'Clear the filter {filter}',
+    }),
+    filtersDone: defineMessage({ id: 'panneau.lists.filtersDone', defaultMessage: 'Done' }),
     rangeFrom: defineMessage<{ start: string }>({
         id: 'panneau.lists.rangeFrom',
         defaultMessage: 'From {start}',

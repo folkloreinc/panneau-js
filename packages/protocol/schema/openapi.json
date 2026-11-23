@@ -4794,7 +4794,11 @@
                     "multiple": {
                         "type": "boolean"
                     },
-                    "default": {}
+                    "default": {},
+                    "primary": {
+                        "description": "Shown first, in the toolbar of the list. The others are behind \"More filters\". Without any filter that sets it, the first 3 are shown first. `false` always puts a filter behind \"More filters\". A filter with a value always shows it, as a chip.",
+                        "type": "boolean"
+                    }
                 },
                 "required": [
                     "id",
@@ -4904,6 +4908,7 @@
                         "maximum": 100
                     },
                     "perPageOptions": {
+                        "description": "The page sizes the user chooses from, with `perPage`. Defaults to 10, 20, 50 and 100. A page size the browser remembers that is no longer offered falls back to `perPage`.",
                         "type": "array",
                         "items": {
                             "type": "integer",

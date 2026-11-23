@@ -50,6 +50,7 @@ export interface ResolvedList {
     /** List layouts, the first one being the default. */
     layouts: string[];
     perPage: number;
+    /** The page sizes the user chooses from: those of the list, or 10, 20, 50 and 100. */
     perPageOptions: number[];
     /** `pages` (numbered, with a total), or `cursor`: the list follows the cursors of its pages. */
     pagination: 'pages' | 'cursor';
@@ -68,6 +69,9 @@ const DEFAULT_COLUMN_COUNT = 4;
 const NON_COLUMN_TYPES = new Set(['richtext']);
 
 export const DEFAULT_PER_PAGE = 20;
+
+/** The page sizes of a list that doesn't set its own (`perPageOptions`). */
+export const DEFAULT_PER_PAGE_OPTIONS: readonly number[] = Object.freeze([10, 20, 50, 100]);
 
 /** How many items a calendar asks for a month, without its own `perPage`. */
 export const DEFAULT_CALENDAR_PER_PAGE = 100;
@@ -219,7 +223,7 @@ export function resolveList(resource: Resource): ResolvedList {
         search: list.search ?? false,
         layouts: list.layouts ?? ['table'],
         perPage: list.perPage ?? DEFAULT_PER_PAGE,
-        perPageOptions: list.perPageOptions ?? [],
+        perPageOptions: [...(list.perPageOptions ?? DEFAULT_PER_PAGE_OPTIONS)],
         pagination: list.pagination ?? 'pages',
         inlineEdit: (list.inlineEdit ?? []).filter((name) => {
             const field = fields.get(name);

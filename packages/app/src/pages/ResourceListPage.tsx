@@ -361,7 +361,7 @@ export function ResourceListPage({
                         itemTitle={resource.itemTitle}
                         itemImage={itemImage}
                         layouts={{ available: layouts }}
-                        perPageOptions={[10, 20, 50, 100]}
+                        perPageOptions={definitionList.perPageOptions}
                         // Titles open the panel, with the list's query, or the form (`open` of the resource)
                         getItemHref={(item) => getItemPath(resource, item, basePath, search)}
                         // Hovering or focusing a title loads its item, so it opens from the cache

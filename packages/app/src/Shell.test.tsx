@@ -1801,6 +1801,41 @@ describe('the app shell', () => {
         expect(window.location.search).toBe('?sort=-title');
     });
 
+    it('offers the page sizes of a resource, and forgets a remembered one it no longer offers', async () => {
+        const user = userEvent.setup();
+        const pages = (perPageOptions: number[]) => ({
+            resources: [
+                {
+                    id: 'pages',
+                    label: { singular: 'page', plural: 'pages' },
+                    itemTitle: 'title',
+                    fields: [{ name: 'title', type: 'text', label: 'Title' }],
+                    list: { perPage: 1, perPageOptions },
+                },
+            ],
+        });
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        renderApp(pages([1, 25]));
+        const main = within(screen.getByRole('main'));
+        await user.click(await main.findByRole('button', { name: /Per page/ }));
+        // After the empty choice of the select
+        expect(screen.getAllByRole('option').map((option) => option.textContent)).toEqual([
+            'Select…',
+            '1',
+            '25',
+        ]);
+        await user.click(screen.getByRole('option', { name: '25' }));
+        await waitFor(() => expect(window.location.search).toBe('?perPage=25'));
+        cleanup();
+
+        // The resource no longer offers 25: the list opens with its own page size
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        renderApp(pages([1, 50]));
+        expect(await screen.findByText('About us')).toBeInTheDocument();
+        expect(screen.queryByText('Contact')).not.toBeInTheDocument();
+        expect(window.location.search).toBe('');
+    });
+
     it('asks for the fields of the columns of a list only, and for whole items in the panel', async () => {
         const user = userEvent.setup();
         window.history.replaceState(null, '', '/panneau/resources/pages');

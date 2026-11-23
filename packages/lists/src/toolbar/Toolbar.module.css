@@ -29,9 +29,14 @@
 }
 
 @container panneau-list (max-width: 40rem) {
-    .search,
     .sort {
         width: 100%;
+    }
+
+    /* The search takes the row, next to the button of the filters. */
+    .search {
+        flex: 1 1 10rem;
+        width: auto;
     }
 }
 

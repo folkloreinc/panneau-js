@@ -282,6 +282,28 @@ describe('the view of a list', () => {
         expect(views.has('pages')).toBe(false);
     });
 
+    it('falls back to the default page size when the one it remembers is no longer offered', () => {
+        const { store } = memoryStore({
+            pages: { query: { perPage: 50, sort: ['title'] }, view: {} },
+        });
+        const open = (perPageOptions: number[]) =>
+            createList({
+                list: { ...pages, perPageOptions },
+                remember: { key: 'pages', store },
+            }).getState().query;
+        expect(open([10, 50])).toMatchObject({ perPage: 50, sort: ['title'] });
+        expect(open([10, 25])).toMatchObject({ perPage: 10, sort: ['title'] });
+        // A link opens the page size it says
+        const router = createMemoryRouter('perPage=50');
+        expect(
+            createList({
+                list: { ...pages, perPageOptions: [10, 25] },
+                router,
+                remember: { key: 'pages', store },
+            }).getState().query.perPage,
+        ).toBe(50);
+    });
+
     it('remembers the view of a list without a router', () => {
         const { store } = memoryStore({ pages: { query: { perPage: 50 }, view: {} } });
         expect(
