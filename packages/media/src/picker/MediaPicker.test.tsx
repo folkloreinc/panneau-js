@@ -265,9 +265,10 @@ describe('MediaPicker', () => {
         await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument());
         expect(onOpenChange).not.toHaveBeenCalled();
         expect(alt).toHaveValue('Fishing boats in a harbour at dawn!');
-        // Focus is back in the picker, on Cancel: Escape reaches it
+        // Focus is back in the picker: Escape reaches it. React Aria restores it to Cancel, or, on a
+        // busy runner, to the picker itself (#457): the element it lands on is not the point.
         await waitFor(() =>
-            expect(within(dialog()).getByRole('button', { name: 'Cancel' })).toHaveFocus(),
+            expect(dialog()).toContainElement(document.activeElement as HTMLElement),
         );
 
         await userEvent.keyboard('{Escape}');

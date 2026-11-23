@@ -31,17 +31,22 @@ function row(title: string): HTMLElement {
 describe('a row that opens its item', () => {
     it('follows the link of its title when it is clicked outside its controls', async () => {
         const user = userEvent.setup();
+        const onItemIntent = vi.fn();
         const { navigate } = renderRows(
             <ListView
                 list={createList()}
                 columns={columns}
                 items={pages}
                 getItemHref={getItemHref}
+                onItemIntent={onItemIntent}
             />,
         );
         await user.click(within(row('Contact')).getByText('Draft'));
         expect(navigate).toHaveBeenCalledTimes(1);
         expect(navigate.mock.calls[0]?.[0]).toBe('/pages/2');
+        // The title keeps its prefetch on focus, next to the row's click
+        screen.getByRole('link', { name: 'Blog' }).focus();
+        expect(onItemIntent).toHaveBeenCalledWith(pages[2]);
     });
 
     it('stays out of the way of assistive technologies and the keyboard', () => {

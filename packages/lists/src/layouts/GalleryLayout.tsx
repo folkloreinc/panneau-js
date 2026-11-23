@@ -23,6 +23,7 @@ export function GalleryLayout({
     renderValue,
     getItemLabel,
     getItemHref,
+    onItemIntent,
     getItemImage,
     getItemFileKind,
     isCurrent,
@@ -100,7 +101,15 @@ export function GalleryLayout({
                                         </span>
                                     ) : null}
                                     <div className={styles.title} data-item-title>
-                                        <ItemTitle href={href} current={current}>
+                                        <ItemTitle
+                                            href={href}
+                                            onIntent={
+                                                onItemIntent !== undefined
+                                                    ? () => onItemIntent(item)
+                                                    : undefined
+                                            }
+                                            current={current}
+                                        >
                                             {title !== undefined
                                                 ? renderValue(item, title)
                                                 : getItemLabel(item)}

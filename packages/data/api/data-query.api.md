@@ -176,6 +176,9 @@ export function useItemPreview(resource: string, id: string, values?: Values, op
 export function useOptionalDataAdapter(): DataAdapter | null;
 
 // @public
+export function usePrefetchItem(resource: string): (id: string) => void;
+
+// @public
 export function useResourceAggregate(resource: string, request?: AggregateRequest, options?: QueryHookOptions<unknown, ReturnType<typeof queryKeys.aggregate>>): UseQueryResult<unknown>;
 
 // @public
