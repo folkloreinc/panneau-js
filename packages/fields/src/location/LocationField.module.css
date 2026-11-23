@@ -87,3 +87,8 @@
 .remove {
     flex: none;
 }
+
+/* Leaflet's credits: their links are underlined, not told apart by their color alone. */
+.map :global(.leaflet-control-attribution a) {
+    text-decoration: underline;
+}
