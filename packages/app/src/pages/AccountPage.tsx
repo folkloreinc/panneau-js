@@ -2,10 +2,13 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { KeyRound } from 'lucide-react';
 import { useState } from 'react';
 
+import { useForm } from '@panneau/core';
 import { PasswordConfirmationError, ValidationError } from '@panneau/data';
 import { queryKeys, useDataAdapter } from '@panneau/data/query';
+import { type FieldEntry, type FieldEntryProps, getFieldProps } from '@panneau/fields';
+import { FormView } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
-import type { Definition, Passkey, User } from '@panneau/protocol';
+import type { Definition, Field, Passkey, User } from '@panneau/protocol';
 import {
     Alert,
     Button,
@@ -44,56 +47,81 @@ function FormSkeleton({ fields }: { fields: number }) {
     );
 }
 
-/** The name and the email of the user, saved together. */
+/** An input of the profile, which the browser fills in with what it knows of the user. */
+function profileInput(type: 'text' | 'email', autoComplete: string): FieldEntry {
+    return function ProfileInput(props: FieldEntryProps) {
+        const { required, readOnly, disabled, ...rest } = getFieldProps(props);
+        return (
+            <TextInput
+                {...rest}
+                type={type}
+                autoComplete={autoComplete}
+                isRequired={required}
+                isReadOnly={readOnly}
+                isDisabled={disabled}
+                value={typeof props.value === 'string' ? props.value : ''}
+                onChange={(value) => props.onChange(value === '' ? null : value)}
+            />
+        );
+    };
+}
+
+const profileInputs: Readonly<Record<string, FieldEntry>> = {
+    'account-name': profileInput('text', 'name'),
+    'account-email': profileInput('email', 'email'),
+};
+
+/**
+ * The name and the email of the user, saved together. A form of `@panneau/forms`: errors under
+ * their fields, ⌘ Enter to save, and leaving with unsaved changes asks first.
+ */
 function ProfileForm({ user }: { user: User }) {
     const intl = usePanneauIntl();
     const adapter = useDataAdapter();
     const queryClient = useQueryClient();
     const toasts = useToast();
-    const [name, setName] = useState(user.name);
-    const [email, setEmail] = useState(user.email ?? '');
+    const fields: Field[] = [
+        {
+            name: 'name',
+            type: 'account-name',
+            label: intl.formatMessage(appMessages.name),
+            rules: [{ rule: 'required' }],
+        },
+        {
+            name: 'email',
+            type: 'account-email',
+            label: intl.formatMessage(appMessages.email),
+            rules: [{ rule: 'required' }],
+        },
+    ];
+    const { form } = useForm({
+        fields,
+        values: { name: user.name, email: user.email ?? '' },
+        mode: 'update',
+        onSubmit: async (values) => {
+            const saved = await adapter.updateAccount?.({
+                name: typeof values.name === 'string' ? values.name : '',
+                email: typeof values.email === 'string' ? values.email : '',
+            });
+            if (saved !== undefined) {
+                queryClient.setQueryData(queryKeys.account(), saved);
+            }
+            toasts.show({
+                title: intl.formatMessage(appMessages.accountSaved),
+                tone: 'success',
+            });
+            // The name in the sidebar; a new email may need to be verified
+            await queryClient.invalidateQueries({ queryKey: queryKeys.definition() });
+        },
+    });
     return (
-        <AuthForm
-            fields={['name', 'email']}
+        <FormView
+            form={form}
+            fields={fields}
+            components={profileInputs}
+            aria-label={intl.formatMessage(appMessages.accountProfile)}
             submitLabel={intl.formatMessage(appMessages.saveAccount)}
-            errorMessage={intl.formatMessage(appMessages.accountSaveError)}
-            onSubmit={async () => {
-                const saved = await adapter.updateAccount?.({ name, email });
-                if (saved !== undefined) {
-                    queryClient.setQueryData(queryKeys.account(), saved);
-                }
-                toasts.show({
-                    title: intl.formatMessage(appMessages.accountSaved),
-                    tone: 'success',
-                });
-                // The name in the sidebar; a new email may need to be verified
-                await queryClient.invalidateQueries({ queryKey: queryKeys.definition() });
-            }}
-        >
-            {(errors) => (
-                <>
-                    <TextInput
-                        label={intl.formatMessage(appMessages.name)}
-                        name="name"
-                        autoComplete="name"
-                        isRequired
-                        value={name}
-                        onChange={setName}
-                        errors={errors.fields.name}
-                    />
-                    <TextInput
-                        label={intl.formatMessage(appMessages.email)}
-                        type="email"
-                        name="email"
-                        autoComplete="email"
-                        isRequired
-                        value={email}
-                        onChange={setEmail}
-                        errors={errors.fields.email}
-                    />
-                </>
-            )}
-        </AuthForm>
+        />
     );
 }
 

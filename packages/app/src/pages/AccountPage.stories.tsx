@@ -7,10 +7,12 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { expect, userEvent, within } from 'storybook/test';
 
+import { LeaveGuardsProvider, createLeaveGuards } from '@panneau/core';
 import { type DataAdapter, createRestAdapter } from '@panneau/data';
 import { DataAdapterProvider } from '@panneau/data/query';
 import { type Auth, type Definition, validateDefinition } from '@panneau/protocol';
 import { type MockUser, createMockBackend } from '@panneau/protocol/mock';
+import { Button } from '@panneau/ui';
 
 import { createDefinition } from '../__fixtures__/definition';
 import { AccountPage } from './AccountPage';
@@ -27,11 +29,16 @@ function Account({
     auth,
     users,
     adapter: wrap,
+    leaveButton = false,
 }: {
     auth: Auth;
     users: MockUser[];
     adapter?: (adapter: DataAdapter) => DataAdapter;
+    /** A link out of the page, which asks the guards of unsaved changes, as the router does. */
+    leaveButton?: boolean;
 }) {
+    const [guards] = useState(createLeaveGuards);
+    const [left, setLeft] = useState<boolean | null>(null);
     const [state] = useState(() => {
         const definition = createDefinition({ auth });
         const backend = createMockBackend({ definition, auth: { users } });
@@ -44,7 +51,17 @@ function Account({
     return (
         <QueryClientProvider client={state.queryClient}>
             <DataAdapterProvider adapter={state.adapter}>
-                <AccountPage definition={definitionOf(auth)} />
+                <LeaveGuardsProvider guards={guards}>
+                    {leaveButton ? (
+                        <p>
+                            <Button onPress={() => void guards.confirmLeave().then(setLeft)}>
+                                Go to another page
+                            </Button>{' '}
+                            {left === null ? null : left ? 'Left the page.' : 'Stayed.'}
+                        </p>
+                    ) : null}
+                    <AccountPage definition={definitionOf(auth)} />
+                </LeaveGuardsProvider>
             </DataAdapterProvider>
         </QueryClientProvider>
     );
@@ -96,6 +113,35 @@ export const ProfileOnly: Story = {
         const canvas = within(canvasElement);
         await expect(await canvas.findByLabelText(/^Name/)).toBeVisible();
         await expect(canvas.queryByRole('heading', { name: 'Password' })).not.toBeInTheDocument();
+    },
+};
+
+/**
+ * Leaving the page with changes to the profile asks first, as leaving a form page does: "Stay"
+ * keeps them. Unchanged, or once saved, the page is left without asking.
+ */
+export const UnsavedProfile: Story = {
+    args: { auth: { mode: 'panneau', account: true, token: {} }, leaveButton: true },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        const name = await canvas.findByLabelText(/^Name/);
+        await userEvent.click(canvas.getByRole('button', { name: 'Go to another page' }));
+        await expect(await canvas.findByText('Left the page.')).toBeVisible();
+        await expect(body.queryByRole('alertdialog')).not.toBeInTheDocument();
+
+        await userEvent.clear(name);
+        await userEvent.type(name, 'Ada King');
+        await userEvent.click(canvas.getByRole('button', { name: 'Go to another page' }));
+        const ask = await body.findByRole('alertdialog', { name: 'Leave without saving?' });
+        await userEvent.click(within(ask).getByRole('button', { name: 'Stay' }));
+        await expect(await canvas.findByText('Stayed.')).toBeVisible();
+        await expect(name).toHaveValue('Ada King');
+
+        await userEvent.click(canvas.getByRole('button', { name: 'Save' }));
+        await expect(await body.findByText('Your account was saved.')).toBeInTheDocument();
+        await userEvent.click(canvas.getByRole('button', { name: 'Go to another page' }));
+        await expect(await canvas.findByText('Left the page.')).toBeVisible();
     },
 };
 
