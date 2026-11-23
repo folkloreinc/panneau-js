@@ -6,6 +6,8 @@ import { defineMessage } from '../message';
  */
 export const uiMessages = {
     close: defineMessage({ id: 'panneau.ui.close', defaultMessage: 'Close' }),
+    /** The button of a toast that undoes what was just done (decision 0063). */
+    undo: defineMessage({ id: 'panneau.ui.undo', defaultMessage: 'Undo' }),
     loading: defineMessage({ id: 'panneau.ui.loading', defaultMessage: 'Loading…' }),
     notifications: defineMessage({
         id: 'panneau.ui.notifications',

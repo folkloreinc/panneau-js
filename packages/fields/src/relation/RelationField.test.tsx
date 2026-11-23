@@ -1,4 +1,4 @@
-import { act, renderHook, screen } from '@testing-library/react';
+import { act, renderHook, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -220,6 +220,69 @@ describe('RelationField', () => {
         await userEvent.keyboard('{Escape}');
         await userEvent.click(await screen.findByRole('button', { name: 'Remove Ada Lovelace' }));
         expect(onChange).toHaveBeenLastCalledWith([{ id: '3', label: 'Margaret Hamilton' }]);
+    });
+
+    it('puts a removed card back at its place from “Undo”, in the latest value', async () => {
+        const { source } = createSource();
+        const onChange = vi.fn();
+        renderField(
+            <Controlled<RelationReference[] | null> initial={AUTHORS} onChange={onChange}>
+                {(value, setValue) => (
+                    <RelationField
+                        multiple
+                        label="Authors"
+                        resource="authors"
+                        value={value}
+                        onChange={setValue}
+                    />
+                )}
+            </Controlled>,
+            { relationSource: source },
+        );
+        await userEvent.click(screen.getByRole('button', { name: 'Remove Grace Hopper' }));
+        expect(onChange).toHaveBeenLastCalledWith([AUTHORS[0], AUTHORS[2]]);
+        await userEvent.click(screen.getByRole('button', { name: 'Remove Ada Lovelace' }));
+        expect(screen.getByText('“Grace Hopper” removed')).toBeInTheDocument();
+        expect(screen.getByText('“Ada Lovelace” removed')).toBeInTheDocument();
+
+        // The toast of Grace Hopper still undoes her removal, after Ada Lovelace’s
+        const [graceToast] = screen
+            .getAllByRole('button', { name: 'Undo' })
+            .filter((button) =>
+                button.closest('.panneau-toast')?.textContent?.includes('Grace Hopper'),
+            );
+        await userEvent.click(graceToast as HTMLElement);
+        expect(onChange).toHaveBeenLastCalledWith([AUTHORS[1], AUTHORS[2]]);
+        expect(screen.getByText('“Grace Hopper” put back')).toBeInTheDocument();
+        // Focused on her card again
+        expect(
+            screen.getByRole('button', { name: 'Remove Grace Hopper' }).closest('.panneau-tile'),
+        ).toContainElement(document.activeElement as HTMLElement);
+    });
+
+    it('puts the removed item of a single relation back from “Undo”', async () => {
+        const { source } = createSource();
+        const onChange = vi.fn();
+        renderField(
+            <Controlled<RelationReference | null> initial={AUTHORS[0] ?? null} onChange={onChange}>
+                {(value, setValue) => (
+                    <RelationField
+                        label="Author"
+                        resource="authors"
+                        value={value}
+                        onChange={setValue}
+                    />
+                )}
+            </Controlled>,
+            { relationSource: source },
+        );
+        await userEvent.click(screen.getByRole('button', { name: 'Remove Ada Lovelace' }));
+        expect(onChange).toHaveBeenLastCalledWith(null);
+        await userEvent.click(screen.getByRole('button', { name: 'Undo' }));
+        expect(onChange).toHaveBeenLastCalledWith(AUTHORS[0]);
+        expect(
+            within(screen.getByRole('group', { name: 'Author' })).getByRole('listitem'),
+        ).toHaveTextContent('Ada Lovelace');
     });
 
     it('shows the labels of plain ids, resolved once by the source', async () => {
