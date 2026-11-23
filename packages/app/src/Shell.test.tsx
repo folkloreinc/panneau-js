@@ -92,6 +92,7 @@ describe('the app shell', () => {
     beforeEach(() => {
         window.history.replaceState(null, '', '/panneau');
         window.localStorage.clear();
+        window.sessionStorage.clear();
     });
 
     it('marks the home page as current, and links to each resource from it', () => {
@@ -246,6 +247,143 @@ describe('the app shell', () => {
             ).toBeGreaterThan(1);
             await waitFor(() =>
                 expect(window.location.pathname).toBe('/panneau/resources/authors/1/edit'),
+            );
+        });
+    });
+
+    describe('going back to a list from an item’s form (#429)', () => {
+        const AUTHORS = {
+            id: 'authors',
+            label: { singular: 'author', plural: 'authors' },
+            itemTitle: 'name',
+            fields: [{ name: 'name', type: 'text', label: 'Name' }],
+            actions: [
+                { id: 'edit', kind: 'link', scope: ['item'] },
+                {
+                    id: 'delete',
+                    label: 'Delete',
+                    scope: ['item'],
+                    destructive: true,
+                    confirm: true,
+                },
+            ],
+        } satisfies DefinitionInput['resources'][number];
+        // A query of the moment: a search, a sort, a layout and a page, which a bare URL drops
+        const QUERY = '?q=a&sort=-name&layout=cards&page=1';
+
+        function renderAuthors() {
+            window.history.replaceState(null, '', `/panneau/resources/authors${QUERY}`);
+            return renderApp({ resources: [AUTHORS] });
+        }
+
+        /** Opens the form of an item from its title in the list. */
+        async function openForm(user: ReturnType<typeof userEvent.setup>, title: string) {
+            const main = within(screen.getByRole('main'));
+            await user.click(await main.findByRole('link', { name: title }));
+            await waitFor(() =>
+                expect(window.location.pathname).toMatch(
+                    /^\/panneau\/resources\/authors\/\d+\/edit$/,
+                ),
+            );
+            await screen.findByRole('textbox', { name: 'Name' });
+        }
+
+        it('goes back with the header’s link to the list as the user left it', async () => {
+            const user = userEvent.setup();
+            renderAuthors();
+            await openForm(user, 'Ada');
+            const back = within(screen.getByRole('main')).getByRole('link', { name: 'Authors' });
+            expect(back).toHaveAttribute('href', `/panneau/resources/authors${QUERY}`);
+            await user.click(back);
+            expect(window.location.pathname).toBe('/panneau/resources/authors');
+            expect(window.location.search).toBe(QUERY);
+            // In its layout of the moment, the cards, rather than the table
+            expect(
+                await within(screen.getByRole('main')).findByRole('link', { name: 'Ada' }),
+            ).toBeInTheDocument();
+            expect(screen.queryByRole('table')).toBeNull();
+        });
+
+        it('goes back to the list as the user left it after a delete from the form', async () => {
+            const user = userEvent.setup();
+            const backend = renderAuthors();
+            await openForm(user, 'Ada');
+            await user.click(
+                within(screen.getByRole('main')).getByRole('button', { name: 'Delete' }),
+            );
+            const dialog = await screen.findByRole('alertdialog');
+            await user.click(within(dialog).getByRole('button', { name: 'Delete' }));
+            await waitFor(() =>
+                expect(window.location.pathname).toBe('/panneau/resources/authors'),
+            );
+            expect(window.location.search).toBe(QUERY);
+            expect(backend.items('authors')).toEqual([]);
+        });
+
+        it('restores the scroll of the list on Back and Forward, and starts a new page at the top', async () => {
+            const user = userEvent.setup();
+            renderAuthors();
+            const main = screen.getByRole('main');
+            // jsdom doesn't scroll: the element keeps what it is given
+            let scrollTop = 0;
+            Object.defineProperty(main, 'scrollTop', {
+                configurable: true,
+                get: () => scrollTop,
+                set: (value: number) => {
+                    scrollTop = value;
+                },
+            });
+            await within(main).findByRole('link', { name: 'Ada' });
+            scrollTop = 480;
+
+            // A new page: at the top, with the focus on its title
+            await openForm(user, 'Ada');
+            await waitFor(() => expect(scrollTop).toBe(0));
+            await waitFor(() => expect(screen.getByRole('heading', { level: 1 })).toHaveFocus());
+            scrollTop = 120;
+
+            window.history.back();
+            await waitFor(() =>
+                expect(window.location.pathname).toBe('/panneau/resources/authors'),
+            );
+            expect(window.location.search).toBe(QUERY);
+            await waitFor(() => expect(scrollTop).toBe(480));
+            await waitFor(() =>
+                expect(screen.getByRole('heading', { level: 1, name: 'Authors' })).toHaveFocus(),
+            );
+
+            window.history.forward();
+            await waitFor(() =>
+                expect(window.location.pathname).toBe('/panneau/resources/authors/1/edit'),
+            );
+            await waitFor(() => expect(scrollTop).toBe(120));
+
+            // The header's link is a new navigation, even to the same list: at the top
+            await user.click(
+                within(screen.getByRole('main')).getByRole('link', { name: 'Authors' }),
+            );
+            await waitFor(() =>
+                expect(window.location.pathname).toBe('/panneau/resources/authors'),
+            );
+            await waitFor(() => expect(scrollTop).toBe(0));
+        });
+
+        it('still goes to the list that highlights the new item after a create (decision 0066)', async () => {
+            const user = userEvent.setup();
+            renderAuthors();
+            const main = within(screen.getByRole('main'));
+            await main.findByRole('link', { name: 'Ada' });
+            await user.click(main.getByRole('link', { name: 'New author' }));
+            await user.type(await screen.findByRole('textbox', { name: 'Name' }), 'Zora');
+            await user.click(screen.getByRole('button', { name: 'Save' }));
+            await waitFor(() =>
+                expect(window.location.pathname).toBe('/panneau/resources/authors'),
+            );
+            // Its remembered view, not the search of the moment, which may hide the new item
+            expect(window.location.search).not.toContain('q=');
+            const table = await screen.findByRole('table', { name: 'Authors' });
+            await waitFor(() =>
+                expect(table.querySelector('[data-highlighted]')).toHaveTextContent('Zora'),
             );
         });
     });

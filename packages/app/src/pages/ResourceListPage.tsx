@@ -33,6 +33,7 @@ import {
 
 import { useSummaryPeriod } from '../dashboard/period';
 import { useDocumentTitle } from '../documentTitle';
+import { getListKey, rememberListSearch } from '../listLocation';
 import { navigate } from '../location';
 import { capitalize } from '../navigation';
 import { routePath } from '../routes';
@@ -96,10 +97,8 @@ export function ResourceListPage({
     const { definition, router } = usePanneau();
     // The view of the list (filters, sort, layout, columns) is remembered for the user, in this
     // browser (decision 0042).
-    const { query, list } = useList({
-        list: definitionList,
-        remember: { key: `${basePath}:${definition?.user?.id ?? ''}:${resource.id}` },
-    });
+    const listKey = getListKey(basePath, definition?.user?.id, resource.id);
+    const { query, list } = useList({ list: definitionList, remember: { key: listKey } });
     // The layouts of the definition, or the table and the cards without any
     const layouts =
         resource.list?.layouts !== undefined ? definitionList.layouts : ['table', 'cards'];
@@ -203,6 +202,8 @@ export function ResourceListPage({
     ]);
     // The list keeps its query in the URL: the panel opens and closes without losing it.
     const search = window.location.search;
+    // Links back to the list, from its items, show it as it is now (decision 0102)
+    useEffect(() => rememberListSearch(listKey, search), [listKey, search]);
     const indexPath = routePath({ name: 'resource.index', resource: resource.id }, basePath);
     // Unless the resource opens items in the panel, the show route of an item that can be updated
     // goes to its form (decision 0082), with the hash of the link. One that can't stays in the panel.
