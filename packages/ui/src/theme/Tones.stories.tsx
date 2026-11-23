@@ -6,8 +6,9 @@ import { Alert } from '../alert/Alert';
 import { Badge } from '../badge/Badge';
 import { Button, type ButtonAppearance } from '../button/Button';
 import { PanneauRoot } from '../root/PanneauRoot';
+import { type Rgb, contrastRatio } from './color';
 import { defineTheme } from './defineTheme';
-import type { ColorScheme } from './theme';
+import type { ColorScheme, Theme } from './theme';
 import { BUILT_IN_TONES, type Tone } from './tones';
 
 declare module './tones' {
@@ -232,4 +233,135 @@ export const Meaning: StoryObj<typeof Meanings> = {
 export const MeaningDark: StoryObj<typeof Meanings> = {
     render: (args) => <Meanings {...args} />,
     args: { colorScheme: 'dark' },
+};
+
+/**
+ * A theme with a light accent, as a yellow brand color gives: dark text on its filled buttons. It
+ * doesn't set the accent as text (`panneau-color-accent-strong`): Panneau derives a readable one.
+ */
+const yellowTheme = defineTheme({
+    tokens: {
+        'panneau-color-accent': '#ffea00',
+        'panneau-color-accent-hover': '#e6d300',
+        'panneau-color-accent-text': '#18181b',
+        'panneau-color-accent-subtle': '#fffbd1',
+    },
+    dark: { 'panneau-color-accent-subtle': '#3a3500' },
+});
+
+const ACCENT_THEMES: { name: string; theme: Theme | null }[] = [
+    { name: 'Default accent', theme: null },
+    { name: 'Yellow accent', theme: yellowTheme },
+];
+const TEXT_APPEARANCES: ButtonAppearance[] = ['outline', 'subtle', 'ghost'];
+
+/** The accent as text, on the page and on a panel, with each accent in both schemes. */
+function AccentText() {
+    return (
+        <div style={{ display: 'grid', gap: '0.5rem' }}>
+            {ACCENT_THEMES.flatMap(({ name, theme: accentTheme }) =>
+                (['light', 'dark'] as const).map((scheme) => (
+                    <PanneauRoot
+                        key={`${name}-${scheme}`}
+                        theme={accentTheme}
+                        colorScheme={scheme}
+                        role="group"
+                        aria-label={`${name}, ${scheme}`}
+                        style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: '0.5rem',
+                            padding: '1rem',
+                            background: 'var(--panneau-color-bg)',
+                        }}
+                    >
+                        {TEXT_APPEARANCES.map((appearance) => (
+                            <Button key={appearance} tone="accent" appearance={appearance}>
+                                Edit
+                            </Button>
+                        ))}
+                        <div
+                            style={{
+                                display: 'flex',
+                                gap: '0.5rem',
+                                padding: '0.5rem',
+                                background: 'var(--panneau-color-surface)',
+                                border: '1px solid var(--panneau-color-border)',
+                            }}
+                        >
+                            {TEXT_APPEARANCES.map((appearance) => (
+                                <Button key={appearance} tone="accent" appearance={appearance}>
+                                    Edit
+                                </Button>
+                            ))}
+                            <Button tone="accent">Save</Button>
+                        </div>
+                    </PanneauRoot>
+                )),
+            )}
+        </div>
+    );
+}
+
+/** A computed color as sRGB with its opacity, through a canvas, which reads any CSS color. */
+function readColor(value: string): { color: Rgb; alpha: number } {
+    const context = document.createElement('canvas').getContext('2d', {
+        willReadFrequently: true,
+    });
+    if (context === null) {
+        throw new Error('No 2D canvas to read colors with.');
+    }
+    context.clearRect(0, 0, 1, 1);
+    context.fillStyle = value;
+    context.fillRect(0, 0, 1, 1);
+    const [r = 0, g = 0, b = 0, a = 0] = context.getImageData(0, 0, 1, 1).data;
+    return { color: { r, g, b }, alpha: a / 255 };
+}
+
+/** The background under an element: the first one, up its ancestors, that isn't transparent. */
+function backgroundOf(element: Element): Rgb {
+    for (let current: Element | null = element; current !== null; current = current.parentElement) {
+        const { color, alpha } = readColor(getComputedStyle(current).backgroundColor);
+        if (alpha === 1) {
+            return color;
+        }
+    }
+    return { r: 255, g: 255, b: 255 };
+}
+
+/**
+ * Outline, subtle and ghost buttons of the accent tone write the accent as text: readable (4.5:1)
+ * on the page and on panels, with the default accent and with a light one, in both schemes. Filled
+ * buttons keep the accent as their background.
+ */
+export const AccentAsText: StoryObj<typeof AccentText> = {
+    render: () => <AccentText />,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        for (const { name } of ACCENT_THEMES) {
+            for (const scheme of ['light', 'dark']) {
+                const group = within(canvas.getByRole('group', { name: `${name}, ${scheme}` }));
+                const buttons = group.getAllByRole('button', { name: 'Edit' });
+                await expect(buttons).toHaveLength(TEXT_APPEARANCES.length * 2);
+                for (const button of buttons) {
+                    const text = readColor(getComputedStyle(button).color).color;
+                    const ratio = contrastRatio(text, backgroundOf(button));
+                    await expect(
+                        ratio,
+                        `${name}, ${scheme}: ${button.className}`,
+                    ).toBeGreaterThanOrEqual(4.5);
+                }
+            }
+        }
+        // The filled button keeps the yellow, with dark text on it.
+        const save = within(canvas.getByRole('group', { name: 'Yellow accent, light' })).getByRole(
+            'button',
+            { name: 'Save' },
+        );
+        await expect(readColor(getComputedStyle(save).backgroundColor).color).toEqual({
+            r: 255,
+            g: 234,
+            b: 0,
+        });
+    },
 };

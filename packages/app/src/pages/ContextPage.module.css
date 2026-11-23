@@ -19,7 +19,7 @@
     margin-bottom: var(--panneau-space-1);
     border-radius: var(--panneau-radius-full);
     background: var(--panneau-color-accent-subtle);
-    color: var(--panneau-color-accent);
+    color: var(--panneau-color-accent-strong, var(--panneau-color-accent));
 }
 
 .text {

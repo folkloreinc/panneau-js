@@ -71,7 +71,10 @@ a.itemTitle[data-hovered] {
 .seeAll {
     font-size: var(--panneau-font-size-sm);
     font-weight: var(--panneau-font-weight-medium);
-    color: var(--panneau-color-link, var(--panneau-color-accent));
+    color: var(
+        --panneau-color-link,
+        var(--panneau-color-accent-strong, var(--panneau-color-accent))
+    );
 }
 
 /* The period of an overview (decision 0084): its options, and the widgets it changes under them. */
