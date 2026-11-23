@@ -9,7 +9,12 @@ import {
     useList,
     usePanneau,
 } from '@panneau/core';
-import { useResourceItem, useResourceList, useUpdateItem } from '@panneau/data/query';
+import {
+    usePrefetchItem,
+    useResourceItem,
+    useResourceList,
+    useUpdateItem,
+} from '@panneau/data/query';
 import { useFormatRuleFailure } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
 import { ListView, getPagingProps, useListFields } from '@panneau/lists';
@@ -144,6 +149,7 @@ export function ResourceListPage({
     const previewAction = useActionPreview(resource.id);
     // Fields edited in place are saved alone, with the version of the item (decision 0043).
     const update = useUpdateItem(resource.id);
+    const prefetchItem = usePrefetchItem(resource.id);
     const formatError = useFormatRuleFailure(resource.fields);
     const title = capitalize(resource.label.plural, locale);
     // The item that the create page just created: the list highlights it once it shows it, without
@@ -373,6 +379,8 @@ export function ResourceListPage({
                         perPageOptions={[10, 20, 50, 100]}
                         // Titles open the panel, with the list's query, or the form (`open` of the resource)
                         getItemHref={(item) => getItemPath(resource, item, basePath, search)}
+                        // Hovering or focusing a title loads its item, so it opens from the cache
+                        onItemIntent={(item) => prefetchItem(item.id)}
                         getLinkHref={createLinkResolver(resource, basePath, {
                             search,
                             resolveRoute,
