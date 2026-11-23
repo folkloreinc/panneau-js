@@ -25,7 +25,7 @@ import type { ActionResponse, Values } from '../adapter';
 import { ConflictError } from '../errors';
 import { useDataAdapter } from './context';
 import { type SearchKeyOptions, type WidgetKeyOptions, queryKeys } from './keys';
-import { type PendingEdit, endEdit, sendInTurn, startEdit } from './optimistic';
+import type { PendingEdit } from './optimistic';
 import {
     definitionQueryOptions,
     itemPreviewQueryOptions,
@@ -207,6 +207,14 @@ export interface UpdateItemVariables {
     version?: string | null;
 }
 
+// Loaded with the first edit in place: an app that edits nothing in place doesn't load it up front.
+const loadOptimistic = () => import('./optimistic');
+
+interface OptimisticContext {
+    edit: PendingEdit;
+    optimistic: Awaited<ReturnType<typeof loadOptimistic>>;
+}
+
 export interface UpdateItemOptions {
     /**
      * Shows the values at once, before the server answers, in the cached item and in every cached
@@ -244,34 +252,45 @@ export function useUpdateItem(
         );
     };
     // The lists are refetched in the background once the last edit of the item is answered.
-    const endOptimistic = (id: string, edit: PendingEdit, item?: Item) => {
+    const endOptimistic = (
+        id: string,
+        { edit, optimistic: { endEdit } }: OptimisticContext,
+        item?: Item,
+    ) => {
         const { done, saved } = endEdit(client, resource, id, edit, item);
         if (done && saved) {
             void invalidateLists(client, resource);
         }
     };
-    return useMutation({
+    return useMutation<Item, Error, UpdateItemVariables, OptimisticContext | undefined>({
         mutationFn: ({ id, values, version }: UpdateItemVariables) =>
             optimistic
-                ? sendInTurn(client, resource, id, version, (sent) =>
-                      adapter.update(resource, id, values, { version: sent }),
+                ? loadOptimistic().then(({ sendInTurn }) =>
+                      sendInTurn(client, resource, id, version, (sent) =>
+                          adapter.update(resource, id, values, { version: sent }),
+                      ),
                   )
                 : adapter.update(resource, id, values, { version }),
         onMutate: ({ id, values }) =>
-            optimistic ? startEdit(client, resource, id, values) : undefined,
-        onSuccess: (item, { id }, edit) => {
-            if (edit !== undefined) {
-                endOptimistic(id, edit, item);
+            optimistic
+                ? loadOptimistic().then(async (module) => ({
+                      edit: await module.startEdit(client, resource, id, values),
+                      optimistic: module,
+                  }))
+                : undefined,
+        onSuccess: (item, { id }, context) => {
+            if (context !== undefined) {
+                endOptimistic(id, context, item);
                 return;
             }
             showSaved(item);
             return invalidateLists(client, resource);
         },
-        onError: (error, { id }, edit) => {
-            if (edit !== undefined) {
+        onError: (error, { id }, context) => {
+            if (context !== undefined) {
                 // A conflict gives the current item: it shows, as the server has it.
                 const current = error instanceof ConflictError ? error.current : null;
-                endOptimistic(id, edit, current ?? undefined);
+                endOptimistic(id, context, current ?? undefined);
             }
         },
     });
