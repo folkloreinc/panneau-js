@@ -1,14 +1,6 @@
 import { ArrowDown, ArrowUp, Columns3 } from 'lucide-react';
 
-import {
-    Button,
-    Checkbox,
-    Dialog,
-    IconButton,
-    Popover,
-    PopoverTrigger,
-    usePanneauIntl,
-} from '@panneau/ui';
+import { Button, Checkbox, IconButton, Popover, PopoverTrigger, usePanneauIntl } from '@panneau/ui';
 
 import { messages } from '../messages';
 import type { ListColumn } from '../types';
@@ -31,7 +23,7 @@ function labelOf(column: ListColumn): string {
 }
 
 /** The columns of a list, to show, hide and order, in a popover or a dialog. */
-function ColumnChooser({ columns, shown, onChange, onReset }: ColumnMenuProps) {
+export function ColumnChooser({ columns, shown, onChange, onReset }: ColumnMenuProps) {
     const intl = usePanneauIntl();
     const ids = shown.map((column) => column.id);
     // The shown columns first, in their order, then the others, where showing one adds it.
@@ -124,24 +116,5 @@ export function ColumnMenu(props: ColumnMenuProps) {
                 <ColumnChooser {...props} />
             </Popover>
         </PopoverTrigger>
-    );
-}
-
-/** The columns of a list in a dialog, opened from the menu of a narrow toolbar. */
-export function ColumnDialog({
-    isOpen,
-    onOpenChange,
-    ...props
-}: ColumnMenuProps & { isOpen: boolean; onOpenChange: (isOpen: boolean) => void }) {
-    const intl = usePanneauIntl();
-    return (
-        <Dialog
-            title={intl.formatMessage(messages.columns)}
-            size="sm"
-            isOpen={isOpen}
-            onOpenChange={onOpenChange}
-        >
-            <ColumnChooser {...props} />
-        </Dialog>
     );
 }

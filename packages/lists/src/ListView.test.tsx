@@ -914,6 +914,12 @@ describe('ListView toolbar controls', () => {
             expect(controls()).toEqual(['Select', 'More options']);
             expect(screen.queryByRole('button', { name: 'Export' })).not.toBeInTheDocument();
 
+            // The menu's code loads on phones only
+            await waitFor(() =>
+                expect(screen.getByRole('button', { name: 'More options' })).toHaveAttribute(
+                    'aria-haspopup',
+                ),
+            );
             await user.click(screen.getByRole('button', { name: 'More options' }));
             const menu = await screen.findByRole('menu', { name: 'More options' });
             await user.click(

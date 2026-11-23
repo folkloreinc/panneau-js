@@ -1,7 +1,7 @@
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 import type { Key } from 'react-aria-components';
 
-import { Menu, MenuItem, MenuSection, MenuTrigger, usePanneauIntl } from '@panneau/ui';
+import { Menu, MenuItem, MenuTrigger, usePanneauIntl } from '@panneau/ui';
 
 import { messages } from '../messages';
 import type { ListColumn } from '../types';
@@ -29,7 +29,7 @@ interface SortOption {
 }
 
 /** The sorts of a list: the default one, then each sortable column, ascending and descending. */
-function useSortOptions({ columns, sort }: Pick<SortMenuProps, 'columns' | 'sort'>): {
+export function useSortOptions({ columns, sort }: Pick<SortMenuProps, 'columns' | 'sort'>): {
     options: SortOption[];
     current: SortOption;
 } {
@@ -63,7 +63,7 @@ function useSortOptions({ columns, sort }: Pick<SortMenuProps, 'columns' | 'sort
     return { options, current };
 }
 
-function toSort(keys: 'all' | Set<Key>): string[] | null {
+export function toSort(keys: 'all' | Set<Key>): string[] | null {
     if (keys === 'all') {
         return null;
     }
@@ -116,31 +116,5 @@ export function SortMenu({ columns, sort, onChange }: SortMenuProps) {
                 ))}
             </Menu>
         </MenuTrigger>
-    );
-}
-
-/** The sorts of a list as a section of a menu, such as the menu of a narrow toolbar. */
-export function SortSection({ columns, sort, onChange }: SortMenuProps) {
-    const intl = usePanneauIntl();
-    const { options, current } = useSortOptions({ columns, sort });
-    return (
-        <MenuSection
-            title={intl.formatMessage(messages.sortBy)}
-            selectionMode="single"
-            disallowEmptySelection
-            selectedKeys={[current.id]}
-            onSelectionChange={(keys) => {
-                const next = toSort(keys);
-                if (next !== null) {
-                    onChange(next);
-                }
-            }}
-        >
-            {options.map((option) => (
-                <MenuItem key={option.id} id={option.id}>
-                    {option.label}
-                </MenuItem>
-            ))}
-        </MenuSection>
     );
 }

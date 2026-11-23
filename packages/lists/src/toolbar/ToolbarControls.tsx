@@ -1,16 +1,15 @@
-import { Columns3, Ellipsis, ListChecks } from 'lucide-react';
-import { type ReactNode, useState } from 'react';
+import { Ellipsis, ListChecks } from 'lucide-react';
+import { type ReactNode, Suspense, lazy } from 'react';
 
-import { getActionLabel } from '@panneau/intl';
 import type { Action } from '@panneau/protocol';
-import { Menu, MenuItem, MenuSection, MenuTrigger, usePanneauIntl } from '@panneau/ui';
+import { usePanneauIntl } from '@panneau/ui';
 
 import { ActionButton } from '../actions/ActionButton';
-import { type ActionIcons, getActionIcon } from '../actions/icons';
+import type { ActionIcons } from '../actions/icons';
 import { messages } from '../messages';
-import { ColumnDialog, ColumnMenu, type ColumnMenuProps } from './ColumnMenu';
+import { ColumnMenu, type ColumnMenuProps } from './ColumnMenu';
 import { LayoutSwitch, type LayoutSwitchProps } from './LayoutSwitch';
-import { SortMenu, type SortMenuProps, SortSection } from './SortMenu';
+import { SortMenu, type SortMenuProps } from './SortMenu';
 import styles from './Toolbar.module.css';
 import { ToolbarButton } from './ToolbarButton';
 
@@ -39,8 +38,7 @@ export interface ToolbarControlsProps {
     children?: ReactNode;
 }
 
-/** The key of the item of the narrow menu that opens the columns. */
-const COLUMNS = ':columns';
+const MoreMenu = lazy(async () => ({ default: (await import('./MoreMenu')).MoreMenu }));
 
 function SelectButton({ isSelecting, onPress }: { isSelecting: boolean; onPress: () => void }) {
     const intl = usePanneauIntl();
@@ -77,7 +75,6 @@ export function ToolbarControls({
     children,
 }: ToolbarControlsProps) {
     const intl = usePanneauIntl();
-    const [columnsOpen, setColumnsOpen] = useState(false);
     if (!narrow) {
         return (
             <div className={styles.controls}>
@@ -107,57 +104,18 @@ export function ToolbarControls({
             {layouts !== null ? <LayoutSwitch {...layouts} /> : null}
             {selection !== null ? <SelectButton {...selection} /> : null}
             {hasMore ? (
-                <MenuTrigger>
-                    <ToolbarButton
-                        icon={Ellipsis}
-                        label={moreLabel}
-                        isPending={actions.some((entry) => entry.isPending)}
+                // Only phones show it: loaded when one does, out of the first page's code
+                <Suspense fallback={<ToolbarButton icon={Ellipsis} label={moreLabel} />}>
+                    <MoreMenu
+                        sort={sort}
+                        columns={columns}
+                        actions={actions}
+                        onAction={onAction}
+                        icons={icons}
                     />
-                    <Menu
-                        aria-label={moreLabel}
-                        placement="bottom end"
-                        onAction={(key) => {
-                            if (key === COLUMNS) {
-                                setColumnsOpen(true);
-                                return;
-                            }
-                            const entry = actions.find(({ action }) => action.id === key);
-                            if (entry !== undefined && entry.href === null) {
-                                onAction(entry.action);
-                            }
-                        }}
-                    >
-                        {sort !== null ? <SortSection {...sort} /> : null}
-                        {columns !== null || actions.length > 0 ? (
-                            <MenuSection aria-label={moreLabel}>
-                                {columns !== null ? (
-                                    <MenuItem id={COLUMNS} icon={Columns3}>
-                                        {intl.formatMessage(messages.columns)}
-                                    </MenuItem>
-                                ) : null}
-                                {actions.map(({ action, href }) => {
-                                    const icon = getActionIcon(action, icons);
-                                    return (
-                                        <MenuItem
-                                            key={action.id}
-                                            id={action.id}
-                                            isDanger={action.destructive === true}
-                                            {...(icon !== undefined ? { icon } : {})}
-                                            {...(href !== null ? { href } : {})}
-                                        >
-                                            {getActionLabel(action, intl)}
-                                        </MenuItem>
-                                    );
-                                })}
-                            </MenuSection>
-                        ) : null}
-                    </Menu>
-                </MenuTrigger>
+                </Suspense>
             ) : null}
             {children}
-            {columns !== null ? (
-                <ColumnDialog {...columns} isOpen={columnsOpen} onOpenChange={setColumnsOpen} />
-            ) : null}
         </div>
     );
 }
