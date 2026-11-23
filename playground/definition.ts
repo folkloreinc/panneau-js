@@ -10,9 +10,9 @@ const STATUS: FieldInput = {
     type: 'select',
     label: 'Status',
     options: [
-        { value: 'draft', label: 'Draft' },
-        { value: 'review', label: 'In review' },
-        { value: 'published', label: 'Published' },
+        { value: 'draft', label: 'Draft', tone: 'neutral' },
+        { value: 'review', label: 'In review', tone: 'warning' },
+        { value: 'published', label: 'Published', tone: 'success' },
     ],
     rules: [{ rule: 'required' }],
 };
@@ -65,6 +65,7 @@ export function createPlaygroundDefinition(): DefinitionInput {
                 features: { preview: { mode: 'iframe' } },
                 itemTitle: 'title',
                 itemSubtitle: 'category',
+                itemStatus: 'status',
                 fields: [
                     { name: 'title', type: 'text', label: 'Title', rules: [{ rule: 'required' }] },
                     { name: 'summary', type: 'textarea', label: 'Summary' },

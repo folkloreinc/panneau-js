@@ -100,6 +100,10 @@ export const listsMessages = {
         defaultMessage:
             'The calendar shows the first {shown, plural, one {# item} other {# items}}. Filter the list to see the others.',
     }),
+    calendarEmpty: defineMessage<{ month: string }>({
+        id: 'panneau.lists.calendarEmpty',
+        defaultMessage: 'No items in {month}',
+    }),
     columns: defineMessage({ id: 'panneau.lists.columns', defaultMessage: 'Columns' }),
     moveColumnUp: defineMessage<{ column: string }>({
         id: 'panneau.lists.moveColumnUp',
