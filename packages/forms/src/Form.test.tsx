@@ -1,7 +1,7 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { withPanneauMessages } from '@panneau/intl';
 import type { Field, Item } from '@panneau/protocol';
@@ -249,10 +249,14 @@ describe('Form without a definition', () => {
         expect(name).toHaveAttribute('aria-invalid', 'true');
     });
 
-    it('shows the errors of the parts of an address and a link under their inputs', async () => {
-        // Their entries load on first use (#346): load their modules first, so that the first
-        // `import()` of a busy test run doesn't eat the time of the test.
+    // The entries of the address and link fields load on first use (#346). Their first `import()`
+    // can take seconds on a busy runner (#457): it happens in a hook, with its own timeout, and not
+    // in the 5 s of the test below.
+    beforeAll(async () => {
         await Promise.all([import('@panneau/fields/address'), import('@panneau/fields/link')]);
+    });
+
+    it('shows the errors of the parts of an address and a link under their inputs', async () => {
         const onSubmit = vi.fn();
         renderForm(
             <Form

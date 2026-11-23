@@ -196,6 +196,12 @@ export interface ListViewProps {
     /** A link to an item, on its title. */
     getItemHref?: (item: ListItem) => string | null;
     /**
+     * The user is about to open an item from its link: the pointer rested on it for a moment (not
+     * from touch), or it got the focus. Only items with a link (`getItemHref`) call it. A caller
+     * with a data layer prefetches the item, so it opens from the cache.
+     */
+    onItemIntent?: (item: ListItem) => void;
+    /**
      * The link of a built-in `show` or `edit` action without a `url` or a `route` (decision 0040),
      * which the caller resolves to its own routes. Without it, or when it answers `null`, the list
      * leaves those links out.
@@ -257,6 +263,7 @@ export function ListView({
     calendar = null,
     getItemLabel: getItemLabelProp,
     getItemHref,
+    onItemIntent,
     getLinkHref,
     currentItemId = null,
     highlightedItemId = null,
@@ -667,6 +674,7 @@ export function ListView({
                 renderValue={renderValue}
                 getItemLabel={getItemLabel}
                 getItemHref={getItemHref}
+                onItemIntent={onItemIntent}
                 getItemImage={
                     itemImage !== undefined ? (item) => getImageUrl(item[itemImage]) : undefined
                 }
