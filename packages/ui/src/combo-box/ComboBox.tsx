@@ -4,13 +4,16 @@ import {
     ComboBox as AriaComboBox,
     type ComboBoxProps as AriaComboBoxProps,
     Button,
+    Collection,
     Group,
     Input,
     ListBox,
     ListBoxItem,
+    ListBoxLoadMoreItem,
     Text,
 } from 'react-aria-components';
 
+import { Badge } from '../badge/Badge';
 import {
     type FieldChromeProps,
     FieldDescription,
@@ -24,6 +27,7 @@ import { usePanneauIntl } from '../intl/usePanneauIntl';
 import { PopoverSurface } from '../popover/Popover';
 import listStyles from '../select/ListBox.module.css';
 import { Spinner } from '../spinner/Spinner';
+import type { Tone } from '../theme/tones';
 import { cx } from '../utils/cx';
 import styles from './ComboBox.module.css';
 
@@ -35,6 +39,11 @@ export interface ComboBoxItem {
     disabled?: boolean;
     /** Decorative content before the label, such as a flag. Assistive technologies skip it. */
     prefix?: ReactNode;
+    /**
+     * A short state after the text, as a badge in its tone (Draft, Archived). Assistive
+     * technologies read it with the description.
+     */
+    badge?: { label: string; tone?: Tone | undefined } | undefined;
 }
 
 export interface ComboBoxProps
@@ -68,6 +77,15 @@ export interface ComboBoxProps
     isLoading?: boolean;
     /** Text shown without items. Defaults to "No results". */
     emptyMessage?: string;
+    /**
+     * Called when the list of items scrolls to its end, to load the next items: without it, the list
+     * has all of them.
+     */
+    onLoadMore?: (() => void) | undefined;
+    /** Shows a spinner at the end of the list while the next items load. */
+    isLoadingMore?: boolean | undefined;
+    /** Under the list of items, such as how many there are. */
+    footer?: ReactNode;
     controlClassName?: string;
     inputClassName?: string;
     popoverClassName?: string;
@@ -88,6 +106,9 @@ export function ComboBox({
     prefix,
     isLoading = false,
     emptyMessage,
+    onLoadMore,
+    isLoadingMore = false,
+    footer,
     isRequired,
     isReadOnly,
     menuTrigger = 'focus',
@@ -102,6 +123,7 @@ export function ComboBox({
 }: ComboBoxProps) {
     const intl = usePanneauIntl();
     const invalid = errors.length > 0;
+    const hasFooter = footer !== undefined && footer !== null;
     return (
         <AriaComboBox
             {...props}
@@ -151,9 +173,9 @@ export function ComboBox({
             </Group>
             <FieldDescription className={descriptionClassName}>{description}</FieldDescription>
             <FieldErrors errors={errors} className={errorsClassName} />
-            <PopoverSurface className={popoverClassName}>
+            <PopoverSurface className={cx(hasFooter && styles.popover, popoverClassName)}>
                 <ListBox<ComboBoxItem>
-                    className={listStyles.listBox}
+                    className={cx(listStyles.listBox, hasFooter && styles.listBox)}
                     renderEmptyState={() => (
                         <div className={listStyles.empty}>
                             {isLoading
@@ -162,40 +184,70 @@ export function ComboBox({
                         </div>
                     )}
                 >
-                    {(item) => (
-                        <ListBoxItem
-                            id={item.id}
-                            textValue={item.label}
-                            className={listStyles.item}
-                        >
-                            {({ isSelected }) => (
-                                <>
-                                    <span className={listStyles.check}>
-                                        {isSelected ? <Icon icon={Check} size="sm" /> : null}
-                                    </span>
-                                    {item.prefix !== undefined ? (
-                                        <span className={listStyles.prefix} aria-hidden="true">
-                                            {item.prefix}
+                    <Collection items={items}>
+                        {(item) => (
+                            <ListBoxItem
+                                id={item.id}
+                                textValue={item.label}
+                                className={listStyles.item}
+                            >
+                                {({ isSelected }) => (
+                                    <>
+                                        <span className={listStyles.check}>
+                                            {isSelected ? <Icon icon={Check} size="sm" /> : null}
                                         </span>
-                                    ) : null}
-                                    <span className={listStyles.itemText}>
-                                        <Text slot="label" className={listStyles.itemLabel}>
-                                            {item.label}
-                                        </Text>
-                                        {item.description !== undefined ? (
-                                            <Text
-                                                slot="description"
-                                                className={listStyles.itemDescription}
-                                            >
-                                                {item.description}
-                                            </Text>
+                                        {item.prefix !== undefined ? (
+                                            <span className={listStyles.prefix} aria-hidden="true">
+                                                {item.prefix}
+                                            </span>
                                         ) : null}
-                                    </span>
-                                </>
-                            )}
-                        </ListBoxItem>
-                    )}
+                                        <span className={listStyles.itemText}>
+                                            <Text slot="label" className={listStyles.itemLabel}>
+                                                {item.label}
+                                            </Text>
+                                            {item.description !== undefined ||
+                                            item.badge !== undefined ? (
+                                                <Text
+                                                    slot="description"
+                                                    className={listStyles.itemDescription}
+                                                >
+                                                    {item.description}
+                                                    {item.badge !== undefined ? (
+                                                        // The badge shows at the end of the row
+                                                        <span className={styles.hidden}>
+                                                            {item.description !== undefined
+                                                                ? ', '
+                                                                : null}
+                                                            {item.badge.label}
+                                                        </span>
+                                                    ) : null}
+                                                </Text>
+                                            ) : null}
+                                        </span>
+                                        {item.badge !== undefined ? (
+                                            <span className={styles.badge} aria-hidden="true">
+                                                <Badge tone={item.badge.tone ?? 'neutral'}>
+                                                    {item.badge.label}
+                                                </Badge>
+                                            </span>
+                                        ) : null}
+                                    </>
+                                )}
+                            </ListBoxItem>
+                        )}
+                    </Collection>
+                    {/* Without IntersectionObserver (jsdom), the list has the items it got */}
+                    {onLoadMore !== undefined && typeof IntersectionObserver !== 'undefined' ? (
+                        <ListBoxLoadMoreItem
+                            onLoadMore={onLoadMore}
+                            isLoading={isLoadingMore}
+                            className={styles.loadMore}
+                        >
+                            <Spinner size="sm" />
+                        </ListBoxLoadMoreItem>
+                    ) : null}
                 </ListBox>
+                {hasFooter ? <div className={styles.footer}>{footer}</div> : null}
             </PopoverSurface>
         </AriaComboBox>
     );

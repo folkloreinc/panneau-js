@@ -52,6 +52,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     "id": "pages",
     "kind": null, // "media" for a media library
     "label": { "singular": "page", "plural": "pages" },
+    "itemStatus": "status", // the state of an item, a badge in relation pickers and cards (decision 0103)
     "open": "edit", // where an item's title goes: "edit" (the default) or "panel"
     "itemActions": ["show", "edit", "duplicate", "delete"], // the built-in item actions shown, the default
     "fields": [ /* Field */ ],
@@ -81,6 +82,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 }
 ```
 
+- **`itemTitle`, `itemSubtitle`, `itemImage` and `itemStatus`** name the fields that show an item where it isn't in its list: its title, a line under it, its image ([0061](decisions/0061-item-images-in-lists.md)), and its state. `itemStatus` ([0103](decisions/0103-the-status-of-an-item.md)) names a field whose value says where the item stands (Draft, Archived), usually a `select` whose options have [tones](#tones): relation pickers and cards show the label of its option as a badge in its tone, next to the item's title. A value that isn't one of its options shows as text, in `neutral`; the first value of a `select` with `multiple`. It can name a field of the resource's `types`. Without it, items show no state there. Clients that don't know it ignore it.
 - **`types`** ([0077](decisions/0077-resource-types.md)): the types of the items, each with fields of its own (`ResourceType`: `id`, `label`, `description`, `icon`, `fields`, `abilities`). Every item has a `type` among their ids, set when it is created. Its fields are those of the resource, then those of its type, in forms, details and validation; type fields are named apart from the resource's, and none is named `type`. `form.layout` can name the fields of every type: each form leaves out those of the other types.
     - `abilities.create: false` keeps a type out of the choices when creating, and the backend refuses to create one (a singleton such as the home page).
     - To show and filter by type, the backend declares a `select` field `type`, with the types as its options and `notInForm: true`, and a `select` filter `type`.

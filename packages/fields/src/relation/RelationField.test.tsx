@@ -1,4 +1,4 @@
-import { act, renderHook, screen, within } from '@testing-library/react';
+import { act, renderHook, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -13,6 +13,34 @@ import {
     createRelationSource,
 } from '../shared/relation';
 import { RelationField, useRelationSearch } from './RelationField';
+
+/** 25 articles, a page of 10 at a time, each with a status. */
+const ARTICLES: RelationReference[] = Array.from({ length: 25 }, (_, index) => ({
+    id: String(index + 1),
+    label: `Article ${String(index + 1)}`,
+    status: index % 2 === 0 ? { label: 'Published', tone: 'success' } : { label: 'Draft' },
+}));
+
+function createPagedSource() {
+    const searchPage = vi.fn(
+        async (_resource: string, query: string, { next }: { next?: string | undefined }) => {
+            const matches = ARTICLES.filter((article) => article.label.includes(query));
+            const start = next !== undefined ? Number(next) : 0;
+            return {
+                items: matches.slice(start, start + 10),
+                total: matches.length,
+                next: start + 10 < matches.length ? String(start + 10) : null,
+            };
+        },
+    );
+    const source: RelationSource = {
+        search: async () => [],
+        searchPage,
+        resolve: async (_resource, ids) => ARTICLES.filter((article) => ids.includes(article.id)),
+        describe: () => ({ status: true }),
+    };
+    return { source, searchPage };
+}
 
 const AUTHORS: RelationReference[] = [
     { id: '1', label: 'Ada Lovelace' },
@@ -597,9 +625,12 @@ describe('useRelationSearch', () => {
         });
         expect(search).toHaveBeenCalledTimes(1);
         expect(search).toHaveBeenCalledWith('authors', 'grace', expect.anything());
-        expect(result.current).toEqual({
+        expect(result.current).toMatchObject({
             items: [{ id: '2', label: 'Grace Hopper' }],
             isLoading: false,
+            // `search()` gives no count, and no more pages
+            total: null,
+            hasMore: false,
         });
     });
 
@@ -636,5 +667,135 @@ describe('useRelationSearch', () => {
     it('does nothing without a source', () => {
         const { result } = renderHook(() => useRelationSearch(null, 'authors', 'a'));
         expect(result.current.items).toEqual([]);
+    });
+
+    it('gives the total of a source with pages, and loads the next ones', async () => {
+        const { source, searchPage } = createPagedSource();
+        const { result } = renderHook(() => useRelationSearch(source, 'articles', ''));
+        await waitFor(() => expect(result.current.items).toHaveLength(10));
+        expect(result.current).toMatchObject({ total: 25, hasMore: true, isLoadingMore: false });
+        act(() => result.current.loadMore());
+        expect(result.current.isLoadingMore).toBe(true);
+        await waitFor(() => expect(result.current.items).toHaveLength(20));
+        expect(searchPage).toHaveBeenLastCalledWith(
+            'articles',
+            '',
+            expect.objectContaining({ next: '10' }),
+        );
+        act(() => result.current.loadMore());
+        await waitFor(() => expect(result.current.hasMore).toBe(false));
+        expect(result.current.items).toHaveLength(25);
+        // Nothing more to load
+        act(() => result.current.loadMore());
+        expect(searchPage).toHaveBeenCalledTimes(3);
+    });
+
+    it('asks for a next page once at a time, and shows an item once', async () => {
+        let resolveNext: (page: { items: RelationReference[]; next: null }) => void = () =>
+            undefined;
+        const searchPage = vi
+            .fn()
+            .mockResolvedValueOnce({ items: ARTICLES.slice(0, 2), total: 3, next: 'b' })
+            .mockImplementationOnce(
+                () =>
+                    new Promise((resolve) => {
+                        resolveNext = resolve;
+                    }),
+            );
+        const source: RelationSource = { search: async () => [], searchPage };
+        const { result } = renderHook(() => useRelationSearch(source, 'articles', ''));
+        await waitFor(() => expect(result.current.items).toHaveLength(2));
+        act(() => {
+            result.current.loadMore();
+            result.current.loadMore();
+        });
+        expect(searchPage).toHaveBeenCalledTimes(2);
+        // The second item moved to the next page meanwhile
+        await act(async () => {
+            resolveNext({ items: ARTICLES.slice(1, 3), next: null });
+        });
+        expect(result.current.items.map((item) => item.id)).toEqual(['1', '2', '3']);
+        expect(result.current.total).toBe(3);
+    });
+
+    it('starts again from the first page when the text changes', async () => {
+        const { source, searchPage } = createPagedSource();
+        const { result, rerender } = renderHook(
+            ({ query }) => useRelationSearch(source, 'articles', query, { delay: 0 }),
+            { initialProps: { query: '' } },
+        );
+        await waitFor(() => expect(result.current.items).toHaveLength(10));
+        act(() => result.current.loadMore());
+        await waitFor(() => expect(result.current.items).toHaveLength(20));
+        rerender({ query: '2' });
+        await waitFor(() => expect(result.current.total).toBe(8));
+        expect(result.current.items).toHaveLength(8);
+        expect(searchPage).toHaveBeenLastCalledWith(
+            'articles',
+            '2',
+            expect.not.objectContaining({ next: expect.anything() }),
+        );
+    });
+});
+
+describe('RelationField: results and statuses', () => {
+    it('says how many results there are, of how many', async () => {
+        const { source } = createPagedSource();
+        renderField(<RelationField label="Article" resource="articles" value={null} />, {
+            relationSource: source,
+        });
+        await userEvent.click(screen.getByRole('combobox', { name: 'Article' }));
+        expect(await screen.findByText('10 of 25 results')).toBeInTheDocument();
+        await userEvent.type(screen.getByRole('combobox', { name: 'Article' }), '25');
+        expect(await screen.findByText('1 result')).toBeInTheDocument();
+    });
+
+    it('shows no count when the source doesn’t count', async () => {
+        const { source } = createSource();
+        renderField(<RelationField label="Author" resource="authors" value={null} />, {
+            relationSource: source,
+        });
+        await userEvent.click(screen.getByRole('combobox', { name: 'Author' }));
+        await screen.findByRole('option', { name: 'Ada Lovelace' });
+        expect(screen.queryByText(/results?$/)).not.toBeInTheDocument();
+    });
+
+    it('shows the status of results and cards as badges in their tones', async () => {
+        const { source } = createPagedSource();
+        renderField(
+            <RelationField
+                label="Articles"
+                resource="articles"
+                multiple
+                // A reference from an item gets its status from the source
+                value={[{ id: '2', label: 'Article 2' }]}
+            />,
+            { relationSource: source },
+        );
+        const card = await screen.findByRole('listitem');
+        await waitFor(() =>
+            expect(within(card).getByText('Draft')).toHaveClass('panneau-tone-neutral'),
+        );
+        await userEvent.click(screen.getByRole('combobox', { name: 'Articles' }));
+        const option = await screen.findByRole('option', { name: 'Article 1' });
+        expect(option).toHaveAccessibleDescription('Published');
+        expect(option.querySelector('.panneau-badge')).toHaveClass('panneau-tone-success');
+    });
+
+    it('shows the status of a read-only card', () => {
+        renderField(
+            <RelationField
+                label="Article"
+                resource="articles"
+                readOnly
+                value={{
+                    id: '1',
+                    label: 'Article 1',
+                    status: { label: 'Archived', tone: 'muted' },
+                }}
+            />,
+            { relationSource: createPagedSource().source },
+        );
+        expect(screen.getByText('Archived')).toHaveClass('panneau-tone-muted');
     });
 });
