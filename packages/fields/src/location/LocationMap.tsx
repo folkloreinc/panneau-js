@@ -1,6 +1,9 @@
 import type * as LeafletModule from 'leaflet';
-import { useEffect, useEffectEvent, useRef } from 'react';
+import { type FocusEvent, useEffect, useEffectEvent, useRef, useState } from 'react';
 
+import { isApplePlatform, usePanneauIntl } from '@panneau/ui';
+
+import { messages } from '../shared/messages';
 import styles from './LocationField.module.css';
 import { LEAFLET_CSS } from './leafletCss';
 import type { MapTiles } from './types';
@@ -10,6 +13,9 @@ type LeafletMap = LeafletModule.Map;
 type LeafletMarker = LeafletModule.Marker;
 
 const STYLE_ID = 'panneau-leaflet-css';
+
+/** How long the hint to zoom stays, after a scroll the map let through. */
+const HINT_DURATION = 1500;
 
 /** Loads Leaflet, outside the component: the React Compiler doesn't handle `import()`. */
 async function loadLeaflet(): Promise<Leaflet> {
@@ -50,6 +56,9 @@ export interface LocationMapProps {
 /**
  * A Leaflet map with a marker on the point. Clicking the map or dragging the marker moves the
  * point. Leaflet and its stylesheet load when the map first shows.
+ *
+ * The wheel scrolls the page over the map, which zooms with its buttons, a pinch, a double click,
+ * the + and − keys, and the wheel with ⌘ or Ctrl held, or once it has been clicked or focused.
  */
 export function LocationMap({
     point,
@@ -61,7 +70,13 @@ export function LocationMap({
     label,
     className,
 }: LocationMapProps) {
+    const intl = usePanneauIntl();
     const container = useRef<HTMLDivElement>(null);
+    const frame = useRef<HTMLDivElement>(null);
+    // Whether the focus is in the map: the wheel zooms it then
+    const active = useRef(false);
+    const [hinted, setHinted] = useState(false);
+    const hintTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
     const map = useRef<{ leaflet: Leaflet; map: LeafletMap; marker: LeafletMarker | null } | null>(
         null,
     );
@@ -148,6 +163,44 @@ export function LocationMap({
         };
     }, [url]);
 
+    // Over a map that isn't active, a scroll without ⌘ or Ctrl never reaches Leaflet, which
+    // listens on the map below: the page scrolls, and the hint says how to zoom. A pinch on a
+    // trackpad comes with Ctrl, and zooms.
+    const showHint = useEffectEvent(() => {
+        setHinted(true);
+        clearTimeout(hintTimer.current);
+        hintTimer.current = setTimeout(() => setHinted(false), HINT_DURATION);
+    });
+    useEffect(() => {
+        const element = frame.current;
+        if (element === null) {
+            return undefined;
+        }
+        const onWheel = (event: WheelEvent) => {
+            if (active.current || event.ctrlKey || event.metaKey) {
+                return;
+            }
+            event.stopPropagation();
+            showHint();
+        };
+        element.addEventListener('wheel', onWheel, { capture: true, passive: true });
+        return () => {
+            element.removeEventListener('wheel', onWheel, { capture: true });
+            clearTimeout(hintTimer.current);
+        };
+    }, []);
+    const onFocus = () => {
+        active.current = true;
+        setHinted(false);
+    };
+    const onBlur = (event: FocusEvent<HTMLDivElement>) => {
+        if (!(
+            event.relatedTarget instanceof Node && event.currentTarget.contains(event.relatedTarget)
+        )) {
+            active.current = false;
+        }
+    };
+
     const lat = point?.lat;
     const lng = point?.lng;
     const show = useEffectEvent((next: Point | null) => sync(next, true));
@@ -157,10 +210,20 @@ export function LocationMap({
 
     return (
         <div
-            ref={container}
-            className={[styles.map, className].filter(Boolean).join(' ')}
-            role="application"
-            aria-label={label}
-        />
+            ref={frame}
+            className={[styles.mapFrame, className].filter(Boolean).join(' ')}
+            onFocus={onFocus}
+            onBlur={onBlur}
+        >
+            <div ref={container} className={styles.map} role="application" aria-label={label} />
+            {/* For the pointer only: the keyboard zooms with + and − */}
+            <div className={styles.zoomHint} data-visible={hinted || undefined} aria-hidden="true">
+                <span className={styles.zoomHintText}>
+                    {intl.formatMessage(messages.mapZoomHint, {
+                        key: isApplePlatform() ? '⌘' : 'Ctrl',
+                    })}
+                </span>
+            </div>
+        </div>
     );
 }

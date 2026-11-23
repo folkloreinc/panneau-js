@@ -7,6 +7,7 @@ import {
     Action,
     AddressSettings,
     AddressValue,
+    DateSettings,
     Definition,
     DurationSettings,
     Field,
@@ -18,6 +19,7 @@ import {
     MediaTransform,
     Problem,
     RichTextSettings,
+    SelectSettings,
 } from './index';
 
 describe('Definition', () => {
@@ -158,6 +160,30 @@ describe('Field', () => {
                 .success,
         ).toBe(false);
         expect(RichTextSettings.safeParse({ links: { newTab: 'always' } }).success).toBe(false);
+    });
+
+    it('describes the settings of date and select fields', () => {
+        expect(DateSettings.safeParse({}).success).toBe(true);
+        expect(
+            DateSettings.safeParse({
+                shortcuts: [
+                    'today',
+                    'tomorrow',
+                    { label: 'In a week', weeks: 1 },
+                    { label: 'A year after the start', from: 'starts_on', years: 1, days: -1 },
+                ],
+            }).success,
+        ).toBe(true);
+        expect(DateSettings.safeParse({ shortcuts: ['next week'] }).success).toBe(false);
+        expect(DateSettings.safeParse({ shortcuts: [{ days: 7 }] }).success).toBe(false);
+        expect(DateSettings.safeParse({ shortcuts: [{ label: 'Soon', days: 1.5 }] }).success).toBe(
+            false,
+        );
+        expect(DateSettings.safeParse({ shortcuts: [{ label: 'Soon', hours: 1 }] }).success).toBe(
+            false,
+        );
+        expect(SelectSettings.safeParse({ search: true, widget: 'select' }).success).toBe(true);
+        expect(SelectSettings.safeParse({ search: 'yes' }).success).toBe(false);
     });
 
     it('describes the settings of duration fields', () => {
@@ -651,6 +677,29 @@ describe('the image field', () => {
                 path: `resources.1.fields.${String(index)}.rules.0`,
                 message: 'A field without transforms keeps no crop for the `crop` rule.',
             },
+        ]);
+    });
+
+    it('checks the shortcuts of date fields and the search of selects', () => {
+        const definition = createDefinition();
+        const resource = definition.resources[0];
+        if (resource === undefined) {
+            throw new Error('Fixture has no resource.');
+        }
+        const count = resource.fields.length;
+        resource.fields.push(
+            {
+                name: 'ends_on',
+                type: 'date',
+                settings: { shortcuts: ['today', { label: 'A year later', years: 1 }] },
+            },
+            { name: 'starts_on', type: 'date', settings: { shortcuts: ['soon'] } },
+            { name: 'country', type: 'select', options: [], settings: { search: 'always' } },
+        );
+        const result = validateDefinition(definition);
+        expect(result.success ? [] : result.issues.map((issue) => issue.path)).toEqual([
+            `resources.0.fields.${String(count + 1)}.settings.shortcuts.0`,
+            `resources.0.fields.${String(count + 2)}.settings.search`,
         ]);
     });
 });

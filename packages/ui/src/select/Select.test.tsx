@@ -133,4 +133,12 @@ describe('Select', () => {
         render(<Select label="Status" options={OPTIONS} errors={['Pick a status.']} />);
         expect(screen.getByText('Pick a status.')).toBeInTheDocument();
     });
+
+    it('marks its box as invalid, as a text input', () => {
+        const { rerender } = render(<Select label="Status" options={OPTIONS} />);
+        const trigger = screen.getByRole('button', { name: /Status/ });
+        expect(trigger).not.toHaveAttribute('data-invalid');
+        rerender(<Select label="Status" options={OPTIONS} errors={['Pick a status.']} />);
+        expect(trigger).toHaveAttribute('data-invalid', 'true');
+    });
 });

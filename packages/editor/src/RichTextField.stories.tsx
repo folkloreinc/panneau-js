@@ -2,6 +2,9 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
+import { FieldsProvider, type RelationSource } from '@panneau/fields';
+import { isApplePlatform } from '@panneau/ui';
+
 import { RichTextField } from './RichTextField';
 import { ckeditor5 } from './__fixtures__/ckeditor';
 import { Logo, logoButton } from './__fixtures__/logo';
@@ -10,6 +13,26 @@ const STYLES = [
     { label: 'Big paragraph', class: 'big' },
     { label: 'Lead', class: 'lead' },
 ];
+
+/** The keys of ⌘K or Ctrl+K, as `userEvent.keyboard()` writes them. */
+const modKey = (key: string) => {
+    const modifier = isApplePlatform() ? 'Meta' : 'Control';
+    return `{${modifier}>}${key}{/${modifier}}`;
+};
+
+const PAGES = [
+    { id: '1', label: 'Home' },
+    { id: '12', label: 'About us' },
+    { id: '13', label: 'Contact' },
+];
+
+/** The pages of a site, searched as the app's relation source would. */
+const pageSource: RelationSource = {
+    search: (_resource, query) =>
+        Promise.resolve(
+            PAGES.filter((page) => page.label.toLowerCase().includes(query.toLowerCase())),
+        ),
+};
 
 const PLUGIN_EXTENSIONS = [Logo];
 const PLUGIN_BUTTONS = [logoButton];
@@ -75,7 +98,9 @@ export const Default: Story = {
         const canvas = within(canvasElement);
         const textbox = canvas.getByRole('textbox', { name: 'Body' });
         await expect(
-            within(textbox).getByRole('img', { name: /figure\.media, https:\/\/vimeo\.com/ }),
+            within(textbox).getByRole('img', {
+                name: 'Embedded video, Vimeo, https://vimeo.com/123456',
+            }),
         ).toBeVisible();
         await userEvent.click(within(textbox).getByText('A big paragraph', { exact: false }));
         await waitFor(() =>
@@ -130,6 +155,131 @@ export const FullToolbar: Story = {
                 <RichTextField {...args} value={value} onChange={setValue} />
             </div>
         );
+    },
+};
+
+/**
+ * ⌘K (Ctrl+K elsewhere) opens the link dialog on the selection, rather than the app's "Go to…"
+ * palette. The tooltips of the toolbar name the shortcuts of their buttons.
+ */
+export const Shortcuts: Story = {
+    args: { toolbar: ['bold', 'italic', 'link', '|', 'bulletList', 'undo', 'redo'] },
+    render: function Render(args) {
+        const [value, setValue] = useState<string | null>('<p>Read the documentation.</p>');
+        return (
+            <div style={{ maxWidth: '48rem' }}>
+                <RichTextField {...args} value={value} onChange={setValue} />
+            </div>
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        const bold = canvas.getByRole('button', { name: 'Bold' });
+        await expect(bold).toHaveAttribute(
+            'aria-keyshortcuts',
+            isApplePlatform() ? 'Meta+B' : 'Control+B',
+        );
+        await userEvent.hover(bold);
+        await expect(await body.findByRole('tooltip')).toHaveTextContent(
+            isApplePlatform() ? 'Bold⌘B' : 'BoldCtrl+B',
+        );
+        await userEvent.unhover(bold);
+        await userEvent.tripleClick(canvas.getByText('Read the documentation.'));
+        await userEvent.keyboard(modKey('k'));
+        const dialog = await body.findByRole('dialog', { name: 'Link' });
+        await userEvent.type(
+            within(dialog).getByRole('textbox', { name: 'URL' }),
+            'https://example.com/docs',
+        );
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Apply' }));
+        await waitFor(() =>
+            expect(canvas.getByRole('link', { name: 'Read the documentation.' })).toHaveAttribute(
+                'href',
+                'https://example.com/docs',
+            ),
+        );
+    },
+};
+
+/**
+ * Links to pages of the site: with the `resource` of the field and the relation source of the
+ * app, the link dialog searches its items, and still takes a URL.
+ */
+export const LinksToPages: Story = {
+    args: { toolbar: ['bold', 'italic', 'link'], pages: ['pages'] },
+    render: function Render(args) {
+        const [value, setValue] = useState<string | null>(
+            '<p>Write to us.</p><p>Or read <a href="/en/about" data-page-id="12" data-page-resource="pages">who we are</a>.</p>',
+        );
+        return (
+            <FieldsProvider relationSource={pageSource}>
+                <div style={{ maxWidth: '48rem' }}>
+                    <RichTextField {...args} value={value} onChange={setValue} />
+                </div>
+            </FieldsProvider>
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        const textbox = canvas.getByRole('textbox', { name: 'Body' });
+        await userEvent.tripleClick(within(textbox).getByText('Write to us.'));
+        await userEvent.click(canvas.getByRole('button', { name: 'Link' }));
+        const dialog = await body.findByRole('dialog', { name: 'Link' });
+        await expect(within(dialog).getByRole('radio', { name: 'Page' })).toBeChecked();
+        await userEvent.type(within(dialog).getByRole('combobox', { name: 'Page' }), 'cont');
+        await userEvent.click(await body.findByRole('option', { name: 'Contact' }));
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Apply' }));
+        await waitFor(() =>
+            expect(within(textbox).getByRole('link', { name: 'Write to us.' })).toHaveAttribute(
+                'data-page-id',
+                '13',
+            ),
+        );
+    },
+};
+
+/**
+ * HTML the field keeps as it was written, named in words: a video, a post, other embedded
+ * content, a table, an image, and a `<div>`. Their element is in a tooltip, for developers.
+ */
+export const KeptHtml: Story = {
+    args: { toolbar: ['bold', 'italic', 'link'] },
+    render: function Render(args) {
+        const [value, setValue] = useState<string | null>(
+            [
+                '<p>A video:</p>',
+                '<figure class="media"><oembed url="https://www.youtube.com/watch?v=abc123"></oembed></figure>',
+                '<blockquote class="twitter-tweet"><p>A post</p><a href="https://twitter.com/user/status/1">Link</a></blockquote>',
+                '<figure class="media"><oembed url="https://example.com/widget"></oembed></figure>',
+                '<table><tbody><tr><td>A cell</td></tr></tbody></table>',
+                '<figure class="image"><img src="https://example.com/a.jpg" alt="A lake"></figure>',
+                '<div class="box">Some text in a box</div>',
+            ].join(''),
+        );
+        return (
+            <div style={{ maxWidth: '48rem' }}>
+                <RichTextField {...args} value={value} onChange={setValue} />
+            </div>
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const textbox = within(canvasElement).getByRole('textbox', { name: 'Body' });
+        const video = within(textbox).getByRole('img', {
+            name: 'Embedded video, YouTube, https://www.youtube.com/watch?v=abc123',
+        });
+        await expect(video).toBeVisible();
+        await expect(video).toHaveAttribute('title', 'figure.media');
+        await expect(
+            within(textbox).getByRole('img', {
+                name: 'Embedded post, X, https://twitter.com/user/status/1',
+            }),
+        ).toBeVisible();
+        await expect(within(textbox).getByRole('img', { name: 'Table, A cell' })).toBeVisible();
+        await expect(
+            within(textbox).getByRole('img', { name: 'HTML kept as is, Some text in a box' }),
+        ).toBeVisible();
     },
 };
 

@@ -24,6 +24,14 @@
     overflow-wrap: anywhere;
 }
 
+/* Values show in full: text that a cell clamps at two lines (`data-clamp`), in displays of plugins too. */
+.value [data-clamp] {
+    display: inline;
+    overflow: visible;
+    -webkit-line-clamp: none;
+    line-clamp: none;
+}
+
 /* A group: its label over its values, which are indented. */
 .group > .label {
     color: var(--panneau-color-text);

@@ -4,11 +4,20 @@ import { useState } from 'react';
 import { mediaMessages as messages } from '@panneau/intl';
 import type { Filter, FilterValue } from '@panneau/protocol';
 import { isFilterRange } from '@panneau/protocol/runtime';
-import { Badge, Button, Select, Switch, TextInput, usePanneauIntl } from '@panneau/ui';
+import {
+    Badge,
+    Button,
+    Select,
+    Switch,
+    TextInput,
+    type TextInputProps,
+    usePanneauIntl,
+} from '@panneau/ui';
 
 import styles from './MediaPicker.module.css';
 import { MEDIA_TYPES, sortLabel, typeLabel } from './format';
 import type { MediaSort, MediaType } from './types';
+import { useDraft } from './useDraft';
 import type { BrowseQuery } from './useMediaBrowser';
 
 /** The filter types the picker shows. Others are left out. */
@@ -20,6 +29,29 @@ function isSet(value: FilterValue | undefined): boolean {
         value !== '' &&
         value !== false &&
         !(Array.isArray(value) && value.length === 0)
+    );
+}
+
+interface DraftInputProps extends Omit<TextInputProps, 'value' | 'onChange' | 'onKeyDown'> {
+    value: string;
+    /** Called once the user stops typing (300 ms), or presses Enter. */
+    onChange: (value: string) => void;
+}
+
+/** A text input that changes the query after a pause in typing, or at once on Enter. */
+function DraftInput({ value, onChange, ...props }: DraftInputProps) {
+    const { draft, setDraft, flush } = useDraft(value, onChange);
+    return (
+        <TextInput
+            {...props}
+            value={draft}
+            onChange={setDraft}
+            onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                    flush();
+                }
+            }}
+        />
     );
 }
 
@@ -35,7 +67,7 @@ export interface PickerToolbarProps {
 }
 
 /**
- * Search, the type filter, the sort, and a row of the source's and the opener's filters, with
+ * Search (after a pause in typing, or on Enter), the type filter, the sort, and a row of the source's and the opener's filters, with
  * the opener's locked filters shown as such.
  */
 export function PickerToolbar({
@@ -81,7 +113,7 @@ export function PickerToolbar({
     return (
         <>
             <div className={styles.toolbar}>
-                <TextInput
+                <DraftInput
                     type="search"
                     aria-label={intl.formatMessage(messages.pickerSearch)}
                     placeholder={intl.formatMessage(messages.pickerSearchPlaceholder)}
@@ -170,7 +202,7 @@ export function PickerToolbar({
                         }
                         if (filter.type === 'text') {
                             return (
-                                <TextInput
+                                <DraftInput
                                     key={filter.id}
                                     aria-label={label}
                                     placeholder={label}

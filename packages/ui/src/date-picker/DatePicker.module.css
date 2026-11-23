@@ -35,6 +35,15 @@
     background-color: var(--panneau-selected-bg, var(--panneau-color-accent));
 }
 
+/* Content after the date: a time zone. */
+.end {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    padding-inline: var(--panneau-space-2);
+}
+
 .button {
     display: flex;
     align-items: center;

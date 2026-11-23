@@ -83,6 +83,10 @@ export const fieldsMessages = {
         id: 'panneau.fields.map',
         defaultMessage: 'Map: {label}. Click to place the point, or drag the marker.',
     }),
+    mapZoomHint: defineMessage<{ key: string }>({
+        id: 'panneau.fields.mapZoomHint',
+        defaultMessage: 'To zoom, scroll while holding {key}, or click the map first.',
+    }),
     embedUrl: defineMessage({ id: 'panneau.fields.embedUrl', defaultMessage: 'URL' }),
     embedLoading: defineMessage({
         id: 'panneau.fields.embedLoading',
@@ -167,6 +171,14 @@ export const fieldsMessages = {
     }),
     dropHere: defineMessage({ id: 'panneau.fields.dropHere', defaultMessage: 'or drop them here' }),
     dropZone: defineMessage({ id: 'panneau.fields.dropZone', defaultMessage: 'Drop files here' }),
+    dropToUpload: defineMessage({
+        id: 'panneau.fields.dropToUpload',
+        defaultMessage: 'Drop to upload',
+    }),
+    onlyOneFile: defineMessage<{ name: string }>({
+        id: 'panneau.fields.onlyOneFile',
+        defaultMessage: 'Only one file can be added here: {name} was kept.',
+    }),
     noFile: defineMessage({ id: 'panneau.fields.noFile', defaultMessage: 'No file' }),
     removeFile: defineMessage<{ name: string }>({
         id: 'panneau.fields.removeFile',
@@ -301,6 +313,12 @@ export const fieldsMessages = {
         defaultMessage: 'Open in a new tab',
     }),
     allDay: defineMessage({ id: 'panneau.fields.allDay', defaultMessage: 'All day' }),
+    dateToday: defineMessage({ id: 'panneau.fields.dateToday', defaultMessage: 'Today' }),
+    dateYesterday: defineMessage({
+        id: 'panneau.fields.dateYesterday',
+        defaultMessage: 'Yesterday',
+    }),
+    dateTomorrow: defineMessage({ id: 'panneau.fields.dateTomorrow', defaultMessage: 'Tomorrow' }),
     timeZone: defineMessage({ id: 'panneau.fields.timeZone', defaultMessage: 'Time zone' }),
     noTimeZones: defineMessage({
         id: 'panneau.fields.noTimeZones',

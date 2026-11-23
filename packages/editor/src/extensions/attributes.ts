@@ -27,7 +27,7 @@ const INTERNAL_ATTRIBUTES = [IMPLICIT_PARAGRAPH, CLIPBOARD_SLICE, COPIED_FROM, K
  */
 const OWN_ATTRIBUTES: Readonly<Record<string, readonly string[]>> = {
     orderedList: ['start', 'type'],
-    link: ['href', 'target', 'rel', 'class', 'title'],
+    link: ['href', 'target', 'rel', 'class', 'title', 'data-page-id', 'data-page-resource'],
 };
 
 /** The nodes and marks of the field whose attributes are kept. */
