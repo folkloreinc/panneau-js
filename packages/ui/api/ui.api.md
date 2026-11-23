@@ -494,6 +494,7 @@ export interface CommandPaletteProps {
     // (undocumented)
     className?: string;
     groups: readonly CommandPaletteGroup[];
+    highlightMatches?: boolean;
     inputValue?: string;
     // (undocumented)
     isOpen: boolean;
@@ -533,7 +534,7 @@ export const componentTokens: Readonly<{
     calendar: Readonly<Record<"panneau-calendar-cell-size" | "panneau-calendar-cell-radius" | "panneau-calendar-selected-color" | "panneau-calendar-selected-bg", string>>;
     card: Readonly<Record<"panneau-card-radius" | "panneau-card-gap" | "panneau-card-padding-y" | "panneau-card-padding-x" | "panneau-card-border-width" | "panneau-card-title-font-weight" | "panneau-card-bg" | "panneau-card-shadow" | "panneau-card-border-color" | "panneau-card-header-padding-y" | "panneau-card-title-font-size", string>>;
     checkbox: Readonly<Record<"panneau-checkbox-size" | "panneau-checkbox-radius" | "panneau-checkbox-bg" | "panneau-checkbox-border-color" | "panneau-checkbox-checked-color" | "panneau-checkbox-checked-bg", string>>;
-    'command-palette': Readonly<Record<"panneau-command-palette-width" | "panneau-command-palette-radius" | "panneau-command-palette-bg" | "panneau-command-palette-offset-top" | "panneau-command-palette-list-max-height" | "panneau-command-palette-item-radius" | "panneau-command-palette-item-active-bg", string>>;
+    'command-palette': Readonly<Record<"panneau-command-palette-width" | "panneau-command-palette-radius" | "panneau-command-palette-bg" | "panneau-command-palette-offset-top" | "panneau-command-palette-list-max-height" | "panneau-command-palette-item-radius" | "panneau-command-palette-item-active-bg" | "panneau-command-palette-match-bg" | "panneau-command-palette-match-color" | "panneau-command-palette-match-font-weight", string>>;
     container: Readonly<Record<"panneau-container-padding-x" | "panneau-container-width-sm" | "panneau-container-width-md" | "panneau-container-width-lg" | "panneau-container-width-xl", string>>;
     dialog: Readonly<Record<"panneau-dialog-width" | "panneau-dialog-radius" | "panneau-dialog-padding-x" | "panneau-dialog-title-font-weight" | "panneau-dialog-bg" | "panneau-dialog-shadow" | "panneau-dialog-title-font-size" | "panneau-dialog-width-sm" | "panneau-dialog-width-lg" | "panneau-dialog-width-xl" | "panneau-dialog-backdrop", string>>;
     disclosure: Readonly<Record<"panneau-disclosure-gap" | "panneau-disclosure-title-font-weight" | "panneau-disclosure-title-font-size", string>>;
