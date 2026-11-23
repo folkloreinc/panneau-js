@@ -1,12 +1,21 @@
-import { screen, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { Field } from '@panneau/protocol';
 
 import { Controlled, renderField } from '../__fixtures__/render';
 import { DefinitionField } from '../shared/DefinitionField';
-import { RepeaterField, type RepeaterItem, getItemExcerpt } from './RepeaterField';
+import { builtInFields } from '../shared/builtIn';
+import type { FieldEntryProps } from '../shared/types';
+import {
+    RepeaterField,
+    type RepeaterItem,
+    getItemExcerpt,
+    initialItemKeys,
+    updateItemKeys,
+} from './RepeaterField';
 
 const LINK_FIELDS: Field[] = [
     { name: 'label', type: 'text', label: 'Label' },
@@ -42,6 +51,16 @@ function Links({
                 />
             )}
         </Controlled>
+    );
+}
+
+/** A field with a state of its own, which isn't its value, as an editor keeps its history. */
+function Counter({ field }: FieldEntryProps) {
+    const [count, setCount] = useState(0);
+    return (
+        <button type="button" onClick={() => setCount(count + 1)}>
+            {`${field.label ?? ''} ${count}`}
+        </button>
     );
 }
 
@@ -246,6 +265,89 @@ describe('RepeaterField', () => {
         expect(screen.getByRole('textbox', { name: 'Label' })).toHaveAttribute('readonly');
     });
 
+    it('puts a removed item back at its place, with its value and its state, from “Undo”', async () => {
+        const onChange = vi.fn();
+        renderField(<Links onChange={onChange} />);
+        await userEvent.click(toggles()[0] as HTMLElement);
+        await userEvent.click(screen.getByRole('button', { name: 'Remove item 1' }));
+        expect(onChange).toHaveBeenLastCalledWith([{ label: 'B' }]);
+        expect(toggles()).toHaveLength(1);
+        expect(screen.getByText('“Item 1” removed')).toBeInTheDocument();
+
+        await userEvent.click(screen.getByRole('button', { name: 'Undo' }));
+        expect(onChange).toHaveBeenLastCalledWith([{ label: 'A' }, { label: 'B' }]);
+        const [first, second] = toggles();
+        // Expanded as it was, with its value, and focused
+        expect(screen.getByRole('textbox', { name: 'Label' })).toHaveValue('A');
+        expect(first).toHaveAttribute('aria-expanded', 'true');
+        expect(first).toHaveFocus();
+        expect(second).toHaveAttribute('aria-expanded', 'false');
+        expect(screen.getByText('“Item 1” put back')).toBeInTheDocument();
+        expect(screen.queryByText('“Item 1” removed')).not.toBeInTheDocument();
+    });
+
+    it('puts an item back in the value it has when “Undo” is pressed', async () => {
+        const onChange = vi.fn();
+        renderField(<Links onChange={onChange} />);
+        await userEvent.click(screen.getByRole('button', { name: 'Remove item 1' }));
+        await userEvent.click(screen.getByRole('button', { name: 'Add' }));
+        await userEvent.click(screen.getByRole('button', { name: 'Undo' }));
+        expect(onChange).toHaveBeenLastCalledWith([
+            { label: 'A' },
+            { label: 'B' },
+            { url: 'https://' },
+        ]);
+    });
+
+    it('keeps the state of the fields of an item, and the focus, as it moves', async () => {
+        renderField(
+            <Controlled<RepeaterItem[] | null> initial={[{ label: 'A' }, { label: 'B' }]}>
+                {(value, setValue) => (
+                    <RepeaterField
+                        label="Notes"
+                        name="notes"
+                        fields={[{ name: 'count', type: 'counter', label: 'Count' }]}
+                        itemTitle={(item) => (typeof item.label === 'string' ? item.label : null)}
+                        collapsible={false}
+                        value={value}
+                        onChange={setValue}
+                    />
+                )}
+            </Controlled>,
+            { components: { ...builtInFields, counter: Counter } },
+        );
+        const [first] = screen.getAllByRole('listitem');
+        await userEvent.click(
+            within(first as HTMLElement).getByRole('button', { name: 'Count 0' }),
+        );
+        await userEvent.click(
+            within(first as HTMLElement).getByRole('button', { name: 'Count 1' }),
+        );
+
+        await userEvent.click(screen.getByRole('button', { name: 'Move item 1 down' }));
+        const [top, bottom] = screen.getAllByRole('listitem');
+        expect(top).toHaveAccessibleName('1 B');
+        expect(within(top as HTMLElement).getByRole('button', { name: 'Count 0' })).toBeVisible();
+        expect(bottom).toHaveAccessibleName('2 A');
+        expect(
+            within(bottom as HTMLElement).getByRole('button', { name: 'Count 2' }),
+        ).toBeVisible();
+        // On the other button of the item, since it is now the last one
+        expect(screen.getByRole('button', { name: 'Move item 2 up' })).toHaveFocus();
+
+        await userEvent.keyboard('{Enter}');
+        expect(screen.getAllByRole('listitem')[0]).toHaveAccessibleName('1 A');
+        expect(screen.getByRole('button', { name: 'Move item 1 down' })).toHaveFocus();
+    });
+
+    it('removes an item at once outside a PanneauRoot, without a toast', async () => {
+        const onChange = vi.fn();
+        render(<Links onChange={onChange} />);
+        await userEvent.click(screen.getByRole('button', { name: 'Remove item 1' }));
+        expect(onChange).toHaveBeenLastCalledWith([{ label: 'B' }]);
+        expect(screen.queryByRole('button', { name: 'Undo' })).not.toBeInTheDocument();
+    });
+
     it('shows the items of a disabled list, which can’t expand', () => {
         renderField(
             <RepeaterField label="Links" fields={LINK_FIELDS} value={[{ label: 'A' }]} disabled />,
@@ -273,5 +375,26 @@ describe('getItemExcerpt', () => {
         const fields: Field[] = [{ name: 'title', type: 'text', localized: true }];
         expect(getItemExcerpt({ title: { fr: '', en: 'Summer' } }, fields)).toBe('Summer');
         expect(getItemExcerpt({ title: 'a'.repeat(200) }, fields)).toBe(`${'a'.repeat(140)}…`);
+    });
+});
+
+describe('updateItemKeys', () => {
+    const a = { label: 'A' };
+    const b = { label: 'B' };
+    const c = { label: 'C' };
+
+    it('keeps the key of an item that moved, or that changed in place', () => {
+        const keys = initialItemKeys([a, b, c]);
+        expect(updateItemKeys(keys, [a, b, c])).toBe(keys);
+        expect(updateItemKeys(keys, [c, a, b]).keys).toEqual([2, 0, 1]);
+        expect(updateItemKeys(keys, [a, { label: 'B2' }, c]).keys).toEqual([0, 1, 2]);
+    });
+
+    it('gives new keys to new items, and never reuses one', () => {
+        const keys = updateItemKeys(initialItemKeys([a, b]), [b]);
+        expect(keys.keys).toEqual([1]);
+        const added = updateItemKeys(keys, [b, c, { label: 'D' }]);
+        expect(added.keys).toEqual([1, 2, 3]);
+        expect(added.next).toBe(4);
     });
 });

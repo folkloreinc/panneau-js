@@ -6,6 +6,8 @@ export const fieldsFr: Record<string, string> = {
     'panneau.fields.addType': 'Ajouter : {type}',
     'panneau.fields.remove': 'Retirer',
     'panneau.fields.removeItem': 'Retirer l’élément {index}',
+    'panneau.fields.removed': '« {name} » retiré',
+    'panneau.fields.restored': '« {name} » remis en place',
     'panneau.fields.moveUp': 'Monter l’élément {index}',
     'panneau.fields.moveDown': 'Descendre l’élément {index}',
     'panneau.fields.item': 'Élément {index}',

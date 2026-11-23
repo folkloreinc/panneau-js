@@ -17,6 +17,16 @@ export const fieldsMessages = {
         id: 'panneau.fields.removeItem',
         defaultMessage: 'Remove item {index}',
     }),
+    /** The toast after an item, a relation or a media is removed, with "Undo" (decision 0063). */
+    removed: defineMessage<{ name: string }>({
+        id: 'panneau.fields.removed',
+        defaultMessage: '“{name}” removed',
+    }),
+    /** The toast that replaces it once the removal is undone. */
+    restored: defineMessage<{ name: string }>({
+        id: 'panneau.fields.restored',
+        defaultMessage: '“{name}” put back',
+    }),
     moveUp: defineMessage<{ index: number }>({
         id: 'panneau.fields.moveUp',
         defaultMessage: 'Move item {index} up',

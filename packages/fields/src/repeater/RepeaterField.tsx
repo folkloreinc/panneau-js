@@ -8,7 +8,7 @@ import {
     Plus,
     Trash2,
 } from 'lucide-react';
-import { type ReactNode, useId, useState } from 'react';
+import { type ReactNode, useEffect, useId, useRef, useState } from 'react';
 
 import type { BlockType, Field } from '@panneau/protocol';
 import {
@@ -20,6 +20,7 @@ import {
     MenuItem,
     MenuTrigger,
     usePanneauIntl,
+    useUndoToast,
 } from '@panneau/ui';
 
 import { NestedField } from '../shared/DefinitionField';
@@ -137,6 +138,65 @@ function invalidIndexes(base: string, paths: readonly string[]): Set<number> {
     return indexes;
 }
 
+/**
+ * The keys of the items of a list: a stable identity for each one, which isn't part of its value,
+ * so that the state of its fields (an editor's history), whether it is expanded and the focus
+ * follow it when it moves.
+ */
+export interface ItemKeys {
+    /** The items the keys were given to. */
+    items: readonly RepeaterItem[];
+    keys: readonly number[];
+    /** The next key to give. */
+    next: number;
+}
+
+/** Keys for the items a list shows first. */
+export function initialItemKeys(items: readonly RepeaterItem[]): ItemKeys {
+    return { items, keys: items.map((_, index) => index), next: items.length };
+}
+
+/**
+ * Keys for the items of a new value, from those of the previous one. An item keeps its key when it
+ * is the same object, wherever it moved; an item that changed (a new object at the same place, as
+ * a form writes an edit) keeps the key of its place, when no other item took it. Other items get
+ * new keys. Returns `previous` itself when the items didn't change.
+ */
+export function updateItemKeys(previous: ItemKeys, items: readonly RepeaterItem[]): ItemKeys {
+    if (
+        items.length === previous.items.length &&
+        items.every((item, index) => item === previous.items[index])
+    ) {
+        return previous;
+    }
+    const used = new Set<number>();
+    const found = items.map((item) => {
+        const at = previous.items.findIndex(
+            (candidate, index) =>
+                candidate === item && !used.has(previous.keys[index] ?? Number.NaN),
+        );
+        const key = at !== -1 ? previous.keys[at] : undefined;
+        if (key !== undefined) {
+            used.add(key);
+        }
+        return key;
+    });
+    let next = previous.next;
+    const keys = found.map((key, index) => {
+        if (key !== undefined) {
+            return key;
+        }
+        const own = previous.keys[index];
+        if (own !== undefined && !used.has(own)) {
+            used.add(own);
+            return own;
+        }
+        next += 1;
+        return next - 1;
+    });
+    return { items, keys, next };
+}
+
 /** Moves the value at `from` to `to`, as items move. */
 function moved<T>(list: readonly T[], from: number, to: number): T[] {
     const next = [...list];
@@ -183,6 +243,7 @@ export function RepeaterField({
     itemClassName,
 }: RepeaterFieldProps) {
     const intl = usePanneauIntl();
+    const undoToast = useUndoToast();
     const id = useId();
     const base = path ?? name ?? '';
     const items = value ?? [];
@@ -190,13 +251,49 @@ export function RepeaterField({
     const canAdd = editable && (max === undefined || items.length < max);
     const canRemove = editable && items.length > min;
 
-    // Whether each item is expanded, by index: an item the list doesn't know yet (it had it when
-    // it showed, or it came from outside, such as an undo) is collapsed. A disabled list can't be
-    // expanded, so it shows its items.
-    const [expanded, setExpanded] = useState<readonly boolean[]>([]);
+    // A stable key for each item, adjusted while rendering when the value changes
+    const [itemKeys, setItemKeys] = useState(() => initialItemKeys(items));
+    const tracked = updateItemKeys(itemKeys, items);
+    if (tracked !== itemKeys) {
+        setItemKeys(tracked);
+    }
+    const { keys } = tracked;
+    const keyAt = (index: number) => keys[index] ?? -1;
+
+    // The latest value, for an undo that comes after other changes
+    const latest = useRef({ items, tracked, onChange });
+    useEffect(() => {
+        latest.current = { items, tracked, onChange };
+    });
+
+    // Where the focus goes once the list changed: a button of an item that moved, or the header
+    // of an item put back. The item may only show once its value comes back from the form.
+    const list = useRef<HTMLOListElement>(null);
+    const focusNext = useRef<{ key: number; tool: 'up' | 'down' | 'header' } | null>(null);
+    useEffect(() => {
+        const target = focusNext.current;
+        const item =
+            target !== null ? list.current?.querySelector(`[data-key="${target.key}"]`) : null;
+        if (target === null || item === null || item === undefined) {
+            return;
+        }
+        focusNext.current = null;
+        // The toggle of an item put back, or its first button when it doesn't collapse
+        const element =
+            target.tool === 'header'
+                ? item.querySelector<HTMLElement>('[data-header] button')
+                : item.querySelectorAll<HTMLElement>('[data-tools] button')[
+                      target.tool === 'up' ? 0 : 1
+                  ];
+        element?.focus();
+    });
+
+    // The keys of the expanded items: an item the list doesn't know yet (it had it when it
+    // showed, or it came from outside) is collapsed. A disabled list can't be expanded, so it
+    // shows its items.
+    const [expanded, setExpanded] = useState<ReadonlySet<number>>(() => new Set());
     const isExpanded = (index: number) =>
-        !collapsible || disabled === true || (expanded[index] ?? false);
-    const known = (list: readonly boolean[]) => items.map((_, index) => list[index] ?? false);
+        !collapsible || disabled === true || expanded.has(keyAt(index));
 
     // Items that get an error expand, once: their fields show it, and the error summary can
     // focus them. The state is adjusted while rendering, when the paths in error change.
@@ -206,33 +303,97 @@ export function RepeaterField({
     if (invalidKey !== seenInvalid) {
         const before = new Set(seenInvalid === '' ? [] : seenInvalid.split(',').map(Number));
         setSeenInvalid(invalidKey);
-        if ([...invalid].some((index) => !before.has(index))) {
-            setExpanded(
-                known(expanded).map(
-                    (open, index) => open || (invalid.has(index) && !before.has(index)),
-                ),
-            );
+        const opened = [...invalid].filter((index) => !before.has(index));
+        if (opened.length > 0) {
+            setExpanded(new Set([...expanded, ...opened.map(keyAt)]));
         }
     }
 
-    const set = (next: RepeaterItem[]) => onChange?.(next.length > 0 ? next : null);
+    /** Sets the items, with their keys. */
+    const set = (next: RepeaterItem[], nextKeys: readonly number[], nextKey = tracked.next) => {
+        setItemKeys({ items: next, keys: nextKeys, next: nextKey });
+        onChange?.(next.length > 0 ? next : null);
+    };
     const move = (from: number, to: number) => {
-        set(moved(items, from, to));
-        setExpanded(moved(known(expanded), from, to));
+        set(moved(items, from, to), moved(keys, from, to));
+        // The focus follows the item, on the button that moved it, or on the other one at an end
+        const tool = from < to ? 'down' : 'up';
+        focusNext.current = {
+            key: keyAt(from),
+            tool: to === 0 ? 'down' : to === items.length - 1 ? 'up' : tool,
+        };
+    };
+    const titleOf = (item: RepeaterItem, index: number) => {
+        const type =
+            types !== undefined ? types.find((candidate) => candidate.id === item.type) : undefined;
+        return (
+            itemTitle?.(item, index) ??
+            type?.label ??
+            (typeof item.type === 'string'
+                ? item.type
+                : intl.formatMessage(messages.item, { index: index + 1 }))
+        );
     };
     const remove = (index: number) => {
-        set(items.filter((_, i) => i !== index));
-        setExpanded(known(expanded).filter((_, i) => i !== index));
+        const item = items[index];
+        const key = keyAt(index);
+        const following = keys[index + 1];
+        if (item === undefined) {
+            return;
+        }
+        set(
+            items.filter((_, i) => i !== index),
+            keys.filter((_, i) => i !== index),
+        );
+        const name = titleOf(item, index);
+        undoToast?.(
+            {
+                title: intl.formatMessage(messages.removed, { name }),
+                undoneTitle: intl.formatMessage(messages.restored, { name }),
+                // Back at its place, with its value, its key and so its state
+                onUndo: () => {
+                    const current = latest.current;
+                    if (current.tracked.keys.includes(key)) {
+                        return;
+                    }
+                    // Before the item that followed it, or at its index
+                    const before =
+                        following !== undefined ? current.tracked.keys.indexOf(following) : -1;
+                    const at = before !== -1 ? before : Math.min(index, current.items.length);
+                    const next = current.items.toSpliced(at, 0, item);
+                    setItemKeys({
+                        items: next,
+                        keys: current.tracked.keys.toSpliced(at, 0, key),
+                        next: current.tracked.next,
+                    });
+                    current.onChange?.(next);
+                    focusNext.current = { key, tool: 'header' };
+                },
+            },
+            { key: `${id}-${key}` },
+        );
     };
     const add = (type?: BlockType) => {
-        set([
-            ...items,
-            type !== undefined ? { type: type.id, ...defaults(type.fields) } : defaults(fields),
-        ]);
-        setExpanded([...known(expanded), true]);
+        set(
+            [
+                ...items,
+                type !== undefined ? { type: type.id, ...defaults(type.fields) } : defaults(fields),
+            ],
+            [...keys, tracked.next],
+            tracked.next + 1,
+        );
+        setExpanded(new Set([...expanded, tracked.next]));
     };
-    const toggle = (index: number) =>
-        setExpanded(known(expanded).map((open, i) => (i === index ? !open : open)));
+    const toggle = (index: number) => {
+        const key = keyAt(index);
+        const next = new Set(expanded);
+        if (next.has(key)) {
+            next.delete(key);
+        } else {
+            next.add(key);
+        }
+        setExpanded(next);
+    };
     const anyExpanded = items.some((_, index) => isExpanded(index));
     const showToggleAll = collapsible && disabled !== true && items.length > 1;
 
@@ -253,7 +414,7 @@ export function RepeaterField({
                         size="sm"
                         appearance="ghost"
                         icon={anyExpanded ? ChevronsDownUp : ChevronsUpDown}
-                        onPress={() => setExpanded(items.map(() => !anyExpanded))}
+                        onPress={() => setExpanded(new Set(anyExpanded ? [] : keys))}
                     >
                         {intl.formatMessage(
                             anyExpanded ? messages.collapseAll : messages.expandAll,
@@ -262,7 +423,7 @@ export function RepeaterField({
                 </div>
             ) : null}
             {items.length > 0 ? (
-                <ol className={styles.items}>
+                <ol ref={list} className={styles.items}>
                     {items.map((item, index) => {
                         const type =
                             types !== undefined
@@ -270,9 +431,9 @@ export function RepeaterField({
                                 : undefined;
                         const itemFields = types !== undefined ? (type?.fields ?? []) : fields;
                         const number = index + 1;
-                        const titleId = `${id}-${index}`;
-                        const bodyId = `${id}-${index}-body`;
-                        const summary = itemTitle?.(item, index) ?? null;
+                        const key = keyAt(index);
+                        const titleId = `${id}-${key}`;
+                        const bodyId = `${id}-${key}-body`;
                         const open = isExpanded(index);
                         const hasError = invalid.has(index);
                         const excerpt =
@@ -282,13 +443,7 @@ export function RepeaterField({
                         const title = (
                             <span id={titleId} className={styles.title}>
                                 <span className={styles.index}>{number}</span>{' '}
-                                {summary ??
-                                    type?.label ??
-                                    (typeof item.type === 'string'
-                                        ? item.type
-                                        : intl.formatMessage(messages.item, {
-                                              index: number,
-                                          }))}
+                                {titleOf(item, index)}
                                 {excerpt !== null ? (
                                     <>
                                         {' '}
@@ -310,6 +465,7 @@ export function RepeaterField({
                                                 ? { ...current, [field.name]: next }
                                                 : current,
                                         ),
+                                        keys,
                                     )
                                 }
                                 {...(onBlur !== undefined ? { onBlur } : {})}
@@ -320,13 +476,15 @@ export function RepeaterField({
                         );
                         return (
                             <li
-                                key={index}
+                                // A stable key: the state of its fields follows the item
+                                key={key}
+                                data-key={key}
                                 className={cx(styles.item, itemClassName)}
                                 aria-labelledby={titleId}
                                 data-expanded={open || undefined}
                                 data-invalid={hasError || undefined}
                             >
-                                <div className={styles.header}>
+                                <div className={styles.header} data-header>
                                     {collapsible && disabled !== true ? (
                                         <button
                                             type="button"
@@ -359,7 +517,7 @@ export function RepeaterField({
                                         title
                                     )}
                                     {editable ? (
-                                        <span className={styles.tools}>
+                                        <span className={styles.tools} data-tools>
                                             <IconButton
                                                 icon={ArrowUp}
                                                 size="sm"

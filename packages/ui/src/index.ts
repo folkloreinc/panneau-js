@@ -180,8 +180,10 @@ export {
     type ToastOptions,
     type ToastPlacement,
     type Toasts,
+    type UndoToastContent,
     getToastTimeout,
     useToast,
     useToastOffset,
+    useUndoToast,
 } from './toast/Toast';
 export { Tooltip, type TooltipProps } from './tooltip/Tooltip';

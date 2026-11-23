@@ -131,6 +131,51 @@ export function useToast(): Toasts {
     return toasts;
 }
 
+/** What `useUndoToast()` shows: what was just done, and what undoes it. */
+export interface UndoToastContent {
+    /** What was done to what: "“Intro” removed". */
+    title: string;
+    /** What the toast says once it is undone, in place of the first one: "“Intro” put back". */
+    undoneTitle: string;
+    /** Puts back what was done. */
+    onUndo: () => void;
+}
+
+/**
+ * Offers "Undo" for what was just done, in a toast of the closest `PanneauRoot` (decision 0063):
+ * the toast says what was done and has "Undo" for about 10 seconds; once undone, a short toast
+ * says so in its place. Returns the key of the toast, the one given in its options or a new one.
+ *
+ * `null` outside a `PanneauRoot`, where there is no toast region: a component that works without
+ * the app does what it does at once, without an undo.
+ */
+export function useUndoToast():
+    ((content: UndoToastContent, options?: Pick<ToastOptions, 'key'>) => string) | null {
+    const toasts = use(ToastContext);
+    const intl = usePanneauIntl();
+    if (toasts === null) {
+        return null;
+    }
+    return ({ title, undoneTitle, onUndo }, { key } = {}) => {
+        let shown = '';
+        shown = toasts.show(
+            {
+                title,
+                action: {
+                    label: intl.formatMessage(messages.undo),
+                    onAction: () => {
+                        onUndo();
+                        // In place of the first one, which closes as its action is pressed
+                        toasts.show({ title: undoneTitle }, { key: shown });
+                    },
+                },
+            },
+            key !== undefined ? { key } : {},
+        );
+        return shown;
+    };
+}
+
 /** How far from the bottom of the viewport an element can end and still stick to it (the frame's gutter). */
 const STUCK_SLACK = 32;
 

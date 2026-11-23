@@ -178,6 +178,50 @@ describe('MediaField', () => {
         expect(onChange).toHaveBeenCalledWith([expect.objectContaining({ id: 'med_2' })]);
     });
 
+    it('puts a removed media back at its place, with its transform, from “Undo”', async () => {
+        const onChange = vi.fn();
+        const photo = reference(
+            { type: 'image' },
+            {
+                id: 'med_2',
+                label: 'photo.jpg',
+                transform: { crop: { x: 0, y: 0, width: 0.5, height: 0.5 } },
+            },
+        );
+        renderInRoot(
+            <Controlled<MediaReference[] | null>
+                initial={[reference(), photo, reference({}, { id: 'med_3', label: 'song.mp3' })]}
+                onChange={onChange}
+            >
+                {(value, setValue) => (
+                    <MediaField
+                        label="Gallery"
+                        resource="media"
+                        multiple
+                        adapter={{ create: vi.fn(), get: vi.fn() }}
+                        value={value}
+                        onChange={setValue}
+                    />
+                )}
+            </Controlled>,
+        );
+
+        await userEvent.click(screen.getByRole('button', { name: 'Remove photo.jpg' }));
+        expect(onChange).toHaveBeenLastCalledWith([
+            expect.objectContaining({ id: 'med_1' }),
+            expect.objectContaining({ id: 'med_3' }),
+        ]);
+        expect(screen.getByText('“photo.jpg” removed')).toBeInTheDocument();
+
+        await userEvent.click(screen.getByRole('button', { name: 'Undo' }));
+        expect(onChange).toHaveBeenLastCalledWith([
+            expect.objectContaining({ id: 'med_1' }),
+            photo,
+            expect.objectContaining({ id: 'med_3' }),
+        ]);
+        expect(screen.getByText('“photo.jpg” put back')).toBeInTheDocument();
+    });
+
     it('removes only the media of its library when two libraries have the same id', async () => {
         const onChange = vi.fn();
         renderInRoot(

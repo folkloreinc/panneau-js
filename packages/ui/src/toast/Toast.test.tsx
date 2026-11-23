@@ -12,6 +12,7 @@ import {
     getToastTimeout,
     useToast,
     useToastOffset,
+    useUndoToast,
     wrapToastUpdate,
 } from './Toast';
 
@@ -172,6 +173,47 @@ describe('Toast', () => {
     it('needs a PanneauRoot', () => {
         vi.spyOn(console, 'error').mockImplementation(() => undefined);
         expect(() => render(<Show content={{ title: 'Saved' }} />)).toThrow(/PanneauRoot/);
+    });
+});
+
+describe('useUndoToast', () => {
+    function Remove({ onUndo }: { onUndo: () => void }) {
+        const undoToast = useUndoToast();
+        return (
+            <Button
+                onPress={() =>
+                    undoToast?.({
+                        title: '“Intro” removed',
+                        undoneTitle: '“Intro” put back',
+                        onUndo,
+                    })
+                }
+            >
+                {undoToast !== null ? 'Remove' : 'Remove, without undo'}
+            </Button>
+        );
+    }
+
+    it('offers “Undo”, and says it was undone in place of the first toast', async () => {
+        const onUndo = vi.fn();
+        render(
+            <PanneauRoot>
+                <Remove onUndo={onUndo} />
+            </PanneauRoot>,
+        );
+        await userEvent.click(screen.getByRole('button', { name: 'Remove' }));
+        expect(screen.getByText('“Intro” removed')).toBeInTheDocument();
+        await userEvent.click(screen.getByRole('button', { name: 'Undo' }));
+        expect(onUndo).toHaveBeenCalledTimes(1);
+        expect(screen.queryByText('“Intro” removed')).not.toBeInTheDocument();
+        expect(screen.getByText('“Intro” put back')).toBeInTheDocument();
+        // The undo of an undo isn't offered
+        expect(screen.queryByRole('button', { name: 'Undo' })).not.toBeInTheDocument();
+    });
+
+    it('is null outside a PanneauRoot, where there is no toast region', () => {
+        render(<Remove onUndo={() => undefined} />);
+        expect(screen.getByRole('button', { name: 'Remove, without undo' })).toBeInTheDocument();
     });
 });
 
