@@ -201,6 +201,17 @@
     white-space: nowrap;
 }
 
+/* What matches the query in a label, with `highlightMatches`. */
+.match {
+    border-radius: var(--panneau-radius-sm);
+    background-color: var(--panneau-command-palette-match-bg, var(--panneau-color-accent-subtle));
+    color: var(--panneau-command-palette-match-color, var(--panneau-color-text));
+    font-weight: var(
+        --panneau-command-palette-match-font-weight,
+        var(--panneau-font-weight-medium)
+    );
+}
+
 .description {
     color: var(--panneau-color-text-muted);
     font-size: var(--panneau-font-size-sm);

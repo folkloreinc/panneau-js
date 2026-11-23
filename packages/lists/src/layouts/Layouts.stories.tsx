@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import type { Field } from '@panneau/protocol';
 import { Checkbox } from '@panneau/ui';
@@ -135,6 +135,32 @@ export const Table: Story = {
         // Two thumbnails, the icon of the document, and an empty square
         await expect(table.querySelectorAll('img')).toHaveLength(2);
         await expect(table.querySelector('[data-kind]')).toHaveAttribute('data-kind', 'document');
+    },
+};
+
+/**
+ * The intent to open an item, which an app uses to prefetch it: the pointer resting on the link of
+ * an item for a moment, or the focus on it. A pointer that crosses rows calls nothing.
+ */
+export const ItemIntent: Story = {
+    args: { onItemIntent: fn() },
+    render: (args) => <TableLayout {...args} />,
+    play: async ({ args, canvasElement }) => {
+        const table = within(canvasElement).getByRole('table', { name: 'Articles' });
+        const first = within(table).getByRole('link', { name: 'The river festival returns' });
+        const second = within(table).getByRole('link', { name: 'A new bridge for the old port' });
+        // Crossing a row: nothing
+        await userEvent.hover(first);
+        await userEvent.unhover(first);
+        // Resting on one
+        await userEvent.hover(second);
+        await waitFor(() => expect(args.onItemIntent).toHaveBeenCalledWith(items[1]));
+        await expect(args.onItemIntent).toHaveBeenCalledTimes(1);
+        await userEvent.unhover(second);
+        // The focus of the keyboard
+        first.focus();
+        await expect(args.onItemIntent).toHaveBeenLastCalledWith(items[0]);
+        await expect(args.onItemIntent).toHaveBeenCalledTimes(2);
     },
 };
 

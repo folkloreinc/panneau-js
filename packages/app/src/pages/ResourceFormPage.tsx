@@ -11,6 +11,7 @@ import { ITEM_TYPE_KEY, getItemType, getResourceType } from '@panneau/protocol/r
 import { usePanneauIntl } from '@panneau/ui';
 
 import { useDocumentTitle } from '../documentTitle';
+import { getListPathBack } from '../listLocation';
 import { navigate } from '../location';
 import { useRecordRecentItem } from '../recentItems';
 import { routePath } from '../routes';
@@ -85,11 +86,14 @@ export function ResourceFormPage({
                   resource: resource.id,
                   id,
                   title: getItemTitle(item, resource.itemTitle, definition.locale) ?? id,
+                  abilities: item.abilities,
               }
             : null,
     );
-    // Where the page goes once its item is created or removed
+    // Where the page goes once its item is created: the list, which highlights it (decision 0066)
     const listHref = routePath({ name: 'resource.index', resource: resource.id }, basePath);
+    // Once it is removed: back to the list as the user left it (decision 0102)
+    const listHrefBack = getListPathBack(basePath, definition.user?.id, resource.id);
     // The tab says that the form has unsaved changes, until they are saved or discarded
     const [dirty, setDirty] = useState(false);
     useDocumentTitle([dirty ? intl.formatMessage(appMessages.unsavedTitle, { title }) : title]);
@@ -121,7 +125,7 @@ export function ResourceFormPage({
                     void itemQuery.refetch().then(({ error }) => {
                         if (error instanceof NotFoundError) {
                             // In place of the item's page, which Back can't return to
-                            navigate(listHref, { replace: true });
+                            navigate(listHrefBack, { replace: true });
                         }
                     });
                 }}
