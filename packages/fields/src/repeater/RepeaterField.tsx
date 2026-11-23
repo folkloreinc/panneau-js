@@ -97,54 +97,46 @@ function plainText(text: string): string {
         .trim();
 }
 
+/** A text cut at 140 characters, for a header. */
+const cut = (text: string) => (text.length > 140 ? `${text.slice(0, 140)}…` : text);
+
+/**
+ * A value of an item as text, without tags: a number, the label of a choice, a text, or a
+ * localized text in the locale of the interface, its language, or the first one that has a text.
+ * `null` when it has none.
+ */
+function valueText(value: unknown, field?: Field, locale = ''): string | null {
+    if (typeof value === 'number') {
+        return String(value);
+    }
+    const texts =
+        typeof value === 'string'
+            ? [field?.options?.find((option) => option.value === value)?.label ?? value]
+            : value !== null && typeof value === 'object' && !Array.isArray(value)
+              ? [
+                    (value as Record<string, unknown>)[locale],
+                    (value as Record<string, unknown>)[locale.split('-')[0] ?? locale],
+                    ...Object.values(value),
+                ]
+              : [];
+    for (const text of texts) {
+        const plain = typeof text === 'string' ? plainText(text) : '';
+        if (plain !== '') {
+            return plain;
+        }
+    }
+    return null;
+}
+
 /**
  * The first text of an item, for its collapsed header: the value of its first text field that has
  * one, in the first locale that has one for a localized field.
  */
 export function getItemExcerpt(item: RepeaterItem, fields: readonly Field[]): string | null {
     for (const field of fields) {
-        if (!EXCERPT_TYPES.has(field.type)) {
-            continue;
-        }
-        const value = item[field.name];
-        const texts =
-            typeof value === 'string'
-                ? [value]
-                : value !== null && typeof value === 'object' && !Array.isArray(value)
-                  ? Object.values(value)
-                  : [];
-        for (const text of texts) {
-            if (typeof text === 'string') {
-                const plain = plainText(text);
-                if (plain !== '') {
-                    return plain.length > 140 ? `${plain.slice(0, 140)}…` : plain;
-                }
-            }
-        }
-    }
-    return null;
-}
-
-/** A value of an item as text, for its title: `null` when it has none. */
-function valueText(value: unknown, field: Field | undefined, locale: string): string | null {
-    if (typeof value === 'number') {
-        return String(value);
-    }
-    if (typeof value === 'string') {
-        // The label of a choice, rather than its value
-        const option = field?.options?.find((candidate) => candidate.value === value);
-        const text = plainText(option?.label ?? value);
-        return text !== '' ? text : null;
-    }
-    if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
-        // A localized value: the locale of the interface, its language, or the first one
-        const texts = value as Record<string, unknown>;
-        const language = locale.split('-')[0] ?? locale;
-        for (const text of [texts[locale], texts[language], ...Object.values(texts)]) {
-            const found = typeof text === 'string' ? plainText(text) : '';
-            if (found !== '') {
-                return found;
-            }
+        const text = EXCERPT_TYPES.has(field.type) ? valueText(item[field.name]) : null;
+        if (text !== null) {
+            return cut(text);
         }
     }
     return null;
@@ -178,10 +170,7 @@ export function getItemTitle(
         .replace(/\(\s*\)|\[\s*\]/g, '')
         .replace(/\s+/g, ' ')
         .trim();
-    if (!found || title === '') {
-        return null;
-    }
-    return title.length > 140 ? `${title.slice(0, 140)}…` : title;
+    return found && title !== '' ? cut(title) : null;
 }
 
 /** The indexes of the items that have an error, from the paths in error inside the list. */
@@ -486,17 +475,15 @@ export function RepeaterField({
                         key={type.id}
                         id={type.id}
                         textValue={type.label}
-                        {...(typesHaveIcons
-                            ? {
-                                  media: (
-                                      <span className={styles.typeIcon}>
-                                          {type.icon !== undefined ? (
-                                              <Icon icon={getNamedIcon(type.icon)} />
-                                          ) : null}
-                                      </span>
-                                  ),
-                              }
-                            : {})}
+                        media={
+                            typesHaveIcons ? (
+                                <span className={styles.typeIcon}>
+                                    {type.icon !== undefined ? (
+                                        <Icon icon={getNamedIcon(type.icon)} />
+                                    ) : null}
+                                </span>
+                            ) : undefined
+                        }
                         {...(type.description !== undefined
                             ? { description: type.description }
                             : {})}
@@ -555,10 +542,22 @@ export function RepeaterField({
                         const number = index + 1;
                         const key = keyAt(index);
                         const titleId = `${id}-${key}`;
-                        const insertLabel = intl.formatMessage(messages.insertItem, {
-                            before: index,
-                            after: number,
-                        });
+                        // A menu of types opens from it, or it adds an item there
+                        const insertButton = (
+                            <IconButton
+                                icon={Plus}
+                                size="sm"
+                                appearance="outline"
+                                className={styles.insertButton}
+                                label={intl.formatMessage(messages.insertItem, {
+                                    before: index,
+                                    after: number,
+                                })}
+                                {...(types === undefined
+                                    ? { onPress: () => add(undefined, index) }
+                                    : {})}
+                            />
+                        );
                         const bodyId = `${id}-${key}-body`;
                         const open = isExpanded(index);
                         const hasError = invalid.has(index);
@@ -618,24 +617,11 @@ export function RepeaterField({
                                     <div className={styles.insert} data-insert>
                                         {types !== undefined ? (
                                             <MenuTrigger>
-                                                <IconButton
-                                                    icon={Plus}
-                                                    size="sm"
-                                                    appearance="outline"
-                                                    className={styles.insertButton}
-                                                    label={insertLabel}
-                                                />
+                                                {insertButton}
                                                 {typeMenu(index)}
                                             </MenuTrigger>
                                         ) : (
-                                            <IconButton
-                                                icon={Plus}
-                                                size="sm"
-                                                appearance="outline"
-                                                className={styles.insertButton}
-                                                label={insertLabel}
-                                                onPress={() => add(undefined, index)}
-                                            />
+                                            insertButton
                                         )}
                                     </div>
                                 ) : null}
@@ -766,13 +752,11 @@ export function RepeaterFieldEntry(props: FieldEntryProps) {
     const max = getRuleNumber(field, 'max');
     const collapsible = getSetting(field, 'collapsible', isBoolean);
     const titleSetting = getSetting(field, 'itemTitle', isString);
-    const hasTitles =
-        (titleSetting !== undefined && titleSetting !== '') ||
-        (field.types?.some((type) => type.itemTitle !== undefined) ?? false);
+    // The title of an item from the definition, or none: its type, or "Item 2", and its excerpt
     const itemTitle = (item: RepeaterItem) => {
         const type = field.types?.find((candidate) => candidate.id === item.type);
         const template = type?.itemTitle ?? titleSetting;
-        return template !== undefined && template !== ''
+        return template
             ? getItemTitle(item, template, type?.fields ?? field.fields, intl.locale)
             : null;
     };
@@ -795,7 +779,7 @@ export function RepeaterFieldEntry(props: FieldEntryProps) {
             {...(min !== undefined ? { min } : {})}
             {...(max !== undefined ? { max } : {})}
             {...(collapsible !== undefined ? { collapsible } : {})}
-            {...(hasTitles ? { itemTitle } : {})}
+            itemTitle={itemTitle}
             {...(props.invalidPaths !== undefined ? { invalidPaths: props.invalidPaths } : {})}
         />
     );
