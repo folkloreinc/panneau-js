@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -143,16 +143,126 @@ function NotesInDialog() {
 function Editor({
     fields,
     values,
+    version,
     onSubmit,
     ...props
 }: Omit<FormViewProps, 'form' | 'fields'> & {
     fields: Field[];
     values?: Record<string, unknown>;
+    version?: string | null;
     onSubmit: (values: Record<string, unknown>) => Promise<unknown>;
 }) {
-    const { form } = useForm({ fields, values, onSubmit });
+    const { form } = useForm({ fields, values, version, onSubmit });
     return <FormView form={form} fields={fields} aria-label="Editor" {...props} />;
 }
+
+/** Presses Ctrl S on an element, as the browser would: whether its default was prevented. */
+function pressSave(element: Element, key = 's'): boolean {
+    return !fireEvent.keyDown(element, { key, ctrlKey: true });
+}
+
+describe('FormView without changes', () => {
+    const fields: Field[] = [{ name: 'title', type: 'text', label: 'Title' }];
+
+    it('disables Save on an update, says why, and sends nothing', async () => {
+        const onSubmit = vi.fn(async (values: Record<string, unknown>) => values);
+        renderForm(
+            <Editor fields={fields} values={{ title: 'Hello' }} version="1" onSubmit={onSubmit} />,
+        );
+        const save = screen.getByRole('button', { name: 'Save' });
+        expect(save).toHaveAttribute('aria-disabled', 'true');
+        expect(save).toHaveAccessibleDescription('No changes to save');
+        // Still in the tab order
+        expect(save).not.toBeDisabled();
+        await userEvent.click(save);
+        // Enter in a field submits the form
+        await userEvent.type(screen.getByRole('textbox', { name: 'Title' }), '{Enter}');
+        await new Promise((resolve) => setTimeout(resolve, 20));
+        expect(onSubmit).not.toHaveBeenCalled();
+
+        await userEvent.type(screen.getByRole('textbox', { name: 'Title' }), '!');
+        expect(save).not.toHaveAttribute('aria-disabled');
+        await userEvent.click(save);
+        await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
+        // Saved: nothing left to save
+        await waitFor(() => expect(save).toHaveAttribute('aria-disabled', 'true'));
+    });
+
+    it('lets a create form save without changes', async () => {
+        const onSubmit = vi.fn(async (values: Record<string, unknown>) => values);
+        renderForm(<Editor fields={fields} onSubmit={onSubmit} />);
+        const save = screen.getByRole('button', { name: 'Save' });
+        expect(save).not.toHaveAttribute('aria-disabled');
+        await userEvent.click(save);
+        await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
+    });
+});
+
+describe('FormView save shortcuts', () => {
+    const fields: Field[] = [{ name: 'title', type: 'text', label: 'Title' }];
+
+    it('saves with Ctrl S from outside the form, without the browser’s dialog', async () => {
+        const onSubmit = vi.fn(async (values: Record<string, unknown>) => values);
+        renderForm(
+            <>
+                <button type="button">Outside</button>
+                <Editor
+                    fields={fields}
+                    values={{ title: 'Hello' }}
+                    version="1"
+                    onSubmit={onSubmit}
+                />
+            </>,
+        );
+        // Nothing to save: the browser's dialog doesn't open either
+        expect(pressSave(document.body)).toBe(true);
+        await new Promise((resolve) => setTimeout(resolve, 20));
+        expect(onSubmit).not.toHaveBeenCalled();
+
+        await userEvent.type(screen.getByRole('textbox', { name: 'Title' }), '!');
+        const outside = screen.getByRole('button', { name: 'Outside' });
+        outside.focus();
+        expect(pressSave(outside)).toBe(true);
+        await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
+        expect(onSubmit.mock.calls[0]?.[0]).toEqual({ title: 'Hello!' });
+        // Ctrl Enter too, from anywhere
+        await userEvent.type(screen.getByRole('textbox', { name: 'Title' }), '?');
+        expect(pressSave(document.body, 'Enter')).toBe(true);
+        await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(2));
+    });
+
+    it('leaves the keys alone once the form is gone', () => {
+        const { unmount } = renderForm(<Editor fields={fields} onSubmit={vi.fn()} />);
+        unmount();
+        expect(pressSave(document.body)).toBe(false);
+    });
+
+    it('gives the shortcut to the form of an open dialog, not to the page under it', async () => {
+        const onPageSubmit = vi.fn(async (values: Record<string, unknown>) => values);
+        const onDialogSubmit = vi.fn(async (values: Record<string, unknown>) => values);
+        renderForm(
+            <>
+                <Editor fields={fields} values={{ title: 'Page' }} onSubmit={onPageSubmit} />
+                <DialogTrigger>
+                    <Button>Parameters</Button>
+                    <Dialog title="Parameters">
+                        <Editor
+                            fields={[{ name: 'reason', type: 'text', label: 'Reason' }]}
+                            onSubmit={onDialogSubmit}
+                            aria-label="Parameters"
+                        />
+                    </Dialog>
+                </DialogTrigger>
+            </>,
+        );
+        await userEvent.click(screen.getByRole('button', { name: 'Parameters' }));
+        const dialog = await screen.findByRole('dialog', { name: 'Parameters' });
+        // From the dialog, outside of its form
+        expect(pressSave(dialog)).toBe(true);
+        await waitFor(() => expect(onDialogSubmit).toHaveBeenCalledTimes(1));
+        expect(onPageSubmit).not.toHaveBeenCalled();
+    });
+});
 
 describe('FormView keyboard shortcut', () => {
     const fields: Field[] = [
@@ -172,7 +282,7 @@ describe('FormView keyboard shortcut', () => {
         renderForm(<Editor fields={fields} components={components} onSubmit={onSubmit} />);
         expect(screen.getByRole('button', { name: 'Save' })).toHaveAttribute(
             'aria-keyshortcuts',
-            'Control+Enter',
+            'Control+S Control+Enter',
         );
         await userEvent.type(screen.getByRole('textbox', { name: 'Summary' }), 'Short');
         await userEvent.keyboard('{Control>}{Enter}{/Control}');
@@ -190,7 +300,7 @@ describe('FormView keyboard shortcut', () => {
         renderForm(<Editor fields={fields} components={components} onSubmit={onSubmit} />);
         expect(screen.getByRole('button', { name: 'Save' })).toHaveAttribute(
             'aria-keyshortcuts',
-            'Meta+Enter',
+            'Meta+S Meta+Enter',
         );
         await userEvent.click(screen.getByRole('textbox', { name: 'Title' }));
         await userEvent.keyboard('{Control>}{Enter}{/Control}');

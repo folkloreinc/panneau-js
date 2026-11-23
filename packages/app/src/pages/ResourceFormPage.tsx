@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { type ResolvedResource, getItemActions, getItemValues, resolveForm } from '@panneau/core';
 import { NotFoundError } from '@panneau/data';
@@ -90,7 +90,9 @@ export function ResourceFormPage({
     );
     // Where the page goes once its item is created or removed
     const listHref = routePath({ name: 'resource.index', resource: resource.id }, basePath);
-    useDocumentTitle([title]);
+    // The tab says that the form has unsaved changes, until they are saved or discarded
+    const [dirty, setDirty] = useState(false);
+    useDocumentTitle([dirty ? intl.formatMessage(appMessages.unsavedTitle, { title }) : title]);
     // The actions of the item, as its row and its panel show them, but `edit`: this page
     const { run, isSupported } = useItemActionRunner(resource, {
         basePath,
@@ -206,6 +208,7 @@ export function ResourceFormPage({
                 }
             }}
             onReload={() => void itemQuery.refetch()}
+            onDirtyChange={setDirty}
         />
     );
 

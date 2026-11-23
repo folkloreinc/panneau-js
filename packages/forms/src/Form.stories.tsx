@@ -153,7 +153,7 @@ export const SaveShortcut: Story = {
         const canvas = within(canvasElement);
         await expect(canvas.getByRole('button', { name: 'Save' })).toHaveAttribute(
             'aria-keyshortcuts',
-            isApplePlatform() ? 'Meta+Enter' : 'Control+Enter',
+            isApplePlatform() ? 'Meta+S Meta+Enter' : 'Control+S Control+Enter',
         );
         await userEvent.type(canvas.getByRole('textbox', { name: 'Summary' }), 'Short');
         await userEvent.keyboard(saveShortcut());
@@ -166,6 +166,37 @@ export const SaveShortcut: Story = {
             expect.objectContaining({ summary: 'Short', body: '<p>Hello</p>' }),
             expect.anything(),
         );
+    },
+};
+
+/**
+ * An update without changes has nothing to save: Save is disabled, says why, and sends nothing.
+ * Once something changed, ⌘ S (Ctrl S elsewhere) saves it from anywhere on the page.
+ */
+export const NothingToSave: Story = {
+    args: {
+        values: { name: 'Ada', email: 'ada@example.com' },
+        version: '1',
+    },
+    play: async ({ args, canvasElement }) => {
+        const canvas = within(canvasElement);
+        const save = canvas.getByRole('button', { name: 'Save' });
+        await expect(save).toHaveAttribute('aria-disabled', 'true');
+        await expect(save).toHaveAccessibleDescription('No changes to save');
+        await userEvent.click(save);
+        await expect(args.onSubmit).not.toHaveBeenCalled();
+
+        await userEvent.type(canvas.getByRole('textbox', { name: /Name/ }), ' Lovelace');
+        await expect(save).not.toHaveAttribute('aria-disabled');
+        // From outside the form
+        (canvasElement.ownerDocument.activeElement as HTMLElement | null)?.blur();
+        await userEvent.keyboard(isApplePlatform() ? '{Meta>}s{/Meta}' : '{Control>}s{/Control}');
+        await waitFor(() => expect(args.onSubmit).toHaveBeenCalledTimes(1));
+        await expect(args.onSubmit).toHaveBeenCalledWith(
+            expect.objectContaining({ name: 'Ada Lovelace' }),
+            expect.objectContaining({ changes: { name: 'Ada Lovelace' } }),
+        );
+        await waitFor(() => expect(save).toHaveAttribute('aria-disabled', 'true'));
     },
 };
 

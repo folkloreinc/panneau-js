@@ -249,6 +249,9 @@ export const appMessages: {
     chooseType: PanneauMessage<    {
     resource: string;
     }>;
+    unsavedTitle: PanneauMessage<    {
+    title: string;
+    }>;
     edit: PanneauMessage<    {
     resource: string;
     }>;
@@ -613,6 +616,7 @@ export const formsMessages: {
     saveShortcut: PanneauMessage<    {
     modifier: string;
     }>;
+    nothingToSave: PanneauMessage<Record<never, never>>;
     saved: PanneauMessage<Record<never, never>>;
     loading: PanneauMessage<Record<never, never>>;
     sidebar: PanneauMessage<Record<never, never>>;

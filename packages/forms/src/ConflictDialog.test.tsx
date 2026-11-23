@@ -76,8 +76,9 @@ describe('version conflicts', () => {
             .mockRejectedValueOnce(problemError({ status: 412, current: CURRENT }))
             .mockResolvedValueOnce({ ...CURRENT, version: '4', title: 'Mine' });
         renderForm(
-            <Form fields={FIELDS} values={{ title: 'Mine' }} version="2" onSubmit={onSubmit} />,
+            <Form fields={FIELDS} values={{ title: 'Min' }} version="2" onSubmit={onSubmit} />,
         );
+        await userEvent.type(screen.getByRole('textbox', { name: 'Title' }), 'e');
         await userEvent.click(screen.getByRole('button', { name: 'Save' }));
         await userEvent.click(await screen.findByRole('button', { name: 'Save mine anyway' }));
         await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(2));
@@ -98,7 +99,7 @@ describe('version conflicts', () => {
         renderForm(
             <Form
                 fields={FIELDS}
-                values={{ title: 'Mine' }}
+                values={{ title: 'Min' }}
                 version="2"
                 onSubmit={async () => {
                     throw problemError({ status: 412 });
@@ -106,6 +107,7 @@ describe('version conflicts', () => {
                 onReload={onReload}
             />,
         );
+        await userEvent.type(screen.getByRole('textbox', { name: 'Title' }), 'e');
         await userEvent.click(screen.getByRole('button', { name: 'Save' }));
         const dialog = await screen.findByRole('alertdialog');
         expect(dialog).toHaveTextContent('load it to see what changed');

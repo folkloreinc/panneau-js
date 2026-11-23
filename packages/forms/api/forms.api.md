@@ -106,6 +106,7 @@ export interface FormViewProps {
     // (undocumented)
     layoutClassName?: string;
     locales?: readonly string[];
+    onDirtyChange?: (dirty: boolean) => void;
     onReload?: () => void;
     onSubmitted?: (result: unknown) => void;
     panels?: Readonly<Record<string, FormPanelComponent>>;
