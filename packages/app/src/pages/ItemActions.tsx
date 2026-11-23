@@ -1,11 +1,13 @@
 import { useState } from 'react';
 
 import { type ActionOutcome, type ActionTarget, useActionRunner } from '@panneau/actions';
-import { type ItemAction, asksConfirmation } from '@panneau/core';
-import { getActionLabel, listsMessages } from '@panneau/intl';
+import { type ItemAction, asksConfirmation, usePanneau } from '@panneau/core';
+import { actionsMessages, getActionLabel, listsMessages } from '@panneau/intl';
 import { ActionButton, ConfirmDialog, type ListActionEvent } from '@panneau/lists';
 import type { Action, Item } from '@panneau/protocol';
 import { usePanneauIntl, useToast } from '@panneau/ui';
+
+import { getItemTitle } from './itemTitle';
 
 export interface ItemActionsProps {
     /** The id of the resource. */
@@ -26,7 +28,8 @@ export interface ItemActionsProps {
  * The actions of an item in the header of its panel or of its edit page (decision 0040), those
  * that destroy last and outlined (decision 0088). Links are links, in a new tab when they leave the
  * admin. Other actions run through the action runner (parameters, results, queued runs), after a
- * confirmation when they ask for one.
+ * confirmation when they ask for one. The confirmation and the toast of a failure name the item by
+ * its title (decision 0062).
  */
 export function ItemActions({
     resource,
@@ -41,6 +44,14 @@ export function ItemActions({
     const runAction = runActionProp ?? runner;
     const [pending, setPending] = useState<string | null>(null);
     const [confirming, setConfirming] = useState<ListActionEvent | null>(null);
+    const { definition } = usePanneau();
+    // The title in the locale of the content, as the header of the item shows it
+    const resources = definition?.resources ?? [];
+    const itemTitle = resources.find((candidate) => candidate.id === resource)?.itemTitle;
+    const locale = definition !== null ? definition.locale : intl.locale;
+    const title = getItemTitle(item, itemTitle, locale) ?? '';
+    const subject =
+        title !== '' ? intl.formatMessage(actionsMessages.subjectItem, { title }) : null;
     if (actions.length === 0) {
         return null;
     }
@@ -58,10 +69,15 @@ export function ItemActions({
                 }
             })
             .catch((caught: unknown) => {
+                const label = getActionLabel(action, intl);
                 toasts.show({
-                    title: intl.formatMessage(listsMessages.actionFailed, {
-                        action: getActionLabel(action, intl),
-                    }),
+                    title:
+                        subject !== null
+                            ? intl.formatMessage(actionsMessages.failedFor, {
+                                  action: label,
+                                  subject,
+                              })
+                            : intl.formatMessage(listsMessages.actionFailed, { action: label }),
                     ...(caught instanceof Error && caught.message !== ''
                         ? { description: caught.message }
                         : {}),
@@ -98,6 +114,7 @@ export function ItemActions({
             ))}
             <ConfirmDialog
                 event={confirming}
+                itemLabel={title !== '' ? title : undefined}
                 onConfirm={(event) => void execute(event.action)}
                 onCancel={() => setConfirming(null)}
             />

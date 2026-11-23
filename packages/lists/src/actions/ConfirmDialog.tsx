@@ -1,7 +1,7 @@
 import type { IntlShape } from 'react-intl';
 
 import { asksConfirmation } from '@panneau/core';
-import { getActionLabel } from '@panneau/intl';
+import { actionsMessages, getActionLabel } from '@panneau/intl';
 import { Button, Dialog, Spinner, usePanneauIntl } from '@panneau/ui';
 
 import { messages } from '../messages';
@@ -45,18 +45,60 @@ export interface ConfirmDialogProps {
      * count of the current page; while it loads, the dialog says so and can't be confirmed.
      */
     preview?: ConfirmPreview | null;
+    /**
+     * The label of the item of an `item` action (its title), to name it: "Delete “Spring
+     * contest”?". Without it, the dialog counts items.
+     */
+    itemLabel?: string | undefined;
+    /**
+     * The labels of the items' resource, to name what a selection holds: "Delete 3 articles?".
+     * Without them, the dialog counts items.
+     */
+    labels?: { readonly singular: string; readonly plural: string } | undefined;
     onConfirm: (event: ListActionEvent) => void;
     onCancel: () => void;
 }
 
 /**
+ * What an action applies to, for its confirmation (decision 0062): the item by its title, or the
+ * count of items with the resource's labels. `null` when there is nothing to name it by.
+ */
+function describeSubject(
+    event: ListActionEvent,
+    itemLabel: string | undefined,
+    labels: ConfirmDialogProps['labels'],
+    intl: IntlShape,
+): string | null {
+    if (event.scope === 'item' || event.item !== undefined) {
+        return itemLabel !== undefined && itemLabel !== ''
+            ? intl.formatMessage(actionsMessages.subjectItem, { title: itemLabel })
+            : null;
+    }
+    return labels !== undefined
+        ? intl.formatMessage(actionsMessages.subjectCount, {
+              count: event.count,
+              singular: labels.singular,
+              plural: labels.plural,
+          })
+        : null;
+}
+
+/**
  * Asks before running an action (decision 0017): the action's `confirm` title and message (an ICU
- * message with `{count}`), or default ones, and how many selected items will be skipped: those of
- * the current page that don't allow it, or the backend's count for every item matching a query.
+ * message with `{count}`), or default ones that name the item (`itemLabel`) or the items of a
+ * selection (`labels`), and how many selected items will be skipped: those of the current page that
+ * don't allow it, or the backend's count for every item matching a query.
  * It opens with the focus on "Cancel" for a destructive action, and on the confirming button
  * otherwise (decision 0095).
  */
-export function ConfirmDialog({ event, preview = null, onConfirm, onCancel }: ConfirmDialogProps) {
+export function ConfirmDialog({
+    event,
+    preview = null,
+    itemLabel,
+    labels,
+    onConfirm,
+    onCancel,
+}: ConfirmDialogProps) {
     const intl = usePanneauIntl();
     if (event === null) {
         return null;
@@ -68,6 +110,23 @@ export function ConfirmDialog({ event, preview = null, onConfirm, onCancel }: Co
     const confirm = typeof action.confirm === 'object' ? action.confirm : {};
     const label = getActionLabel(action, intl);
     const values = { count, action: label };
+    const subject = describeSubject(event, itemLabel, labels, intl);
+    // The built-in `delete` says what it deletes in its title, which needs no message under it
+    const isBuiltInDelete = action.id === 'delete' && action.label === undefined;
+    const title =
+        confirm.title !== undefined
+            ? formatDefinitionMessage(intl, confirm.title, values)
+            : subject !== null && isBuiltInDelete
+              ? intl.formatMessage(messages.confirmDeleteTitle, { subject })
+              : intl.formatMessage(messages.confirmTitle, { action: label });
+    const message =
+        confirm.message !== undefined
+            ? formatDefinitionMessage(intl, confirm.message, values)
+            : subject === null
+              ? intl.formatMessage(messages.confirmMessage, values)
+              : confirm.title === undefined && isBuiltInDelete
+                ? null
+                : intl.formatMessage(messages.confirmMessageFor, { action: label, subject });
     return (
         <Dialog
             isOpen
@@ -79,11 +138,7 @@ export function ConfirmDialog({ event, preview = null, onConfirm, onCancel }: Co
             role="alertdialog"
             isDismissable={false}
             size="sm"
-            title={
-                confirm.title !== undefined
-                    ? formatDefinitionMessage(intl, confirm.title, values)
-                    : intl.formatMessage(messages.confirmTitle, { action: label })
-            }
+            title={title}
             footer={
                 <>
                     {/* The safe choice has the focus when the action destroys (decision 0095) */}
@@ -102,11 +157,7 @@ export function ConfirmDialog({ event, preview = null, onConfirm, onCancel }: Co
                 </>
             }
         >
-            <p className={styles.message}>
-                {confirm.message !== undefined
-                    ? formatDefinitionMessage(intl, confirm.message, values)
-                    : intl.formatMessage(messages.confirmMessage, values)}
-            </p>
+            {message !== null ? <p className={styles.message}>{message}</p> : null}
             {loading ? (
                 <div className={styles.skipped}>
                     <Spinner

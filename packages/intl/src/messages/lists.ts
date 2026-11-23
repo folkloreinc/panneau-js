@@ -160,6 +160,19 @@ export const listsMessages = {
         id: 'panneau.lists.confirmMessage',
         defaultMessage: '“{action}” will apply to {count, plural, one {# item} other {# items}}.',
     }),
+    /**
+     * The title that confirms the built-in `delete`, with what it deletes: the item by its title,
+     * or the count with the resource's labels (`subjectItem` and `subjectCount` of the actions).
+     */
+    confirmDeleteTitle: defineMessage<{ subject: string }>({
+        id: 'panneau.lists.confirmDeleteTitle',
+        defaultMessage: 'Delete {subject}?',
+    }),
+    /** What a confirmed action applies to, named: the item by its title, or the count of items. */
+    confirmMessageFor: defineMessage<{ action: string; subject: string }>({
+        id: 'panneau.lists.confirmMessageFor',
+        defaultMessage: '“{action}” will apply to {subject}.',
+    }),
     confirmSkipped: defineMessage<{ count: number }>({
         id: 'panneau.lists.confirmSkipped',
         defaultMessage:

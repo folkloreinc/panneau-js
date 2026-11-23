@@ -230,6 +230,11 @@ export interface ListViewProps {
     /** The field that titles items, for their label (`itemTitle` of the resource). */
     itemTitle?: string;
     /**
+     * The labels of the resource, to name items in the confirmations of actions: "Delete 3
+     * articles?" (the `label` of the resource).
+     */
+    resourceLabel?: { readonly singular: string; readonly plural: string } | undefined;
+    /**
      * The field shown as the image of items (`itemImage` of the resource, or `media` in a media
      * library): a media reference, a media, a file or a URL. The `gallery` layout needs it
      * (decision 0044), and the table starts each title with its thumbnail (decision 0061).
@@ -314,6 +319,7 @@ export function ListView({
     selectable: selectableProp,
     actions: actionOptions = NO_OPTIONS,
     itemTitle,
+    resourceLabel,
     itemImage,
     calendar = null,
     getItemLabel: getItemLabelProp,
@@ -997,6 +1003,10 @@ export function ListView({
             <ConfirmDialog
                 event={confirming}
                 preview={preview}
+                itemLabel={
+                    confirming?.item !== undefined ? getItemLabel(confirming.item) : undefined
+                }
+                labels={resourceLabel}
                 onConfirm={(event) => void execute(event)}
                 onCancel={closeConfirmation}
             />
