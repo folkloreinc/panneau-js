@@ -117,3 +117,76 @@
 .regionFlag {
     align-self: center;
 }
+
+/* The variant of details: values in full. */
+
+/* Text with its line breaks. */
+.fullText {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.json {
+    margin: 0;
+    overflow-x: auto;
+    font-family: var(--panneau-font-family-mono);
+    font-size: var(--panneau-font-size-sm);
+    white-space: pre;
+}
+
+/* Related items, or media, one per line. */
+.relations,
+.medias {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.relation {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    min-width: 0;
+}
+
+.relationText {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.relationLabel {
+    overflow-wrap: anywhere;
+}
+
+.relationDescription {
+    color: var(--panneau-color-text-muted);
+    font-size: var(--panneau-font-size-sm);
+}
+
+/* The locales of a localized value, each under its name. */
+.locales {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-2);
+    margin: 0;
+}
+
+.locale {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.localeName {
+    color: var(--panneau-color-text-muted);
+    font-size: var(--panneau-font-size-xs);
+}
+
+.localeValue {
+    min-width: 0;
+    margin: 0;
+}

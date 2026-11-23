@@ -154,7 +154,11 @@ export interface DisplayProps {
     item: ListItem;
     // (undocumented)
     value: unknown;
+    variant?: DisplayVariant;
 }
+
+// @public
+export type DisplayVariant = 'cell' | 'details';
 
 // @public
 export function DurationDisplay(input: DisplayProps): JSX.Element;
@@ -500,7 +504,7 @@ export interface PaginationProps {
 export function RegionDisplay(input: DisplayProps): JSX.Element;
 
 // @public
-export function RelationDisplay(input: DisplayProps): JSX.Element;
+export function RelationDisplay(props: DisplayProps): JSX.Element;
 
 // @public
 export function RelationFilter(input: FilterControlProps): JSX.Element;

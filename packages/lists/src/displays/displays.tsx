@@ -1,7 +1,7 @@
 import { Check, File, FileText, Globe, Hash, Mail, Minus, Phone } from 'lucide-react';
 import { Suspense, lazy } from 'react';
 
-import { toReferences } from '@panneau/fields';
+import { toReferences, useFieldsContext, useRelationReferences } from '@panneau/fields';
 import { formatAddress, isAddress } from '@panneau/fields/address';
 import { getColorPalette, getSwatchColor } from '@panneau/fields/color';
 import { getCountryFlag, getCountryName, isCountryCode } from '@panneau/fields/country';
@@ -38,10 +38,10 @@ function isEmpty(value: unknown): boolean {
 }
 
 /**
- * Text, on two lines at most. The default display. The value of a `secret` text field
- * (`settings.secret`) shows as dots, never in clear.
+ * Text, on two lines at most in a cell, in full with its line breaks in details. The default
+ * display. The value of a `secret` text field (`settings.secret`) shows as dots, never in clear.
  */
-export function TextDisplay({ value, field }: DisplayProps) {
+export function TextDisplay({ value, field, variant }: DisplayProps) {
     const intl = usePanneauIntl();
     const text = toText(value, intl.locale);
     if (text === '') {
@@ -53,6 +53,9 @@ export function TextDisplay({ value, field }: DisplayProps) {
                 ••••••••
             </span>
         );
+    }
+    if (variant === 'details') {
+        return <span className={styles.fullText}>{text}</span>;
     }
     return (
         <span className={styles.text} data-clamp="">
@@ -217,11 +220,72 @@ export function SelectDisplay({ value, field }: DisplayProps) {
     );
 }
 
-/** The labels of related items. */
-export function RelationDisplay({ value }: DisplayProps) {
-    const references = toReferences(value);
+/**
+ * Related items, in details: a list of their labels, linked to the items where the relation source
+ * of the fields (`getItemHref()`) says they open, with their image and their description when the
+ * source knows them, and the labels of plain ids.
+ */
+function RelationItems({ value, field }: DisplayProps) {
+    const { relationSource } = useFieldsContext();
+    const resource = typeof field?.resource === 'string' ? field.resource : '';
+    const references = useRelationReferences(relationSource, resource, toReferences(value));
     if (references.length === 0) {
         return <EmptyValue />;
+    }
+    return (
+        <ul className={styles.relations}>
+            {references.map((reference) => {
+                const href =
+                    resource !== ''
+                        ? (relationSource?.getItemHref?.(resource, reference.id) ?? null)
+                        : null;
+                const content = (
+                    <>
+                        {reference.imageUrl !== undefined ? (
+                            <img
+                                className={styles.thumbnail}
+                                src={reference.imageUrl}
+                                alt=""
+                                loading="lazy"
+                            />
+                        ) : null}
+                        <span className={styles.relationText}>
+                            <span className={styles.relationLabel}>{reference.label}</span>
+                            {reference.description !== undefined ? (
+                                <span className={styles.relationDescription}>
+                                    {reference.description}
+                                </span>
+                            ) : null}
+                        </span>
+                    </>
+                );
+                return (
+                    <li key={reference.id}>
+                        {href !== null ? (
+                            <a className={`${styles.link} ${styles.relation}`} href={href}>
+                                {content}
+                            </a>
+                        ) : (
+                            <span className={styles.relation}>{content}</span>
+                        )}
+                    </li>
+                );
+            })}
+        </ul>
+    );
+}
+
+/**
+ * The labels of related items: as text in a cell, as a list of links to the items in details
+ * (`RelationItems`).
+ */
+export function RelationDisplay(props: DisplayProps) {
+    const references = toReferences(props.value);
+    if (references.length === 0) {
+        return <EmptyValue />;
+    }
+    if (props.variant === 'details') {
+        return <RelationItems {...props} />;
     }
     return (
         <span className={styles.text} data-clamp="">
@@ -344,10 +408,13 @@ export function DurationDisplay({ value, field }: DisplayProps) {
     return <span className={styles.number}>{formatDuration(value, { ...units, labels })}</span>;
 }
 
-/** JSON on one line, shortened. */
-export function JsonDisplay({ value }: DisplayProps) {
+/** JSON on one line, shortened, in a cell; indented and in full in details. */
+export function JsonDisplay({ value, variant }: DisplayProps) {
     if (value === null || value === undefined || typeof value !== 'object') {
         return <EmptyValue />;
+    }
+    if (variant === 'details') {
+        return <pre className={styles.json}>{JSON.stringify(value, null, 2)}</pre>;
     }
     const json = JSON.stringify(value);
     return (
@@ -535,15 +602,8 @@ function mediaLabel(value: Record<string, unknown>): string {
     return '';
 }
 
-/**
- * A thumbnail and the name of a media (or of the first one), for `media` and `image` values:
- * a media reference (`{ id, label, media }`), or a media with its URLs.
- */
-export function MediaDisplay({ value }: DisplayProps) {
-    const media: unknown = Array.isArray(value) ? value[0] : value;
-    if (!isRecord(media)) {
-        return <EmptyValue />;
-    }
+/** The thumbnail and the name of a media. */
+function MediaEntry({ media }: { media: Record<string, unknown> }) {
     const source = getImageUrl(media);
     const label = mediaLabel(media);
     return (
@@ -558,6 +618,37 @@ export function MediaDisplay({ value }: DisplayProps) {
             ) : null}
         </span>
     );
+}
+
+/**
+ * A thumbnail and the name of a media, for `media` and `image` values: a media reference
+ * (`{ id, label, media }`), or a media with its URLs. A cell shows the first one, details show
+ * each of them.
+ */
+export function MediaDisplay({ value, variant }: DisplayProps) {
+    if (variant === 'details') {
+        const medias = (Array.isArray(value) ? value : [value]).filter(isRecord);
+        if (medias.length === 0) {
+            return <EmptyValue />;
+        }
+        if (medias.length === 1) {
+            return <MediaEntry media={medias[0] as Record<string, unknown>} />;
+        }
+        return (
+            <ul className={styles.medias}>
+                {medias.map((media, index) => (
+                    <li key={typeof media.id === 'string' ? media.id : index}>
+                        <MediaEntry media={media} />
+                    </li>
+                ))}
+            </ul>
+        );
+    }
+    const media: unknown = Array.isArray(value) ? value[0] : value;
+    if (!isRecord(media)) {
+        return <EmptyValue />;
+    }
+    return <MediaEntry media={media} />;
 }
 
 /**

@@ -79,6 +79,7 @@ export { SearchField, type SearchFieldProps } from './toolbar/SearchField';
 export type {
     DisplayEntry,
     DisplayProps,
+    DisplayVariant,
     FilterControlProps,
     FilterEntry,
     ListActionEvent,
