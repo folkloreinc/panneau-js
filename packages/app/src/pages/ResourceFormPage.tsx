@@ -86,6 +86,7 @@ export function ResourceFormPage({
                   resource: resource.id,
                   id,
                   title: getItemTitle(item, resource.itemTitle, definition.locale) ?? id,
+                  abilities: item.abilities,
               }
             : null,
     );

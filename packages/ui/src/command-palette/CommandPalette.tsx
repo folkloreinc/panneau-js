@@ -22,7 +22,7 @@ import { usePanneauIntl } from '../intl/usePanneauIntl';
 import { usePortalContainer } from '../root/PanneauRoot';
 import { cx } from '../utils/cx';
 import styles from './CommandPalette.module.css';
-import { type CommandPaletteGroup, matchCommands } from './match';
+import { type CommandPaletteGroup, matchCommands, splitMatches } from './match';
 
 export interface CommandPaletteProps {
     isOpen: boolean;
@@ -47,7 +47,29 @@ export interface CommandPaletteProps {
      */
     scope?: string | null;
     onScopeRemove?: () => void;
+    /**
+     * Highlights, in the label of each item, the first match of each word of the query, ignoring
+     * case and accents. Screen readers read the label as it is.
+     */
+    highlightMatches?: boolean;
     className?: string;
+}
+
+/**
+ * A label with what matches the query in `<mark>`. The marks are presentational: screen readers
+ * read the label once, as it is.
+ */
+function Highlighted({ label, query, locale }: { label: string; query: string; locale: string }) {
+    return splitMatches(label, query, locale).map((part, index) =>
+        part.match ? (
+            // The parts of a label keep their order
+            <mark key={index} role="presentation" className={styles.match}>
+                {part.text}
+            </mark>
+        ) : (
+            part.text
+        ),
+    );
 }
 
 /**
@@ -55,7 +77,7 @@ export interface CommandPaletteProps {
  * of the screen. Typing matches the items without case or accents, every word having to match,
  * the best matches first. Arrow keys move through the items, Enter opens one and closes the
  * palette, Escape clears the field, then closes it. A `scope` narrows what it searches, as a chip
- * before the field. It knows no data or router: links go through
+ * before the field. `highlightMatches` marks what matches in labels. It knows no data or router: links go through
  * the app's `RouterProvider`. `useCommandShortcut()` opens it with ⌘K or Ctrl+K.
  */
 export function CommandPalette({
@@ -69,6 +91,7 @@ export function CommandPalette({
     status,
     scope = null,
     onScopeRemove,
+    highlightMatches = false,
     className,
 }: CommandPaletteProps) {
     const intl = usePanneauIntl();
@@ -197,7 +220,15 @@ export function CommandPalette({
                                             )}
                                             <span className={styles.text}>
                                                 <Text slot="label" className={styles.label}>
-                                                    {item.label}
+                                                    {highlightMatches ? (
+                                                        <Highlighted
+                                                            label={item.label}
+                                                            query={value}
+                                                            locale={intl.locale}
+                                                        />
+                                                    ) : (
+                                                        item.label
+                                                    )}
                                                 </Text>
                                                 {item.description !== undefined ? (
                                                     <Text
