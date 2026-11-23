@@ -3,6 +3,7 @@ import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import {
+    createAgentsJsonSchema,
     createBootConfigJsonSchema,
     createDefinitionJsonSchema,
     createOpenApiDocument,
@@ -17,3 +18,4 @@ write('definition.schema.json', createDefinitionJsonSchema());
 write('openapi.json', createOpenApiDocument());
 write('boot.schema.json', createBootConfigJsonSchema());
 write('theme.schema.json', createThemeJsonSchema());
+write('agents.schema.json', createAgentsJsonSchema());

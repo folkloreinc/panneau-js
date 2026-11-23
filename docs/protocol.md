@@ -39,10 +39,12 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     "search": { "enabled": true },
     "theme": { "colorScheme": "auto", "density": "auto", "navigation": "sidebar" }, // density: "compact", "comfortable", "touch" or "auto" (touch on touch screens); navigation: "sidebar" or "dock" (decision 0076)
     "user": { "id": "usr_123", "name": "Ada", "abilities": { "panneau.view": true } },
+    "agents": { "mcp": { "url": "/panneau/mcp" }, "assistant": false }, // decisions 0090 and 0106
 }
 ```
 
 - **Languages.** `locales` are the languages of the content, those of localized fields. `interfaceLocales`, optional, are the languages the user can switch the interface to, `locale` among them, each with its `label` in its own language. With two or more, the shell has a language switcher, with the user's settings ([0083](decisions/0083-a-language-switcher-in-the-shell.md)): choosing one is a full navigation to its `url`, with `next` (the path and query of the page), and the backend comes back to it, the definition then in the new locale. `GET /locale/{locale}` is an optional endpoint for that `url`: it redirects to `next`, a local path under the base path, and answers `404` for a locale it doesn't offer.
+- **Agents.** `agents`, optional, says what agents can use ([Agents](#agents)): `mcp.url`, the URL of the MCP server that outside clients connect to, whose connections the account page lists; `assistant`, whether the app offers its assistant. Without it, the Panneau has neither.
 - **The user's profile.** Without `auth.account`, the user's name links to their item in the resource of users: `user.resource`, or the resource `users` without it. A backend sets `user.resource` to `null` when the user has no item they can edit there, such as a user outside the resource's scope: the app then shows no link to a profile, instead of a page that isn't found.
 
 ### Resource
@@ -52,6 +54,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     "id": "pages",
     "kind": null, // "media" for a media library
     "label": { "singular": "page", "plural": "pages" },
+    "description": "Les pages du site, de l'accueil aux pages légales.", // what it holds and when to use it (decision 0106)
     "itemStatus": "status", // the state of an item, a badge in relation pickers and cards (decision 0103)
     "open": "edit", // where an item's title goes: "edit" (the default) or "panel"
     "itemActions": ["show", "edit", "duplicate", "delete"], // the built-in item actions shown, the default
@@ -82,6 +85,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 }
 ```
 
+- **`description`**, optional: one sentence that says what the resource holds and when to use it, in the user's language ([0106](decisions/0106-five-tools-for-agents.md)). It is for agents, which `describe` answers it to, and for people: the app can show it.
 - **`itemTitle`, `itemSubtitle`, `itemImage` and `itemStatus`** name the fields that show an item where it isn't in its list: its title, a line under it, its image ([0061](decisions/0061-item-images-in-lists.md)), and its state. `itemStatus` ([0103](decisions/0103-the-status-of-an-item.md)) names a field whose value says where the item stands (Draft, Archived), usually a `select` whose options have [tones](#tones): relation pickers and cards show the label of its option as a badge in its tone, next to the item's title. A value that isn't one of its options shows as text, in `neutral`; the first value of a `select` with `multiple`. It can name a field of the resource's `types`. Without it, items show no state there. Clients that don't know it ignore it.
 - **`types`** ([0077](decisions/0077-resource-types.md)): the types of the items, each with fields of its own (`ResourceType`: `id`, `label`, `description`, `icon`, `fields`, `abilities`). Every item has a `type` among their ids, set when it is created. Its fields are those of the resource, then those of its type, in forms, details and validation; type fields are named apart from the resource's, and none is named `type`. `form.layout` can name the fields of every type: each form leaves out those of the other types.
     - `abilities.create: false` keeps a type out of the choices when creating, and the backend refuses to create one (a singleton such as the home page).
@@ -1131,6 +1135,27 @@ Global search ([decisions/0029](decisions/0029-go-to-palette.md)):
     - an invalid parameter is a `422` problem, with `errors` keyed by parameter (`q`, `limit`, `resources`): a search shorter than 2 characters, a limit out of bounds, or a resource that isn't searchable;
     - a backend can limit how often a user searches: `429`, with `Retry-After` in seconds. Clients wait for the next search, and say so.
 - **Reference.** `readSearchQuery()` of `@panneau/protocol/runtime` reads and validates these parameters; `toSearchQueryParams()` writes them.
+
+## Agents
+
+Agents work in a Panneau through five tools, served by the backend's MCP server at `agents.mcp.url` ([0090](decisions/0090-agents-work-through-tools-as-their-user.md), amended by [0106](decisions/0106-five-tools-for-agents.md)). Every call runs as the user who connected, with the definition built for them: an agent can't do anything its user can't do in the app. `agents.schema.json` holds the arguments and the result of each tool; `AGENT_TOOLS` names them.
+
+| Tool         | Arguments                                                                                   | Answers                                             | Writes |
+| ------------ | ------------------------------------------------------------------------------------------- | --------------------------------------------------- | ------ |
+| `describe`   | `resource`, `parts` (`fields`, `list`, `actions`)                                           | the resources the user can list, or one resource    | no     |
+| `find_items` | `q`, `limit`; or `resource`, `filter`, `q`, `sort`, `page` or `cursor`, `perPage`, `fields` | the results of `GET /search`, or a page of the list | no     |
+| `get_item`   | `resource`, `id`, `fields`                                                                  | the item, with its `version` and its `abilities`    | no     |
+| `save_item`  | `resource`, `values`, `type`; or `resource`, `id`, `version`, `values`                      | the item, with its new `version`                    | yes    |
+| `run_action` | `resource`, `action`, `selection`, `values`, `dryRun`, `confirmation`                       | the action result, or a confirmation to ask for     | yes    |
+
+- **`describe` without `resource`** answers `{ "resources", "context" }`: each resource's `id`, `label`, `description` and `abilities` (`viewAny`, `create`), and the context the connection was made for. **With `resource`,** it answers the resource for an agent (`AgentResourceDescription`): its `fields` (name, type, label, help, localized, required, read-only, options, the resource of a relation, and the fields inside groups and repeaters), its `types`, its `list` (filters and sorts) and its `actions`, built-in ones included (`delete`, `restore`, `duplicate`), with their fields, scope, and whether they destroy, can be undone or ask for a confirmation. No layout, columns, icons or placements. `parts` asks for some of it only.
+- **`find_items` without `resource`** is the global search: `q`, and `limit`. **With `resource`,** it answers `{ "data", "meta" }` as the list, at most 50 items a page, with the fields of the list's columns unless `fields` names others.
+- **An argument of the other mode is an error,** never ignored: a `filter` without `resource`, a `limit` with one, a `version` without `id`, `page` and `cursor` together.
+- **`save_item` with an `id` requires `version`,** the one the agent read (`null` when the backend has no versions). A conflict is the `412` problem, with the current item. It saves one item at a time.
+- **`save_item` replaces the whole value of each field it sends.** Fields it doesn't send keep their value. A group or a repeater is never partial: changing one block sends every block of the field.
+- **`run_action` asks first when the app would.** When the action has a `confirm`, or destroys and can't be undone, or its selection is a query, or holds more than `UNDO_LIMIT` (100) items, a first call doesn't run it and answers `{ "status": "confirmation_required", "message", "preview", "confirmation" }`: `preview` is the result of its dry run, or the `count` of its selection. The agent shows it to its user; a second call with the same arguments and `confirmation` runs exactly what was previewed, within 5 minutes. Undoable actions run at once and answer their `undo`. The built-in `duplicate` answers the copy, in `item`. A selection above the backend's synchronous limit is refused.
+- **Errors are problems,** as in the HTTP API ([Errors](#errors)): a `422` keyed by the path of the argument or the value, `403`, `404`, `412`, `429` with `retryAfter`.
+- **A read connection** lists `describe`, `find_items` and `get_item` only, and the backend refuses the others.
 
 ## Conformance
 

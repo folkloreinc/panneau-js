@@ -131,6 +131,7 @@ export * from './widget';
 export * from './definition';
 export * from './api';
 export * from './boot';
+export * from './agents';
 
 /** The named schemas of the protocol, as they appear in the generated JSON Schema and OpenAPI files. */
 export const namedSchemas = {

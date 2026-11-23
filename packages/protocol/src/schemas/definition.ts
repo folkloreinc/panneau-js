@@ -228,6 +228,27 @@ export const Uploads = z.looseObject({
     maxSize: z.number().int().positive().optional(),
 });
 
+export const Agents = z
+    .looseObject({
+        mcp: z
+            .looseObject({
+                url: z.string().min(1).meta({
+                    description:
+                        'The URL of the MCP server (Streamable HTTP), which outside clients connect to.',
+                }),
+            })
+            .optional()
+            .meta({
+                description:
+                    'The MCP server of the Panneau: the account page lists the connections of the user.',
+            }),
+        assistant: z
+            .boolean()
+            .optional()
+            .meta({ description: 'The assistant inside Panneau is offered to the user.' }),
+    })
+    .meta({ description: 'What agents can use in the Panneau (decision 0090).' });
+
 export const Definition = z
     .looseObject({
         protocol: z.literal(PROTOCOL_VERSION),
@@ -268,6 +289,10 @@ export const Definition = z
         context: DefinitionContext.optional(),
         theme: DefinitionTheme.optional(),
         user: User.nullable().optional(),
+        agents: Agents.optional().meta({
+            description:
+                'What agents can use (decisions 0090 and 0106). Without it, the Panneau has none.',
+        }),
     })
     .superRefine((definition, context) => {
         const ids = new Set<string>();
@@ -312,6 +337,7 @@ export type Page = z.infer<typeof Page>;
 export type ContextOption = z.infer<typeof ContextOption>;
 export type ContextParam = z.infer<typeof ContextParam>;
 export type DefinitionContext = z.infer<typeof DefinitionContext>;
+export type Agents = z.infer<typeof Agents>;
 export type Uploads = z.infer<typeof Uploads>;
 export type Definition = z.infer<typeof Definition>;
 /** A definition as a backend writes it, before defaults are applied. */

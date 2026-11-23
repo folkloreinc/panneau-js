@@ -12,6 +12,7 @@ import {
 } from './constants';
 import { OVERVIEW_PERIODS } from './periods';
 import { createSchemaRegistry } from './schemas';
+import * as agents from './schemas/agents';
 import { BootConfig } from './schemas/boot';
 import { Definition } from './schemas/definition';
 import { Theme } from './schemas/theme';
@@ -175,6 +176,33 @@ export function createBootConfigJsonSchema(): JsonObject {
             io: 'input',
             metadata: createSchemaRegistry(),
         }) as JsonObject),
+    };
+}
+
+/** The JSON Schema of the arguments and the result of each tool of agents (decision 0106). */
+export function createAgentsJsonSchema(): JsonObject {
+    const registry = createSchemaRegistry();
+    Object.entries(agents).forEach(([id, schema]) => {
+        if (id.startsWith('Agent') && schema instanceof z.ZodType) {
+            registry.add(schema, { id });
+        }
+    });
+    const tools = z
+        .object(
+            Object.fromEntries(
+                Object.entries(agents.agentToolSchemas).map(([name, tool]) => [
+                    name,
+                    z.object(tool),
+                ]),
+            ),
+        )
+        .meta({
+            description:
+                'The tools of agents: the arguments and the result of each one. A tool that fails answers a `Problem`.',
+        });
+    return {
+        $id: 'https://github.com/folkloreinc/panneau-js/blob/v5.x/packages/protocol/schema/agents.schema.json',
+        ...(z.toJSONSchema(tools, { io: 'input', metadata: registry }) as JsonObject),
     };
 }
 
