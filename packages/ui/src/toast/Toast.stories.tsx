@@ -39,8 +39,16 @@ const EXAMPLES: Example[] = [
     ['Neutral', { title: 'Link copied' }],
 ];
 
+interface ToastButtonsProps {
+    /**
+     * The timeout of every toast, in place of the one from what it holds: `null` keeps them until
+     * they are closed, so that a play function doesn't race their timers.
+     */
+    timeout?: number | null;
+}
+
 /** Buttons that show toasts, above a footer that sticks to the bottom, as a form's does. */
-function ToastButtons() {
+function ToastButtons({ timeout }: ToastButtonsProps) {
     const toasts = useToast();
     const footer = useRef<HTMLDivElement>(null);
     useToastOffset(footer);
@@ -48,7 +56,15 @@ function ToastButtons() {
         <div style={{ display: 'grid', gap: '1rem' }}>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                 {EXAMPLES.map(([label, content, options]) => (
-                    <Button key={label} onPress={() => toasts.show(content, options)}>
+                    <Button
+                        key={label}
+                        onPress={() =>
+                            toasts.show(content, {
+                                ...options,
+                                ...(timeout !== undefined ? { timeout } : {}),
+                            })
+                        }
+                    >
                         {label}
                     </Button>
                 ))}
@@ -80,6 +96,8 @@ type Story = StoryObj<typeof meta>;
 
 /** Several toasts: at most three, the older ones folded behind the newest. */
 export const Several: Story = {
+    // A toast that closes by itself would give its place back to the oldest.
+    args: { timeout: null },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         const body = within(canvasElement.ownerDocument.body);
@@ -88,9 +106,16 @@ export const Several: Story = {
         }
         const region = await body.findByRole('region', { name: 'Notifications' });
         await expect(region).toHaveAttribute('data-placement', 'bottom');
-        await waitFor(() => expect(within(region).getAllByRole('alertdialog')).toHaveLength(3));
-        // The oldest waits for a place.
-        await expect(within(region).queryByText('“Spring contest” saved')).toBeNull();
+        // The newest shown, and the oldest waiting for a place. The region renders each change in a
+        // view transition, at the next frame: until then, it still shows the first three toasts,
+        // the oldest among them. So wait for the whole state, not only the count.
+        await waitFor(() => {
+            expect(within(region).getAllByRole('alertdialog')).toHaveLength(3);
+            expect(
+                within(region).getByText('Someone else is editing “Spring contest”'),
+            ).toBeInTheDocument();
+            expect(within(region).queryByText('“Spring contest” saved')).toBeNull();
+        });
         // Above the footer that sticks to the bottom.
         const footer = canvas.getByText('A footer that sticks to the bottom');
         await expect(region.getBoundingClientRect().bottom).toBeLessThanOrEqual(
@@ -108,6 +133,8 @@ export const Several: Story = {
  * move into its place; the page itself doesn't cross-fade.
  */
 export const Closed: Story = {
+    // Only the toast closed here closes: the count after it doesn't depend on timers.
+    args: { timeout: null },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         const body = within(canvasElement.ownerDocument.body);

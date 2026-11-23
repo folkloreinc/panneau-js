@@ -17,6 +17,7 @@ export {
     useDeleteItem,
     useDuplicateItem,
     useItemPreview,
+    usePrefetchItem,
     useResourceAggregate,
     useResourceAggregates,
     useResourceItem,

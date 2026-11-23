@@ -7,6 +7,7 @@ import {
 } from '@panneau/protocol';
 
 import { createDefinition } from './__fixtures__/definition';
+import { getListKey, rememberListSearch } from './listLocation';
 import { getNavigation } from './navigation';
 import { getMenuRoute, getPageParents, getRouteParents } from './parents';
 
@@ -140,6 +141,25 @@ describe('getPageParents', () => {
             { href: '/panneau/pages/activity', label: 'Activity' },
             { href: '/panneau/resources/authors', label: 'Authors' },
         ]);
+    });
+
+    it('goes back to a list with the query it last had in this tab (decision 0102)', () => {
+        const definition = createParents();
+        rememberListSearch(getListKey('/panneau', definition.user?.id, 'authors'), '?page=3&q=ada');
+        try {
+            expect(
+                getPageParents(definition, '/panneau', {
+                    name: 'resource.edit',
+                    resource: 'authors',
+                    id: '1',
+                }),
+            ).toEqual([
+                { href: '/panneau/pages/activity', label: 'Activity' },
+                { href: '/panneau/resources/authors?page=3&q=ada', label: 'Authors' },
+            ]);
+        } finally {
+            window.sessionStorage.clear();
+        }
     });
 
     it('names a page without a label by its id', () => {
