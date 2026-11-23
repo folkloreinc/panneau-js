@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { type CommandPaletteGroup, matchCommands, normalizeSearch } from './match';
+import { type CommandPaletteGroup, matchCommands, normalizeSearch, splitMatches } from './match';
 
 const groups: CommandPaletteGroup[] = [
     {
@@ -57,5 +57,31 @@ describe('matchCommands', () => {
             ['nav', ['Événements', 'Pages', 'New page', 'Homepage settings']],
             ['server', ['Something the server found']],
         ]);
+    });
+});
+
+describe('splitMatches', () => {
+    const marked = (label: string, query: string) =>
+        splitMatches(label, query)
+            .map((part) => (part.match ? `[${part.text}]` : part.text))
+            .join('');
+
+    it('marks the first match of each word, ignoring case and accents', () => {
+        expect(marked('Événements à venir', 'EVEN')).toBe('[Évén]ements à venir');
+        expect(marked('Événements à venir', 'a venir')).toBe('Événements [à] [venir]');
+        expect(marked('Événements à venir', 'ven')).toBe('É[vén]ements à venir');
+        expect(marked('Pages and pages', 'pag')).toBe('[Pag]es and pages');
+        // An accent written apart from its letter belongs to it
+        expect(marked('Cafe\u0301 du coin', 'cafe')).toBe('[Cafe\u0301] du coin');
+    });
+
+    it('joins matches that overlap or touch', () => {
+        expect(marked('Contact us', 'conta tact')).toBe('[Contact] us');
+        expect(marked('Contact us', 'con tact')).toBe('[Contact] us');
+    });
+
+    it('keeps the label as one part without a query or a match', () => {
+        expect(splitMatches('Contact', '  ')).toEqual([{ text: 'Contact', match: false }]);
+        expect(splitMatches('Contact', 'zzz')).toEqual([{ text: 'Contact', match: false }]);
     });
 });
