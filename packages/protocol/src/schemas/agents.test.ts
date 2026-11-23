@@ -25,17 +25,25 @@ const description = {
     description: 'News articles of the site, published on the home page.',
     fields: [
         { name: 'title', type: 'text', label: 'Title', localized: true, required: true },
+        { name: 'slug', type: 'text', required: 'create', createOnly: true },
+        { name: 'tags', type: 'relation', resource: 'tags', multiple: true },
         { name: 'author', type: 'relation', resource: 'people' },
         { name: 'status', type: 'select', options: [{ value: 'draft', label: 'Draft' }] },
         {
             name: 'blocks',
             type: 'repeater',
-            blocks: [{ type: 'text', fields: [{ name: 'body', type: 'richtext' }] }],
+            types: [{ id: 'text', label: 'Text', fields: [{ name: 'body', type: 'richtext' }] }],
         },
         { name: 'seo', type: 'group', fields: [{ name: 'title', type: 'text', readOnly: true }] },
     ],
     types: [{ id: 'news', label: 'News', fields: [] }],
-    list: { filters: [{ id: 'status', type: 'select' }], sorts: ['title'], search: true },
+    abilities: { viewAny: true, create: true },
+    list: {
+        filters: [{ id: 'status', type: 'select' }],
+        sorts: ['title'],
+        defaultSort: '-title',
+        search: true,
+    },
     actions: [
         { id: 'delete', label: 'Delete', scope: ['item', 'selection'], destructive: true },
         { id: 'publish', label: 'Publish', scope: ['item'], confirmation: true, dryRun: true },
@@ -190,5 +198,16 @@ describe('the tools of agents', () => {
         expect(validate({ ...calls, get_item: unknownArgument })).toBe(false);
         const bigPage = { ...calls.find_items, arguments: { resource: 'a', perPage: 51 } };
         expect(validate({ ...calls, find_items: bigPage })).toBe(false);
+    });
+});
+
+describe('a field, as an agent reads it', () => {
+    it('takes a required mode, not any string', () => {
+        expect(
+            AgentResourceDescription.safeParse({
+                ...description,
+                fields: [{ name: 'slug', type: 'text', required: 'always' }],
+            }).success,
+        ).toBe(false);
     });
 });

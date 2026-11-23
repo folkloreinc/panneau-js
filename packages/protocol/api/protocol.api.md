@@ -570,7 +570,13 @@ export const AgentAction: z.ZodObject<{
         label: z.ZodOptional<z.ZodString>;
         help: z.ZodOptional<z.ZodString>;
         localized: z.ZodOptional<z.ZodBoolean>;
-        required: z.ZodOptional<z.ZodBoolean>;
+        required: z.ZodOptional<z.ZodUnion<readonly [z.ZodBoolean, z.ZodEnum<{
+            update: "update";
+            create: "create";
+        }>]>>;
+        multiple: z.ZodOptional<z.ZodBoolean>;
+        createOnly: z.ZodOptional<z.ZodBoolean>;
+        updateOnly: z.ZodOptional<z.ZodBoolean>;
         readOnly: z.ZodOptional<z.ZodBoolean>;
         options: z.ZodOptional<z.ZodArray<z.ZodObject<{
             value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -581,7 +587,7 @@ export const AgentAction: z.ZodObject<{
         }, z.core.$loose>>>;
         resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
         fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
-        blocks: z.ZodOptional<z.ZodArray<typeof AgentBlock>>;
+        types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
     }, z.core.$loose>>>;
     destructive: z.ZodOptional<z.ZodBoolean>;
     undoable: z.ZodOptional<z.ZodBoolean>;
@@ -593,14 +599,14 @@ export const AgentAction: z.ZodObject<{
 export type AgentAction = z.infer<typeof AgentAction>;
 
 // @public (undocumented)
-export const AgentBlock: z.ZodObject<{
-    type: z.ZodString;
-    label: z.ZodOptional<z.ZodString>;
+export const AgentBlockType: z.ZodObject<{
+    id: z.ZodString;
+    label: z.ZodString;
     fields: z.ZodArray<typeof AgentField>;
 }, z.core.$loose>;
 
 // @public (undocumented)
-export type AgentBlock = z.infer<typeof AgentBlock>;
+export type AgentBlockType = z.infer<typeof AgentBlockType>;
 
 // @public (undocumented)
 export const AgentConfirmationRequired: z.ZodObject<{
@@ -715,7 +721,13 @@ export const AgentDescribeResult: z.ZodUnion<readonly [z.ZodObject<{
         label: z.ZodOptional<z.ZodString>;
         help: z.ZodOptional<z.ZodString>;
         localized: z.ZodOptional<z.ZodBoolean>;
-        required: z.ZodOptional<z.ZodBoolean>;
+        required: z.ZodOptional<z.ZodUnion<readonly [z.ZodBoolean, z.ZodEnum<{
+            update: "update";
+            create: "create";
+        }>]>>;
+        multiple: z.ZodOptional<z.ZodBoolean>;
+        createOnly: z.ZodOptional<z.ZodBoolean>;
+        updateOnly: z.ZodOptional<z.ZodBoolean>;
         readOnly: z.ZodOptional<z.ZodBoolean>;
         options: z.ZodOptional<z.ZodArray<z.ZodObject<{
             value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -726,7 +738,7 @@ export const AgentDescribeResult: z.ZodUnion<readonly [z.ZodObject<{
         }, z.core.$loose>>>;
         resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
         fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
-        blocks: z.ZodOptional<z.ZodArray<typeof AgentBlock>>;
+        types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
     }, z.core.$loose>>>;
     types: z.ZodOptional<z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -738,7 +750,13 @@ export const AgentDescribeResult: z.ZodUnion<readonly [z.ZodObject<{
             label: z.ZodOptional<z.ZodString>;
             help: z.ZodOptional<z.ZodString>;
             localized: z.ZodOptional<z.ZodBoolean>;
-            required: z.ZodOptional<z.ZodBoolean>;
+            required: z.ZodOptional<z.ZodUnion<readonly [z.ZodBoolean, z.ZodEnum<{
+                update: "update";
+                create: "create";
+            }>]>>;
+            multiple: z.ZodOptional<z.ZodBoolean>;
+            createOnly: z.ZodOptional<z.ZodBoolean>;
+            updateOnly: z.ZodOptional<z.ZodBoolean>;
             readOnly: z.ZodOptional<z.ZodBoolean>;
             options: z.ZodOptional<z.ZodArray<z.ZodObject<{
                 value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -749,7 +767,7 @@ export const AgentDescribeResult: z.ZodUnion<readonly [z.ZodObject<{
             }, z.core.$loose>>>;
             resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
             fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
-            blocks: z.ZodOptional<z.ZodArray<typeof AgentBlock>>;
+            types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
         }, z.core.$loose>>;
     }, z.core.$loose>>>;
     list: z.ZodOptional<z.ZodObject<{
@@ -770,6 +788,7 @@ export const AgentDescribeResult: z.ZodUnion<readonly [z.ZodObject<{
             primary: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>>>;
         sorts: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        defaultSort: z.ZodOptional<z.ZodString>;
         search: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>>;
     actions: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -786,7 +805,13 @@ export const AgentDescribeResult: z.ZodUnion<readonly [z.ZodObject<{
             label: z.ZodOptional<z.ZodString>;
             help: z.ZodOptional<z.ZodString>;
             localized: z.ZodOptional<z.ZodBoolean>;
-            required: z.ZodOptional<z.ZodBoolean>;
+            required: z.ZodOptional<z.ZodUnion<readonly [z.ZodBoolean, z.ZodEnum<{
+                update: "update";
+                create: "create";
+            }>]>>;
+            multiple: z.ZodOptional<z.ZodBoolean>;
+            createOnly: z.ZodOptional<z.ZodBoolean>;
+            updateOnly: z.ZodOptional<z.ZodBoolean>;
             readOnly: z.ZodOptional<z.ZodBoolean>;
             options: z.ZodOptional<z.ZodArray<z.ZodObject<{
                 value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -797,13 +822,14 @@ export const AgentDescribeResult: z.ZodUnion<readonly [z.ZodObject<{
             }, z.core.$loose>>>;
             resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
             fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
-            blocks: z.ZodOptional<z.ZodArray<typeof AgentBlock>>;
+            types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
         }, z.core.$loose>>>;
         destructive: z.ZodOptional<z.ZodBoolean>;
         undoable: z.ZodOptional<z.ZodBoolean>;
         dryRun: z.ZodOptional<z.ZodBoolean>;
         confirmation: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>>>;
+    abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
 }, z.core.$loose>]>;
 
 // @public (undocumented)
@@ -816,7 +842,13 @@ export const AgentField: z.ZodObject<{
     label: z.ZodOptional<z.ZodString>;
     help: z.ZodOptional<z.ZodString>;
     localized: z.ZodOptional<z.ZodBoolean>;
-    required: z.ZodOptional<z.ZodBoolean>;
+    required: z.ZodOptional<z.ZodUnion<readonly [z.ZodBoolean, z.ZodEnum<{
+        update: "update";
+        create: "create";
+    }>]>>;
+    multiple: z.ZodOptional<z.ZodBoolean>;
+    createOnly: z.ZodOptional<z.ZodBoolean>;
+    updateOnly: z.ZodOptional<z.ZodBoolean>;
     readOnly: z.ZodOptional<z.ZodBoolean>;
     options: z.ZodOptional<z.ZodArray<z.ZodObject<{
         value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -827,7 +859,7 @@ export const AgentField: z.ZodObject<{
     }, z.core.$loose>>>;
     resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
     fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
-    blocks: z.ZodOptional<z.ZodArray<typeof AgentBlock>>;
+    types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -908,7 +940,13 @@ export const AgentResourceDescription: z.ZodObject<{
         label: z.ZodOptional<z.ZodString>;
         help: z.ZodOptional<z.ZodString>;
         localized: z.ZodOptional<z.ZodBoolean>;
-        required: z.ZodOptional<z.ZodBoolean>;
+        required: z.ZodOptional<z.ZodUnion<readonly [z.ZodBoolean, z.ZodEnum<{
+            update: "update";
+            create: "create";
+        }>]>>;
+        multiple: z.ZodOptional<z.ZodBoolean>;
+        createOnly: z.ZodOptional<z.ZodBoolean>;
+        updateOnly: z.ZodOptional<z.ZodBoolean>;
         readOnly: z.ZodOptional<z.ZodBoolean>;
         options: z.ZodOptional<z.ZodArray<z.ZodObject<{
             value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -919,7 +957,7 @@ export const AgentResourceDescription: z.ZodObject<{
         }, z.core.$loose>>>;
         resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
         fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
-        blocks: z.ZodOptional<z.ZodArray<typeof AgentBlock>>;
+        types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
     }, z.core.$loose>>>;
     types: z.ZodOptional<z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -931,7 +969,13 @@ export const AgentResourceDescription: z.ZodObject<{
             label: z.ZodOptional<z.ZodString>;
             help: z.ZodOptional<z.ZodString>;
             localized: z.ZodOptional<z.ZodBoolean>;
-            required: z.ZodOptional<z.ZodBoolean>;
+            required: z.ZodOptional<z.ZodUnion<readonly [z.ZodBoolean, z.ZodEnum<{
+                update: "update";
+                create: "create";
+            }>]>>;
+            multiple: z.ZodOptional<z.ZodBoolean>;
+            createOnly: z.ZodOptional<z.ZodBoolean>;
+            updateOnly: z.ZodOptional<z.ZodBoolean>;
             readOnly: z.ZodOptional<z.ZodBoolean>;
             options: z.ZodOptional<z.ZodArray<z.ZodObject<{
                 value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -942,7 +986,7 @@ export const AgentResourceDescription: z.ZodObject<{
             }, z.core.$loose>>>;
             resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
             fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
-            blocks: z.ZodOptional<z.ZodArray<typeof AgentBlock>>;
+            types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
         }, z.core.$loose>>;
     }, z.core.$loose>>>;
     list: z.ZodOptional<z.ZodObject<{
@@ -963,6 +1007,7 @@ export const AgentResourceDescription: z.ZodObject<{
             primary: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>>>;
         sorts: z.ZodOptional<z.ZodArray<z.ZodString>>;
+        defaultSort: z.ZodOptional<z.ZodString>;
         search: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>>;
     actions: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -979,7 +1024,13 @@ export const AgentResourceDescription: z.ZodObject<{
             label: z.ZodOptional<z.ZodString>;
             help: z.ZodOptional<z.ZodString>;
             localized: z.ZodOptional<z.ZodBoolean>;
-            required: z.ZodOptional<z.ZodBoolean>;
+            required: z.ZodOptional<z.ZodUnion<readonly [z.ZodBoolean, z.ZodEnum<{
+                update: "update";
+                create: "create";
+            }>]>>;
+            multiple: z.ZodOptional<z.ZodBoolean>;
+            createOnly: z.ZodOptional<z.ZodBoolean>;
+            updateOnly: z.ZodOptional<z.ZodBoolean>;
             readOnly: z.ZodOptional<z.ZodBoolean>;
             options: z.ZodOptional<z.ZodArray<z.ZodObject<{
                 value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -990,13 +1041,14 @@ export const AgentResourceDescription: z.ZodObject<{
             }, z.core.$loose>>>;
             resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
             fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
-            blocks: z.ZodOptional<z.ZodArray<typeof AgentBlock>>;
+            types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
         }, z.core.$loose>>>;
         destructive: z.ZodOptional<z.ZodBoolean>;
         undoable: z.ZodOptional<z.ZodBoolean>;
         dryRun: z.ZodOptional<z.ZodBoolean>;
         confirmation: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>>>;
+    abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -1242,7 +1294,13 @@ export const agentToolSchemas: {
                 label: z.ZodOptional<z.ZodString>;
                 help: z.ZodOptional<z.ZodString>;
                 localized: z.ZodOptional<z.ZodBoolean>;
-                required: z.ZodOptional<z.ZodBoolean>;
+                required: z.ZodOptional<z.ZodUnion<readonly [z.ZodBoolean, z.ZodEnum<{
+                    update: "update";
+                    create: "create";
+                }>]>>;
+                multiple: z.ZodOptional<z.ZodBoolean>;
+                createOnly: z.ZodOptional<z.ZodBoolean>;
+                updateOnly: z.ZodOptional<z.ZodBoolean>;
                 readOnly: z.ZodOptional<z.ZodBoolean>;
                 options: z.ZodOptional<z.ZodArray<z.ZodObject<{
                     value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -1253,7 +1311,7 @@ export const agentToolSchemas: {
                 }, z.core.$loose>>>;
                 resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
                 fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
-                blocks: z.ZodOptional<z.ZodArray<typeof AgentBlock>>;
+                types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
             }, z.core.$loose>>>;
             types: z.ZodOptional<z.ZodArray<z.ZodObject<{
                 id: z.ZodString;
@@ -1265,7 +1323,13 @@ export const agentToolSchemas: {
                     label: z.ZodOptional<z.ZodString>;
                     help: z.ZodOptional<z.ZodString>;
                     localized: z.ZodOptional<z.ZodBoolean>;
-                    required: z.ZodOptional<z.ZodBoolean>;
+                    required: z.ZodOptional<z.ZodUnion<readonly [z.ZodBoolean, z.ZodEnum<{
+                        update: "update";
+                        create: "create";
+                    }>]>>;
+                    multiple: z.ZodOptional<z.ZodBoolean>;
+                    createOnly: z.ZodOptional<z.ZodBoolean>;
+                    updateOnly: z.ZodOptional<z.ZodBoolean>;
                     readOnly: z.ZodOptional<z.ZodBoolean>;
                     options: z.ZodOptional<z.ZodArray<z.ZodObject<{
                         value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -1276,7 +1340,7 @@ export const agentToolSchemas: {
                     }, z.core.$loose>>>;
                     resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
                     fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
-                    blocks: z.ZodOptional<z.ZodArray<typeof AgentBlock>>;
+                    types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
                 }, z.core.$loose>>;
             }, z.core.$loose>>>;
             list: z.ZodOptional<z.ZodObject<{
@@ -1297,6 +1361,7 @@ export const agentToolSchemas: {
                     primary: z.ZodOptional<z.ZodBoolean>;
                 }, z.core.$loose>>>;
                 sorts: z.ZodOptional<z.ZodArray<z.ZodString>>;
+                defaultSort: z.ZodOptional<z.ZodString>;
                 search: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>>;
             actions: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -1313,7 +1378,13 @@ export const agentToolSchemas: {
                     label: z.ZodOptional<z.ZodString>;
                     help: z.ZodOptional<z.ZodString>;
                     localized: z.ZodOptional<z.ZodBoolean>;
-                    required: z.ZodOptional<z.ZodBoolean>;
+                    required: z.ZodOptional<z.ZodUnion<readonly [z.ZodBoolean, z.ZodEnum<{
+                        update: "update";
+                        create: "create";
+                    }>]>>;
+                    multiple: z.ZodOptional<z.ZodBoolean>;
+                    createOnly: z.ZodOptional<z.ZodBoolean>;
+                    updateOnly: z.ZodOptional<z.ZodBoolean>;
                     readOnly: z.ZodOptional<z.ZodBoolean>;
                     options: z.ZodOptional<z.ZodArray<z.ZodObject<{
                         value: z.ZodUnion<readonly [z.ZodString, z.ZodNumber, z.ZodBoolean]>;
@@ -1324,13 +1395,14 @@ export const agentToolSchemas: {
                     }, z.core.$loose>>>;
                     resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
                     fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
-                    blocks: z.ZodOptional<z.ZodArray<typeof AgentBlock>>;
+                    types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
                 }, z.core.$loose>>>;
                 destructive: z.ZodOptional<z.ZodBoolean>;
                 undoable: z.ZodOptional<z.ZodBoolean>;
                 dryRun: z.ZodOptional<z.ZodBoolean>;
                 confirmation: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>>>;
+            abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
         }, z.core.$loose>]>;
     };
     find_items: {

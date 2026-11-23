@@ -32,7 +32,22 @@ export const AgentField = z
         localized: z.boolean().optional().meta({
             description: 'The value is an object keyed by locale, one per locale of the content.',
         }),
-        required: z.boolean().optional(),
+        required: z
+            .union([z.boolean(), z.enum(['create', 'update'])])
+            .optional()
+            .meta({
+                description:
+                    '`create` or `update`: the value is required only when the item is created, or only when it is changed.',
+            }),
+        multiple: z.boolean().optional().meta({ description: 'The value is a list.' }),
+        createOnly: z
+            .boolean()
+            .optional()
+            .meta({ description: 'Only set when the item is created: changes ignore it.' }),
+        updateOnly: z
+            .boolean()
+            .optional()
+            .meta({ description: 'Only set when the item is changed: creating ignores it.' }),
         readOnly: z.boolean().optional().meta({
             description: '`save_item` ignores its value: read-only, or not editable by the user.',
         }),
@@ -47,17 +62,18 @@ export const AgentField = z
                 description: 'The fields of the value of a group, or of each item of a repeater.',
             });
         },
-        get blocks(): z.ZodOptional<z.ZodArray<typeof AgentBlock>> {
-            return z.array(AgentBlock).optional().meta({
-                description: 'A repeater of blocks: the blocks it takes, each with its `type`.',
+        get types(): z.ZodOptional<z.ZodArray<typeof AgentBlockType>> {
+            return z.array(AgentBlockType).optional().meta({
+                description:
+                    'A repeater of blocks: the types of block it takes. Each block of its value has the `type` of one of their ids.',
             });
         },
     })
     .meta({ description: 'A field, as an agent reads it: what it takes, not how it is shown.' });
 
-export const AgentBlock = z.looseObject({
-    type: z.string().min(1),
-    label: z.string().optional(),
+export const AgentBlockType = z.looseObject({
+    id: z.string().min(1),
+    label: z.string(),
     get fields(): z.ZodArray<typeof AgentField> {
         return z.array(AgentField);
     },
@@ -106,10 +122,17 @@ export const AgentResourceDescription = z
             .looseObject({
                 filters: z.array(Filter).optional(),
                 sorts: z.array(z.string().min(1)).optional(),
+                defaultSort: z.string().optional().meta({
+                    description: 'The `sort` of `find_items` without one: `-published_at`.',
+                }),
                 search: z.boolean().optional().meta({ description: '`find_items` takes `q`.' }),
             })
             .optional(),
         actions: z.array(AgentAction).optional(),
+        abilities: z.record(z.string(), z.boolean()).optional().meta({
+            description:
+                'What the user can do with the resource, by ability (`viewAny`, `create`).',
+        }),
     })
     .meta({
         description:
@@ -265,7 +288,7 @@ export const agentToolSchemas = {
 
 export type AgentDescribePart = z.infer<typeof AgentDescribePart>;
 export type AgentField = z.infer<typeof AgentField>;
-export type AgentBlock = z.infer<typeof AgentBlock>;
+export type AgentBlockType = z.infer<typeof AgentBlockType>;
 export type AgentAction = z.infer<typeof AgentAction>;
 export type AgentResourceDescription = z.infer<typeof AgentResourceDescription>;
 export type AgentResourceSummary = z.infer<typeof AgentResourceSummary>;

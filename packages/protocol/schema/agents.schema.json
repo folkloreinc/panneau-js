@@ -353,6 +353,9 @@
                                 "minLength": 1
                             }
                         },
+                        "defaultSort": {
+                            "type": "string"
+                        },
                         "search": {
                             "type": "boolean"
                         }
@@ -363,6 +366,15 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/$defs/AgentAction"
+                    }
+                },
+                "abilities": {
+                    "type": "object",
+                    "propertyNames": {
+                        "type": "string"
+                    },
+                    "additionalProperties": {
+                        "type": "boolean"
                     }
                 }
             },
@@ -393,6 +405,26 @@
                     "type": "boolean"
                 },
                 "required": {
+                    "anyOf": [
+                        {
+                            "type": "boolean"
+                        },
+                        {
+                            "type": "string",
+                            "enum": [
+                                "create",
+                                "update"
+                            ]
+                        }
+                    ]
+                },
+                "multiple": {
+                    "type": "boolean"
+                },
+                "createOnly": {
+                    "type": "boolean"
+                },
+                "updateOnly": {
                     "type": "boolean"
                 },
                 "readOnly": {
@@ -425,10 +457,10 @@
                         "$ref": "#/$defs/AgentField"
                     }
                 },
-                "blocks": {
+                "types": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/$defs/AgentBlock"
+                        "$ref": "#/$defs/AgentBlockType"
                     }
                 }
             },
@@ -468,10 +500,10 @@
             ],
             "additionalProperties": {}
         },
-        "AgentBlock": {
+        "AgentBlockType": {
             "type": "object",
             "properties": {
-                "type": {
+                "id": {
                     "type": "string",
                     "minLength": 1
                 },
@@ -486,7 +518,8 @@
                 }
             },
             "required": [
-                "type",
+                "id",
+                "label",
                 "fields"
             ],
             "additionalProperties": {}
