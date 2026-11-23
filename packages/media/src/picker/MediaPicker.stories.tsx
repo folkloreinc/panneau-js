@@ -83,6 +83,38 @@ export const Single: Story = {
     },
 };
 
+/**
+ * Closing with details changed but not saved asks first, as leaving a form page does: "Stay"
+ * keeps them. Unchanged, the picker closes without asking.
+ */
+export const UnsavedDetails: Story = {
+    play: async ({ args, canvasElement }) => {
+        const page = body(canvasElement);
+        const dialog = await page.findByRole('dialog', { name: 'Choose media' });
+        await userEvent.click(await within(dialog).findByRole('row', { name: 'autumn forest' }));
+        const details = within(dialog).getByRole('complementary', {
+            name: 'Details of autumn forest',
+        });
+        const alt = within(details).getByRole('textbox', { name: 'Alt text' });
+        await userEvent.type(alt, 'In the fog');
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+        const ask = await page.findByRole('alertdialog', { name: 'Leave without saving?' });
+        await userEvent.click(within(ask).getByRole('button', { name: 'Stay' }));
+        await waitFor(() => expect(page.queryByRole('alertdialog')).not.toBeInTheDocument());
+        await expect(alt).toHaveValue('In the fog');
+        await expect(args.onOpenChange).not.toHaveBeenCalled();
+
+        // Saved, the details are no longer changed: Cancel closes at once
+        await userEvent.click(within(details).getByRole('button', { name: 'Save' }));
+        await waitFor(() =>
+            expect(within(details).getByRole('button', { name: 'Save' })).toBeDisabled(),
+        );
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+        await expect(args.onOpenChange).toHaveBeenCalledWith(false);
+        await expect(page.queryByRole('alertdialog')).not.toBeInTheDocument();
+    },
+};
+
 /** Several media, with a count and "Clear", and a label that counts. */
 export const Multiple: Story = {
     args: {

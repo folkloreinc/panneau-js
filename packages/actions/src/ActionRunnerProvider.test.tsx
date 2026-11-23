@@ -534,6 +534,64 @@ describe('ActionRunnerProvider', () => {
             expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
             expect(adapter.runAction).not.toHaveBeenCalled();
         });
+
+        it('asks before closing with changed values: "Stay" keeps them', async () => {
+            const user = userEvent.setup();
+            const adapter = createAdapter();
+            const { outcomes, run } = renderRunner(
+                { action: notify, scope: 'selection', selection: { ids: ['1'] } },
+                { adapter },
+            );
+            await run();
+            const dialog = await screen.findByRole('dialog', { name: 'Notify' });
+            await user.type(within(dialog).getByRole('textbox', { name: 'Note' }), 'Hello');
+            await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+            const ask = await screen.findByRole('alertdialog', { name: 'Leave without saving?' });
+            await user.click(within(ask).getByRole('button', { name: 'Stay' }));
+            await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument());
+            expect(within(dialog).getByRole('textbox', { name: 'Note' })).toHaveValue('Hello');
+            expect(outcomes).toEqual([]);
+
+            await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+            const again = await screen.findByRole('alertdialog', {
+                name: 'Leave without saving?',
+            });
+            await user.click(within(again).getByRole('button', { name: 'Leave' }));
+            await waitFor(() => expect(outcomes).toEqual([false]));
+            expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+            expect(adapter.runAction).not.toHaveBeenCalled();
+        });
+
+        it('asks before Escape closes it with changed values, and focuses the field back', async () => {
+            const user = userEvent.setup();
+            const { outcomes, run } = renderRunner(
+                { action: notify, scope: 'selection', selection: { ids: ['1'] } },
+                { adapter: createAdapter() },
+            );
+            await run();
+            const dialog = await screen.findByRole('dialog', { name: 'Notify' });
+            const note = within(dialog).getByRole('textbox', { name: 'Note' });
+            await user.type(note, 'Hello');
+            await user.keyboard('{Escape}');
+            const ask = await screen.findByRole('alertdialog', { name: 'Leave without saving?' });
+            await user.click(within(ask).getByRole('button', { name: 'Stay' }));
+            await waitFor(() => expect(note).toHaveFocus());
+            expect(note).toHaveValue('Hello');
+            expect(outcomes).toEqual([]);
+        });
+
+        it('closes without asking when nothing changed', async () => {
+            const user = userEvent.setup();
+            const { outcomes, run } = renderRunner(
+                { action: notify, scope: 'selection', selection: { ids: ['1'] } },
+                { adapter: createAdapter() },
+            );
+            await run();
+            await screen.findByRole('dialog', { name: 'Notify' });
+            await user.keyboard('{Escape}');
+            await waitFor(() => expect(outcomes).toEqual([false]));
+            expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+        });
     });
 
     describe('queued runs', () => {
