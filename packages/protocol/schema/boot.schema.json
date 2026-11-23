@@ -2679,6 +2679,9 @@
                         "auto"
                     ]
                 },
+                "lockDensity": {
+                    "type": "boolean"
+                },
                 "navigation": {
                     "type": "string",
                     "enum": [

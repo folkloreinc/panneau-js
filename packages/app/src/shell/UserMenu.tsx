@@ -19,6 +19,7 @@ import {
 import { getInterfaceLocales } from '../interfaceLocales';
 import { getProfilePath } from '../navigation';
 import styles from './UserMenu.module.css';
+import { DENSITY_CHOICES, DENSITY_ICONS, type DensityChoice } from './density';
 
 /** The color schemes the user can pick, in the order of the menu. */
 export const COLOR_SCHEMES = ['light', 'dark', 'auto'] as const;
@@ -60,6 +61,10 @@ export interface UserMenuProps {
     basePath: string;
     colorScheme: ColorSchemePreference;
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
+    /** The user's density (decision 0104). */
+    density?: DensityChoice | undefined;
+    /** Keeps the user's density. Without it, as when the definition locks it, no "Density". */
+    onDensityChange?: ((density: DensityChoice) => void) | undefined;
     /** Logs the user out. Without it, the menu has no "Log out". */
     onLogOut?: (() => void) | undefined;
     /**
@@ -76,7 +81,8 @@ export interface UserMenuProps {
 
 /**
  * The user's menu (decision 0086), behind their avatar and name: who is logged in, their profile,
- * the appearance and the language as choices with a check, and "Log out". The sidebar and the dock
+ * the appearance, the density (decision 0104) and the language as choices with a check, and
+ * "Log out". The sidebar and the dock
  * share it.
  */
 export function UserMenu({
@@ -84,6 +90,8 @@ export function UserMenu({
     basePath,
     colorScheme,
     onColorSchemeChange,
+    density = 'default',
+    onDensityChange,
     onLogOut,
     onLocaleChange,
     onNavigate,
@@ -145,6 +153,34 @@ export function UserMenu({
                         </MenuItem>
                     ))}
                 </MenuSection>
+                {onDensityChange !== undefined ? (
+                    <MenuSection
+                        title={intl.formatMessage(appMessages.densityTitle)}
+                        selectionMode="single"
+                        disallowEmptySelection
+                        // Prefixed: the ids of a menu are unique
+                        selectedKeys={[`density-${density}`]}
+                        onSelectionChange={(keys) => {
+                            const [key] = keys === 'all' ? [] : [...keys];
+                            const choice = DENSITY_CHOICES.find(
+                                (value) => `density-${value}` === key,
+                            );
+                            if (choice !== undefined) {
+                                onDensityChange(choice);
+                            }
+                        }}
+                    >
+                        {DENSITY_CHOICES.map((choice) => (
+                            <MenuItem
+                                key={choice}
+                                id={`density-${choice}`}
+                                icon={DENSITY_ICONS[choice]}
+                            >
+                                {intl.formatMessage(appMessages.densityOption, { density: choice })}
+                            </MenuItem>
+                        ))}
+                    </MenuSection>
+                ) : null}
                 {locales.length > 0 ? (
                     <MenuSection
                         title={intl.formatMessage(appMessages.language)}

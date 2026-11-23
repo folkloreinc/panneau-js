@@ -108,6 +108,10 @@ export const DefinitionTheme = z
         tokens: themeShape.tokens.optional(),
         colorScheme: z.enum(['light', 'dark', 'auto']).optional(),
         density: z.enum(['compact', 'comfortable', 'touch', 'auto']).optional(),
+        lockDensity: z.boolean().optional().meta({
+            description:
+                "Whether the density is the definition's only: `true` hides the user's choice of a density (decision 0104).",
+        }),
         navigation: z.enum(['sidebar', 'dock']).optional().meta({
             description:
                 'Where the app shows the `main` menu: `sidebar` (the default), a column on the left, or `dock`, a dock at the bottom of the window (decision 0076).',
