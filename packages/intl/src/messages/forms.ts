@@ -243,5 +243,9 @@ export const formsMessages = {
             id: 'panneau.forms.publication.unpublish',
             defaultMessage: 'Unpublish',
         }),
+        unsaved: defineMessage({
+            id: 'panneau.forms.publication.unsaved',
+            defaultMessage: 'Unsaved changes',
+        }),
     },
 };

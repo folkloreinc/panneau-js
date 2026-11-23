@@ -76,4 +76,5 @@ export const formsFr: Record<string, string> = {
     'panneau.forms.publication.scheduledFor': 'Sera publié le {date}',
     'panneau.forms.publication.publish': 'Publier',
     'panneau.forms.publication.unpublish': 'Dépublier',
+    'panneau.forms.publication.unsaved': 'Modifications non enregistrées',
 };
