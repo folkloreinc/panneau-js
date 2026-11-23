@@ -1,3 +1,5 @@
+import type { DropItem } from 'react-aria-components';
+
 /** Whether a MIME type matches one of the patterns of an `accept` rule (`image/*`, `application/pdf`). */
 export function matchesMime(mime: string, patterns: readonly string[]): boolean {
     return patterns.some((pattern) =>
@@ -19,4 +21,12 @@ export function formatSize(bytes: number, locale?: string): string {
         maximumFractionDigits: unit === 0 || value >= 10 ? 0 : 1,
     }).format(value);
     return `${number} ${UNITS[unit] ?? 'B'}`;
+}
+
+/** The files of a drop, without its other items (text, directories). */
+export async function readDrop(items: readonly DropItem[]): Promise<File[]> {
+    const files = await Promise.all(
+        items.map((item) => (item.kind === 'file' ? item.getFile() : Promise.resolve(null))),
+    );
+    return files.filter((file): file is File => file !== null);
 }

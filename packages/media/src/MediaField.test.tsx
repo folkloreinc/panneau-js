@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -9,11 +9,19 @@ import { FieldsProvider, type UploadSource, type UploadedFile } from '@panneau/f
 import type { Definition, Item, MediaInfo, MediaReference } from '@panneau/protocol';
 
 import { type MediaAdapter, MediaField, MediaFieldEntry } from './MediaField';
+import { dragFiles, pasteFiles } from './__fixtures__/dataTransfer';
 import { createMemorySource, libraryMedia } from './__fixtures__/mediaSources';
 import { Controlled, file, fileInput, renderInRoot } from './__fixtures__/render';
 import { mediaPlugin } from './plugin';
 
 const NO_ITEMS: never[] = [];
+
+/** Drops files on an element, and lets the drop zone read them. */
+const dropFiles = (target: Element, files: readonly File[]) =>
+    act(async () => {
+        dragFiles(target, files);
+        await Promise.resolve();
+    });
 
 /** A source that uploads each file at once, as `upl_1`, `upl_2`… */
 const instantSource: UploadSource = {
@@ -151,6 +159,116 @@ describe('MediaField', () => {
         await userEvent.upload(fileInput(container), file('photo.jpg', 'image/jpeg'));
 
         expect(await screen.findByText('Failed: photo.jpg: Too large.')).toBeInTheDocument();
+    });
+
+    it('takes files dropped anywhere on it, its media included', async () => {
+        const create = vi
+            .fn<MediaAdapter['create']>()
+            .mockResolvedValueOnce(item({ type: 'image' }, { id: 'med_2', name: 'a.jpg' }))
+            .mockResolvedValueOnce(item({ type: 'image' }, { id: 'med_3', name: 'b.jpg' }));
+        const onChange = vi.fn();
+        renderInRoot(
+            <Controlled<MediaReference[] | null> initial={[reference()]} onChange={onChange}>
+                {(value, setValue) => (
+                    <MediaField
+                        label="Gallery"
+                        resource="media"
+                        multiple
+                        adapter={{ create, get: vi.fn() }}
+                        value={value}
+                        onChange={setValue}
+                    />
+                )}
+            </Controlled>,
+        );
+        const dropped = [file('a.jpg', 'image/jpeg'), file('b.jpg', 'image/jpeg')];
+
+        await dropFiles(screen.getByText('clip.mp4'), dropped);
+
+        await waitFor(() => expect(create).toHaveBeenCalledTimes(2));
+        expect(create).toHaveBeenCalledWith('media', { file: dropped[0] });
+        await waitFor(() =>
+            expect(onChange).toHaveBeenLastCalledWith([
+                expect.objectContaining({ id: 'med_1' }),
+                expect.objectContaining({ id: 'med_2' }),
+                expect.objectContaining({ id: 'med_3' }),
+            ]),
+        );
+    });
+
+    it('says why a file dropped on it is refused, and keeps one without multiple', async () => {
+        const create = vi.fn<MediaAdapter['create']>().mockResolvedValue(item({ type: 'image' }));
+        renderInRoot(
+            <MediaField
+                label="Cover"
+                resource="media"
+                adapter={{ create, get: vi.fn() }}
+                accept={['image/*']}
+                value={reference()}
+            />,
+        );
+
+        await dropFiles(screen.getByText('clip.mp4'), [file('terms.pdf', 'application/pdf')]);
+        expect(
+            await screen.findByText('terms.pdf: this type of file is not accepted.'),
+        ).toBeInTheDocument();
+        expect(create).not.toHaveBeenCalled();
+
+        await dropFiles(screen.getByText('clip.mp4'), [
+            file('a.jpg', 'image/jpeg'),
+            file('b.jpg', 'image/jpeg'),
+        ]);
+        expect(
+            await screen.findByText('Only one file can be added here: a.jpg was kept.'),
+        ).toBeInTheDocument();
+        expect(
+            screen.queryByText('terms.pdf: this type of file is not accepted.'),
+        ).not.toBeInTheDocument();
+        expect(create).toHaveBeenCalledTimes(1);
+        expect(create).toHaveBeenCalledWith('media', {
+            file: expect.objectContaining({ name: 'a.jpg' }),
+        });
+    });
+
+    it('uploads a file pasted while its focus is inside it', async () => {
+        const create = vi.fn<MediaAdapter['create']>().mockResolvedValue(item({ type: 'image' }));
+        const onChange = vi.fn();
+        renderInRoot(
+            <MediaField
+                label="Gallery"
+                resource="media"
+                multiple
+                adapter={{ create, get: vi.fn() }}
+                value={[reference()]}
+                onChange={onChange}
+            />,
+        );
+        const pasted = file('screenshot.png', 'image/png');
+        const remove = screen.getByRole('button', { name: 'Remove clip.mp4' });
+        remove.focus();
+
+        expect(pasteFiles(remove, [pasted])).toBe(false);
+
+        expect(create).toHaveBeenCalledWith('media', { file: pasted });
+        await waitFor(() => expect(onChange).toHaveBeenCalled());
+    });
+
+    it('takes no drop or paste when it is read-only', async () => {
+        const create = vi.fn<MediaAdapter['create']>();
+        renderInRoot(
+            <MediaField
+                label="Cover"
+                resource="media"
+                adapter={{ create, get: vi.fn() }}
+                readOnly
+                value={reference()}
+            />,
+        );
+
+        await dropFiles(screen.getByText('clip.mp4'), [file('a.jpg', 'image/jpeg')]);
+        expect(pasteFiles(screen.getByText('clip.mp4'), [file('b.jpg', 'image/jpeg')])).toBe(true);
+
+        expect(create).not.toHaveBeenCalled();
     });
 
     it('removes a media from a multiple value', async () => {

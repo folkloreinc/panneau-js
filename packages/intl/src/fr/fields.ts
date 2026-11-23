@@ -65,6 +65,8 @@ export const fieldsFr: Record<string, string> = {
     'panneau.fields.replaceFile': 'Remplacer le fichier',
     'panneau.fields.dropHere': 'ou les déposer ici',
     'panneau.fields.dropZone': 'Déposer des fichiers ici',
+    'panneau.fields.dropToUpload': 'Déposer pour téléverser',
+    'panneau.fields.onlyOneFile': 'Un seul fichier peut être ajouté ici : {name} a été gardé.',
     'panneau.fields.noFile': 'Aucun fichier',
     'panneau.fields.removeFile': 'Retirer {name}',
     'panneau.fields.rejectedType': '{name} : ce type de fichier n’est pas accepté.',
