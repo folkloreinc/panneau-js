@@ -8,6 +8,7 @@ import {
     createContext,
     use,
     useEffect,
+    useRef,
     useState,
 } from 'react';
 import {
@@ -146,6 +147,9 @@ export interface UndoToastContent {
  * the toast says what was done and has "Undo" for about 10 seconds; once undone, a short toast
  * says so in its place. Returns the key of the toast, the one given in its options or a new one.
  *
+ * Its toasts close when the component unmounts: the undo of a field that is gone (the page
+ * changed, or the form shows another item) would change a value nobody sees.
+ *
  * `null` outside a `PanneauRoot`, where there is no toast region: a component that works without
  * the app does what it does at once, without an undo.
  */
@@ -153,10 +157,23 @@ export function useUndoToast():
     ((content: UndoToastContent, options?: Pick<ToastOptions, 'key'>) => string) | null {
     const toasts = use(ToastContext);
     const intl = usePanneauIntl();
+    // The toasts that still offer "Undo", by key, each with its own token: a toast replaced by a
+    // later one of the same key forgets nothing of the later one when it closes
+    const pending = useRef<Map<string, object>>(new Map());
+    useEffect(() => {
+        const keys = pending.current;
+        return () => {
+            for (const key of keys.keys()) {
+                toasts?.close(key);
+            }
+            keys.clear();
+        };
+    }, [toasts]);
     if (toasts === null) {
         return null;
     }
     return ({ title, undoneTitle, onUndo }, { key } = {}) => {
+        const token = {};
         let shown = '';
         shown = toasts.show(
             {
@@ -170,8 +187,17 @@ export function useUndoToast():
                     },
                 },
             },
-            key !== undefined ? { key } : {},
+            {
+                ...(key !== undefined ? { key } : {}),
+                // Undone, replaced or closed: nothing left to close
+                onClose: () => {
+                    if (pending.current.get(shown) === token) {
+                        pending.current.delete(shown);
+                    }
+                },
+            },
         );
+        pending.current.set(shown, token);
         return shown;
     };
 }

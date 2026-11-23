@@ -1,6 +1,6 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { Button } from '../button/Button';
@@ -209,6 +209,55 @@ describe('useUndoToast', () => {
         expect(screen.getByText('“Intro” put back')).toBeInTheDocument();
         // The undo of an undo isn't offered
         expect(screen.queryByRole('button', { name: 'Undo' })).not.toBeInTheDocument();
+    });
+
+    it('closes its toasts when the component unmounts, and keeps the others', async () => {
+        const onUndo = vi.fn();
+        function Page() {
+            const [shown, setShown] = useState(true);
+            return (
+                <>
+                    {shown ? <Remove onUndo={onUndo} /> : null}
+                    <Show content={{ title: 'Saved' }} />
+                    <Button onPress={() => setShown(false)}>Leave</Button>
+                </>
+            );
+        }
+        render(
+            <PanneauRoot>
+                <Page />
+            </PanneauRoot>,
+        );
+        await userEvent.click(screen.getByRole('button', { name: 'Remove' }));
+        await userEvent.click(screen.getByRole('button', { name: 'Show' }));
+        expect(screen.getByText('“Intro” removed')).toBeInTheDocument();
+
+        await userEvent.click(screen.getByRole('button', { name: 'Leave' }));
+        expect(screen.queryByText('“Intro” removed')).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Undo' })).not.toBeInTheDocument();
+        expect(screen.getByText('Saved')).toBeInTheDocument();
+        expect(onUndo).not.toHaveBeenCalled();
+    });
+
+    it('keeps the toast that says it was undone when the component unmounts', async () => {
+        function Page() {
+            const [shown, setShown] = useState(true);
+            return (
+                <>
+                    {shown ? <Remove onUndo={() => undefined} /> : null}
+                    <Button onPress={() => setShown(false)}>Leave</Button>
+                </>
+            );
+        }
+        render(
+            <PanneauRoot>
+                <Page />
+            </PanneauRoot>,
+        );
+        await userEvent.click(screen.getByRole('button', { name: 'Remove' }));
+        await userEvent.click(screen.getByRole('button', { name: 'Undo' }));
+        await userEvent.click(screen.getByRole('button', { name: 'Leave' }));
+        expect(screen.getByText('“Intro” put back')).toBeInTheDocument();
     });
 
     it('is null outside a PanneauRoot, where there is no toast region', () => {

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { Field } from '@panneau/protocol';
+import { PanneauRoot } from '@panneau/ui';
 
 import { Controlled, renderField } from '../__fixtures__/render';
 import { DefinitionField } from '../shared/DefinitionField';
@@ -338,6 +339,22 @@ describe('RepeaterField', () => {
         await userEvent.keyboard('{Enter}');
         expect(screen.getAllByRole('listitem')[0]).toHaveAccessibleName('1 A');
         expect(screen.getByRole('button', { name: 'Move item 1 down' })).toHaveFocus();
+    });
+
+    it('closes its “Undo” toast when the list unmounts', async () => {
+        const onChange = vi.fn();
+        const { rerender } = renderField(<Links onChange={onChange} />);
+        await userEvent.click(screen.getByRole('button', { name: 'Remove item 1' }));
+        expect(screen.getByRole('button', { name: 'Undo' })).toBeInTheDocument();
+
+        rerender(
+            <PanneauRoot>
+                <p>Another page</p>
+            </PanneauRoot>,
+        );
+        expect(screen.queryByText('“Item 1” removed')).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Undo' })).not.toBeInTheDocument();
+        expect(onChange).toHaveBeenCalledTimes(1);
     });
 
     it('removes an item at once outside a PanneauRoot, without a toast', async () => {
