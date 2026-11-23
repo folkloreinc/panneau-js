@@ -2,6 +2,7 @@ import { type ReactNode, type RefObject, useEffect, useEffectEvent, useRef, useS
 
 import {
     type Form,
+    type FormStatus,
     type SubmitResult,
     getEntries,
     getLayoutFieldNames,
@@ -301,6 +302,11 @@ function useSaveShortcut(root: RefObject<HTMLFormElement | null>, isShown: boole
     }, [root, isShown]);
 }
 
+/** Whether a form has something to save. */
+function canSaveState(mode: Form['mode'], dirty: boolean, status: FormStatus): boolean {
+    return mode === 'create' || dirty || status === 'error';
+}
+
 /** Calls `onDirtyChange` when `dirty` changes, and with `false` when the form is gone. */
 function useDirtyChange(dirty: boolean, onDirtyChange: ((dirty: boolean) => void) | undefined) {
     const report = useEffectEvent((value: boolean) => onDirtyChange?.(value));
@@ -386,7 +392,7 @@ export function FormView({
     useSaveShortcut(root, !isLoading);
     // An update without changes has nothing to save, unless its last save failed: it can be tried
     // again. A form with a newer version has changes.
-    const canSave = form.mode === 'create' || dirty || status === 'error';
+    const canSave = canSaveState(form.mode, dirty, status);
     const guarded = guardUnsavedChanges && dirty;
     useBeforeUnloadGuard(guarded);
     // Leaving through the app's router asks first, in a dialog
@@ -507,8 +513,13 @@ export function FormView({
                                         onSubmit={(event) => {
                                             event.preventDefault();
                                             // Enter in a field, or a shortcut, with nothing to
-                                            // save: no request
-                                            if (canSave) {
+                                            // save: no request. Read from the form now: a submit
+                                            // button can set values first (Publish), before this
+                                            // render knows them.
+                                            const latest = form.getState();
+                                            if (
+                                                canSaveState(form.mode, latest.dirty, latest.status)
+                                            ) {
                                                 void form.submit().then(handle);
                                             }
                                         }}
