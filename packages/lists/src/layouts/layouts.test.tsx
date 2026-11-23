@@ -230,7 +230,8 @@ describe('the calendar', () => {
             />,
             { locale: 'fr-CA' },
         );
-        const grid = screen.getByRole('table', { name: 'Items, mars 2027' });
+        // The calendar's code loads when it shows
+        const grid = await screen.findByRole('table', { name: 'Items, mars 2027' });
         // The filter of the calendar is its own
         expect(screen.queryByRole('group', { name: 'Date' })).toBeNull();
         const fifteenth = within(grid)
@@ -252,7 +253,7 @@ describe('the calendar', () => {
         );
     });
 
-    it('shows a date range on each day it covers, and asks for the ranges that overlap the month', () => {
+    it('shows a date range on each day it covers, and asks for the ranges that overlap the month', async () => {
         const router = createMemoryRouter('month=2027-03');
         const festivals: ListItem[] = [
             { id: '1', title: 'Festival', dates: { start: '2027-02-27', end: '2027-03-02' } },
@@ -271,7 +272,7 @@ describe('the calendar', () => {
                 router={router}
             />,
         );
-        const grid = screen.getByRole('table', { name: 'Items, March 2027' });
+        const grid = await screen.findByRole('table', { name: 'Items, March 2027' });
         const itemsOn = (day: string) => {
             const cell = within(grid)
                 .getAllByRole('cell')
@@ -292,7 +293,7 @@ describe('the calendar', () => {
         expect(grid).not.toHaveTextContent('Winter');
     });
 
-    it('says when a month has more items than it shows', () => {
+    it('says when a month has more items than it shows', async () => {
         renderList(
             <ListView
                 list={createList({
@@ -309,9 +310,11 @@ describe('the calendar', () => {
             />,
         );
         expect(
-            screen
-                .getByText('The calendar shows 2 of 12 items. Filter the list to see the others.')
-                .closest('[role="status"]'),
+            (
+                await screen.findByText(
+                    'The calendar shows 2 of 12 items. Filter the list to see the others.',
+                )
+            ).closest('[role="status"]'),
         ).not.toBeNull();
         expect(screen.queryByRole('navigation', { name: 'Pagination' })).toBeNull();
     });

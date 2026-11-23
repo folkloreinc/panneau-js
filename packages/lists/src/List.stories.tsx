@@ -450,7 +450,8 @@ export const Calendar: Story = {
     },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        const grid = canvas.getByRole('table', { name: 'Members, March 2026' });
+        // The calendar's code loads when it shows
+        const grid = await canvas.findByRole('table', { name: 'Members, March 2026' });
         await expect(grid).toHaveTextContent('Alan Turing');
         await userEvent.click(canvas.getByRole('button', { name: 'Next month' }));
         await expect(
@@ -474,7 +475,8 @@ export const CalendarOnAPhone: Story = {
     ],
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        const grid = canvas.getByRole('table', { name: 'Members, March 2026' });
+        // The calendar's code loads when it shows
+        const grid = await canvas.findByRole('table', { name: 'Members, March 2026' });
         const headers = within(grid).getAllByRole('columnheader', { hidden: true });
         await expect(headers[0]).not.toBeVisible();
         await expect(within(grid).getAllByRole('listitem')[0]).toBeVisible();
