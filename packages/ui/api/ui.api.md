@@ -686,6 +686,7 @@ export interface DialogProps extends Pick<ModalOverlayProps, 'isOpen' | 'default
     headerClassName?: string;
     headerContent?: ReactNode | ((close: () => void) => ReactNode);
     isDismissable?: boolean;
+    isSuspended?: boolean;
     // (undocumented)
     overlayClassName?: string;
     role?: 'dialog' | 'alertdialog';
