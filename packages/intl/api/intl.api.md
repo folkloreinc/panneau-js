@@ -858,6 +858,9 @@ export const listsMessages: {
     calendarMoreUnknown: PanneauMessage<    {
     shown: number;
     }>;
+    calendarEmpty: PanneauMessage<    {
+    month: string;
+    }>;
     columns: PanneauMessage<Record<never, never>>;
     moveColumnUp: PanneauMessage<    {
     column: string;

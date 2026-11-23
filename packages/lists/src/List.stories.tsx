@@ -450,7 +450,8 @@ export const Calendar: Story = {
     },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        const grid = canvas.getByRole('table', { name: 'Members, March 2026' });
+        // The calendar's code loads when it shows
+        const grid = await canvas.findByRole('table', { name: 'Members, March 2026' });
         await expect(grid).toHaveTextContent('Alan Turing');
         await userEvent.click(canvas.getByRole('button', { name: 'Next month' }));
         await expect(
@@ -458,6 +459,61 @@ export const Calendar: Story = {
         ).toHaveTextContent('Katherine Johnson');
         await userEvent.click(canvas.getByRole('button', { name: 'Previous month' }));
         await expect(canvas.getByRole('table', { name: 'Members, March 2026' })).toBeVisible();
+    },
+};
+
+/**
+ * The state of each item in the calendar (#413): a dot in the tone of its option, as the badges of
+ * the table show it, here the role of members (`itemStatus`), and the whole title on hover.
+ */
+export const CalendarWithStates: Story = {
+    args: {
+        ...Calendar.args,
+        router: createMemoryRouter('month=2026-03'),
+        itemStatus: 'role',
+        fields: [
+            {
+                ...roleField,
+                options: [
+                    { value: 'owner', label: 'Owner', tone: 'accent' },
+                    { value: 'editor', label: 'Editor', tone: 'success' },
+                    { value: 'viewer', label: 'Viewer', tone: 'neutral' },
+                ],
+            },
+        ],
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const grid = await canvas.findByRole('table', { name: 'Members, March 2026' });
+        const item = (name: string) =>
+            within(grid)
+                .getAllByRole('listitem')
+                .find((element) => element.title === name) as HTMLElement;
+        const dot = (name: string) => item(name).querySelector('.panneau-badge') as HTMLElement;
+        await expect(item('Linus Torvalds')).toHaveTextContent('OwnerLinus Torvalds');
+        await expect(item('Alan Turing')).toHaveTextContent('EditorAlan Turing');
+        await expect(dot('Linus Torvalds')).toBeVisible();
+        // Each state in the solid color of its tone
+        const color = (name: string) => getComputedStyle(dot(name)).backgroundColor;
+        await expect(color('Linus Torvalds')).not.toBe(color('Alan Turing'));
+        await expect(color('Alan Turing')).not.toBe(color('Frances Allen'));
+    },
+};
+
+/**
+ * A month without items says so where its grid would be (#413), and keeps its buttons to the
+ * other months.
+ */
+export const CalendarEmptyMonth: Story = {
+    args: { ...Calendar.args, router: createMemoryRouter('month=2026-10') },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(await canvas.findByText('No items in October 2026')).toBeVisible();
+        await expect(canvas.queryByRole('table')).toBeNull();
+        await userEvent.click(canvas.getByRole('button', { name: 'Previous month' }));
+        await expect(
+            await canvas.findByRole('table', { name: 'Members, September 2026' }),
+        ).toBeVisible();
     },
 };
 
@@ -474,7 +530,8 @@ export const CalendarOnAPhone: Story = {
     ],
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        const grid = canvas.getByRole('table', { name: 'Members, March 2026' });
+        // The calendar's code loads when it shows
+        const grid = await canvas.findByRole('table', { name: 'Members, March 2026' });
         const headers = within(grid).getAllByRole('columnheader', { hidden: true });
         await expect(headers[0]).not.toBeVisible();
         await expect(within(grid).getAllByRole('listitem')[0]).toBeVisible();
