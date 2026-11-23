@@ -3,9 +3,14 @@ import userEvent from '@testing-library/user-event';
 import type { ReactElement } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
-import { DefinitionField, FieldsProvider, builtInFields } from '@panneau/fields';
+import {
+    DefinitionField,
+    FieldsProvider,
+    type RelationSource,
+    builtInFields,
+} from '@panneau/fields';
 import type { Field } from '@panneau/protocol';
-import { PanneauRoot } from '@panneau/ui';
+import { PanneauRoot, useCommandShortcut } from '@panneau/ui';
 
 import { RichTextField } from './RichTextField';
 import { ckeditor5 } from './__fixtures__/ckeditor';
@@ -22,9 +27,13 @@ function renderDefinition(
     value: unknown,
     onChange: (value: unknown) => void,
     plugin = editorPlugin,
+    relationSource: RelationSource | null = null,
 ) {
     return renderInRoot(
-        <FieldsProvider components={{ ...builtInFields, ...plugin.fields }}>
+        <FieldsProvider
+            components={{ ...builtInFields, ...plugin.fields }}
+            relationSource={relationSource}
+        >
             <DefinitionField field={field} path={field.name} value={value} onChange={onChange} />
         </FieldsProvider>,
     );
@@ -47,7 +56,9 @@ describe('RichTextField', () => {
         );
         // Embeds are shown by what they point to, never rendered
         expect(
-            within(textbox).getByRole('img', { name: /figure\.media, https:\/\/vimeo\.com/ }),
+            within(textbox).getByRole('img', {
+                name: 'Embedded video, Vimeo, https://vimeo.com/123456',
+            }),
         ).toBeInTheDocument();
         expect(textbox.querySelector('iframe')).toBeNull();
         await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
@@ -290,5 +301,207 @@ describe('RichTextFieldEntry', () => {
         expect(onChange).toHaveBeenLastCalledWith(
             '<p><span class="logo" data-logo="" aria-label="Logo"></span></p>',
         );
+    });
+
+    it('opens the link dialog with Ctrl+K in the editor, and leaves the palette alone', async () => {
+        const onPalette = vi.fn();
+        function Palette() {
+            useCommandShortcut(onPalette);
+            return <button type="button">Elsewhere</button>;
+        }
+        renderInRoot(
+            <>
+                <Palette />
+                <RichTextField label="Body" value="<p>Site</p>" toolbar={['bold', 'link']} />
+            </>,
+        );
+        await selectAll(screen.getByRole('textbox', { name: 'Body' }));
+        await userEvent.keyboard('{Control>}k{/Control}');
+        expect(screen.getByRole('dialog', { name: 'Link' })).toBeInTheDocument();
+        expect(onPalette).not.toHaveBeenCalled();
+        await userEvent.keyboard('{Escape}');
+        expect(screen.queryByRole('dialog')).toBeNull();
+        // Outside the editor, the palette opens
+        await userEvent.click(screen.getByRole('button', { name: 'Elsewhere' }));
+        await userEvent.keyboard('{Control>}k{/Control}');
+        expect(onPalette).toHaveBeenCalledTimes(1);
+    });
+
+    it('leaves Ctrl+K to the palette without a link button', async () => {
+        const onPalette = vi.fn();
+        function Palette() {
+            useCommandShortcut(onPalette);
+            return null;
+        }
+        renderInRoot(
+            <>
+                <Palette />
+                <RichTextField label="Body" value="<p>Site</p>" toolbar={['bold']} />
+            </>,
+        );
+        await selectAll(screen.getByRole('textbox', { name: 'Body' }));
+        await userEvent.keyboard('{Control>}k{/Control}');
+        expect(screen.queryByRole('dialog')).toBeNull();
+        expect(onPalette).toHaveBeenCalledTimes(1);
+    });
+
+    it('names the shortcuts of its buttons', () => {
+        renderInRoot(
+            <RichTextField
+                label="Body"
+                value={null}
+                toolbar={['bold', 'link', 'bulletList', 'clear', 'redo']}
+            />,
+        );
+        expect(screen.getByRole('button', { name: 'Bold' })).toHaveAttribute(
+            'aria-keyshortcuts',
+            'Control+B',
+        );
+        expect(screen.getByRole('button', { name: 'Link' })).toHaveAttribute(
+            'aria-keyshortcuts',
+            'Control+K',
+        );
+        expect(screen.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute(
+            'aria-keyshortcuts',
+            'Control+Shift+8',
+        );
+        expect(screen.getByRole('button', { name: 'Redo' })).toHaveAttribute(
+            'aria-keyshortcuts',
+            'Control+Shift+Z',
+        );
+        expect(screen.getByRole('button', { name: 'Clear formatting' })).not.toHaveAttribute(
+            'aria-keyshortcuts',
+        );
+    });
+
+    it('links to an item of the site, searched with the relation source', async () => {
+        const onChange = vi.fn();
+        const search = vi.fn((resource: string, query: string) =>
+            Promise.resolve(
+                [
+                    { id: '12', label: 'About us' },
+                    { id: '13', label: 'Contact' },
+                ].filter((item) => item.label.toLowerCase().includes(query.toLowerCase())),
+            ),
+        );
+        renderDefinition(
+            {
+                name: 'body',
+                type: 'richtext',
+                label: 'Body',
+                resource: 'pages',
+                settings: { toolbar: ['link'] },
+            },
+            '<p>Site</p>',
+            onChange,
+            editorPlugin,
+            { search },
+        );
+        await selectAll(screen.getByRole('textbox', { name: 'Body' }));
+        await userEvent.click(screen.getByRole('button', { name: 'Link' }));
+        const dialog = screen.getByRole('dialog', { name: 'Link' });
+        expect(within(dialog).getByRole('radio', { name: 'Page' })).toBeChecked();
+        await userEvent.type(within(dialog).getByRole('combobox', { name: 'Page' }), 'abo');
+        await userEvent.click(await screen.findByRole('option', { name: 'About us' }));
+        expect(search).toHaveBeenLastCalledWith('pages', 'abo', expect.anything());
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Apply' }));
+        expect(onChange).toHaveBeenLastCalledWith(
+            '<p><a href="#" data-page-id="12" data-page-resource="pages">Site</a></p>',
+        );
+    });
+
+    it('opens on the item of a link, keeps its URL, and turns it into a URL', async () => {
+        const onChange = vi.fn();
+        renderDefinition(
+            {
+                name: 'body',
+                type: 'richtext',
+                label: 'Body',
+                resource: ['pages', 'events'],
+                settings: { toolbar: ['link'] },
+            },
+            '<p><a href="/en/about" data-page-id="12" data-page-resource="pages">About</a></p>',
+            onChange,
+            editorPlugin,
+            { search: () => Promise.resolve([]) },
+        );
+        const textbox = screen.getByRole('textbox', { name: 'Body' });
+        await selectAll(textbox);
+        await userEvent.keyboard('{Control>}k{/Control}');
+        let dialog = screen.getByRole('dialog', { name: 'Link' });
+        expect(within(dialog).getByRole('combobox', { name: 'Page' })).toHaveValue('About');
+        // The same item keeps the URL the backend wrote: nothing changed
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Apply' }));
+        expect(screen.queryByRole('dialog')).toBeNull();
+        expect(onChange).not.toHaveBeenCalled();
+        await selectAll(textbox);
+        await userEvent.keyboard('{Control>}k{/Control}');
+        dialog = screen.getByRole('dialog', { name: 'Link' });
+        await userEvent.click(within(dialog).getByRole('radio', { name: 'URL' }));
+        await userEvent.type(
+            within(dialog).getByRole('textbox', { name: 'URL' }),
+            'https://example.com',
+        );
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Apply' }));
+        expect(onChange).toHaveBeenLastCalledWith('<p><a href="https://example.com">About</a></p>');
+    });
+
+    it('links to URLs only without a relation source', async () => {
+        renderDefinition(
+            {
+                name: 'body',
+                type: 'richtext',
+                label: 'Body',
+                resource: 'pages',
+                settings: { toolbar: ['link'] },
+            },
+            '<p>Site</p>',
+            vi.fn(),
+        );
+        await selectAll(screen.getByRole('textbox', { name: 'Body' }));
+        await userEvent.click(screen.getByRole('button', { name: 'Link' }));
+        const dialog = screen.getByRole('dialog', { name: 'Link' });
+        expect(within(dialog).queryByRole('radio')).toBeNull();
+        expect(within(dialog).getByRole('textbox', { name: 'URL' })).toHaveFocus();
+    });
+
+    it('says what kept HTML is, with its element for developers', () => {
+        renderInRoot(
+            <RichTextField
+                label="Body"
+                value={[
+                    '<figure class="media"><oembed url="https://www.youtube.com/watch?v=abc123"></oembed></figure>',
+                    '<blockquote class="twitter-tweet"><p>A post</p><a href="https://twitter.com/user/status/1">Link</a></blockquote>',
+                    '<figure class="media"><oembed url="https://example.com/widget"></oembed></figure>',
+                    '<table><tbody><tr><td>A cell</td></tr></tbody></table>',
+                    '<figure class="image"><img src="https://example.com/a.jpg" alt="A lake"></figure>',
+                    '<div class="box">Some text</div>',
+                ].join('')}
+            />,
+        );
+        const textbox = screen.getByRole('textbox', { name: 'Body' });
+        const video = within(textbox).getByRole('img', {
+            name: 'Embedded video, YouTube, https://www.youtube.com/watch?v=abc123',
+        });
+        expect(video).toHaveAttribute('title', 'figure.media');
+        expect(video).toHaveTextContent('Embedded video');
+        expect(video.querySelector('[data-player]')).not.toBeNull();
+        expect(
+            within(textbox).getByRole('img', {
+                name: 'Embedded post, X, https://twitter.com/user/status/1',
+            }),
+        ).toHaveAttribute('title', 'blockquote.twitter-tweet');
+        expect(
+            within(textbox)
+                .getByRole('img', {
+                    name: 'Embedded content, https://example.com/widget',
+                })
+                .querySelector('[data-player]'),
+        ).toBeNull();
+        expect(within(textbox).getByRole('img', { name: 'Table, A cell' })).toBeInTheDocument();
+        expect(within(textbox).getByRole('img', { name: 'Image, A lake' })).toBeInTheDocument();
+        expect(
+            within(textbox).getByRole('img', { name: 'HTML kept as is, Some text' }),
+        ).toHaveAttribute('title', 'div.box');
     });
 });

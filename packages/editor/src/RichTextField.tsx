@@ -1,6 +1,6 @@
 import type { AnyExtension } from '@tiptap/core';
 import { EditorContent, useEditor } from '@tiptap/react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { type FieldEntryProps, type FieldProps, getFieldProps } from '@panneau/fields';
 import { editorMessages as messages } from '@panneau/intl';
@@ -11,6 +11,7 @@ import styles from './RichTextField.module.css';
 import { Toolbar } from './Toolbar';
 import type { RichTextButton } from './buttons';
 import { createRichTextExtensions } from './extensions/index';
+import { LinkShortcut } from './extensions/shortcut';
 import { parseRichText, serializeRichText } from './html';
 import {
     DEFAULT_HEADINGS,
@@ -33,6 +34,12 @@ export interface RichTextFieldProps extends FieldProps<string> {
     styles?: readonly RichTextStyle[];
     /** Which links open in a new tab: as the user chooses (the default), external ones, or none. */
     newTab?: NewTabLinks;
+    /**
+     * The resources whose items links can point to: the link dialog searches them with the
+     * `relationSource` of the fields context, as `page` links of `link` fields do. Without them, or
+     * without a source, links are URLs.
+     */
+    pages?: readonly string[];
     /**
      * TipTap extensions of the project: custom nodes such as an inline logo. One with the name of
      * a built-in extension replaces it. The editor is made again when they change.
@@ -68,6 +75,26 @@ const NO_EXTENSIONS: readonly AnyExtension[] = [];
 const NO_BUTTONS: readonly RichTextButton[] = [];
 const NO_STYLES: readonly RichTextStyle[] = [];
 const NO_ERRORS: readonly string[] = [];
+const NO_PAGES: readonly string[] = [];
+
+/** The words that name kept HTML, by kind. */
+function getKeptHtmlLabels(intl: ReturnType<typeof usePanneauIntl>) {
+    return {
+        label: intl.formatMessage(messages.html),
+        labels: {
+            video: intl.formatMessage(messages.keptVideo),
+            audio: intl.formatMessage(messages.keptAudio),
+            image: intl.formatMessage(messages.keptImage),
+            post: intl.formatMessage(messages.keptPost),
+            embed: intl.formatMessage(messages.keptEmbed),
+            table: intl.formatMessage(messages.keptTable),
+            form: intl.formatMessage(messages.keptForm),
+            code: intl.formatMessage(messages.keptCode),
+            script: intl.formatMessage(messages.keptScript),
+            style: intl.formatMessage(messages.keptStyle),
+        },
+    };
+}
 
 /**
  * Rich text, stored as HTML (decision 0007): an empty text is `null`. Content keeps what the
@@ -83,6 +110,7 @@ export function RichTextField({
     headings = DEFAULT_HEADINGS,
     styles: blockStyles = NO_STYLES,
     newTab = 'choose',
+    pages = NO_PAGES,
     extensions: projectExtensions = NO_EXTENSIONS,
     buttons = NO_BUTTONS,
     label,
@@ -100,11 +128,15 @@ export function RichTextField({
 }: RichTextFieldProps) {
     const intl = usePanneauIntl();
     const editable = !disabled && !readOnly;
-    const extensions = createRichTextExtensions({
-        extensions: projectExtensions,
-        ...(placeholder !== undefined ? { placeholder } : {}),
-        html: { label: intl.formatMessage(messages.html), className: styles.html ?? '' },
-    });
+    const [linkOpen, setLinkOpen] = useState(false);
+    const extensions = [
+        ...createRichTextExtensions({
+            extensions: projectExtensions,
+            ...(placeholder !== undefined ? { placeholder } : {}),
+            html: { ...getKeptHtmlLabels(intl), className: styles.html ?? '' },
+        }),
+        LinkShortcut,
+    ];
     // The HTML of the editor's content: the value it was loaded from, or the last one it gave
     const current = useRef<string | null | undefined>(value);
     const accessibleName = ariaLabel ?? (typeof label === 'string' ? label : undefined);
@@ -197,6 +229,9 @@ export function RichTextField({
                         styles={blockStyles}
                         newTab={newTab}
                         buttons={buttons}
+                        pages={pages}
+                        isLinkOpen={linkOpen}
+                        onLinkOpenChange={setLinkOpen}
                     />
                 ) : null}
                 <EditorContent editor={editor} />
@@ -208,7 +243,8 @@ export function RichTextField({
 
 /**
  * The `richtext` type: its toolbar, heading levels, block styles and links from `settings`
- * (`RichTextSettings`), and the extensions and buttons of the editor plugin.
+ * (`RichTextSettings`), the resources of links to items from `resource`, and the extensions and
+ * buttons of the editor plugin.
  */
 export function RichTextFieldEntry(
     props: FieldEntryProps & {
@@ -217,6 +253,9 @@ export function RichTextFieldEntry(
     },
 ) {
     const options = getRichTextOptions(props.field);
+    const { resource } = props.field;
+    const pages =
+        resource === undefined ? NO_PAGES : typeof resource === 'string' ? [resource] : resource;
     return (
         <RichTextField
             {...getFieldProps(props)}
@@ -226,6 +265,7 @@ export function RichTextFieldEntry(
             headings={options.headings}
             styles={options.styles}
             newTab={options.newTab}
+            pages={pages}
             {...(props.extensions !== undefined ? { extensions: props.extensions } : {})}
             {...(props.buttons !== undefined ? { buttons: props.buttons } : {})}
         />

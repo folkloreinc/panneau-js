@@ -223,11 +223,14 @@
     content: attr(data-placeholder);
 }
 
-/* HTML kept as it was written: its element and what it points to, never its markup. */
+/*
+ * HTML kept as it was written: what it is in words, then its provider and what it points to,
+ * never its markup. A video of a known provider has a player drawn in its place.
+ */
 .html {
     display: flex;
-    gap: var(--panneau-space-2);
-    align-items: baseline;
+    gap: var(--panneau-space-3);
+    align-items: center;
     min-width: 0;
     padding: var(--panneau-space-2) var(--panneau-space-3);
     font-size: var(--panneau-font-size-sm);
@@ -245,16 +248,61 @@ span.html {
     vertical-align: baseline;
 }
 
-.html > code {
-    flex: 0 0 auto;
-    font-family: var(--panneau-font-family-mono);
+.html > [data-text] {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+span.html > [data-text] {
+    flex-direction: row;
+    gap: var(--panneau-space-2);
+    align-items: baseline;
+}
+
+.html strong {
+    font-weight: var(--panneau-font-weight-medium);
     color: var(--panneau-color-text);
 }
 
-.html > span {
+.html > [data-text] > span {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* A player drawn by the editor: a frame, and a play button. Nothing is loaded. */
+.html > [data-player] {
+    position: relative;
+    flex: 0 0 auto;
+    width: 7rem;
+    aspect-ratio: 16 / 9;
+    background-color: var(--panneau-color-text);
+    border-radius: var(--panneau-radius-sm);
+}
+
+.html > [data-player]::after {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 0;
+    height: 0;
+    content: '';
+    border-color: transparent transparent transparent var(--panneau-color-surface);
+    border-style: solid;
+    border-width: 0.5rem 0 0.5rem 0.8rem;
+    transform: translate(-35%, -50%);
+}
+
+/* A tooltip of the toolbar with the shortcut of its button. */
+.tooltip {
+    display: inline-flex;
+    gap: var(--panneau-space-2);
+    align-items: baseline;
+}
+
+.shortcut {
+    font-family: inherit;
+    opacity: 0.75;
 }
 
 .linkForm {

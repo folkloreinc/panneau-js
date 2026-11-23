@@ -339,8 +339,9 @@ export function LinkField({
     );
 }
 
-interface PagePickerProps {
+export interface PagePickerProps {
     label: string;
+    /** The resources whose items it searches, in order. */
     resources: readonly string[];
     page: LinkPage | null;
     onChange: (page: LinkPage | null) => void;
@@ -350,8 +351,11 @@ interface PagePickerProps {
     required: boolean;
 }
 
-/** The page of a link: searched in every resource of `pages`, with the relation source. */
-function PagePicker({
+/**
+ * The page of a link: an item searched in every resource of `resources`, with the relation source
+ * of the fields context. The `page` links of `link` fields, and the links of rich text, pick it.
+ */
+export function PagePicker({
     label,
     resources,
     page,

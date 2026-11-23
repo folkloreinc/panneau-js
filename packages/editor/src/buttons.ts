@@ -30,6 +30,12 @@ export interface RichTextButton {
     /** Its accessible label, also shown as a tooltip. */
     label: string | MessageDescriptor;
     icon: IconComponent;
+    /**
+     * The keys that run its command in the editor, as TipTap writes them (`Mod-b`, `Mod-Shift-8`):
+     * its tooltip and `aria-keyshortcuts` name them, with ⌘ on Apple platforms and Ctrl elsewhere.
+     * Naming them doesn't bind them: the extension of the command does.
+     */
+    shortcut?: string;
     /** Runs its command on the editor. */
     run: (editor: Editor) => void;
     /** Makes it a toggle, pressed when the selection has what it adds. */
@@ -43,6 +49,7 @@ export const builtInButtons: readonly RichTextButton[] = [
     {
         name: 'bold',
         label: messages.bold,
+        shortcut: 'Mod-b',
         icon: Bold,
         run: (editor) => editor.chain().focus().toggleBold().run(),
         isActive: (editor) => editor.isActive('bold'),
@@ -51,6 +58,7 @@ export const builtInButtons: readonly RichTextButton[] = [
     {
         name: 'italic',
         label: messages.italic,
+        shortcut: 'Mod-i',
         icon: Italic,
         run: (editor) => editor.chain().focus().toggleItalic().run(),
         isActive: (editor) => editor.isActive('italic'),
@@ -59,6 +67,7 @@ export const builtInButtons: readonly RichTextButton[] = [
     {
         name: 'underline',
         label: messages.underline,
+        shortcut: 'Mod-u',
         icon: Underline,
         run: (editor) => editor.chain().focus().toggleUnderline().run(),
         isActive: (editor) => editor.isActive('underline'),
@@ -67,6 +76,7 @@ export const builtInButtons: readonly RichTextButton[] = [
     {
         name: 'strike',
         label: messages.strike,
+        shortcut: 'Mod-Shift-s',
         icon: Strikethrough,
         run: (editor) => editor.chain().focus().toggleStrike().run(),
         isActive: (editor) => editor.isActive('strike'),
@@ -75,6 +85,7 @@ export const builtInButtons: readonly RichTextButton[] = [
     {
         name: 'superscript',
         label: messages.superscript,
+        shortcut: 'Mod-.',
         icon: Superscript,
         run: (editor) => editor.chain().focus().toggleSuperscript().run(),
         isActive: (editor) => editor.isActive('superscript'),
@@ -83,6 +94,7 @@ export const builtInButtons: readonly RichTextButton[] = [
     {
         name: 'subscript',
         label: messages.subscript,
+        shortcut: 'Mod-,',
         icon: Subscript,
         run: (editor) => editor.chain().focus().toggleSubscript().run(),
         isActive: (editor) => editor.isActive('subscript'),
@@ -91,6 +103,7 @@ export const builtInButtons: readonly RichTextButton[] = [
     {
         name: 'code',
         label: messages.code,
+        shortcut: 'Mod-e',
         icon: Code,
         run: (editor) => editor.chain().focus().toggleCode().run(),
         isActive: (editor) => editor.isActive('code'),
@@ -99,6 +112,7 @@ export const builtInButtons: readonly RichTextButton[] = [
     {
         name: 'bulletList',
         label: messages.bulletList,
+        shortcut: 'Mod-Shift-8',
         icon: List,
         run: (editor) => editor.chain().focus().toggleBulletList().run(),
         isActive: (editor) => editor.isActive('bulletList'),
@@ -107,6 +121,7 @@ export const builtInButtons: readonly RichTextButton[] = [
     {
         name: 'orderedList',
         label: messages.orderedList,
+        shortcut: 'Mod-Shift-7',
         icon: ListOrdered,
         run: (editor) => editor.chain().focus().toggleOrderedList().run(),
         isActive: (editor) => editor.isActive('orderedList'),
@@ -115,6 +130,7 @@ export const builtInButtons: readonly RichTextButton[] = [
     {
         name: 'blockquote',
         label: messages.blockquote,
+        shortcut: 'Mod-Shift-b',
         icon: TextQuote,
         run: (editor) => editor.chain().focus().toggleBlockquote().run(),
         isActive: (editor) => editor.isActive('blockquote'),
@@ -136,6 +152,7 @@ export const builtInButtons: readonly RichTextButton[] = [
     {
         name: 'undo',
         label: messages.undo,
+        shortcut: 'Mod-z',
         icon: Undo2,
         run: (editor) => editor.chain().focus().undo().run(),
         isDisabled: (editor) => !editor.can().undo(),
@@ -143,6 +160,7 @@ export const builtInButtons: readonly RichTextButton[] = [
     {
         name: 'redo',
         label: messages.redo,
+        shortcut: 'Mod-Shift-z',
         icon: Redo2,
         run: (editor) => editor.chain().focus().redo().run(),
         isDisabled: (editor) => !editor.can().redo(),

@@ -423,7 +423,21 @@ export const editorMessages: {
     linkApply: PanneauMessage<Record<never, never>>;
     linkRemove: PanneauMessage<Record<never, never>>;
     linkCancel: PanneauMessage<Record<never, never>>;
+    linkType: PanneauMessage<Record<never, never>>;
+    linkTypePage: PanneauMessage<Record<never, never>>;
+    linkTypeUrl: PanneauMessage<Record<never, never>>;
+    linkPage: PanneauMessage<Record<never, never>>;
     html: PanneauMessage<Record<never, never>>;
+    keptVideo: PanneauMessage<Record<never, never>>;
+    keptAudio: PanneauMessage<Record<never, never>>;
+    keptImage: PanneauMessage<Record<never, never>>;
+    keptPost: PanneauMessage<Record<never, never>>;
+    keptEmbed: PanneauMessage<Record<never, never>>;
+    keptTable: PanneauMessage<Record<never, never>>;
+    keptForm: PanneauMessage<Record<never, never>>;
+    keptCode: PanneauMessage<Record<never, never>>;
+    keptScript: PanneauMessage<Record<never, never>>;
+    keptStyle: PanneauMessage<Record<never, never>>;
 };
 
 // @public
