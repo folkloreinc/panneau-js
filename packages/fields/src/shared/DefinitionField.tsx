@@ -7,7 +7,6 @@ import { evaluateCondition, getNestedShape } from '@panneau/protocol/runtime';
 import { GroupFieldEntry } from '../group/GroupField';
 import { LocalizedFieldEntry } from '../localized/LocalizedField';
 import { MissingFieldEntry } from '../missing/MissingField';
-import { RepeaterFieldEntry } from '../repeater/RepeaterField';
 import { builtInFields } from './builtIn';
 import { getParentPath, useFieldsContext } from './context';
 import type { FieldEntryProps } from './types';
@@ -105,9 +104,10 @@ export function DefinitionField(props: FieldEntryProps) {
         components[field.type] ??
         builtInFields[field.type] ??
         (shape === 'repeater'
-            ? RepeaterFieldEntry
+            ? builtInFields.repeater
             : shape === 'group'
               ? GroupFieldEntry
-              : MissingFieldEntry);
+              : undefined) ??
+        MissingFieldEntry;
     return <Entry {...props} />;
 }

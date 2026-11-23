@@ -7,6 +7,7 @@ import {
     Action,
     AddressSettings,
     AddressValue,
+    BlockType,
     DateSettings,
     Definition,
     DurationSettings,
@@ -19,6 +20,7 @@ import {
     ListResponse,
     MediaTransform,
     Problem,
+    RepeaterSettings,
     RichTextSettings,
     SelectSettings,
 } from './index';
@@ -196,6 +198,26 @@ describe('Field', () => {
         );
         expect(SelectSettings.safeParse({ search: true, widget: 'select' }).success).toBe(true);
         expect(SelectSettings.safeParse({ search: 'yes' }).success).toBe(false);
+        expect(
+            RepeaterSettings.safeParse({ collapsible: false, itemTitle: '{first} {last}' }).success,
+        ).toBe(true);
+        expect(RepeaterSettings.safeParse({ itemTitle: 3 }).success).toBe(false);
+        expect(RepeaterSettings.safeParse({ itemTitle: '' }).success).toBe(false);
+        expect(RepeaterSettings.safeParse({ collapsible: 'no' }).success).toBe(false);
+    });
+
+    it('accepts block types with an icon, a description and a title', () => {
+        const type = {
+            id: 'quote',
+            label: 'Quote',
+            icon: 'quote',
+            description: 'A quote and its author',
+            itemTitle: '{author}',
+            fields: [{ name: 'author', type: 'text' }],
+        };
+        expect(BlockType.safeParse(type).success).toBe(true);
+        expect(BlockType.safeParse({ ...type, itemTitle: '' }).success).toBe(false);
+        expect(BlockType.safeParse({ ...type, description: 1 }).success).toBe(false);
     });
 
     it('describes the settings of duration fields', () => {

@@ -14,6 +14,7 @@ const HEIGHTS: Readonly<Record<string, string>> = {
     address: '12rem',
     embed: '6rem',
     link: '6rem',
+    repeater: '6rem',
 };
 
 /**
