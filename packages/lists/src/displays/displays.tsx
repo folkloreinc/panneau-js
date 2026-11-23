@@ -1,5 +1,5 @@
 import { Check, File, FileText, Globe, Hash, Mail, Minus, Phone } from 'lucide-react';
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 
 import { toReferences, useFieldsContext, useRelationReferences } from '@panneau/fields';
 import { formatAddress, isAddress } from '@panneau/fields/address';
@@ -65,17 +65,76 @@ export function TextDisplay({ value, field, variant }: DisplayProps) {
 }
 
 /** HTML as plain text. */
-export function RichTextDisplay({ value }: DisplayProps) {
-    const text =
-        typeof value === 'string'
-            ? value
-                  .replace(/<[^>]*>/g, ' ')
-                  .replace(/\s+/g, ' ')
-                  .trim()
-            : '';
-    return text === '' ? (
-        <EmptyValue />
-    ) : (
+function toPlainText(value: unknown): string {
+    return typeof value === 'string'
+        ? value
+              .replace(/<[^>]*>/g, ' ')
+              .replace(/\s+/g, ' ')
+              .trim()
+        : '';
+}
+
+type Sanitize = (html: string) => string;
+
+/** The sanitizer of rich text, once loaded, and its loading. */
+let sanitizer: Sanitize | null = null;
+let loadingSanitizer: Promise<Sanitize> | null = null;
+
+/** Loads the sanitizer of rich text (DOMPurify), with the first rich text shown in details. */
+function loadSanitizer(): Promise<Sanitize> {
+    loadingSanitizer ??= import('./sanitize').then(({ sanitizeRichText }) => {
+        sanitizer = sanitizeRichText;
+        return sanitizeRichText;
+    });
+    return loadingSanitizer;
+}
+
+/**
+ * Rich text with its formatting, sanitized (`sanitizeRichText()`). Until the sanitizer loads, its
+ * plain text in full.
+ */
+function RichTextDetails({ html, text }: { html: string; text: string }) {
+    const [sanitize, setSanitize] = useState<Sanitize | null>(() => sanitizer);
+    useEffect(() => {
+        if (sanitize !== null) {
+            return undefined;
+        }
+        let active = true;
+        void loadSanitizer().then((loaded) => {
+            if (active) {
+                setSanitize(() => loaded);
+            }
+        });
+        return () => {
+            active = false;
+        };
+    }, [sanitize]);
+    if (sanitize === null) {
+        return <span className={styles.fullText}>{text}</span>;
+    }
+    return (
+        <div
+            className={styles.richText}
+            // Sanitized by DOMPurify: HTML only, without scripts, handlers, styles or script URLs
+            dangerouslySetInnerHTML={{ __html: sanitize(html) }}
+        />
+    );
+}
+
+/**
+ * Rich text: as plain text on two lines in a cell. In details, with its formatting, sanitized by
+ * DOMPurify, which loads with the first one: until then, as plain text in full, never as HTML that
+ * isn't sanitized.
+ */
+export function RichTextDisplay({ value, variant }: DisplayProps) {
+    const text = toPlainText(value);
+    if (text === '') {
+        return <EmptyValue />;
+    }
+    if (variant === 'details' && typeof value === 'string') {
+        return <RichTextDetails html={value} text={text} />;
+    }
+    return (
         <span className={styles.text} data-clamp="">
             {text}
         </span>

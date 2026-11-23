@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { createList } from '@panneau/core';
@@ -186,6 +186,38 @@ describe('ItemDetails values in full', () => {
         const value = screen.getByRole('definition');
         expect(value.querySelector('[data-clamp]')).toBeNull();
         expect(value.textContent).toBe(text);
+    });
+
+    it('shows rich text with its formatting, sanitized, and plain text until then', async () => {
+        renderList(
+            <ItemDetails
+                item={{
+                    id: '1',
+                    body: '<p>Some <strong>bold</strong> text.</p><img src="x" onerror="alert(1)"><script>alert(2)</script>',
+                }}
+                columns={[{ id: 'body', label: 'Body', display: 'richtext' }]}
+            />,
+        );
+        const value = screen.getByRole('definition');
+        // Plain text while DOMPurify loads: never HTML that isn't sanitized
+        expect(value.querySelector('strong')).toBeNull();
+        expect(value).toHaveTextContent('Some bold text.');
+        await waitFor(() => expect(value.querySelector('strong')).toHaveTextContent('bold'));
+        expect(value.querySelector('img')).not.toHaveAttribute('onerror');
+        expect(value.querySelector('script')).toBeNull();
+    });
+
+    it('keeps rich text as plain text in list cells', () => {
+        const { container } = renderList(
+            <ListView
+                list={createList()}
+                items={[{ id: '1', body: '<p>Some <strong>bold</strong> text.</p>' }]}
+                columns={[{ id: 'body', label: 'Body', display: 'richtext' }]}
+                aria-label="Pages"
+            />,
+        );
+        expect(container.querySelector('strong')).toBeNull();
+        expect(screen.getByText('Some bold text.')).toHaveAttribute('data-clamp');
     });
 
     it('shows JSON in full', () => {

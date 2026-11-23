@@ -242,6 +242,7 @@ export const InFull: Story = {
                 field: { name: 'title', type: 'text', label: 'Title', localized: true },
             },
             { id: 'summary', label: 'Summary', display: 'textarea' },
+            { id: 'body', label: 'Body', display: 'richtext' },
             {
                 id: 'authors',
                 label: 'Authors',
@@ -255,6 +256,10 @@ export const InFull: Story = {
             id: '1',
             title: { en: 'The river festival returns', fr: 'Le festival de la rivière revient' },
             summary: longSummary,
+            body:
+                '<h3>Programme</h3><p>Three stages, <strong>on the water</strong>, and <a href="https://example.com/tickets" target="_blank">tickets online</a>.</p>' +
+                '<ul><li>Noon: the first boats</li><li>Midnight: fireworks</li></ul>' +
+                '<p style="position: fixed; inset: 0" onclick="alert(1)">Not over the admin</p><script>alert(2)</script>',
             authors: [
                 { id: '7', label: 'Ada Lovelace', description: 'Editor' },
                 { id: '8', label: 'Alan Turing' },
@@ -294,6 +299,18 @@ export const InFull: Story = {
         await expect(summary.closest('[data-clamp]')).toBeNull();
         await expect(summary.scrollHeight).toBeLessThanOrEqual(summary.clientHeight + 1);
         await expect(canvas.getByText(/"every": "30 minutes"/)).toBeInTheDocument();
+        // Rich text with its formatting, sanitized: no handler, no style, no script
+        const heading = await canvas.findByRole('heading', { name: 'Programme' });
+        const body = heading.parentElement;
+        await expect(within(body as HTMLElement).getAllByRole('listitem')).toHaveLength(2);
+        await expect(canvas.getByRole('link', { name: 'tickets online' })).toHaveAttribute(
+            'rel',
+            'noopener noreferrer',
+        );
+        const paragraph = canvas.getByText('Not over the admin');
+        await expect(paragraph).not.toHaveAttribute('style');
+        await expect(paragraph).not.toHaveAttribute('onclick');
+        await expect(body?.querySelector('script')).toBeNull();
     },
 };
 
