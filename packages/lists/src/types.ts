@@ -49,6 +49,12 @@ export interface ListColumn {
     render?: (item: ListItem) => ReactNode;
 }
 
+/**
+ * Where a display renders: in a `cell` of a list, short (two lines, the first media, rich text as
+ * text), or in the `details` of an item, in full (every media, linked relations, formatted text).
+ */
+export type DisplayVariant = 'cell' | 'details';
+
 /** Props of a display: shows the value of a column for an item. */
 export interface DisplayProps {
     value: unknown;
@@ -56,6 +62,8 @@ export interface DisplayProps {
     column: ListColumn;
     /** The column's field, or `null`. */
     field: Field | null;
+    /** Where it renders. Without it, in a cell. */
+    variant?: DisplayVariant;
 }
 
 /** A registry entry: renders a value with a display (`date`, `select`, a plugin's own). */

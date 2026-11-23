@@ -42,6 +42,7 @@
         "@panneau/intl": "5.0.0-alpha.46",
         "@panneau/protocol": "5.0.0-alpha.46",
         "@panneau/ui": "5.0.0-alpha.46",
+        "dompurify": "^3.4.18",
         "lucide-react": "^1.57.0"
     },
     "devDependencies": {
