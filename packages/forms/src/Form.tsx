@@ -1,7 +1,7 @@
 import { useLayoutEffect, useState } from 'react';
 
 import { type FormOptions, createForm, resolveFields, usePanneau } from '@panneau/core';
-import type { Field, LayoutNode } from '@panneau/protocol';
+import type { Field, Item, LayoutNode } from '@panneau/protocol';
 
 import { FormView, type FormViewProps } from './FormView';
 import { useFormatRuleFailure } from './formatError';
@@ -19,6 +19,12 @@ export interface FormProps
     fields: readonly Field[];
     /** The layout tree. Fields that no node references are added at the end. */
     layout?: readonly LayoutNode[];
+    /**
+     * The item the form edits, as the backend has it now: give the latest one after every fetch.
+     * When its version changes, a form without unsaved changes takes its values, and a form with
+     * unsaved changes keeps them and says that a newer version exists (`form.refresh()`).
+     */
+    item?: Item | null | undefined;
 }
 
 /**
@@ -28,8 +34,9 @@ export interface FormProps
  * translated with react-intl.
  *
  * Initial values and the version are read once: give the form a new `key` to start from another
- * item, or use `useForm()` and `FormView`. While the item loads, `isLoading` draws a skeleton of
- * the form, and a new `key` once it is there starts the form from its values.
+ * item, or use `useForm()` and `FormView`. Newer versions of the same item go through `item`, which
+ * keeps the form and what is typed in it. While the item loads, `isLoading` draws a skeleton of the
+ * form, and a new `key` once it is there starts the form from its values.
  */
 export function Form({
     fields,
@@ -41,6 +48,7 @@ export function Form({
     formatError,
     onSubmit,
     locales,
+    item,
     ...props
 }: FormProps) {
     const { definition } = usePanneau();
@@ -70,6 +78,12 @@ export function Form({
             onSubmit: options.onSubmit,
         });
     });
+    // A newer version of the item, from a refetch or another save
+    useLayoutEffect(() => {
+        if (item !== undefined && item !== null) {
+            form.refresh(item);
+        }
+    }, [form, item]);
     return (
         <FormView
             {...props}

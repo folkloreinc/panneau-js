@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { editorPlugin } from '@panneau/editor';
-import type { Field, LayoutNode } from '@panneau/protocol';
+import type { Field, Item, LayoutNode } from '@panneau/protocol';
 import { Button, isApplePlatform } from '@panneau/ui';
 
 import { Form } from './Form';
@@ -299,5 +299,73 @@ export const UnsavedChanges: Story = {
         await expect(
             await canvas.findByRole('alertdialog', { name: 'Leave without saving?' }),
         ).toBeInTheDocument();
+    },
+};
+
+const PROFILE: Item = {
+    id: '1',
+    version: '1',
+    abilities: { update: true },
+    name: 'Ada',
+    email: 'ada@example.com',
+};
+
+/** A form whose item someone else saves: as the app refetches it, on focus or after an action. */
+function SavedElsewhere(args: Partial<Parameters<typeof Form>[0]>) {
+    const [item, setItem] = useState(PROFILE);
+    return (
+        <div style={{ display: 'grid', gap: '1rem' }}>
+            <div>
+                <Button
+                    onPress={() =>
+                        setItem((current) => ({
+                            ...current,
+                            version: String(Number(current.version) + 1),
+                            name: 'Ada King',
+                        }))
+                    }
+                >
+                    Save elsewhere
+                </Button>
+            </div>
+            <Form
+                {...args}
+                fields={PROFILE_FIELDS}
+                values={PROFILE}
+                version={PROFILE.version}
+                item={item}
+            />
+        </div>
+    );
+}
+
+/**
+ * A newer version of the item arrives while the form has unsaved changes: the form keeps them, and
+ * offers to compare them with it in the conflict dialog.
+ */
+export const NewerVersion: Story = {
+    render: (args) => <SavedElsewhere {...args} />,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const name = canvas.getByRole('textbox', { name: /Name/ });
+        await userEvent.type(name, ' Lovelace');
+        await userEvent.click(canvas.getByRole('button', { name: 'Save elsewhere' }));
+        const notice = (
+            await canvas.findByText('A newer version of this item was saved')
+        ).closest<HTMLElement>('[role="status"]');
+        if (notice === null) {
+            throw new Error('The notice is not a status');
+        }
+        await expect(name).toHaveValue('Ada Lovelace');
+        await userEvent.click(within(notice).getByRole('button', { name: 'Compare' }));
+        const page = within(canvasElement.ownerDocument.body);
+        const dialog = await page.findByRole('alertdialog', {
+            name: 'Someone else saved this item',
+        });
+        await expect(dialog).toHaveTextContent('Ada King');
+        await userEvent.click(
+            within(dialog).getByRole('button', { name: 'Load the current version' }),
+        );
+        await waitFor(() => expect(name).toHaveValue('Ada King'));
     },
 };

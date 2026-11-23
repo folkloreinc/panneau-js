@@ -42,6 +42,11 @@ export interface FormState {
     status: FormStatus;
     /** With the `conflict` status: what the backend says is current. */
     conflict: FormConflict | null;
+    /**
+     * A newer version of the item than the form's, received by `refresh()` while the form had
+     * unsaved changes: the form kept them. `reviewNewer()` opens the conflict flow on it.
+     */
+    newer: Item | null;
     /** With the `error` status: what `onSubmit` threw. */
     error: unknown;
     submitCount: number;
@@ -146,6 +151,18 @@ export interface Form {
     /** Starts over from new values (or the initial ones), and a new version. */
     reset(values?: Values, version?: string | null): void;
     /**
+     * Takes the item as the backend has it now, such as after a refetch. When its version differs
+     * from the form's, a form without unsaved changes starts over from it, and a form with unsaved
+     * changes keeps them and holds the item in `newer`. Ignored while submitting: the submit
+     * decides the next version.
+     */
+    refresh(item: Item): void;
+    /**
+     * Opens the conflict flow on the `newer` item, as a `412` would: the `conflict` status, which
+     * `resolveConflict()` leaves.
+     */
+    reviewNewer(): void;
+    /**
      * Leaves the `conflict` status:
      *
      * - `reload` drops the local changes and continues from the current item;
@@ -223,6 +240,7 @@ export function createForm(options: FormOptions): Form {
     let serverErrors: Record<string, string[]> = {};
     let status: FormStatus = 'idle';
     let conflict: FormConflict | null = null;
+    let newer: Item | null = null;
     let error: unknown = null;
     let submitCount = 0;
     let pending: Promise<SubmitResult> | null = null;
@@ -260,6 +278,7 @@ export function createForm(options: FormOptions): Form {
             touched,
             status,
             conflict,
+            newer,
             error,
             submitCount,
         };
@@ -304,6 +323,7 @@ export function createForm(options: FormOptions): Form {
         serverErrors = {};
         status = 'idle';
         conflict = null;
+        newer = null;
         error = null;
         submitCount = 0;
         if (values !== undefined) {
@@ -349,13 +369,17 @@ export function createForm(options: FormOptions): Form {
             touched = new Set();
             submitCount = 0;
             status = 'submitted';
+            // This save is the newest version
+            newer = null;
             update();
             return { status: 'submitted', result };
         } catch (caught) {
             const problem = getProblem(caught);
             if (problem?.status === 412) {
                 status = 'conflict';
-                conflict = { current: problem.current ?? null };
+                // The newer item received while editing, when the backend didn't send it
+                conflict = { current: problem.current ?? newer };
+                newer = null;
                 update();
                 return { status: 'conflict', current: conflict.current };
             }
@@ -449,6 +473,37 @@ export function createForm(options: FormOptions): Form {
             return pending;
         },
         reset,
+        refresh(item) {
+            if (status === 'submitting') {
+                return;
+            }
+            if (status === 'conflict' && conflict !== null) {
+                // The dialog compares with the latest version
+                if (item.version !== version && conflict.current?.version !== item.version) {
+                    conflict = { current: item };
+                    update();
+                }
+                return;
+            }
+            if (item.version === version || item.version === newer?.version) {
+                return;
+            }
+            if (!form.getState().dirty) {
+                reset(getItemValues(item, fieldNames()), item.version);
+                return;
+            }
+            newer = item;
+            update();
+        },
+        reviewNewer() {
+            if (newer === null || status === 'submitting') {
+                return;
+            }
+            status = 'conflict';
+            conflict = { current: newer };
+            newer = null;
+            update();
+        },
         async resolveConflict(choice) {
             if (status !== 'conflict' || conflict === null) {
                 return null;

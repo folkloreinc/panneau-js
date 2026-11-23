@@ -333,6 +333,113 @@ describe('createForm', () => {
         });
     });
 
+    describe('refresh', () => {
+        const theirs: Item = { ...item, version: '4', title: { en: 'Theirs', fr: 'Les leurs' } };
+
+        it('starts a form without changes over from a newer version', () => {
+            const form = setup();
+            form.refresh(theirs);
+            expect(form.getState()).toMatchObject({
+                version: '4',
+                dirty: false,
+                newer: null,
+                values: { title: { en: 'Theirs', fr: 'Les leurs' } },
+            });
+        });
+
+        it('ignores the version the form already has', () => {
+            const form = setup();
+            form.setValue('title.en', 'Mine');
+            form.refresh({ ...item, title: { en: 'Other', fr: 'Autre' } });
+            expect(form.getState()).toMatchObject({
+                dirty: true,
+                newer: null,
+                values: { title: { en: 'Mine' } },
+            });
+        });
+
+        it('keeps unsaved changes and holds the newer version, then reviews it as a conflict', async () => {
+            const form = setup();
+            form.setValue('title.en', 'Mine');
+            form.refresh(theirs);
+            expect(form.getState()).toMatchObject({
+                version: '3',
+                dirty: true,
+                newer: theirs,
+                status: 'idle',
+                values: { title: { en: 'Mine', fr: 'Accueil' } },
+            });
+
+            form.reviewNewer();
+            expect(form.getState()).toMatchObject({
+                status: 'conflict',
+                conflict: { current: theirs },
+                newer: null,
+            });
+            await form.resolveConflict('reload');
+            expect(form.getState()).toMatchObject({
+                version: '4',
+                dirty: false,
+                values: { title: { en: 'Theirs', fr: 'Les leurs' } },
+            });
+        });
+
+        it('saves the unsaved changes over the newer version', async () => {
+            const onSubmit = vi.fn(
+                (values: Record<string, unknown>, context: { version: string | null }) => ({
+                    ...theirs,
+                    ...values,
+                    version: String(Number(context.version) + 1),
+                }),
+            );
+            const form = setup({ onSubmit });
+            form.setValue('title.en', 'Mine');
+            form.refresh(theirs);
+            form.reviewNewer();
+            expect((await form.resolveConflict('overwrite'))?.status).toBe('submitted');
+            expect(onSubmit.mock.calls[0]?.[1].version).toBe('4');
+            expect(form.getState()).toMatchObject({ version: '5', dirty: false, newer: null });
+        });
+
+        it('compares a 412 without the current item with the newer version', async () => {
+            const form = setup({
+                onSubmit: () => {
+                    throw problemError({ status: 412 });
+                },
+            });
+            form.setValue('title.en', 'Mine');
+            form.refresh(theirs);
+            await form.submit();
+            expect(form.getState()).toMatchObject({
+                status: 'conflict',
+                conflict: { current: theirs },
+                newer: null,
+            });
+        });
+
+        it('waits for a submit, and keeps what was typed meanwhile', async () => {
+            let resolve: (value: unknown) => void = () => undefined;
+            const form = setup({ onSubmit: () => new Promise((done) => (resolve = done)) });
+            form.setValue('slug', 'saved');
+            const submitting = form.submit();
+            form.setValue('title.en', 'Typed meanwhile');
+            const saved = { ...item, slug: 'saved', version: '4' };
+            // The saved item reaches the cache before the submit returns
+            form.refresh(saved);
+            expect(form.getState()).toMatchObject({ status: 'submitting', newer: null });
+            resolve(saved);
+            await submitting;
+            form.refresh(saved);
+            expect(form.getState()).toMatchObject({
+                version: '4',
+                dirty: true,
+                newer: null,
+                values: { slug: 'saved', title: { en: 'Typed meanwhile' } },
+                initialValues: { slug: 'saved', title: { en: 'Home' } },
+            });
+        });
+    });
+
     it('reads and writes values through its store, and follows its changes', () => {
         const store = createLocalStore({ title: { en: 'Shared' } });
         const form = createForm({ fields, store, version: '1' });

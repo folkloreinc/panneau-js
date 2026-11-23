@@ -78,6 +78,7 @@ export interface FormPanelProps {
 // @public (undocumented)
 export interface FormProps extends Omit<FormViewProps, 'form' | 'fields' | 'layout'>, Pick<FormOptions, 'values' | 'version' | 'mode' | 'store' | 'formatError' | 'onSubmit'> {
     fields: readonly Field[];
+    item?: Item | null | undefined;
     layout?: readonly LayoutNode[];
 }
 
