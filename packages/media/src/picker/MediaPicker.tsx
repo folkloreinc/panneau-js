@@ -3,6 +3,7 @@ import { Button, Dialog, Text, usePanneauIntl } from '@panneau/ui';
 
 import styles from './MediaPicker.module.css';
 import type { MediaPickerProps } from './types';
+import { useCloseConfirmation } from './useCloseConfirmation';
 import { type Picked, toReference, useMediaLibrary } from './useMediaLibrary';
 
 /**
@@ -48,6 +49,8 @@ function OpenMediaPicker({
             return false;
         },
     });
+    // Closing with details changed but not saved asks first (Escape, a click outside, Cancel)
+    const closing = useCloseConfirmation(library.dirty, () => onOpenChange(false));
     if (library.source === null) {
         return null;
     }
@@ -59,7 +62,11 @@ function OpenMediaPicker({
     return (
         <Dialog
             isOpen
-            onOpenChange={onOpenChange}
+            onOpenChange={(open) => {
+                if (!open) {
+                    closing.requestClose();
+                }
+            }}
             title={title ?? intl.formatMessage(messages.pickerTitle)}
             size="xl"
             fullScreenOnPhone
@@ -98,7 +105,7 @@ function OpenMediaPicker({
                         )}
                     </div>
                     <div className={styles.actions}>
-                        <Button className={styles.cancel} onPress={() => onOpenChange(false)}>
+                        <Button className={styles.cancel} onPress={closing.requestClose}>
                             {intl.formatMessage(messages.pickerCancel)}
                         </Button>
                         <Button
@@ -114,6 +121,7 @@ function OpenMediaPicker({
         >
             {library.tabs}
             {library.unsaved}
+            {closing.dialog}
         </Dialog>
     );
 }

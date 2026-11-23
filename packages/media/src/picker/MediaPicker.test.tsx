@@ -251,6 +251,39 @@ describe('MediaPicker', () => {
         ).toBeInTheDocument();
     });
 
+    it('asks before closing with changed details: "Stay" keeps them', async () => {
+        const { onOpenChange } = open();
+        await userEvent.click(await card('harbour at dawn'));
+        const details = screen.getByRole('complementary', { name: 'Details of harbour at dawn' });
+        const alt = within(details).getByRole('textbox', { name: 'Alt text' });
+        await userEvent.type(alt, '!');
+
+        await userEvent.click(within(dialog()).getByRole('button', { name: 'Cancel' }));
+        const ask = await screen.findByRole('alertdialog', { name: 'Leave without saving?' });
+        expect(ask).toHaveTextContent('Your changes will be lost.');
+        await userEvent.click(within(ask).getByRole('button', { name: 'Stay' }));
+        await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument());
+        expect(onOpenChange).not.toHaveBeenCalled();
+        expect(alt).toHaveValue('Fishing boats in a harbour at dawn!');
+        // Focus is back in the picker, on Cancel: Escape reaches it
+        await waitFor(() =>
+            expect(within(dialog()).getByRole('button', { name: 'Cancel' })).toHaveFocus(),
+        );
+
+        await userEvent.keyboard('{Escape}');
+        const again = await screen.findByRole('alertdialog', { name: 'Leave without saving?' });
+        await userEvent.click(within(again).getByRole('button', { name: 'Leave' }));
+        expect(onOpenChange).toHaveBeenCalledWith(false);
+    });
+
+    it('closes without asking when the details are unchanged', async () => {
+        const { onOpenChange } = open();
+        await userEvent.click(await card('harbour at dawn'));
+        await userEvent.click(within(dialog()).getByRole('button', { name: 'Cancel' }));
+        expect(onOpenChange).toHaveBeenCalledWith(false);
+        expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    });
+
     it('marks the media of the value, and keeps a single pick of it disabled', async () => {
         open({ value: [{ id: 'med_03', resource: 'media' }] });
 

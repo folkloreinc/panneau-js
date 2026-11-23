@@ -97,6 +97,8 @@ export interface MediaLibraryParts {
     tabs: ReactNode;
     /** Asks to save or discard the details edited before another media is focused. */
     unsaved: ReactNode;
+    /** The details of the media focused have changes that aren't saved. */
+    dirty: boolean;
     /** The media selected, in order. */
     picked: Picked[];
     /** How many libraries the selection spans. */
@@ -420,6 +422,7 @@ export function useMediaLibrary({
             switcher: null,
             tabs: null,
             unsaved: null,
+            dirty: false,
             picked,
             pickedSources: pickedSources.size,
             unchanged,
@@ -725,6 +728,7 @@ export function useMediaLibrary({
         switcher,
         tabs,
         unsaved,
+        dirty,
         picked,
         pickedSources: pickedSources.size,
         unchanged,

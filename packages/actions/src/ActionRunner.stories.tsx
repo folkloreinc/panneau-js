@@ -173,6 +173,44 @@ export const Parameters: Story = {
     },
 };
 
+/**
+ * Closing the parameters with changed values asks first, as leaving a form page does: "Stay"
+ * keeps them. Closing them unchanged doesn't ask.
+ */
+export const ParametersUnsaved: Story = {
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        await userEvent.click(canvas.getByRole('button', { name: 'Select' }));
+        await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Contact' }));
+        await userEvent.click(canvas.getByRole('button', { name: 'Publish' }));
+        await body.findByRole('dialog', { name: 'Publish' });
+        // Unchanged: Escape closes it
+        await userEvent.keyboard('{Escape}');
+        await waitFor(() => expect(body.queryByRole('dialog')).not.toBeInTheDocument());
+        await expect(body.queryByRole('alertdialog')).not.toBeInTheDocument();
+
+        await userEvent.click(canvas.getByRole('button', { name: 'Publish' }));
+        const dialog = await body.findByRole('dialog', { name: 'Publish' });
+        const note = within(dialog).getByRole('textbox', { name: 'Note to the authors' });
+        await userEvent.type(note, 'Almost there.');
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+        const ask = await body.findByRole('alertdialog', { name: 'Leave without saving?' });
+        await userEvent.click(within(ask).getByRole('button', { name: 'Stay' }));
+        await waitFor(() => expect(body.queryByRole('alertdialog')).not.toBeInTheDocument());
+        await expect(note).toHaveValue('Almost there.');
+        // Focus is back on Cancel, in the dialog: Escape reaches it
+        await waitFor(() =>
+            expect(within(dialog).getByRole('button', { name: 'Cancel' })).toHaveFocus(),
+        );
+
+        await userEvent.keyboard('{Escape}');
+        const again = await body.findByRole('alertdialog', { name: 'Leave without saving?' });
+        await userEvent.click(within(again).getByRole('button', { name: 'Leave' }));
+        await waitFor(() => expect(body.queryByRole('dialog')).not.toBeInTheDocument());
+    },
+};
+
 /** A queued action: its progress, then its result and its download. */
 export const QueuedRun: Story = {
     play: async ({ args, canvasElement }) => {
