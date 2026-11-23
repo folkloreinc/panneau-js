@@ -2,6 +2,7 @@ import { useId } from 'react';
 
 import { getItemValues, isEqual } from '@panneau/core';
 import type { Field, Item } from '@panneau/protocol';
+import { getFieldLabel } from '@panneau/protocol/runtime';
 import { Button, Dialog, usePanneauIntl } from '@panneau/ui';
 
 import styles from './ConflictDialog.module.css';
@@ -135,7 +136,7 @@ export function ConflictDialog({
                         <dl className={styles.changes}>
                             {changed.map((field) => (
                                 <div key={field.name} className={styles.change}>
-                                    <dt className={styles.label}>{field.label ?? field.name}</dt>
+                                    <dt className={styles.label}>{getFieldLabel(field)}</dt>
                                     <dd className={styles.version}>
                                         <span className={styles.which}>
                                             {intl.formatMessage(messages.yours)}

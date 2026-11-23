@@ -1,4 +1,5 @@
 import type { Field, Rule } from '@panneau/protocol';
+import { getFieldLabel } from '@panneau/protocol/runtime';
 
 import type { FieldEntryProps, FieldProps } from './types';
 
@@ -38,16 +39,16 @@ export const isNumber = (value: unknown): value is number =>
     typeof value === 'number' && !Number.isNaN(value);
 
 /**
- * The props that every field takes, from a registry entry's props: label (the field's name
- * without one, or `aria-label` with `hideLabel`), help, required mark, read-only, errors and
- * handlers. Plugins use it to write their own entries.
+ * The props that every field takes, from a registry entry's props: label (the field's name made
+ * readable without one, or `aria-label` with `hideLabel`), help, required mark, read-only, errors
+ * and handlers. Plugins use it to write their own entries.
  */
 export function getFieldProps(
     props: FieldEntryProps,
 ): Omit<FieldProps<never>, 'value' | 'onChange'> & { placeholder?: string } {
     const { field } = props;
-    // A field always has a label: its name when the definition gives none.
-    const label = field.label ?? field.name;
+    // A field always has a label: its name made readable when the definition gives none.
+    const label = getFieldLabel(field);
     return {
         name: props.path,
         ...(props.hideLabel === true ? { 'aria-label': label } : { label }),

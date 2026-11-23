@@ -1,4 +1,21 @@
+import type { ReactNode } from 'react';
+
+import { humanizeKey } from '@panneau/protocol/runtime';
+
 import type { ListColumn } from './types';
+
+/**
+ * The label of a column: its `label` as given, an empty one included, or its id made readable
+ * (`published_at` → "Published at", issue 408).
+ */
+export function getColumnLabel(column: ListColumn): ReactNode {
+    return column.label ?? humanizeKey(column.id);
+}
+
+/** The label of a column as text, for options and menus: a label that isn't text reads its id. */
+export function getColumnText(column: ListColumn): string {
+    return typeof column.label === 'string' ? column.label : humanizeKey(column.id);
+}
 
 function isHideable(column: ListColumn): boolean {
     return column.hideable !== false;

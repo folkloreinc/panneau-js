@@ -1,4 +1,5 @@
 import type { Field } from '@panneau/protocol';
+import { getFieldLabel } from '@panneau/protocol/runtime';
 
 import { getPathSteps } from './paths';
 
@@ -13,7 +14,7 @@ export function describePath(fields: readonly Field[], path: string): string {
     }
     return steps
         .map((step) => {
-            const label = step.field.label ?? step.field.name;
+            const label = getFieldLabel(step.field);
             const locale = step.locale !== undefined ? ` (${step.locale})` : '';
             const index = step.index !== undefined ? ` › ${step.index + 1}` : '';
             return `${label}${locale}${index}`;

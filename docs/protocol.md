@@ -112,6 +112,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 }
 ```
 
+- **`label`** is optional, on a field as on a column, a filter and a page, and it is shown as given, in the locale of the definition: an empty `label` stays empty. Without one, clients show the key made readable, `humanizeKey()` of `@panneau/protocol/runtime`: `published_at` and `publishedAt` read "Published at", a trailing `_id` names what it points to (`author_id` reads "Author"), the segments of a path stay (`seo.title` reads "Seo title"), and acronyms in capitals stay so. It is a fallback for humans, in English, not a translation: a definition in another language gives its labels. A column without a `label` takes the label of its field, then its key; a filter, the label of the field it filters, then its id. Actions and resources need their labels (but the built-in item actions, which clients label).
 - **`abilities`** ([0046](decisions/0046-abilities-in-the-ui.md)) say what the current user can do with the field. Only `false` restricts:
     - `view: false`: clients leave the field out of forms, details, list columns, sorts and inline editing. Layouts and columns that name it stay valid. Items don't carry its value.
     - `update: false`: the field is read-only for this user, in forms and in lists. The backend ignores its value on create and update.
