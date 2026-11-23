@@ -4,7 +4,7 @@
 - Date: 2026-11-23
 - Amends: [0090](0090-agents-work-through-tools-as-their-user.md) (the tools, what describes a resource, and the order of delivery)
 - Part of: [#6](https://github.com/folkloreinc/panneau-js/issues/6), 5.x (AI agents (MCP))
-- Laravel side: [laravel-panneau decision 0022](https://github.com/folkloreinc/laravel-panneau/blob/v5.x/docs/decisions/0022-agents-on-laravel-mcp-and-laravel-ai.md), amended by a record of [its decisions](https://github.com/folkloreinc/laravel-panneau/tree/v5.x/docs/decisions)
+- Laravel side: [laravel-panneau decision 0022](https://github.com/folkloreinc/laravel-panneau/blob/v5.x/docs/decisions/0022-agents-on-laravel-mcp-and-laravel-ai.md), amended by [its decision 0025](https://github.com/folkloreinc/laravel-panneau/blob/v5.x/docs/decisions/0025-five-tools-read-first.md)
 - Changes: the protocol (the tools of its "Agents" section, and an optional `description` of a resource)
 
 ## Context
