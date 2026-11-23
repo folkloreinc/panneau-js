@@ -5300,6 +5300,10 @@
                         "description": "The field that holds the image of an item (a media, a file or a URL), in search results, pickers, the gallery and the thumbnails of the table. Defaults to the item's `media` in a resource of kind `media` (decision 0061).",
                         "type": "string"
                     },
+                    "itemStatus": {
+                        "description": "The field that holds the state of an item (Draft, Archived), usually a `select` whose options have tones: its label, in its option's tone, shows as a badge next to the item's title in relation pickers and cards (decision 0103).",
+                        "type": "string"
+                    },
                     "open": {
                         "description": "Where an item's title goes, in its list and wherever the app links to the item (decision 0082). `edit`, the default: its edit form, and the show route redirects there. An item the user can't update still opens in the panel. `panel`: the show route, with the item's details in a panel next to the list, for items read more than edited, or shown with their preview. Clients treat a value they don't know as `edit`.",
                         "anyOf": [

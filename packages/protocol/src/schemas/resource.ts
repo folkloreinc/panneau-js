@@ -112,6 +112,10 @@ export const Resource = z
             description:
                 "The field that holds the image of an item (a media, a file or a URL), in search results, pickers, the gallery and the thumbnails of the table. Defaults to the item's `media` in a resource of kind `media` (decision 0061).",
         }),
+        itemStatus: z.string().optional().meta({
+            description:
+                "The field that holds the state of an item (Draft, Archived), usually a `select` whose options have tones: its label, in its option's tone, shows as a badge next to the item's title in relation pickers and cards (decision 0103).",
+        }),
         open: z
             .union([z.enum(['panel', 'edit']), z.string().min(1)])
             .optional()
