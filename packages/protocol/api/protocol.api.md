@@ -1152,6 +1152,9 @@ export const DASHBOARD_COMPONENT = "dashboard";
 // @public
 export const DATE_RANGE_OPEN_BOUNDS: readonly ["start", "end", "both"];
 
+// @public
+export const DATE_SHORTCUTS: readonly ["today", "yesterday", "tomorrow"];
+
 // @public (undocumented)
 export type DateRangeOpenBound = (typeof DATE_RANGE_OPEN_BOUNDS)[number];
 
@@ -1181,6 +1184,45 @@ export const DateRangeValue: z.ZodObject<{
 
 // @public (undocumented)
 export type DateRangeValue = z.infer<typeof DateRangeValue>;
+
+// @public
+export const DateSettings: z.ZodObject<{
+    shortcuts: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodEnum<{
+        today: "today";
+        yesterday: "yesterday";
+        tomorrow: "tomorrow";
+    }>, z.ZodObject<{
+        label: z.ZodString;
+        from: z.ZodOptional<z.ZodString>;
+        days: z.ZodOptional<z.ZodInt>;
+        weeks: z.ZodOptional<z.ZodInt>;
+        months: z.ZodOptional<z.ZodInt>;
+        years: z.ZodOptional<z.ZodInt>;
+    }, z.core.$strict>]>>>;
+}, z.core.$loose>;
+
+// @public
+export type DateSettings = z.infer<typeof DateSettings>;
+
+// @public
+export const DateShortcut: z.ZodUnion<readonly [z.ZodEnum<{
+    today: "today";
+    yesterday: "yesterday";
+    tomorrow: "tomorrow";
+}>, z.ZodObject<{
+    label: z.ZodString;
+    from: z.ZodOptional<z.ZodString>;
+    days: z.ZodOptional<z.ZodInt>;
+    weeks: z.ZodOptional<z.ZodInt>;
+    months: z.ZodOptional<z.ZodInt>;
+    years: z.ZodOptional<z.ZodInt>;
+}, z.core.$strict>]>;
+
+// @public
+export type DateShortcut = z.infer<typeof DateShortcut>;
+
+// @public
+export type DateShortcutName = (typeof DATE_SHORTCUTS)[number];
 
 // @public
 export const DEFAULT_ADDRESS_REQUIRED_PARTS: readonly AddressPart[];
@@ -4651,6 +4693,35 @@ export const namedSchemas: {
             hours: "hours";
             days: "days";
         }>>;
+    }, z.core.$loose>;
+    DateShortcut: z.ZodUnion<readonly [z.ZodEnum<{
+        today: "today";
+        yesterday: "yesterday";
+        tomorrow: "tomorrow";
+    }>, z.ZodObject<{
+        label: z.ZodString;
+        from: z.ZodOptional<z.ZodString>;
+        days: z.ZodOptional<z.ZodInt>;
+        weeks: z.ZodOptional<z.ZodInt>;
+        months: z.ZodOptional<z.ZodInt>;
+        years: z.ZodOptional<z.ZodInt>;
+    }, z.core.$strict>]>;
+    DateSettings: z.ZodObject<{
+        shortcuts: z.ZodOptional<z.ZodArray<z.ZodUnion<readonly [z.ZodEnum<{
+            today: "today";
+            yesterday: "yesterday";
+            tomorrow: "tomorrow";
+        }>, z.ZodObject<{
+            label: z.ZodString;
+            from: z.ZodOptional<z.ZodString>;
+            days: z.ZodOptional<z.ZodInt>;
+            weeks: z.ZodOptional<z.ZodInt>;
+            months: z.ZodOptional<z.ZodInt>;
+            years: z.ZodOptional<z.ZodInt>;
+        }, z.core.$strict>]>>>;
+    }, z.core.$loose>;
+    SelectSettings: z.ZodObject<{
+        search: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>;
     LayoutNode: z.ZodObject<{
         type: z.ZodString;
@@ -13682,6 +13753,14 @@ const Selection_2: z.ZodUnion<readonly [z.ZodObject<{
 // @public (undocumented)
 type Selection_2 = z.infer<typeof Selection_2>;
 export { Selection_2 as Selection }
+
+// @public
+export const SelectSettings: z.ZodObject<{
+    search: z.ZodOptional<z.ZodBoolean>;
+}, z.core.$loose>;
+
+// @public
+export type SelectSettings = z.infer<typeof SelectSettings>;
 
 // @public (undocumented)
 export const SeriesPoint: z.ZodObject<{

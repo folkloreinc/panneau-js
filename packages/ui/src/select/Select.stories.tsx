@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { expect, userEvent, within } from 'storybook/test';
 
+import { TextInput } from '../text-input/TextInput';
 import { type OptionValue, Select, type SelectOption } from './Select';
 
 const OPTIONS: SelectOption[] = [
@@ -65,4 +66,23 @@ export const Multiple: Story = {
 
 export const Required: Story = { args: { isRequired: true, description: 'Pick one.' } };
 
-export const WithErrors: Story = { args: { errors: ['This value is not one of the choices.'] } };
+/** An invalid select has the red border of an invalid text input. */
+export const WithErrors: Story = {
+    args: { errors: ['This value is not one of the choices.'] },
+    render: (args) => (
+        <div style={{ display: 'grid', gap: '1rem' }}>
+            <Select {...args} />
+            <TextInput label="Title" errors={['This field is required.']} />
+            <Select {...args} label="Category" errors={[]} />
+        </div>
+    ),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const border = (element: Element) => getComputedStyle(element).borderTopColor;
+        const trigger = canvas.getByRole('button', { name: /Status/ });
+        const input = canvas.getByRole('textbox', { name: 'Title' });
+        const valid = canvas.getByRole('button', { name: /Category/ });
+        await expect(border(trigger)).toBe(border(input.closest('[data-invalid]') ?? input));
+        await expect(border(trigger)).not.toBe(border(valid));
+    },
+};

@@ -158,6 +158,8 @@ export function Select(props: SelectProps) {
                 {label}
             </FieldLabel>
             <Button
+                // The box shows the error, as the box of a text input does
+                data-invalid={invalid || undefined}
                 className={cx(
                     appearance === 'bare' ? styles.bareTrigger : fieldStyles.control,
                     styles.trigger,

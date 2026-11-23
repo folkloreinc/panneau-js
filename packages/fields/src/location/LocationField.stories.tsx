@@ -65,3 +65,40 @@ export const Empty: Story = {
 export const WithPoint: Story = {
     args: { initial: { lat: 45.503182, lng: -73.569807, address: 'Montréal, Québec, Canada' } },
 };
+
+/**
+ * The wheel scrolls the page over the map, with a hint to hold ⌘ or Ctrl. Once clicked or focused,
+ * the map zooms with the wheel.
+ */
+export const ScrollOverTheMap: Story = {
+    args: WithPoint.args,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const map = canvas.getByRole('application', { name: /Map: Place/ });
+        await waitFor(() => expect(map.querySelector('.leaflet-pane')).not.toBeNull());
+        const pane = map.querySelector('.leaflet-pane') ?? map;
+        const leaflet: WheelEvent[] = [];
+        const listen = (event: WheelEvent) => leaflet.push(event);
+        map.addEventListener('wheel', listen);
+        const wheel = (init: WheelEventInit = {}) =>
+            pane.dispatchEvent(
+                new WheelEvent('wheel', { deltaY: 100, bubbles: true, cancelable: true, ...init }),
+            );
+
+        wheel();
+        await expect(leaflet).toHaveLength(0);
+        const hint = canvas.getByText(/To zoom, scroll while holding/);
+        await waitFor(() =>
+            expect(Number(getComputedStyle(hint.parentElement ?? hint).opacity)).toBeGreaterThan(0),
+        );
+
+        wheel({ ctrlKey: true });
+        await expect(leaflet).toHaveLength(1);
+
+        await userEvent.click(map);
+        await expect(map).toHaveFocus();
+        wheel();
+        await expect(leaflet).toHaveLength(2);
+        map.removeEventListener('wheel', listen);
+    },
+};

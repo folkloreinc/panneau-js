@@ -50,4 +50,37 @@ describe('DateTimeField', () => {
         await userEvent.keyboard('{ArrowUp}');
         expect(onChange).toHaveBeenLastCalledWith('2026-10-15T09:31:00');
     });
+
+    it('names the time zone, with its offset at the date of the value', () => {
+        renderField(
+            <>
+                <DateTimeField
+                    label="Published at"
+                    timeZone="America/Toronto"
+                    value="2026-10-15T13:30:00Z"
+                />
+                <DateTimeField
+                    label="Unpublished at"
+                    timeZone="America/Toronto"
+                    value="2026-11-15T13:30:00Z"
+                />
+            </>,
+        );
+        const published = screen.getByRole('group', { name: 'Published at' });
+        expect(within(published).getByText('Eastern Time (UTC−4)')).toHaveAttribute(
+            'title',
+            'America/Toronto',
+        );
+        const unpublished = screen.getByRole('group', { name: 'Unpublished at' });
+        expect(within(unpublished).getByText('Eastern Time (UTC−5)')).toBeInTheDocument();
+        // The zone describes the segments, which are the date and the time only
+        expect(segments('Published at')).not.toContain('EDT');
+        const month = within(published).getAllByRole('spinbutton')[0] as HTMLElement;
+        expect(month).toHaveAccessibleDescription(/Eastern Time \(UTC−4\)/);
+    });
+
+    it('has no time zone for values without an offset', () => {
+        renderField(<DateTimeField label="Starts at" value="2026-10-15T09:30:00" />);
+        expect(screen.queryByText(/UTC/)).toBeNull();
+    });
 });

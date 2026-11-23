@@ -35,6 +35,8 @@ export const fieldsFr: Record<string, string> = {
     'panneau.fields.address': 'Adresse',
     'panneau.fields.removePoint': 'Retirer le point',
     'panneau.fields.map': 'Carte : {label}. Cliquez pour placer le point, ou déplacez le marqueur.',
+    'panneau.fields.mapZoomHint':
+        'Pour zoomer, faites défiler en maintenant {key}, ou cliquez d’abord sur la carte.',
     'panneau.fields.embedUrl': 'URL',
     'panneau.fields.embedLoading': 'Chargement de l’aperçu…',
     'panneau.fields.embedProviders': 'Fournisseurs acceptés : {providers}.',
@@ -113,6 +115,9 @@ export const fieldsFr: Record<string, string> = {
     'panneau.fields.linkLabel': 'Libellé',
     'panneau.fields.linkNewTab': 'Ouvrir dans un nouvel onglet',
     'panneau.fields.allDay': 'Toute la journée',
+    'panneau.fields.dateToday': 'Aujourd’hui',
+    'panneau.fields.dateYesterday': 'Hier',
+    'panneau.fields.dateTomorrow': 'Demain',
     'panneau.fields.timeZone': 'Fuseau horaire',
     'panneau.fields.noTimeZones': 'Aucun fuseau horaire ne correspond',
     'panneau.fields.moneyCurrency': 'Devise',

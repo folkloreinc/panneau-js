@@ -63,6 +63,8 @@ import {
     AddressSettings,
     BlockType,
     DateRangeSettings,
+    DateSettings,
+    DateShortcut,
     DurationSettings,
     Field,
     LinkSettings,
@@ -71,6 +73,7 @@ import {
     RichTextSettings,
     RichTextStyle,
     Rule,
+    SelectSettings,
 } from './field';
 import { actionJsonRules } from './jsonRules';
 import { LayoutNode } from './layout';
@@ -147,6 +150,9 @@ export const namedSchemas = {
     DateRangeSettings,
     MoneySettings,
     DurationSettings,
+    DateShortcut,
+    DateSettings,
+    SelectSettings,
     LayoutNode,
     Column,
     Filter,

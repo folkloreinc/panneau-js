@@ -486,6 +486,9 @@ export const fieldsMessages: {
     map: PanneauMessage<    {
     label: string;
     }>;
+    mapZoomHint: PanneauMessage<    {
+    key: string;
+    }>;
     embedUrl: PanneauMessage<Record<never, never>>;
     embedLoading: PanneauMessage<Record<never, never>>;
     embedProviders: PanneauMessage<    {
@@ -609,6 +612,9 @@ export const fieldsMessages: {
     linkLabel: PanneauMessage<Record<never, never>>;
     linkNewTab: PanneauMessage<Record<never, never>>;
     allDay: PanneauMessage<Record<never, never>>;
+    dateToday: PanneauMessage<Record<never, never>>;
+    dateYesterday: PanneauMessage<Record<never, never>>;
+    dateTomorrow: PanneauMessage<Record<never, never>>;
     timeZone: PanneauMessage<Record<never, never>>;
     noTimeZones: PanneauMessage<Record<never, never>>;
     moneyCurrency: PanneauMessage<Record<never, never>>;

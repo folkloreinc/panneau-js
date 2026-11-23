@@ -96,6 +96,7 @@ describe('@panneau/protocol/runtime', () => {
             'CURRENCY_CODES',
             'DASHBOARD_COMPONENT',
             'DATE_RANGE_OPEN_BOUNDS',
+            'DATE_SHORTCUTS',
             'DEFAULT_ADDRESS_REQUIRED_PARTS',
             'DURATION_UNITS',
             'EMAIL_UNVERIFIED_PROBLEM_TYPE',

@@ -597,6 +597,7 @@ export function DatePicker(input: DatePickerProps): JSX.Element;
 export interface DatePickerProps extends Omit<DatePickerProps_2<DateValue>, 'className' | 'style' | 'children' | 'isInvalid' | 'validate'>, FieldChromeProps {
     // (undocumented)
     controlClassName?: string;
+    end?: ReactNode;
     // (undocumented)
     popoverClassName?: string;
     shortcuts?: readonly DatePickerShortcut[];
