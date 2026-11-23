@@ -12,9 +12,11 @@ import { useCommandShortcut } from './useCommandShortcut';
 function Palette({
     groups,
     navigate = vi.fn(),
+    highlightMatches,
 }: {
     groups: CommandPaletteGroup[];
     navigate?: (href: string) => void;
+    highlightMatches?: boolean;
 }) {
     const [isOpen, setOpen] = useState(false);
     useCommandShortcut(() => setOpen((open) => !open), { isOpen });
@@ -29,6 +31,7 @@ function Palette({
                     onOpenChange={setOpen}
                     groups={groups}
                     aria-label="Go to…"
+                    highlightMatches={highlightMatches}
                 />
             </RouterProvider>
         </PanneauRoot>
@@ -87,6 +90,26 @@ describe('CommandPalette', () => {
         await user.click(screen.getByRole('menuitem', { name: 'Dark appearance' }));
         expect(onAction).toHaveBeenCalledOnce();
         expect(screen.queryByRole('dialog')).toBeNull();
+    });
+
+    it('highlights what matches in labels, without changing their accessible names', async () => {
+        const user = userEvent.setup();
+        render(<Palette groups={groups} highlightMatches />);
+        await user.click(screen.getByRole('button', { name: 'Go to…' }));
+        await user.type(await screen.findByRole('searchbox'), 'thor');
+        const item = screen.getByRole('menuitem', { name: 'Authors' });
+        const marks = item.querySelectorAll('mark');
+        expect([...marks].map((mark) => mark.textContent)).toEqual(['thor']);
+        expect(marks[0]).toHaveAttribute('role', 'presentation');
+        expect(item).toHaveAccessibleDescription('People');
+    });
+
+    it('highlights nothing unless asked', async () => {
+        const user = userEvent.setup();
+        render(<Palette groups={groups} />);
+        await user.click(screen.getByRole('button', { name: 'Go to…' }));
+        await user.type(await screen.findByRole('searchbox'), 'thor');
+        expect(screen.getByRole('menuitem', { name: 'Authors' }).querySelector('mark')).toBeNull();
     });
 
     it('says when nothing matches', async () => {

@@ -75,6 +75,19 @@ export function useResourceItem(
 }
 
 /**
+ * Prefetches the items of a resource, for a link to one that is hovered or focused: its form or
+ * its panel then opens from the cache. An item that is fresh (30 seconds) or already loading isn't
+ * fetched again, and a failure is left to the page that opens the item.
+ */
+export function usePrefetchItem(resource: string): (id: string) => void {
+    const adapter = useDataAdapter();
+    const client = useQueryClient();
+    return (id) => {
+        void client.prefetchQuery(resourceItemQueryOptions(adapter, resource, id));
+    };
+}
+
+/**
  * The iframe preview of an item: a short-lived URL of its page on the site, rendered with
  * `values` (`{}` for the saved item). Pass `enabled: false` until the preview is shown.
  */

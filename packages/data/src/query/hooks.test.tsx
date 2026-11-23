@@ -16,6 +16,7 @@ import {
     useDefinition,
     useDeleteItem,
     useDuplicateItem,
+    usePrefetchItem,
     useResourceAggregate,
     useResourceAggregates,
     useResourceItem,
@@ -264,6 +265,26 @@ describe('query hooks', () => {
         rerender({ id: '1' });
         await waitFor(() => expect(result.current.isSuccess).toBe(true));
         expect(result.current.data).toMatchObject({ id: '1', status: 'published' });
+    });
+
+    it('prefetch an item once, and not again while it is fresh or loading', async () => {
+        const { wrapper, backend, client } = setup();
+        const { result } = renderHook(() => usePrefetchItem('pages'), { wrapper });
+        act(() => {
+            result.current('1');
+            // Hovered again while it loads
+            result.current('1');
+        });
+        await waitFor(() =>
+            expect(client.getQueryData(queryKeys.item('pages', '1'))).toMatchObject({ id: '1' }),
+        );
+        expect(backend.requests).toHaveLength(1);
+
+        act(() => result.current('1'));
+        // The page that opens it reads it from the cache
+        const item = renderHook(() => useResourceItem('pages', '1'), { wrapper });
+        expect(item.result.current.data).toMatchObject({ id: '1' });
+        expect(backend.requests).toHaveLength(1);
     });
 
     it('update an item, cache it and refetch the lists', async () => {

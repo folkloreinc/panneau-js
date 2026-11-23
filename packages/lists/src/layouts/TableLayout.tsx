@@ -59,6 +59,7 @@ export function TableLayout({
     renderValue,
     getItemLabel,
     getItemHref,
+    onItemIntent,
     getItemImage,
     getItemFileKind,
     isCurrent,
@@ -185,7 +186,15 @@ export function TableLayout({
                                     {columns.map((column, index) => {
                                         const content =
                                             index === 0 ? (
-                                                <ItemTitle href={href} current={current}>
+                                                <ItemTitle
+                                                    href={href}
+                                                    current={current}
+                                                    onIntent={
+                                                        onItemIntent !== undefined
+                                                            ? () => onItemIntent(item)
+                                                            : undefined
+                                                    }
+                                                >
                                                     {renderValue(item, column)}
                                                 </ItemTitle>
                                             ) : (

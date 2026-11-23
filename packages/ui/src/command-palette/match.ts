@@ -32,13 +32,17 @@ export interface CommandPaletteGroup {
     matched?: boolean;
 }
 
-/** Lower case, without accents: `Été` and `ete` are the same. */
-export function normalizeSearch(text: string, locale?: string): string {
+/** Lower case, without accents. */
+function fold(text: string, locale?: string): string {
     return text
         .normalize('NFD')
         .replace(/\p{Diacritic}/gu, '')
-        .toLocaleLowerCase(locale)
-        .trim();
+        .toLocaleLowerCase(locale);
+}
+
+/** Lower case, without accents: `Été` and `ete` are the same. */
+export function normalizeSearch(text: string, locale?: string): string {
+    return fold(text, locale).trim();
 }
 
 /**
@@ -95,4 +99,65 @@ export function matchCommands(
                       .map(({ item }) => item),
               }));
     return [...matched, ...remote].filter((group) => group.items.length > 0);
+}
+
+/** A part of a label, and whether it matches a word of the query. */
+export interface LabelPart {
+    text: string;
+    match: boolean;
+}
+
+/**
+ * A label in parts, for highlighting what matches a query: the first match of each word of the
+ * query, ignoring case and accents, as `matchCommands()` does. Matches that overlap or touch are
+ * one part. Without a query or a match, the label is one part.
+ */
+export function splitMatches(label: string, query: string, locale?: string): LabelPart[] {
+    // The label normalized one character at a time, with where each normalized character comes from
+    let normalized = '';
+    const starts: number[] = [];
+    const ends: number[] = [];
+    let offset = 0;
+    for (const character of label) {
+        const piece = fold(character, locale);
+        for (let index = 0; index < piece.length; index += 1) {
+            starts.push(offset);
+            ends.push(offset + character.length);
+        }
+        normalized += piece;
+        offset += character.length;
+    }
+    const ranges = normalizeSearch(query, locale)
+        .split(/\s+/)
+        .filter((word) => word !== '')
+        .flatMap((word): [number, number][] => {
+            const index = normalized.indexOf(word);
+            const start = starts[index];
+            const end = ends[index + word.length - 1];
+            return index === -1 || start === undefined || end === undefined ? [] : [[start, end]];
+        })
+        .sort((a, b) => a[0] - b[0]);
+    const parts: LabelPart[] = [];
+    let cursor = 0;
+    ranges.forEach(([start, end]) => {
+        // Accents written apart from their letter belong to it
+        let last = end;
+        while (last < label.length && fold(label.charAt(last), locale) === '') {
+            last += 1;
+        }
+        const previous = parts.at(-1);
+        if (previous?.match === true && start <= cursor) {
+            previous.text += label.slice(cursor, last);
+        } else {
+            if (start > cursor) {
+                parts.push({ text: label.slice(cursor, start), match: false });
+            }
+            parts.push({ text: label.slice(Math.max(start, cursor), last), match: true });
+        }
+        cursor = Math.max(cursor, last);
+    });
+    if (cursor < label.length) {
+        parts.push({ text: label.slice(cursor), match: false });
+    }
+    return parts.filter((part) => part.text !== '');
 }
