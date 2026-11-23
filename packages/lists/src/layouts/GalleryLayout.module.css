@@ -85,3 +85,8 @@
 .pageSelection {
     margin-bottom: var(--panneau-space-2);
 }
+
+/* A tile that opens its item, or selects it, when it is clicked. */
+.tile[data-opens] {
+    cursor: pointer;
+}

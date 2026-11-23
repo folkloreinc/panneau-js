@@ -37,7 +37,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     "auth": {/* Auth */},
     "dashboard": { "widgets": [/* Widget */] },
     "search": { "enabled": true },
-    "theme": { "colorScheme": "auto", "density": "auto", "navigation": "sidebar" }, // density: "compact", "comfortable", "touch" or "auto" (touch on touch screens); navigation: "sidebar" or "dock" (decision 0076)
+    "theme": { "colorScheme": "auto", "density": "auto", "navigation": "sidebar" }, // density: "compact", "comfortable", "touch" or "auto" (touch on touch screens), the default of the user's choice; lockDensity: true hides that choice (decision 0104); navigation: "sidebar" or "dock" (decision 0076)
     "user": { "id": "usr_123", "name": "Ada", "abilities": { "panneau.view": true } },
     "agents": { "mcp": { "url": "/panneau/mcp" }, "assistant": false }, // decisions 0090 and 0106
 }
@@ -45,6 +45,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 
 - **Languages.** `locales` are the languages of the content, those of localized fields. `interfaceLocales`, optional, are the languages the user can switch the interface to, `locale` among them, each with its `label` in its own language. With two or more, the shell has a language switcher, with the user's settings ([0083](decisions/0083-a-language-switcher-in-the-shell.md)): choosing one is a full navigation to its `url`, with `next` (the path and query of the page), and the backend comes back to it, the definition then in the new locale. `GET /locale/{locale}` is an optional endpoint for that `url`: it redirects to `next`, a local path under the base path, and answers `404` for a locale it doesn't offer.
 - **Agents.** `agents`, optional, says what agents can use ([Agents](#agents)): `mcp.url`, the URL of the MCP server that outside clients connect to, whose connections the account page lists; `assistant`, whether the app offers its assistant. Without it, the Panneau has neither.
+- **The density.** `theme.density` is the density of the app until the user picks one in their menu or in "Go to…": compact, comfortable, or the default, the definition's again. The browser remembers the choice, as it does the color scheme. With `auto`, touch screens keep the touch density whatever the user chose, and have no choice. `theme.lockDensity: true` makes the definition's density the only one: the user has no choice, and one they made earlier is ignored ([0104](decisions/0104-users-choose-the-density.md)).
 - **The user's profile.** Without `auth.account`, the user's name links to their item in the resource of users: `user.resource`, or the resource `users` without it. A backend sets `user.resource` to `null` when the user has no item they can edit there, such as a user outside the resource's scope: the app then shows no link to a profile, instead of a page that isn't found.
 
 ### Resource
@@ -66,11 +67,15 @@ The protocol is the only contract between a Panneau frontend and its backend. It
             { "field": "published_at", "display": "date" },
             { "field": "author", "hidden": true }, // shown when the user chooses it
         ],
-        "filters": [ { "id": "status", "type": "select", "options": [...] } ],
+        "filters": [
+            { "id": "status", "type": "select", "options": [...], "primary": true }, // shown first
+            { "id": "author", "type": "relation", "resource": "authors" }, // behind "More filters"
+        ],
         "sorts": [ "title", "-published_at" ],
         "defaultSort": "-published_at",
         "layouts": [ "table", "cards" ],
         "perPage": 20,
+        "perPageOptions": [ 10, 20, 50, 100 ], // the page sizes the user chooses from, the default
         "inlineEdit": [ "title", "status" ],
         "aggregates": { "sum": [ "price" ], "groupBy": [ "status" ], "dates": [ "published_at" ] }
     },
@@ -87,6 +92,8 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 
 - **`description`**, optional: one sentence that says what the resource holds and when to use it, in the user's language ([0106](decisions/0106-five-tools-for-agents.md)). It is for agents, which `describe` answers it to, and for people: the app can show it.
 - **`itemTitle`, `itemSubtitle`, `itemImage` and `itemStatus`** name the fields that show an item where it isn't in its list: its title, a line under it, its image ([0061](decisions/0061-item-images-in-lists.md)), and its state. `itemStatus` ([0103](decisions/0103-the-status-of-an-item.md)) names a field whose value says where the item stands (Draft, Archived), usually a `select` whose options have [tones](#tones): relation pickers and cards show the label of its option as a badge in its tone, next to the item's title. A value that isn't one of its options shows as text, in `neutral`; the first value of a `select` with `multiple`. It can name a field of the resource's `types`. Without it, items show no state there. Clients that don't know it ignore it.
+- **The filters of a list** show first in its toolbar when they have `"primary": true`; the others are behind a "More filters" button, with the count of those that are active. Without any filter that sets it, the first 3 show first, and `"primary": false` always puts a filter behind the button. The setting is on the filter, as `hidden` is on a column: it reads where the filter is declared, and moving filters around doesn't change which ones show. A filter with a value always shows it, as a chip under the toolbar, and in a narrow list (a phone), every filter is behind one "Filters" button.
+- **The page sizes of a list**, `perPageOptions`, are those the user chooses from, with `perPage`: 10, 20, 50 and 100 by default, at most 100 each. A page size the browser remembers for the list ([0042](decisions/0042-list-view-columns-and-remembered-view.md)) that the list no longer offers falls back to `perPage`; a link with `perPage` still opens that page size.
 - **`types`** ([0077](decisions/0077-resource-types.md)): the types of the items, each with fields of its own (`ResourceType`: `id`, `label`, `description`, `icon`, `fields`, `abilities`). Every item has a `type` among their ids, set when it is created. Its fields are those of the resource, then those of its type, in forms, details and validation; type fields are named apart from the resource's, and none is named `type`. `form.layout` can name the fields of every type: each form leaves out those of the other types.
     - `abilities.create: false` keeps a type out of the choices when creating, and the backend refuses to create one (a singleton such as the home page).
     - To show and filter by type, the backend declares a `select` field `type`, with the types as its options and `notInForm: true`, and a `select` filter `type`.

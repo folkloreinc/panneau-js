@@ -111,6 +111,9 @@ export const DEFAULT_CALENDAR_PER_PAGE = 100;
 export const DEFAULT_PER_PAGE = 20;
 
 // @public
+export const DEFAULT_PER_PAGE_OPTIONS: readonly number[];
+
+// @public
 export function definePlugin<Plugin extends PanneauPlugin>(plugin: Plugin): Plugin;
 
 // @public
@@ -544,7 +547,6 @@ export interface ResolvedList {
     pagination: 'pages' | 'cursor';
     // (undocumented)
     perPage: number;
-    // (undocumented)
     perPageOptions: number[];
     search: boolean;
     selectable: boolean;

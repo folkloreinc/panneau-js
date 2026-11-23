@@ -1,11 +1,12 @@
 import { X } from 'lucide-react';
-import { useState } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 
 import { resolveEntry, usePlugins } from '@panneau/core';
 import type { Field, Filter, FilterValue } from '@panneau/protocol';
 import { IDS_FILTER } from '@panneau/protocol/runtime';
 import { Button, IconButton, usePanneauIntl } from '@panneau/ui';
 
+import { cx } from '../cx';
 import { messages } from '../messages';
 import type { FilterEntry, ListColumn } from '../types';
 import styles from './Filters.module.css';
@@ -49,9 +50,24 @@ export interface FilterControlsProps extends FilterContext {
      * kind, decision 0097).
      */
     controls?: Readonly<Record<string, FilterEntry>> | undefined;
+    /** One control under the other, each as wide as the group: in a popover or a sheet. */
+    stacked?: boolean;
+    /** The accessible name of the group. Defaults to "Filters". */
+    'aria-label'?: string;
 }
 
-/** A control for each filter of the list. */
+/** Whether a filter has a value: the list is filtered by it. */
+export function isFilterActive(
+    values: Readonly<Record<string, FilterValue>>,
+    filter: Pick<Filter, 'id'>,
+): boolean {
+    return values[filter.id] !== undefined;
+}
+
+/**
+ * A control for each filter of the list. A filter with a value is marked as active, in the tones
+ * of what is selected (`--panneau-selected-*`), with a button that clears it.
+ */
 export function FilterControls({
     filters,
     values,
@@ -61,14 +77,16 @@ export function FilterControls({
     columns,
     fields,
     labels,
+    stacked = false,
+    'aria-label': ariaLabel,
 }: FilterControlsProps) {
     const intl = usePanneauIntl();
     const plugins = usePlugins();
     return (
         <div
             role="group"
-            aria-label={intl.formatMessage(messages.filters)}
-            className={styles.filters}
+            aria-label={ariaLabel ?? intl.formatMessage(messages.filters)}
+            className={cx(styles.filters, stacked && styles.stacked)}
         >
             {filters.map((filter) => {
                 // A type that nothing gives is a text filter, with a warning in development
@@ -80,19 +98,65 @@ export function FilterControls({
                 if (Control === undefined) {
                     return null;
                 }
+                const label = getFilterLabel(filter, columns, fields);
                 return (
-                    <Control
+                    <FilterItem
                         key={filter.id}
-                        filter={filter}
-                        label={getFilterLabel(filter, columns, fields)}
-                        options={getFilterOptions(filter, columns, fields)}
-                        value={values[filter.id]}
-                        onChange={(value) => onChange(filter.id, value)}
-                        onLabel={(value, label) => onLabel(filter.id, value, label)}
-                        getValueLabel={(value) => labels[filter.id]?.[value] ?? null}
-                    />
+                        label={label}
+                        // A switch says itself whether it is on
+                        clearable={filter.type !== 'toggle'}
+                        isActive={isFilterActive(values, filter)}
+                        onClear={() => onChange(filter.id, undefined)}
+                    >
+                        <Control
+                            filter={filter}
+                            label={label}
+                            options={getFilterOptions(filter, columns, fields)}
+                            value={values[filter.id]}
+                            onChange={(value) => onChange(filter.id, value)}
+                            onLabel={(value, label) => onLabel(filter.id, value, label)}
+                            getValueLabel={(value) => labels[filter.id]?.[value] ?? null}
+                        />
+                    </FilterItem>
                 );
             })}
+        </div>
+    );
+}
+
+interface FilterItemProps {
+    label: string;
+    isActive: boolean;
+    clearable: boolean;
+    onClear: () => void;
+    children: ReactNode;
+}
+
+/** A filter control, marked when it has a value, with a button that clears it. */
+function FilterItem({ label, isActive, clearable, onClear, children }: FilterItemProps) {
+    const intl = usePanneauIntl();
+    const item = useRef<HTMLDivElement>(null);
+    return (
+        <div
+            ref={item}
+            className={cx(styles.item, isActive && styles.active)}
+            data-active={isActive ? 'true' : undefined}
+        >
+            {children}
+            {isActive && clearable ? (
+                <IconButton
+                    icon={X}
+                    label={intl.formatMessage(messages.clearFilter, { filter: label })}
+                    className={styles.clear}
+                    onPress={() => {
+                        onClear();
+                        // The button goes away with the value: focus stays on the filter.
+                        item.current
+                            ?.querySelector<HTMLElement>('input, button, [tabindex="0"]')
+                            ?.focus();
+                    }}
+                />
+            ) : null}
         </div>
     );
 }

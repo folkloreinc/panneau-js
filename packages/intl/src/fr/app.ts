@@ -128,6 +128,11 @@ export const appFr: Record<string, string> = {
         '{scheme, select, light {Claire} dark {Sombre} other {Celle du système}}',
     'panneau.app.colorScheme':
         'Apparence : {scheme, select, light {claire} dark {sombre} other {celle du système}}',
+    'panneau.app.densityTitle': 'Densité',
+    'panneau.app.densityOption':
+        '{density, select, compact {Compacte} comfortable {Confortable} other {Par défaut}}',
+    'panneau.app.density':
+        'Densité : {density, select, compact {compacte} comfortable {confortable} other {par défaut}}',
     'panneau.app.language': 'Langue',
     'panneau.app.languageButton': 'Langue : {language}',
     'panneau.app.home': 'Accueil',

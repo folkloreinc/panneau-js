@@ -13,6 +13,7 @@ import { Dock } from './Dock';
 import styles from './DockLayout.module.css';
 import { GoTo } from './GoTo';
 import type { ColorSchemePreference } from './UserMenu';
+import type { DensityChoice } from './density';
 import { CONTENT_ID, SiteLogo, SkipLink } from './frame';
 import { useRouteFocus } from './useRouteFocus';
 
@@ -22,6 +23,9 @@ export interface DockLayoutProps {
     route: AppRoute;
     colorScheme: ColorSchemePreference;
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
+    /** The user's density, and how to keep it: without it, no choice (decision 0104). */
+    density?: DensityChoice | undefined;
+    onDensityChange?: ((density: DensityChoice) => void) | undefined;
     /** Logs the user out. Without it, the user's menu has no "Log out". */
     onLogOut?: () => void;
     /** Switches the interface to a locale of `interfaceLocales` (decision 0083). */
@@ -44,6 +48,8 @@ export function DockLayout({
     route,
     colorScheme,
     onColorSchemeChange,
+    density,
+    onDensityChange,
     onLogOut,
     onLocaleChange,
     children,
@@ -87,6 +93,8 @@ export function DockLayout({
                     route={route}
                     colorScheme={colorScheme}
                     onColorSchemeChange={onColorSchemeChange}
+                    density={density}
+                    onDensityChange={onDensityChange}
                     onLogOut={onLogOut}
                     onLocaleChange={onLocaleChange}
                     onGoTo={openGoTo}
@@ -100,6 +108,8 @@ export function DockLayout({
                 onOpenChange={setGoToOpen}
                 colorScheme={colorScheme}
                 onColorSchemeChange={onColorSchemeChange}
+                density={density}
+                onDensityChange={onDensityChange}
                 onLocaleChange={onLocaleChange}
             />
         </div>

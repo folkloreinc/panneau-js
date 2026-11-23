@@ -69,6 +69,7 @@ import {
 } from './routes';
 import { ShellSkeleton } from './shell/ShellSkeleton';
 import { COLOR_SCHEMES } from './shell/UserMenu';
+import { useDensityPreference } from './shell/density';
 import {
     type SessionState,
     createSessionState,
@@ -212,6 +213,8 @@ function Content({
     });
     const [colorScheme, setColorScheme] = usePreference('color-scheme', COLOR_SCHEMES);
     const definition = definitionQuery.data;
+    // The user's density, or the definition's (decision 0104)
+    const density = useDensityPreference(definition?.theme);
     const definitionNames = getContextNames(definition);
     if (definition !== undefined && definitionNames.join('&') !== names.join('&')) {
         // Before anything renders for the values of the path read with the names of no definition
@@ -377,7 +380,7 @@ function Content({
             ref={setRootElement}
             theme={theme}
             colorScheme={scheme}
-            density={definition?.theme?.density ?? 'auto'}
+            density={density.density}
             locale={locale}
             messages={messages}
             iconLoader={iconLoader}
@@ -502,6 +505,8 @@ function Content({
                                     basePath={url.basePath}
                                     colorScheme={scheme}
                                     onColorSchemeChange={setColorScheme}
+                                    density={density.choice}
+                                    onDensityChange={density.onChange}
                                     onLogOut={logOut}
                                 />
                             </FieldsProvider>

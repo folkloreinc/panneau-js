@@ -42,12 +42,16 @@ import { type AppRoute, matchRoute, routePath } from './routes';
 import { AppLayout } from './shell/AppLayout';
 import { DockLayout } from './shell/DockLayout';
 import type { ColorSchemePreference } from './shell/UserMenu';
+import type { DensityChoice } from './shell/density';
 
 export interface ShellProps {
     definition: Definition;
     basePath: string;
     colorScheme: ColorSchemePreference;
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
+    /** The user's density, and how to keep it: without it, no choice (decision 0104). */
+    density?: DensityChoice | undefined;
+    onDensityChange?: ((density: DensityChoice) => void) | undefined;
     /** Logs the user out. Without it, the shell offers no logout. */
     onLogOut?: () => Promise<void> | void;
 }
@@ -245,6 +249,8 @@ export function Shell({
     basePath,
     colorScheme,
     onColorSchemeChange,
+    density,
+    onDensityChange,
     onLogOut,
 }: ShellProps) {
     const intl = usePanneauIntl();
@@ -341,6 +347,8 @@ export function Shell({
                         route={route}
                         colorScheme={colorScheme}
                         onColorSchemeChange={onColorSchemeChange}
+                        density={density}
+                        onDensityChange={onDensityChange}
                         onLogOut={logOut}
                         onLocaleChange={switchLocale}
                     >

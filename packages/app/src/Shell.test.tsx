@@ -1646,6 +1646,25 @@ describe('the app shell', () => {
             expect(screen.queryByRole('link', { name: 'New author' })).toBeNull();
         });
 
+        it('offers nothing to create in an empty list of a resource without `create`', async () => {
+            window.history.replaceState(null, '', '/panneau/resources/tags');
+            renderApp({
+                resources: [
+                    {
+                        id: 'tags',
+                        label: { singular: 'tag', plural: 'tags' },
+                        itemTitle: 'name',
+                        fields: [{ name: 'name', type: 'text', label: 'Name' }],
+                        abilities: { viewAny: true, create: false },
+                    },
+                ],
+            });
+            const list = await screen.findByRole('group', { name: 'Tags' });
+            expect(await within(list).findByText('No items yet.')).toBeInTheDocument();
+            expect(within(list).queryByRole('link')).toBeNull();
+            expect(within(list).queryByRole('button')).toBeNull();
+        });
+
         it('shows the forbidden state on a page the user can’t open, and the built-in home for `pages.home`', async () => {
             window.history.replaceState(null, '', '/panneau/pages/stats');
             const stats = definePlugin({
@@ -1780,6 +1799,41 @@ describe('the app shell', () => {
         renderApp();
         expect(await screen.findByRole('table', { name: 'Pages' })).toBeInTheDocument();
         expect(window.location.search).toBe('?sort=-title');
+    });
+
+    it('offers the page sizes of a resource, and forgets a remembered one it no longer offers', async () => {
+        const user = userEvent.setup();
+        const pages = (perPageOptions: number[]) => ({
+            resources: [
+                {
+                    id: 'pages',
+                    label: { singular: 'page', plural: 'pages' },
+                    itemTitle: 'title',
+                    fields: [{ name: 'title', type: 'text', label: 'Title' }],
+                    list: { perPage: 1, perPageOptions },
+                },
+            ],
+        });
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        renderApp(pages([1, 25]));
+        const main = within(screen.getByRole('main'));
+        await user.click(await main.findByRole('button', { name: /Per page/ }));
+        // After the empty choice of the select
+        expect(screen.getAllByRole('option').map((option) => option.textContent)).toEqual([
+            'Select…',
+            '1',
+            '25',
+        ]);
+        await user.click(screen.getByRole('option', { name: '25' }));
+        await waitFor(() => expect(window.location.search).toBe('?perPage=25'));
+        cleanup();
+
+        // The resource no longer offers 25: the list opens with its own page size
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        renderApp(pages([1, 50]));
+        expect(await screen.findByText('About us')).toBeInTheDocument();
+        expect(screen.queryByText('Contact')).not.toBeInTheDocument();
+        expect(window.location.search).toBe('');
     });
 
     it('asks for the fields of the columns of a list only, and for whole items in the panel', async () => {
@@ -2005,6 +2059,63 @@ describe('the app shell', () => {
         expect(await screen.findByText('“About us”: title put back.')).toBeInTheDocument();
     });
 
+    it('shows a value edited in place at once, in the list and the cached item, and puts it back when the save fails', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        const definition = createDefinition();
+        const pages = definition.resources[0];
+        const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+        let release: (response?: Response) => void = () => undefined;
+        renderApp(
+            {
+                resources: [
+                    { ...pages, list: { inlineEdit: ['title'] } } as NonNullable<typeof pages>,
+                    ...definition.resources.slice(1),
+                ],
+            },
+            [],
+            undefined,
+            {
+                queryClient,
+                fetch: (fetch) => async (input, init) => {
+                    if (init?.method === 'PATCH') {
+                        const failure = await new Promise<Response | undefined>((resolve) => {
+                            release = resolve;
+                        });
+                        if (failure !== undefined) {
+                            return failure;
+                        }
+                    }
+                    return fetch(input, init);
+                },
+            },
+        );
+        await user.click(await screen.findByRole('button', { name: 'Edit title of About us' }));
+        const input = screen.getByRole('textbox', { name: 'title' });
+        await user.clear(input);
+        await user.type(input, 'About{Enter}');
+        // Before the backend answers
+        expect(await screen.findByRole('link', { name: 'About' })).toBeInTheDocument();
+        const cached = () =>
+            queryClient
+                .getQueriesData<{ data: { id: string; title?: unknown }[] }>({
+                    queryKey: ['panneau', 'resources', 'pages', 'list'],
+                })
+                .flatMap(([, list]) => list?.data ?? [])
+                .find((item) => item.id === '1');
+        expect(cached()).toMatchObject({ title: 'About' });
+
+        release(
+            new Response(JSON.stringify({ title: 'Server Error', status: 500 }), {
+                status: 500,
+                headers: { 'Content-Type': 'application/problem+json' },
+            }),
+        );
+        expect(await screen.findByText('Server Error')).toBeInTheDocument();
+        expect(cached()).toMatchObject({ title: 'About us' });
+        expect(screen.getByRole('textbox', { name: 'title' })).toHaveValue('About');
+    });
+
     it('deletes an item of a resource with a trash at once, and "Undo" puts it back', async () => {
         const user = userEvent.setup();
         window.history.replaceState(null, '', '/panneau/resources/pages');
@@ -2159,6 +2270,39 @@ describe('resource types (decision 0077)', () => {
         renderTypedApp(types.slice(0, 2));
         expect(screen.getByRole('heading', { name: 'New Event' })).toBeInTheDocument();
         expect(screen.getByRole('textbox', { name: 'Venue' })).toBeInTheDocument();
+    });
+
+    it('offers to create the first item of an empty list, with the menu of its types (#443)', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/authors');
+        const { unmount } = renderTypedApp();
+        // Authors have no items: the empty list links to the form, as the header of the page does
+        const empty = await screen.findByRole('group', { name: 'Authors' });
+        expect(await within(empty).findByText('No items yet.')).toBeInTheDocument();
+        expect(within(empty).getByRole('link', { name: 'New author' })).toHaveAttribute(
+            'href',
+            '/panneau/resources/authors/create',
+        );
+        unmount();
+
+        // Posts with types, and none yet: the menu of the types
+        window.history.replaceState(null, '', '/panneau/resources/posts');
+        renderApp({
+            resources: [
+                {
+                    id: 'posts',
+                    label: { singular: 'post', plural: 'posts' },
+                    itemTitle: 'title',
+                    fields: [{ name: 'title', type: 'text', label: 'Title' }],
+                    types,
+                },
+            ],
+        });
+        const list = await screen.findByRole('group', { name: 'Posts' });
+        await within(list).findByText('No items yet.');
+        await user.click(within(list).getByRole('button', { name: 'New post' }));
+        const menu = await screen.findByRole('menu', { name: 'New post' });
+        expect(within(menu).getAllByRole('menuitem')).toHaveLength(2);
     });
 
     it('refuses a type that can’t be created, and doesn’t find one that doesn’t exist', async () => {

@@ -3,6 +3,10 @@
  * breakpoint (64rem, measured on the Panneau root, a size container): the sidebar on the left. */
 
 .layout {
+    /* The bar stuck to the top of a small screen: what sticks to the top of the page (the header of
+     * a table) stays under it. */
+    --panneau-frame-top: 3.25rem;
+
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
     grid-template-columns: minmax(0, 1fr);
@@ -17,7 +21,8 @@
     display: flex;
     align-items: center;
     gap: var(--panneau-space-2);
-    min-height: 3.25rem;
+    box-sizing: border-box;
+    height: var(--panneau-frame-top);
     padding: var(--panneau-space-1) var(--panneau-space-3) var(--panneau-space-1)
         var(--panneau-space-1);
     background: var(--panneau-shell-bg, var(--panneau-color-surface-sunken));
@@ -120,6 +125,8 @@
 
 @container panneau-root (min-width: 64rem) {
     .layout {
+        --panneau-frame-top: 0px;
+
         grid-template-rows: minmax(0, 1fr);
         grid-template-columns: var(--panneau-sidebar-width, 15rem) minmax(0, 1fr);
         transition: grid-template-columns var(--panneau-duration-slow) var(--panneau-ease-out);

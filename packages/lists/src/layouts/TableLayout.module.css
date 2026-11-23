@@ -1,8 +1,18 @@
+/* The table scrolls with the page, so that its header sticks under the top of the window. A table
+ * wider than the list scrolls in its own box, as high as the window at most, where its header
+ * sticks: a box that scrolls sideways is a scroll container, which a header can't stick out of. */
 .scroller {
-    overflow-x: auto;
     border: var(--panneau-border-width) solid var(--panneau-color-border);
     border-radius: var(--panneau-radius-lg);
     background-color: var(--panneau-color-surface);
+}
+
+.scroller[data-overflows] {
+    max-height: calc(
+        100dvh - var(--panneau-frame-top) - var(--panneau-frame-bottom) - var(--panneau-space-4)
+    );
+    overflow: auto;
+    overscroll-behavior-x: contain;
 }
 
 .table {
@@ -26,6 +36,31 @@
     white-space: nowrap;
 }
 
+/* The header sticks under what sticks above it: the frame of the app, and the selection bar of the
+ * list (`--_panneau-list-sticky-top`, which the list sets). Its line is a shadow, since the border
+ * of a collapsed table stays with the rows. */
+.table thead th {
+    position: sticky;
+    top: var(--_panneau-list-sticky-top, var(--panneau-frame-top));
+    z-index: 1;
+    background-color: var(--panneau-color-surface);
+    border-bottom: 0;
+    box-shadow: inset 0 calc(-1 * var(--panneau-border-width)) 0 var(--panneau-color-border);
+}
+
+.scroller[data-overflows] .table thead th {
+    top: 0;
+}
+
+/* Its corners follow those of the table. */
+.table thead th:first-child {
+    border-start-start-radius: calc(var(--panneau-radius-lg) - var(--panneau-border-width));
+}
+
+.table thead th:last-child {
+    border-start-end-radius: calc(var(--panneau-radius-lg) - var(--panneau-border-width));
+}
+
 /* The title stays readable in a narrow list, such as next to an item's details: the table
  * scrolls instead. */
 .table td.title {
@@ -36,23 +71,48 @@
     border-bottom: 0;
 }
 
-@media (hover: hover) {
-    .table tbody tr:hover {
-        background-color: var(--panneau-color-hover);
-    }
+/* A row that opens its item, or selects it, when it is clicked. */
+.table tbody tr[data-opens] {
+    cursor: pointer;
 }
 
-.table tbody tr[data-selected] {
-    background-color: var(--panneau-selected-subtle, var(--panneau-color-accent-subtle));
-}
-
-/* The item shown next to the list: a bar on its first cell. */
+/* Three states apart (#405). The item shown next to the list: a bar on its first cell, on the hover
+ * color. */
 .table tbody tr[data-current] td:first-child {
     box-shadow: inset 3px 0 0 var(--panneau-selected-bg, var(--panneau-color-accent));
 }
 
 .table tbody tr[data-current] {
     background-color: var(--panneau-color-hover);
+}
+
+/* A selected row: the subtle selection. In a light scheme, it takes some of the selection, so that
+ * it reads darker than a hovered row (the subtle selection of the default theme is lighter than the
+ * hover color). In a dark one, the subtle selection is already further from the surface than the
+ * hover color, and a lighter row would leave muted text under 4.5:1. */
+.table tbody tr[data-selected] {
+    background-color: light-dark(
+        color-mix(
+            in srgb,
+            var(--panneau-selected-bg, var(--panneau-color-accent)) 8%,
+            var(--panneau-selected-subtle, var(--panneau-color-accent-subtle))
+        ),
+        var(--panneau-selected-subtle, var(--panneau-color-accent-subtle))
+    );
+}
+
+/* Hover goes over the row's own color, selected or current: half of it over a selection, which
+ * keeps the contrast of its text. */
+@media (hover: hover) {
+    .table tbody tr:hover {
+        background-image: linear-gradient(var(--panneau-color-hover), var(--panneau-color-hover));
+    }
+
+    .table tbody tr[data-selected]:hover {
+        --_panneau-row-hover: color-mix(in srgb, var(--panneau-color-hover) 50%, transparent);
+
+        background-image: linear-gradient(var(--_panneau-row-hover), var(--_panneau-row-hover));
+    }
 }
 
 /* The thumbnail of an item, before its title (decision 0061). */
@@ -187,7 +247,9 @@
 
 /* Narrow lists (phones): each row is a block, with the label of each value next to it. */
 @container panneau-list (max-width: 40rem) {
-    .scroller {
+    .scroller,
+    .scroller[data-overflows] {
+        max-height: none;
         overflow: visible;
         background: none;
         border: 0;
