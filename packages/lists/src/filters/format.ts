@@ -1,13 +1,13 @@
 import type { IntlShape } from 'react-intl';
 
 import type { Field, Filter, Option } from '@panneau/protocol';
-import { isFilterRange } from '@panneau/protocol/runtime';
+import { getFieldLabel, humanizeKey, isFilterRange } from '@panneau/protocol/runtime';
 
 import { messages } from '../messages';
 import type { ListColumn } from '../types';
 import { getFieldOptions, getOptionLabel } from '../values';
 
-/** The label of a filter: its `label`, the label of its field, or its id. */
+/** The label of a filter: its `label`, the label of its field, or its id made readable. */
 export function getFilterLabel(
     filter: Filter,
     columns: readonly ListColumn[],
@@ -17,7 +17,7 @@ export function getFilterLabel(
         return filter.label;
     }
     const field = findFilterField(filter, columns, fields);
-    return field?.label ?? filter.id;
+    return field !== null ? getFieldLabel(field) : humanizeKey(filter.id);
 }
 
 /** The field a filter filters, when a column or the list's fields have one with its id. */

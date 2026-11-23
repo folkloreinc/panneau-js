@@ -6,7 +6,7 @@ import { useResourceItem } from '@panneau/data/query';
 import { appMessages } from '@panneau/intl';
 import { ItemDetails, type ItemDetailsColumn, getImageUrl } from '@panneau/lists';
 import type { Field, Item, RouteReference } from '@panneau/protocol';
-import { ITEM_TYPE_KEY, getTypeFields } from '@panneau/protocol/runtime';
+import { ITEM_TYPE_KEY, getFieldLabel, getTypeFields } from '@panneau/protocol/runtime';
 import {
     Alert,
     Aside,
@@ -40,7 +40,7 @@ function toDetailsColumns(fields: readonly Field[]): ItemDetailsColumn[] {
         .map((field) => ({
             id: field.name,
             field,
-            label: field.label ?? field.name,
+            label: getFieldLabel(field),
             display: field.display ?? field.type,
             ...(field.type === 'group' ? { columns: toDetailsColumns(field.fields ?? []) } : {}),
         }));

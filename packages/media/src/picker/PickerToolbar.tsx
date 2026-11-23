@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { mediaMessages as messages } from '@panneau/intl';
 import type { Filter, FilterValue } from '@panneau/protocol';
-import { isFilterRange } from '@panneau/protocol/runtime';
+import { isFilterRange, labelOrKey } from '@panneau/protocol/runtime';
 import {
     Badge,
     Button,
@@ -177,14 +177,17 @@ export function PickerToolbar({
                                 label:
                                     id === 'type'
                                         ? intl.formatMessage(messages.pickerType)
-                                        : (lockedFilters.find((filter) => filter.id === id)
-                                              ?.label ?? id),
+                                        : labelOrKey(
+                                              lockedFilters.find((filter) => filter.id === id)
+                                                  ?.label,
+                                              id,
+                                          ),
                                 value: valueLabel(id, value),
                             })}
                         </span>
                     ))}
                     {shown.map((filter) => {
-                        const label = filter.label ?? filter.id;
+                        const label = labelOrKey(filter.label, filter.id);
                         const value = query.filter[filter.id];
                         if (filter.type === 'toggle') {
                             return (

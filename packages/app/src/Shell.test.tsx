@@ -2039,8 +2039,8 @@ describe('the app shell', () => {
                 ...definition.resources.slice(1),
             ],
         });
-        await user.click(await screen.findByRole('button', { name: 'Edit title of About us' }));
-        const input = screen.getByRole('textbox', { name: 'title' });
+        await user.click(await screen.findByRole('button', { name: 'Edit Title of About us' }));
+        const input = screen.getByRole('textbox', { name: 'Title' });
         await user.clear(input);
         await user.type(input, 'About{Enter}');
         await waitFor(() =>
@@ -2051,14 +2051,14 @@ describe('the app shell', () => {
         expect(await screen.findByRole('link', { name: 'About' })).toBeInTheDocument();
         // "Undo" in its toast saves the previous value the same way (decision 0063)
         const toast = await screen.findByRole('alertdialog');
-        expect(toast).toHaveTextContent('“About”: title saved.');
+        expect(toast).toHaveTextContent('“About”: Title saved.');
         await user.click(within(toast).getByRole('button', { name: 'Undo' }));
         await waitFor(() =>
             expect(backend.items('pages').find((item) => item.id === '1')).toMatchObject({
                 title: 'About us',
             }),
         );
-        expect(await screen.findByText('“About us”: title put back.')).toBeInTheDocument();
+        expect(await screen.findByText('“About us”: Title put back.')).toBeInTheDocument();
     });
 
     it('shows a value edited in place at once, in the list and the cached item, and puts it back when the save fails', async () => {
@@ -2092,8 +2092,8 @@ describe('the app shell', () => {
                 },
             },
         );
-        await user.click(await screen.findByRole('button', { name: 'Edit title of About us' }));
-        const input = screen.getByRole('textbox', { name: 'title' });
+        await user.click(await screen.findByRole('button', { name: 'Edit Title of About us' }));
+        const input = screen.getByRole('textbox', { name: 'Title' });
         await user.clear(input);
         await user.type(input, 'About{Enter}');
         // Before the backend answers
@@ -2115,7 +2115,7 @@ describe('the app shell', () => {
         );
         expect(await screen.findByText('Server Error')).toBeInTheDocument();
         expect(cached()).toMatchObject({ title: 'About us' });
-        expect(screen.getByRole('textbox', { name: 'title' })).toHaveValue('About');
+        expect(screen.getByRole('textbox', { name: 'Title' })).toHaveValue('About');
     });
 
     it('deletes an item of a resource with a trash at once, and "Undo" puts it back', async () => {
