@@ -347,7 +347,8 @@ export function useMediaLibrary({
                             ...(currentUploaded.get(target.id) ?? []),
                         ]),
                     );
-                    browser.upsert(target.id, [item]);
+                    // First in the library it went to, whatever its sort, until the next search.
+                    browser.pin(target.id, [item]);
                     if (onCreated?.(entry) === true) {
                         return;
                     }

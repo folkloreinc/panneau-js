@@ -535,6 +535,10 @@ export const fieldsMessages: {
     replaceFile: PanneauMessage<Record<never, never>>;
     dropHere: PanneauMessage<Record<never, never>>;
     dropZone: PanneauMessage<Record<never, never>>;
+    dropToUpload: PanneauMessage<Record<never, never>>;
+    onlyOneFile: PanneauMessage<    {
+    name: string;
+    }>;
     noFile: PanneauMessage<Record<never, never>>;
     removeFile: PanneauMessage<    {
     name: string;

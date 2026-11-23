@@ -1,11 +1,12 @@
 import { Upload } from 'lucide-react';
-import { type DropItem, DropZone, FileTrigger } from 'react-aria-components';
+import { DropZone, FileTrigger } from 'react-aria-components';
 
 import { Button, usePanneauIntl } from '@panneau/ui';
 
 import { cx } from '../shared/cx';
 import { messages } from '../shared/messages';
 import styles from './FilePicker.module.css';
+import { readDrop } from './files';
 
 export interface FilePickerProps {
     /** Called with the files chosen or dropped. */
@@ -16,14 +17,12 @@ export interface FilePickerProps {
     isDisabled?: boolean;
     /** Text of the button. Defaults to "Choose a file", or "Choose files" with `multiple`. */
     label?: string;
+    /**
+     * Whether the picker takes drops itself. Defaults to true. `false` inside a `FileDropZone`,
+     * which takes them on the whole field.
+     */
+    isDroppable?: boolean;
     className?: string;
-}
-
-async function readDrop(items: DropItem[]): Promise<File[]> {
-    const files = await Promise.all(
-        items.map((item) => (item.kind === 'file' ? item.getFile() : Promise.resolve(null))),
-    );
-    return files.filter((file): file is File => file !== null);
 }
 
 /** A button that opens the file dialog, in a zone where files can be dropped. */
@@ -33,22 +32,12 @@ export function FilePicker({
     multiple = false,
     isDisabled = false,
     label,
+    isDroppable = true,
     className,
 }: FilePickerProps) {
     const intl = usePanneauIntl();
-    return (
-        <DropZone
-            className={cx(styles.zone, className)}
-            aria-label={intl.formatMessage(messages.dropZone)}
-            isDisabled={isDisabled}
-            onDrop={(event) => {
-                void readDrop(event.items).then((files) => {
-                    if (files.length > 0) {
-                        onSelect(multiple ? files : files.slice(0, 1));
-                    }
-                });
-            }}
-        >
+    const content = (
+        <>
             <FileTrigger
                 {...(accept !== null && accept !== undefined && accept.length > 0
                     ? { acceptedFileTypes: accept }
@@ -67,6 +56,25 @@ export function FilePicker({
                 </Button>
             </FileTrigger>
             <span className={styles.hint}>{intl.formatMessage(messages.dropHere)}</span>
+        </>
+    );
+    if (!isDroppable) {
+        return <div className={cx(styles.zone, className)}>{content}</div>;
+    }
+    return (
+        <DropZone
+            className={cx(styles.zone, className)}
+            aria-label={intl.formatMessage(messages.dropZone)}
+            isDisabled={isDisabled}
+            onDrop={(event) => {
+                void readDrop(event.items).then((files) => {
+                    if (files.length > 0) {
+                        onSelect(multiple ? files : files.slice(0, 1));
+                    }
+                });
+            }}
+        >
+            {content}
         </DropZone>
     );
 }

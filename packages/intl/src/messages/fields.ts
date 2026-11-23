@@ -171,6 +171,14 @@ export const fieldsMessages = {
     }),
     dropHere: defineMessage({ id: 'panneau.fields.dropHere', defaultMessage: 'or drop them here' }),
     dropZone: defineMessage({ id: 'panneau.fields.dropZone', defaultMessage: 'Drop files here' }),
+    dropToUpload: defineMessage({
+        id: 'panneau.fields.dropToUpload',
+        defaultMessage: 'Drop to upload',
+    }),
+    onlyOneFile: defineMessage<{ name: string }>({
+        id: 'panneau.fields.onlyOneFile',
+        defaultMessage: 'Only one file can be added here: {name} was kept.',
+    }),
     noFile: defineMessage({ id: 'panneau.fields.noFile', defaultMessage: 'No file' }),
     removeFile: defineMessage<{ name: string }>({
         id: 'panneau.fields.removeFile',
