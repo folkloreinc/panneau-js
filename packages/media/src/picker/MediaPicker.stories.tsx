@@ -213,6 +213,56 @@ export const Upload: Story = {
     },
 };
 
+/**
+ * A media just uploaded shows first in the library it went to, whatever the sort (here by name),
+ * until the next search.
+ */
+export const UploadedFirst: Story = {
+    args: { multiple: true, sort: 'name' },
+    play: async ({ canvasElement }) => {
+        const dialog = await body(canvasElement).findByRole('dialog', { name: 'Choose media' });
+        await within(dialog).findByRole('row', { name: 'autumn forest' });
+        await userEvent.click(within(dialog).getByRole('tab', { name: 'Upload' }));
+        const input = dialog.querySelector<HTMLInputElement>('input[type="file"]');
+        if (input === null) {
+            throw new Error('No file input.');
+        }
+        await userEvent.upload(input, new File(['image'], 'zebra.jpg', { type: 'image/jpeg' }));
+        await within(dialog).findByRole('row', { name: 'zebra' });
+
+        await userEvent.click(within(dialog).getByRole('tab', { name: 'Library' }));
+        await waitFor(() =>
+            expect(within(dialog).getAllByRole('row')[0]).toHaveAccessibleName('zebra'),
+        );
+        await expect(within(dialog).getAllByRole('row', { name: 'zebra' })).toHaveLength(1);
+    },
+};
+
+/** The search waits for a pause in typing, and Enter searches at once. */
+export const Search: Story = {
+    play: async ({ canvasElement }) => {
+        const dialog = await body(canvasElement).findByRole('dialog', { name: 'Choose media' });
+        await within(dialog).findByRole('row', { name: 'autumn forest' });
+        const search = within(dialog).getByRole('searchbox', { name: 'Search media' });
+
+        await userEvent.type(search, 'lake');
+        // Not yet: the library still shows every media.
+        await expect(within(dialog).getByRole('row', { name: 'autumn forest' })).toBeVisible();
+        await waitFor(() =>
+            expect(within(dialog).queryByRole('row', { name: 'autumn forest' })).toBeNull(),
+        );
+        await expect(
+            await within(dialog).findByRole('row', { name: 'mountain lake' }),
+        ).toBeVisible();
+
+        await userEvent.clear(search);
+        await userEvent.type(search, 'forest{Enter}');
+        await expect(
+            await within(dialog).findByRole('row', { name: 'autumn forest' }, { timeout: 250 }),
+        ).toBeVisible();
+    },
+};
+
 /** With `confirmOnUpload`, a single uploaded media is used at once. */
 export const ConfirmOnUpload: Story = {
     args: {

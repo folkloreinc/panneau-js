@@ -241,6 +241,23 @@ export interface FieldsProviderProps {
 }
 
 // @public
+export function FileDropZone(input: FileDropZoneProps): JSX.Element;
+
+// @public (undocumented)
+export interface FileDropZoneProps {
+    'aria-label'?: string;
+    acceptsPaste?: boolean;
+    // (undocumented)
+    children: ReactNode;
+    // (undocumented)
+    className?: string;
+    dropLabel?: string;
+    // (undocumented)
+    isDisabled?: boolean;
+    onSelect: (files: File[]) => void;
+}
+
+// @public
 export function FileField(props: FileFieldProps): JSX.Element;
 
 // @public (undocumented)
@@ -276,6 +293,7 @@ export interface FilePickerProps {
     className?: string;
     // (undocumented)
     isDisabled?: boolean;
+    isDroppable?: boolean;
     label?: string;
     // (undocumented)
     multiple?: boolean;

@@ -342,4 +342,64 @@ describe('MediaPicker', () => {
         );
         expect(await card('autumn forest')).toBeInTheDocument();
     });
+
+    it('searches once the user stops typing, and at once on Enter', async () => {
+        const media = createMemorySource({ id: 'media', label: 'Media', items: libraryMedia });
+        const list = vi.spyOn(media, 'list');
+        open({ sources: [media] });
+        await card('autumn forest');
+        const searches = () =>
+            list.mock.calls.map(([query]) => query.q).filter((q) => q !== undefined);
+        const search = within(dialog()).getByRole('searchbox', { name: 'Search media' });
+
+        await userEvent.type(search, 'lake');
+        expect(searches()).toEqual([]);
+        await waitFor(() => expect(searches()).toEqual(['lake']));
+
+        await userEvent.clear(search);
+        await userEvent.type(search, 'forest{Enter}');
+        expect(searches()).toEqual(['lake', 'forest']);
+        expect(await card('autumn forest')).toBeInTheDocument();
+        // The pause after Enter searches nothing more.
+        await new Promise((done) => setTimeout(done, 350));
+        expect(searches()).toEqual(['lake', 'forest']);
+    });
+
+    it('shows a media just uploaded first in its library, whatever the sort, until the next search', async () => {
+        const media = createMemorySource({
+            id: 'media',
+            label: 'Media',
+            items: libraryMedia,
+            perPage: 5,
+        });
+        const { container } = open({ sources: [media], sort: 'name', multiple: true });
+        await card('autumn forest');
+
+        await userEvent.click(within(dialog()).getByRole('tab', { name: 'Upload' }));
+        await userEvent.upload(
+            fileInput(container.ownerDocument.body as HTMLElement),
+            file('zebra.jpg', 'image/jpeg'),
+        );
+        await card('zebra');
+        await userEvent.click(within(dialog()).getByRole('tab', { name: 'Library' }));
+
+        const names = () =>
+            within(dialog())
+                .getAllByRole('row')
+                .map((row) => row.getAttribute('aria-label') ?? row.textContent);
+        await waitFor(() => expect(names()[0]).toContain('zebra'));
+        expect(within(dialog()).getByText('6 of 13 media')).toBeInTheDocument();
+        // Once in the pages too, at its place by name: it is shown once.
+        for (let page = 0; page < 2; page += 1) {
+            await userEvent.click(within(dialog()).getByRole('button', { name: 'Load more' }));
+        }
+        await waitFor(() => expect(names()).toHaveLength(13));
+        expect(names().filter((name) => name.includes('zebra'))).toHaveLength(1);
+
+        await userEvent.type(
+            within(dialog()).getByRole('searchbox', { name: 'Search media' }),
+            'harbour{Enter}',
+        );
+        await waitFor(() => expect(names()).toEqual([expect.stringContaining('harbour')]));
+    });
 });

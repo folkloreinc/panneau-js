@@ -7,6 +7,7 @@ import { useOptionalDataAdapter } from '@panneau/data/query';
 import {
     type FieldEntryProps,
     type FieldProps,
+    FileDropZone,
     FilePicker,
     UploadList,
     type UploadSource,
@@ -413,6 +414,17 @@ export function MediaField(props: MediaFieldProps) {
             setProblems((current) => [...current, rejectionMessage(file, reason)]),
     });
 
+    // Files chosen, dropped anywhere on the field or pasted in it: one only, without `multiple`.
+    const addFiles = (files: readonly File[]) => {
+        const [first] = files;
+        setProblems(
+            !multiple && files.length > 1 && first !== undefined
+                ? [intl.formatMessage(fieldsMessages.onlyOneFile, { name: first.name })]
+                : [],
+        );
+        upload.add(multiple ? files : files.slice(0, 1));
+    };
+
     const statusBadge = (item: MediaReference) => {
         if (item.media?.status === 'failed') {
             const reason = item.media.error?.message;
@@ -494,6 +506,130 @@ export function MediaField(props: MediaFieldProps) {
         return transform === null || transform === undefined ? rest : { ...rest, transform };
     };
 
+    const content = (
+        <div className={styles.field}>
+            {media.length > 0 && imageOptions !== null ? (
+                <ul className={multiple ? styles.gallery : styles.media}>
+                    {media.map((item) => (
+                        <ImageItem
+                            key={keyOf(item, resource)}
+                            reference={item}
+                            tile={multiple}
+                            cropRequired={editable && imageOptions.cropRequired === true}
+                            status={statusBadge(item)}
+                            onEdit={
+                                enabled && editable
+                                    ? () => setEditing({ key: keyOf(item, resource) })
+                                    : null
+                            }
+                            onRemove={canUpload || canPick ? () => remove(item) : null}
+                        />
+                    ))}
+                </ul>
+            ) : media.length > 0 ? (
+                <TileGroup appearance="outline">
+                    {media.map((item) => {
+                        const name = item.label ?? item.id;
+                        const size = item.media?.size;
+                        const status = statusBadge(item);
+                        return (
+                            <Tile
+                                key={keyOf(item, resource)}
+                                title={name}
+                                description={[
+                                    item.media?.type ?? null,
+                                    typeof size === 'number' ? formatSize(size, intl.locale) : null,
+                                ]
+                                    .filter((part) => part !== null)
+                                    .join(' · ')}
+                                {...(typeof item.media?.thumbnailUrl === 'string'
+                                    ? {
+                                          media: (
+                                              <img
+                                                  src={item.media.thumbnailUrl}
+                                                  alt=""
+                                                  loading="lazy"
+                                              />
+                                          ),
+                                      }
+                                    : { icon: FileImage })}
+                                actions={
+                                    canUpload || canPick ? (
+                                        <IconButton
+                                            icon={X}
+                                            size="sm"
+                                            label={intl.formatMessage(fieldsMessages.removeFile, {
+                                                name,
+                                            })}
+                                            onPress={() => remove(item)}
+                                        />
+                                    ) : undefined
+                                }
+                            >
+                                {status}
+                            </Tile>
+                        );
+                    })}
+                </TileGroup>
+            ) : creating.length === 0 && upload.items.length === 0 ? (
+                <span className={styles.none}>
+                    {intl.formatMessage(
+                        imageOptions !== null ? messages.noImage : messages.noMedia,
+                    )}
+                </span>
+            ) : null}
+            <UploadList
+                items={upload.items}
+                onPause={upload.pause}
+                onResume={upload.resume}
+                onCancel={upload.cancel}
+                onRetry={upload.retry}
+            />
+            {creating.length > 0 ? (
+                <span className={styles.meta} role="status">
+                    <Spinner size="sm" />
+                    {intl.formatMessage(fieldsMessages.uploadCompleting)} {creating.join(', ')}
+                </span>
+            ) : null}
+            {canPick || canUpload ? (
+                <div className={styles.actions}>
+                    {canPick ? (
+                        <Button
+                            size="sm"
+                            appearance="outline"
+                            icon={Images}
+                            onPress={() => setPicking(true)}
+                        >
+                            {intl.formatMessage(chooseLabel)}
+                        </Button>
+                    ) : null}
+                    {canUpload ? (
+                        <FilePicker
+                            accept={accept}
+                            multiple={multiple}
+                            className={styles.upload}
+                            {...(canPick
+                                ? {
+                                      label: intl.formatMessage(
+                                          imageOptions !== null
+                                              ? multiple
+                                                  ? messages.uploadImages
+                                                  : messages.uploadImage
+                                              : multiple
+                                                ? messages.uploadFiles
+                                                : messages.uploadFile,
+                                      ),
+                                  }
+                                : {})}
+                            isDroppable={false}
+                            onSelect={addFiles}
+                        />
+                    ) : null}
+                </div>
+            ) : null}
+        </div>
+    );
+
     return (
         <Fieldset
             legend={label}
@@ -522,132 +658,7 @@ export function MediaField(props: MediaFieldProps) {
             descriptionClassName={descriptionClassName}
             errorsClassName={errorsClassName}
         >
-            <div className={styles.field}>
-                {media.length > 0 && imageOptions !== null ? (
-                    <ul className={multiple ? styles.gallery : styles.media}>
-                        {media.map((item) => (
-                            <ImageItem
-                                key={keyOf(item, resource)}
-                                reference={item}
-                                tile={multiple}
-                                cropRequired={editable && imageOptions.cropRequired === true}
-                                status={statusBadge(item)}
-                                onEdit={
-                                    enabled && editable
-                                        ? () => setEditing({ key: keyOf(item, resource) })
-                                        : null
-                                }
-                                onRemove={canUpload || canPick ? () => remove(item) : null}
-                            />
-                        ))}
-                    </ul>
-                ) : media.length > 0 ? (
-                    <TileGroup appearance="outline">
-                        {media.map((item) => {
-                            const name = item.label ?? item.id;
-                            const size = item.media?.size;
-                            const status = statusBadge(item);
-                            return (
-                                <Tile
-                                    key={keyOf(item, resource)}
-                                    title={name}
-                                    description={[
-                                        item.media?.type ?? null,
-                                        typeof size === 'number'
-                                            ? formatSize(size, intl.locale)
-                                            : null,
-                                    ]
-                                        .filter((part) => part !== null)
-                                        .join(' · ')}
-                                    {...(typeof item.media?.thumbnailUrl === 'string'
-                                        ? {
-                                              media: (
-                                                  <img
-                                                      src={item.media.thumbnailUrl}
-                                                      alt=""
-                                                      loading="lazy"
-                                                  />
-                                              ),
-                                          }
-                                        : { icon: FileImage })}
-                                    actions={
-                                        canUpload || canPick ? (
-                                            <IconButton
-                                                icon={X}
-                                                size="sm"
-                                                label={intl.formatMessage(
-                                                    fieldsMessages.removeFile,
-                                                    { name },
-                                                )}
-                                                onPress={() => remove(item)}
-                                            />
-                                        ) : undefined
-                                    }
-                                >
-                                    {status}
-                                </Tile>
-                            );
-                        })}
-                    </TileGroup>
-                ) : creating.length === 0 && upload.items.length === 0 ? (
-                    <span className={styles.none}>
-                        {intl.formatMessage(
-                            imageOptions !== null ? messages.noImage : messages.noMedia,
-                        )}
-                    </span>
-                ) : null}
-                <UploadList
-                    items={upload.items}
-                    onPause={upload.pause}
-                    onResume={upload.resume}
-                    onCancel={upload.cancel}
-                    onRetry={upload.retry}
-                />
-                {creating.length > 0 ? (
-                    <span className={styles.meta} role="status">
-                        <Spinner size="sm" />
-                        {intl.formatMessage(fieldsMessages.uploadCompleting)} {creating.join(', ')}
-                    </span>
-                ) : null}
-                {canPick || canUpload ? (
-                    <div className={styles.actions}>
-                        {canPick ? (
-                            <Button
-                                size="sm"
-                                appearance="outline"
-                                icon={Images}
-                                onPress={() => setPicking(true)}
-                            >
-                                {intl.formatMessage(chooseLabel)}
-                            </Button>
-                        ) : null}
-                        {canUpload ? (
-                            <FilePicker
-                                accept={accept}
-                                multiple={multiple}
-                                className={styles.upload}
-                                {...(canPick
-                                    ? {
-                                          label: intl.formatMessage(
-                                              imageOptions !== null
-                                                  ? multiple
-                                                      ? messages.uploadImages
-                                                      : messages.uploadImage
-                                                  : multiple
-                                                    ? messages.uploadFiles
-                                                    : messages.uploadFile,
-                                          ),
-                                      }
-                                    : {})}
-                                onSelect={(selected) => {
-                                    setProblems([]);
-                                    upload.add(selected);
-                                }}
-                            />
-                        ) : null}
-                    </div>
-                ) : null}
-            </div>
+            {canUpload ? <FileDropZone onSelect={addFiles}>{content}</FileDropZone> : content}
             {canPick ? (
                 <MediaPicker
                     isOpen={picking}
