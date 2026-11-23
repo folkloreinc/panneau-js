@@ -107,7 +107,7 @@ describe('a secret text field', () => {
 });
 
 describe('TextFieldEntry without a label', () => {
-    it('is labelled with the name of the field', () => {
+    it('is labelled with the name of the field, made readable', () => {
         renderField(
             <DefinitionField
                 field={{ name: 'meta_title', type: 'text' }}
@@ -116,6 +116,6 @@ describe('TextFieldEntry without a label', () => {
                 onChange={() => undefined}
             />,
         );
-        expect(screen.getByRole('textbox', { name: 'meta_title' })).toBeInTheDocument();
+        expect(screen.getByRole('textbox', { name: 'Meta title' })).toBeInTheDocument();
     });
 });

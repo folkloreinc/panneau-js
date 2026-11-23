@@ -6,7 +6,7 @@ import {
     useFormSelector,
 } from '@panneau/core';
 import type { FieldBindingProps } from '@panneau/fields';
-import { getNestedShape } from '@panneau/protocol/runtime';
+import { getFieldLabel, getNestedShape } from '@panneau/protocol/runtime';
 import { Alert, Button, usePanneauIntl } from '@panneau/ui';
 
 import { FieldErrorBoundary } from './FieldErrorBoundary';
@@ -83,7 +83,7 @@ export function FormBinding({ field, path, parentPath, render }: FieldBindingPro
                         }
                     >
                         {intl.formatMessage(messages.fieldCrashed, {
-                            field: field.label ?? field.name,
+                            field: getFieldLabel(field),
                         })}
                     </Alert>
                 )}
