@@ -45,6 +45,7 @@ import { getItemTitle } from '../pages/itemTitle';
 import { readRecentItems, useRecentScope } from '../recentItems';
 import { routePath } from '../routes';
 import { COLOR_SCHEMES, type ColorSchemePreference } from './UserMenu';
+import { type DensityChoice, useDensityCommands } from './density';
 
 /** The pause after typing before the palette searches the server. */
 const SEARCH_DELAY = 300;
@@ -65,6 +66,9 @@ export interface GoToProps {
     onToggleSidebar?: () => void;
     colorScheme: ColorSchemePreference;
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
+    /** The user's density, and how to keep it: without it, no command (decision 0104). */
+    density?: DensityChoice | undefined;
+    onDensityChange?: ((density: DensityChoice) => void) | undefined;
     /** Switches the interface to a locale of `interfaceLocales` (decision 0083). */
     onLocaleChange?: ((locale: string) => void) | undefined;
 }
@@ -106,9 +110,12 @@ export function GoTo({
     onToggleSidebar,
     colorScheme,
     onColorSchemeChange,
+    density = 'default',
+    onDensityChange,
     onLocaleChange,
 }: GoToProps) {
     const intl = usePanneauIntl();
+    const densityCommands = useDensityCommands(density, onDensityChange);
     const plugins = usePlugins();
     const user = useRecentScope();
     const [query, setQuery] = useState('');
@@ -246,6 +253,7 @@ export function GoTo({
             icon: SCHEME_ICONS[scheme],
             onAction: () => onColorSchemeChange(scheme),
         })),
+        ...densityCommands,
         ...(onLocaleChange !== undefined ? getInterfaceLocales(definition) : [])
             .filter(({ locale: other }) => other !== locale)
             .map(({ locale: other, label }) => ({

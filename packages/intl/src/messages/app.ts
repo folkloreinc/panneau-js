@@ -374,6 +374,17 @@ export const appMessages = {
         defaultMessage:
             'Appearance: {scheme, select, light {light} dark {dark} other {same as the system}}',
     }),
+    densityTitle: defineMessage({ id: 'panneau.app.densityTitle', defaultMessage: 'Density' }),
+    densityOption: defineMessage<{ density: string }>({
+        id: 'panneau.app.densityOption',
+        defaultMessage:
+            '{density, select, compact {Compact} comfortable {Comfortable} other {Default}}',
+    }),
+    density: defineMessage<{ density: string }>({
+        id: 'panneau.app.density',
+        defaultMessage:
+            'Density: {density, select, compact {compact} comfortable {comfortable} other {default}}',
+    }),
     language: defineMessage({ id: 'panneau.app.language', defaultMessage: 'Language' }),
     languageButton: defineMessage<{ language: string }>({
         id: 'panneau.app.languageButton',

@@ -27,6 +27,7 @@ import { type AppRoute, routePath } from '../routes';
 import { ActionRunsButton } from './ActionRunsButton';
 import styles from './Dock.module.css';
 import { type ColorSchemePreference, UserAvatar, UserMenu, getUserMenuLabel } from './UserMenu';
+import type { DensityChoice } from './density';
 import { getGroupIcon, getHomeLink, getLinkIcon } from './links';
 
 /** The entries of the menu that a phone shows in the dock, before "More". */
@@ -38,6 +39,9 @@ export interface DockProps {
     route: AppRoute;
     colorScheme: ColorSchemePreference;
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
+    /** The user's density, and how to keep it: without it, no choice (decision 0104). */
+    density?: DensityChoice | undefined;
+    onDensityChange?: ((density: DensityChoice) => void) | undefined;
     /** Logs the user out. Without it, the user's menu has no "Log out". */
     onLogOut?: () => void;
     /**
@@ -117,6 +121,8 @@ export function Dock({
     route,
     colorScheme,
     onColorSchemeChange,
+    density,
+    onDensityChange,
     onLogOut,
     onLocaleChange,
     onGoTo,
@@ -245,6 +251,8 @@ export function Dock({
                 basePath={basePath}
                 colorScheme={colorScheme}
                 onColorSchemeChange={onColorSchemeChange}
+                density={density}
+                onDensityChange={onDensityChange}
                 onLogOut={onLogOut}
                 onLocaleChange={onLocaleChange}
                 placement="top end"

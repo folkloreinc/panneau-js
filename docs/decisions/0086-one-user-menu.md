@@ -1,6 +1,6 @@
 # 0086: One user's menu, at the bottom of the sidebar and in the dock
 
-- Status: accepted
+- Status: accepted, amended by [0104](0104-users-choose-the-density.md): the menu has a choice of the density, after the appearance
 - Date: 2026-11-17
 - Issue: [#316](https://github.com/folkloreinc/panneau-js/issues/316)
 - Amends: where the language switcher sits in [0083](0083-a-language-switcher-in-the-shell.md), the "Log out" button of [0037](0037-login-page-token-and-logout.md), the link of the user's name in [0050](0050-account-page.md), and the user's menu of the dock in [0076](0076-a-dock-in-place-of-the-sidebar.md)

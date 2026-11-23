@@ -35,6 +35,7 @@ import { ActionRunsButton } from './ActionRunsButton';
 import { ContextPicker, ContextPickerButton } from './ContextPicker';
 import styles from './Sidebar.module.css';
 import { type ColorSchemePreference, UserAvatar, UserMenu, getUserMenuLabel } from './UserMenu';
+import type { DensityChoice } from './density';
 import { SiteLogo } from './frame';
 import { getHomeLink, getLinkIcon } from './links';
 
@@ -119,6 +120,9 @@ export interface SidebarProps {
     onNavigate?: () => void;
     colorScheme: ColorSchemePreference;
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
+    /** The user's density, and how to keep it: without it, no choice (decision 0104). */
+    density?: DensityChoice | undefined;
+    onDensityChange?: ((density: DensityChoice) => void) | undefined;
     /** Logs the user out. Without it, the user's menu has no "Log out". */
     onLogOut?: () => void;
     /**
@@ -148,6 +152,8 @@ export function Sidebar({
     onNavigate,
     colorScheme,
     onColorSchemeChange,
+    density,
+    onDensityChange,
     onLogOut,
     onLocaleChange,
     onGoTo,
@@ -331,6 +337,8 @@ export function Sidebar({
                     basePath={basePath}
                     colorScheme={colorScheme}
                     onColorSchemeChange={onColorSchemeChange}
+                    density={density}
+                    onDensityChange={onDensityChange}
                     onLogOut={onLogOut}
                     onLocaleChange={onLocaleChange}
                     onNavigate={onNavigate}

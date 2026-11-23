@@ -58,6 +58,13 @@ describe('Theme', () => {
         expect(DefinitionTheme.safeParse({ density: 'dense' }).success).toBe(false);
     });
 
+    it("locks the density of a definition, hiding the user's choice (decision 0104)", () => {
+        expect(DefinitionTheme.safeParse({ density: 'compact', lockDensity: true }).success).toBe(
+            true,
+        );
+        expect(DefinitionTheme.safeParse({ lockDensity: 'yes' }).success).toBe(false);
+    });
+
     it('lets the theme of a definition extend themes of plugins, without its own tokens', () => {
         const result = DefinitionTheme.safeParse({ colorScheme: 'auto', extends: ['brand'] });
         expect(result.success).toBe(true);

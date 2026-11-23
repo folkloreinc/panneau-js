@@ -11,12 +11,13 @@ import { expect, fn, userEvent, within } from 'storybook/test';
 import { ActionRunnerProvider } from '@panneau/actions';
 import { createRestAdapter } from '@panneau/data';
 import { DataAdapterProvider } from '@panneau/data/query';
-import { type DefinitionInput, validateDefinition } from '@panneau/protocol';
+import { type DefinitionInput, type DefinitionTheme, validateDefinition } from '@panneau/protocol';
 import { createMockBackend } from '@panneau/protocol/mock';
-import { Heading, Text } from '@panneau/ui';
+import { Heading, Text, ThemeScope } from '@panneau/ui';
 
 import { AppLayout } from './AppLayout';
 import type { ColorSchemePreference } from './UserMenu';
+import { useDensityPreference } from './density';
 
 const input: DefinitionInput = {
     protocol: 1,
@@ -92,24 +93,34 @@ function createData() {
 function Layout({
     onLogOut,
     onLocaleChange,
+    theme,
 }: {
     onLogOut?: () => void;
     onLocaleChange?: (locale: string) => void;
+    /** The definition's theme. With one, the layout is in the density the app would give it. */
+    theme?: DefinitionTheme;
 }) {
     const [colorScheme, setColorScheme] = useState<ColorSchemePreference>('light');
+    // The density of the app: the user's choice, or the definition's (decision 0104)
+    const density = useDensityPreference(theme);
     // The "Go to…" palette searches through the data adapter.
     const [{ adapter, client }] = useState(createData);
-    return (
+    const layout = (
         <QueryClientProvider client={client}>
             <DataAdapterProvider adapter={adapter}>
                 <RouterProvider navigate={() => undefined}>
                     <ActionRunnerProvider adapter={adapter}>
                         <AppLayout
-                            definition={getDefinition()}
+                            definition={{
+                                ...getDefinition(),
+                                ...(theme !== undefined ? { theme } : {}),
+                            }}
                             basePath="/admin"
                             route={{ name: 'resource.index', resource: 'articles' }}
                             colorScheme={colorScheme}
                             onColorSchemeChange={setColorScheme}
+                            density={density.choice}
+                            onDensityChange={density.onChange}
                             onLogOut={onLogOut}
                             onLocaleChange={onLocaleChange}
                         >
@@ -120,6 +131,13 @@ function Layout({
                 </RouterProvider>
             </DataAdapterProvider>
         </QueryClientProvider>
+    );
+    return theme !== undefined ? (
+        <ThemeScope density={density.density} className="density-scope">
+            {layout}
+        </ThemeScope>
+    ) : (
+        layout
     );
 }
 
@@ -132,6 +150,7 @@ const meta = {
         window.localStorage.removeItem('panneau:sidebar');
         window.localStorage.removeItem('panneau:nav-group:Content');
         window.localStorage.removeItem('panneau:nav-group:Settings');
+        window.localStorage.removeItem('panneau:density');
     },
 } satisfies Meta<typeof Layout>;
 
@@ -279,5 +298,77 @@ export const GoTo: Story = {
         const field = await body.findByRole('searchbox', { name: 'Go to…' });
         await userEvent.type(field, 'arti');
         await expect(body.getByRole('menuitem', { name: 'Articles' })).toBeInTheDocument();
+    },
+};
+
+/**
+ * The density (decision 0104): the definition's, "touch" here, until the user picks another in
+ * their menu, next to the appearance. The browser remembers it.
+ */
+export const Density: Story = {
+    args: { theme: { density: 'touch' } },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        const scope = canvasElement.querySelector('.density-scope');
+        // Without a choice, the definition's density
+        await expect(scope).toHaveAttribute('data-density', 'touch');
+        const account = canvas.getByRole('button', { name: 'Your account (Ada Lovelace)' });
+        await userEvent.click(account);
+        const menu = within(await body.findByRole('menu'));
+        const density = within(menu.getByRole('group', { name: 'Density' }));
+        await expect(density.getByRole('menuitemradio', { name: 'Default' })).toHaveAttribute(
+            'aria-checked',
+            'true',
+        );
+        await userEvent.click(density.getByRole('menuitemradio', { name: 'Compact' }));
+        await expect(scope).toHaveAttribute('data-density', 'compact');
+        await expect(window.localStorage.getItem('panneau:density')).toBe('compact');
+    },
+};
+
+/** A density the user chose earlier: it applies as the page loads, over the definition's. */
+export const RememberedDensity: Story = {
+    args: { theme: { density: 'touch' } },
+    beforeEach: () => {
+        window.localStorage.setItem('panneau:density', 'comfortable');
+        return () => window.localStorage.removeItem('panneau:density');
+    },
+    play: async ({ canvasElement }) => {
+        const body = within(canvasElement.ownerDocument.body);
+        await expect(canvasElement.querySelector('.density-scope')).toHaveAttribute(
+            'data-density',
+            'comfortable',
+        );
+        await userEvent.click(
+            within(canvasElement).getByRole('button', { name: 'Your account (Ada Lovelace)' }),
+        );
+        const menu = within(await body.findByRole('menu'));
+        await expect(menu.getByRole('menuitemradio', { name: 'Comfortable' })).toHaveAttribute(
+            'aria-checked',
+            'true',
+        );
+    },
+};
+
+/** A definition that locks its density (`lockDensity`): the menu has no choice of a density. */
+export const LockedDensity: Story = {
+    args: { theme: { density: 'compact', lockDensity: true } },
+    beforeEach: () => {
+        window.localStorage.setItem('panneau:density', 'comfortable');
+        return () => window.localStorage.removeItem('panneau:density');
+    },
+    play: async ({ canvasElement }) => {
+        const body = within(canvasElement.ownerDocument.body);
+        await expect(canvasElement.querySelector('.density-scope')).toHaveAttribute(
+            'data-density',
+            'compact',
+        );
+        await userEvent.click(
+            within(canvasElement).getByRole('button', { name: 'Your account (Ada Lovelace)' }),
+        );
+        const menu = within(await body.findByRole('menu'));
+        await expect(menu.getByRole('group', { name: 'Appearance' })).toBeInTheDocument();
+        await expect(menu.queryByRole('group', { name: 'Density' })).toBeNull();
     },
 };

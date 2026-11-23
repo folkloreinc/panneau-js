@@ -2649,6 +2649,7 @@ export const Definition: z.ZodObject<{
             comfortable: "comfortable";
             touch: "touch";
         }>>;
+        lockDensity: z.ZodOptional<z.ZodBoolean>;
         navigation: z.ZodOptional<z.ZodEnum<{
             sidebar: "sidebar";
             dock: "dock";
@@ -2751,6 +2752,7 @@ export const DefinitionTheme: z.ZodObject<{
         comfortable: "comfortable";
         touch: "touch";
     }>>;
+    lockDensity: z.ZodOptional<z.ZodBoolean>;
     navigation: z.ZodOptional<z.ZodEnum<{
         sidebar: "sidebar";
         dock: "dock";
@@ -7397,6 +7399,7 @@ export const namedSchemas: {
             comfortable: "comfortable";
             touch: "touch";
         }>>;
+        lockDensity: z.ZodOptional<z.ZodBoolean>;
         navigation: z.ZodOptional<z.ZodEnum<{
             sidebar: "sidebar";
             dock: "dock";
@@ -8911,6 +8914,7 @@ export const namedSchemas: {
                 comfortable: "comfortable";
                 touch: "touch";
             }>>;
+            lockDensity: z.ZodOptional<z.ZodBoolean>;
             navigation: z.ZodOptional<z.ZodEnum<{
                 sidebar: "sidebar";
                 dock: "dock";

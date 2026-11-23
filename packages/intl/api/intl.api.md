@@ -235,6 +235,13 @@ export const appMessages: {
     colorScheme: PanneauMessage<    {
     scheme: string;
     }>;
+    densityTitle: PanneauMessage<Record<never, never>>;
+    densityOption: PanneauMessage<    {
+    density: string;
+    }>;
+    density: PanneauMessage<    {
+    density: string;
+    }>;
     language: PanneauMessage<Record<never, never>>;
     languageButton: PanneauMessage<    {
     language: string;

@@ -37,12 +37,13 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     "auth": {/* Auth */},
     "dashboard": { "widgets": [/* Widget */] },
     "search": { "enabled": true },
-    "theme": { "colorScheme": "auto", "density": "auto", "navigation": "sidebar" }, // density: "compact", "comfortable", "touch" or "auto" (touch on touch screens); navigation: "sidebar" or "dock" (decision 0076)
+    "theme": { "colorScheme": "auto", "density": "auto", "navigation": "sidebar" }, // density: "compact", "comfortable", "touch" or "auto" (touch on touch screens), the default of the user's choice; lockDensity: true hides that choice (decision 0104); navigation: "sidebar" or "dock" (decision 0076)
     "user": { "id": "usr_123", "name": "Ada", "abilities": { "panneau.view": true } },
 }
 ```
 
 - **Languages.** `locales` are the languages of the content, those of localized fields. `interfaceLocales`, optional, are the languages the user can switch the interface to, `locale` among them, each with its `label` in its own language. With two or more, the shell has a language switcher, with the user's settings ([0083](decisions/0083-a-language-switcher-in-the-shell.md)): choosing one is a full navigation to its `url`, with `next` (the path and query of the page), and the backend comes back to it, the definition then in the new locale. `GET /locale/{locale}` is an optional endpoint for that `url`: it redirects to `next`, a local path under the base path, and answers `404` for a locale it doesn't offer.
+- **The density.** `theme.density` is the density of the app until the user picks one in their menu or in "Go to…": compact, comfortable, or the default, the definition's again. The browser remembers the choice, as it does the color scheme. With `auto`, touch screens keep the touch density whatever the user chose, and have no choice. `theme.lockDensity: true` makes the definition's density the only one: the user has no choice, and one they made earlier is ignored ([0104](decisions/0104-users-choose-the-density.md)).
 - **The user's profile.** Without `auth.account`, the user's name links to their item in the resource of users: `user.resource`, or the resource `users` without it. A backend sets `user.resource` to `null` when the user has no item they can edit there, such as a user outside the resource's scope: the app then shows no link to a profile, instead of a page that isn't found.
 
 ### Resource
