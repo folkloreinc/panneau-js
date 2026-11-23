@@ -32,14 +32,17 @@ const SIDEBAR_LAYOUT: LayoutNode[] = [
 ];
 
 /**
- * A form with localized fields and more than one locale has one language switch above its
- * fields, which sets the language of every localized field at once (decision 0108).
+ * A form that asks for it (`languageSwitch`, `form.languageSwitch` of a resource) has one language
+ * switch above its fields, which sets the language of every localized field at once, when it has
+ * localized fields and more than one locale (decision 0108). Without it, the default, each
+ * localized field has its own switch only.
  */
 const meta = {
     title: 'Forms/Language switch',
     component: Form,
     args: {
         fields: FIELDS,
+        languageSwitch: true,
         locales: ['fr', 'en'],
         values: { title: { fr: 'Été', en: 'Summer' }, summary: { fr: 'Chaud' } },
         version: '1',
@@ -58,6 +61,31 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const SWITCH = { name: 'Language of the content' };
+
+/** The default: no switch for the form, each field switched on its own, and copied. */
+export const WithoutTheSetting: Story = {
+    args: { languageSwitch: false },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const title = canvas.getByRole('group', { name: 'Title' });
+        const summary = canvas.getByRole('group', { name: 'Summary' });
+        await expect(canvas.queryByRole('radiogroup', SWITCH)).toBeNull();
+        await userEvent.click(within(title).getByRole('radio', { name: 'English' }));
+        await expect(within(title).getByRole('textbox', { name: 'English' })).toHaveValue('Summer');
+        // The other fields stay on their own language
+        await expect(within(summary).getByRole('textbox', { name: 'French' })).toBeVisible();
+        await userEvent.click(
+            within(summary).getByRole('radio', { name: 'Add a translation: English' }),
+        );
+        await userEvent.click(
+            await within(summary).findByRole('button', { name: 'Copy from French' }),
+        );
+        await expect(within(summary).getByRole('textbox', { name: 'English' })).toHaveValue(
+            'Chaud',
+        );
+        await expect(canvas.queryByRole('radiogroup', SWITCH)).toBeNull();
+    },
+};
 
 export const SwitchesEveryField: Story = {
     play: async ({ canvasElement }) => {

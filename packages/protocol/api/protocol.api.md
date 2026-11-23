@@ -1473,6 +1473,7 @@ export const Definition: z.ZodObject<{
                 }, z.core.$loose>>;
                 children: z.ZodOptional<z.ZodArray<LayoutNode>>;
             }, z.core.$loose>>>;
+            languageSwitch: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>>;
         list: z.ZodOptional<z.ZodObject<{
             columns: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -5650,6 +5651,7 @@ export const namedSchemas: {
                 }, z.core.$loose>>;
                 children: z.ZodOptional<z.ZodArray<typeof LayoutNode>>;
             }, z.core.$loose>>>;
+            languageSwitch: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>>;
         list: z.ZodOptional<z.ZodObject<{
             columns: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -7775,6 +7777,7 @@ export const namedSchemas: {
                     }, z.core.$loose>>;
                     children: z.ZodOptional<z.ZodArray<typeof LayoutNode>>;
                 }, z.core.$loose>>>;
+                languageSwitch: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>>;
             list: z.ZodOptional<z.ZodObject<{
                 columns: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -12567,6 +12570,7 @@ export const Resource: z.ZodObject<{
             }, z.core.$loose>>;
             children: z.ZodOptional<z.ZodArray<typeof LayoutNode>>;
         }, z.core.$loose>>>;
+        languageSwitch: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>>;
     list: z.ZodOptional<z.ZodObject<{
         columns: z.ZodOptional<z.ZodArray<z.ZodObject<{

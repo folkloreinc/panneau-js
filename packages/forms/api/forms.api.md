@@ -102,6 +102,7 @@ export interface FormViewProps {
     // (undocumented)
     id?: string;
     isLoading?: boolean;
+    languageSwitch?: boolean;
     layout?: readonly LayoutNode[];
     // (undocumented)
     layoutClassName?: string;

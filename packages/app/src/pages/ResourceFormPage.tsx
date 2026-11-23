@@ -184,6 +184,7 @@ export function ResourceFormPage({
             item={item}
             mode={mode}
             locales={definition.locales}
+            languageSwitch={resource.form?.languageSwitch === true}
             checkSource={checkSource}
             guardUnsavedChanges
             panels={PANELS}

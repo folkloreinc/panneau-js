@@ -34,6 +34,7 @@ describe('The language switch of a form', () => {
     it('sets the language of every localized field at once', async () => {
         renderForm(
             <Form
+                languageSwitch
                 fields={FIELDS}
                 locales={LOCALES}
                 values={{ title: { fr: 'Été', en: 'Summer' }, summary: { fr: 'Chaud' } }}
@@ -52,12 +53,12 @@ describe('The language switch of a form', () => {
 
     it('is remembered by the browser for the next forms', async () => {
         const { unmount } = renderForm(
-            <Form fields={FIELDS} locales={LOCALES} onSubmit={vi.fn()} />,
+            <Form languageSwitch fields={FIELDS} locales={LOCALES} onSubmit={vi.fn()} />,
         );
         await userEvent.click(within(await getSwitch()).getByRole('radio', { name: /English/ }));
         expect(window.localStorage.getItem('panneau:content-locale')).toBe('en');
         unmount();
-        renderForm(<Form fields={FIELDS} locales={LOCALES} onSubmit={vi.fn()} />);
+        renderForm(<Form languageSwitch fields={FIELDS} locales={LOCALES} onSubmit={vi.fn()} />);
         expect(within(await getSwitch()).getByRole('radio', { name: /English/ })).toBeChecked();
         expect(
             within(screen.getByRole('group', { name: 'Title' })).getByRole('textbox', {
@@ -68,12 +69,13 @@ describe('The language switch of a form', () => {
 
     it('shows only with localized fields and more than one locale', () => {
         const { unmount } = renderForm(
-            <Form fields={FIELDS} locales={['fr']} onSubmit={vi.fn()} />,
+            <Form languageSwitch fields={FIELDS} locales={['fr']} onSubmit={vi.fn()} />,
         );
         expect(screen.queryByRole('radiogroup', { name: 'Language of the content' })).toBeNull();
         unmount();
         renderForm(
             <Form
+                languageSwitch
                 fields={[{ name: 'slug', type: 'text', label: 'Slug' }]}
                 locales={LOCALES}
                 onSubmit={vi.fn()}
@@ -85,6 +87,7 @@ describe('The language switch of a form', () => {
     it('shows for localized fields inside blocks', async () => {
         renderForm(
             <Form
+                languageSwitch
                 fields={[
                     {
                         name: 'blocks',
@@ -111,6 +114,7 @@ describe('The language switch of a form', () => {
     it('says which languages miss required values or have errors', async () => {
         renderForm(
             <Form
+                languageSwitch
                 fields={FIELDS}
                 locales={LOCALES}
                 values={{ title: { fr: 'Été' }, summary: { en: 'Hot' } }}
@@ -146,6 +150,7 @@ describe('The language switch of a form', () => {
     it('lets a field switch on its own until the form switches again', async () => {
         renderForm(
             <Form
+                languageSwitch
                 fields={FIELDS}
                 locales={LOCALES}
                 values={{ title: { fr: 'Été', en: 'Summer' }, summary: { fr: 'Chaud' } }}
@@ -168,6 +173,7 @@ describe('The language switch of a form', () => {
     it('moves to the language of an error picked in the summary', async () => {
         renderForm(
             <Form
+                languageSwitch
                 fields={FIELDS}
                 locales={LOCALES}
                 values={{ title: { fr: 'Été' } }}
@@ -193,6 +199,64 @@ describe('The language switch of a form', () => {
             ).toHaveFocus(),
         );
     });
+});
+
+describe('A form without a language switch (the default)', () => {
+    it('shows none: each localized field has its own, on its first locale', async () => {
+        // A language the user chose in a form with the switch isn't applied here
+        window.localStorage.setItem('panneau:content-locale', 'en');
+        renderForm(
+            <Form
+                fields={FIELDS}
+                locales={LOCALES}
+                values={{ title: { fr: 'Été', en: 'Summer' } }}
+                onSubmit={vi.fn()}
+            />,
+        );
+        const title = screen.getByRole('group', { name: 'Title' });
+        expect(within(title).getByRole('textbox', { name: 'French' })).toHaveValue('Été');
+        expect(within(title).getByRole('radiogroup', { name: 'Languages' })).toBeInTheDocument();
+        await waitFor(() =>
+            expect(
+                screen.queryByRole('radiogroup', { name: 'Language of the content' }),
+            ).toBeNull(),
+        );
+    });
+
+    it('moves nothing but the field in error: a field switched on its own stays', async () => {
+        renderForm(
+            <Form
+                fields={[
+                    ...FIELDS.slice(0, 1),
+                    {
+                        name: 'summary',
+                        type: 'textarea',
+                        label: 'Summary',
+                        localized: true,
+                        rules: [{ rule: 'required' }],
+                    },
+                ]}
+                locales={LOCALES}
+                values={{ title: { fr: 'Été', en: 'Summer' }, summary: { fr: 'Chaud' } }}
+                onSubmit={vi.fn()}
+            />,
+        );
+        const title = screen.getByRole('group', { name: 'Title' });
+        const summary = screen.getByRole('group', { name: 'Summary' });
+        await userEvent.click(within(title).getByRole('radio', { name: 'English' }));
+        await userEvent.click(within(summary).getByRole('radio', { name: /French/ }));
+        await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+        // The error is in the summary's English: the summary moves to it, the title stays
+        await waitFor(() =>
+            expect(within(summary).getByRole('textbox', { name: 'English' })).toHaveFocus(),
+        );
+        expect(within(title).getByRole('textbox', { name: 'English' })).toBeInTheDocument();
+        await userEvent.click(within(title).getByRole('radio', { name: 'French' }));
+        await userEvent.click(
+            within(await screen.findByRole('alert')).getByRole('button', { name: /Summary/ }),
+        );
+        expect(within(title).getByRole('textbox', { name: 'French' })).toBeInTheDocument();
+    });
 
     it('copies a value from another language, as an edit of the form', async () => {
         renderForm(
@@ -208,13 +272,10 @@ describe('The language switch of a form', () => {
             'aria-disabled',
             'true',
         );
-        await userEvent.click(within(await getSwitch()).getByRole('radio', { name: 'English' }));
         const summary = screen.getByRole('group', { name: 'Summary' });
-        expect(
-            within(screen.getByRole('group', { name: 'Title' })).queryByRole('button', {
-                name: /Copy from/,
-            }),
-        ).toBeNull();
+        await userEvent.click(
+            within(summary).getByRole('radio', { name: 'Add a translation: English' }),
+        );
         await userEvent.click(
             await within(summary).findByRole('button', { name: 'Copy from French' }),
         );

@@ -104,6 +104,13 @@ export interface FormViewProps {
     layout?: readonly LayoutNode[];
     /** Locales of localized fields. Defaults to the definition's, from `PanneauProvider`. */
     locales?: readonly string[];
+    /**
+     * One language switch above the fields, which sets the language of every localized field at
+     * once (`form.languageSwitch` of a resource, decision 0108). It shows when the form has
+     * localized fields and more than one locale. Defaults to false: each localized field has its
+     * own switch only.
+     */
+    languageSwitch?: boolean;
     /** Where relation fields search. Defaults to the one of a parent `FieldsProvider`. */
     relationSource?: RelationSource | null;
     /**
@@ -322,18 +329,21 @@ function useSaveShortcut(root: RefObject<HTMLFormElement | null>, isShown: boole
 }
 
 /**
- * The language of the content of a form, which every localized field in it shows: the user's
- * last choice, remembered by the browser for every form (`panneau:content-locale`), or the first
- * locale. `null` without a switch: a single locale, or no localized field.
+ * The language of the content of a form with a language switch, which every localized field in it
+ * shows: the user's last choice, remembered by the browser for every form with the switch
+ * (`panneau:content-locale`), or the first locale. `null` without a switch: not asked for
+ * (`languageSwitch`), a single locale, or no localized field. Each field then keeps its own
+ * language, and nothing is read from the browser.
  */
 function useContentLocaleState(
     locales: readonly string[],
+    isAsked: boolean,
     hasSwitch: boolean,
 ): ContentLocale | null {
-    const [stored, store] = usePreference('content-locale', locales);
+    const [stored, store] = usePreference(isAsked ? 'content-locale' : null, locales);
     const [changes, setChanges] = useState(0);
     const locale = stored !== null && locales.includes(stored) ? stored : locales[0];
-    if (!hasSwitch || locale === undefined) {
+    if (!isAsked || !hasSwitch || locale === undefined) {
         return null;
     }
     return {
@@ -380,6 +390,7 @@ export function FormView({
     fields,
     layout = NO_LAYOUT,
     locales,
+    languageSwitch = false,
     relationSource,
     uploadSource,
     checkSource,
@@ -448,7 +459,8 @@ export function FormView({
     const { resolved, laidOut, flow, sidebar, order } = useFormLayout(form, fields, layout);
     const contentLocale = useContentLocaleState(
         formLocales,
-        formLocales.length > 1 && hasLocalizedFields(resolved.fields),
+        languageSwitch,
+        languageSwitch && formLocales.length > 1 && hasLocalizedFields(resolved.fields),
     );
     const panelEntries = getEntries(plugins, 'panels', {
         builtIn: builtInPanels,
