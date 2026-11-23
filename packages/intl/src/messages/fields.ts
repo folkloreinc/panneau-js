@@ -232,6 +232,14 @@ export const fieldsMessages = {
         id: 'panneau.fields.addLocale',
         defaultMessage: 'Add a translation: {locale}',
     }),
+    copyFromLocale: defineMessage<{ locale: string }>({
+        id: 'panneau.fields.copyFromLocale',
+        defaultMessage: 'Copy from {locale}',
+    }),
+    copyFromLocales: defineMessage({
+        id: 'panneau.fields.copyFromLocales',
+        defaultMessage: 'Copy from…',
+    }),
     countryPlaceholder: defineMessage({
         id: 'panneau.fields.countryPlaceholder',
         defaultMessage: 'Choose a country',

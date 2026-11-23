@@ -1,10 +1,20 @@
-import { Plus } from 'lucide-react';
-import { type ReactNode, useState } from 'react';
+import { Copy, Plus } from 'lucide-react';
+import type { ReactNode } from 'react';
 
 import { isFilled } from '@panneau/protocol/runtime';
-import { Fieldset, Icon, SegmentedControl, usePanneauIntl } from '@panneau/ui';
+import {
+    Button,
+    Fieldset,
+    Icon,
+    Menu,
+    MenuItem,
+    MenuTrigger,
+    SegmentedControl,
+    usePanneauIntl,
+} from '@panneau/ui';
 
 import { NestedField } from '../shared/DefinitionField';
+import { useFieldLocale } from '../shared/contentLocale';
 import { useFieldsContext } from '../shared/context';
 import { cx } from '../shared/cx';
 import { getFieldProps } from '../shared/entry';
@@ -37,7 +47,10 @@ export interface LocalizedFieldProps<V> extends FieldProps<LocalizedValue<V>> {
     locales: readonly string[];
     /** Renders the input of a locale. */
     children: (props: LocalizedInputProps<V>) => ReactNode;
-    /** The locale shown. Controlled with `onLocaleChange`. */
+    /**
+     * The locale shown. Controlled with `onLocaleChange`. Uncontrolled, it is the locale of the
+     * form (`ContentLocaleContext`) until the field is switched on its own, or else the first one.
+     */
     locale?: string;
     onLocaleChange?: (locale: string) => void;
     /** Locales whose value has errors: their switch shows it. */
@@ -63,8 +76,11 @@ export function useLocaleName(): (locale: string) => string {
 /**
  * A value per locale: one locale at a time, under the field's label, with a switch at the end of
  * the label's line for the others. The switch marks the locales in error, and the empty ones: to
- * fill in when the field is required, to add otherwise. A value without any locale filled is
- * `null`.
+ * fill in when the field is required, to add otherwise. An empty locale can be copied from a
+ * filled one ("Copy from …"). A value without any locale filled is `null`.
+ *
+ * In a form with a language switch, the field shows the form's locale. Switched on its own, it
+ * keeps its locale until the form's switch changes again.
  */
 export function LocalizedField<V>({
     locales,
@@ -89,9 +105,28 @@ export function LocalizedField<V>({
 }: LocalizedFieldProps<V>) {
     const intl = usePanneauIntl();
     const localeName = useLocaleName();
-    const [uncontrolled, setUncontrolled] = useState(locales[0]);
-    const wanted = locale ?? uncontrolled;
-    const current = wanted !== undefined && locales.includes(wanted) ? wanted : locales[0];
+    const fieldLocale = useFieldLocale(locales);
+    const current = locale !== undefined && locales.includes(locale) ? locale : fieldLocale.locale;
+    const change = (next: LocalizedValue<V>) => {
+        const filled = Object.values(next).some(
+            (entry) => entry !== null && entry !== undefined && entry !== '',
+        );
+        onChange?.(filled ? next : null);
+    };
+    // The filled locales an empty one can be copied from
+    const sources =
+        current !== undefined &&
+        !isFilled(value?.[current]) &&
+        disabled !== true &&
+        readOnly !== true
+            ? locales.filter((option) => option !== current && isFilled(value?.[option]))
+            : [];
+    const [onlySource] = sources.length === 1 ? sources : [];
+    const copyFrom = (source: string) => {
+        if (current !== undefined) {
+            change({ ...value, [current]: value?.[source] ?? null });
+        }
+    };
 
     const options = locales.map((option, index) => {
         const name = localeName(option);
@@ -128,16 +163,48 @@ export function LocalizedField<V>({
             legend={label}
             legendEnd={
                 locales.length > 1 ? (
-                    <SegmentedControl
-                        size="sm"
-                        aria-label={intl.formatMessage(messages.locales)}
-                        options={options}
-                        {...(current !== undefined ? { value: current } : {})}
-                        onChange={(next) => {
-                            setUncontrolled(next);
-                            onLocaleChange?.(next);
-                        }}
-                    />
+                    <span className={styles.end}>
+                        {onlySource !== undefined ? (
+                            <Button
+                                size="sm"
+                                appearance="ghost"
+                                icon={Copy}
+                                onPress={() => copyFrom(onlySource)}
+                            >
+                                {intl.formatMessage(messages.copyFromLocale, {
+                                    locale: localeName(onlySource),
+                                })}
+                            </Button>
+                        ) : null}
+                        {sources.length > 1 ? (
+                            <MenuTrigger>
+                                <Button size="sm" appearance="ghost" icon={Copy}>
+                                    {intl.formatMessage(messages.copyFromLocales)}
+                                </Button>
+                                <Menu
+                                    aria-label={intl.formatMessage(messages.copyFromLocales)}
+                                    placement="bottom end"
+                                    onAction={(key) => copyFrom(String(key))}
+                                >
+                                    {sources.map((source) => (
+                                        <MenuItem key={source} id={source}>
+                                            {localeName(source)}
+                                        </MenuItem>
+                                    ))}
+                                </Menu>
+                            </MenuTrigger>
+                        ) : null}
+                        <SegmentedControl
+                            size="sm"
+                            aria-label={intl.formatMessage(messages.locales)}
+                            options={options}
+                            {...(current !== undefined ? { value: current } : {})}
+                            onChange={(next) => {
+                                fieldLocale.select(next);
+                                onLocaleChange?.(next);
+                            }}
+                        />
+                    </span>
                 ) : undefined
             }
             description={description}
@@ -159,13 +226,7 @@ export function LocalizedField<V>({
                         locale: option,
                         label: localeName(option),
                         value: value?.[option] ?? null,
-                        onChange: (next) => {
-                            const updated = { ...value, [option]: next };
-                            const filled = Object.values(updated).some(
-                                (entry) => entry !== null && entry !== undefined && entry !== '',
-                            );
-                            onChange?.(filled ? updated : null);
-                        },
+                        onChange: (next) => change({ ...value, [option]: next }),
                         ...(onBlur !== undefined ? { onBlur } : {}),
                         ...(disabled !== undefined ? { disabled } : {}),
                         ...(readOnly !== undefined ? { readOnly } : {}),
@@ -187,7 +248,8 @@ function localeOf(path: string, fieldPath: string, locales: readonly string[]) {
 /**
  * A field of the definition with `localized: true`: the field of its type for each locale of the
  * fields context, each at its own path (`title.fr`). It shows the locale of a path the form
- * reveals, such as the first error on submit.
+ * reveals, such as the first error on submit: in a form with a language switch, the switch moves
+ * to it, and every localized field with it.
  */
 export function LocalizedFieldEntry(props: FieldEntryProps) {
     const { locales: contextLocales } = useFieldsContext();
@@ -197,11 +259,11 @@ export function LocalizedFieldEntry(props: FieldEntryProps) {
             ? (value as Record<string, unknown>)
             : {};
     const locales = contextLocales.length > 0 ? contextLocales : Object.keys(record);
-    const [locale, setLocale] = useState(locales[0]);
+    const { locale, select, reveal } = useFieldLocale(locales);
     useRevealer((revealed) => {
         const found = localeOf(revealed, path, locales);
         if (found !== undefined) {
-            setLocale(found);
+            reveal(found);
         }
     });
     const invalidLocales = locales.filter((candidate) =>
@@ -217,7 +279,7 @@ export function LocalizedFieldEntry(props: FieldEntryProps) {
             value={record}
             onChange={props.onChange}
             {...(locale !== undefined ? { locale } : {})}
-            onLocaleChange={setLocale}
+            onLocaleChange={select}
             invalidLocales={invalidLocales}
         >
             {(input) => (

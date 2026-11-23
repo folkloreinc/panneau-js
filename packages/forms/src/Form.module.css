@@ -230,3 +230,39 @@
     padding-block: var(--panneau-space-2);
     border-bottom: var(--panneau-border-width) solid var(--panneau-color-border);
 }
+
+/* The language switch of a form with localized fields, above its fields. */
+.contentLocale {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--panneau-space-2) var(--panneau-space-3);
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.contentLocaleLabel {
+    color: var(--panneau-color-text-muted);
+    font-size: var(--panneau-font-size-sm);
+}
+
+.localeOption {
+    display: inline-flex;
+    gap: var(--panneau-space-1);
+    align-items: center;
+}
+
+.localeMarker {
+    flex: 0 0 auto;
+    width: 0.45em;
+    height: 0.45em;
+    background-color: currentcolor;
+    border-radius: 50%;
+}
+
+.localeInvalid {
+    color: var(--panneau-color-danger);
+}
+
+.localeMissing {
+    color: var(--panneau-color-warning);
+}

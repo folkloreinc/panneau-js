@@ -600,6 +600,10 @@ export const fieldsMessages: {
     addLocale: PanneauMessage<    {
     locale: string;
     }>;
+    copyFromLocale: PanneauMessage<    {
+    locale: string;
+    }>;
+    copyFromLocales: PanneauMessage<Record<never, never>>;
     countryPlaceholder: PanneauMessage<Record<never, never>>;
     addCountry: PanneauMessage<Record<never, never>>;
     noCountries: PanneauMessage<Record<never, never>>;
@@ -658,6 +662,13 @@ export const formsMessages: {
     saved: PanneauMessage<Record<never, never>>;
     loading: PanneauMessage<Record<never, never>>;
     sidebar: PanneauMessage<Record<never, never>>;
+    contentLocale: PanneauMessage<Record<never, never>>;
+    contentLocaleInvalid: PanneauMessage<    {
+    locale: string;
+    }>;
+    contentLocaleMissing: PanneauMessage<    {
+    locale: string;
+    }>;
     unsaved: PanneauMessage<Record<never, never>>;
     errorCount: PanneauMessage<    {
     count: number;

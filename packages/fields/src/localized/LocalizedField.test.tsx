@@ -1,10 +1,13 @@
-import { screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useState } from 'react';
 import { IntlProvider } from 'react-intl';
 import { describe, expect, it, vi } from 'vitest';
 
 import { Controlled, renderField } from '../__fixtures__/render';
 import { DefinitionField } from '../shared/DefinitionField';
+import { type ContentLocale, ContentLocaleContext } from '../shared/contentLocale';
+import { RevealContext, createRevealRegistry } from '../shared/reveal';
 import { TextField } from '../text/TextField';
 import { LocalizedField } from './LocalizedField';
 
@@ -116,5 +119,114 @@ describe('LocalizedField', () => {
         expect(screen.getByRole('textbox', { name: 'Anglais' })).toBeRequired();
         await userEvent.type(screen.getByRole('textbox', { name: 'Anglais' }), '!');
         expect(onChange).toHaveBeenLastCalledWith({ fr: 'Été', en: 'Summer!' });
+    });
+
+    it('follows the locale of the form, unless switched on its own until it changes', async () => {
+        const setLocale = vi.fn();
+        function Harness() {
+            const [changes, setChanges] = useState(0);
+            return (
+                <ContentLocaleContext value={{ locale: 'en', setLocale, changes }}>
+                    <button type="button" onClick={() => setChanges(changes + 1)}>
+                        Switch the form
+                    </button>
+                    <LocalizedField<string>
+                        label="Title"
+                        locales={['fr', 'en']}
+                        value={{ fr: 'Été', en: 'Summer' }}
+                    >
+                        {(input) => <TextField aria-label={input.label} value={input.value} />}
+                    </LocalizedField>
+                </ContentLocaleContext>
+            );
+        }
+        renderField(<Harness />);
+        expect(screen.getByRole('textbox', { name: 'English' })).toHaveValue('Summer');
+        await userEvent.click(screen.getByRole('radio', { name: 'French' }));
+        expect(screen.getByRole('textbox', { name: 'French' })).toBeInTheDocument();
+        // Switched on its own: the form's switch didn't move
+        expect(setLocale).not.toHaveBeenCalled();
+        // The form's switch changes again, even to the locale it had: the field follows it
+        await userEvent.click(screen.getByRole('button', { name: 'Switch the form' }));
+        expect(screen.getByRole('textbox', { name: 'English' })).toBeInTheDocument();
+    });
+
+    it('moves the switch of the form to the locale of an error it reveals', () => {
+        const registry = createRevealRegistry();
+        const content: ContentLocale = { locale: 'fr', setLocale: vi.fn(), changes: 0 };
+        renderField(
+            <RevealContext value={registry}>
+                <ContentLocaleContext value={content}>
+                    <DefinitionField
+                        field={{ name: 'title', type: 'text', label: 'Title', localized: true }}
+                        path="title"
+                        value={{ fr: 'Été' }}
+                        onChange={vi.fn()}
+                    />
+                </ContentLocaleContext>
+            </RevealContext>,
+            { locales: ['fr', 'en'] },
+        );
+        act(() => registry.reveal('summary.en'));
+        expect(content.setLocale).not.toHaveBeenCalled();
+        act(() => registry.reveal('title.en'));
+        expect(content.setLocale).toHaveBeenCalledWith('en');
+    });
+
+    it('copies an empty locale from the filled one', async () => {
+        const onChange = vi.fn();
+        renderField(
+            <LocalizedField<string>
+                label="Title"
+                locales={['fr', 'en']}
+                locale="en"
+                value={{ fr: 'Été' }}
+                onChange={onChange}
+            >
+                {(input) => <TextField aria-label={input.label} value={input.value} />}
+            </LocalizedField>,
+        );
+        await userEvent.click(screen.getByRole('button', { name: 'Copy from French' }));
+        expect(onChange).toHaveBeenLastCalledWith({ fr: 'Été', en: 'Été' });
+    });
+
+    it('copies an empty locale from one of the filled ones, in a menu', async () => {
+        const onChange = vi.fn();
+        renderField(
+            <LocalizedField<string>
+                label="Title"
+                locales={['fr', 'en', 'es']}
+                locale="en"
+                value={{ fr: 'Été', es: 'Verano' }}
+                onChange={onChange}
+            >
+                {(input) => <TextField aria-label={input.label} value={input.value} />}
+            </LocalizedField>,
+        );
+        await userEvent.click(screen.getByRole('button', { name: 'Copy from…' }));
+        await userEvent.click(await screen.findByRole('menuitem', { name: 'Spanish' }));
+        expect(onChange).toHaveBeenLastCalledWith({ fr: 'Été', en: 'Verano', es: 'Verano' });
+    });
+
+    it('copies nothing into a filled locale, nor in a read-only field', () => {
+        const { unmount } = renderField(
+            <LocalizedField<string> label="Title" locales={['fr', 'en']} value={{ fr: 'Été' }}>
+                {(input) => <TextField aria-label={input.label} value={input.value} />}
+            </LocalizedField>,
+        );
+        expect(screen.queryByRole('button', { name: /Copy from/ })).toBeNull();
+        unmount();
+        renderField(
+            <LocalizedField<string>
+                label="Title"
+                locales={['fr', 'en']}
+                locale="en"
+                value={{ fr: 'Été' }}
+                readOnly
+            >
+                {(input) => <TextField aria-label={input.label} value={input.value} />}
+            </LocalizedField>,
+        );
+        expect(screen.queryByRole('button', { name: /Copy from/ })).toBeNull();
     });
 });

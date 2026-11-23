@@ -84,6 +84,8 @@ export const fieldsFr: Record<string, string> = {
     'panneau.fields.localeEmpty': '{locale}, vide',
     'panneau.fields.localeInvalid': '{locale}, contient des erreurs',
     'panneau.fields.addLocale': 'Ajouter une traduction : {locale}',
+    'panneau.fields.copyFromLocale': 'Copier depuis : {locale}',
+    'panneau.fields.copyFromLocales': 'Copier depuis…',
     'panneau.fields.countryPlaceholder': 'Choisir un pays',
     'panneau.fields.addCountry': 'Ajouter un pays',
     'panneau.fields.noCountries': 'Aucun pays ne correspond',
