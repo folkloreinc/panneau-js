@@ -1,6 +1,6 @@
 # 0043: Inline editing in lists, one field at a time
 
-- Status: accepted
+- Status: accepted, amended by [0105](0105-edits-in-place-show-at-once.md): the value shows at once in every list, and the cell stays usable while it saves
 - Date: 2026-11-03
 - Issue: [#177](https://github.com/folkloreinc/panneau-js/issues/177)
 - Changes: what `list.inlineEdit` does, and partial updates in the protocol

@@ -146,8 +146,9 @@ export function ResourceListPage({
     const total = (data?.meta as { total?: unknown } | undefined)?.total;
     const { run: runAction, isSupported } = useItemActionRunner(resource, { basePath, locale });
     const previewAction = useActionPreview(resource.id);
-    // Fields edited in place are saved alone, with the version of the item (decision 0043).
-    const update = useUpdateItem(resource.id);
+    // Fields edited in place are saved alone, with the version of the item (decision 0043), and
+    // show at once in every cached list and item.
+    const update = useUpdateItem(resource.id, { optimistic: true });
     const prefetchItem = usePrefetchItem(resource.id);
     const formatError = useFormatRuleFailure(resource.fields);
     const title = capitalize(resource.label.plural, locale);
