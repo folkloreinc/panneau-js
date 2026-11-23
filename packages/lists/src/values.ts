@@ -26,6 +26,28 @@ export function getLocalizedValue(value: unknown, locale: string): unknown {
     return Object.values(value).find(filled) ?? null;
 }
 
+/**
+ * The locales of a localized value, each with its value, for the details of an item: the locales
+ * given (those of the interface, in order) and those of the value, the locale (`fr-CA`) or its
+ * language (`fr`) first. Empty without a value keyed by locale.
+ */
+export function getLocalizedEntries(
+    value: unknown,
+    locale: string,
+    locales: readonly string[] = [],
+): [string, unknown][] {
+    if (!isRecord(value)) {
+        return [];
+    }
+    const keys = [...locales, ...Object.keys(value)].filter(
+        (key, index, all) => all.indexOf(key) === index,
+    );
+    const language = locale.split('-')[0] ?? locale;
+    const first = keys.includes(locale) ? locale : keys.includes(language) ? language : null;
+    const ordered = first !== null ? [first, ...keys.filter((key) => key !== first)] : keys;
+    return ordered.map((key) => [key, value[key] ?? null]);
+}
+
 /** Whether a field's values are keyed by locale. */
 export function isLocalized(field: Field | null | undefined): boolean {
     return field?.localized === true;

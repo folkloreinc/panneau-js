@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, waitFor, within } from 'storybook/test';
 
+import { FieldsProvider, type RelationSource } from '@panneau/fields';
 import type { Field } from '@panneau/protocol';
 
 import { ItemDetails } from './ItemDetails';
@@ -199,6 +200,117 @@ export const WithPlaces: Story = {
         for (const image of canvasElement.querySelectorAll('img')) {
             await expect(image).toHaveAttribute('alt', '');
         }
+    },
+};
+
+/** A square image, inline, so that the story needs no network. */
+function swatch(color: string): string {
+    return `data:image/svg+xml,${encodeURIComponent(
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"><rect width="1" height="1" fill="${color}"/></svg>`,
+    )}`;
+}
+
+/** Where related items open: the relation source of the fields, as the app gives it. */
+const relationSource: RelationSource = {
+    search: () => Promise.resolve([]),
+    getItemHref: (resource, id) => `#/resources/${resource}/${id}`,
+};
+
+const longSummary =
+    'The festival returns to the river for its tenth summer, with three stages on the water.\n' +
+    'Boats leave the old port every half hour from noon, and the last one comes back at midnight.\n' +
+    'Tickets are on sale at the door and on the site, with a discount for families.';
+
+/**
+ * Values in full, unlike in a cell: related items linked to their items, every media, text and
+ * JSON in full, and each locale of a localized value, the interface's first.
+ */
+export const InFull: Story = {
+    decorators: [
+        (Story) => (
+            <FieldsProvider locales={['en', 'fr']} relationSource={relationSource}>
+                <Story />
+            </FieldsProvider>
+        ),
+    ],
+    args: {
+        'aria-label': 'The river festival returns',
+        columns: [
+            {
+                id: 'title',
+                label: 'Title',
+                field: { name: 'title', type: 'text', label: 'Title', localized: true },
+            },
+            { id: 'summary', label: 'Summary', display: 'textarea' },
+            { id: 'body', label: 'Body', display: 'richtext' },
+            {
+                id: 'authors',
+                label: 'Authors',
+                display: 'relation',
+                field: { name: 'authors', type: 'relation', label: 'Authors', resource: 'people' },
+            },
+            { id: 'gallery', label: 'Gallery', display: 'media' },
+            { id: 'settings', label: 'Settings', display: 'json' },
+        ],
+        item: {
+            id: '1',
+            title: { en: 'The river festival returns', fr: 'Le festival de la rivière revient' },
+            summary: longSummary,
+            body:
+                '<h3>Programme</h3><p>Three stages, <strong>on the water</strong>, and <a href="https://example.com/tickets" target="_blank">tickets online</a>.</p>' +
+                '<ul><li>Noon: the first boats</li><li>Midnight: fireworks</li></ul>' +
+                '<p style="position: fixed; inset: 0" onclick="alert(1)">Not over the admin</p><script>alert(2)</script>',
+            authors: [
+                { id: '7', label: 'Ada Lovelace', description: 'Editor' },
+                { id: '8', label: 'Alan Turing' },
+            ],
+            gallery: [
+                {
+                    id: 'a',
+                    label: 'The stage at night',
+                    media: { thumbnailUrl: swatch('#2b6cb0') },
+                },
+                { id: 'b', label: 'The old port', media: { thumbnailUrl: swatch('#2f855a') } },
+                { id: 'c', label: 'Fireworks', media: { thumbnailUrl: swatch('#c05621') } },
+            ],
+            settings: { stages: 3, boats: { every: '30 minutes', from: '12:00', until: '24:00' } },
+        },
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        // Each locale, the interface's first
+        await expect(canvas.getByText('Le festival de la rivière revient')).toBeInTheDocument();
+        await expect(canvas.getByText('English')).toBeInTheDocument();
+        await expect(canvas.getByText('French')).toBeInTheDocument();
+        // Related items link to their items
+        await expect(canvas.getByRole('link', { name: /Ada Lovelace/ })).toHaveAttribute(
+            'href',
+            '#/resources/people/7',
+        );
+        await expect(canvas.getByRole('link', { name: 'Alan Turing' })).toHaveAttribute(
+            'href',
+            '#/resources/people/8',
+        );
+        // Every media
+        await expect(canvas.getByText('Fireworks')).toBeInTheDocument();
+        await expect(canvasElement.querySelectorAll('dd img')).toHaveLength(3);
+        // Text in full, not clamped at two lines
+        const summary = canvas.getByText(/tenth summer/);
+        await expect(summary.closest('[data-clamp]')).toBeNull();
+        await expect(summary.scrollHeight).toBeLessThanOrEqual(summary.clientHeight + 1);
+        await expect(canvas.getByText(/"every": "30 minutes"/)).toBeInTheDocument();
+        // Rich text with its formatting, sanitized: no handler, no style, no script
+        const heading = await canvas.findByRole('heading', { name: 'Programme' });
+        const body = heading.parentElement;
+        await expect(within(body as HTMLElement).getAllByRole('listitem')).toHaveLength(2);
+        await expect(canvas.getByRole('link', { name: 'tickets online' })).toHaveAttribute(
+            'rel',
+            'noopener noreferrer',
+        );
+        const paragraph = canvas.getByText('Not over the admin');
+        await expect(paragraph).not.toHaveAttribute('style');
+        await expect(paragraph).not.toHaveAttribute('onclick');
+        await expect(body?.querySelector('script')).toBeNull();
     },
 };
 
