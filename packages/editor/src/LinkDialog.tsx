@@ -25,7 +25,7 @@ export function getLinkTarget(newTab: boolean, rel: string | null) {
 
 /**
  * The `href` of a new link to an item, until the backend writes the item's URL in its place
- * (decision 0106).
+ * (decision 0107).
  */
 export const PAGE_HREF = '#';
 
