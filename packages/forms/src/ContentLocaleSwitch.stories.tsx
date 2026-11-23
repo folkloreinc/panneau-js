@@ -62,7 +62,7 @@ const SWITCH = { name: 'Language of the content' };
 export const SwitchesEveryField: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        const languages = canvas.getByRole('radiogroup', SWITCH);
+        const languages = await canvas.findByRole('radiogroup', SWITCH);
         const title = canvas.getByRole('group', { name: 'Title' });
         const summary = canvas.getByRole('group', { name: 'Summary' });
         await expect(within(title).getByRole('textbox', { name: 'French' })).toHaveValue('Été');
@@ -85,10 +85,14 @@ export const CopyFromAnotherLanguage: Story = {
         const save = canvas.getByRole('button', { name: 'Save' });
         await expect(save).toHaveAttribute('aria-disabled', 'true');
         await userEvent.click(
-            within(canvas.getByRole('radiogroup', SWITCH)).getByRole('radio', { name: 'English' }),
+            within(await canvas.findByRole('radiogroup', SWITCH)).getByRole('radio', {
+                name: 'English',
+            }),
         );
         const summary = canvas.getByRole('group', { name: 'Summary' });
-        await userEvent.click(within(summary).getByRole('button', { name: 'Copy from French' }));
+        await userEvent.click(
+            await within(summary).findByRole('button', { name: 'Copy from French' }),
+        );
         await expect(within(summary).getByRole('textbox', { name: 'English' })).toHaveValue(
             'Chaud',
         );
@@ -105,7 +109,7 @@ export const MarksAndErrors: Story = {
     },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        const languages = canvas.getByRole('radiogroup', SWITCH);
+        const languages = await canvas.findByRole('radiogroup', SWITCH);
         await expect(
             within(languages).getByRole('radio', { name: 'English, required values missing' }),
         ).toBeInTheDocument();

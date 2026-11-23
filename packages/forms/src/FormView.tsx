@@ -1,4 +1,13 @@
-import { type ReactNode, type RefObject, useEffect, useEffectEvent, useRef, useState } from 'react';
+import {
+    type ReactNode,
+    type RefObject,
+    Suspense,
+    lazy,
+    useEffect,
+    useEffectEvent,
+    useRef,
+    useState,
+} from 'react';
 
 import {
     type Form,
@@ -39,7 +48,6 @@ import {
 } from '@panneau/ui';
 
 import { ConflictDialog, type ConflictDialogProps } from './ConflictDialog';
-import { ContentLocaleSwitch } from './ContentLocaleSwitch';
 import { ErrorSummary } from './ErrorSummary';
 import styles from './Form.module.css';
 import { FormBinding } from './FormBinding';
@@ -53,6 +61,12 @@ import { SaveContext, SaveControls, type SaveState, SummaryContext } from './pan
 import { type FormPanelComponent, PanelsContext, builtInPanels } from './panels/panels';
 import { addSaveShortcut } from './shortcuts';
 import { useBeforeUnloadGuard, useLeaveConfirmation } from './unsaved';
+
+// The language switch loads with the first form that has localized fields in several locales: the
+// first page of an app doesn't need it
+const ContentLocaleSwitch = lazy(async () => ({
+    default: (await import('./ContentLocaleSwitch')).ContentLocaleSwitch,
+}));
 
 // Defaults shared by every render: the React Compiler doesn't memoize what is computed from an
 // array made before a hook, and every render of the form would render all of its fields.
@@ -612,13 +626,15 @@ export function FormView({
                                                 </Alert>
                                             ) : null}
                                             {contentLocale !== null ? (
-                                                <ContentLocaleSwitch
-                                                    form={form}
-                                                    fields={resolved.fields}
-                                                    locales={formLocales}
-                                                    locale={contentLocale.locale}
-                                                    onChange={contentLocale.setLocale}
-                                                />
+                                                <Suspense fallback={null}>
+                                                    <ContentLocaleSwitch
+                                                        form={form}
+                                                        fields={resolved.fields}
+                                                        locales={formLocales}
+                                                        locale={contentLocale.locale}
+                                                        onChange={contentLocale.setLocale}
+                                                    />
+                                                </Suspense>
                                             ) : null}
                                             <AsideLayout
                                                 className={layoutClassName}

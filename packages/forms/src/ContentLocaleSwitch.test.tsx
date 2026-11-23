@@ -21,8 +21,9 @@ const FIELDS: Field[] = [
 
 const LOCALES = ['fr', 'en'];
 
+/** The switch loads with `import()`, after the form. */
 function getSwitch() {
-    return screen.getByRole('radiogroup', { name: 'Language of the content' });
+    return screen.findByRole('radiogroup', { name: 'Language of the content' });
 }
 
 afterEach(() => {
@@ -41,9 +42,9 @@ describe('The language switch of a form', () => {
         );
         const title = screen.getByRole('group', { name: 'Title' });
         const summary = screen.getByRole('group', { name: 'Summary' });
-        expect(within(getSwitch()).getByRole('radio', { name: 'French' })).toBeChecked();
+        expect(within(await getSwitch()).getByRole('radio', { name: 'French' })).toBeChecked();
         expect(within(title).getByRole('textbox', { name: 'French' })).toHaveValue('Été');
-        await userEvent.click(within(getSwitch()).getByRole('radio', { name: 'English' }));
+        await userEvent.click(within(await getSwitch()).getByRole('radio', { name: 'English' }));
         expect(within(title).getByRole('textbox', { name: 'English' })).toHaveValue('Summer');
         expect(within(summary).getByRole('textbox', { name: 'English' })).toHaveValue('');
         expect(within(title).queryByRole('textbox', { name: 'French' })).toBeNull();
@@ -53,11 +54,11 @@ describe('The language switch of a form', () => {
         const { unmount } = renderForm(
             <Form fields={FIELDS} locales={LOCALES} onSubmit={vi.fn()} />,
         );
-        await userEvent.click(within(getSwitch()).getByRole('radio', { name: /English/ }));
+        await userEvent.click(within(await getSwitch()).getByRole('radio', { name: /English/ }));
         expect(window.localStorage.getItem('panneau:content-locale')).toBe('en');
         unmount();
         renderForm(<Form fields={FIELDS} locales={LOCALES} onSubmit={vi.fn()} />);
-        expect(within(getSwitch()).getByRole('radio', { name: /English/ })).toBeChecked();
+        expect(within(await getSwitch()).getByRole('radio', { name: /English/ })).toBeChecked();
         expect(
             within(screen.getByRole('group', { name: 'Title' })).getByRole('textbox', {
                 name: 'English',
@@ -81,7 +82,7 @@ describe('The language switch of a form', () => {
         expect(screen.queryByRole('radiogroup', { name: 'Language of the content' })).toBeNull();
     });
 
-    it('shows for localized fields inside blocks', () => {
+    it('shows for localized fields inside blocks', async () => {
         renderForm(
             <Form
                 fields={[
@@ -104,7 +105,7 @@ describe('The language switch of a form', () => {
                 onSubmit={vi.fn()}
             />,
         );
-        expect(getSwitch()).toBeInTheDocument();
+        expect(await getSwitch()).toBeInTheDocument();
     });
 
     it('says which languages miss required values or have errors', async () => {
@@ -116,14 +117,18 @@ describe('The language switch of a form', () => {
                 onSubmit={vi.fn()}
             />,
         );
-        expect(within(getSwitch()).getByRole('radio', { name: 'French' })).toBeInTheDocument();
         expect(
-            within(getSwitch()).getByRole('radio', { name: 'English, required values missing' }),
+            within(await getSwitch()).getByRole('radio', { name: 'French' }),
+        ).toBeInTheDocument();
+        expect(
+            within(await getSwitch()).getByRole('radio', {
+                name: 'English, required values missing',
+            }),
         ).toBeInTheDocument();
         await userEvent.click(screen.getByRole('button', { name: 'Save' }));
-        await waitFor(() =>
+        await waitFor(async () =>
             expect(
-                within(getSwitch()).getByRole('radio', { name: 'English, has errors' }),
+                within(await getSwitch()).getByRole('radio', { name: 'English, has errors' }),
             ).toBeChecked(),
         );
         // Filled, the locale has nothing to say any more
@@ -133,8 +138,8 @@ describe('The language switch of a form', () => {
             }),
             'Summer',
         );
-        await waitFor(() =>
-            expect(within(getSwitch()).getByRole('radio', { name: 'English' })).toBeChecked(),
+        await waitFor(async () =>
+            expect(within(await getSwitch()).getByRole('radio', { name: 'English' })).toBeChecked(),
         );
     });
 
@@ -152,10 +157,10 @@ describe('The language switch of a form', () => {
         await userEvent.click(within(title).getByRole('radio', { name: 'English' }));
         expect(within(title).getByRole('textbox', { name: 'English' })).toBeInTheDocument();
         expect(within(summary).getByRole('textbox', { name: 'French' })).toBeInTheDocument();
-        expect(within(getSwitch()).getByRole('radio', { name: 'French' })).toBeChecked();
+        expect(within(await getSwitch()).getByRole('radio', { name: 'French' })).toBeChecked();
         // The form's switch changes: every field follows it, the one switched on its own too
-        await userEvent.click(within(getSwitch()).getByRole('radio', { name: 'English' }));
-        await userEvent.click(within(getSwitch()).getByRole('radio', { name: 'French' }));
+        await userEvent.click(within(await getSwitch()).getByRole('radio', { name: 'English' }));
+        await userEvent.click(within(await getSwitch()).getByRole('radio', { name: 'French' }));
         expect(within(title).getByRole('textbox', { name: 'French' })).toBeInTheDocument();
         expect(within(summary).getByRole('textbox', { name: 'French' })).toBeInTheDocument();
     });
@@ -171,14 +176,14 @@ describe('The language switch of a form', () => {
         );
         await userEvent.click(screen.getByRole('button', { name: 'Save' }));
         const summary = await screen.findByRole('alert');
-        await waitFor(() =>
-            expect(within(getSwitch()).getByRole('radio', { name: /English/ })).toBeChecked(),
+        await waitFor(async () =>
+            expect(within(await getSwitch()).getByRole('radio', { name: /English/ })).toBeChecked(),
         );
-        await userEvent.click(within(getSwitch()).getByRole('radio', { name: 'French' }));
-        expect(within(getSwitch()).getByRole('radio', { name: 'French' })).toBeChecked();
+        await userEvent.click(within(await getSwitch()).getByRole('radio', { name: 'French' }));
+        expect(within(await getSwitch()).getByRole('radio', { name: 'French' })).toBeChecked();
         await userEvent.click(within(summary).getByRole('button', { name: /Title/ }));
-        await waitFor(() =>
-            expect(within(getSwitch()).getByRole('radio', { name: /English/ })).toBeChecked(),
+        await waitFor(async () =>
+            expect(within(await getSwitch()).getByRole('radio', { name: /English/ })).toBeChecked(),
         );
         await waitFor(() =>
             expect(
@@ -203,14 +208,16 @@ describe('The language switch of a form', () => {
             'aria-disabled',
             'true',
         );
-        await userEvent.click(within(getSwitch()).getByRole('radio', { name: 'English' }));
+        await userEvent.click(within(await getSwitch()).getByRole('radio', { name: 'English' }));
         const summary = screen.getByRole('group', { name: 'Summary' });
         expect(
             within(screen.getByRole('group', { name: 'Title' })).queryByRole('button', {
                 name: /Copy from/,
             }),
         ).toBeNull();
-        await userEvent.click(within(summary).getByRole('button', { name: 'Copy from French' }));
+        await userEvent.click(
+            await within(summary).findByRole('button', { name: 'Copy from French' }),
+        );
         expect(within(summary).getByRole('textbox', { name: 'English' })).toHaveValue('Chaud');
         expect(within(summary).queryByRole('button', { name: /Copy from/ })).toBeNull();
         expect(screen.getByRole('button', { name: 'Save' })).not.toHaveAttribute('aria-disabled');

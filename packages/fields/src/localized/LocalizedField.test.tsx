@@ -186,7 +186,7 @@ describe('LocalizedField', () => {
                 {(input) => <TextField aria-label={input.label} value={input.value} />}
             </LocalizedField>,
         );
-        await userEvent.click(screen.getByRole('button', { name: 'Copy from French' }));
+        await userEvent.click(await screen.findByRole('button', { name: 'Copy from French' }));
         expect(onChange).toHaveBeenLastCalledWith({ fr: 'Été', en: 'Été' });
     });
 
@@ -203,7 +203,7 @@ describe('LocalizedField', () => {
                 {(input) => <TextField aria-label={input.label} value={input.value} />}
             </LocalizedField>,
         );
-        await userEvent.click(screen.getByRole('button', { name: 'Copy from…' }));
+        await userEvent.click(await screen.findByRole('button', { name: 'Copy from…' }));
         await userEvent.click(await screen.findByRole('menuitem', { name: 'Spanish' }));
         expect(onChange).toHaveBeenLastCalledWith({ fr: 'Été', en: 'Verano', es: 'Verano' });
     });

@@ -1,17 +1,8 @@
-import { Copy, Plus } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { Plus } from 'lucide-react';
+import { type ReactNode, Suspense, lazy } from 'react';
 
 import { isFilled } from '@panneau/protocol/runtime';
-import {
-    Button,
-    Fieldset,
-    Icon,
-    Menu,
-    MenuItem,
-    MenuTrigger,
-    SegmentedControl,
-    usePanneauIntl,
-} from '@panneau/ui';
+import { Fieldset, Icon, SegmentedControl, usePanneauIntl } from '@panneau/ui';
 
 import { NestedField } from '../shared/DefinitionField';
 import { useFieldLocale } from '../shared/contentLocale';
@@ -22,6 +13,14 @@ import { messages } from '../shared/messages';
 import { useRevealer } from '../shared/reveal';
 import type { FieldEntryProps, FieldProps } from '../shared/types';
 import styles from './LocalizedField.module.css';
+import { useLocaleName } from './localeName';
+
+export { useLocaleName } from './localeName';
+
+// "Copy from …" loads with its first empty locale: the first page of an app doesn't need it.
+const CopyFromLocale = lazy(async () => ({
+    default: (await import('./CopyFromLocale')).CopyFromLocale,
+}));
 
 /** A localized value: a value per locale (`{ fr: 'Été', en: 'Summer' }`). */
 export type LocalizedValue<V> = Partial<Record<string, V | null>>;
@@ -56,21 +55,6 @@ export interface LocalizedFieldProps<V> extends FieldProps<LocalizedValue<V>> {
     /** Locales whose value has errors: their switch shows it. */
     invalidLocales?: readonly string[];
     localeClassName?: string;
-}
-
-/** The name of a locale in the UI's language, capitalized (`Français`, `English`). */
-export function useLocaleName(): (locale: string) => string {
-    const intl = usePanneauIntl();
-    return (locale) => {
-        let name: string | undefined;
-        try {
-            name = intl.formatDisplayName(locale, { type: 'language' });
-        } catch {
-            name = undefined;
-        }
-        const text = name ?? locale.toUpperCase();
-        return text.charAt(0).toLocaleUpperCase(intl.locale) + text.slice(1);
-    };
 }
 
 /**
@@ -121,7 +105,6 @@ export function LocalizedField<V>({
         readOnly !== true
             ? locales.filter((option) => option !== current && isFilled(value?.[option]))
             : [];
-    const [onlySource] = sources.length === 1 ? sources : [];
     const copyFrom = (source: string) => {
         if (current !== undefined) {
             change({ ...value, [current]: value?.[source] ?? null });
@@ -164,35 +147,10 @@ export function LocalizedField<V>({
             legendEnd={
                 locales.length > 1 ? (
                     <span className={styles.end}>
-                        {onlySource !== undefined ? (
-                            <Button
-                                size="sm"
-                                appearance="ghost"
-                                icon={Copy}
-                                onPress={() => copyFrom(onlySource)}
-                            >
-                                {intl.formatMessage(messages.copyFromLocale, {
-                                    locale: localeName(onlySource),
-                                })}
-                            </Button>
-                        ) : null}
-                        {sources.length > 1 ? (
-                            <MenuTrigger>
-                                <Button size="sm" appearance="ghost" icon={Copy}>
-                                    {intl.formatMessage(messages.copyFromLocales)}
-                                </Button>
-                                <Menu
-                                    aria-label={intl.formatMessage(messages.copyFromLocales)}
-                                    placement="bottom end"
-                                    onAction={(key) => copyFrom(String(key))}
-                                >
-                                    {sources.map((source) => (
-                                        <MenuItem key={source} id={source}>
-                                            {localeName(source)}
-                                        </MenuItem>
-                                    ))}
-                                </Menu>
-                            </MenuTrigger>
+                        {sources.length > 0 ? (
+                            <Suspense fallback={null}>
+                                <CopyFromLocale sources={sources} onCopy={copyFrom} />
+                            </Suspense>
                         ) : null}
                         <SegmentedControl
                             size="sm"

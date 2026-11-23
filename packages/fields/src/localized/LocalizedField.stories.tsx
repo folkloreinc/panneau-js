@@ -52,7 +52,7 @@ export const CopyFromAnotherLanguage: Story = {
         const canvas = within(canvasElement);
         await expect(canvas.queryByRole('button', { name: /Copy from/ })).toBeNull();
         await userEvent.click(canvas.getByRole('radio', { name: 'Add a translation: English' }));
-        await userEvent.click(canvas.getByRole('button', { name: 'Copy from French' }));
+        await userEvent.click(await canvas.findByRole('button', { name: 'Copy from French' }));
         await expect(canvas.getByRole('textbox', { name: 'English' })).toHaveValue('Été');
         await expect(canvas.queryByRole('button', { name: /Copy from/ })).toBeNull();
     },

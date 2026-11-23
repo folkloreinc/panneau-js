@@ -6,8 +6,8 @@ import type { Field } from '@panneau/protocol';
 import { SegmentedControl, usePanneauIntl } from '@panneau/ui';
 
 import styles from './Form.module.css';
-import { getLocaleMarks } from './contentLocale';
 import { cx } from './cx';
+import { getLocaleMarks } from './localeMarks';
 import { messages } from './messages';
 
 export interface ContentLocaleSwitchProps {
