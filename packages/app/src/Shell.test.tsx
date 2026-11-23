@@ -2005,6 +2005,63 @@ describe('the app shell', () => {
         expect(await screen.findByText('“About us”: title put back.')).toBeInTheDocument();
     });
 
+    it('shows a value edited in place at once, in the list and the cached item, and puts it back when the save fails', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/pages');
+        const definition = createDefinition();
+        const pages = definition.resources[0];
+        const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+        let release: (response?: Response) => void = () => undefined;
+        renderApp(
+            {
+                resources: [
+                    { ...pages, list: { inlineEdit: ['title'] } } as NonNullable<typeof pages>,
+                    ...definition.resources.slice(1),
+                ],
+            },
+            [],
+            undefined,
+            {
+                queryClient,
+                fetch: (fetch) => async (input, init) => {
+                    if (init?.method === 'PATCH') {
+                        const failure = await new Promise<Response | undefined>((resolve) => {
+                            release = resolve;
+                        });
+                        if (failure !== undefined) {
+                            return failure;
+                        }
+                    }
+                    return fetch(input, init);
+                },
+            },
+        );
+        await user.click(await screen.findByRole('button', { name: 'Edit title of About us' }));
+        const input = screen.getByRole('textbox', { name: 'title' });
+        await user.clear(input);
+        await user.type(input, 'About{Enter}');
+        // Before the backend answers
+        expect(await screen.findByRole('link', { name: 'About' })).toBeInTheDocument();
+        const cached = () =>
+            queryClient
+                .getQueriesData<{ data: { id: string; title?: unknown }[] }>({
+                    queryKey: ['panneau', 'resources', 'pages', 'list'],
+                })
+                .flatMap(([, list]) => list?.data ?? [])
+                .find((item) => item.id === '1');
+        expect(cached()).toMatchObject({ title: 'About' });
+
+        release(
+            new Response(JSON.stringify({ title: 'Server Error', status: 500 }), {
+                status: 500,
+                headers: { 'Content-Type': 'application/problem+json' },
+            }),
+        );
+        expect(await screen.findByText('Server Error')).toBeInTheDocument();
+        expect(cached()).toMatchObject({ title: 'About us' });
+        expect(screen.getByRole('textbox', { name: 'title' })).toHaveValue('About');
+    });
+
     it('deletes an item of a resource with a trash at once, and "Undo" puts it back', async () => {
         const user = userEvent.setup();
         window.history.replaceState(null, '', '/panneau/resources/pages');

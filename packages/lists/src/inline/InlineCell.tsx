@@ -36,8 +36,17 @@ const PICKED = new Set(['select', 'date']);
 type State =
     | { mode: 'idle' }
     | { mode: 'editing'; draft: unknown; errors: readonly string[] }
-    | { mode: 'saving'; draft: unknown }
     | { mode: 'conflict'; draft: unknown; current: ListItem };
+
+/** The saves of a cell: the one in flight, and the value to save after it. */
+interface Saves {
+    /** The value to save once the save in flight is answered, the last one picked. */
+    next: { value: unknown } | null;
+    /** The value before the first of these saves, that "Undo" puts back. */
+    previous: unknown;
+    /** The value the backend last saved. */
+    saved: unknown;
+}
 
 export interface InlineCellProps {
     item: ListItem;
@@ -53,7 +62,10 @@ export interface InlineCellProps {
     renderValue: (item: ListItem) => ReactNode;
     /** Saves the value on an item (the current one after a conflict), with its version. */
     onSave: (item: ListItem, value: unknown) => Promise<ListItem>;
-    /** Shows an item the backend gave back: saved, or changed by someone else. */
+    /**
+     * Shows an item: with the value being saved, at once, then as the backend gave it back
+     * (saved, or changed by someone else), or with the value back when the save failed.
+     */
     onItem: (item: ListItem) => void;
     formatError: (failure: RuleFailure) => string;
 }
@@ -66,7 +78,8 @@ function isEqualValue(a: unknown, b: unknown): boolean {
  * A cell that edits its field in place (decision 0043): a checkbox for a boolean, otherwise the
  * value with a button that turns it into the field's control. Enter or leaving the cell saves,
  * Escape cancels; a select and a date save when one is picked. The value is checked by the
- * field's portable rules, then saved alone; errors and conflicts show in the cell.
+ * field's portable rules, then saved alone, and shows at once: the cell stays usable while it
+ * saves. Errors and conflicts show in the cell.
  */
 export function InlineCell({
     item,
@@ -82,6 +95,13 @@ export function InlineCell({
     const intl = usePanneauIntl();
     const toasts = useToast();
     const [state, setState] = useState<State>({ mode: 'idle' });
+    const [sending, setSending] = useState(false);
+    const saves = useRef<Saves | null>(null);
+    // The item as the list shows it now, for what a save does once it is answered.
+    const latest = useRef(item);
+    useEffect(() => {
+        latest.current = item;
+    });
     const root = useRef<HTMLDivElement>(null);
     // Where focus goes once the cell has drawn its new state.
     const focus = useRef<'editor' | 'button' | null>(null);
@@ -101,21 +121,39 @@ export function InlineCell({
         focus.current = null;
     });
 
+    // Whether the focus is still in the cell, or nowhere: a cell that answers late doesn't take
+    // the focus from where the user went meanwhile.
+    const hasFocus = () => {
+        const active = document.activeElement;
+        return (
+            active === null || active === document.body || (root.current?.contains(active) ?? false)
+        );
+    };
+
     /**
-     * Saves a value on an item. The toast that says it has "Undo", which saves the previous value
-     * the same way, with the version the save just got (decision 0063): a conflict then shows in
-     * the cell, as for any change. After an undo, a short toast says the value is back.
+     * Sends a value, then the one picked while it was sent, if any, on the item the first save
+     * gave back: with its version, so that it doesn't conflict with the first.
      */
-    const save = (base: ListItem, draft: unknown, { undoing = false } = {}) => {
-        const previous = base[field.name];
-        setState({ mode: 'saving', draft });
+    const send = (base: ListItem, draft: unknown, undoing: boolean) => {
         onSave(base, draft).then(
             (saved) => {
+                const current = saves.current;
+                const next = current?.next ?? null;
+                if (current !== null && next !== null) {
+                    current.saved = saved[field.name];
+                    current.next = null;
+                    if (!isEqualValue(next.value, saved[field.name])) {
+                        onItem({ ...saved, [field.name]: next.value });
+                        send(saved, next.value, false);
+                        return;
+                    }
+                }
+                saves.current = null;
+                setSending(false);
                 onItem(saved);
-                focus.current = isBoolean ? null : 'button';
-                setState({ mode: 'idle' });
                 const names = { item: getItemLabel?.(saved) ?? itemLabel, field: label };
                 const key = { key: `panneau-inline:${item.id}:${field.name}` };
+                const previous = current?.previous;
                 toasts.show(
                     undoing
                         ? { title: intl.formatMessage(messages.inlineUndone, names) }
@@ -131,12 +169,19 @@ export function InlineCell({
                 );
             },
             (error: unknown) => {
+                const current = saves.current;
+                // The value picked last, which the cell offers to save again.
+                const wanted = current?.next?.value ?? draft;
+                saves.current = null;
+                setSending(false);
                 const problem = getProblem(error);
                 if (problem?.status === 412 && problem.current !== undefined) {
                     onItem(problem.current);
-                    setState({ mode: 'conflict', draft, current: problem.current });
+                    setState({ mode: 'conflict', draft: wanted, current: problem.current });
                     return;
                 }
+                // The value goes back to what the backend has.
+                onItem({ ...latest.current, [field.name]: current?.saved ?? base[field.name] });
                 const own = Object.entries(problem?.errors ?? {})
                     .filter(([path]) => path === field.name || path.startsWith(`${field.name}.`))
                     .flatMap(([, list]) => list);
@@ -145,13 +190,41 @@ export function InlineCell({
                     (problem !== null ? problem.title : null) ??
                     (error instanceof Error && error.message !== '' ? error.message : null) ??
                     intl.formatMessage(messages.saveValueFailed);
-                focus.current = 'editor';
-                setState({ mode: 'editing', draft, errors: own.length > 0 ? own : [message] });
+                focus.current = hasFocus() ? 'editor' : null;
+                setState({
+                    mode: 'editing',
+                    draft: wanted,
+                    errors: own.length > 0 ? own : [message],
+                });
             },
         );
     };
 
-    const commit = (draft: unknown) => {
+    /**
+     * Saves a value on an item, and shows it at once: the cell stays usable while it saves. A
+     * value picked while a save is in flight is saved after it. When the save fails, the value
+     * goes back and the cell says why. The toast that says it was saved has "Undo", which saves
+     * the value from before the saves the same way, with the version the save just got (decision
+     * 0063): a conflict then shows in the cell, as for any change. After an undo, a short toast
+     * says the value is back.
+     */
+    const save = (base: ListItem, draft: unknown, { undoing = false } = {}) => {
+        setState({ mode: 'idle' });
+        onItem({ ...base, [field.name]: draft });
+        if (saves.current !== null) {
+            saves.current.next = { value: draft };
+            return;
+        }
+        saves.current = {
+            next: null,
+            previous: base[field.name],
+            saved: base[field.name],
+        };
+        setSending(true);
+        send(base, draft, undoing);
+    };
+
+    const commit = (draft: unknown, { leaving = false } = {}) => {
         if (isEqualValue(draft, value)) {
             focus.current = 'button';
             setState({ mode: 'idle' });
@@ -173,6 +246,7 @@ export function InlineCell({
             setState({ mode: 'editing', draft, errors });
             return;
         }
+        focus.current = isBoolean || leaving ? null : 'button';
         save(item, draft);
     };
 
@@ -204,10 +278,11 @@ export function InlineCell({
         ) {
             return;
         }
-        commit(state.draft);
+        commit(state.draft, { leaving: true });
     };
 
-    const control = (draft: unknown, errors: readonly string[], disabled: boolean) => (
+    // The control stays usable while a value saves: a value picked meanwhile is saved after it.
+    const control = (draft: unknown, errors: readonly string[]) => (
         <Entry
             field={bare}
             path={field.name}
@@ -220,7 +295,6 @@ export function InlineCell({
                 }
             }}
             errors={errors}
-            disabled={disabled}
             hideLabel
         />
     );
@@ -229,12 +303,8 @@ export function InlineCell({
         return (
             <div className={styles.cell}>
                 <div className={styles.control}>
-                    {control(
-                        state.mode === 'idle' ? value : state.draft,
-                        state.mode === 'editing' ? state.errors : [],
-                        state.mode === 'saving',
-                    )}
-                    {state.mode === 'saving' ? (
+                    {control(value, state.mode === 'editing' ? state.errors : [])}
+                    {sending ? (
                         <Spinner size="sm" label={intl.formatMessage(messages.savingValue)} />
                     ) : null}
                 </div>
@@ -253,6 +323,9 @@ export function InlineCell({
         return (
             <div ref={root} className={styles.cell}>
                 <span className={styles.value}>{children}</span>
+                {sending ? (
+                    <Spinner size="sm" label={intl.formatMessage(messages.savingValue)} />
+                ) : null}
                 <IconButton
                     icon={Pencil}
                     size="sm"
@@ -274,12 +347,8 @@ export function InlineCell({
     return (
         <div ref={root} className={styles.cell} onKeyDown={onKeyDown} onBlur={onBlur}>
             <div className={styles.control}>
-                {control(
-                    state.draft,
-                    state.mode === 'editing' ? state.errors : [],
-                    state.mode === 'saving',
-                )}
-                {state.mode === 'saving' ? (
+                {control(state.draft, state.mode === 'editing' ? state.errors : [])}
+                {sending ? (
                     <Spinner size="sm" label={intl.formatMessage(messages.savingValue)} />
                 ) : null}
             </div>
