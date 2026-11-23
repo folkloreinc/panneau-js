@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { type ResolvedResource, getItemActions, getItemValues, resolveForm } from '@panneau/core';
 import { NotFoundError } from '@panneau/data';
@@ -56,8 +56,6 @@ export function ResourceFormPage({
 }: ResourceFormPageProps) {
     const intl = usePanneauIntl();
     const adapter = useDataAdapter();
-    // The version this page just saved: the form starts over from it, and still says "Saved".
-    const [savedVersion, setSavedVersion] = useState<string | null>(null);
     const { resource } = resolved;
     const mode = id === null ? 'create' : 'update';
     const itemQuery = useResourceItem(resource.id, id);
@@ -158,10 +156,12 @@ export function ResourceFormPage({
             />
         );
     }
-    // While the item loads, the form draws its skeleton; it starts over from the item's values.
+    // While the item loads, the form draws its skeleton; it starts over from the item's values once
+    // it is there. Newer versions of the item don't start it over: they go through `item`, which
+    // keeps what is being typed (a refetch, an action, a save while typing).
     const content = (
         <Form
-            key={item?.version ?? item?.id ?? 'new'}
+            key={mode === 'create' ? 'new' : (item?.id ?? 'loading')}
             aria-label={title}
             isLoading={mode === 'update' && item === undefined}
             fields={fields}
@@ -175,6 +175,7 @@ export function ResourceFormPage({
                     : undefined
             }
             version={item?.version ?? null}
+            item={item}
             mode={mode}
             locales={definition.locales}
             checkSource={checkSource}
@@ -182,7 +183,6 @@ export function ResourceFormPage({
             panels={PANELS}
             // The panels of its sidebar that the user collapsed, per resource (decision 0074)
             sidebarStorageKey={`form-${resource.id}`}
-            saved={savedVersion !== null && item?.version === savedVersion}
             onSubmit={(values, { version, changes }) =>
                 id === null
                     ? createItem.mutateAsync(
@@ -192,7 +192,6 @@ export function ResourceFormPage({
             }
             onSubmitted={(result) => {
                 const saved = result as Item;
-                setSavedVersion(saved.version ?? null);
                 if (id === null) {
                     // Back to the list, which highlights the new item: it says it was created,
                     // without a toast (decision 0066). In place of the create page, which Back

@@ -635,6 +635,9 @@ export const formsMessages: {
     conflictMessage: PanneauMessage<Record<never, never>>;
     conflictChanges: PanneauMessage<Record<never, never>>;
     conflictUnknown: PanneauMessage<Record<never, never>>;
+    newerTitle: PanneauMessage<Record<never, never>>;
+    newerMessage: PanneauMessage<Record<never, never>>;
+    reviewNewer: PanneauMessage<Record<never, never>>;
     yours: PanneauMessage<Record<never, never>>;
     current: PanneauMessage<Record<never, never>>;
     empty: PanneauMessage<Record<never, never>>;

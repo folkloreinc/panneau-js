@@ -1,10 +1,11 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { withPanneauMessages } from '@panneau/intl';
-import type { Field } from '@panneau/protocol';
-import { Dialog } from '@panneau/ui';
+import type { Field, Item } from '@panneau/protocol';
+import { Button, Dialog } from '@panneau/ui';
 
 import { Form } from './Form';
 import { problemError, renderForm } from './__fixtures__/render';
@@ -410,5 +411,57 @@ describe('Form without a definition', () => {
         await userEvent.click(await screen.findByRole('button', { name: 'Create the key' }));
         await waitFor(() => expect(inner).toHaveBeenCalledTimes(1));
         expect(outer).not.toHaveBeenCalled();
+    });
+});
+
+describe('Form with an item', () => {
+    const ITEM: Item = { id: '1', version: '1', abilities: { update: true }, name: 'Ada' };
+
+    /** A form whose item someone else saves, as a refetch brings it. */
+    function Harness() {
+        const [item, setItem] = useState(ITEM);
+        return (
+            <>
+                <Button onPress={() => setItem({ ...item, version: '2', name: 'Ada King' })}>
+                    Save elsewhere
+                </Button>
+                <Form
+                    fields={FIELDS}
+                    values={{ name: ITEM.name }}
+                    version={ITEM.version}
+                    item={item}
+                />
+            </>
+        );
+    }
+
+    it('takes a newer version of the item without unsaved changes', async () => {
+        renderForm(<Harness />);
+        const name = screen.getByRole('textbox', { name: /Name/ });
+        await userEvent.click(screen.getByRole('button', { name: 'Save elsewhere' }));
+        expect(name).toHaveValue('Ada King');
+        expect(screen.queryByText('A newer version of this item was saved')).toBeNull();
+    });
+
+    it('keeps unsaved changes over a newer version, and compares them with it', async () => {
+        renderForm(<Harness />);
+        const name = screen.getByRole('textbox', { name: /Name/ });
+        await userEvent.type(name, ' Lovelace');
+        await userEvent.click(screen.getByRole('button', { name: 'Save elsewhere' }));
+        expect(name).toHaveValue('Ada Lovelace');
+        const notice = screen
+            .getByText('A newer version of this item was saved')
+            .closest<HTMLElement>('[role="status"]');
+        if (notice === null) {
+            throw new Error('The notice is not a status');
+        }
+        await userEvent.click(within(notice).getByRole('button', { name: 'Compare' }));
+        const dialog = await screen.findByRole('alertdialog', {
+            name: 'Someone else saved this item',
+        });
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Save mine anyway' }));
+        await waitFor(() => expect(screen.queryByRole('alertdialog')).toBeNull());
+        expect(name).toHaveValue('Ada Lovelace');
+        expect(screen.queryByText('A newer version of this item was saved')).toBeNull();
     });
 });

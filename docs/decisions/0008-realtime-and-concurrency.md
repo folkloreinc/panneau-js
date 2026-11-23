@@ -1,6 +1,6 @@
 # 0008: Conflict detection in 5.0, collaboration in 5.x
 
-- Status: accepted
+- Status: accepted, amended by [0100](0100-a-form-keeps-its-edits-over-a-newer-version.md): a form keeps its unsaved changes when a newer version arrives before it saves
 - Date: 2026-10-14
 
 ## Context

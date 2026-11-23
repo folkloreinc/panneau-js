@@ -134,8 +134,10 @@ export interface Form {
         visibleWhen?: Condition | undefined;
     }, parentPath?: string): boolean;
     readonly mode: FormMode;
+    refresh(item: Item): void;
     reset(values?: Values, version?: string | null): void;
     resolveConflict(choice: 'reload' | 'overwrite'): Promise<SubmitResult | null>;
+    reviewNewer(): void;
     setOptions(options: Partial<UpdatableFormOptions>): void;
     setServerErrors(errors: Record<string, string[]>): void;
     // (undocumented)
@@ -176,6 +178,7 @@ export interface FormState {
     error: unknown;
     errors: Record<string, string[]>;
     initialValues: Values;
+    newer: Item | null;
     // (undocumented)
     status: FormStatus;
     // (undocumented)

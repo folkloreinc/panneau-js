@@ -344,6 +344,8 @@ export function FormView({
     );
     const submitError = useFormSelector(form, (state) => state.error);
     const conflict = useFormSelector(form, (state) => state.conflict);
+    // A newer version arrived while the form had unsaved changes
+    const hasNewer = useFormSelector(form, (state) => state.newer !== null);
     const [registry] = useState(createRevealRegistry);
     const { root, goTo } = useGoToField(registry);
     const [errorSections] = useState(createRevealRegistry);
@@ -519,6 +521,23 @@ export function FormView({
                                                 }
                                             >
                                                 {errorDetail}
+                                            </Alert>
+                                        ) : null}
+                                        {hasNewer ? (
+                                            <Alert
+                                                tone="warning"
+                                                role="status"
+                                                title={intl.formatMessage(messages.newerTitle)}
+                                                actions={
+                                                    <Button
+                                                        size="sm"
+                                                        onPress={() => form.reviewNewer()}
+                                                    >
+                                                        {intl.formatMessage(messages.reviewNewer)}
+                                                    </Button>
+                                                }
+                                            >
+                                                {intl.formatMessage(messages.newerMessage)}
                                             </Alert>
                                         ) : null}
                                         <AsideLayout
