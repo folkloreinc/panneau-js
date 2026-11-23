@@ -55,7 +55,11 @@ export function getRichTextOptions(field: Pick<Field, 'settings'>): RichTextOpti
 export interface HtmlNodeOptions {
     className: string;
     label: string;
+    labels: Partial<Readonly<Record<KeptHtmlKind, string>>>;
 }
+
+// @public
+export type KeptHtmlKind = 'video' | 'audio' | 'image' | 'post' | 'embed' | 'table' | 'form' | 'code' | 'script' | 'style';
 
 // @public
 export type NewTabLinks = 'choose' | 'external' | 'never';
@@ -72,6 +76,7 @@ export interface RichTextButton {
     label: string | MessageDescriptor;
     name: string;
     run: (editor: Editor) => void;
+    shortcut?: string;
 }
 
 // @public (undocumented)
@@ -98,6 +103,7 @@ export interface RichTextFieldProps extends FieldProps<string> {
     extensions?: readonly AnyExtension[];
     headings?: readonly number[];
     newTab?: NewTabLinks;
+    pages?: readonly string[];
     // (undocumented)
     placeholder?: string;
     styles?: readonly RichTextStyle[];

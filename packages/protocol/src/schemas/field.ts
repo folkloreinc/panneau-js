@@ -210,7 +210,7 @@ export const Field = z
             .optional()
             .meta({
                 description:
-                    '`relation`: id of the related resource. `media`, `image`: id of a resource of kind `media`, or a list of them; without it, every library of the definition (decision 0027). `link`: the resources of its `page` links (decision 0055).',
+                    '`relation`: id of the related resource. `media`, `image`: id of a resource of kind `media`, or a list of them; without it, every library of the definition (decision 0027). `link`: the resources of its `page` links (decision 0055). `richtext`: the resources whose items its links can point to (decision 0106).',
             }),
         accept: z.array(z.string()).optional().meta({
             description:

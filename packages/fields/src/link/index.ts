@@ -1,4 +1,11 @@
-export { LinkField, LinkFieldEntry, type LinkFieldProps, type LinkLabelMode } from './LinkField';
+export {
+    LinkField,
+    LinkFieldEntry,
+    type LinkFieldProps,
+    type LinkLabelMode,
+    PagePicker,
+    type PagePickerProps,
+} from './LinkField';
 export {
     type LinkPage,
     type LinkValue,
