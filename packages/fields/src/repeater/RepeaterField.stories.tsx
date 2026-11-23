@@ -60,6 +60,45 @@ export const Items: Story = {
     },
 };
 
+/**
+ * Removing an item offers "Undo" in a toast (decision 0063), which puts it back at its place, with
+ * its value and whether it was expanded. Each item keeps its state and the focus as it moves.
+ */
+export const UndoRemove: Story = {
+    render: function Render(args) {
+        const [value, setValue] = useState<RepeaterItem[] | null>([
+            { label: 'Site', url: 'https://example.com' },
+            { label: 'Shop', url: 'https://shop.example.com' },
+            { label: 'Blog', url: 'https://blog.example.com' },
+        ]);
+        return <RepeaterField {...args} value={value} onChange={setValue} />;
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        await userEvent.click(canvas.getByRole('button', { name: '2 Item 2 Shop' }));
+        await userEvent.click(canvas.getByRole('button', { name: 'Remove item 2' }));
+        await expect(canvas.queryByText('Shop')).not.toBeInTheDocument();
+        await expect(await body.findByText('“Item 2” removed')).toBeInTheDocument();
+
+        await userEvent.click(body.getByRole('button', { name: 'Undo' }));
+        await expect(await body.findByText('“Item 2” put back')).toBeInTheDocument();
+        // Back at its place, expanded as it was, with the focus on its header
+        const header = canvas.getByRole('button', { name: '2 Item 2' });
+        await expect(header).toHaveAttribute('aria-expanded', 'true');
+        await expect(header).toHaveFocus();
+        await expect(canvas.getByRole('textbox', { name: 'Label' })).toHaveValue('Shop');
+
+        // The item moves with its state, and the focus follows it
+        await userEvent.click(canvas.getByRole('button', { name: 'Move item 2 down' }));
+        await expect(canvas.getByRole('button', { name: '3 Item 3' })).toHaveAttribute(
+            'aria-expanded',
+            'true',
+        );
+        await expect(canvas.getByRole('button', { name: 'Move item 3 up' })).toHaveFocus();
+    },
+};
+
 const BLOCKS: RepeaterItem[] = [
     { type: 'heading', text: 'A summer in Montréal' },
     {

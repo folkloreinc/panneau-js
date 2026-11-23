@@ -1,5 +1,5 @@
 import { File, ImageOff, X } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 import {
     Button,
@@ -11,6 +11,7 @@ import {
     TileGroup,
     getNamedIcon,
     usePanneauIntl,
+    useUndoToast,
 } from '@panneau/ui';
 
 import { useFieldsContext } from '../shared/context';
@@ -308,6 +309,39 @@ export function RelationField(props: RelationFieldProps) {
         element?.focus();
     });
     const editable = source !== null && disabled !== true && readOnly !== true;
+
+    // "Undo" after a removal (decision 0063): the item goes back at its place, in the latest value
+    const undoToast = useUndoToast();
+    const fieldId = useId();
+    const restore = (reference: RelationReference, index: number, following?: string) => {
+        if (selected.some((entry) => entry.id === reference.id)) {
+            return;
+        }
+        // Before the item that followed it, or at its index
+        const before = selected.findIndex((entry) => entry.id === following);
+        const at = before !== -1 ? before : Math.min(index, selected.length);
+        if (props.multiple === true) {
+            props.onChange?.(selected.toSpliced(at, 0, reference));
+        } else {
+            props.onChange?.(reference);
+        }
+        setChanging(false);
+        focusNext.current = at;
+    };
+    const latest = useRef(restore);
+    useEffect(() => {
+        latest.current = restore;
+    });
+    const offerUndo = (reference: RelationReference, index: number, following?: string) =>
+        undoToast?.(
+            {
+                title: intl.formatMessage(messages.removed, { name: reference.label }),
+                undoneTitle: intl.formatMessage(messages.restored, { name: reference.label }),
+                onUndo: () => latest.current(reference, index, following),
+            },
+            { key: `${fieldId}-${reference.id}` },
+        );
+
     // The picker searches once it is about to be used: the field has the focus, the pointer is
     // over it, or it opens. A form of many relation fields doesn't search for each one.
     const [wanted, setWanted] = useState(false);
@@ -459,6 +493,11 @@ export function RelationField(props: RelationFieldProps) {
     if (props.multiple === true) {
         const { onChange } = props;
         const set = (next: RelationReference[]) => onChange?.(next.length > 0 ? next : null);
+        const remove = (reference: RelationReference) => {
+            set(selected.filter((entry) => entry.id !== reference.id));
+            const index = selected.indexOf(reference);
+            offerUndo(reference, index, selected[index + 1]?.id);
+        };
         return (
             <Fieldset {...chrome} description={description}>
                 <div ref={container} className={styles.multiple} onPointerEnter={want}>
@@ -466,16 +505,14 @@ export function RelationField(props: RelationFieldProps) {
                         <References
                             references={selected}
                             removeLabel={removeLabel}
-                            onRemove={(reference) =>
-                                set(selected.filter((entry) => entry.id !== reference.id))
-                            }
+                            onRemove={remove}
                         />
                     ) : selected.length > 0 ? (
                         <RelationCards
                             {...cards}
                             references={selected}
                             onRemove={(reference) => {
-                                set(selected.filter((entry) => entry.id !== reference.id));
+                                remove(reference);
                                 // The next card, or the last one, so that several go in a row
                                 focusNext.current = selected.indexOf(reference);
                             }}
@@ -590,6 +627,7 @@ export function RelationField(props: RelationFieldProps) {
                         }}
                         onRemove={() => {
                             onChange?.(null);
+                            offerUndo(current, 0);
                             focusNext.current = 'picker';
                         }}
                     />

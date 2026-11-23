@@ -143,10 +143,13 @@ export const Cards: Story = {
     },
 };
 
+/** Removing a card offers "Undo" in a toast (decision 0063), which puts it back at its place. */
 export const Multiple: Story = {
     render: function Render(args) {
         const [value, setValue] = useState<RelationReference[] | null>([
             { id: '1', label: 'Ada Lovelace' },
+            { id: '2', label: 'Grace Hopper' },
+            { id: '3', label: 'Margaret Hamilton' },
         ]);
         return (
             <RelationField
@@ -157,6 +160,24 @@ export const Multiple: Story = {
                 value={value}
                 onChange={setValue}
             />
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        const guests = within(canvas.getByRole('group', { name: 'Guests' }));
+        await userEvent.click(guests.getByRole('button', { name: 'Remove Grace Hopper' }));
+        await expect(guests.queryByText('Grace Hopper')).not.toBeInTheDocument();
+        await expect(await body.findByText('“Grace Hopper” removed')).toBeInTheDocument();
+
+        await userEvent.click(body.getByRole('button', { name: 'Undo' }));
+        await expect(await body.findByText('“Grace Hopper” put back')).toBeInTheDocument();
+        await waitFor(() =>
+            expect(guests.getAllByRole('listitem').map((card) => card.textContent ?? '')).toEqual([
+                expect.stringContaining('Ada Lovelace'),
+                expect.stringContaining('Grace Hopper'),
+                expect.stringContaining('Margaret Hamilton'),
+            ]),
         );
     },
 };
