@@ -65,6 +65,28 @@ export interface LinkPage {
 
 export { LinkValue }
 
+// @public
+export function PagePicker(input: PagePickerProps): JSX.Element;
+
+// @public (undocumented)
+export interface PagePickerProps {
+    // (undocumented)
+    editable: boolean;
+    // (undocumented)
+    errors: readonly string[];
+    // (undocumented)
+    label: string;
+    // (undocumented)
+    onBlur?: () => void;
+    // (undocumented)
+    onChange: (page: LinkPage | null) => void;
+    // (undocumented)
+    page: LinkPage | null;
+    // (undocumented)
+    required: boolean;
+    resources: readonly string[];
+}
+
 // (No @packageDocumentation comment for this package)
 
 ```

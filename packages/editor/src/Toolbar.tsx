@@ -1,7 +1,7 @@
 import type { Editor } from '@tiptap/core';
 import { useEditorState } from '@tiptap/react';
 import { Link } from 'lucide-react';
-import { Fragment, useState } from 'react';
+import { type ComponentProps, Fragment, useEffect } from 'react';
 import {
     Button as AriaButton,
     Toolbar as AriaToolbar,
@@ -11,12 +11,14 @@ import {
 
 import { editorMessages as messages } from '@panneau/intl';
 import type { RichTextStyle } from '@panneau/protocol';
-import { type IconComponent, Select, Tooltip, usePanneauIntl } from '@panneau/ui';
+import { type IconComponent, Select, Tooltip, isApplePlatform, usePanneauIntl } from '@panneau/ui';
 
 import { LinkDialog } from './LinkDialog';
 import styles from './RichTextField.module.css';
 import { type RichTextButton, builtInButtons } from './buttons';
+import { LINK_SHORTCUT, setLinkShortcut } from './extensions/shortcut';
 import type { NewTabLinks } from './settings';
+import { type FormattedShortcut, formatShortcut } from './shortcuts';
 import { applyStyle, canApplyStyle, getActiveStyle } from './styles';
 
 export interface ToolbarProps {
@@ -28,6 +30,11 @@ export interface ToolbarProps {
     newTab: NewTabLinks;
     /** Buttons of plugins. One with the name of a built-in button replaces it. */
     buttons: readonly RichTextButton[];
+    /** The resources whose items links can point to, searched in the link dialog. */
+    pages: readonly string[];
+    /** Whether the link dialog is open: the link button and ⌘K open it. */
+    isLinkOpen: boolean;
+    onLinkOpenChange: (isOpen: boolean) => void;
 }
 
 const SEPARATOR = '|';
@@ -78,23 +85,46 @@ function getTextStyle(editor: Editor): string | null {
 function ToolbarButton({
     label,
     icon: Icon,
+    shortcut,
     isActive,
     isDisabled,
     onPress,
 }: {
     label: string;
     icon: IconComponent;
+    shortcut: FormattedShortcut | undefined;
     isActive: boolean | undefined;
     isDisabled: boolean;
     onPress: () => void;
 }) {
     const icon = <Icon size={16} aria-hidden />;
+    // React Aria leaves `aria-keyshortcuts` out of the button's attributes
+    const keys =
+        shortcut !== undefined
+            ? {
+                  render: (props: ComponentProps<'button'>) => (
+                      <button {...props} aria-keyshortcuts={shortcut.keys} />
+                  ),
+              }
+            : {};
     return (
-        <Tooltip content={label}>
+        <Tooltip
+            content={
+                shortcut !== undefined ? (
+                    <span className={styles.tooltip}>
+                        {label}
+                        <kbd className={styles.shortcut}>{shortcut.label}</kbd>
+                    </span>
+                ) : (
+                    label
+                )
+            }
+        >
             {isActive !== undefined ? (
                 <ToggleButton
                     className={styles.button}
                     aria-label={label}
+                    {...keys}
                     isSelected={isActive}
                     isDisabled={isDisabled}
                     onChange={onPress}
@@ -105,6 +135,7 @@ function ToolbarButton({
                 <AriaButton
                     className={styles.button}
                     aria-label={label}
+                    {...keys}
                     isDisabled={isDisabled}
                     onPress={onPress}
                 >
@@ -126,9 +157,14 @@ export function Toolbar({
     styles: blockStyles,
     newTab,
     buttons,
+    pages,
+    isLinkOpen,
+    onLinkOpenChange,
 }: ToolbarProps) {
     const intl = usePanneauIntl();
-    const [linkOpen, setLinkOpen] = useState(false);
+    const apple = isApplePlatform();
+    const shortcutOf = (shortcut: string | undefined) =>
+        shortcut !== undefined ? formatShortcut(shortcut, apple) : undefined;
     const allButtons = new Map(
         [...builtInButtons, ...buttons].map((button) => [button.name, button]),
     );
@@ -138,6 +174,16 @@ export function Toolbar({
         name === 'link' ||
         (name === 'style' && blockStyles.length > 0);
     const shown = getShownItems(items, known);
+    const hasLink = shown.includes('link');
+
+    // ⌘K opens the link dialog while the toolbar shows the link button
+    useEffect(() => {
+        if (!hasLink) {
+            return undefined;
+        }
+        setLinkShortcut(editor, () => onLinkOpenChange(true));
+        return () => setLinkShortcut(editor, null);
+    }, [editor, hasLink, onLinkOpenChange]);
 
     // Only what the toolbar shows: it renders again when it changes
     const state = useEditorState({
@@ -272,9 +318,10 @@ export function Toolbar({
                                             key={key}
                                             label={intl.formatMessage(messages.link)}
                                             icon={Link}
+                                            shortcut={shortcutOf(LINK_SHORTCUT)}
                                             isActive={state.link}
                                             isDisabled={!state.canLink}
-                                            onPress={() => setLinkOpen(true)}
+                                            onPress={() => onLinkOpenChange(true)}
                                         />
                                     );
                                 }
@@ -292,6 +339,7 @@ export function Toolbar({
                                                 : intl.formatMessage(button.label)
                                         }
                                         icon={button.icon}
+                                        shortcut={shortcutOf(button.shortcut)}
                                         isActive={buttonState?.active}
                                         isDisabled={buttonState?.disabled === true}
                                         onPress={() => button.run(editor)}
@@ -302,12 +350,13 @@ export function Toolbar({
                     </Fragment>
                 ))}
             </AriaToolbar>
-            {shown.includes('link') ? (
+            {hasLink ? (
                 <LinkDialog
                     editor={editor}
                     newTab={newTab}
-                    isOpen={linkOpen}
-                    onOpenChange={setLinkOpen}
+                    pages={pages}
+                    isOpen={isLinkOpen}
+                    onOpenChange={onLinkOpenChange}
                 />
             ) : null}
         </>

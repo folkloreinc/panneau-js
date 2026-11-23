@@ -1,7 +1,7 @@
 export { RichTextField, RichTextFieldEntry, type RichTextFieldProps } from './RichTextField';
 export { type RichTextButton, builtInButtons } from './buttons';
 export { type RichTextExtensionsOptions, createRichTextExtensions } from './extensions/index';
-export type { HtmlNodeOptions } from './extensions/raw';
+export type { HtmlNodeOptions, KeptHtmlKind } from './extensions/raw';
 export { normalizeRichText } from './html';
 export {
     type EditorPlugin,
