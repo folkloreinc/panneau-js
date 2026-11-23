@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import type { Definition, Item, ListQuery } from '@panneau/protocol';
+import type { Definition, Field, Item, ListQuery, Resource } from '@panneau/protocol';
 import {
     IDS_FILTER,
     IDS_FILTER_LIMIT,
@@ -19,6 +19,27 @@ export interface RelationReference {
     description?: string;
     /** The URL of its image: the related resource's `itemImage` (decision 0061). */
     imageUrl?: string;
+    /**
+     * Its state (Draft, Archived), shown as a badge in its tone: the related resource's
+     * `itemStatus` (decision 0103).
+     */
+    status?: RelationStatus;
+}
+
+/** The state of a related item: the label of its `itemStatus`, and the tone of its option. */
+export interface RelationStatus {
+    label: string;
+    /** A tone of the theme (`neutral`, `success`, `muted`…). Defaults to `neutral`. */
+    tone?: string;
+}
+
+/** A page of results of `searchPage()`. */
+export interface RelationSearchPage {
+    items: RelationReference[];
+    /** How many items match the text, when the source counts them. */
+    total?: number | null;
+    /** What `searchPage()` takes to get the next page: `null`, or left out, on the last one. */
+    next?: string | null;
 }
 
 /** How a relation field shows the items of a resource, in its cards (decision 0067). */
@@ -29,6 +50,8 @@ export interface RelationResourceInfo {
     image?: boolean;
     /** Whether its items have a description (`itemSubtitle`). */
     description?: boolean;
+    /** Whether its items have a status (`itemStatus`, decision 0103). */
+    status?: boolean;
 }
 
 /** Where relation fields search for items. */
@@ -39,6 +62,16 @@ export interface RelationSource {
         query: string,
         options: { signal: AbortSignal },
     ): Promise<RelationReference[]>;
+    /**
+     * A page of the items of a resource that match a text, with how many there are: the picker
+     * shows the first page, then asks for the `next` one as its list scrolls to the end. Without
+     * it, the picker shows what `search()` gives, and no count.
+     */
+    searchPage?(
+        resource: string,
+        query: string,
+        options: { signal: AbortSignal; next?: string | undefined },
+    ): Promise<RelationSearchPage>;
     /**
      * The references of items by id, for values that are only ids (`"12"`, `["12", "13"]`), as a
      * product's own API gives them. In any order; ids it doesn't find are left out, and keep their
@@ -66,9 +99,9 @@ export interface RelationSource {
     /** Whether `create()` can create items of a resource. Defaults to true. */
     canCreate?(resource: string): boolean;
     /**
-     * How the items of a resource show in their cards: its icon, and whether they have an image or
-     * a description. When they do, references that come without them (`{ id, label }`, from items)
-     * get them from `resolve()`.
+     * How the items of a resource show in their cards: its icon, and whether they have an image, a
+     * description or a status. When they do, references that come without them (`{ id, label }`,
+     * from items) get them from `resolve()`.
      */
     describe?(resource: string): RelationResourceInfo | null;
     /** Where an item opens, for the link of its card. Without it, or `null`, the card has none. */
@@ -77,14 +110,25 @@ export interface RelationSource {
 
 /** What `createRelationSource()` needs from an adapter: the `list()` and `create()` of `@panneau/data`. */
 export interface RelationListAdapter {
-    /** Searches items (`q`), and gets them by id (`filter[ids]`), for `resolve()`. */
+    /**
+     * Searches items (`q`), page by page, and gets them by id (`filter[ids]`), for `resolve()`. Its
+     * `meta`, when it gives one, says how many items match and whether there is a next page.
+     */
     list(
         resource: string,
         query?: ListQuery,
         options?: { signal?: AbortSignal },
-    ): Promise<{ data: Item[] }>;
+    ): Promise<{ data: Item[]; meta?: RelationListMeta }>;
     /** Creates an item, for `create()`. */
     create?(resource: string, values: Record<string, unknown>): Promise<Item>;
+}
+
+/** The `meta` of a page of a list, as `@panneau/protocol` gives it: by page numbers, or by cursors. */
+export interface RelationListMeta {
+    page?: number;
+    lastPage?: number;
+    total?: number | null;
+    nextCursor?: string | null;
 }
 
 /**
@@ -133,6 +177,66 @@ function labelOf(value: unknown, locale?: string): string | null {
 }
 
 const keyOf = (resource: string, id: string) => `${resource}\u0000${id}`;
+
+/** The fields of a resource and of its types, for the field of its `itemStatus`. */
+function fieldOf(resource: Resource, name: string): Field | undefined {
+    return [...resource.fields, ...(resource.types ?? []).flatMap((type) => type.fields)].find(
+        (field) => field.name === name,
+    );
+}
+
+/**
+ * The status of an item, from the value of its resource's `itemStatus` field (decision 0103): the
+ * label and the tone of its option for a `select` (its first value when it has several), or the
+ * value as text.
+ */
+function statusOf(resource: Resource, item: Item): RelationStatus | null {
+    const name = resource.itemStatus;
+    if (name === undefined) {
+        return null;
+    }
+    const raw: unknown = item[name];
+    const value: unknown = Array.isArray(raw) ? raw[0] : raw;
+    if (value === null || value === undefined || value === '') {
+        return null;
+    }
+    const option = fieldOf(resource, name)?.options?.find(
+        (candidate) => String(candidate.value) === String(value),
+    );
+    if (option !== undefined) {
+        return { label: option.label, ...(option.tone !== undefined ? { tone: option.tone } : {}) };
+    }
+    const label = labelOf(value);
+    return label !== null && label !== '' ? { label } : null;
+}
+
+/** Reads the `next` of a page: a page number (`p:2`) or a cursor (`c:…`). */
+function pageQuery(next: string | undefined): Pick<ListQuery, 'page' | 'cursor'> {
+    if (next?.startsWith('c:') === true) {
+        return { cursor: next.slice(2) };
+    }
+    const page = next?.startsWith('p:') === true ? Number(next.slice(2)) : 1;
+    return { page: Number.isInteger(page) && page > 0 ? page : 1 };
+}
+
+/** The `total` and the `next` page of a list, from its `meta`. */
+function pageOf(meta: RelationListMeta | undefined): Omit<RelationSearchPage, 'items'> {
+    if (meta === undefined) {
+        return {};
+    }
+    const total = typeof meta.total === 'number' ? meta.total : null;
+    if ('nextCursor' in meta) {
+        return { total, next: typeof meta.nextCursor === 'string' ? `c:${meta.nextCursor}` : null };
+    }
+    const { page, lastPage } = meta;
+    return {
+        total,
+        next:
+            typeof page === 'number' && typeof lastPage === 'number' && page < lastPage
+                ? `p:${page + 1}`
+                : null,
+    };
+}
 
 /** A cache of items for the life of a relation source, without the `items` option. */
 function createItemCache(): RelationItemCache {
@@ -183,6 +287,7 @@ export function createRelationSource(
             definitionResource !== undefined ? getItemImageField(definitionResource) : undefined;
         const description = subtitleField !== undefined ? labelOf(item[subtitleField]) : null;
         const imageUrl = imageField !== undefined ? getImageUrl(item[imageField]) : null;
+        const status = definitionResource !== undefined ? statusOf(definitionResource, item) : null;
         return {
             id: item.id,
             label:
@@ -191,6 +296,7 @@ export function createRelationSource(
                 item.id,
             ...(description !== null && description !== '' ? { description } : {}),
             ...(imageUrl !== null ? { imageUrl } : {}),
+            ...(status !== null ? { status } : {}),
         };
     };
     const valuesOf = (text: string, resource: string): Record<string, unknown> | null => {
@@ -211,15 +317,26 @@ export function createRelationSource(
                     : text,
         };
     };
+    const searchPage = async (
+        resource: string,
+        query: string,
+        { signal, next }: { signal: AbortSignal; next?: string | undefined },
+    ): Promise<RelationSearchPage> => {
+        const response = await adapter.list(
+            resource,
+            { ...pageQuery(next), perPage, ...(query !== '' ? { q: query } : {}) },
+            { signal },
+        );
+        return {
+            items: response.data.map((item) => toReference(item, resource)),
+            ...pageOf(response.meta),
+        };
+    };
     const source: RelationSource = {
         async search(resource, query, { signal }) {
-            const response = await adapter.list(
-                resource,
-                { page: 1, perPage, ...(query !== '' ? { q: query } : {}) },
-                { signal },
-            );
-            return response.data.map((item) => toReference(item, resource));
+            return (await searchPage(resource, query, { signal })).items;
         },
+        searchPage,
         describe(resource) {
             const definitionResource = resourceOf(resource);
             if (definitionResource === undefined) {
@@ -229,6 +346,7 @@ export function createRelationSource(
                 ...(definitionResource.icon !== undefined ? { icon: definitionResource.icon } : {}),
                 image: getItemImageField(definitionResource) !== undefined,
                 description: definitionResource.itemSubtitle !== undefined,
+                status: definitionResource.itemStatus !== undefined,
             };
         },
     };
@@ -335,12 +453,17 @@ export function toReferences(value: unknown): RelationReference[] {
             return [{ id: String(entry), label: String(entry) }];
         }
         if (entry !== null && typeof entry === 'object' && 'id' in entry) {
-            const { id, label, description, imageUrl } = entry as {
+            const { id, label, description, imageUrl, status } = entry as {
                 id: unknown;
                 label?: unknown;
                 description?: unknown;
                 imageUrl?: unknown;
+                status?: unknown;
             };
+            const { label: statusLabel, tone } =
+                status !== null && typeof status === 'object'
+                    ? (status as { label?: unknown; tone?: unknown })
+                    : {};
             if (typeof id === 'string' || typeof id === 'number') {
                 return [
                     {
@@ -348,6 +471,14 @@ export function toReferences(value: unknown): RelationReference[] {
                         label: typeof label === 'string' ? label : String(id),
                         ...(typeof description === 'string' ? { description } : {}),
                         ...(typeof imageUrl === 'string' ? { imageUrl } : {}),
+                        ...(typeof statusLabel === 'string'
+                            ? {
+                                  status: {
+                                      label: statusLabel,
+                                      ...(typeof tone === 'string' ? { tone } : {}),
+                                  },
+                              }
+                            : {}),
                     },
                 ];
             }
@@ -358,18 +489,23 @@ export function toReferences(value: unknown): RelationReference[] {
 
 /**
  * Whether a reference needs `resolve()`: a plain id (its label is its id), or a reference without
- * the description or the image that the items of its resource have (decision 0067).
+ * the description, the image or the status that the items of its resource have (decisions 0067
+ * and 0103).
  */
 function needsResolving(reference: RelationReference, detailed: boolean): boolean {
     return (
         reference.label === reference.id ||
-        (detailed && reference.description === undefined && reference.imageUrl === undefined)
+        (detailed &&
+            reference.description === undefined &&
+            reference.imageUrl === undefined &&
+            reference.status === undefined)
     );
 }
 
 /**
  * Relation references with what the source knows of them: plain ids (`"12"`) get their labels, and
- * references of a resource whose items have a description or an image (`describe()`) get them, from
+ * references of a resource whose items have a description, an image or a status (`describe()`)
+ * get them, from
  * the source: at once from `peek()`, or else from `resolve()`, once per field, resource and id.
  * They stay as they are until then, or when the source doesn't find them.
  */
@@ -385,7 +521,7 @@ export function useRelationReferences(
     }>({ source, references: {} });
     const found = resolved.source === source ? resolved.references : {};
     const info = source?.describe?.(resource) ?? null;
-    const detailed = info?.image === true || info?.description === true;
+    const detailed = info?.image === true || info?.description === true || info?.status === true;
     const knownOf = (id: string): RelationReference | null | undefined => {
         const key = keyOf(resource, id);
         return key in found ? found[key] : source?.peek?.(resource, id);

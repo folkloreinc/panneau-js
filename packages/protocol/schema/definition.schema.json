@@ -223,6 +223,9 @@
                 "itemImage": {
                     "type": "string"
                 },
+                "itemStatus": {
+                    "type": "string"
+                },
                 "open": {
                     "anyOf": [
                         {

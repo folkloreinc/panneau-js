@@ -447,7 +447,20 @@ export interface RelationListAdapter {
         signal?: AbortSignal;
     }): Promise<{
         data: Item[];
+        meta?: RelationListMeta;
     }>;
+}
+
+// @public
+export interface RelationListMeta {
+    // (undocumented)
+    lastPage?: number;
+    // (undocumented)
+    nextCursor?: string | null;
+    // (undocumented)
+    page?: number;
+    // (undocumented)
+    total?: number | null;
 }
 
 // @public
@@ -458,13 +471,29 @@ export interface RelationReference {
     imageUrl?: string;
     // (undocumented)
     label: string;
+    status?: RelationStatus;
+}
+
+// @public
+export interface RelationResourceInfo {
+    description?: boolean;
+    icon?: string;
+    image?: boolean;
+    status?: boolean;
+}
+
+// @public
+export interface RelationSearchPage {
+    // (undocumented)
+    items: RelationReference[];
+    next?: string | null;
+    total?: number | null;
 }
 
 // @public
 export interface RelationSource {
     canCreate?(resource: string): boolean;
     create?(resource: string, text: string): Promise<RelationReference | null>;
-    // Warning: (ae-forgotten-export) The symbol "RelationResourceInfo" needs to be exported by the entry point index.d.ts
     describe?(resource: string): RelationResourceInfo | null;
     getItemHref?(resource: string, id: string): string | null;
     peek?(resource: string, id: string): RelationReference | null | undefined;
@@ -474,6 +503,10 @@ export interface RelationSource {
     search(resource: string, query: string, options: {
         signal: AbortSignal;
     }): Promise<RelationReference[]>;
+    searchPage?(resource: string, query: string, options: {
+        signal: AbortSignal;
+        next?: string | undefined;
+    }): Promise<RelationSearchPage>;
 }
 
 // @public (undocumented)
@@ -484,6 +517,13 @@ export interface RelationSourceOptions {
     getLabel?: (item: Item, resource: string) => string;
     items?: RelationItemCache;
     perPage?: number;
+}
+
+// @public
+export interface RelationStatus {
+    // (undocumented)
+    label: string;
+    tone?: string;
 }
 
 // @public

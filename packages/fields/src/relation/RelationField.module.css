@@ -12,7 +12,8 @@
     gap: var(--panneau-space-2);
 }
 
-.picker > :first-child {
+/* The width of its column, as the card that replaces it (#410). */
+.combo {
     flex: 1;
     min-width: 0;
 }

@@ -52,6 +52,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     "id": "pages",
     "kind": null, // "media" for a media library
     "label": { "singular": "page", "plural": "pages" },
+    "itemStatus": "status", // the state of an item, a badge in relation pickers and cards (decision 0103)
     "open": "edit", // where an item's title goes: "edit" (the default) or "panel"
     "itemActions": ["show", "edit", "duplicate", "delete"], // the built-in item actions shown, the default
     "fields": [ /* Field */ ],
@@ -81,6 +82,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 }
 ```
 
+- **`itemTitle`, `itemSubtitle`, `itemImage` and `itemStatus`** name the fields that show an item where it isn't in its list: its title, a line under it, its image ([0061](decisions/0061-item-images-in-lists.md)), and its state. `itemStatus` ([0103](decisions/0103-the-status-of-an-item.md)) names a field whose value says where the item stands (Draft, Archived), usually a `select` whose options have [tones](#tones): relation pickers and cards show the label of its option as a badge in its tone, next to the item's title. A value that isn't one of its options shows as text, in `neutral`; the first value of a `select` with `multiple`. It can name a field of the resource's `types`. Without it, items show no state there. Clients that don't know it ignore it.
 - **`types`** ([0077](decisions/0077-resource-types.md)): the types of the items, each with fields of its own (`ResourceType`: `id`, `label`, `description`, `icon`, `fields`, `abilities`). Every item has a `type` among their ids, set when it is created. Its fields are those of the resource, then those of its type, in forms, details and validation; type fields are named apart from the resource's, and none is named `type`. `form.layout` can name the fields of every type: each form leaves out those of the other types.
     - `abilities.create: false` keeps a type out of the choices when creating, and the backend refuses to create one (a singleton such as the home page).
     - To show and filter by type, the backend declares a `select` field `type`, with the types as its options and `notInForm: true`, and a `select` filter `type`.
@@ -203,7 +205,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     - `toolbar` lists buttons in order, with `|` between groups: `heading`, `style`, `bold`, `italic`, `underline`, `strike`, `superscript`, `subscript`, `code`, `link`, `bulletList`, `orderedList`, `blockquote`, `horizontalRule`, `clear`, `undo`, `redo`, and the buttons that plugins add (an inline logo). Clients skip names they don't know.
     - A style in `styles` puts its `class` on an element: `p` (the default), `h1` to `h6`, `blockquote`, `ul`, `ol` or `li`.
     - `links.newTab` sets which links open in a new tab, with `target="_blank" rel="noopener noreferrer"`: as the user chooses, every link to another site, or none.
-    - With a `resource` (one or several, as a `link` field's), links can point to items of the site ([0103](decisions/0103-links-to-items-in-rich-text.md)): `<a href="…" data-page-id="12" data-page-resource="pages">`. A client writes `href="#"` for a new one. A backend writes the URL of the item in `href` where it serializes the item, as for `page` links, and resolves it again when it saves the value: it ignores the `href` a client sends for such a link.
+    - With a `resource` (one or several, as a `link` field's), links can point to items of the site ([0107](decisions/0107-links-to-items-in-rich-text.md)): `<a href="…" data-page-id="12" data-page-resource="pages">`. A client writes `href="#"` for a new one. A backend writes the URL of the item in `href` where it serializes the item, as for `page` links, and resolves it again when it saves the value: it ignores the `href` a client sends for such a link.
 
 - **`color` values** are hexadecimal colors, `#1d4ed8`. With `settings.palette`, `[{ "value": "purple", "label": "Purple", "color": "#6b21a8" }]`, a value is the `value` of one of its colors, and a backend refuses others. `color` (hexadecimal) draws the swatch of a color, and `label` names it; without `color`, `value` is a hexadecimal color ([0058](decisions/0058-multiple-countries-embed-providers-color-palettes.md)).
 - **`tel` values** are international numbers in E.164, `+15145550199` ([0047](decisions/0047-countries-regions-and-phone-numbers.md)). The type implies the `tel` rule: a client keeps a number that isn't complete as the text typed, which the rule refuses. `settings.country` is the country of a new number. With `settings.extension: true`, a number can have an extension, after `;ext=` as in a `tel:` URI: `+15145550199;ext=123`, 1 to 10 digits, and the type implies `{ "rule": "tel", "extension": true }`, which accepts it ([0057](decisions/0057-phone-extensions.md)).

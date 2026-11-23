@@ -4161,7 +4161,7 @@
                         "type": "boolean"
                     },
                     "resource": {
-                        "description": "`relation`: id of the related resource. `media`, `image`: id of a resource of kind `media`, or a list of them; without it, every library of the definition (decision 0027). `link`: the resources of its `page` links (decision 0055). `richtext`: the resources whose items its links can point to (decision 0103).",
+                        "description": "`relation`: id of the related resource. `media`, `image`: id of a resource of kind `media`, or a list of them; without it, every library of the definition (decision 0027). `link`: the resources of its `page` links (decision 0055). `richtext`: the resources whose items its links can point to (decision 0107).",
                         "anyOf": [
                             {
                                 "type": "string",
@@ -5298,6 +5298,10 @@
                     },
                     "itemImage": {
                         "description": "The field that holds the image of an item (a media, a file or a URL), in search results, pickers, the gallery and the thumbnails of the table. Defaults to the item's `media` in a resource of kind `media` (decision 0061).",
+                        "type": "string"
+                    },
+                    "itemStatus": {
+                        "description": "The field that holds the state of an item (Draft, Archived), usually a `select` whose options have tones: its label, in its option's tone, shows as a badge next to the item's title in relation pickers and cards (decision 0103).",
                         "type": "string"
                     },
                     "open": {

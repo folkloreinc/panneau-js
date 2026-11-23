@@ -1,4 +1,4 @@
-# 0103: Links to items in rich text
+# 0107: Links to items in rich text
 
 - Status: accepted
 - Date: 2026-11-23
