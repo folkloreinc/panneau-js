@@ -474,6 +474,13 @@ export const fieldsMessages: {
     moveDown: PanneauMessage<    {
     index: number;
     }>;
+    duplicateItem: PanneauMessage<    {
+    index: number;
+    }>;
+    insertItem: PanneauMessage<    {
+    before: number;
+    after: number;
+    }>;
     item: PanneauMessage<    {
     index: number;
     }>;

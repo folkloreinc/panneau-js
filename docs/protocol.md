@@ -148,7 +148,31 @@ The protocol is the only contract between a Panneau frontend and its backend. It
 - **`select` settings** (`SelectSettings`, which `validateDefinition()` checks): `widget` shows every choice, as `radios` for a single choice or `checkboxes` for several. `search` makes the dropdown of a single choice a combo box, whose options are filtered as the user types: `true` always, `false` never, and without it the client chooses (Panneau: more than 10 options). The value is the same either way.
 - **`localized`** makes the value an object keyed by locale (`{ "fr": "…", "en": "…" }`). It replaces the separate `localized` field and the `*Localized` PHP classes of v1.
 - **`group`** has `fields`, for a nested object.
-- **`repeater`** has `fields`, or `types` for typed blocks, for an array. Clients collapse its items under their title; `settings.collapsible: false` keeps them expanded ([0068](decisions/0068-collapsed-items-and-lighter-controls.md)). A repeater can name a list of shared block types with `typeSet`, a key of the definition's `blockTypeSets`, rather than repeat its `types` ([0094](decisions/0094-shared-block-types.md)): the blocks of every type of page, or the blocks a block holds. Clients resolve it into `types` when they read the definition (`validateDefinition()`, `validateBootConfig()`, `resolveBlockTypeSets()`).
+- **`repeater`** has `fields`, or `types` for typed blocks, for an array. Clients collapse its items under their title; `settings.collapsible: false` keeps them expanded ([0068](decisions/0068-collapsed-items-and-lighter-controls.md)). A block type has an `id`, a `label` and its `fields`, and can have an `icon` (a Lucide name) and a `description`, which the menu of types shows.
+    - **`settings.itemTitle`** (`RepeaterSettings`, which `validateDefinition()` checks) names what titles an item in its header: a field name (`"title"`), or a template of field names in braces (`"{first_name} {last_name} ({role})"`). A localized value gives the text of the interface's locale, or the first one that has a text; a rich text its text without tags; a `select` the label of its option. Brackets left empty by a missing value are dropped. A block type's own `itemTitle` takes its place for blocks of that type. An item without any of the values keeps the label of its type, or "Item 2", and an excerpt of its first text ([0109](decisions/0109-duplicate-add-in-between-and-titled-blocks.md)).
+
+        ```jsonc
+        {
+            "name": "blocks",
+            "type": "repeater",
+            "settings": { "itemTitle": "title" },
+            "types": [
+                {
+                    "id": "quote",
+                    "label": "Quote",
+                    "icon": "quote",
+                    "description": "A quote and who said it",
+                    "itemTitle": "{text} ({author})",
+                    "fields": [
+                        { "name": "text", "type": "textarea" },
+                        { "name": "author", "type": "text" },
+                    ],
+                },
+            ],
+        }
+        ```
+
+    - A repeater can name a list of shared block types with `typeSet`, a key of the definition's `blockTypeSets`, rather than repeat its `types` ([0094](decisions/0094-shared-block-types.md)): the blocks of every type of page, or the blocks a block holds. Clients resolve it into `types` when they read the definition (`validateDefinition()`, `validateBootConfig()`, `resolveBlockTypeSets()`).
 - **Compound fields** ([0065](decisions/0065-compound-fields.md)) are types of plugins that carry their sub-fields in `fields` (`credits`, `sessions`). Their value is an object of them, or a list of objects with `"multiple": true`, checked as a `group` or a `repeater`. A client without the type's plugin renders it as a `group`, or as a `repeater` with `multiple` (`getNestedShape()`).
 - **`relation`** points to another resource:
 

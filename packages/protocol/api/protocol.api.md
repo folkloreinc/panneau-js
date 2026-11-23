@@ -671,6 +671,8 @@ export const BlockType: z.ZodObject<{
     id: z.ZodString;
     label: z.ZodString;
     icon: z.ZodOptional<z.ZodString>;
+    description: z.ZodOptional<z.ZodString>;
+    itemTitle: z.ZodOptional<z.ZodString>;
     fields: z.ZodArray<typeof Field>;
 }, z.core.$loose>;
 
@@ -2073,6 +2075,8 @@ export const Definition: z.ZodObject<{
         id: z.ZodString;
         label: z.ZodString;
         icon: z.ZodOptional<z.ZodString>;
+        description: z.ZodOptional<z.ZodString>;
+        itemTitle: z.ZodOptional<z.ZodString>;
         fields: z.ZodArray<Field>;
     }, z.core.$loose>>>>;
     pages: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
@@ -4383,6 +4387,8 @@ export const namedSchemas: {
         id: z.ZodString;
         label: z.ZodString;
         icon: z.ZodOptional<z.ZodString>;
+        description: z.ZodOptional<z.ZodString>;
+        itemTitle: z.ZodOptional<z.ZodString>;
         fields: z.ZodArray<typeof Field>;
     }, z.core.$loose>;
     Field: z.ZodObject<{
@@ -4727,6 +4733,10 @@ export const namedSchemas: {
     }, z.core.$loose>;
     SelectSettings: z.ZodObject<{
         search: z.ZodOptional<z.ZodBoolean>;
+    }, z.core.$loose>;
+    RepeaterSettings: z.ZodObject<{
+        collapsible: z.ZodOptional<z.ZodBoolean>;
+        itemTitle: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>;
     LayoutNode: z.ZodObject<{
         type: z.ZodString;
@@ -8375,6 +8385,8 @@ export const namedSchemas: {
             id: z.ZodString;
             label: z.ZodString;
             icon: z.ZodOptional<z.ZodString>;
+            description: z.ZodOptional<z.ZodString>;
+            itemTitle: z.ZodOptional<z.ZodString>;
             fields: z.ZodArray<typeof Field>;
         }, z.core.$loose>>>>;
         pages: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodObject<{
@@ -12320,6 +12332,15 @@ export function renderedCropSize(transform: Pick<MediaTransform, 'crop' | 'rotat
     width: number;
     height: number;
 } | null;
+
+// @public
+export const RepeaterSettings: z.ZodObject<{
+    collapsible: z.ZodOptional<z.ZodBoolean>;
+    itemTitle: z.ZodOptional<z.ZodString>;
+}, z.core.$loose>;
+
+// @public
+export type RepeaterSettings = z.infer<typeof RepeaterSettings>;
 
 // @public
 export const RESERVED_ROUTE_SEGMENTS: readonly ["resources", "pages", "media", "search", "account", "auth"];

@@ -5,6 +5,7 @@ import {
     ChevronsDownUp,
     ChevronsUpDown,
     CircleAlert,
+    Copy,
     Plus,
     Trash2,
 } from 'lucide-react';
@@ -19,13 +20,14 @@ import {
     Menu,
     MenuItem,
     MenuTrigger,
+    getNamedIcon,
     usePanneauIntl,
     useUndoToast,
 } from '@panneau/ui';
 
 import { NestedField } from '../shared/DefinitionField';
 import { cx } from '../shared/cx';
-import { getFieldProps, getRuleNumber, getSetting, isBoolean } from '../shared/entry';
+import { getFieldProps, getRuleNumber, getSetting, isBoolean, isString } from '../shared/entry';
 import { messages } from '../shared/messages';
 import type { FieldEntryProps, FieldProps } from '../shared/types';
 import styles from './RepeaterField.module.css';
@@ -121,6 +123,65 @@ export function getItemExcerpt(item: RepeaterItem, fields: readonly Field[]): st
         }
     }
     return null;
+}
+
+/** A value of an item as text, for its title: `null` when it has none. */
+function valueText(value: unknown, field: Field | undefined, locale: string): string | null {
+    if (typeof value === 'number') {
+        return String(value);
+    }
+    if (typeof value === 'string') {
+        // The label of a choice, rather than its value
+        const option = field?.options?.find((candidate) => candidate.value === value);
+        const text = plainText(option?.label ?? value);
+        return text !== '' ? text : null;
+    }
+    if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+        // A localized value: the locale of the interface, its language, or the first one
+        const texts = value as Record<string, unknown>;
+        const language = locale.split('-')[0] ?? locale;
+        for (const text of [texts[locale], texts[language], ...Object.values(texts)]) {
+            const found = typeof text === 'string' ? plainText(text) : '';
+            if (found !== '') {
+                return found;
+            }
+        }
+    }
+    return null;
+}
+
+/**
+ * The title of an item from the definition (`settings.itemTitle` of a repeater, or `itemTitle` of a
+ * block type): a field name (`title`), or a template of field names in braces (`{first} {last}`).
+ * Gives `null` when none of the fields it names has a value.
+ */
+export function getItemTitle(
+    item: RepeaterItem,
+    template: string,
+    fields: readonly Field[] = [],
+    locale = 'en',
+): string | null {
+    const pattern = template.includes('{') ? template : `{${template}}`;
+    let found = false;
+    const title = pattern
+        .replace(/\{([^{}]+)\}/g, (_, name: string) => {
+            const key = name.trim();
+            const text = valueText(
+                item[key],
+                fields.find((field) => field.name === key),
+                locale,
+            );
+            found = found || text !== null;
+            return text ?? '';
+        })
+        // Brackets left empty by a missing value
+        .replace(/\(\s*\)|\[\s*\]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    if (!found || title === '') {
+        return null;
+    }
+    return title.length > 140 ? `${title.slice(0, 140)}…` : title;
 }
 
 /** The indexes of the items that have an error, from the paths in error inside the list. */
@@ -381,17 +442,70 @@ export function RepeaterField({
             { key: `${id}-${key}` },
         );
     };
-    const add = (type?: BlockType) => {
-        set(
-            [
-                ...items,
-                type !== undefined ? { type: type.id, ...defaults(type.fields) } : defaults(fields),
-            ],
-            [...keys, tracked.next],
-            tracked.next + 1,
-        );
-        setExpanded(new Set([...expanded, tracked.next]));
+    /**
+     * Adds an item at `at`, the end by default, with its key, expanded. An item added between
+     * others, or a copy, gets the focus on its header.
+     */
+    const addAt = (item: RepeaterItem, position?: number) => {
+        const at = position ?? items.length;
+        const key = tracked.next;
+        set(items.toSpliced(at, 0, item), keys.toSpliced(at, 0, key), key + 1);
+        setExpanded(new Set([...expanded, key]));
+        if (at < items.length) {
+            focusNext.current = { key, index: at, tool: 'header' };
+        }
     };
+    const add = (type?: BlockType, at?: number) =>
+        addAt(
+            type !== undefined ? { type: type.id, ...defaults(type.fields) } : defaults(fields),
+            at,
+        );
+    /** A copy of an item, right after it: its own values, which the original doesn't share. */
+    const duplicate = (index: number) => {
+        const item = items[index];
+        if (item !== undefined) {
+            addAt(structuredClone(item), index + 1);
+        }
+    };
+    // Icons before the types in the menu, from their names: a type without one keeps its place
+    const typesHaveIcons = types?.some((type) => type.icon !== undefined) ?? false;
+    /** The menu of block types, which adds a block at `at`, or at the end. */
+    const typeMenu = (at?: number) =>
+        types !== undefined ? (
+            <Menu
+                aria-label={intl.formatMessage(messages.add)}
+                onAction={(key) => {
+                    const type = types.find((candidate) => candidate.id === key);
+                    if (type !== undefined) {
+                        add(type, at);
+                    }
+                }}
+            >
+                {types.map((type) => (
+                    <MenuItem
+                        key={type.id}
+                        id={type.id}
+                        textValue={type.label}
+                        {...(typesHaveIcons
+                            ? {
+                                  media: (
+                                      <span className={styles.typeIcon}>
+                                          {type.icon !== undefined ? (
+                                              <Icon icon={getNamedIcon(type.icon)} />
+                                          ) : null}
+                                      </span>
+                                  ),
+                              }
+                            : {})}
+                        {...(type.description !== undefined
+                            ? { description: type.description }
+                            : {})}
+                    >
+                        {type.label}
+                    </MenuItem>
+                ))}
+            </Menu>
+        ) : null;
     const toggle = (index: number) => {
         const key = keyAt(index);
         const next = new Set(expanded);
@@ -441,11 +555,17 @@ export function RepeaterField({
                         const number = index + 1;
                         const key = keyAt(index);
                         const titleId = `${id}-${key}`;
+                        const insertLabel = intl.formatMessage(messages.insertItem, {
+                            before: index,
+                            after: number,
+                        });
                         const bodyId = `${id}-${key}-body`;
                         const open = isExpanded(index);
                         const hasError = invalid.has(index);
+                        // Without a title of its own, a collapsed item shows its first text
+                        const ownTitle = itemTitle?.(item, index) ?? null;
                         const excerpt =
-                            collapsible && !open && itemTitle === undefined
+                            collapsible && !open && ownTitle === null
                                 ? getItemExcerpt(item, itemFields)
                                 : null;
                         const title = (
@@ -492,6 +612,33 @@ export function RepeaterField({
                                 data-expanded={open || undefined}
                                 data-invalid={hasError || undefined}
                             >
+                                {/* Adds an item between this one and the one before it: shows
+                                    on hover and focus (decision 0109) */}
+                                {canAdd && index > 0 ? (
+                                    <div className={styles.insert} data-insert>
+                                        {types !== undefined ? (
+                                            <MenuTrigger>
+                                                <IconButton
+                                                    icon={Plus}
+                                                    size="sm"
+                                                    appearance="outline"
+                                                    className={styles.insertButton}
+                                                    label={insertLabel}
+                                                />
+                                                {typeMenu(index)}
+                                            </MenuTrigger>
+                                        ) : (
+                                            <IconButton
+                                                icon={Plus}
+                                                size="sm"
+                                                appearance="outline"
+                                                className={styles.insertButton}
+                                                label={insertLabel}
+                                                onPress={() => add(undefined, index)}
+                                            />
+                                        )}
+                                    </div>
+                                ) : null}
                                 <div className={styles.header} data-header>
                                     {collapsible && disabled !== true ? (
                                         <button
@@ -545,6 +692,15 @@ export function RepeaterField({
                                                 onPress={() => move(index, index + 1)}
                                             />
                                             <IconButton
+                                                icon={Copy}
+                                                size="sm"
+                                                label={intl.formatMessage(messages.duplicateItem, {
+                                                    index: number,
+                                                })}
+                                                isDisabled={!canAdd}
+                                                onPress={() => duplicate(index)}
+                                            />
+                                            <IconButton
                                                 icon={Trash2}
                                                 size="sm"
                                                 label={intl.formatMessage(messages.removeItem, {
@@ -585,16 +741,7 @@ export function RepeaterField({
                             <Button size="sm" icon={Plus} isDisabled={!canAdd}>
                                 {intl.formatMessage(messages.add)}
                             </Button>
-                            <Menu
-                                aria-label={intl.formatMessage(messages.add)}
-                                onAction={(key) => add(types.find((type) => type.id === key))}
-                            >
-                                {types.map((type) => (
-                                    <MenuItem key={type.id} id={type.id}>
-                                        {type.label}
-                                    </MenuItem>
-                                ))}
-                            </Menu>
+                            {typeMenu()}
                         </MenuTrigger>
                     ) : (
                         <Button size="sm" icon={Plus} isDisabled={!canAdd} onPress={() => add()}>
@@ -609,13 +756,26 @@ export function RepeaterField({
 
 /**
  * The `repeater` type: `fields`, or `types` for typed blocks, with `min` and `max` items from its
- * rules. The `collapsible` setting, `false`, keeps every item expanded (decision 0068).
+ * rules. The `collapsible` setting, `false`, keeps every item expanded (decision 0068). The
+ * `itemTitle` setting, or the `itemTitle` of a block type, titles each item from its values.
  */
 export function RepeaterFieldEntry(props: FieldEntryProps) {
     const { field, value } = props;
+    const intl = usePanneauIntl();
     const min = getRuleNumber(field, 'min');
     const max = getRuleNumber(field, 'max');
     const collapsible = getSetting(field, 'collapsible', isBoolean);
+    const titleSetting = getSetting(field, 'itemTitle', isString);
+    const hasTitles =
+        (titleSetting !== undefined && titleSetting !== '') ||
+        (field.types?.some((type) => type.itemTitle !== undefined) ?? false);
+    const itemTitle = (item: RepeaterItem) => {
+        const type = field.types?.find((candidate) => candidate.id === item.type);
+        const template = type?.itemTitle ?? titleSetting;
+        return template !== undefined && template !== ''
+            ? getItemTitle(item, template, type?.fields ?? field.fields, intl.locale)
+            : null;
+    };
     return (
         <RepeaterField
             {...getFieldProps(props)}
@@ -635,6 +795,7 @@ export function RepeaterFieldEntry(props: FieldEntryProps) {
             {...(min !== undefined ? { min } : {})}
             {...(max !== undefined ? { max } : {})}
             {...(collapsible !== undefined ? { collapsible } : {})}
+            {...(hasTitles ? { itemTitle } : {})}
             {...(props.invalidPaths !== undefined ? { invalidPaths: props.invalidPaths } : {})}
         />
     );

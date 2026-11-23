@@ -14,6 +14,7 @@
 }
 
 .item {
+    position: relative;
     display: flex;
     flex-direction: column;
     min-width: 0;
@@ -168,4 +169,64 @@
     .body {
         padding: var(--panneau-space-3);
     }
+}
+
+/*
+ * The control that adds an item between two others: in the gap above an item, shown on hover and
+ * keyboard focus only (decision 0068), and always on touch screens.
+ */
+.insert {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 100%;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--panneau-space-3);
+}
+
+.insert::before {
+    position: absolute;
+    inset-inline: var(--panneau-space-3);
+    top: 50%;
+    content: '';
+    border-top: var(--panneau-focus-width) solid var(--panneau-color-accent);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.insertButton {
+    position: relative;
+    border-radius: var(--panneau-radius-full);
+    background-color: var(--panneau-color-surface);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.insert:is(:hover, :focus-within, :has([aria-expanded='true']))::before {
+    opacity: 1;
+}
+
+.insert:is(:hover, :focus-within) .insertButton,
+.insertButton[aria-expanded='true'] {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+@media (hover: none) {
+    .insertButton {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+/* The icon of a block type in the menu of types, or its empty place. */
+.typeIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
+    color: var(--panneau-color-text-muted);
 }
