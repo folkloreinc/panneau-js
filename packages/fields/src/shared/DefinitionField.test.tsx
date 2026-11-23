@@ -56,7 +56,8 @@ describe('NestedField', () => {
             />,
             { binding: Binding },
         );
-        const input = screen.getByRole('textbox', { name: 'Text' });
+        // The repeater loads with its first use
+        const input = await screen.findByRole('textbox', { name: 'Text' });
         expect(input).toHaveValue('value of blocks.0.text');
         expect(input).toHaveAccessibleDescription('Required.');
         await userEvent.type(input, '!');

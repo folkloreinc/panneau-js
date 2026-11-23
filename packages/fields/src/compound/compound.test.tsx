@@ -37,7 +37,8 @@ describe('compound fields without their plugin', () => {
                 )}
             </Controlled>,
         );
-        expect(screen.getByRole('group', { name: 'Team' })).toBeInTheDocument();
+        // The repeater loads with its first use
+        expect(await screen.findByRole('group', { name: 'Team' })).toBeInTheDocument();
         expect(screen.getByRole('textbox', { name: 'Name', hidden: true })).toHaveValue('Ada');
         await userEvent.click(screen.getByRole('button', { name: 'Add' }));
         expect(onChange).toHaveBeenLastCalledWith([{ name: 'Ada' }, {}]);

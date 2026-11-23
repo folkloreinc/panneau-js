@@ -30,9 +30,11 @@ The blocks of a page are a `repeater` with typed blocks ([0068](0068-collapsed-i
 
 The setting is additive: a client that doesn't know it shows the title it showed before.
 
+**The repeater loads with its first use.** The built-in `repeater` entry, and the fallback of a compound field without its plugin, are a `lazyFieldEntry` like the other heavy types: the first page of an app (a list) doesn't load it, and a form shows the skeleton of the field until it has loaded. `summarizeCompound()` and `restParts()` live apart from `defineCompoundField()`, so that lists summarize compound values without loading the repeater. This keeps the initial JavaScript of a minimal app within its budget, with room for the controls above.
+
 ## Consequences
 
 - `@panneau/protocol`: `RepeaterSettings` (`collapsible`, `itemTitle`), and `description` and `itemTitle` on `BlockType`.
-- `@panneau/fields`: `RepeaterField` duplicates items and adds them in between; `RepeaterFieldEntry` passes the title of the definition. An `itemTitle` that gives `null` for an item now leaves it its excerpt.
+- `@panneau/fields`: `RepeaterField` duplicates items and adds them in between; `RepeaterFieldEntry` passes the title of the definition. An `itemTitle` that gives `null` for an item now leaves it its excerpt. The built-in `repeater` is loaded with `import()`: tests that render one through `DefinitionField` or a form wait for it (`findBy…`), as for the other lazy types.
 - `@panneau/intl`: "Duplicate item {index}" and "Add an item between items {before} and {after}", in English and French.
 - `laravel-panneau` can describe a block type's `description` and `itemTitle`, and a repeater's `itemTitle`, in its builders.

@@ -325,7 +325,7 @@ export const BlockTypeMenu: Story = {
         const canvas = within(canvasElement);
         const body = within(canvasElement.ownerDocument.body);
         await expect(
-            canvas.getByRole('button', { name: '1 A summer in Montréal' }),
+            await canvas.findByRole('button', { name: '1 A summer in Montréal' }),
         ).toBeInTheDocument();
         await expect(
             canvas.getByRole('button', { name: '2 The best city in summer. (A visitor)' }),
@@ -397,7 +397,7 @@ export const TitlesFromTheDefinition: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         await expect(
-            canvas.getByRole('button', { name: '1 Ada Lovelace (Director)' }),
+            await canvas.findByRole('button', { name: '1 Ada Lovelace (Director)' }),
         ).toBeInTheDocument();
         await expect(canvas.getByRole('button', { name: '2 Grace Hopper' })).toBeInTheDocument();
         await expect(

@@ -246,7 +246,8 @@ describe('RepeaterField', () => {
                 )}
             </Controlled>,
         );
-        expect(screen.getByRole('listitem', { name: /Quote/ })).toBeInTheDocument();
+        // The repeater of the definition loads with its first use
+        expect(await screen.findByRole('listitem', { name: /Quote/ })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Remove item 1' })).toBeDisabled();
         await userEvent.click(screen.getByRole('button', { name: 'Add' }));
         await userEvent.click(await screen.findByRole('menuitem', { name: 'Video' }));
@@ -522,7 +523,7 @@ function Blocks({
 describe('RepeaterField: block types', () => {
     it('shows the icon and the description of each type in the menu', async () => {
         render(<Blocks initial={null} />);
-        await userEvent.click(screen.getByRole('button', { name: 'Add' }));
+        await userEvent.click(await screen.findByRole('button', { name: 'Add' }));
         const quote = await screen.findByRole('menuitem', { name: 'Quote' });
         expect(quote).toHaveAccessibleDescription('A quote and its author');
         await waitFor(() => {
@@ -546,7 +547,7 @@ describe('RepeaterField: block types', () => {
             />,
         );
         await userEvent.click(
-            screen.getByRole('button', { name: 'Add an item between items 1 and 2' }),
+            await screen.findByRole('button', { name: 'Add an item between items 1 and 2' }),
         );
         await userEvent.click(await screen.findByRole('menuitem', { name: 'Quote' }));
         expect(onChange).toHaveBeenLastCalledWith([
@@ -561,7 +562,7 @@ describe('RepeaterField: block types', () => {
         expect(screen.getByRole('button', { name: '2 Quote', expanded: true })).toHaveFocus();
     });
 
-    it('titles a block from the `itemTitle` of its type, or its label and first text', () => {
+    it('titles a block from the `itemTitle` of its type, or its label and first text', async () => {
         render(
             <Blocks
                 initial={[
@@ -571,7 +572,7 @@ describe('RepeaterField: block types', () => {
                 ]}
             />,
         );
-        const [hamlet, unsigned, video] = screen.getAllByRole('listitem');
+        const [hamlet, unsigned, video] = await screen.findAllByRole('listitem');
         expect(hamlet).toHaveAccessibleName('1 Hamlet');
         expect(unsigned).toHaveAccessibleName('2 Quote Or not');
         expect(video).toHaveAccessibleName('3 Video https://a');
@@ -579,7 +580,7 @@ describe('RepeaterField: block types', () => {
 });
 
 describe('RepeaterField: titles from the definition', () => {
-    it('titles items from the field that `settings.itemTitle` names', () => {
+    it('titles items from the field that `settings.itemTitle` names', async () => {
         renderField(
             <DefinitionField
                 field={{
@@ -606,7 +607,7 @@ describe('RepeaterField: titles from the definition', () => {
                 onChange={() => undefined}
             />,
         );
-        const [ada, jane, unnamed] = screen.getAllByRole('listitem');
+        const [ada, jane, unnamed] = await screen.findAllByRole('listitem');
         expect(ada).toHaveAccessibleName('1 Ada Lovelace (Director)');
         expect(jane).toHaveAccessibleName('2 Jane');
         // Without a value for the title: "Item 3", and its first text
