@@ -235,6 +235,13 @@ export const appMessages: {
     colorScheme: PanneauMessage<    {
     scheme: string;
     }>;
+    densityTitle: PanneauMessage<Record<never, never>>;
+    densityOption: PanneauMessage<    {
+    density: string;
+    }>;
+    density: PanneauMessage<    {
+    density: string;
+    }>;
     language: PanneauMessage<Record<never, never>>;
     languageButton: PanneauMessage<    {
     language: string;
@@ -801,6 +808,14 @@ export const listsMessages: {
     any: PanneauMessage<Record<never, never>>;
     from: PanneauMessage<Record<never, never>>;
     to: PanneauMessage<Record<never, never>>;
+    moreFilters: PanneauMessage<Record<never, never>>;
+    activeFilterCount: PanneauMessage<    {
+    count: number;
+    }>;
+    clearFilter: PanneauMessage<    {
+    filter: string;
+    }>;
+    filtersDone: PanneauMessage<Record<never, never>>;
     rangeFrom: PanneauMessage<    {
     start: string;
     }>;

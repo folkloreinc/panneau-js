@@ -1,5 +1,13 @@
-import { Inbox, ListChecks, SearchX } from 'lucide-react';
-import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Inbox, ListChecks, Plus, SearchX } from 'lucide-react';
+import {
+    type CSSProperties,
+    type ReactNode,
+    isValidElement,
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useState,
+} from 'react';
 
 import type { List, ResolvedCalendar } from '@panneau/core';
 import {
@@ -18,6 +26,7 @@ import {
     Button,
     Checkbox,
     EmptyState,
+    LinkButton,
     prefersReducedMotion,
     usePanneauIntl,
     useToast,
@@ -32,7 +41,8 @@ import { type ListActions, groupListActions, hasScope, isAllowedOn } from './act
 import type { ActionIcons } from './actions/icons';
 import { getShownColumns } from './columns';
 import { cx } from './cx';
-import { FilterChips, FilterControls, useFilterLabels } from './filters/Filters';
+import { FilterBar } from './filters/FilterBar';
+import { FilterChips, useFilterLabels } from './filters/Filters';
 import { moveFocusFromLeaving } from './focus';
 import { getImageUrl } from './images';
 import { InlineCell } from './inline/InlineCell';
@@ -119,6 +129,46 @@ export interface ListViewLayouts {
     components?: Readonly<Record<string, ListLayoutEntry>> | undefined;
 }
 
+/**
+ * The action of an empty list (`emptyAction` of `ListView`): a button, a menu, or a label and the
+ * link it goes to.
+ */
+export type ListViewEmptyAction = ReactNode | { label: string; href: string };
+
+function isLinkAction(
+    action: ListViewEmptyAction | undefined,
+): action is { label: string; href: string } {
+    return (
+        typeof action === 'object' &&
+        action !== null &&
+        !isValidElement(action) &&
+        'href' in action &&
+        'label' in action
+    );
+}
+
+/**
+ * The height of the selection bar, which sticks to the top of the window: what sticks in the
+ * layout (the header of the table) sticks under it. `0` without ResizeObserver (jsdom); the list
+ * only uses it while the bar is shown.
+ */
+function useStickyHeight(): [height: number, ref: (element: HTMLElement | null) => void] {
+    const [element, setElement] = useState<HTMLElement | null>(null);
+    const [height, setHeight] = useState(0);
+    useEffect(() => {
+        if (element === null || typeof ResizeObserver === 'undefined') {
+            return undefined;
+        }
+        // The observer is called as soon as it observes: a bar shown again gets its height.
+        const observer = new ResizeObserver(() => {
+            setHeight(element.getBoundingClientRect().height);
+        });
+        observer.observe(element);
+        return () => observer.disconnect();
+    }, [element]);
+    return [height, setElement];
+}
+
 // Defaults made once: the React Compiler doesn't memoize what is computed from an array or an
 // object made before a hook
 const DEFAULT_LAYOUTS: readonly string[] = ['table'];
@@ -156,7 +206,11 @@ export interface ListViewProps {
     /** An error while loading: an alert with a retry replaces the items. */
     error?: Error | null;
     onRetry?: () => void;
-    /** Filter controls, with chips for the active filters. */
+    /**
+     * Filter controls, with chips for the active filters. Those with `primary` show first (or the
+     * first 3), the others behind "More filters"; a narrow list shows them all behind one
+     * "Filters" button.
+     */
     filters?: readonly Filter[];
     /** Fields of the items, for the labels and options of filters that are not columns. */
     fields?: readonly Field[];
@@ -222,6 +276,12 @@ export interface ListViewProps {
     toolbar?: ReactNode;
     /** Shown when the list has no items, without filters or search. */
     emptyMessage?: ReactNode;
+    /**
+     * The action of a list that has no items, without filters or search, such as a button to
+     * create the first one: a node (a button, a menu of types), or a label and its link. A list
+     * emptied by its filters or its search offers to clear them instead.
+     */
+    emptyAction?: ListViewEmptyAction;
     /** Accessible name of the list. Defaults to "Items". */
     'aria-label'?: string;
     className?: string;
@@ -267,6 +327,7 @@ export function ListView({
     inline,
     toolbar,
     emptyMessage,
+    emptyAction,
     'aria-label': ariaLabel,
     className,
 }: ListViewProps) {
@@ -300,6 +361,7 @@ export function ListView({
     // Checkboxes show once the user asks for them ("Select"), or while items are selected: until
     // then, rows read without a column of empty space before them.
     const [selecting, setSelecting] = useState(false);
+    const [selectionHeight, measureSelection] = useStickyHeight();
 
     // Items saved in place, over the item the caller gave, until it gives another one.
     const [saved, setSaved] = useState<
@@ -657,7 +719,13 @@ export function ListView({
                             <Button size="sm" onPress={() => clearFilters()}>
                                 {intl.formatMessage(messages.clearFilters)}
                             </Button>
-                        ) : undefined
+                        ) : isLinkAction(emptyAction) ? (
+                            <LinkButton href={emptyAction.href} icon={Plus}>
+                                {emptyAction.label}
+                            </LinkButton>
+                        ) : (
+                            emptyAction
+                        )
                     }
                 />
             );
@@ -727,7 +795,17 @@ export function ListView({
     }, [highlightShown, highlightedItemId]);
 
     return (
-        <div ref={root} className={cx(styles.list, className)}>
+        <div
+            ref={root}
+            className={cx(styles.list, className)}
+            style={
+                selectedCount > 0 && selectionHeight > 0
+                    ? ({
+                          '--_panneau-list-sticky-top': `calc(var(--panneau-frame-top) + ${String(selectionHeight)}px)`,
+                      } as CSSProperties)
+                    : undefined
+            }
+        >
             {showToolbar ? (
                 <div className={styles.toolbar}>
                     <div className={styles.toolbarStart}>
@@ -738,7 +816,7 @@ export function ListView({
                             />
                         ) : null}
                         {filters.length > 0 ? (
-                            <FilterControls
+                            <FilterBar
                                 filters={filters}
                                 values={filterValues}
                                 onChange={(id, value) => list.setFilter(id, value)}
@@ -824,7 +902,7 @@ export function ListView({
                 labels={filterLabels.labels}
             />
             {selectedCount > 0 ? (
-                <div className={styles.selection}>
+                <div ref={measureSelection} className={styles.selection}>
                     <span className={styles.selectionCount} role="status">
                         {selection.mode === 'all'
                             ? intl.formatMessage(messages.allMatchingSelected, {

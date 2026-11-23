@@ -1,6 +1,6 @@
 # 0024: A theme model as extensible as Bootstrap's
 
-- Status: accepted, amended by [0072](0072-touch-targets-follow-the-density.md): touch targets follow the density; and by [0073](0073-selections-focus-rings-and-outlined-buttons.md): selections apart from the accent, focus rings, and outlined filled buttons
+- Status: accepted, amended by [0072](0072-touch-targets-follow-the-density.md): touch targets follow the density; and by [0073](0073-selections-focus-rings-and-outlined-buttons.md): selections apart from the accent, focus rings, and outlined filled buttons; and by [0104](0104-users-choose-the-density.md): the user chooses the density, the definition's being the default
 - Date: 2026-10-19
 - Issue: [#56](https://github.com/folkloreinc/panneau-js/issues/56)
 - Builds on: [0005](0005-styling-and-theming.md), [0020](0020-default-theme-and-icons.md)

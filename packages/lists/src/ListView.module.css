@@ -1,5 +1,8 @@
 .list {
     container: panneau-list / inline-size;
+    /* What sticks in the list (the selection bar, the header of the table) stays under what sticks
+     * in the frame of the app, such as its top bar. */
+    isolation: isolate;
     display: flex;
     flex-direction: column;
     gap: var(--panneau-space-3);
@@ -35,14 +38,26 @@
     display: none;
 }
 
+/* The bar of a selection, and its actions, stay in view while the list scrolls under the top of the
+ * window. */
 .selection {
+    position: sticky;
+    top: var(--panneau-frame-top);
+    z-index: 2;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--panneau-space-2) var(--panneau-space-3);
     padding: var(--panneau-space-2) var(--panneau-space-3);
     font-size: var(--panneau-font-size-sm);
-    background-color: var(--panneau-selected-subtle, var(--panneau-color-accent-subtle));
+    /* The subtle selection over the surface: the rows that scroll under the bar don't show
+     * through a translucent one. */
+    background:
+        linear-gradient(
+            var(--panneau-selected-subtle, var(--panneau-color-accent-subtle)),
+            var(--panneau-selected-subtle, var(--panneau-color-accent-subtle))
+        ),
+        var(--panneau-color-surface);
     border: var(--panneau-border-width) solid var(--panneau-color-border);
     border-radius: var(--panneau-radius-lg);
 }

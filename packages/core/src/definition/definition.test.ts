@@ -319,7 +319,17 @@ describe('resolveList', () => {
         const list = resolveList(getResource('authors'));
         expect(list.columns.map((column) => column.id)).toEqual(['name', 'email', 'phone', 'city']);
         // The built-in `delete` applies to selections: the list is selectable
-        expect(list).toMatchObject({ perPage: 20, defaultSort: [], selectable: true });
+        expect(list).toMatchObject({
+            perPage: 20,
+            perPageOptions: [10, 20, 50, 100],
+            defaultSort: [],
+            selectable: true,
+        });
+        // The page sizes of the list, when it sets them
+        expect(
+            resolveList({ ...getResource('authors'), list: { perPageOptions: [25, 50] } })
+                .perPageOptions,
+        ).toEqual([25, 50]);
         expect(resolveList({ ...getResource('authors'), itemActions: ['edit'] }).selectable).toBe(
             false,
         );

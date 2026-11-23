@@ -55,6 +55,7 @@ export { List, type ListProps } from './List';
 export {
     ListView,
     type ListViewActions,
+    type ListViewEmptyAction,
     type ListViewInline,
     type ListViewLayouts,
     type ListViewProps,

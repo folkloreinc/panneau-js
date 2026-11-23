@@ -23,7 +23,9 @@ const work = resolve(root, '.tmp/bundle-size');
 // 1370 / 445 KB (#457): the waves of the UX review add behaviour to the first page (list rows,
 // filters, details, optimistic updates). The figure is set once for all of them: their pull
 // requests don't raise it themselves.
-const BUDGET = { minified: 1370 * 1024, gzip: 445 * 1024 };
+// 1375 / 448 KB: the waves together measure 1372 / 446 KB, over v5.x's 1360 / 442: list filters
+// (#455) +5 KB, the user's density (#447) +3, sticky rows (#456) +3, optimistic edits (#453) +1.
+const BUDGET = { minified: 1375 * 1024, gzip: 448 * 1024 };
 
 const report = process.argv.includes('--report');
 

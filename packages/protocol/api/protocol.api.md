@@ -1504,6 +1504,7 @@ export const Definition: z.ZodObject<{
                 resource: z.ZodOptional<z.ZodString>;
                 multiple: z.ZodOptional<z.ZodBoolean>;
                 default: z.ZodOptional<z.ZodUnknown>;
+                primary: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>>>;
             sorts: z.ZodOptional<z.ZodArray<z.ZodString>>;
             defaultSort: z.ZodOptional<z.ZodString>;
@@ -2692,6 +2693,7 @@ export const Definition: z.ZodObject<{
             comfortable: "comfortable";
             touch: "touch";
         }>>;
+        lockDensity: z.ZodOptional<z.ZodBoolean>;
         navigation: z.ZodOptional<z.ZodEnum<{
             sidebar: "sidebar";
             dock: "dock";
@@ -2794,6 +2796,7 @@ export const DefinitionTheme: z.ZodObject<{
         comfortable: "comfortable";
         touch: "touch";
     }>>;
+    lockDensity: z.ZodOptional<z.ZodBoolean>;
     navigation: z.ZodOptional<z.ZodEnum<{
         sidebar: "sidebar";
         dock: "dock";
@@ -3164,6 +3167,7 @@ export const Filter: z.ZodObject<{
     resource: z.ZodOptional<z.ZodString>;
     multiple: z.ZodOptional<z.ZodBoolean>;
     default: z.ZodOptional<z.ZodUnknown>;
+    primary: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$loose>;
 
 // @public (undocumented)
@@ -3602,6 +3606,7 @@ export const ListDefinition: z.ZodObject<{
         resource: z.ZodOptional<z.ZodString>;
         multiple: z.ZodOptional<z.ZodBoolean>;
         default: z.ZodOptional<z.ZodUnknown>;
+        primary: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>>>;
     sorts: z.ZodOptional<z.ZodArray<z.ZodString>>;
     defaultSort: z.ZodOptional<z.ZodString>;
@@ -4775,6 +4780,7 @@ export const namedSchemas: {
         resource: z.ZodOptional<z.ZodString>;
         multiple: z.ZodOptional<z.ZodBoolean>;
         default: z.ZodOptional<z.ZodUnknown>;
+        primary: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>;
     ListCalendar: z.ZodObject<{
         field: z.ZodString;
@@ -4816,6 +4822,7 @@ export const namedSchemas: {
             resource: z.ZodOptional<z.ZodString>;
             multiple: z.ZodOptional<z.ZodBoolean>;
             default: z.ZodOptional<z.ZodUnknown>;
+            primary: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>>>;
         sorts: z.ZodOptional<z.ZodArray<z.ZodString>>;
         defaultSort: z.ZodOptional<z.ZodString>;
@@ -5674,6 +5681,7 @@ export const namedSchemas: {
                 resource: z.ZodOptional<z.ZodString>;
                 multiple: z.ZodOptional<z.ZodBoolean>;
                 default: z.ZodOptional<z.ZodUnknown>;
+                primary: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>>>;
             sorts: z.ZodOptional<z.ZodArray<z.ZodString>>;
             defaultSort: z.ZodOptional<z.ZodString>;
@@ -7470,6 +7478,7 @@ export const namedSchemas: {
             comfortable: "comfortable";
             touch: "touch";
         }>>;
+        lockDensity: z.ZodOptional<z.ZodBoolean>;
         navigation: z.ZodOptional<z.ZodEnum<{
             sidebar: "sidebar";
             dock: "dock";
@@ -7797,6 +7806,7 @@ export const namedSchemas: {
                     resource: z.ZodOptional<z.ZodString>;
                     multiple: z.ZodOptional<z.ZodBoolean>;
                     default: z.ZodOptional<z.ZodUnknown>;
+                    primary: z.ZodOptional<z.ZodBoolean>;
                 }, z.core.$loose>>>;
                 sorts: z.ZodOptional<z.ZodArray<z.ZodString>>;
                 defaultSort: z.ZodOptional<z.ZodString>;
@@ -8985,6 +8995,7 @@ export const namedSchemas: {
                 comfortable: "comfortable";
                 touch: "touch";
             }>>;
+            lockDensity: z.ZodOptional<z.ZodBoolean>;
             navigation: z.ZodOptional<z.ZodEnum<{
                 sidebar: "sidebar";
                 dock: "dock";
@@ -12587,6 +12598,7 @@ export const Resource: z.ZodObject<{
             resource: z.ZodOptional<z.ZodString>;
             multiple: z.ZodOptional<z.ZodBoolean>;
             default: z.ZodOptional<z.ZodUnknown>;
+            primary: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>>>;
         sorts: z.ZodOptional<z.ZodArray<z.ZodString>>;
         defaultSort: z.ZodOptional<z.ZodString>;

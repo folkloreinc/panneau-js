@@ -9,6 +9,7 @@ import type { ListColumn, ListItem } from '../types';
 import { CalendarLayout } from './CalendarLayout';
 import { CardsLayout } from './CardsLayout';
 import { GalleryLayout } from './GalleryLayout';
+import { INTENT_DELAY } from './ItemTitle';
 import { TableLayout } from './TableLayout';
 
 const statusField: Field = {
@@ -152,9 +153,15 @@ export const ItemIntent: Story = {
         // Crossing a row: nothing
         await userEvent.hover(first);
         await userEvent.unhover(first);
-        // Resting on one
-        await userEvent.hover(second);
-        await waitFor(() => expect(args.onItemIntent).toHaveBeenCalledWith(items[1]));
+        // Resting on one. When the layout moves under the browser's real pointer, which is
+        // elsewhere, Chromium sends a `pointerover` there, and React Aria ends the hover of the
+        // link, as it should: the intent then never comes. So hover it again, for longer than
+        // INTENT_DELAY each time, until it does.
+        await waitFor(async () => {
+            await userEvent.hover(second);
+            await new Promise((resolve) => setTimeout(resolve, INTENT_DELAY * 2));
+            await expect(args.onItemIntent).toHaveBeenCalledWith(items[1]);
+        });
         await expect(args.onItemIntent).toHaveBeenCalledTimes(1);
         await userEvent.unhover(second);
         // The focus of the keyboard

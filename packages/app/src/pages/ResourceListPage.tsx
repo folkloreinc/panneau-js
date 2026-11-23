@@ -240,62 +240,55 @@ export function ResourceListPage({
             />
         );
     }
+    // "New …", in the header of the page and in the empty list
+    const createAction = !abilities.create ? undefined : creatableTypes.length > 1 ? (
+        // A resource with types: a menu of the types to create (decision 0077)
+        <MenuTrigger>
+            <Button tone="accent" icon={Plus} iconEnd={ChevronDown}>
+                {createLabel}
+            </Button>
+            <Menu placement="bottom end">
+                {creatableTypes.map((type) => (
+                    <MenuItem
+                        key={type.id}
+                        id={type.id}
+                        href={routePath(
+                            {
+                                name: 'resource.create',
+                                resource: resource.id,
+                                type: type.id,
+                            },
+                            basePath,
+                        )}
+                        {...(type.icon !== undefined ? { icon: getNamedIcon(type.icon) } : {})}
+                        {...(type.description !== undefined
+                            ? { description: type.description }
+                            : {})}
+                    >
+                        {type.label}
+                    </MenuItem>
+                ))}
+            </Menu>
+        </MenuTrigger>
+    ) : (
+        <LinkButton
+            href={routePath(
+                {
+                    name: 'resource.create',
+                    resource: resource.id,
+                    ...(creatableTypes[0] !== undefined ? { type: creatableTypes[0].id } : {}),
+                },
+                basePath,
+            )}
+            tone="accent"
+            icon={Plus}
+        >
+            {createLabel}
+        </LinkButton>
+    );
     return (
         <div className={styles.page}>
-            <PageHeader
-                title={title}
-                actions={
-                    !abilities.create ? undefined : creatableTypes.length > 1 ? (
-                        // A resource with types: a menu of the types to create (decision 0077)
-                        <MenuTrigger>
-                            <Button tone="accent" icon={Plus} iconEnd={ChevronDown}>
-                                {createLabel}
-                            </Button>
-                            <Menu placement="bottom end">
-                                {creatableTypes.map((type) => (
-                                    <MenuItem
-                                        key={type.id}
-                                        id={type.id}
-                                        href={routePath(
-                                            {
-                                                name: 'resource.create',
-                                                resource: resource.id,
-                                                type: type.id,
-                                            },
-                                            basePath,
-                                        )}
-                                        {...(type.icon !== undefined
-                                            ? { icon: getNamedIcon(type.icon) }
-                                            : {})}
-                                        {...(type.description !== undefined
-                                            ? { description: type.description }
-                                            : {})}
-                                    >
-                                        {type.label}
-                                    </MenuItem>
-                                ))}
-                            </Menu>
-                        </MenuTrigger>
-                    ) : (
-                        <LinkButton
-                            href={routePath(
-                                {
-                                    name: 'resource.create',
-                                    resource: resource.id,
-                                    ...(creatableTypes[0] !== undefined
-                                        ? { type: creatableTypes[0].id }
-                                        : {}),
-                                },
-                                basePath,
-                            )}
-                            tone="accent"
-                            icon={Plus}
-                        >
-                            {createLabel}
-                        </LinkButton>
-                    )
-                }
-            />
+            <PageHeader title={title} actions={createAction} />
             {resource.description !== undefined ? (
                 <p className={styles.intro}>{resource.description}</p>
             ) : null}
@@ -357,6 +350,7 @@ export function ResourceListPage({
                             preview: previewAction,
                         }}
                         aria-label={title}
+                        emptyAction={createAction}
                         list={list}
                         items={data?.data}
                         {...getPagingProps(data?.meta)}
@@ -367,7 +361,7 @@ export function ResourceListPage({
                         itemTitle={resource.itemTitle}
                         itemImage={itemImage}
                         layouts={{ available: layouts }}
-                        perPageOptions={[10, 20, 50, 100]}
+                        perPageOptions={definitionList.perPageOptions}
                         // Titles open the panel, with the list's query, or the form (`open` of the resource)
                         getItemHref={(item) => getItemPath(resource, item, basePath, search)}
                         // Hovering or focusing a title loads its item, so it opens from the cache

@@ -10,6 +10,7 @@ import type { ListLayoutProps } from '../types';
 import styles from './GalleryLayout.module.css';
 import { ItemTitle } from './ItemTitle';
 import highlight from './highlight.module.css';
+import { getRowClickProps } from './rowClick';
 
 /**
  * Items as a grid of images (decision 0044): the image of each item (`itemImage` of the
@@ -49,6 +50,8 @@ export function GalleryLayout({
                         const current = isCurrent?.(item) ?? false;
                         const highlighted = isHighlighted?.(item) ?? false;
                         const leaving = isLeaving?.(item) ?? false;
+                        const href = getItemHref?.(item) ?? null;
+                        const opens = selectable || href !== null;
                         const image = getItemImage?.(item) ?? null;
                         const kind = getItemFileKind?.(item) ?? null;
                         return (
@@ -64,7 +67,14 @@ export function GalleryLayout({
                                 data-highlighted={highlighted || undefined}
                                 data-item-id={item.id}
                                 data-leaving={leaving || undefined}
+                                data-opens={opens || undefined}
                                 inert={leaving || undefined}
+                                {...(opens
+                                    ? getRowClickProps({
+                                          selecting: selectable,
+                                          onToggle: () => onToggle(item),
+                                      })
+                                    : {})}
                             >
                                 <div className={styles.media}>
                                     {image !== null || kind !== null ? (
@@ -90,9 +100,9 @@ export function GalleryLayout({
                                             />
                                         </span>
                                     ) : null}
-                                    <div className={styles.title}>
+                                    <div className={styles.title} data-item-title>
                                         <ItemTitle
-                                            href={getItemHref?.(item) ?? null}
+                                            href={href}
                                             onIntent={
                                                 onItemIntent !== undefined
                                                     ? () => onItemIntent(item)
@@ -106,7 +116,9 @@ export function GalleryLayout({
                                         </ItemTitle>
                                     </div>
                                     {actions !== null ? (
-                                        <div className={styles.actions}>{actions}</div>
+                                        <div className={styles.actions} data-row-control>
+                                            {actions}
+                                        </div>
                                     ) : null}
                                 </div>
                             </li>

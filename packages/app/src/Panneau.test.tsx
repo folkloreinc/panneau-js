@@ -127,6 +127,107 @@ describe('Panneau', () => {
         );
     });
 
+    describe("the user's density (decision 0104)", () => {
+        beforeEach(() => {
+            window.localStorage.clear();
+        });
+
+        const root = () => document.querySelector('.panneau-root');
+
+        function renderWithTheme(theme: DefinitionInput['theme']) {
+            return renderPanneau({
+                adapter: createAdapter(() => Promise.reject(new Error('Not called.'))),
+                config: createBootConfig({ definition: { ...createDefinition(), theme } }),
+            });
+        }
+
+        it("starts from the definition's density, and changes the page's from the user's menu", async () => {
+            const user = userEvent.setup();
+            renderWithTheme({ density: 'touch' });
+            expect(root()).toHaveAttribute('data-density', 'touch');
+            const menu = await openUserMenu(user);
+            const density = within(menu.getByRole('group', { name: 'Density' }));
+            expect(
+                density
+                    .getAllByRole('menuitemradio')
+                    .map((item) => [item.textContent, item.getAttribute('aria-checked')]),
+            ).toEqual([
+                ['Compact', 'false'],
+                ['Comfortable', 'false'],
+                ['Default', 'true'],
+            ]);
+            await user.click(density.getByRole('menuitemradio', { name: 'Compact' }));
+            expect(root()).toHaveAttribute('data-density', 'compact');
+            expect(window.localStorage.getItem('panneau:density')).toBe('compact');
+
+            // "Default" goes back to the definition's
+            const reopened = await openUserMenu(user);
+            expect(reopened.getByRole('menuitemradio', { name: 'Compact' })).toHaveAttribute(
+                'aria-checked',
+                'true',
+            );
+            await user.click(reopened.getByRole('menuitemradio', { name: 'Default' }));
+            expect(root()).toHaveAttribute('data-density', 'touch');
+        });
+
+        it('keeps the choice after a reload', async () => {
+            const user = userEvent.setup();
+            const { unmount } = renderWithTheme({ density: 'auto' });
+            const menu = await openUserMenu(user);
+            await user.click(menu.getByRole('menuitemradio', { name: 'Comfortable' }));
+            unmount();
+            renderWithTheme({ density: 'auto' });
+            expect(root()).toHaveAttribute('data-density', 'comfortable');
+        });
+
+        it('offers the densities the user has not chosen in "Go to…"', async () => {
+            const user = userEvent.setup();
+            renderWithTheme(undefined);
+            await user.keyboard('{Control>}k{/Control}');
+            const palette = within(await screen.findByRole('dialog', { name: 'Go to…' }));
+            await user.type(palette.getByRole('searchbox'), 'density');
+            expect(palette.getAllByRole('menuitem').map((item) => item.textContent)).toEqual([
+                'Density: compact',
+                'Density: comfortable',
+            ]);
+            await user.click(palette.getByRole('menuitem', { name: 'Density: compact' }));
+            expect(root()).toHaveAttribute('data-density', 'compact');
+        });
+
+        it('hides the choice, and ignores a kept one, when the definition locks the density', async () => {
+            const user = userEvent.setup();
+            window.localStorage.setItem('panneau:density', 'compact');
+            renderWithTheme({ density: 'comfortable', lockDensity: true });
+            expect(root()).toHaveAttribute('data-density', 'comfortable');
+            const menu = await openUserMenu(user);
+            expect(menu.getByRole('group', { name: 'Appearance' })).toBeInTheDocument();
+            expect(menu.queryByRole('group', { name: 'Density' })).toBeNull();
+        });
+
+        it('keeps the touch targets of `auto` on touch screens, whatever the choice', async () => {
+            const user = userEvent.setup();
+            window.localStorage.setItem('panneau:density', 'compact');
+            vi.stubGlobal(
+                'matchMedia',
+                (query: string) =>
+                    ({
+                        matches: query === '(pointer: coarse)',
+                        media: query,
+                        addEventListener: () => undefined,
+                        removeEventListener: () => undefined,
+                    }) as unknown as MediaQueryList,
+            );
+            try {
+                renderWithTheme({ density: 'auto' });
+                expect(root()).toHaveAttribute('data-density', 'auto');
+                const menu = await openUserMenu(user);
+                expect(menu.queryByRole('group', { name: 'Density' })).toBeNull();
+            } finally {
+                vi.unstubAllGlobals();
+            }
+        });
+    });
+
     it('navigates between routes under the base path, in history mode', async () => {
         const user = userEvent.setup();
         renderPanneau({

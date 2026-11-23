@@ -19,6 +19,7 @@ import styles from './AppLayout.module.css';
 import { GoTo } from './GoTo';
 import { Sidebar } from './Sidebar';
 import type { ColorSchemePreference } from './UserMenu';
+import type { DensityChoice } from './density';
 import { CONTENT_ID, SkipLink } from './frame';
 import { useRouteFocus } from './useRouteFocus';
 
@@ -30,6 +31,9 @@ export interface AppLayoutProps {
     route: AppRoute;
     colorScheme: ColorSchemePreference;
     onColorSchemeChange: (scheme: ColorSchemePreference) => void;
+    /** The user's density, and how to keep it: without it, no choice (decision 0104). */
+    density?: DensityChoice | undefined;
+    onDensityChange?: ((density: DensityChoice) => void) | undefined;
     /** Logs the user out. Without it, the sidebar has no "Log out" button. */
     onLogOut?: () => void;
     /** Switches the interface to a locale of `interfaceLocales` (decision 0083). */
@@ -59,6 +63,8 @@ export function AppLayout({
     route,
     colorScheme,
     onColorSchemeChange,
+    density,
+    onDensityChange,
     onLogOut,
     onLocaleChange,
     children,
@@ -101,6 +107,8 @@ export function AppLayout({
         route,
         colorScheme,
         onColorSchemeChange,
+        density,
+        onDensityChange,
         onLogOut,
         onLocaleChange,
         onGoTo: openGoTo,
@@ -144,6 +152,8 @@ export function AppLayout({
                 onToggleSidebar={toggle}
                 colorScheme={colorScheme}
                 onColorSchemeChange={onColorSchemeChange}
+                density={density}
+                onDensityChange={onDensityChange}
                 onLocaleChange={onLocaleChange}
             />
             {portalContainer !== null ? (

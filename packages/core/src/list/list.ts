@@ -201,6 +201,26 @@ function rememberedQuery(query: ListQuery): RememberedView['query'] {
     return result;
 }
 
+/**
+ * A remembered query without its page size when the list no longer offers it: the list's own
+ * `perPage`, or one of its `perPageOptions`. The query of a URL keeps its page size: a link opens
+ * what it says.
+ */
+function offeredPerPage(
+    query: RememberedView['query'],
+    perPage: number,
+    list: ResolvedList | undefined,
+): RememberedView['query'] {
+    if (query.perPage === undefined || list === undefined) {
+        return query;
+    }
+    if (query.perPage === perPage || list.perPageOptions.includes(query.perPage)) {
+        return query;
+    }
+    const { perPage: _perPage, ...rest } = query;
+    return rest;
+}
+
 /** Creates a headless list. */
 export function createList(options: ListOptions = {}): List {
     const defaults: Defaults = {
@@ -245,7 +265,9 @@ export function createList(options: ListOptions = {}): List {
 
     const initial = router !== null ? readRouter() : null;
     let params: ListQuery = normalize(
-        remembered?.query ?? initial?.query ?? options.query ?? {},
+        remembered !== null
+            ? offeredPerPage(remembered.query, defaults.perPage, options.list)
+            : (initial?.query ?? options.query ?? {}),
         defaults,
     );
     let view: ListViewState = normalizeView(remembered?.view ?? initial?.view ?? {}, defaults);
