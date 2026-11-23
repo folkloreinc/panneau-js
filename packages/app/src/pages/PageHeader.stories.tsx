@@ -49,6 +49,138 @@ export const PluginPage: Story = {
     },
 };
 
+/** The header of a page, from its title. */
+function header(canvas: ReturnType<typeof within>) {
+    return canvas.getByRole('heading', { level: 1 }).closest('header');
+}
+
+/** The left and right edges of an element, rounded to the pixel. */
+function edges(element: Element | null) {
+    if (element === null) {
+        throw new Error('No element');
+    }
+    const { left, right } = element.getBoundingClientRect();
+    return { left: Math.round(left), right: Math.round(right) };
+}
+
+const ITEM_ACTIONS = (
+    <>
+        <Button>Duplicate</Button>
+        <Button tone="danger" appearance="outline">
+            Delete
+        </Button>
+    </>
+);
+
+/**
+ * The actions keep their place whatever the length of the title (#423): the title wraps, whole,
+ * and the actions stay at the end of its row.
+ */
+export const LongTitle: Story = {
+    render: () => (
+        <PageLayout>
+            <section data-testid="short" aria-label="A short title">
+                <PageHeader title="Spring" actions={ITEM_ACTIONS} parents={[]} />
+            </section>
+            <section data-testid="long" aria-label="A long title">
+                <PageHeader
+                    title="The river festival returns for its twentieth summer, with three new stages along the old port and a night of fireworks over the water"
+                    actions={ITEM_ACTIONS}
+                    parents={[]}
+                />
+            </section>
+        </PageLayout>
+    ),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const short = within(canvas.getByTestId('short'));
+        const long = within(canvas.getByTestId('long'));
+        const shortDelete = edges(short.getByRole('button', { name: 'Delete' }));
+        const longDelete = edges(long.getByRole('button', { name: 'Delete' }));
+        await expect(longDelete).toEqual(shortDelete);
+        await expect(edges(long.getByRole('button', { name: 'Duplicate' }))).toEqual(
+            edges(short.getByRole('button', { name: 'Duplicate' })),
+        );
+        // At the end of the header
+        await expect(longDelete.right).toBe(edges(header(long)).right);
+        // The title wraps, whole, before the actions
+        const title = long.getByRole('heading', { level: 1 });
+        await expect(title).toHaveTextContent(/fireworks over the water$/);
+        await expect(title.getBoundingClientRect().height).toBeGreaterThan(
+            short.getByRole('heading', { level: 1 }).getBoundingClientRect().height,
+        );
+        await expect(edges(title).right).toBeLessThanOrEqual(
+            edges(long.getByRole('button', { name: 'Duplicate' })).left,
+        );
+    },
+};
+
+/** On a phone (below 48rem of the root), the actions go under the title. */
+export const ActionsOnANarrowRoot: Story = {
+    render: () => (
+        <div
+            style={{ containerType: 'inline-size', containerName: 'panneau-root', width: '22rem' }}
+        >
+            <PageLayout>
+                <PageHeader
+                    title="The river festival returns"
+                    actions={ITEM_ACTIONS}
+                    parents={[{ href: '/admin/resources/articles', label: 'Articles' }]}
+                />
+            </PageLayout>
+        </div>
+    ),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const title = canvas.getByRole('heading', { level: 1 }).getBoundingClientRect();
+        const duplicate = canvas.getByRole('button', { name: 'Duplicate' }).getBoundingClientRect();
+        await expect(duplicate.top).toBeGreaterThanOrEqual(title.bottom);
+        await expect(Math.round(duplicate.left)).toBe(Math.round(title.left));
+    },
+};
+
+/**
+ * A narrow page narrows its content, from the start of the column, and not its header (#415): the
+ * title and the actions are where they are on a wide page. (Each page in a section, which keeps
+ * their headers from being two banners.)
+ */
+export const NarrowAndWide: Story = {
+    render: () => (
+        <>
+            <section data-testid="wide" aria-label="A wide page">
+                <PageLayout>
+                    <PageHeader title="Articles" actions={ITEM_ACTIONS} parents={[]} />
+                    <div data-testid="wide-content">The list of articles.</div>
+                </PageLayout>
+            </section>
+            <section data-testid="narrow" aria-label="A narrow page">
+                <PageLayout width="narrow">
+                    <PageHeader title="Ada Lovelace" actions={ITEM_ACTIONS} parents={[]} />
+                    <div data-testid="narrow-content">The form of an author.</div>
+                </PageLayout>
+            </section>
+        </>
+    ),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const wide = within(canvas.getByTestId('wide'));
+        const narrow = within(canvas.getByTestId('narrow'));
+        await expect(edges(header(narrow))).toEqual(edges(header(wide)));
+        await expect(edges(narrow.getByRole('heading', { level: 1 })).left).toBe(
+            edges(wide.getByRole('heading', { level: 1 })).left,
+        );
+        await expect(edges(narrow.getByRole('button', { name: 'Delete' }))).toEqual(
+            edges(wide.getByRole('button', { name: 'Delete' })),
+        );
+        // The content starts where the header does, and is narrower when the page is wide enough
+        const content = edges(canvas.getByTestId('narrow-content'));
+        await expect(content.left).toBe(edges(header(narrow)).left);
+        await expect(content.right).toBeLessThanOrEqual(
+            edges(canvas.getByTestId('wide-content')).right,
+        );
+    },
+};
+
 /** A narrow page about one item, with a link to its parent page. */
 export const Narrow: Story = {
     render: () => (
