@@ -94,7 +94,10 @@ export function ItemPanel({
     const label = intl.formatMessage(appMessages.itemPanel, { resource: singular });
     const title =
         getItemTitle(item, resource.itemTitle, locale) ?? (item !== undefined ? item.id : '');
-    useRecordRecentItem(basePath, item !== undefined ? { resource: resource.id, id, title } : null);
+    useRecordRecentItem(
+        basePath,
+        item !== undefined ? { resource: resource.id, id, title, abilities: item.abilities } : null,
+    );
 
     // Focus moves to the panel when it opens or shows another item.
     useEffect(() => {

@@ -178,6 +178,11 @@ export interface ListLayoutProps {
     getItemLabel: (item: ListItem) => string;
     /** A link to the item, when the list has one. */
     getItemHref?: ((item: ListItem) => string | null) | undefined;
+    /**
+     * The user is about to open an item: the pointer rested on its link for a moment (not from
+     * touch), or the link got the focus. A caller with a data layer prefetches the item.
+     */
+    onItemIntent?: ((item: ListItem) => void) | undefined;
     /** Whether the item is the one shown next to the list, such as in a panel of its details. */
     isCurrent?: ((item: ListItem) => boolean) | undefined;
     /**
