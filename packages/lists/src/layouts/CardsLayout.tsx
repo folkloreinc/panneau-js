@@ -7,6 +7,7 @@ import type { ListLayoutProps } from '../types';
 import styles from './CardsLayout.module.css';
 import { ItemTitle } from './ItemTitle';
 import highlight from './highlight.module.css';
+import { getRowClickProps } from './rowClick';
 
 /** Items as cards: the first column is the title, the others are listed under it. */
 export function CardsLayout({
@@ -39,6 +40,8 @@ export function CardsLayout({
                         const current = isCurrent?.(item) ?? false;
                         const highlighted = isHighlighted?.(item) ?? false;
                         const leaving = isLeaving?.(item) ?? false;
+                        const href = getItemHref?.(item) ?? null;
+                        const opens = selectable || href !== null;
                         return (
                             <li
                                 key={item.id}
@@ -52,14 +55,18 @@ export function CardsLayout({
                                 data-highlighted={highlighted || undefined}
                                 data-item-id={item.id}
                                 data-leaving={leaving || undefined}
+                                data-opens={opens || undefined}
                                 inert={leaving || undefined}
+                                {...(opens
+                                    ? getRowClickProps({
+                                          selecting: selectable,
+                                          onToggle: () => onToggle(item),
+                                      })
+                                    : {})}
                             >
                                 <div className={styles.header}>
-                                    <div className={styles.title}>
-                                        <ItemTitle
-                                            href={getItemHref?.(item) ?? null}
-                                            current={current}
-                                        >
+                                    <div className={styles.title} data-item-title>
+                                        <ItemTitle href={href} current={current}>
                                             {title !== undefined
                                                 ? renderValue(item, title)
                                                 : getItemLabel(item)}
@@ -86,7 +93,9 @@ export function CardsLayout({
                                     </dl>
                                 ) : null}
                                 {actions !== null ? (
-                                    <div className={styles.actions}>{actions}</div>
+                                    <div className={styles.actions} data-row-control>
+                                        {actions}
+                                    </div>
                                 ) : null}
                             </li>
                         );

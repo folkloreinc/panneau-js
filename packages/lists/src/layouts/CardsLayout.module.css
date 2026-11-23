@@ -81,3 +81,8 @@
 .pageSelection {
     margin-bottom: var(--panneau-space-2);
 }
+
+/* A card that opens its item, or selects it, when it is clicked. */
+.card[data-opens] {
+    cursor: pointer;
+}

@@ -400,6 +400,12 @@ export interface ListViewActions {
 }
 
 // @public
+export type ListViewEmptyAction = ReactNode | {
+    label: string;
+    href: string;
+};
+
+// @public
 export interface ListViewInline {
     fields: readonly string[];
     formatError?: ((failure: RuleFailure, path: string) => string) | undefined;
@@ -430,6 +436,7 @@ export interface ListViewProps {
         previous?: string | null | undefined;
     } | undefined;
     displays?: Readonly<Record<string, DisplayEntry>>;
+    emptyAction?: ListViewEmptyAction;
     emptyMessage?: ReactNode;
     error?: Error | null;
     fields?: readonly Field[];
