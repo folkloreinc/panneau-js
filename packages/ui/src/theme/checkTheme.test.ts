@@ -148,7 +148,9 @@ describe('checkTheme', () => {
             'panneau-color-accent-text': '#000000',
         };
         expect(
-            checkTheme({ tokens: yellow }).failures.map((check) => `${check.scheme} ${check.name}`),
+            checkTheme({ tokens: yellow })
+                .failures.filter((check) => check.name.includes('selected'))
+                .map((check) => `${check.scheme} ${check.name}`),
         ).toEqual(['light tokens: selected on surface', 'dark tokens: selected on surface']);
         expect(
             checkTheme({
@@ -157,8 +159,39 @@ describe('checkTheme', () => {
                     'panneau-selected-bg': '#000000',
                     'panneau-selected-text': '#ffffff',
                 },
-            }).failures,
+            }).failures.filter((check) => check.name.includes('selected')),
         ).toEqual([]);
+    });
+
+    it('checks the accent as text, as Panneau derives it when the theme sets the accent only', () => {
+        const yellow = {
+            tokens: {
+                'panneau-color-accent': '#ffea00',
+                'panneau-color-accent-text': '#18181b',
+                'panneau-color-accent-subtle': '#fffbd1',
+            },
+            dark: { 'panneau-color-accent-subtle': '#3a3500' },
+        };
+        const report = checkTheme(yellow);
+        const names = report.checks
+            .filter((check) => check.name.includes('accent as text'))
+            .map((check) => `${check.scheme} ${check.name}`);
+        expect(names).toEqual([
+            'light tokens: accent as text on accent subtle',
+            'light tokens: accent as text on surface',
+            'dark tokens: accent as text on accent subtle',
+            'dark tokens: accent as text on surface',
+        ]);
+        expect(report.failures).toEqual([]);
+        // The yellow itself, as a theme could set it, is reported.
+        const unreadable = checkTheme({
+            ...yellow,
+            tokens: { ...yellow.tokens, 'panneau-color-accent-strong': '#ffea00' },
+        });
+        expect(unreadable.failures.map((check) => `${check.scheme} ${check.name}`)).toEqual([
+            'light tokens: accent as text on accent subtle',
+            'light tokens: accent as text on surface',
+        ]);
     });
 
     it('lists colors it can not read as unchecked', () => {
