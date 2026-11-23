@@ -33,7 +33,7 @@ describe('date ranges', () => {
                     'America/Toronto',
                 ),
             )?.text,
-        ).toMatch(/^Nov 4, 2026, 7:30 – 9:00 PM( EST)?$/);
+        ).toMatch(/^Nov 4, 2026, 7:30 – 9:00 PM(, Eastern Time \(UTC−5\))?$/);
         expect(
             text(
                 formatDateRange(
@@ -46,7 +46,7 @@ describe('date ranges', () => {
                     'America/Toronto',
                 ),
             )?.text,
-        ).toMatch(/^Nov 4, 2026, 7:30 – 9:00 PM( GMT\+1)?$/);
+        ).toMatch(/^Nov 4, 2026, 7:30 – 9:00 PM(, Central European Time \(UTC\+1\))?$/);
     });
 
     it('gives the days a range covers, in its time zone', () => {

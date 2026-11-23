@@ -1,0 +1,6 @@
+/* The time zone at the end of a control of date-times. */
+.zone {
+    color: var(--panneau-color-text-muted);
+    font-size: var(--panneau-font-size-sm);
+    white-space: nowrap;
+}

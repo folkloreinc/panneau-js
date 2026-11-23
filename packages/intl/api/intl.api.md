@@ -486,6 +486,9 @@ export const fieldsMessages: {
     map: PanneauMessage<    {
     label: string;
     }>;
+    mapZoomHint: PanneauMessage<    {
+    key: string;
+    }>;
     embedUrl: PanneauMessage<Record<never, never>>;
     embedLoading: PanneauMessage<Record<never, never>>;
     embedProviders: PanneauMessage<    {
