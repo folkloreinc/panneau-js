@@ -256,6 +256,24 @@ describe('the app shell', () => {
         expect(within(form).getByRole('status')).toHaveTextContent('Unsaved changes');
     });
 
+    it('marks the title of the tab while its form has unsaved changes', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/authors/1/edit');
+        renderApp();
+        const field = await screen.findByRole('textbox', { name: /name/i });
+        await waitFor(() => expect(document.title).toMatch(/^Edit the author · /));
+        // Discarded: typed, then erased
+        await user.type(field, '!');
+        await waitFor(() => expect(document.title).toMatch(/^• Edit the author · /));
+        await user.type(field, '{Backspace}');
+        await waitFor(() => expect(document.title).toMatch(/^Edit the author · /));
+        // Saved
+        await user.type(field, ' Lovelace');
+        await waitFor(() => expect(document.title).toMatch(/^• Edit the author · /));
+        await user.click(screen.getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(document.title).toMatch(/^Edit the author · /));
+    });
+
     describe('when the item of a form gets a new version', () => {
         /** Someone else saves the author, then the app fetches it again (focus, an action). */
         async function saveElsewhere(

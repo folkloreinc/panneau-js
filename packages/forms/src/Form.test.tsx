@@ -229,13 +229,12 @@ describe('Form without a definition', () => {
             <Form
                 fields={fields}
                 version="1"
-                values={{ password: null }}
+                values={{ password: 'secret' }}
                 onSubmit={onSubmit}
                 onSubmitted={onSubmitted}
             />,
         );
         expect(screen.getByLabelText(/Password/)).not.toBeRequired();
-        await userEvent.type(screen.getByLabelText(/Password/), 'x');
         await userEvent.clear(screen.getByLabelText(/Password/));
         await userEvent.click(screen.getByRole('button', { name: 'Save' }));
         await waitFor(() => expect(onSubmitted).toHaveBeenCalled());

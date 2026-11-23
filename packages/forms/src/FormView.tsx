@@ -1,4 +1,4 @@
-import { type KeyboardEvent, type ReactNode, type RefObject, useRef, useState } from 'react';
+import { type ReactNode, type RefObject, useEffect, useEffectEvent, useRef, useState } from 'react';
 
 import {
     type Form,
@@ -28,7 +28,6 @@ import {
     Aside,
     AsideLayout,
     Button,
-    isApplePlatform,
     prefersReducedMotion,
     usePanneauIntl,
     useToast,
@@ -46,6 +45,7 @@ import { FieldFlow, LayoutNodes, SidebarNode } from './layout/Layout';
 import { messages } from './messages';
 import { SaveContext, SaveControls, type SaveState, SummaryContext } from './panels/SaveControls';
 import { type FormPanelComponent, PanelsContext, builtInPanels } from './panels/panels';
+import { addSaveShortcut } from './shortcuts';
 import { useBeforeUnloadGuard, useLeaveConfirmation } from './unsaved';
 
 // Defaults shared by every render: the React Compiler doesn't memoize what is computed from an
@@ -110,6 +110,11 @@ export interface FormViewProps {
     actions?: ReactNode;
     /** Called after a successful submit, with what `onSubmit` returned. */
     onSubmitted?: (result: unknown) => void;
+    /**
+     * Called when the form gets unsaved changes, and when it no longer has any (saved, discarded,
+     * or the form is gone), such as to mark the title of the page.
+     */
+    onDirtyChange?: (dirty: boolean) => void;
     /**
      * Called by "Load the current version" in the conflict dialog when the backend didn't send the
      * current item: fetch it, and `form.reset()` with it.
@@ -282,16 +287,30 @@ function useGoToField(registry: RevealRegistry) {
     return { root, goTo };
 }
 
-/** Whether a key press saves: ⌘ Enter on Apple platforms, Ctrl Enter elsewhere. */
-function isSaveShortcut(event: KeyboardEvent, apple: boolean): boolean {
-    return (
-        event.key === 'Enter' &&
-        (apple ? event.metaKey : event.ctrlKey) &&
-        !event.altKey &&
-        !event.shiftKey &&
-        !event.repeat &&
-        !event.nativeEvent.isComposing
-    );
+/**
+ * Lets the form of `root` take ⌘ S and ⌘ Enter (Ctrl elsewhere) from anywhere on the page while
+ * it is shown (see `addSaveShortcut()`).
+ */
+function useSaveShortcut(root: RefObject<HTMLFormElement | null>, isShown: boolean): void {
+    useEffect(() => {
+        const element = root.current;
+        if (!isShown || element === null) {
+            return undefined;
+        }
+        return addSaveShortcut(element);
+    }, [root, isShown]);
+}
+
+/** Calls `onDirtyChange` when `dirty` changes, and with `false` when the form is gone. */
+function useDirtyChange(dirty: boolean, onDirtyChange: ((dirty: boolean) => void) | undefined) {
+    const report = useEffectEvent((value: boolean) => onDirtyChange?.(value));
+    useEffect(() => {
+        if (!dirty) {
+            return undefined;
+        }
+        report(true);
+        return () => report(false);
+    }, [dirty]);
 }
 
 /**
@@ -300,8 +319,10 @@ function isSaveShortcut(event: KeyboardEvent, apple: boolean): boolean {
  * unsaved changes and the dialog of version conflicts. Saving is the job of the form's
  * `onSubmit`.
  *
- * ⌘ Enter (Ctrl Enter elsewhere) saves from any of its fields. After a failed save, every
- * collapsed section that holds an error opens, and the first error is focused.
+ * ⌘ S and ⌘ Enter (Ctrl elsewhere) save it from anywhere on the page, or from the dialog it is in.
+ * An update without changes has nothing to save: its Save button is disabled, and submitting it
+ * sends nothing. After a failed save, every collapsed section that holds an error opens, and the
+ * first error is focused.
  */
 export function FormView({
     form,
@@ -316,6 +337,7 @@ export function FormView({
     submitLabel,
     actions,
     onSubmitted,
+    onDirtyChange,
     onReload,
     guardUnsavedChanges = true,
     showSavedToast = true,
@@ -360,6 +382,11 @@ export function FormView({
     if (savedShown && dirty) {
         setSavedShown(false);
     }
+    useDirtyChange(dirty, onDirtyChange);
+    useSaveShortcut(root, !isLoading);
+    // An update without changes has nothing to save, unless its last save failed: it can be tried
+    // again. A form with a newer version has changes.
+    const canSave = form.mode === 'create' || dirty || status === 'error';
     const guarded = guardUnsavedChanges && dirty;
     useBeforeUnloadGuard(guarded);
     // Leaving through the app's router asks first, in a dialog
@@ -416,22 +443,6 @@ export function FormView({
             .finally(() => setResolving(false));
     };
 
-    const apple = isApplePlatform();
-    const onKeyDown = (event: KeyboardEvent<HTMLFormElement>) => {
-        // Not `defaultPrevented`: rich text editors prevent the default of every Enter. Keys of
-        // what a field opens in a portal, such as a dialog, reach the form through React: they
-        // are that dialog's own.
-        if (
-            !isSaveShortcut(event, apple) ||
-            !(event.target instanceof Node) ||
-            !event.currentTarget.contains(event.target)
-        ) {
-            return;
-        }
-        event.preventDefault();
-        event.currentTarget.requestSubmit();
-    };
-
     const problem = status === 'error' ? getProblem(submitError) : null;
     const errorDetail =
         problem?.detail ??
@@ -449,6 +460,7 @@ export function FormView({
                     ? 'saved'
                     : null,
         isSubmitting: status === 'submitting',
+        canSave,
         actions,
         submitLabel: submitLabel === undefined ? intl.formatMessage(messages.save) : submitLabel,
     };
@@ -494,9 +506,12 @@ export function FormView({
                                         className={cx(styles.form, className)}
                                         onSubmit={(event) => {
                                             event.preventDefault();
-                                            void form.submit().then(handle);
+                                            // Enter in a field, or a shortcut, with nothing to
+                                            // save: no request
+                                            if (canSave) {
+                                                void form.submit().then(handle);
+                                            }
                                         }}
-                                        onKeyDown={onKeyDown}
                                     >
                                         {showSummary ? (
                                             <ErrorSummary

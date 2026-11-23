@@ -135,6 +135,7 @@ export const appFr: Record<string, string> = {
     'panneau.app.create': 'Créer : {resource}',
     'panneau.app.chooseType': 'Quel type de {resource} ?',
     'panneau.app.edit': 'Modifier : {resource}',
+    'panneau.app.unsavedTitle': '• {title}',
     'panneau.app.created': 'Création réussie : {resource}.',
     'panneau.app.saved': 'Enregistrement réussi : {resource}.',
     'panneau.app.itemCreated': '« {title} » : création réussie.',

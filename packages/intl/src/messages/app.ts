@@ -393,6 +393,11 @@ export const appMessages = {
         id: 'panneau.app.chooseType',
         defaultMessage: 'Which type of {resource}?',
     }),
+    /** The title of a page whose form has unsaved changes, in the browser's tab. */
+    unsavedTitle: defineMessage<{ title: string }>({
+        id: 'panneau.app.unsavedTitle',
+        defaultMessage: '• {title}',
+    }),
     edit: defineMessage<{ resource: string }>({
         id: 'panneau.app.edit',
         defaultMessage: 'Edit the {resource}',
