@@ -360,6 +360,7 @@ export function ResourceListPage({
                         fields={getVisibleFields(resource.fields)}
                         itemTitle={resource.itemTitle}
                         itemImage={itemImage}
+                        itemStatus={resource.itemStatus}
                         layouts={{ available: layouts }}
                         perPageOptions={definitionList.perPageOptions}
                         // Titles open the panel, with the list's query, or the form (`open` of the resource)

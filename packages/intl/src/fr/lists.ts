@@ -40,6 +40,7 @@ export const listsFr: Record<string, string> = {
         'Le calendrier montre {shown, number} {total, plural, one {élément sur #} other {éléments sur #}}. Filtrez la liste pour voir les autres.',
     'panneau.lists.calendarMoreUnknown':
         'Le calendrier montre {shown, plural, one {le premier élément} other {les # premiers éléments}}. Filtrez la liste pour voir les autres.',
+    'panneau.lists.calendarEmpty': 'Aucun élément en {month}',
     'panneau.lists.columns': 'Colonnes',
     'panneau.lists.moveColumnUp': 'Monter {column}',
     'panneau.lists.moveColumnDown': 'Descendre {column}',

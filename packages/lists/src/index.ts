@@ -92,6 +92,7 @@ export type {
     ListInlineEditEvent,
     ListInlineEditHandler,
     ListItem,
+    ListItemStatus,
     ListLayoutEntry,
     ListLayoutProps,
 } from './types';
