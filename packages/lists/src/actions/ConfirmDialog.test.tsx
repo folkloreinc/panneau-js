@@ -32,47 +32,53 @@ function renderDialog(props: Omit<ConfirmDialogProps, 'onConfirm' | 'onCancel'>,
     );
 }
 
-describe('ConfirmDialog names what an action applies to (#411)', () => {
-    it('names the item of the built-in delete in its title', () => {
+describe('ConfirmDialog names what an action applies to (#411)', async () => {
+    it('names the item of the built-in delete in its title', async () => {
         renderDialog({ event: event(builtInDelete, 'item'), itemLabel: 'Spring contest' });
-        const dialog = screen.getByRole('alertdialog', { name: 'Delete “Spring contest”?' });
+        const dialog = await screen.findByRole('alertdialog', { name: 'Delete “Spring contest”?' });
         // The title says it all: no message repeats it
         expect(dialog.querySelector('p')).toBeNull();
     });
 
-    it('names the items of a selection by the labels of their resource', () => {
+    it('names the items of a selection by the labels of their resource', async () => {
         renderDialog({ event: event(builtInDelete, 'selection', 3), labels });
-        expect(screen.getByRole('alertdialog', { name: 'Delete 3 articles?' })).toBeInTheDocument();
-        screen.getByRole('alertdialog').remove();
+        expect(
+            await screen.findByRole('alertdialog', { name: 'Delete 3 articles?' }),
+        ).toBeInTheDocument();
+        (await screen.findByRole('alertdialog')).remove();
         renderDialog({ event: event(builtInDelete, 'selection', 1), labels });
-        expect(screen.getByRole('alertdialog', { name: 'Delete 1 article?' })).toBeInTheDocument();
+        expect(
+            await screen.findByRole('alertdialog', { name: 'Delete 1 article?' }),
+        ).toBeInTheDocument();
     });
 
-    it('names the subject in the message of a declared action, under its own title', () => {
+    it('names the subject in the message of a declared action, under its own title', async () => {
         renderDialog({ event: event(archive, 'selection', 3), labels });
-        const dialog = screen.getByRole('alertdialog', { name: 'Archive?' });
+        const dialog = await screen.findByRole('alertdialog', { name: 'Archive?' });
         expect(dialog).toHaveTextContent('“Archive” will apply to 3 articles.');
     });
 
-    it('keeps the declared confirmation of an action, and counts items without labels', () => {
+    it('keeps the declared confirmation of an action, and counts items without labels', async () => {
         renderDialog({ event: event(publish, 'selection', 2), labels });
-        expect(screen.getByRole('alertdialog')).toHaveTextContent('Publish 2 pages?');
-        screen.getByRole('alertdialog').remove();
+        expect(await screen.findByRole('alertdialog')).toHaveTextContent('Publish 2 pages?');
+        (await screen.findByRole('alertdialog')).remove();
         renderDialog({ event: event(remove, 'item') });
-        expect(screen.getByRole('alertdialog', { name: 'Delete?' })).toHaveTextContent(
+        expect(await screen.findByRole('alertdialog', { name: 'Delete?' })).toHaveTextContent(
             '“Delete” will apply to 1 item.',
         );
     });
 
-    it('says it in French', () => {
+    it('says it in French', async () => {
         renderDialog(
             { event: event(builtInDelete, 'item'), itemLabel: 'Concours du printemps' },
             'fr',
         );
         expect(
-            screen.getByRole('alertdialog', { name: 'Supprimer « Concours du printemps » ?' }),
+            await screen.findByRole('alertdialog', {
+                name: 'Supprimer « Concours du printemps » ?',
+            }),
         ).toBeInTheDocument();
-        screen.getByRole('alertdialog').remove();
+        (await screen.findByRole('alertdialog')).remove();
         renderDialog(
             {
                 event: event(archive, 'selection', 3),
@@ -80,7 +86,7 @@ describe('ConfirmDialog names what an action applies to (#411)', () => {
             },
             'fr',
         );
-        expect(screen.getByRole('alertdialog')).toHaveTextContent(
+        expect(await screen.findByRole('alertdialog')).toHaveTextContent(
             '« Archive » s’appliquera à 3 pages.',
         );
     });
