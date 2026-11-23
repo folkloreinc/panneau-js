@@ -1,10 +1,43 @@
 // The actions of a mock backend: built-in and declared ones, dry runs and undo (decision 0063).
 import { UNDO_LIMIT } from '../constants';
-import type { ActionResult, Selection } from '../schemas/api';
+import type { ActionResult, Item, Selection } from '../schemas/api';
+import type { Resource } from '../schemas/resource';
 import { json, problem } from './http';
 import { allows } from './items';
 import type { MockRoute } from './route';
 import type { MockState } from './state';
+
+/**
+ * What a delete says, as a backend should write it (decision 0062): the item by its title, or the
+ * resource's labels with the count: "“Spring contest” deleted.", "Article deleted.", "3 articles
+ * deleted.". Nothing when nothing was deleted: the client explains the skipped items.
+ */
+function describeDeleted(
+    resource: Pick<Resource, 'label' | 'itemTitle'>,
+    deleted: readonly Item[],
+): string | undefined {
+    const [only] = deleted;
+    if (only === undefined) {
+        return undefined;
+    }
+    if (deleted.length > 1) {
+        return `${deleted.length} ${resource.label.plural} deleted.`;
+    }
+    const value = resource.itemTitle !== undefined ? only[resource.itemTitle] : undefined;
+    const title =
+        typeof value === 'string'
+            ? value
+            : value !== null && typeof value === 'object'
+              ? Object.values(value as Record<string, unknown>).find(
+                    (localized): localized is string => typeof localized === 'string',
+                )
+              : undefined;
+    if (title !== undefined && title !== '') {
+        return `“${title}” deleted.`;
+    }
+    const singular = resource.label.singular;
+    return `${singular.charAt(0).toLocaleUpperCase('en')}${singular.slice(1)} deleted.`;
+}
 
 /**
  * `POST /resources/{resource}/actions/{action}`: built-in and declared actions, their dry runs and
@@ -110,8 +143,9 @@ export async function answerAction(state: MockState, route: MockRoute): Promise<
         if (hasTrash) {
             trash.set(resource.id, [...(trash.get(resource.id) ?? []), ...deleted]);
         }
+        const message = describeDeleted(resource, deleted);
         const result: ActionResult = {
-            message: `${deleted.length} deleted.`,
+            ...(message !== undefined ? { message } : {}),
             // What was deleted can be put back, up to the limit of the protocol.
             ...(hasTrash && deleted.length > 0 && deleted.length <= UNDO_LIMIT
                 ? { undo: { action: 'restore', items: deleted.map((item) => item.id) } }

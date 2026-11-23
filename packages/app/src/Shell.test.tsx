@@ -1214,9 +1214,11 @@ describe('the app shell', () => {
         expect(remove.className).toMatch(/outline/);
         expect(remove.className).not.toMatch(/solid/);
         await user.click(remove);
-        const dialog = await screen.findByRole('alertdialog');
+        // The confirmation and the toast name the item (decision 0062)
+        const dialog = await screen.findByRole('alertdialog', { name: 'Delete?' });
+        expect(dialog).toHaveTextContent('“Delete” will apply to “About us”.');
         await user.click(within(dialog).getByRole('button', { name: 'Delete' }));
-        expect(await screen.findByText('1 deleted.')).toBeInTheDocument();
+        expect(await screen.findByText('“About us” deleted.')).toBeInTheDocument();
         expect(backend.items('pages').map((page) => page.id)).toEqual(['2']);
         // The item is gone: back to the list, in place of its page
         await waitFor(() => expect(window.location.pathname).toBe('/panneau/resources/pages'));
