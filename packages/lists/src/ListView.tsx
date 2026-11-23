@@ -53,6 +53,7 @@ import { getLayoutComponents, resolveListLayout } from './layouts/resolve';
 import { useLeavingItems, withLeavingItems } from './leaving';
 import { messages } from './messages';
 import { countSelected, getPageSelection, isItemSelected } from './selection';
+import { getItemStatus } from './status';
 import { ColumnMenu } from './toolbar/ColumnMenu';
 import { LayoutSwitch } from './toolbar/LayoutSwitch';
 import { CursorPagination, Pagination } from './toolbar/Pagination';
@@ -241,6 +242,11 @@ export interface ListViewProps {
      */
     itemImage?: string | undefined;
     /**
+     * The field that holds the state of items (`itemStatus` of the resource, decision 0103),
+     * usually a `select` with tones: the calendar shows it next to each title, in its tone.
+     */
+    itemStatus?: string | undefined;
+    /**
      * The calendar of the list (`calendar` of `resolveList()`), for its `calendar` layout. The list
      * state asks for its month when it is given the same calendar.
      */
@@ -321,6 +327,7 @@ export function ListView({
     itemTitle,
     resourceLabel,
     itemImage,
+    itemStatus,
     calendar = null,
     getItemLabel: getItemLabelProp,
     getItemHref,
@@ -750,6 +757,19 @@ export function ListView({
                 getItemFileKind={
                     itemImage !== undefined ? (item) => getFileKind(item[itemImage]) : undefined
                 }
+                getItemStatus={
+                    itemStatus !== undefined
+                        ? (item) =>
+                              getItemStatus(
+                                  item,
+                                  itemStatus,
+                                  [...fields, ...allColumns.map((column) => column.field)].find(
+                                      (field) => field?.name === itemStatus,
+                                  ),
+                                  intl.locale,
+                              )
+                        : undefined
+                }
                 calendar={
                     inCalendar
                         ? {
@@ -761,6 +781,7 @@ export function ListView({
                               ),
                               month: view.month ?? currentMonth(),
                               onMonthChange: (month) => list.setMonth(month),
+                              isLoading,
                               more:
                                   total !== undefined && total > pageItems.length
                                       ? { total }
