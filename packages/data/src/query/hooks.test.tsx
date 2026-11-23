@@ -330,6 +330,248 @@ describe('query hooks', () => {
         expect((result.current.error as ConflictError).current).toMatchObject({ version: '2' });
     });
 
+    describe('optimistic updates', () => {
+        /** A REST adapter whose updates wait until the test lets them through, one by one. */
+        function setupGated() {
+            const backend = createBackend();
+            const rest = createRestAdapter({ baseUrl: BASE_URL, fetch: backend.fetch });
+            const gates: (() => void)[] = [];
+            const sent: (string | null | undefined)[] = [];
+            const adapter: DataAdapter = {
+                ...rest,
+                update: async (resource, id, values, options) => {
+                    await new Promise<void>((resolve) => gates.push(resolve));
+                    sent.push(options?.version);
+                    return rest.update(resource, id, values, options);
+                },
+            };
+            const release = async () => {
+                await waitFor(() => expect(gates.length).toBeGreaterThan(0));
+                gates.shift()?.();
+            };
+            return { ...setup(adapter), backend, sent, release };
+        }
+
+        function renderPages(wrapper: ({ children }: { children: ReactNode }) => ReactNode) {
+            return renderHook(
+                () => ({
+                    list: useResourceList('pages'),
+                    item: useResourceItem('pages', '2'),
+                    update: useUpdateItem('pages', { optimistic: true }),
+                }),
+                { wrapper },
+            );
+        }
+
+        const listed = (data: { data: { id: string }[] } | undefined) =>
+            data?.data.find((item) => item.id === '2');
+
+        it('show the values at once in the item and the lists, with the old version', async () => {
+            const { wrapper, release } = setupGated();
+            const { result } = renderPages(wrapper);
+            await waitFor(() => expect(result.current.item.isSuccess).toBe(true));
+            await waitFor(() => expect(result.current.list.isSuccess).toBe(true));
+
+            let saved: Promise<unknown> = Promise.resolve();
+            act(() => {
+                saved = result.current.update.mutateAsync({
+                    id: '2',
+                    values: { status: 'published' },
+                    version: '1',
+                });
+            });
+            await waitFor(() =>
+                expect(result.current.item.data).toMatchObject({
+                    status: 'published',
+                    version: '1',
+                }),
+            );
+            expect(listed(result.current.list.data)).toMatchObject({
+                status: 'published',
+                version: '1',
+            });
+
+            await release();
+            await act(() => saved);
+            await waitFor(() =>
+                expect(result.current.item.data).toMatchObject({
+                    status: 'published',
+                    version: '2',
+                }),
+            );
+            expect(listed(result.current.list.data)).toMatchObject({ version: '2' });
+        });
+
+        it('put the values back when the save fails', async () => {
+            const { wrapper, client } = setup();
+            const { result } = renderPages(wrapper);
+            await waitFor(() => expect(result.current.item.isSuccess).toBe(true));
+            await waitFor(() => expect(result.current.list.isSuccess).toBe(true));
+            const before = result.current.item.data;
+
+            let failure: unknown = null;
+            await act(async () => {
+                await result.current.update
+                    // The mock backend refuses a status outside the options.
+                    .mutateAsync({ id: '2', values: { status: 'archived' }, version: '1' })
+                    .catch((error: unknown) => {
+                        failure = error;
+                    });
+            });
+            expect(failure).toBeInstanceOf(ValidationError);
+            expect(result.current.item.data).toEqual(before);
+            expect(listed(result.current.list.data)).toMatchObject({
+                status: 'draft',
+                version: '1',
+            });
+            expect(client.getQueryData(queryKeys.item('pages', '2'))).toEqual(before);
+        });
+
+        it('send two quick edits of an item one after the other, the second with the first’s version', async () => {
+            const { wrapper, release, sent, backend } = setupGated();
+            const { result } = renderPages(wrapper);
+            await waitFor(() => expect(result.current.item.isSuccess).toBe(true));
+
+            let first: Promise<unknown> = Promise.resolve();
+            let second: Promise<unknown> = Promise.resolve();
+            act(() => {
+                first = result.current.update.mutateAsync({
+                    id: '2',
+                    values: { status: 'published' },
+                    version: '1',
+                });
+                // Made from the item as the list showed it: still version 1.
+                second = result.current.update.mutateAsync({
+                    id: '2',
+                    values: { title: { en: 'About us', fr: 'À propos' } },
+                    version: '1',
+                });
+            });
+            await waitFor(() =>
+                expect(result.current.item.data).toMatchObject({
+                    status: 'published',
+                    title: { en: 'About us' },
+                    version: '1',
+                }),
+            );
+
+            await release();
+            await act(() => first);
+            // The first is saved; the second still shows.
+            await waitFor(() =>
+                expect(result.current.item.data).toMatchObject({
+                    status: 'published',
+                    title: { en: 'About us' },
+                    version: '2',
+                }),
+            );
+            await release();
+            await act(() => second);
+            await waitFor(() => expect(sent).toEqual(['1', '2']));
+            expect(result.current.item.data).toMatchObject({
+                status: 'published',
+                title: { en: 'About us' },
+                version: '3',
+            });
+            expect(backend.requests.filter(({ method }) => method === 'PATCH')).toHaveLength(2);
+        });
+
+        it('put back only the edit that failed, under the edits still pending', async () => {
+            const { wrapper, release } = setupGated();
+            const { result } = renderPages(wrapper);
+            await waitFor(() => expect(result.current.item.isSuccess).toBe(true));
+            await waitFor(() => expect(result.current.list.isSuccess).toBe(true));
+
+            let first: Promise<unknown> = Promise.resolve();
+            let second: Promise<unknown> = Promise.resolve();
+            act(() => {
+                first = result.current.update
+                    .mutateAsync({ id: '2', values: { status: 'archived' }, version: '1' })
+                    .catch(() => undefined);
+                second = result.current.update.mutateAsync({
+                    id: '2',
+                    values: { title: { en: 'About us', fr: 'À propos' } },
+                    version: '1',
+                });
+            });
+            await waitFor(() =>
+                expect(result.current.item.data).toMatchObject({ status: 'archived' }),
+            );
+            await release();
+            await act(() => first);
+            await waitFor(() =>
+                expect(result.current.item.data).toMatchObject({
+                    status: 'draft',
+                    title: { en: 'About us' },
+                    version: '1',
+                }),
+            );
+            expect(listed(result.current.list.data)).toMatchObject({ status: 'draft' });
+            await release();
+            await act(() => second);
+            await waitFor(() =>
+                expect(result.current.item.data).toMatchObject({
+                    status: 'draft',
+                    title: { en: 'About us' },
+                    version: '2',
+                }),
+            );
+        });
+
+        it('show the current item of a conflict', async () => {
+            const { wrapper, backend } = setup();
+            const { result } = renderPages(wrapper);
+            await waitFor(() => expect(result.current.item.isSuccess).toBe(true));
+            // Someone else saves it first.
+            await backend.fetch(`${BASE_URL}/resources/pages/2`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'If-Match': '"1"' },
+                body: JSON.stringify({ title: { en: 'Theirs', fr: 'Theirs' } }),
+            });
+
+            let failure: unknown = null;
+            await act(async () => {
+                await result.current.update
+                    .mutateAsync({ id: '2', values: { status: 'published' }, version: '1' })
+                    .catch((error: unknown) => {
+                        failure = error;
+                    });
+            });
+            expect(failure).toBeInstanceOf(ConflictError);
+            await waitFor(() =>
+                expect(result.current.item.data).toMatchObject({
+                    status: 'draft',
+                    title: { en: 'Theirs' },
+                    version: '2',
+                }),
+            );
+        });
+
+        it('leave a form’s update as it was: nothing shows before the answer', async () => {
+            const { wrapper, release } = setupGated();
+            const { result } = renderHook(
+                () => ({ item: useResourceItem('pages', '2'), update: useUpdateItem('pages') }),
+                { wrapper },
+            );
+            await waitFor(() => expect(result.current.item.isSuccess).toBe(true));
+            let saved: Promise<unknown> = Promise.resolve();
+            act(() => {
+                saved = result.current.update.mutateAsync({
+                    id: '2',
+                    values: { status: 'published' },
+                    version: '1',
+                });
+            });
+            await waitFor(() => expect(result.current.update.isPending).toBe(true));
+            expect(result.current.item.data).toMatchObject({ status: 'draft' });
+            await release();
+            await act(() => saved);
+            await waitFor(() =>
+                expect(result.current.item.data).toMatchObject({ status: 'published' }),
+            );
+        });
+    });
+
     it('create an item and refetch the lists', async () => {
         const { wrapper } = setup();
         const { result } = renderHook(

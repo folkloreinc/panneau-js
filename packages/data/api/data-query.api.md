@@ -140,6 +140,11 @@ export interface SearchKeyOptions {
 export function searchQueryOptions(adapter: DataAdapter, q: string, input?: SearchKeyOptions): DataQueryOptions<SearchResponse, ReturnType<typeof queryKeys.search>>;
 
 // @public (undocumented)
+export interface UpdateItemOptions {
+    optimistic?: boolean;
+}
+
+// @public (undocumented)
 export interface UpdateItemVariables {
     id: string;
     values: Values;
@@ -198,7 +203,7 @@ export function useRunAction(resource: string): UseMutationResult<ActionResponse
 export function useSearch(q: string, input?: QueryHookOptions<SearchResponse, ReturnType<typeof queryKeys.search>> & SearchKeyOptions): UseQueryResult<SearchResponse>;
 
 // @public
-export function useUpdateItem(resource: string): UseMutationResult<Item, Error, UpdateItemVariables>;
+export function useUpdateItem(resource: string, input?: UpdateItemOptions): UseMutationResult<Item, Error, UpdateItemVariables>;
 
 // @public
 export function useWidgetData(widget: string, input?: QueryHookOptions<unknown, ReturnType<typeof queryKeys.widget>> & WidgetKeyOptions): UseQueryResult<unknown>;

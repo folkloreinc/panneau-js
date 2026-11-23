@@ -8,6 +8,7 @@ export {
     type QueryHookOptions,
     type ResourceAggregateRead,
     type RunActionVariables,
+    type UpdateItemOptions,
     type UpdateItemVariables,
     type UseActionRunOptions,
     isRunFinished,
