@@ -15,14 +15,14 @@ import { markExtensions } from './marks';
 import { Paste } from './paste';
 import { HtmlBlock, HtmlInline, HtmlMark, type HtmlNodeOptions } from './raw';
 
-/** The attributes of a link to an item of the site (decision 0107). */
+/** The attributes of a link to an item of the site (under review, decision 0107). */
 export const PAGE_ID = 'data-page-id';
 export const PAGE_RESOURCE = 'data-page-resource';
 
 /**
  * Links with their attributes in the order they were written in (CKEditor 5 writes `target` and
  * `rel` before `href`), and new links with `href` first. A link to an item of the site keeps the
- * item in `data-page-id` and `data-page-resource` (decision 0107).
+ * item in `data-page-id` and `data-page-resource` (under review, decision 0107).
  */
 const KeptLink = Link.extend({
     addAttributes() {

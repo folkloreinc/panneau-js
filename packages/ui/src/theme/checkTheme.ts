@@ -1,6 +1,12 @@
 import { type Rgb, WHITE, contrastRatio, mixColors, parseColor, parseColorOver } from './color';
 import { type ColorDifferenceCheck, checkColorDifferences } from './colorVision';
-import { type Theme, paletteVariables, resolveReference, themeSurfaces } from './theme';
+import {
+    type Theme,
+    deriveAccentStrong,
+    paletteVariables,
+    resolveReference,
+    themeSurfaces,
+} from './theme';
 import { MIN_CONTRAST_RATIO, SUBTLE_AMOUNTS, type ToneValues, resolveTone } from './tones';
 
 /** A pair of colors that a theme must keep readable. */
@@ -68,6 +74,14 @@ const TOKEN_PAIRS: [name: string, foreground: string, background: string, minimu
         'panneau-color-accent',
         MIN_CONTRAST_RATIO,
     ],
+    // The accent as text: the outline, subtle and ghost appearances of the accent tone.
+    ['accent as text on bg', 'panneau-color-accent-strong', 'panneau-color-bg', MIN_CONTRAST_RATIO],
+    [
+        'accent as text on accent subtle',
+        'panneau-color-accent-strong',
+        'panneau-color-accent-subtle',
+        MIN_CONTRAST_RATIO,
+    ],
     [
         'control border on surface',
         'panneau-color-border-control',
@@ -111,7 +125,8 @@ const TOKEN_PAIRS: [name: string, foreground: string, background: string, minimu
 
 /**
  * Checks the contrast of a theme, like Bootstrap's `$min-contrast-ratio`, but as a report: text
- * tokens against backgrounds (4.5:1), control borders (3:1), and every tone of the theme (its text
+ * tokens against backgrounds (4.5:1), the accent as text (`panneau-color-accent-strong`, as the
+ * theme sets it or as Panneau derives it), control borders (3:1), and every tone of the theme (its text
  * on the surface, its solid text on the solid background and its hover), and chart colors (3:1
  * against the surface, and categorical colors distinct with color vision deficiencies). Pairs where a color comes
  * from the default theme and is not set by the theme are skipped, except the surface, which falls
@@ -125,6 +140,7 @@ export function checkTheme(theme: Theme): ThemeReport {
     const colorDifferences: ThemeReport['colorDifferences'] = [];
     const palette = paletteVariables(theme.palette);
     const surfaces = themeSurfaces(theme);
+    const accentStrong = deriveAccentStrong(theme);
     (['light', 'dark'] as const).forEach((scheme) => {
         const variables = {
             ...palette,
@@ -137,6 +153,11 @@ export function checkTheme(theme: Theme): ThemeReport {
                 resolveReference(value, variables),
             ]),
         );
+        // The accent as text that getThemeCss() derives, when the theme sets the accent only.
+        const derived = accentStrong[scheme];
+        if (tokens['panneau-color-accent-strong'] === undefined && derived !== undefined) {
+            tokens['panneau-color-accent-strong'] = resolveReference(derived, variables);
+        }
         // Tokens that default to another one, as their fallback in the CSS does.
         Object.entries(FALLBACKS).forEach(([name, fallback]) => {
             const value = tokens[fallback];
@@ -175,8 +196,19 @@ export function checkTheme(theme: Theme): ThemeReport {
                 add(`tokens: ${name}`, foregroundValue, backgroundValue, minimum);
             }
         });
-        // Chart colors are graphics: 3:1 against the surface, and distinct from each other.
         const surfaceValue = surface ?? (scheme === 'light' ? '#ffffff' : '#18181b');
+        // Panels: on the surface of the theme, or the default one.
+        const accentStrongValue = tokens['panneau-color-accent-strong'];
+        if (accentStrongValue !== undefined) {
+            add(
+                'tokens: accent as text on surface',
+                accentStrongValue,
+                surfaceValue,
+                MIN_CONTRAST_RATIO,
+                surfaceColor,
+            );
+        }
+        // Chart colors are graphics: 3:1 against the surface, and distinct from each other.
         CHART_TOKENS.forEach((token) => {
             const value = tokens[token];
             if (value !== undefined) {

@@ -46,6 +46,8 @@ export const bootstrapTheme: Theme = {
         'panneau-color-accent-hover': 'color-mix(in srgb, var(--bs-primary), #000 15%)',
         'panneau-color-accent-text': 'var(--bs-white)',
         'panneau-color-accent-subtle': 'var(--bs-primary-bg-subtle)',
+        // The accent as text, as Bootstrap writes `.text-primary-emphasis`.
+        'panneau-color-accent-strong': 'var(--bs-primary-text-emphasis)',
         'panneau-color-focus': 'rgba(var(--bs-primary-rgb), 0.5)',
         'panneau-color-danger': 'var(--bs-danger-text-emphasis)',
         'panneau-color-danger-subtle': 'var(--bs-danger-bg-subtle)',
