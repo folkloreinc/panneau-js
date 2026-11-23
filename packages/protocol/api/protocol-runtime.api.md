@@ -208,8 +208,14 @@ export const DASHBOARD_COMPONENT = "dashboard";
 // @public
 export const DATE_RANGE_OPEN_BOUNDS: readonly ["start", "end", "both"];
 
+// @public
+export const DATE_SHORTCUTS: readonly ["today", "yesterday", "tomorrow"];
+
 // @public (undocumented)
 export type DateRangeOpenBound = (typeof DATE_RANGE_OPEN_BOUNDS)[number];
+
+// @public
+export type DateShortcutName = (typeof DATE_SHORTCUTS)[number];
 
 // @public
 export const DEFAULT_ADDRESS_REQUIRED_PARTS: readonly AddressPart[];

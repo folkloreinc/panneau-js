@@ -174,6 +174,15 @@ export const BOOT_CONFIG_ELEMENT_ID = 'panneau-boot';
  */
 export const DURATION_UNITS = ['seconds', 'minutes', 'hours', 'days'] as const;
 
+/**
+ * The shortcuts of a `date` field that need no settings (`settings.shortcuts`): buttons that fill
+ * it with today, yesterday or tomorrow, in the user's zone.
+ */
+export const DATE_SHORTCUTS = ['today', 'yesterday', 'tomorrow'] as const;
+
+/** A shortcut of a `date` field without settings. */
+export type DateShortcutName = (typeof DATE_SHORTCUTS)[number];
+
 /** A unit of a `duration` field. */
 export type DurationUnit = (typeof DURATION_UNITS)[number];
 

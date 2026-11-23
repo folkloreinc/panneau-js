@@ -50,6 +50,7 @@ export interface SingleSelectFieldProps extends SelectFieldBaseProps {
     multiple?: false;
     // (undocumented)
     onChange?: (value: OptionValue | null) => void;
+    search?: boolean;
     // (undocumented)
     value?: OptionValue | null;
     widget?: 'select' | 'radios';

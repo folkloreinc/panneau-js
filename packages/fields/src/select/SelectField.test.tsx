@@ -97,4 +97,99 @@ describe('SelectField', () => {
         await userEvent.click(await screen.findByRole('option', { name: 'Draft' }));
         expect(onChange).toHaveBeenLastCalledWith(['draft', 'published']);
     });
+
+    describe('with search', () => {
+        const MANY = Array.from({ length: 12 }, (_, index) => ({
+            value: index + 1,
+            label:
+                [
+                    'January',
+                    'February',
+                    'March',
+                    'April',
+                    'May',
+                    'June',
+                    'July',
+                    'August',
+                    'September',
+                    'October',
+                    'November',
+                    'December',
+                ][index] ?? '',
+        }));
+
+        it('is a combo box with more than 10 options, with the same values', async () => {
+            const onChange = vi.fn();
+            renderField(
+                <DefinitionField
+                    field={{ name: 'month', type: 'select', label: 'Month', options: MANY }}
+                    path="month"
+                    value={null}
+                    onChange={onChange}
+                />,
+            );
+            const input = screen.getByRole('combobox', { name: 'Month' });
+            expect(input).toHaveAttribute('placeholder', 'Select…');
+            await userEvent.type(input, 'ju');
+            expect(screen.getAllByRole('option').map((option) => option.textContent)).toEqual([
+                'June',
+                'July',
+            ]);
+            await userEvent.keyboard('{ArrowDown}{ArrowDown}{Enter}');
+            // A number stays a number
+            expect(onChange).toHaveBeenLastCalledWith(7);
+        });
+
+        it('shows the label of the value, and clears it with its text', async () => {
+            const onChange = vi.fn();
+            renderField(
+                <SelectField
+                    label="Month"
+                    options={MANY}
+                    value={3}
+                    onChange={onChange}
+                    errors={['Pick a month.']}
+                />,
+            );
+            const input = screen.getByRole('combobox', { name: 'Month' });
+            expect(input).toHaveValue('March');
+            expect(input.closest('[data-invalid]')).not.toBeNull();
+            await userEvent.clear(input);
+            expect(onChange).toHaveBeenLastCalledWith(null);
+        });
+
+        it('follows the search setting of the field', () => {
+            renderField(
+                <>
+                    <DefinitionField
+                        field={{
+                            name: 'month',
+                            type: 'select',
+                            label: 'Month',
+                            options: MANY,
+                            settings: { search: false },
+                        }}
+                        path="month"
+                        value={null}
+                        onChange={() => undefined}
+                    />
+                    <DefinitionField
+                        field={{
+                            name: 'status',
+                            type: 'select',
+                            label: 'Status',
+                            options: OPTIONS,
+                            settings: { search: true },
+                        }}
+                        path="status"
+                        value="draft"
+                        onChange={() => undefined}
+                    />
+                </>,
+            );
+            expect(screen.getByRole('button', { name: /Month/ })).toBeInTheDocument();
+            expect(screen.queryByRole('combobox', { name: 'Month' })).toBeNull();
+            expect(screen.getByRole('combobox', { name: 'Status' })).toHaveValue('Draft');
+        });
+    });
 });
