@@ -1,5 +1,37 @@
 # @panneau/forms
 
+## 5.0.0-alpha.47
+
+### Patch Changes
+
+- 2aab034: Save only what changed, from anywhere on the page. The Save button of an update without changes is disabled: it stays in the tab order, says "No changes to save" to assistive technologies, and submitting the form (Enter in a field, a shortcut) sends no request. A create form can always be saved. ⌘ S and ⌘ Enter (Ctrl S and Ctrl Enter elsewhere) save the form of the page wherever the focus is, and the form of an open dialog (the parameters of an action) rather than the page under it; ⌘ S never opens the browser's "Save page" while a form is shown. `FormView` and `Form` take `onDirtyChange`, and the app marks the title of the tab (`• `) while the form of an item has unsaved changes.
+- ff56beb: The publication badge says what is saved. The `publication` component and panel show the state of the item as it was last saved (the form's initial values, which follow each saved version), and say apart, in the `warning` tone, when the publication fields have unsaved changes ("Published · Unsaved changes"). A Publish or Unpublish whose save doesn't succeed (invalid values, a `422`, a conflict, an error) puts the publication values back as they were before the press, and keeps the other edits. A scheduled item becomes Published when its date passes while the form is open, with a timer set for the date. Publish and Unpublish also save an item that has no other changes: a form's submit reads whether it has changes when it happens, not from its last render.
+- 35b9955: Fields, columns, filters and pages without a `label` show their key made readable instead of the key as written: `published_at` reads "Published at", `author_id` reads "Author", `seo.title` reads "Seo title". The same fallback names fields, list columns, filters and their chips, sort options, the columns menu, the details of an item, the error summary and the conflict dialog of a form, inline editing, the filters of the media picker, and the pages in the navigation and the "Go to…" palette. A label given by the definition is shown as given, an empty one included. `@panneau/protocol/runtime` exports the fallback: `humanizeKey()`, `labelOrKey()` and `getFieldLabel()`.
+- 1350d30: A form no longer drops what is being typed when its item gets a new version (a refetch on focus, after an action, or a save while typing). A form without unsaved changes takes the new version; a form with unsaved changes keeps them, says that a newer version was saved, and its "Compare" opens the conflict dialog. New: `form.refresh(item)`, `form.reviewNewer()` and `newer` in the form state in `@panneau/core`, and the `item` prop of `Form` in `@panneau/forms`.
+- Updated dependencies [2aab034]
+- Updated dependencies [79abfd4]
+- Updated dependencies [ff56beb]
+- Updated dependencies [35b9955]
+- Updated dependencies [a55f51b]
+- Updated dependencies [ecf96f3]
+- Updated dependencies [09cca06]
+- Updated dependencies [9e90547]
+- Updated dependencies [060c1e9]
+- Updated dependencies [b754dda]
+- Updated dependencies [3eb376c]
+- Updated dependencies [7e99405]
+- Updated dependencies [8ad5274]
+- Updated dependencies [55eced0]
+- Updated dependencies [f8c5d4f]
+- Updated dependencies [d256517]
+- Updated dependencies [4686a26]
+- Updated dependencies [1350d30]
+  - @panneau/intl@5.0.0-alpha.47
+  - @panneau/fields@5.0.0-alpha.47
+  - @panneau/ui@5.0.0-alpha.47
+  - @panneau/protocol@5.0.0-alpha.47
+  - @panneau/core@5.0.0-alpha.47
+
 ## 5.0.0-alpha.46
 
 ### Patch Changes
