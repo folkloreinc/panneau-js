@@ -4,10 +4,8 @@ import { useState } from 'react';
 
 import { PasswordConfirmationError, ValidationError } from '@panneau/data';
 import { queryKeys, useDataAdapter } from '@panneau/data/query';
-import type { FieldEntry, FieldEntryProps } from '@panneau/fields';
-import { Form } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
-import type { Definition, Field, Passkey, User } from '@panneau/protocol';
+import type { Definition, Passkey, User } from '@panneau/protocol';
 import {
     Alert,
     Button,
@@ -46,70 +44,21 @@ function FormSkeleton({ fields }: { fields: number }) {
     );
 }
 
-/** An input of the profile, which the browser fills in with what it knows of the user. */
-function profileInput(type: 'text' | 'email', autoComplete: string): FieldEntry {
-    return function ProfileInput({
-        field,
-        path,
-        value,
-        onChange,
-        onBlur,
-        errors,
-    }: FieldEntryProps) {
-        return (
-            <TextInput
-                label={field.label ?? field.name}
-                name={path}
-                type={type}
-                autoComplete={autoComplete}
-                isRequired
-                value={typeof value === 'string' ? value : ''}
-                onChange={(next) => onChange(next === '' ? null : next)}
-                {...(onBlur !== undefined ? { onBlur } : {})}
-                errors={errors ?? []}
-            />
-        );
-    };
-}
-
-const profileInputs: Readonly<Record<string, FieldEntry>> = {
-    'account-name': profileInput('text', 'name'),
-    'account-email': profileInput('email', 'email'),
-};
-
-/**
- * The name and the email of the user, saved together. A form of `@panneau/forms`: errors under
- * their fields, ⌘ Enter to save, and leaving with unsaved changes asks first.
- */
+/** The name and the email of the user, saved together. */
 function ProfileForm({ user }: { user: User }) {
     const intl = usePanneauIntl();
     const adapter = useDataAdapter();
     const queryClient = useQueryClient();
     const toasts = useToast();
-    const fields: Field[] = [
-        {
-            name: 'name',
-            type: 'account-name',
-            label: intl.formatMessage(appMessages.name),
-            rules: [{ rule: 'required' }],
-        },
-        {
-            name: 'email',
-            type: 'account-email',
-            label: intl.formatMessage(appMessages.email),
-            rules: [{ rule: 'required' }],
-        },
-    ];
+    const [name, setName] = useState(user.name);
+    const [email, setEmail] = useState(user.email ?? '');
     return (
-        <Form
-            fields={fields}
-            values={{ name: user.name, email: user.email ?? '' }}
-            mode="update"
-            onSubmit={async (values) => {
-                const saved = await adapter.updateAccount?.({
-                    name: typeof values.name === 'string' ? values.name : '',
-                    email: typeof values.email === 'string' ? values.email : '',
-                });
+        <AuthForm
+            fields={['name', 'email']}
+            submitLabel={intl.formatMessage(appMessages.saveAccount)}
+            errorMessage={intl.formatMessage(appMessages.accountSaveError)}
+            onSubmit={async () => {
+                const saved = await adapter.updateAccount?.({ name, email });
                 if (saved !== undefined) {
                     queryClient.setQueryData(queryKeys.account(), saved);
                 }
@@ -120,10 +69,31 @@ function ProfileForm({ user }: { user: User }) {
                 // The name in the sidebar; a new email may need to be verified
                 await queryClient.invalidateQueries({ queryKey: queryKeys.definition() });
             }}
-            components={profileInputs}
-            aria-label={intl.formatMessage(appMessages.accountProfile)}
-            submitLabel={intl.formatMessage(appMessages.saveAccount)}
-        />
+        >
+            {(errors) => (
+                <>
+                    <TextInput
+                        label={intl.formatMessage(appMessages.name)}
+                        name="name"
+                        autoComplete="name"
+                        isRequired
+                        value={name}
+                        onChange={setName}
+                        errors={errors.fields.name}
+                    />
+                    <TextInput
+                        label={intl.formatMessage(appMessages.email)}
+                        type="email"
+                        name="email"
+                        autoComplete="email"
+                        isRequired
+                        value={email}
+                        onChange={setEmail}
+                        errors={errors.fields.email}
+                    />
+                </>
+            )}
+        </AuthForm>
     );
 }
 
