@@ -15,6 +15,7 @@ export function CardsLayout({
     renderValue,
     getItemLabel,
     getItemHref,
+    onItemIntent,
     isCurrent,
     isHighlighted,
     isLeaving,
@@ -58,6 +59,11 @@ export function CardsLayout({
                                     <div className={styles.title}>
                                         <ItemTitle
                                             href={getItemHref?.(item) ?? null}
+                                            onIntent={
+                                                onItemIntent !== undefined
+                                                    ? () => onItemIntent(item)
+                                                    : undefined
+                                            }
                                             current={current}
                                         >
                                             {title !== undefined

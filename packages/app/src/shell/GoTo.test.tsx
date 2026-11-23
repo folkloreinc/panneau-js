@@ -22,10 +22,12 @@ function renderApp(
         ],
         wrapFetch = (fetch) => fetch,
         types,
+        open,
     }: {
         pages?: Record<string, unknown>[];
         wrapFetch?: (fetch: Fetch) => Fetch;
         types?: ResourceInput['types'];
+        open?: ResourceInput['open'];
     } = {},
 ) {
     const definition = createDefinition({
@@ -41,6 +43,7 @@ function renderApp(
                 ],
                 list: { search: true },
                 ...(types !== undefined ? { types } : {}),
+                ...(open !== undefined ? { open } : {}),
             },
             {
                 id: 'authors',
@@ -143,6 +146,74 @@ describe('the "Go to…" palette', () => {
         );
         await user.keyboard('{Control>}k{/Control}');
         expect(palette().getByRole('group', { name: 'Recent' })).toHaveTextContent('Contact');
+    });
+
+    it('opens a result in the panel when its resource opens items there (decision 0082)', async () => {
+        const user = userEvent.setup();
+        renderApp([], { open: 'panel' });
+        await user.click(goToButton());
+        await user.type(palette().getByRole('searchbox'), 'conta');
+        await user.click(await palette().findByRole('menuitem', { name: 'Contact' }));
+        expect(window.location.pathname).toBe('/panneau/resources/pages/2');
+    });
+
+    it("opens a result the user can't update in the panel, and remembers it", async () => {
+        const user = userEvent.setup();
+        renderApp([], {
+            pages: [{ id: '2', title: 'Contact', abilities: { view: true, update: false } }],
+        });
+        await user.click(goToButton());
+        await user.type(palette().getByRole('searchbox'), 'conta');
+        await user.click(await palette().findByRole('menuitem', { name: 'Contact' }));
+        expect(window.location.pathname).toBe('/panneau/resources/pages/2');
+
+        // The recent item opens where it did, with the abilities it was recorded with.
+        await waitFor(() =>
+            expect(
+                JSON.parse(window.localStorage.getItem('panneau:recent:/panneau:usr_1') ?? '[]'),
+            ).toEqual([
+                { resource: 'pages', id: '2', title: 'Contact', abilities: { update: false } },
+            ]),
+        );
+        window.history.replaceState(null, '', '/panneau');
+        await user.click(goToButton());
+        expect(
+            within(palette().getByRole('group', { name: 'Recent' })).getByRole('menuitem', {
+                name: 'Contact',
+            }),
+        ).toHaveAttribute('href', '/panneau/resources/pages/2');
+    });
+
+    it('opens a recent item where its list does', async () => {
+        const user = userEvent.setup();
+        window.localStorage.setItem(
+            'panneau:recent:/panneau:usr_1',
+            JSON.stringify([
+                { resource: 'pages', id: '1', title: 'About us', abilities: { update: true } },
+                { resource: 'pages', id: '2', title: 'Contact', abilities: { update: false } },
+                // Recorded before abilities were kept: the show route decides once it loads.
+                { resource: 'authors', id: '1', title: 'Ada' },
+            ]),
+        );
+        renderApp();
+        await user.click(goToButton());
+        const recent = within(palette().getByRole('group', { name: 'Recent' }));
+        expect(recent.getAllByRole('menuitem').map((item) => item.getAttribute('href'))).toEqual([
+            '/panneau/resources/pages/1/edit',
+            '/panneau/resources/pages/2',
+            '/panneau/resources/authors/1',
+        ]);
+    });
+
+    it('highlights what matches the query, without changing the names of results', async () => {
+        const user = userEvent.setup();
+        renderApp();
+        await user.click(goToButton());
+        await user.type(palette().getByRole('searchbox'), 'conta');
+        const result = await palette().findByRole('menuitem', { name: 'Contact' });
+        expect([...result.querySelectorAll('mark')].map((mark) => mark.textContent)).toEqual([
+            'Conta',
+        ]);
     });
 
     it('runs the actions of the app and the commands of plugins', async () => {

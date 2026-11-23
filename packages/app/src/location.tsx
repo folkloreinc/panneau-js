@@ -20,6 +20,43 @@ let guard: HistoryGuard | null = null;
 let current = 0;
 let confirmed = false;
 
+/** Where a page of the app was scrolled: the window, and the element that holds the page. */
+export interface ScrollPosition {
+    window: number;
+    container: number;
+}
+
+// The scroll of each entry of the history, saved when the app leaves it, so that going back or
+// forward to it restores it. Whether the last move went back or forward.
+const positions = new Map<number, ScrollPosition>();
+let container: HTMLElement | null = null;
+let wentBackOrForward = false;
+
+function saveScroll() {
+    positions.set(current, { window: window.scrollY, container: container?.scrollTop ?? 0 });
+}
+
+/**
+ * Sets the element that holds the pages, whose scroll the history keeps with the window's: the
+ * main element of the layout. Returns a function that removes it.
+ */
+export function setScrollContainer(element: HTMLElement | null): () => void {
+    container = element;
+    return () => {
+        if (container === element) {
+            container = null;
+        }
+    };
+}
+
+/**
+ * The scroll to restore on the current entry: where it was left, when the browser went back or
+ * forward to it. `null` after a new navigation, which starts at the top.
+ */
+export function getRestoredScroll(): ScrollPosition | null {
+    return wentBackOrForward ? (positions.get(current) ?? null) : null;
+}
+
 function readIndex(state: unknown): number | null {
     const value =
         state !== null && typeof state === 'object'
@@ -47,6 +84,9 @@ function onPopState(event: PopStateEvent) {
         return;
     }
     confirmed = false;
+    // The page shown is still the one the browser left
+    saveScroll();
+    wentBackOrForward = true;
     if (index !== null) {
         current = index;
     }
@@ -66,12 +106,19 @@ function subscribe(listener: () => void) {
             current = index;
         }
         window.addEventListener('popstate', onPopState);
+        // The app restores the scroll of its pages once they render, not the browser before
+        if ('scrollRestoration' in window.history) {
+            window.history.scrollRestoration = 'manual';
+        }
     }
     listeners.add(listener);
     return () => {
         listeners.delete(listener);
         if (listeners.size === 0) {
             window.removeEventListener('popstate', onPopState);
+            if ('scrollRestoration' in window.history) {
+                window.history.scrollRestoration = 'auto';
+            }
         }
     };
 }
@@ -99,10 +146,18 @@ export function setHistoryGuard(next: HistoryGuard): () => void {
  * `replace`, the path replaces the current entry of the history, which Back then skips.
  */
 export function navigate(path: string, { replace = false }: { replace?: boolean } = {}) {
+    wentBackOrForward = false;
     if (replace) {
         window.history.replaceState({ [INDEX_KEY]: current }, '', path);
     } else {
+        saveScroll();
         current += 1;
+        // A new entry, after those that Back left: their positions are gone with them
+        for (const index of positions.keys()) {
+            if (index >= current) {
+                positions.delete(index);
+            }
+        }
         window.history.pushState({ [INDEX_KEY]: current }, '', path);
     }
     notify();

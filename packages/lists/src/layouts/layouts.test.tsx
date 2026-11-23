@@ -1,6 +1,6 @@
-import { screen, within } from '@testing-library/react';
+import { act, fireEvent, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createList, createMemoryRouter } from '@panneau/core';
 
@@ -10,6 +10,7 @@ import { columns, pages, publish } from '../__fixtures__/pages';
 import { renderList } from '../__fixtures__/render';
 import { getImageUrl } from '../images';
 import type { ListItem } from '../types';
+import { INTENT_DELAY } from './ItemTitle';
 
 const events: ListItem[] = [
     { id: '1', title: 'Kick-off', published_on: '2027-03-02' },
@@ -313,5 +314,95 @@ describe('the calendar', () => {
                 .closest('[role="status"]'),
         ).not.toBeNull();
         expect(screen.queryByRole('navigation', { name: 'Pagination' })).toBeNull();
+    });
+});
+
+describe('the intent to open an item', () => {
+    beforeEach(() => {
+        vi.useFakeTimers({ shouldAdvanceTime: true });
+    });
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
+    function renderWithIntent(layout: string, onItemIntent?: (item: ListItem) => void) {
+        renderList(
+            <ListView
+                list={createList()}
+                columns={columns}
+                items={pages}
+                layouts={{ available: [layout] }}
+                getItemHref={(item) => (item.id === '3' ? null : `/pages/${item.id}`)}
+                {...(onItemIntent !== undefined ? { onItemIntent } : {})}
+            />,
+        );
+    }
+
+    it.each(['table', 'cards', 'gallery'])(
+        'is called once the pointer rests on the link of an item, in the %s',
+        async (layout) => {
+            const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+            const onItemIntent = vi.fn();
+            renderWithIntent(layout, onItemIntent);
+            await user.hover(screen.getByRole('link', { name: 'About us' }));
+            expect(onItemIntent).not.toHaveBeenCalled();
+            act(() => vi.advanceTimersByTime(INTENT_DELAY));
+            expect(onItemIntent).toHaveBeenCalledExactlyOnceWith(pages[0]);
+        },
+    );
+
+    it('is not called when the pointer leaves before the delay, crossing rows', async () => {
+        const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+        const onItemIntent = vi.fn();
+        renderWithIntent('table', onItemIntent);
+        const about = screen.getByRole('link', { name: 'About us' });
+        const contact = screen.getByRole('link', { name: 'Contact' });
+        await user.hover(about);
+        await user.unhover(about);
+        await user.hover(contact);
+        await user.unhover(contact);
+        act(() => vi.advanceTimersByTime(INTENT_DELAY * 2));
+        expect(onItemIntent).not.toHaveBeenCalled();
+    });
+
+    it('is not called by the hover of touch', () => {
+        const onItemIntent = vi.fn();
+        renderWithIntent('table', onItemIntent);
+        const link = screen.getByRole('link', { name: 'About us' });
+        fireEvent.pointerOver(link, { pointerType: 'touch' });
+        fireEvent.pointerEnter(link, { pointerType: 'touch' });
+        act(() => vi.advanceTimersByTime(INTENT_DELAY * 2));
+        expect(onItemIntent).not.toHaveBeenCalled();
+    });
+
+    it('is called when the link of an item gets the focus', async () => {
+        const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+        const onItemIntent = vi.fn();
+        renderWithIntent('table', onItemIntent);
+        await user.tab();
+        while (document.activeElement !== screen.getByRole('link', { name: 'About us' })) {
+            await user.tab();
+        }
+        expect(onItemIntent).toHaveBeenCalledExactlyOnceWith(pages[0]);
+    });
+
+    it('is not called for an item without a link', async () => {
+        const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+        const onItemIntent = vi.fn();
+        renderWithIntent('table', onItemIntent);
+        // The third page has no link: its title is text
+        expect(screen.queryByRole('link', { name: 'Blog' })).toBeNull();
+        await user.hover(screen.getByText('Blog'));
+        act(() => vi.advanceTimersByTime(INTENT_DELAY * 2));
+        expect(onItemIntent).not.toHaveBeenCalled();
+    });
+
+    it('is optional: links work without it', async () => {
+        const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+        renderWithIntent('table');
+        const link = screen.getByRole('link', { name: 'About us' });
+        expect(link).toHaveAttribute('href', '/pages/1');
+        await user.hover(link);
+        act(() => vi.advanceTimersByTime(INTENT_DELAY * 2));
     });
 });

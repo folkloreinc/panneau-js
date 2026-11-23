@@ -1,7 +1,8 @@
-import { useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
-import { type Form, definePlugin, selectValue, useFormSelector } from '@panneau/core';
+import { type Form, definePlugin, isEqual, useFormSelector } from '@panneau/core';
 import type { Field, Option } from '@panneau/protocol';
+import { getValue } from '@panneau/protocol/runtime';
 import { Badge, Button, type Tone, usePanneauIntl } from '@panneau/ui';
 
 import styles from '../Form.module.css';
@@ -39,20 +40,57 @@ interface PublicationNames {
     status: string;
 }
 
+/** The longest delay of `setTimeout()`: a later date sets a timer again when it ends. */
+const MAX_DELAY = 2 ** 31 - 1;
+
 /**
- * The state of the publication of the form's item, from the values of its fields, and these
- * values. It renders again when they change only.
+ * Now, which changes when `date` passes: a scheduled item becomes published while the form is
+ * open. A timer set for the date, cleared when the date changes or the component goes away.
+ */
+function useNow(date: Date | null): number {
+    const [now, setNow] = useState(() => Date.now());
+    const time = date?.getTime() ?? null;
+    useEffect(() => {
+        if (time === null || time <= now) {
+            return undefined;
+        }
+        const timer = setTimeout(
+            () => setNow(Date.now()),
+            Math.min(Math.max(time - Date.now(), 0), MAX_DELAY),
+        );
+        return () => clearTimeout(timer);
+    }, [time, now]);
+    return now;
+}
+
+/**
+ * The state of the publication of the form's item, as it is saved: from the initial values of
+ * the form, which follow the saved version. `unsaved` says that the publication fields have
+ * changes. It renders again when these values change only.
  */
 function usePublicationSummary(
     form: Form,
     fields: ReadonlyMap<string, Field>,
     { published, publishedAt, status }: PublicationNames,
-): { summary: PublicationState; live: boolean; isPublished: unknown; statusValue: unknown } {
+): {
+    summary: PublicationState;
+    live: boolean;
+    unsaved: boolean;
+    isPublished: unknown;
+    statusValue: unknown;
+} {
     const intl = usePanneauIntl();
-    const [now] = useState(() => Date.now());
-    const isPublished = useFormSelector(form, (state) => selectValue(state, published));
-    const date = toDate(useFormSelector(form, (state) => selectValue(state, publishedAt)));
-    const statusValue = useFormSelector(form, (state) => selectValue(state, status));
+    const isPublished = useFormSelector(form, (state) => getValue(state.initialValues, published));
+    const date = toDate(
+        useFormSelector(form, (state) => getValue(state.initialValues, publishedAt)),
+    );
+    const statusValue = useFormSelector(form, (state) => getValue(state.initialValues, status));
+    const unsaved = useFormSelector(form, (state) =>
+        [published, publishedAt, status].some(
+            (path) => !isEqual(getValue(state.values, path), getValue(state.initialValues, path)),
+        ),
+    );
+    const now = useNow(date);
     const option: Option | undefined = fields
         .get(status)
         ?.options?.find((candidate) => String(candidate.value) === String(statusValue));
@@ -93,7 +131,20 @@ function usePublicationSummary(
             tone: (option.tone as Tone | undefined) ?? 'neutral',
         };
     }
-    return { summary, live, isPublished, statusValue };
+    return { summary, live, unsaved, isPublished, statusValue };
+}
+
+/** The saved state, and apart from it, in the `warning` tone, that its fields have changes. */
+function PublicationBadges({ summary, unsaved }: { summary: PublicationState; unsaved: boolean }) {
+    const intl = usePanneauIntl();
+    return (
+        <>
+            <Badge tone={summary.tone}>{summary.label}</Badge>
+            {unsaved ? (
+                <Badge tone="warning">{intl.formatMessage(messages.publication.unsaved)}</Badge>
+            ) : null}
+        </>
+    );
 }
 
 /**
@@ -122,13 +173,17 @@ export function Publication({
 }: PublicationProps) {
     const intl = usePanneauIntl();
     const titleId = useId();
-    const { summary } = usePublicationSummary(form, fields, { published, publishedAt, status });
+    const { summary, unsaved } = usePublicationSummary(form, fields, {
+        published,
+        publishedAt,
+        status,
+    });
     return (
         <section className={styles.section} aria-labelledby={titleId}>
             <div className={styles.sectionHeader}>
                 <h3 id={titleId} className={styles.sectionTitle}>
                     {node.label ?? intl.formatMessage(messages.publication.title)}
-                    <Badge tone={summary.tone}>{summary.label}</Badge>
+                    <PublicationBadges summary={summary} unsaved={unsaved} />
                 </h3>
                 {summary.detail !== null ? (
                     <p className={styles.sectionDescription}>{summary.detail}</p>
@@ -163,6 +218,54 @@ function nowValue(field: Field): string {
 }
 
 /**
+ * Follows the submit that the press of Publish or Unpublish starts (the button submits the form):
+ * when it doesn't succeed (invalid values, a `422`, a conflict, an error), the publication values
+ * go back to what they were before the press, and the other edits stay. A change of these values
+ * before the submit starts ends the follow, as does the next press or the unmount.
+ */
+function followSubmit(
+    form: Form,
+    paths: readonly string[],
+    before: readonly unknown[],
+    pending: { current: (() => void) | null },
+) {
+    const pressed = paths.map((path) => form.getValue(path));
+    const { submitCount } = form.getState();
+    let started = false;
+    const stop = form.subscribe(() => {
+        const state = form.getState();
+        const values = paths.map((path) => getValue(state.values, path));
+        // A submit starts by counting itself, and a successful one counts from 0 again
+        started ||= state.status === 'submitting' || state.submitCount !== submitCount;
+        if (!started) {
+            if (!isEqual(values, pressed)) {
+                end();
+            }
+            return;
+        }
+        if (state.status === 'submitting') {
+            return;
+        }
+        end();
+        if (state.status !== 'submitted' && isEqual(values, pressed)) {
+            // Only what the press changed: a field the form doesn't have stays without a value
+            paths.forEach((path, index) => {
+                if (!isEqual(pressed[index], before[index])) {
+                    form.setValue(path, before[index]);
+                }
+            });
+        }
+    });
+    function end() {
+        stop();
+        if (pending.current === end) {
+            pending.current = null;
+        }
+    }
+    pending.current = end;
+}
+
+/**
  * The `publication` panel of a form's sidebar (decision 0075): the state of the item, as the
  * `publication` component shows it, its fields, and a Publish button, or Unpublish once it is
  * published, which sets the publication and saves. Publishing sets `published` to `true`, or else
@@ -180,11 +283,11 @@ export function PublicationPanel({
     draftStatus = 'draft',
 }: PublicationPanelProps) {
     const intl = usePanneauIntl();
-    const { summary, live, isPublished, statusValue } = usePublicationSummary(form, fields, {
-        published,
-        publishedAt,
-        status,
-    });
+    const { summary, live, unsaved, isPublished, statusValue } = usePublicationSummary(
+        form,
+        fields,
+        { published, publishedAt, status },
+    );
     const isSubmitting = useFormSelector(form, (state) => state.status === 'submitting');
     const publishedField = fields.get(published);
     const statusField = fields.get(status);
@@ -198,7 +301,15 @@ export function PublicationPanel({
         : byStatus
           ? String(statusValue) === publishedStatus
           : live;
+    // The submit of the last press, followed until it ends
+    const pending = useRef<(() => void) | null>(null);
+    useEffect(() => () => pending.current?.(), []);
+    // Publish and Unpublish act on the saved state: the values they set differ from it, so the form
+    // has changes to save, even without other edits.
     const toggle = () => {
+        pending.current?.();
+        const paths = [byFlag ? published : status, publishedAt];
+        const before = paths.map((path) => form.getValue(path));
         if (byFlag) {
             form.setValue(published, !isLive);
         } else if (byStatus) {
@@ -207,11 +318,12 @@ export function PublicationPanel({
         if (!isLive && dateField !== undefined && toDate(form.getValue(publishedAt)) === null) {
             form.setValue(publishedAt, nowValue(dateField));
         }
+        followSubmit(form, paths, before, pending);
     };
     return (
         <div className={styles.stack}>
             <div className={styles.publicationState}>
-                <Badge tone={summary.tone}>{summary.label}</Badge>
+                <PublicationBadges summary={summary} unsaved={unsaved} />
                 {summary.detail !== null ? (
                     <span className={styles.sectionDescription}>{summary.detail}</span>
                 ) : null}

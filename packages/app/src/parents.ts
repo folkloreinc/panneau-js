@@ -1,6 +1,7 @@
 import { canViewPage, findResource, resolveResource } from '@panneau/core';
 import type { Definition } from '@panneau/protocol';
 
+import { getListPathBack } from './listLocation';
 import { type NavEntry, capitalize, isCurrent } from './navigation';
 import { type AppRoute, routePath } from './routes';
 
@@ -107,7 +108,8 @@ export function getPageParents(
         }
         const resource = findResource(definition, parent.resource);
         return {
-            href: routePath(parent, basePath),
+            // Back to the list as the user left it in this tab (decision 0102)
+            href: getListPathBack(basePath, definition.user?.id, parent.resource),
             label: capitalize(resource?.label.plural ?? parent.resource, definition.locale),
         };
     });

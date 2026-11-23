@@ -67,6 +67,7 @@ export function CalendarLayout({
     renderValue,
     getItemLabel,
     getItemHref,
+    onItemIntent,
     isCurrent,
     isHighlighted,
     label,
@@ -201,6 +202,11 @@ export function CalendarLayout({
                                                     >
                                                         <ItemTitle
                                                             href={getItemHref?.(item) ?? null}
+                                                            onIntent={
+                                                                onItemIntent !== undefined
+                                                                    ? () => onItemIntent(item)
+                                                                    : undefined
+                                                            }
                                                             current={isCurrent?.(item) ?? false}
                                                         >
                                                             {title !== undefined

@@ -1,6 +1,6 @@
 # 0042: The view of a list: chosen columns, and the view the browser remembers
 
-- Status: accepted
+- Status: accepted, amended by [0102](0102-going-back-to-a-list-shows-it-as-it-was-left.md): links back to a list open its last URL in the tab, with its page, cursor and search
 - Date: 2026-11-03
 - Issues: [#176](https://github.com/folkloreinc/panneau-js/issues/176) (column choice), [#179](https://github.com/folkloreinc/panneau-js/issues/179) (remembered view)
 - Changes: the columns of a list in the protocol, and the list state of [0022](0022-lists-render-core-state.md)

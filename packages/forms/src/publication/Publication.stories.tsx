@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, userEvent, within } from 'storybook/test';
+import { useState } from 'react';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { PanneauProvider, definePlugin } from '@panneau/core';
 import type { Field, LayoutNode } from '@panneau/protocol';
@@ -58,14 +59,35 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/**
+ * The badge says the saved state: turning the switch on is a change, said apart from the state,
+ * until the form saves.
+ */
 export const Unpublished: Story = {
     args: { layout: LAYOUT, values: { title: 'Summer', published: false } },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        const region = canvas.getByRole('region', { name: /Publication/ });
-        await expect(region).toHaveTextContent('Not published');
+        const heading = canvas.getByRole('heading', { name: /Publication/ });
+        await expect(heading).toHaveTextContent('Not published');
+        await expect(heading).not.toHaveTextContent('Unsaved changes');
         await userEvent.click(canvas.getByRole('switch', { name: 'Published' }));
-        await expect(region).toHaveTextContent('Published');
+        await expect(heading.textContent).toBe('PublicationNot publishedUnsaved changes');
+        await userEvent.click(canvas.getByRole('switch', { name: 'Published' }));
+        await expect(heading).not.toHaveTextContent('Unsaved changes');
+    },
+};
+
+export const Published: Story = {
+    args: {
+        layout: LAYOUT,
+        values: { title: 'Summer', published: true, published_at: '2026-06-21T09:00:00-04:00' },
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByRole('heading', { name: /Publication/ })).toHaveTextContent(
+            'Published',
+        );
+        await expect(canvas.getByText(/Published on Jun 21, 2026/)).toBeVisible();
     },
 };
 
@@ -79,6 +101,29 @@ export const Scheduled: Story = {
         await expect(canvas.getByRole('region', { name: /Publication/ })).toHaveTextContent(
             'Scheduled',
         );
+    },
+};
+
+/** Scheduled in two seconds: the badge becomes Published when the date passes, without a reload. */
+export const ScheduledDatePasses: Story = {
+    args: { layout: LAYOUT, values: {} },
+    render: function ScheduledSoon(args) {
+        const [values] = useState(() => ({
+            title: 'Summer',
+            published: true,
+            published_at: new Date(Date.now() + 2000).toISOString(),
+        }));
+        return (
+            <PanneauProvider plugins={[definePlugin(publicationPlugin)]}>
+                <Form fields={FIELDS} layout={args.layout} values={values} />
+            </PanneauProvider>
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const heading = within(canvasElement).getByRole('heading', { name: /Publication/ });
+        await expect(heading).toHaveTextContent('Scheduled');
+        await waitFor(() => expect(heading).toHaveTextContent('Published'), { timeout: 4000 });
+        await expect(heading).not.toHaveTextContent('Unsaved changes');
     },
 };
 
