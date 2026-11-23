@@ -317,8 +317,8 @@ export function RepeaterField({
     }
 
     /** Sets the items, with their keys. */
-    const set = (next: RepeaterItem[], nextKeys: readonly number[], nextKey = tracked.next) => {
-        setItemKeys({ items: next, keys: nextKeys, next: nextKey });
+    const set = (next: RepeaterItem[], nextKeys: readonly number[], nextKey?: number) => {
+        setItemKeys({ items: next, keys: nextKeys, next: nextKey ?? tracked.next });
         onChange?.(next.length > 0 ? next : null);
     };
     const move = (from: number, to: number) => {
