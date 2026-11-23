@@ -56,7 +56,7 @@ describe('paths', () => {
     it('describes paths with labels', () => {
         expect(describePath(FIELDS, 'title.fr')).toBe('Title (fr)');
         expect(describePath(FIELDS, 'blocks.2.body.en')).toBe('Blocks › 3 › Body (en)');
-        expect(describePath(FIELDS, 'seo.title')).toBe('SEO › title');
+        expect(describePath(FIELDS, 'seo.title')).toBe('SEO › Title');
         expect(describePath(FIELDS, 'other.path')).toBe('other.path');
     });
 });

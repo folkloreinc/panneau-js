@@ -1,5 +1,6 @@
 import { Select, usePanneauIntl } from '@panneau/ui';
 
+import { getColumnText } from '../columns';
 import { messages } from '../messages';
 import type { ListColumn } from '../types';
 import styles from './Toolbar.module.css';
@@ -16,8 +17,7 @@ const DEFAULT = '';
 export function SortSelect({ columns, sort, onChange }: SortSelectProps) {
     const intl = usePanneauIntl();
     const sortable = columns.filter((column) => column.sortable === true);
-    const label = (column: ListColumn) =>
-        typeof column.label === 'string' ? column.label : column.id;
+    const label = (column: ListColumn) => getColumnText(column);
     const options = [
         { value: DEFAULT, label: intl.formatMessage(messages.defaultSort) },
         ...sortable.flatMap((column) => [
