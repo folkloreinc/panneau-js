@@ -127,6 +127,14 @@ export const fieldsMessages = {
     search: defineMessage({ id: 'panneau.fields.search', defaultMessage: 'Search…' }),
     noRelation: defineMessage({ id: 'panneau.fields.noRelation', defaultMessage: 'None' }),
     noResults: defineMessage({ id: 'panneau.fields.noResults', defaultMessage: 'No results' }),
+    relationResults: defineMessage<{ count: number }>({
+        id: 'panneau.fields.relationResults',
+        defaultMessage: '{count, plural, one {# result} other {# results}}',
+    }),
+    relationResultsShown: defineMessage<{ shown: number; count: number }>({
+        id: 'panneau.fields.relationResultsShown',
+        defaultMessage: '{shown} of {count, plural, one {# result} other {# results}}',
+    }),
     createRelation: defineMessage<{ text: string }>({
         id: 'panneau.fields.createRelation',
         defaultMessage: 'Create “{text}”',

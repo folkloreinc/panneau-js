@@ -49,6 +49,9 @@ export const fieldsFr: Record<string, string> = {
     'panneau.fields.search': 'Rechercher…',
     'panneau.fields.noRelation': 'Aucun',
     'panneau.fields.noResults': 'Aucun résultat',
+    'panneau.fields.relationResults': '{count, plural, one {# résultat} other {# résultats}}',
+    'panneau.fields.relationResultsShown':
+        '{shown} sur {count, plural, one {# résultat} other {# résultats}}',
     'panneau.fields.createRelation': 'Créer « {text} »',
     'panneau.fields.createRelationFailed': '« {text} » n’a pas pu être créé.',
     'panneau.fields.change': 'Remplacer',

@@ -508,6 +508,13 @@ export const fieldsMessages: {
     search: PanneauMessage<Record<never, never>>;
     noRelation: PanneauMessage<Record<never, never>>;
     noResults: PanneauMessage<Record<never, never>>;
+    relationResults: PanneauMessage<    {
+    count: number;
+    }>;
+    relationResultsShown: PanneauMessage<    {
+    shown: number;
+    count: number;
+    }>;
     createRelation: PanneauMessage<    {
     text: string;
     }>;
