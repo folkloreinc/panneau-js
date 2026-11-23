@@ -18,6 +18,7 @@ The app gave its form a new `key` for every version of the item. Each of these r
     - the version the form already has, or one that arrives while it saves, changes nothing: the save decides the next version, and keeps what was typed meanwhile;
     - **without unsaved changes**, the form takes the values and the version of the newer item;
     - **with unsaved changes**, the form keeps them, and holds the item in `newer`. The form says that a newer version was saved, and its "Compare" opens the conflict dialog of 0008 on it (`form.reviewNewer()`): load the current version, or save mine over it.
+- **An item without a version** (`null`, the backend has no versions) can't be compared: each new item object counts as newer. A form without unsaved changes takes its values, and a form with unsaved changes keeps them, without a notice.
 - Saving without comparing sends the old version, so the backend answers `412`, and the same dialog opens. When the `412` doesn't carry the current item, the dialog compares with the newer one the form holds.
 - There is no merge field by field: the dialog of 0008 shows the values that differ, and the user chooses.
 

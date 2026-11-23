@@ -155,6 +155,10 @@ export interface Form {
      * from the form's, a form without unsaved changes starts over from it, and a form with unsaved
      * changes keeps them and holds the item in `newer`. Ignored while submitting: the submit
      * decides the next version.
+     *
+     * An item without a version (`null`) is new when it is another object than the last one given:
+     * a form without unsaved changes starts over from it, and a form with unsaved changes keeps
+     * them, without `newer`.
      */
     refresh(item: Item): void;
     /**
@@ -241,6 +245,8 @@ export function createForm(options: FormOptions): Form {
     let status: FormStatus = 'idle';
     let conflict: FormConflict | null = null;
     let newer: Item | null = null;
+    // The last item given to `refresh()`, for items without a version
+    let refreshed: Item | null = null;
     let error: unknown = null;
     let submitCount = 0;
     let pending: Promise<SubmitResult> | null = null;
@@ -475,6 +481,19 @@ export function createForm(options: FormOptions): Form {
         reset,
         refresh(item) {
             if (status === 'submitting') {
+                return;
+            }
+            // Without a version, nothing tells which item is newer: a new item object is one. A
+            // form without unsaved changes takes it, a form with unsaved changes keeps them,
+            // without a notice, since there is nothing to compare.
+            if (item.version === null || item.version === undefined) {
+                if (item === refreshed) {
+                    return;
+                }
+                refreshed = item;
+                if (!form.getState().dirty) {
+                    reset(getItemValues(item, fieldNames()), item.version ?? null);
+                }
                 return;
             }
             if (status === 'conflict' && conflict !== null) {

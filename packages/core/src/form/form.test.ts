@@ -417,6 +417,47 @@ describe('createForm', () => {
             });
         });
 
+        describe('of an item without a version', () => {
+            const unversioned: Item = { ...item, version: null };
+
+            function setupUnversioned() {
+                return setup({
+                    values: getItemValues(
+                        unversioned,
+                        fields.map((field) => field.name),
+                    ),
+                    version: null,
+                    mode: 'update',
+                });
+            }
+
+            it('starts a form without changes over from a new item object', () => {
+                const form = setupUnversioned();
+                form.refresh(unversioned);
+                form.refresh({ ...unversioned, title: { en: 'Theirs', fr: 'Les leurs' } });
+                expect(form.getState()).toMatchObject({
+                    version: null,
+                    dirty: false,
+                    newer: null,
+                    values: { title: { en: 'Theirs', fr: 'Les leurs' } },
+                });
+            });
+
+            it('keeps unsaved changes, without a newer version to compare with', () => {
+                const form = setupUnversioned();
+                form.refresh(unversioned);
+                form.setValue('title.en', 'Mine');
+                form.refresh({ ...unversioned, title: { en: 'Theirs', fr: 'Les leurs' } });
+                expect(form.getState()).toMatchObject({
+                    version: null,
+                    dirty: true,
+                    newer: null,
+                    status: 'idle',
+                    values: { title: { en: 'Mine', fr: 'Accueil' } },
+                });
+            });
+        });
+
         it('waits for a submit, and keeps what was typed meanwhile', async () => {
             let resolve: (value: unknown) => void = () => undefined;
             const form = setup({ onSubmit: () => new Promise((done) => (resolve = done)) });
