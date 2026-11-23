@@ -1,11 +1,13 @@
 # 0107: Links to items in rich text
 
-- Status: accepted
+- Status: proposed
 - Date: 2026-11-23
 - Issue: [#439](https://github.com/folkloreinc/panneau-js/issues/439)
 - Extends: [0055](0055-links.md) (`page` links) to the links of `richtext` fields ([0007](0007-rich-text.md))
 
 ## Context
+
+The implementation of [#452](https://github.com/folkloreinc/panneau-js/pull/452) is in `v5.x`, but the format of a link to an item (its two attributes, and who writes `href`) is under review by the maintainer before the first release that carries it: no backend should implement it yet.
 
 The link dialog of a rich text field took a URL and a "new tab" checkbox. Linking to a page of the site meant opening the page in another tab, copying its public URL and pasting it: the link breaks when the page's slug changes, and nothing says it points to that page.
 
