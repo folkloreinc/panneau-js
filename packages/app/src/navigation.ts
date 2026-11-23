@@ -1,5 +1,6 @@
 import { can, canViewPage } from '@panneau/core';
 import type { Definition, MenuItem } from '@panneau/protocol';
+import { labelOrKey } from '@panneau/protocol/runtime';
 
 import { type AppRoute, routePath } from './routes';
 
@@ -121,7 +122,7 @@ function toLinks(item: MenuItem, definition: Definition, basePath: string, key: 
                 {
                     type: 'link',
                     key,
-                    label: item.label ?? page.label ?? item.page,
+                    label: item.label ?? labelOrKey(page.label, item.page),
                     href: routePath({ name: 'page', page: item.page }, basePath),
                     icon: item.icon,
                     target: { kind: 'page', page: item.page },

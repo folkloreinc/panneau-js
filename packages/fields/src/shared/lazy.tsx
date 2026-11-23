@@ -1,5 +1,6 @@
 import { Suspense, lazy } from 'react';
 
+import { getFieldLabel } from '@panneau/protocol/runtime';
 import { LoadingRegion, Skeleton } from '@panneau/ui';
 
 import styles from './FieldEntrySkeleton.module.css';
@@ -23,7 +24,7 @@ export function FieldEntrySkeleton({
     field,
     hideLabel,
 }: Pick<FieldEntryProps, 'field' | 'hideLabel'>) {
-    const label = field.label ?? field.name;
+    const label = getFieldLabel(field);
     return (
         <LoadingRegion className={styles.root}>
             {hideLabel === true ? null : (

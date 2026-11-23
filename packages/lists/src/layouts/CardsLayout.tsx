@@ -1,6 +1,7 @@
 import { Checkbox, usePanneauIntl } from '@panneau/ui';
 
 import { RowActionsFit, fitContent, useRowActionsFit } from '../actions/fit';
+import { getColumnLabel } from '../columns';
 import { cx } from '../cx';
 import { messages } from '../messages';
 import type { ListLayoutProps } from '../types';
@@ -95,7 +96,7 @@ export function CardsLayout({
                                     <dl className={styles.values}>
                                         {others.map((column) => (
                                             <div key={column.id} className={styles.value}>
-                                                <dt>{column.label ?? column.id}</dt>
+                                                <dt>{getColumnLabel(column)}</dt>
                                                 <dd>{renderValue(item, column)}</dd>
                                             </div>
                                         ))}
