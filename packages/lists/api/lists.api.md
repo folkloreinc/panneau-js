@@ -359,6 +359,7 @@ export interface ListLayoutProps {
     // (undocumented)
     items: readonly ListItem[];
     label: string;
+    onItemIntent?: ((item: ListItem) => void) | undefined;
     // (undocumented)
     onSort: (column: ListColumn) => void;
     // (undocumented)
@@ -446,6 +447,7 @@ export interface ListViewProps {
     itemTitle?: string;
     layouts?: ListViewLayouts;
     list: List_2;
+    onItemIntent?: (item: ListItem) => void;
     // (undocumented)
     onRetry?: () => void;
     perPageOptions?: readonly number[];
