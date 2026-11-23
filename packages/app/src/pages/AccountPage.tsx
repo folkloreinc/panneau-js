@@ -2,11 +2,10 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { KeyRound } from 'lucide-react';
 import { useState } from 'react';
 
-import { useForm } from '@panneau/core';
 import { PasswordConfirmationError, ValidationError } from '@panneau/data';
 import { queryKeys, useDataAdapter } from '@panneau/data/query';
-import { type FieldEntry, type FieldEntryProps, getFieldProps } from '@panneau/fields';
-import { FormView } from '@panneau/forms';
+import type { FieldEntry, FieldEntryProps } from '@panneau/fields';
+import { Form } from '@panneau/forms';
 import { appMessages } from '@panneau/intl';
 import type { Definition, Field, Passkey, User } from '@panneau/protocol';
 import {
@@ -49,18 +48,25 @@ function FormSkeleton({ fields }: { fields: number }) {
 
 /** An input of the profile, which the browser fills in with what it knows of the user. */
 function profileInput(type: 'text' | 'email', autoComplete: string): FieldEntry {
-    return function ProfileInput(props: FieldEntryProps) {
-        const { required, readOnly, disabled, ...rest } = getFieldProps(props);
+    return function ProfileInput({
+        field,
+        path,
+        value,
+        onChange,
+        onBlur,
+        errors,
+    }: FieldEntryProps) {
         return (
             <TextInput
-                {...rest}
+                label={field.label ?? field.name}
+                name={path}
                 type={type}
                 autoComplete={autoComplete}
-                isRequired={required}
-                isReadOnly={readOnly}
-                isDisabled={disabled}
-                value={typeof props.value === 'string' ? props.value : ''}
-                onChange={(value) => props.onChange(value === '' ? null : value)}
+                isRequired
+                value={typeof value === 'string' ? value : ''}
+                onChange={(next) => onChange(next === '' ? null : next)}
+                {...(onBlur !== undefined ? { onBlur } : {})}
+                errors={errors ?? []}
             />
         );
     };
@@ -94,30 +100,26 @@ function ProfileForm({ user }: { user: User }) {
             rules: [{ rule: 'required' }],
         },
     ];
-    const { form } = useForm({
-        fields,
-        values: { name: user.name, email: user.email ?? '' },
-        mode: 'update',
-        onSubmit: async (values) => {
-            const saved = await adapter.updateAccount?.({
-                name: typeof values.name === 'string' ? values.name : '',
-                email: typeof values.email === 'string' ? values.email : '',
-            });
-            if (saved !== undefined) {
-                queryClient.setQueryData(queryKeys.account(), saved);
-            }
-            toasts.show({
-                title: intl.formatMessage(appMessages.accountSaved),
-                tone: 'success',
-            });
-            // The name in the sidebar; a new email may need to be verified
-            await queryClient.invalidateQueries({ queryKey: queryKeys.definition() });
-        },
-    });
     return (
-        <FormView
-            form={form}
+        <Form
             fields={fields}
+            values={{ name: user.name, email: user.email ?? '' }}
+            mode="update"
+            onSubmit={async (values) => {
+                const saved = await adapter.updateAccount?.({
+                    name: typeof values.name === 'string' ? values.name : '',
+                    email: typeof values.email === 'string' ? values.email : '',
+                });
+                if (saved !== undefined) {
+                    queryClient.setQueryData(queryKeys.account(), saved);
+                }
+                toasts.show({
+                    title: intl.formatMessage(appMessages.accountSaved),
+                    tone: 'success',
+                });
+                // The name in the sidebar; a new email may need to be verified
+                await queryClient.invalidateQueries({ queryKey: queryKeys.definition() });
+            }}
             components={profileInputs}
             aria-label={intl.formatMessage(appMessages.accountProfile)}
             submitLabel={intl.formatMessage(appMessages.saveAccount)}
