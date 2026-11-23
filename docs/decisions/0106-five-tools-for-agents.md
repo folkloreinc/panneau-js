@@ -11,7 +11,7 @@
 
 [0090](0090-agents-work-through-tools-as-their-user.md) gives agents nine tools. Nothing of it is built yet, and a review before the work starts found what to change first:
 
-- **Nine tools leave little room.** Every tool costs the context of every conversation, and clients cap them. Uploads, aggregates and previews will want tools of their own later. Four of the nine are pairs that differ by one argument: the resources and one resource, the search and a list, creating and updating.
+- **Nine tools leave little room.** Every tool costs the context of every conversation, and clients cap them. Uploads, aggregates and previews will want tools of their own later. Six of the nine are three pairs that differ by one argument: the resources and one resource, the search and a list, creating and updating.
 - **`describe_resource` answers the fields twice:** the resource of the definition, made for a UI (layouts, columns, icons, placements), and `valuesSchema`, the same fields again as a JSON Schema.
 - **An agent can't find the built-in actions.** `delete`, `restore` and `duplicate` exist on every resource without being declared ([Actions](../protocol.md#actions)), so the definition doesn't list them.
 - **`get_action_run` has nothing to read.** `laravel-panneau` has no queued actions yet: a selection above its synchronous limit is refused.
