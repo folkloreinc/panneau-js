@@ -81,6 +81,45 @@ export const Destructive: Story = {
     },
 };
 
+/** The built-in `delete`, which the client labels. */
+const builtInDelete: Action = { id: 'delete', kind: 'server', scope: ['item', 'selection'] };
+
+/**
+ * The built-in delete names the item it deletes, by its title (`itemLabel`), in its title
+ * (decision 0062, #411).
+ */
+export const NamesTheItem: Story = {
+    args: { event: { ...deleteEvent, action: builtInDelete }, itemLabel: 'Contact' },
+    play: async ({ canvasElement, args }) => {
+        const body = within(canvasElement.ownerDocument.body);
+        const dialog = await body.findByRole('alertdialog', { name: 'Delete “Contact”?' });
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Delete' }));
+        await expect(args.onConfirm).toHaveBeenCalled();
+    },
+};
+
+/**
+ * A selection is named by the labels of its resource (`labels`): in the title of the built-in
+ * delete, in the message of another action.
+ */
+export const NamesTheSelection: Story = {
+    args: {
+        event: {
+            action: { id: 'archive', label: 'Archive', kind: 'server', scope: ['selection'] },
+            scope: 'selection',
+            selection: { ids: ['1', '2', '3'] },
+            count: 3,
+            skipped: [],
+        },
+        labels: { singular: 'article', plural: 'articles' },
+    },
+    play: async ({ canvasElement }) => {
+        const body = within(canvasElement.ownerDocument.body);
+        const dialog = await body.findByRole('alertdialog', { name: 'Archive?' });
+        await expect(dialog).toHaveTextContent('“Archive” will apply to 3 articles.');
+    },
+};
+
 /** While the backend counts the items a query selection would skip: it can't be confirmed. */
 export const Counting: Story = {
     args: { preview: { status: 'loading' } },

@@ -1053,6 +1053,13 @@
                 "icon": {
                     "type": "string"
                 },
+                "description": {
+                    "type": "string"
+                },
+                "itemTitle": {
+                    "type": "string",
+                    "minLength": 1
+                },
                 "fields": {
                     "type": "array",
                     "items": {

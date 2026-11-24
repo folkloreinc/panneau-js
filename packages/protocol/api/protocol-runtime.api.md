@@ -303,6 +303,12 @@ export function getDashboardWidgets(definition: DashboardsOf, page?: string): Wi
 export function getDefaultPeriod(period: PeriodLike): OverviewPeriodOption | null;
 
 // @public
+export function getFieldLabel(field: {
+    name: string;
+    label?: string | undefined;
+}): string;
+
+// @public
 export function getFilterRange(query: Pick<ListQuery, 'filter'>, field: string): FilterRange | undefined;
 
 // @public
@@ -394,6 +400,9 @@ export function hasResourceTypes(resource: {
 export const HOME_PAGE = "home";
 
 // @public
+export function humanizeKey(key: string): string;
+
+// @public
 export const IDS_FILTER = "ids";
 
 // @public
@@ -474,6 +483,9 @@ export interface ItemImageResource {
     // (undocumented)
     kind?: string | undefined;
 }
+
+// @public
+export function labelOrKey(label: string | null | undefined, key: string): string;
 
 // @public
 export type LinkNewTab = 'choose' | 'external' | 'never';

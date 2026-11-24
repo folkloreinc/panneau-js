@@ -162,7 +162,7 @@ describe('getPageParents', () => {
         }
     });
 
-    it('names a page without a label by its id', () => {
+    it('names a page without a label by its id made readable', () => {
         const definition = createParents({
             pages: {
                 stats: { component: 'stats' },
@@ -170,7 +170,7 @@ describe('getPageParents', () => {
             },
         });
         expect(getPageParents(definition, '', { name: 'page', page: 'usage' })).toEqual([
-            { href: '/pages/stats', label: 'stats' },
+            { href: '/pages/stats', label: 'Stats' },
         ]);
     });
 });

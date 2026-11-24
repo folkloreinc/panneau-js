@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react';
 
 import { appMessages } from '@panneau/intl';
 import type { Definition, Widget } from '@panneau/protocol';
-import { HOME_PAGE, getDashboardWidgets } from '@panneau/protocol/runtime';
+import { HOME_PAGE, getDashboardWidgets, labelOrKey } from '@panneau/protocol/runtime';
 import { Card, LoadingRegion, Skeleton, Stat, usePanneauIntl } from '@panneau/ui';
 
 import { PageHeader, PageLayout } from '../pages/PageHeader';
@@ -67,7 +67,8 @@ export function DashboardSkeleton({
     definition: Definition;
     page?: string | undefined;
 }) {
-    const title = page === HOME_PAGE ? definition.name : (definition.pages?.[page]?.label ?? page);
+    const title =
+        page === HOME_PAGE ? definition.name : labelOrKey(definition.pages?.[page]?.label, page);
     return (
         <PageLayout>
             <PageHeader title={title} />

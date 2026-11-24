@@ -4080,7 +4080,17 @@
                         "type": "string"
                     },
                     "icon": {
+                        "description": "The name of a Lucide icon (`quote`, `image`), shown before the label in the menu of types.",
                         "type": "string"
+                    },
+                    "description": {
+                        "description": "What the block is for, under its label in the menu of types.",
+                        "type": "string"
+                    },
+                    "itemTitle": {
+                        "description": "The title of a block of this type in its collapsed header, in place of the repeater's `settings.itemTitle`: a field name (`heading`), or a template of field names in braces (`{name} ({role})`).",
+                        "type": "string",
+                        "minLength": 1
                     },
                     "fields": {
                         "type": "array",
@@ -4648,6 +4658,22 @@
                 },
                 "additionalProperties": {},
                 "description": "The `settings` of a `select` field."
+            },
+            "RepeaterSettings": {
+                "type": "object",
+                "properties": {
+                    "collapsible": {
+                        "description": "With `false`, every item stays expanded. Items collapse under their title by default (decision 0068).",
+                        "type": "boolean"
+                    },
+                    "itemTitle": {
+                        "description": "The title of an item in its header: a field name (`title`), or a template of field names in braces (`{first_name} {last_name}`). A localized value gives the text of the interface's locale, or the first one; a rich text gives its text without tags. When the item has no such value, the label of its type, or `Item 2`, with an excerpt of its first text. A block type's `itemTitle` takes its place for blocks of that type.",
+                        "type": "string",
+                        "minLength": 1
+                    }
+                },
+                "additionalProperties": {},
+                "description": "The `settings` of a `repeater` field: how its items collapse and are titled."
             },
             "LayoutNode": {
                 "type": "object",

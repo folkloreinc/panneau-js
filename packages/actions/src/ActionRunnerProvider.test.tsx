@@ -869,7 +869,8 @@ describe('useActionRunner', () => {
         await user.click(screen.getByRole('button', { name: 'Select' }));
         await user.click(screen.getByRole('checkbox', { name: 'Select draft' }));
         await user.click(screen.getByRole('button', { name: 'Delete' }));
-        expect(await screen.findByText('1 deleted.')).toBeInTheDocument();
+        // The backend names the item it deleted (decision 0062)
+        expect(await screen.findByText('“Contact” deleted.')).toBeInTheDocument();
         expect(onResult).toHaveBeenCalledWith(
             expect.objectContaining({ refresh: 'list' }),
             expect.objectContaining({ resource: 'pages' }),

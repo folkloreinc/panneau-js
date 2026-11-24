@@ -29,6 +29,17 @@ describe('getNavigation', () => {
         ]);
     });
 
+    it('names a page without a label by its id made readable, the palette included', () => {
+        const definition = parse(
+            createDefinition({ pages: { usage_report: { component: 'usage' } } }),
+        );
+        expect(
+            getNavigation(definition, '/panneau').map((entry) =>
+                entry.type === 'link' ? entry.label : entry.type,
+            ),
+        ).toEqual(['Pages', 'Authors', 'Usage report']);
+    });
+
     it('leaves the home page out of the default menu, since the shell links to it', () => {
         const definition = parse(
             createDefinition({

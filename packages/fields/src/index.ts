@@ -43,16 +43,17 @@ export type { GeocodingResult, GeocodingSource, MapTiles, MapsConfig } from './l
 export { type NominatimSourceOptions, createNominatimSource } from './location/nominatim';
 export type { FieldEntry, FieldEntryProps, FieldProps } from './shared/types';
 export { isWideField } from './shared/flow';
+export { defineCompoundField } from './compound/compound';
+// Apart from the field, so that lists summarize values without loading the repeater
 export {
     type CompoundFieldEntry,
     type CompoundFieldOptions,
     type CompoundLayoutProps,
     type CompoundSummary,
     type CompoundSummaryContext,
-    defineCompoundField,
     restParts,
     summarizeCompound,
-} from './compound/compound';
+} from './compound/summary';
 export { MissingFieldEntry } from './missing/MissingField';
 export {
     type ContentLocale,
