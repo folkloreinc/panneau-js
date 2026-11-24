@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
+import { afterSlides, dragHandle } from '../__fixtures__/reorder';
 import { createExampleUploadSource, exampleFile, fileInput } from '../__fixtures__/uploads';
 import { FileField, type FileValue } from './FileField';
 
@@ -195,5 +196,111 @@ export const ReadOnly: Story = {
         const canvas = within(canvasElement);
         await expect(canvas.getByRole('link', { name: 'terms.pdf' })).toBeVisible();
         await expect(canvas.queryByRole('button')).not.toBeInTheDocument();
+    },
+};
+
+const FILES: FileValue[] = [
+    TERMS,
+    {
+        name: 'minutes.txt',
+        url: 'https://files.example/minutes.txt',
+        mime: 'text/plain',
+        size: 800,
+    },
+    { name: 'budget.csv', url: 'https://files.example/budget.csv', mime: 'text/csv', size: 4_200 },
+];
+
+const handleNames = (element: HTMLElement) =>
+    [...element.querySelectorAll('[data-reorder-handle]')].map((handle) =>
+        handle.getAttribute('aria-label'),
+    );
+
+function Reorderable() {
+    const [value, setValue] = useState<FileValue[] | null>(FILES);
+    return (
+        <FileField
+            label="Attachments"
+            multiple
+            uploadSource={null}
+            value={value}
+            onChange={setValue}
+        />
+    );
+}
+
+/**
+ * Several files reorder (decision 0111): by the handle at the start of each file, with the
+ * pointer or the keyboard, or from the menu of moves before its button to remove it.
+ */
+export const Reorder: Story = {
+    render: () => <Reorderable />,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+
+        // The pointer: on the upper half of the first file
+        const first = canvas.getAllByRole('listitem')[0] as HTMLElement;
+        await dragHandle(
+            canvas.getByRole('button', { name: 'Move budget.csv' }),
+            first,
+            first.getBoundingClientRect().top + 4,
+        );
+        await waitFor(() =>
+            expect(handleNames(canvasElement)).toEqual([
+                'Move budget.csv',
+                'Move terms.pdf',
+                'Move minutes.txt',
+            ]),
+        );
+        await expect(canvas.getByRole('status')).toHaveTextContent(
+            'budget.csv moved to position 1 of 3',
+        );
+        await afterSlides();
+
+        // The keyboard: the places of the list, not the drop zone of the field
+        canvas.getByRole('button', { name: 'Move minutes.txt' }).focus();
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() => expect(document.activeElement).toHaveAttribute('data-reorder-gap'));
+        await userEvent.keyboard('{ArrowUp}');
+        await waitFor(() =>
+            expect(document.activeElement).toHaveAccessibleName('Before budget.csv'),
+        );
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() =>
+            expect(handleNames(canvasElement)).toEqual([
+                'Move minutes.txt',
+                'Move budget.csv',
+                'Move terms.pdf',
+            ]),
+        );
+        await waitFor(() =>
+            expect(canvas.getByRole('button', { name: 'Move minutes.txt' })).toHaveFocus(),
+        );
+        await afterSlides();
+
+        // The menu
+        await userEvent.click(canvas.getByRole('button', { name: 'Reorder minutes.txt' }));
+        await userEvent.click(await body.findByRole('menuitem', { name: 'Move to the end' }));
+        await waitFor(() =>
+            expect(handleNames(canvasElement)).toEqual([
+                'Move budget.csv',
+                'Move terms.pdf',
+                'Move minutes.txt',
+            ]),
+        );
+    },
+};
+
+/** In a narrow column, as the sidebar of a form: the files keep their tools, and cut their names. */
+export const ReorderInANarrowColumn: Story = {
+    render: () => (
+        <div style={{ maxWidth: '16rem' }}>
+            <Reorderable />
+        </div>
+    ),
+    play: async ({ canvasElement }) => {
+        for (const file of canvasElement.querySelectorAll<HTMLElement>('li')) {
+            await expect(file.scrollWidth).toBeLessThanOrEqual(file.clientWidth);
+        }
     },
 };

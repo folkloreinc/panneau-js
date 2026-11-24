@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -223,5 +223,77 @@ describe('FileField', () => {
 
         expect(onChange).not.toHaveBeenCalled();
         expect(screen.getByText('notes.txt: files can’t be larger than 5 B.')).toBeInTheDocument();
+    });
+});
+
+describe('FileField: reorder', () => {
+    const NOTES = { name: 'notes.txt', upload: 'upload-1', mime: 'text/plain', size: 12 };
+    const PHOTO = file('photo.jpg', 'image/jpeg');
+    const names = () =>
+        [...document.querySelectorAll('[data-reorder-handle]')].map((handle) =>
+            handle.getAttribute('aria-label'),
+        );
+
+    function Files({
+        onChange,
+        readOnly,
+    }: {
+        onChange?: (value: FileValue[] | null) => void;
+        readOnly?: boolean;
+    }) {
+        return (
+            <Controlled<FileValue[] | null> initial={[TERMS, NOTES, PHOTO]} onChange={onChange}>
+                {(value, setValue) => (
+                    <FileField
+                        label="Files"
+                        multiple
+                        uploadSource={null}
+                        value={value}
+                        onChange={setValue}
+                        {...(readOnly !== undefined ? { readOnly } : {})}
+                    />
+                )}
+            </Controlled>
+        );
+    }
+
+    it('moves a file by its handle with the keyboard, and the value follows', async () => {
+        const onChange = vi.fn();
+        renderInRoot(<Files onChange={onChange} />);
+        expect(names()).toEqual(['Move terms.pdf', 'Move notes.txt', 'Move photo.jpg']);
+        act(() => screen.getByRole('button', { name: 'Move photo.jpg' }).focus());
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() => expect(document.activeElement).toHaveAttribute('data-reorder-gap'));
+        act(() => screen.getByRole('button', { name: 'Before terms.pdf' }).focus());
+        await userEvent.keyboard('{Enter}');
+        expect(onChange).toHaveBeenLastCalledWith([PHOTO, TERMS, NOTES]);
+        expect(names()).toEqual(['Move photo.jpg', 'Move terms.pdf', 'Move notes.txt']);
+        await waitFor(() =>
+            expect(screen.getByRole('button', { name: 'Move photo.jpg' })).toHaveFocus(),
+        );
+        expect(screen.getByRole('status')).toHaveTextContent('photo.jpg moved to position 1 of 3');
+    });
+
+    it('moves a file from its menu, then removes the file at its new place', async () => {
+        const onChange = vi.fn();
+        renderInRoot(<Files onChange={onChange} />);
+        await userEvent.click(screen.getByRole('button', { name: 'Reorder terms.pdf' }));
+        await userEvent.click(screen.getByRole('menuitem', { name: 'Move to the end' }));
+        expect(onChange).toHaveBeenLastCalledWith([NOTES, PHOTO, TERMS]);
+        await userEvent.click(screen.getByRole('button', { name: 'Remove photo.jpg' }));
+        expect(onChange).toHaveBeenLastCalledWith([NOTES, TERMS]);
+    });
+
+    it('has no handle or menu when it is read-only, or with a single file', () => {
+        const { unmount } = renderInRoot(<Files readOnly />);
+        expect(document.querySelector('[data-reorder-handle]')).toBeNull();
+        expect(screen.queryByRole('button')).not.toBeInTheDocument();
+        unmount();
+        renderInRoot(<FileField label="Files" multiple value={[TERMS]} onChange={() => {}} />);
+        expect(screen.getByRole('button', { name: 'Move terms.pdf' })).toHaveAttribute(
+            'aria-disabled',
+            'true',
+        );
+        expect(screen.queryByRole('button', { name: 'Reorder terms.pdf' })).not.toBeInTheDocument();
     });
 });
