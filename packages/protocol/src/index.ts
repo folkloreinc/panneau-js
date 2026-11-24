@@ -9,6 +9,7 @@ export {
     validateDefinition,
 } from './validate';
 export {
+    createAgentsJsonSchema,
     createBootConfigJsonSchema,
     createComponentSchemas,
     createDefinitionJsonSchema,

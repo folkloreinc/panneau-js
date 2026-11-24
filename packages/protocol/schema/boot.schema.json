@@ -180,6 +180,28 @@
                             "type": "null"
                         }
                     ]
+                },
+                "agents": {
+                    "type": "object",
+                    "properties": {
+                        "mcp": {
+                            "type": "object",
+                            "properties": {
+                                "url": {
+                                    "type": "string",
+                                    "minLength": 1
+                                }
+                            },
+                            "required": [
+                                "url"
+                            ],
+                            "additionalProperties": {}
+                        },
+                        "assistant": {
+                            "type": "boolean"
+                        }
+                    },
+                    "additionalProperties": {}
                 }
             },
             "required": [

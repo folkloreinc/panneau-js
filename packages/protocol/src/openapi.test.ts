@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 
 import { createDefinition } from './__fixtures__/definition';
 import {
+    createAgentsJsonSchema,
     createBootConfigJsonSchema,
     createDefinitionJsonSchema,
     createOpenApiDocument,
@@ -155,6 +156,7 @@ describe('generated files', () => {
         expect(read('openapi.json')).toEqual(createOpenApiDocument());
         expect(read('boot.schema.json')).toEqual(createBootConfigJsonSchema());
         expect(read('theme.schema.json')).toEqual(createThemeJsonSchema());
+        expect(read('agents.schema.json')).toEqual(createAgentsJsonSchema());
     });
 });
 

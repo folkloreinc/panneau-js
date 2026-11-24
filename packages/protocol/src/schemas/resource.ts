@@ -94,7 +94,10 @@ export const Resource = z
                 "What the resource is. `media`: a library of media (decision 0026), with a `file` field and a `media` on each item. Without it, an ordinary resource. Clients treat a kind they don't know as an ordinary resource.",
         }),
         label: z.looseObject({ singular: z.string(), plural: z.string() }),
-        description: z.string().optional(),
+        description: z.string().optional().meta({
+            description:
+                'One sentence that says what the resource holds and when to use it, in the language of the user (decision 0106): for agents, which `describe` answers it to, and for people, where the app shows it.',
+        }),
         icon: z.string().optional(),
         parent: z.string().min(1).optional().meta({
             description:

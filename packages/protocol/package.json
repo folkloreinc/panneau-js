@@ -35,6 +35,7 @@
         "./openapi.json": "./schema/openapi.json",
         "./boot.schema.json": "./schema/boot.schema.json",
         "./theme.schema.json": "./schema/theme.schema.json",
+        "./agents.schema.json": "./schema/agents.schema.json",
         "./package.json": "./package.json"
     },
     "files": [

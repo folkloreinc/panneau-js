@@ -5392,6 +5392,7 @@
                         "additionalProperties": {}
                     },
                     "description": {
+                        "description": "One sentence that says what the resource holds and when to use it, in the language of the user (decision 0106): for agents, which `describe` answers it to, and for people, where the app shows it.",
                         "type": "string"
                     },
                     "icon": {
@@ -7120,6 +7121,32 @@
                                 "type": "null"
                             }
                         ]
+                    },
+                    "agents": {
+                        "description": "What agents can use (decisions 0090 and 0106). Without it, the Panneau has none.",
+                        "type": "object",
+                        "properties": {
+                            "mcp": {
+                                "description": "The MCP server of the Panneau: the account page lists the connections of the user.",
+                                "type": "object",
+                                "properties": {
+                                    "url": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "description": "The URL of the MCP server (Streamable HTTP), which outside clients connect to."
+                                    }
+                                },
+                                "required": [
+                                    "url"
+                                ],
+                                "additionalProperties": {}
+                            },
+                            "assistant": {
+                                "description": "The assistant inside Panneau is offered to the user.",
+                                "type": "boolean"
+                            }
+                        },
+                        "additionalProperties": {}
                     }
                 },
                 "required": [
