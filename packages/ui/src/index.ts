@@ -112,6 +112,14 @@ export {
     type Space,
 } from './layout/responsive';
 export { Prose, type ProseProps } from './prose/Prose';
+export {
+    ReorderHandle,
+    type ReorderHandleProps,
+    ReorderItem,
+    type ReorderItemProps,
+    ReorderList,
+    type ReorderListProps,
+} from './reorder/ReorderList';
 export { LoadingRegion, type LoadingRegionProps } from './skeleton/LoadingRegion';
 export { Skeleton, type SkeletonProps } from './skeleton/Skeleton';
 export { Sparkline, type SparklineProps } from './sparkline/Sparkline';

@@ -80,4 +80,24 @@ export const uiMessages = {
         id: 'panneau.ui.moreBreadcrumbs',
         defaultMessage: 'More pages',
     }),
+    reorderItem: defineMessage<{ index: number }>({
+        id: 'panneau.ui.reorderItem',
+        defaultMessage: 'Item {index, number}',
+    }),
+    reorderHandle: defineMessage<{ item: string }>({
+        id: 'panneau.ui.reorderHandle',
+        defaultMessage: 'Move {item}',
+    }),
+    reorderBefore: defineMessage<{ item: string }>({
+        id: 'panneau.ui.reorderBefore',
+        defaultMessage: 'Before {item}',
+    }),
+    reorderAfter: defineMessage<{ item: string }>({
+        id: 'panneau.ui.reorderAfter',
+        defaultMessage: 'After {item}',
+    }),
+    reorderMoved: defineMessage<{ item: string; position: number; count: number }>({
+        id: 'panneau.ui.reorderMoved',
+        defaultMessage: '{item} moved to position {position, number} of {count, number}',
+    }),
 };

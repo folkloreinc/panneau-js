@@ -8,7 +8,7 @@ import { ButtonProps as ButtonProps_2 } from 'react-aria-components';
 import { CheckboxProps as CheckboxProps_2 } from 'react-aria-components';
 import { ComboBoxProps as ComboBoxProps_2 } from 'react-aria-components';
 import type { ComponentType } from 'react';
-import type { CSSProperties } from 'react';
+import { CSSProperties } from 'react';
 import { DatePickerProps as DatePickerProps_2 } from 'react-aria-components';
 import { DateValue } from 'react-aria-components';
 import { DialogTrigger } from 'react-aria-components';
@@ -1178,6 +1178,55 @@ export interface RadioGroupProps extends Omit<RadioGroupProps_2, 'className' | '
     startLabel?: ReactNode;
     // (undocumented)
     value?: OptionValue | null;
+}
+
+// @public
+export function ReorderHandle(input: ReorderHandleProps): JSX.Element;
+
+// @public (undocumented)
+export interface ReorderHandleProps {
+    // (undocumented)
+    className?: string;
+    label?: string;
+    // (undocumented)
+    style?: CSSProperties;
+}
+
+// @public
+export function ReorderItem(input: ReorderItemProps): JSX.Element;
+
+// @public (undocumented)
+export interface ReorderItemProps extends Omit<HTMLAttributes<HTMLElement>, 'children' | 'id'> {
+    // (undocumented)
+    children?: ReactNode;
+    // (undocumented)
+    className?: string;
+    elementType?: 'li' | 'div';
+    id: string | number;
+    index: number;
+    // (undocumented)
+    ref?: Ref<HTMLElement>;
+    // (undocumented)
+    style?: CSSProperties;
+}
+
+// @public
+export function ReorderList(input: ReorderListProps): JSX.Element;
+
+// @public (undocumented)
+export interface ReorderListProps extends Omit<HTMLAttributes<HTMLElement>, 'children'> {
+    children?: ReactNode;
+    // (undocumented)
+    className?: string;
+    elementType?: 'ol' | 'ul' | 'div';
+    isDisabled?: boolean;
+    itemCount: number;
+    itemLabel?: (index: number) => string;
+    onMove: (from: number, to: number) => void;
+    // (undocumented)
+    ref?: Ref<HTMLElement>;
+    // (undocumented)
+    style?: CSSProperties;
 }
 
 // @public
