@@ -56,13 +56,7 @@ import { FormSkeleton } from './FormSkeleton';
 import { hasLocalizedFields } from './contentLocale';
 import { ErrorSectionsContext, FormContext, RevealContext, createRevealRegistry } from './context';
 import { cx } from './cx';
-import {
-    ErrorBadge,
-    FieldFlow,
-    LayoutNodes,
-    SidebarNode,
-    sidebarSummary,
-} from './layout/Layout';
+import { ErrorBadge, FieldFlow, LayoutNodes, SidebarNode, sidebarSummary } from './layout/Layout';
 import { messages } from './messages';
 import { SaveContext, SaveControls, type SaveState, SummaryContext } from './panels/SaveControls';
 import { type FormPanelComponent, PanelsContext, builtInPanels } from './panels/panels';
@@ -322,8 +316,7 @@ function useFooterHeight(
         const measure = () =>
             form.style.setProperty('--_panneau-form-footer-height', `${element.offsetHeight}px`);
         measure();
-        const observer =
-            typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null;
+        const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null;
         observer?.observe(element);
         return () => {
             observer?.disconnect();
@@ -501,11 +494,13 @@ export function FormView({
     useLeaveGuard(guarded, leave.confirmLeave);
 
     const formLocales = locales ?? definition?.locales ?? NO_LOCALES;
-    const { resolved, laidOut, flow, sidebar, order: mainFirst } = useFormLayout(
-        form,
-        fields,
-        layout,
-    );
+    const {
+        resolved,
+        laidOut,
+        flow,
+        sidebar,
+        order: mainFirst,
+    } = useFormLayout(form, fields, layout);
     // Before the form on a narrow screen, the sidebar is a disclosure, collapsed until the user
     // opens it, or until it must show a field (an error, a link of the summary). Its fields then
     // come first in the order of errors, as on the screen (#501).

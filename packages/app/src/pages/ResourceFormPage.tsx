@@ -18,12 +18,12 @@ import { routePath } from '../routes';
 import { ErrorPage, getErrorPageKind } from './ErrorPage';
 import { ItemActions } from './ItemActions';
 import { PageHeader, PageLayout } from './PageHeader';
+import styles from './ResourceFormPage.module.css';
 import { setCreatedItem } from './createdItem';
 import { ActionsPanel, FormPageContext } from './formPage';
 import { useItemActionRunner } from './itemActionRunner';
 import { createLinkResolver, getItemPath } from './itemLinks';
 import { getItemTitle } from './itemTitle';
-import styles from './ResourceFormPage.module.css';
 
 /** The panels of the app, for the sidebars of its forms (decision 0075). */
 const PANELS = { actions: ActionsPanel };
