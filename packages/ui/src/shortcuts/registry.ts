@@ -10,6 +10,7 @@ export interface ShortcutOptions {
      * and the keys.
      */
     id?: string;
+    /** Its keys, the same on every platform with `Mod` (`Mod+K`), or per platform. */
     keys: ShortcutKeys;
     /** What it does, in the help: "Save", "Go to…". */
     label: string;
@@ -41,6 +42,7 @@ export interface ShortcutOptions {
 
 /** A shortcut of the registry. */
 export interface RegisteredShortcut extends Readonly<Omit<ShortcutOptions, 'perform'>> {
+    /** What it does, with the key press. */
     readonly perform: (event: KeyboardEvent) => void;
 }
 

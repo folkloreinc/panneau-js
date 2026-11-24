@@ -224,6 +224,7 @@ export const appMessages: {
     skipToContent: PanneauMessage<Record<never, never>>;
     navigation: PanneauMessage<Record<never, never>>;
     collapseSidebar: PanneauMessage<Record<never, never>>;
+    toggleSidebar: PanneauMessage<Record<never, never>>;
     expandSidebar: PanneauMessage<Record<never, never>>;
     openMenu: PanneauMessage<Record<never, never>>;
     closeMenu: PanneauMessage<Record<never, never>>;
@@ -658,9 +659,7 @@ export const fieldsMessages: {
 // @public
 export const formsMessages: {
     save: PanneauMessage<Record<never, never>>;
-    saveShortcut: PanneauMessage<    {
-    modifier: string;
-    }>;
+    shortcutsGroup: PanneauMessage<Record<never, never>>;
     nothingToSave: PanneauMessage<Record<never, never>>;
     saved: PanneauMessage<Record<never, never>>;
     loading: PanneauMessage<Record<never, never>>;
@@ -1267,6 +1266,14 @@ export const uiMessages: {
     }>;
     breadcrumbs: PanneauMessage<Record<never, never>>;
     moreBreadcrumbs: PanneauMessage<Record<never, never>>;
+    shortcutsTitle: PanneauMessage<Record<never, never>>;
+    shortcutsHelp: PanneauMessage<Record<never, never>>;
+    shortcutsGeneral: PanneauMessage<Record<never, never>>;
+    shortcutsOr: PanneauMessage<Record<never, never>>;
+    singleKeyShortcuts: PanneauMessage<Record<never, never>>;
+    singleKeyShortcutsDescription: PanneauMessage<Record<never, never>>;
+    keyEnter: PanneauMessage<Record<never, never>>;
+    keySpace: PanneauMessage<Record<never, never>>;
 };
 
 // @public

@@ -59,7 +59,7 @@ export function ShortcutHelp({ isOpen, onOpenChange }: ShortcutHelpProps) {
             isOpen={isOpen}
             onOpenChange={onOpenChange}
         >
-            <div className={styles.help}>
+            <div className={styles.content}>
                 {groups.map(([group, items]) => (
                     <section key={group} className={styles.group}>
                         <h3 className={styles.groupTitle}>{group}</h3>

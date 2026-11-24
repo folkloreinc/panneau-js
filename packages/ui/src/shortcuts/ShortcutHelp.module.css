@@ -1,4 +1,4 @@
-.help {
+.content {
     display: flex;
     flex-direction: column;
     gap: var(--panneau-space-4);
