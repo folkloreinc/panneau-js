@@ -8,7 +8,7 @@ import { ButtonProps as ButtonProps_2 } from 'react-aria-components';
 import { CheckboxProps as CheckboxProps_2 } from 'react-aria-components';
 import { ComboBoxProps as ComboBoxProps_2 } from 'react-aria-components';
 import type { ComponentType } from 'react';
-import type { CSSProperties } from 'react';
+import { CSSProperties } from 'react';
 import { DatePickerProps as DatePickerProps_2 } from 'react-aria-components';
 import { DateValue } from 'react-aria-components';
 import { DialogTrigger } from 'react-aria-components';
@@ -790,6 +790,18 @@ export interface FieldsetProps {
 export function findUnknownTokens(theme: Theme): string[];
 
 // @public
+export function formatShortcut(keys: ShortcutKeys, input?: {
+    apple?: boolean;
+    names?: KeyNames;
+}): FormattedShortcut;
+
+// @public
+export interface FormattedShortcut {
+    keys: string;
+    labels: readonly string[];
+}
+
+// @public
 export function getNamedIcon(name: string): IconComponent;
 
 // @public
@@ -889,7 +901,18 @@ export interface InlineProps extends HTMLAttributes<HTMLElement> {
 export function isApplePlatform(): boolean;
 
 // @public
+export function isSingleKey(combination: string): boolean;
+
+// @public
+export function isTextInput(element: Element | null): boolean;
+
+// @public
 export type Justification = 'start' | 'center' | 'end' | 'between';
+
+// @public
+export interface KeyNames {
+    readonly [key: string]: string;
+}
 
 // @public
 export function LineChart(input: LineChartProps): JSX.Element;
@@ -960,6 +983,9 @@ export function loadNamedIcon(name: string, loader: NamedIconLoader): Promise<Ic
 
 // @public
 export function matchCommands(groups: readonly CommandPaletteGroup[], query: string, locale?: string): CommandPaletteGroup[];
+
+// @public
+export function matchesKeys(event: KeyboardEvent, keys: ShortcutKeys, apple?: boolean): boolean;
 
 // @public
 export const MAX_VISIBLE_TOASTS = 3;
@@ -1181,6 +1207,60 @@ export interface RadioGroupProps extends Omit<RadioGroupProps_2, 'className' | '
 }
 
 // @public
+export interface RegisteredShortcut extends Readonly<Omit<ShortcutOptions, 'perform'>> {
+    readonly perform: (event: KeyboardEvent) => void;
+}
+
+// @public
+export function ReorderHandle(input: ReorderHandleProps): JSX.Element;
+
+// @public (undocumented)
+export interface ReorderHandleProps {
+    // (undocumented)
+    className?: string;
+    label?: string;
+    // (undocumented)
+    style?: CSSProperties;
+}
+
+// @public
+export function ReorderItem(input: ReorderItemProps): JSX.Element;
+
+// @public (undocumented)
+export interface ReorderItemProps extends Omit<HTMLAttributes<HTMLElement>, 'children' | 'id'> {
+    // (undocumented)
+    children?: ReactNode;
+    // (undocumented)
+    className?: string;
+    elementType?: 'li' | 'div';
+    id: string | number;
+    index: number;
+    // (undocumented)
+    ref?: Ref<HTMLElement>;
+    // (undocumented)
+    style?: CSSProperties;
+}
+
+// @public
+export function ReorderList(input: ReorderListProps): JSX.Element;
+
+// @public (undocumented)
+export interface ReorderListProps extends Omit<HTMLAttributes<HTMLElement>, 'children'> {
+    children?: ReactNode;
+    // (undocumented)
+    className?: string;
+    elementType?: 'ol' | 'ul' | 'div';
+    isDisabled?: boolean;
+    itemCount: number;
+    itemLabel?: (index: number) => string;
+    onMove: (from: number, to: number) => void;
+    // (undocumented)
+    ref?: Ref<HTMLElement>;
+    // (undocumented)
+    style?: CSSProperties;
+}
+
+// @public
 export type Responsive<T> = T | Partial<Record<'base' | Breakpoint, T>>;
 
 // @public
@@ -1281,6 +1361,30 @@ export const SEMANTIC_TOKENS: readonly ["panneau-color-bg", "panneau-color-surfa
 
 // @public
 export type SemanticTokenName = (typeof SEMANTIC_TOKENS)[number];
+
+// @public
+export type ShortcutKeys = string | readonly string[] | {
+    apple: string | readonly string[];
+    other: string | readonly string[];
+};
+
+// @public
+export interface ShortcutOptions {
+    enabled?: boolean | undefined;
+    group?: string | undefined;
+    id?: string;
+    inInputs?: boolean | undefined;
+    keys: ShortcutKeys;
+    label: string;
+    perform: (event: KeyboardEvent) => void;
+    scope?: ShortcutScope | undefined;
+    whenHandled?: boolean | undefined;
+}
+
+// @public
+export type ShortcutScope = {
+    readonly current: Element | null;
+} | 'page';
 
 // @public (undocumented)
 export interface SingleSelectProps extends SelectBaseProps {
@@ -1745,7 +1849,11 @@ export interface UndoToastContent {
 export function useCommandShortcut(onToggle: () => void, input?: {
     isOpen?: boolean;
     enabled?: boolean;
+    label?: string;
 }): void;
+
+// @public
+export function useFormatShortcut(): (keys: ShortcutKeys) => FormattedShortcut;
 
 // @public
 export function usePanneauIntl(): IntlShape;
@@ -1755,6 +1863,18 @@ export function usePortalContainer(): Element | null | undefined;
 
 // @public
 export function usePreference<T extends string>(key: string | null, allowed: readonly T[]): [T | null, (value: T) => void];
+
+// @public
+export function useRegisteredShortcuts(): readonly RegisteredShortcut[];
+
+// @public
+export function useShortcut(input: ShortcutOptions): void;
+
+// @public
+export function useShortcutHelp(): (() => void) | null;
+
+// @public
+export function useShortcutLabel(): (keys: ShortcutKeys) => string;
 
 // @public
 export function useToast(): Toasts;

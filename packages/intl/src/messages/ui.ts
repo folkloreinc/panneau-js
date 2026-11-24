@@ -80,4 +80,52 @@ export const uiMessages = {
         id: 'panneau.ui.moreBreadcrumbs',
         defaultMessage: 'More pages',
     }),
+    reorderItem: defineMessage<{ index: number }>({
+        id: 'panneau.ui.reorderItem',
+        defaultMessage: 'Item {index, number}',
+    }),
+    reorderHandle: defineMessage<{ item: string }>({
+        id: 'panneau.ui.reorderHandle',
+        defaultMessage: 'Move {item}',
+    }),
+    reorderBefore: defineMessage<{ item: string }>({
+        id: 'panneau.ui.reorderBefore',
+        defaultMessage: 'Before {item}',
+    }),
+    reorderAfter: defineMessage<{ item: string }>({
+        id: 'panneau.ui.reorderAfter',
+        defaultMessage: 'After {item}',
+    }),
+    reorderMoved: defineMessage<{ item: string; position: number; count: number }>({
+        id: 'panneau.ui.reorderMoved',
+        defaultMessage: '{item} moved to position {position, number} of {count, number}',
+    }),
+    /** The help of keyboard shortcuts (decision 0112): its title, and what opens it. */
+    shortcutsTitle: defineMessage({
+        id: 'panneau.ui.shortcutsTitle',
+        defaultMessage: 'Keyboard shortcuts',
+    }),
+    shortcutsHelp: defineMessage({
+        id: 'panneau.ui.shortcutsHelp',
+        defaultMessage: 'Show keyboard shortcuts',
+    }),
+    /** The group of shortcuts without one. */
+    shortcutsGeneral: defineMessage({
+        id: 'panneau.ui.shortcutsGeneral',
+        defaultMessage: 'General',
+    }),
+    /** Between two combinations of keys of one shortcut. */
+    shortcutsOr: defineMessage({ id: 'panneau.ui.shortcutsOr', defaultMessage: 'or' }),
+    singleKeyShortcuts: defineMessage({
+        id: 'panneau.ui.singleKeyShortcuts',
+        defaultMessage: 'Single-key shortcuts',
+    }),
+    singleKeyShortcutsDescription: defineMessage({
+        id: 'panneau.ui.singleKeyShortcutsDescription',
+        defaultMessage:
+            'Shortcuts of one key, such as ?, never work while you type in a field. Turn them off if they get in your way.',
+    }),
+    /** Names of keys in shortcuts, off Apple platforms. */
+    keyEnter: defineMessage({ id: 'panneau.ui.keyEnter', defaultMessage: 'Enter' }),
+    keySpace: defineMessage({ id: 'panneau.ui.keySpace', defaultMessage: 'Space' }),
 };

@@ -36,4 +36,19 @@ export const uiFr: Record<string, string> = {
     'panneau.ui.avatarOthers': '{count, plural, one {# autre} other {# autres}}',
     'panneau.ui.breadcrumbs': 'Fil d’Ariane',
     'panneau.ui.moreBreadcrumbs': 'Plus de pages',
+    'panneau.ui.reorderItem': 'Élément {index, number}',
+    'panneau.ui.reorderHandle': 'Déplacer {item}',
+    'panneau.ui.reorderBefore': 'Avant {item}',
+    'panneau.ui.reorderAfter': 'Après {item}',
+    'panneau.ui.reorderMoved':
+        '{item}, maintenant en position {position, number} sur {count, number}',
+    'panneau.ui.shortcutsTitle': 'Raccourcis clavier',
+    'panneau.ui.shortcutsHelp': 'Afficher les raccourcis clavier',
+    'panneau.ui.shortcutsGeneral': 'Général',
+    'panneau.ui.shortcutsOr': 'ou',
+    'panneau.ui.singleKeyShortcuts': 'Raccourcis d’une seule touche',
+    'panneau.ui.singleKeyShortcutsDescription':
+        'Les raccourcis d’une seule touche, comme ?, ne fonctionnent jamais pendant la saisie dans un champ. Désactivez-les s’ils vous gênent.',
+    'panneau.ui.keyEnter': 'Entrée',
+    'panneau.ui.keySpace': 'Espace',
 };

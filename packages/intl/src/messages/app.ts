@@ -357,6 +357,11 @@ export const appMessages = {
         id: 'panneau.app.collapseSidebar',
         defaultMessage: 'Collapse the sidebar',
     }),
+    /** The shortcut that collapses or expands the sidebar, in the help of shortcuts. */
+    toggleSidebar: defineMessage({
+        id: 'panneau.app.toggleSidebar',
+        defaultMessage: 'Collapse or expand the sidebar',
+    }),
     expandSidebar: defineMessage({
         id: 'panneau.app.expandSidebar',
         defaultMessage: 'Expand the sidebar',

@@ -56,7 +56,10 @@ export function DockLayout({
 }: DockLayoutProps) {
     const intl = usePanneauIntl();
     const [goToOpen, setGoToOpen] = useState(false);
-    useCommandShortcut(() => setGoToOpen((open) => !open), { isOpen: goToOpen });
+    useCommandShortcut(() => setGoToOpen((open) => !open), {
+        isOpen: goToOpen,
+        label: intl.formatMessage(appMessages.goTo),
+    });
     const openGoTo = () => setGoToOpen(true);
 
     const main = useRef<HTMLElement>(null);

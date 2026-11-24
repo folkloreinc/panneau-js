@@ -2,11 +2,19 @@ import { CircleCheck } from 'lucide-react';
 import { type ReactNode, createContext, useId } from 'react';
 
 import type { Field } from '@panneau/protocol';
-import { Button, Icon, Tooltip, isApplePlatform, usePanneauIntl } from '@panneau/ui';
+import {
+    Button,
+    Icon,
+    Tooltip,
+    useFormatShortcut,
+    usePanneauIntl,
+    useShortcutLabel,
+} from '@panneau/ui';
 
 import styles from '../Form.module.css';
 import { cx } from '../cx';
 import { messages } from '../messages';
+import { SAVE_KEYS } from '../saveKeys';
 
 export interface SaveState {
     /** What the status says: the failure of the last save, unsaved changes, or "Saved". */
@@ -42,8 +50,10 @@ export const SummaryContext = createContext<SummaryState | null>(null);
  */
 export function SaveControls({ status, isSubmitting, canSave, actions, submitLabel }: SaveState) {
     const intl = usePanneauIntl();
-    const apple = isApplePlatform();
-    const modifier = apple ? '⌘' : 'Ctrl';
+    const formatShortcut = useFormatShortcut();
+    const shortcutLabel = useShortcutLabel();
+    // "⌘S or ⌘↩", and `Meta+S Meta+Enter`
+    const keys = formatShortcut(SAVE_KEYS).keys;
     const reasonId = useId();
     return (
         <>
@@ -72,7 +82,7 @@ export function SaveControls({ status, isSubmitting, canSave, actions, submitLab
                 <Tooltip
                     content={
                         canSave
-                            ? intl.formatMessage(messages.saveShortcut, { modifier })
+                            ? shortcutLabel(SAVE_KEYS)
                             : intl.formatMessage(messages.nothingToSave)
                     }
                 >
@@ -80,7 +90,7 @@ export function SaveControls({ status, isSubmitting, canSave, actions, submitLab
                         type="submit"
                         tone="accent"
                         isPending={isSubmitting}
-                        aria-keyshortcuts={apple ? 'Meta+S Meta+Enter' : 'Control+S Control+Enter'}
+                        aria-keyshortcuts={keys}
                         aria-describedby={canSave ? undefined : reasonId}
                         // Disabled as a pending button is: it keeps its place in the tab order, and
                         // assistive technologies say why. Submitting it sends nothing (`FormView`).

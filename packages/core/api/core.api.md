@@ -248,6 +248,9 @@ export function getResourceActions(resource: Resource): Action[];
 export function getSearchableResources(definition: Definition): Resource[];
 
 // @public
+export function getShortcuts(sources: readonly ShortcutSource[], context: CommandContext): Shortcut[];
+
+// @public
 export function getVisibleFields<T extends Pick<Field, 'abilities'>>(fields: readonly T[]): T[];
 
 // @public
@@ -433,6 +436,7 @@ export interface PanneauContextValue {
 export type PanneauPlugin = PluginEntries & {
     id: string;
     commands?: CommandSource;
+    shortcuts?: ShortcutSource;
     locales?: Record<string, MessagesLoader>;
     themes?: Record<string, Theme>;
 };
@@ -482,6 +486,7 @@ export type PluginRegistry = {
 } & {
     plugins: readonly PanneauPlugin[];
     commands: readonly CommandSource[];
+    shortcuts: readonly ShortcutSource[];
     locales: ReadonlyMap<string, readonly MessagesLoader[]>;
     themes: ReadonlyMap<string, Theme>;
 };
@@ -645,6 +650,21 @@ export function setValue<T extends Values>(values: T, path: string, value: unkno
 
 // @public
 export function shiftMonth(month: string, offset: number): string;
+
+// @public
+export interface Shortcut {
+    group?: string;
+    id: string;
+    keys: string | readonly string[] | {
+        apple: string | readonly string[];
+        other: string | readonly string[];
+    };
+    label: string;
+    perform: () => void;
+}
+
+// @public
+export type ShortcutSource = readonly Shortcut[] | ((context: CommandContext) => readonly Shortcut[]);
 
 // @public (undocumented)
 export interface SubmitContext {

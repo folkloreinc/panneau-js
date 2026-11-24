@@ -2,7 +2,8 @@ import { useState } from 'react';
 
 const PREFIX = 'panneau:';
 
-function read<T extends string>(key: string, allowed: readonly T[]): T | null {
+/** The stored value of a preference, or `null` (see `usePreference()`). */
+export function readPreference<T extends string>(key: string, allowed: readonly T[]): T | null {
     try {
         const value = window.localStorage.getItem(`${PREFIX}${key}`);
         return allowed.find((candidate) => candidate === value) ?? null;
@@ -12,7 +13,8 @@ function read<T extends string>(key: string, allowed: readonly T[]): T | null {
     }
 }
 
-function write(key: string, value: string) {
+/** Stores a preference (see `usePreference()`). */
+export function writePreference(key: string, value: string): void {
     try {
         window.localStorage.setItem(`${PREFIX}${key}`, value);
     } catch {
@@ -29,13 +31,15 @@ export function usePreference<T extends string>(
     key: string | null,
     allowed: readonly T[],
 ): [T | null, (value: T) => void] {
-    const [value, setValue] = useState<T | null>(() => (key !== null ? read(key, allowed) : null));
+    const [value, setValue] = useState<T | null>(() =>
+        key !== null ? readPreference(key, allowed) : null,
+    );
     return [
         value,
         (next: T) => {
             setValue(next);
             if (key !== null) {
-                write(key, next);
+                writePreference(key, next);
             }
         },
     ];

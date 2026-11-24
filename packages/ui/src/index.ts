@@ -34,7 +34,29 @@ export {
     matchCommands,
     normalizeSearch,
 } from './command-palette/match';
-export { isApplePlatform, useCommandShortcut } from './command-palette/useCommandShortcut';
+export { useCommandShortcut } from './command-palette/useCommandShortcut';
+export {
+    type FormattedShortcut,
+    type KeyNames,
+    type ShortcutKeys,
+    formatShortcut,
+    isApplePlatform,
+    isSingleKey,
+    matchesKeys,
+} from './shortcuts/keys';
+export {
+    type RegisteredShortcut,
+    type ShortcutOptions,
+    type ShortcutScope,
+    isTextInput,
+} from './shortcuts/registry';
+export {
+    useFormatShortcut,
+    useRegisteredShortcuts,
+    useShortcut,
+    useShortcutHelp,
+    useShortcutLabel,
+} from './shortcuts/useShortcut';
 export { Container, type ContainerProps } from './container/Container';
 export { Divider, type DividerProps } from './divider/Divider';
 export { Grid, GridItem, type GridItemProps, type GridProps } from './grid/Grid';
@@ -112,6 +134,14 @@ export {
     type Space,
 } from './layout/responsive';
 export { Prose, type ProseProps } from './prose/Prose';
+export {
+    ReorderHandle,
+    type ReorderHandleProps,
+    ReorderItem,
+    type ReorderItemProps,
+    ReorderList,
+    type ReorderListProps,
+} from './reorder/ReorderList';
 export { LoadingRegion, type LoadingRegionProps } from './skeleton/LoadingRegion';
 export { Skeleton, type SkeletonProps } from './skeleton/Skeleton';
 export { Sparkline, type SparklineProps } from './sparkline/Sparkline';
