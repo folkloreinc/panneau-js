@@ -58,6 +58,21 @@
     padding: 0;
 }
 
+/* A button that holds a value other than the default, such as a sort: in the tones of what is
+ * selected, as a filter with a value is (#487). Doubled: over the button's own colors. */
+.active.active {
+    background-color: var(--panneau-selected-subtle, var(--panneau-color-accent-subtle));
+    border-color: var(--panneau-selected-bg, var(--panneau-color-accent));
+}
+
+.active.active[data-hovered] {
+    background-color: color-mix(
+        in srgb,
+        var(--panneau-tone-text) 6%,
+        var(--panneau-selected-subtle, var(--panneau-color-accent-subtle))
+    );
+}
+
 /* The column of the sort, cut when it is long: the button stays in the toolbar's row. */
 .sortValue {
     max-width: 10rem;

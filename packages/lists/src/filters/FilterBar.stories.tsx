@@ -131,8 +131,17 @@ export const ActiveFilter: Story = {
         probe.remove();
         await expect(getComputedStyle(active).borderTopColor).toBe(selected);
         await expect(getComputedStyle(empty).borderTopColor).not.toBe(selected);
-        // Not only by color: a button clears it
-        await userEvent.click(canvas.getByRole('button', { name: 'Clear the filter Status' }));
+        // Not only by color: a button clears it, inside the select, in place of its arrow (#487)
+        const clear = canvas.getByRole('button', { name: 'Clear the filter Status' });
+        const box = active.getBoundingClientRect();
+        const button = clear.getBoundingClientRect();
+        await expect(button.left).toBeGreaterThanOrEqual(box.left);
+        await expect(button.right).toBeLessThanOrEqual(box.right + 1);
+        await expect(button.top).toBeGreaterThanOrEqual(box.top - 1);
+        await expect(button.bottom).toBeLessThanOrEqual(box.bottom + 1);
+        const arrow = active.querySelector('svg:last-of-type');
+        await expect(arrow === null ? 'hidden' : getComputedStyle(arrow).visibility).toBe('hidden');
+        await userEvent.click(clear);
         await expect(
             canvas.queryByRole('list', { name: 'Active filters' }),
         ).not.toBeInTheDocument();
@@ -140,6 +149,41 @@ export const ActiveFilter: Story = {
         await expect(
             canvas.queryByRole('button', { name: 'Clear the filter Status' }),
         ).not.toBeInTheDocument();
+    },
+};
+
+/**
+ * A list sorted by a column: its sort button in the tones of what is selected, as a filter with a
+ * value. The default sort can't be emptied, so it has no clear button.
+ */
+export const SortedBy: Story = {
+    args: {
+        columns: columns.map((column) =>
+            column.id === 'title' ? { ...column, sortable: true } : column,
+        ),
+        router: createMemoryRouter('sort=-title'),
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        const sort = canvas.getByRole('button', { name: /^Sort by: / });
+        // The colors of the tokens, as the browser resolves them
+        const probe = canvasElement.ownerDocument.createElement('span');
+        probe.style.color = 'var(--panneau-selected-bg, var(--panneau-color-accent))';
+        probe.style.backgroundColor =
+            'var(--panneau-selected-subtle, var(--panneau-color-accent-subtle))';
+        sort.parentElement?.append(probe);
+        const selected = getComputedStyle(probe);
+        const [border, background] = [selected.color, selected.backgroundColor];
+        probe.remove();
+        await expect(getComputedStyle(sort).borderTopColor).toBe(border);
+        await expect(getComputedStyle(sort).backgroundColor).toBe(background);
+        await expect(canvas.queryByRole('button', { name: /Clear.*sort/i })).toBeNull();
+        // Back to the default sort: the button is as the others
+        await userEvent.click(sort);
+        await userEvent.click(await body.findByRole('menuitemradio', { name: 'Default' }));
+        const unsorted = await canvas.findByRole('button', { name: 'Sort by' });
+        await expect(getComputedStyle(unsorted).backgroundColor).not.toBe(background);
     },
 };
 

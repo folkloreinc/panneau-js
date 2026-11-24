@@ -44,6 +44,39 @@ export const Single: Story = {
     },
 };
 
+/**
+ * `onClear`: a select that can be emptied, such as a filter. With a value, a button in place of its
+ * arrow empties it, and the focus goes back to the select.
+ */
+export const Clearable: Story = {
+    render: function Render(args) {
+        const [value, setValue] = useState<OptionValue | null>('draft');
+        return (
+            <Select
+                {...args}
+                multiple={false}
+                value={value}
+                onChange={setValue}
+                onClear={() => setValue(null)}
+                clearLabel="Clear the status"
+            />
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const trigger = canvas.getByRole('button', { name: /Status/ });
+        const clear = canvas.getByRole('button', { name: 'Clear the status' });
+        const box = trigger.getBoundingClientRect();
+        const button = clear.getBoundingClientRect();
+        await expect(button.right).toBeLessThanOrEqual(box.right + 1);
+        await expect(button.left).toBeGreaterThan(box.left + box.width / 2);
+        await userEvent.click(clear);
+        await expect(trigger).toHaveTextContent('Select…');
+        await expect(trigger).toHaveFocus();
+        await expect(canvas.queryByRole('button', { name: 'Clear the status' })).toBeNull();
+    },
+};
+
 /** Several options read as one line, their labels in a list, cut when it is too long. */
 export const Multiple: Story = {
     render: function Render(args) {

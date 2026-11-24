@@ -659,7 +659,7 @@ export const OnAPhone: Story = {
  * The toolbar stays in place (#412): the layout switch doesn't move when the layout or the
  * selection changes. Each layout shows only the controls that change it: the calendar has no
  * sort, no columns and no "Select". "Columns" and "Select" are icon buttons, named by their
- * tooltips (#424); "Done" keeps its label.
+ * tooltips (#424), and so is "Done" while selecting (#487).
  */
 export const ToolbarInPlace: Story = {
     args: {
@@ -696,7 +696,7 @@ export const ToolbarInPlace: Story = {
         await userEvent.click(canvas.getByRole('radio', { name: 'Table' }));
         const select = canvas.getByRole('button', { name: 'Select' });
         await userEvent.click(select);
-        await expect(canvas.getByRole('button', { name: 'Done' })).toHaveTextContent('Done');
+        await expect(canvas.getByRole('button', { name: 'Done' })).not.toHaveTextContent('Done');
         await expect(canvas.getByRole('button', { name: 'Done' })).toHaveFocus();
         await expect(place()).toEqual(start);
         await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Ada Lovelace' }));

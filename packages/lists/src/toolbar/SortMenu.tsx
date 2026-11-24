@@ -89,6 +89,9 @@ export function SortMenu({ columns, sort, onChange }: SortMenuProps) {
                         ? intl.formatMessage(messages.sortedBy, { sort: current.label })
                         : sortBy
                 }
+                // Sorted by a column: tinted as a filter with a value. The default sort can't be
+                // cleared, so the button has no clear button.
+                isActive={current.column !== null}
                 iconEnd={
                     current.column === null ? undefined : current.descending ? ArrowDown : ArrowUp
                 }

@@ -1,9 +1,10 @@
-import { Check, ChevronDown } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { Check, ChevronDown, X } from 'lucide-react';
+import { type ReactNode, useRef } from 'react';
 import type { Key } from 'react-aria-components';
 import {
     Select as AriaSelect,
     Button,
+    ButtonContext,
     ListBox,
     ListBoxItem,
     SelectValue,
@@ -17,6 +18,7 @@ import {
     FieldLabel,
     fieldStyles,
 } from '../field/FieldParts';
+import { IconButton } from '../icon-button/IconButton';
 import { Icon } from '../icon/Icon';
 import { messages } from '../intl/messages';
 import { usePanneauIntl } from '../intl/usePanneauIntl';
@@ -57,6 +59,13 @@ export interface SelectBaseProps extends FieldChromeProps {
     /** Class name of the button that opens the options. */
     triggerClassName?: string;
     popoverClassName?: string;
+    /**
+     * Empties the select. With a value, a button in place of the arrow calls it: a filter, whose
+     * value can be removed in one click. The focus then goes back to the select.
+     */
+    onClear?: () => void;
+    /** The name of the button that empties the select. Defaults to "Clear". */
+    clearLabel?: string;
 }
 
 export interface SingleSelectProps extends SelectBaseProps {
@@ -118,7 +127,15 @@ export function Select(props: SelectProps) {
         appearance = 'field',
         triggerClassName,
         popoverClassName,
+        onClear,
+        clearLabel,
     } = props;
+    const box = useRef<HTMLDivElement>(null);
+    const hasValue =
+        props.multiple === true
+            ? (props.value ?? []).length > 0
+            : props.value !== undefined && props.value !== null;
+    const clearable = onClear !== undefined && hasValue && isDisabled !== true;
     const placeholder = props.placeholder ?? intl.formatMessage(messages.selectPlaceholder);
     const invalid = errors.length > 0;
     const items = options.map((option, index) => ({ ...option, key: String(index) }));
@@ -157,39 +174,58 @@ export function Select(props: SelectProps) {
             <FieldLabel isRequired={isRequired} className={labelClassName}>
                 {label}
             </FieldLabel>
-            <Button
-                // The box shows the error, as the box of a text input does
-                data-invalid={invalid || undefined}
-                className={cx(
-                    appearance === 'bare' ? styles.bareTrigger : fieldStyles.control,
-                    styles.trigger,
-                    triggerClassName,
-                )}
-            >
-                <SelectValue className={styles.value}>
-                    {({ defaultChildren, isPlaceholder }) =>
-                        !isPlaceholder && chosenLabels.length > 0 ? (
-                            <span className={styles.valueList}>
-                                {intl.formatList(chosenLabels, { type: 'conjunction' })}
-                            </span>
-                        ) : !isPlaceholder && selected !== undefined ? (
-                            <span className={styles.valueText}>
-                                {selected.prefix !== undefined ? (
-                                    <span className={styles.prefix} aria-hidden="true">
-                                        {selected.prefix}
-                                    </span>
-                                ) : null}
-                                {renderValue !== undefined
-                                    ? renderValue(selected)
-                                    : defaultChildren}
-                            </span>
-                        ) : (
-                            defaultChildren
-                        )
-                    }
-                </SelectValue>
-                <Icon icon={ChevronDown} className={styles.chevron} />
-            </Button>
+            <div ref={box} className={styles.triggerBox}>
+                <Button
+                    // The box shows the error, as the box of a text input does
+                    data-invalid={invalid || undefined}
+                    data-clearable={clearable || undefined}
+                    className={cx(
+                        appearance === 'bare' ? styles.bareTrigger : fieldStyles.control,
+                        styles.trigger,
+                        triggerClassName,
+                    )}
+                >
+                    <SelectValue className={styles.value}>
+                        {({ defaultChildren, isPlaceholder }) =>
+                            !isPlaceholder && chosenLabels.length > 0 ? (
+                                <span className={styles.valueList}>
+                                    {intl.formatList(chosenLabels, { type: 'conjunction' })}
+                                </span>
+                            ) : !isPlaceholder && selected !== undefined ? (
+                                <span className={styles.valueText}>
+                                    {selected.prefix !== undefined ? (
+                                        <span className={styles.prefix} aria-hidden="true">
+                                            {selected.prefix}
+                                        </span>
+                                    ) : null}
+                                    {renderValue !== undefined
+                                        ? renderValue(selected)
+                                        : defaultChildren}
+                                </span>
+                            ) : (
+                                defaultChildren
+                            )
+                        }
+                    </SelectValue>
+                    <Icon icon={ChevronDown} className={styles.chevron} />
+                </Button>
+                {clearable ? (
+                    // Not a part of the select: its own button, over the place of the arrow
+                    <ButtonContext.Provider value={null}>
+                        <IconButton
+                            icon={X}
+                            label={clearLabel ?? intl.formatMessage(messages.clear)}
+                            size="sm"
+                            className={styles.clear}
+                            onPress={() => {
+                                onClear();
+                                // The button goes away with the value: the focus goes to the select
+                                box.current?.querySelector('button')?.focus();
+                            }}
+                        />
+                    </ButtonContext.Provider>
+                ) : null}
+            </div>
             <FieldDescription className={descriptionClassName}>{description}</FieldDescription>
             <FieldErrors errors={errors} className={errorsClassName} />
             <PopoverSurface className={popoverClassName}>

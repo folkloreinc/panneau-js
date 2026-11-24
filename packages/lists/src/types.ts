@@ -135,6 +135,13 @@ export interface FilterControlProps {
     onLabel: (value: string, label: string) => void;
     /** The label remembered for a value, if any. */
     getValueLabel: (value: string) => string | null;
+    /**
+     * Removes the filter, for a control that offers it in its own box, in place of its arrow (a
+     * select). Other controls get the button beside them.
+     */
+    onClear?: () => void;
+    /** The name of that button: "Clear the filter Role". */
+    clearLabel?: string;
 }
 
 /** A filter control, by filter type (`select`, `date`). */

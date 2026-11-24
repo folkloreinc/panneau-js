@@ -16,6 +16,11 @@ export interface ToolbarButtonProps {
     children?: ReactNode;
     iconEnd?: IconComponent | undefined;
     appearance?: 'outline' | 'solid';
+    /**
+     * The button holds a value other than the default, such as a sort: in the tones of what is
+     * selected, as a filter with a value is.
+     */
+    isActive?: boolean;
     isPending?: boolean;
     onPress?: () => void;
 }
@@ -31,6 +36,7 @@ export function ToolbarButton({
     children,
     iconEnd,
     appearance = 'outline',
+    isActive = false,
     isPending,
     onPress,
 }: ToolbarButtonProps) {
@@ -44,7 +50,7 @@ export function ToolbarButton({
                 aria-label={label}
                 {...(isPending !== undefined ? { isPending } : {})}
                 {...(onPress !== undefined ? { onPress } : {})}
-                className={cx(!hasText && styles.iconOnly)}
+                className={cx(!hasText && styles.iconOnly, isActive && styles.active)}
             >
                 {hasText ? children : null}
             </Button>

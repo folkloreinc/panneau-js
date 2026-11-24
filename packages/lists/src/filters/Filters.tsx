@@ -64,6 +64,9 @@ export function isFilterActive(
     return values[filter.id] !== undefined;
 }
 
+/** The built-in controls that clear in their own box, in place of their arrow. */
+const CLEARS_INSIDE: ReadonlySet<unknown> = new Set([builtInFilters.select]);
+
 /**
  * A control for each filter of the list. A filter with a value is marked as active, in the tones
  * of what is selected (`--panneau-selected-*`), with a button that clears it.
@@ -99,16 +102,19 @@ export function FilterControls({
                     return null;
                 }
                 const label = getFilterLabel(filter, columns, fields);
+                const clear = () => onChange(filter.id, undefined);
                 return (
                     <FilterItem
                         key={filter.id}
                         label={label}
-                        // A switch says itself whether it is on
-                        clearable={filter.type !== 'toggle'}
+                        // A switch says itself whether it is on, and a select clears in its box
+                        clearable={filter.type !== 'toggle' && !CLEARS_INSIDE.has(Control)}
                         isActive={isFilterActive(values, filter)}
-                        onClear={() => onChange(filter.id, undefined)}
+                        onClear={clear}
                     >
                         <Control
+                            onClear={clear}
+                            clearLabel={intl.formatMessage(messages.clearFilter, { filter: label })}
                             filter={filter}
                             label={label}
                             options={getFilterOptions(filter, columns, fields)}

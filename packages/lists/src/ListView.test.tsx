@@ -882,12 +882,15 @@ describe('ListView toolbar controls', () => {
         expect(await screen.findByRole('tooltip')).toHaveTextContent('Columns');
         const select = screen.getByRole('button', { name: 'Select' });
         expect(select).not.toHaveTextContent('Select');
-        // Selecting, it says what pressing it does, and keeps the focus
+        // Selecting, it keeps its icon only, says what pressing it does, and keeps the focus
         await user.click(select);
         const done = screen.getByRole('button', { name: 'Done' });
         expect(done).toBe(select);
-        expect(done).toHaveTextContent('Done');
+        expect(done).not.toHaveTextContent('Done');
         expect(done).toHaveFocus();
+        await user.unhover(done);
+        await user.hover(done);
+        expect(await screen.findByRole('tooltip')).toHaveTextContent('Done');
     });
 
     it('keeps the controls in one row on a phone, with the less used ones in a menu', async () => {

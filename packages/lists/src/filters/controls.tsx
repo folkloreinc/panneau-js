@@ -45,7 +45,15 @@ export function TextFilter({ label, value, onChange }: FilterControlProps) {
 }
 
 /** A choice among the options, or several with `multiple`. */
-export function SelectFilter({ filter, label, options, value, onChange }: FilterControlProps) {
+export function SelectFilter({
+    filter,
+    label,
+    options,
+    value,
+    onChange,
+    onClear,
+    clearLabel,
+}: FilterControlProps) {
     const intl = usePanneauIntl();
     const selected = asStrings(value);
     // Values from the URL are strings: match them to the options' values.
@@ -63,6 +71,8 @@ export function SelectFilter({ filter, label, options, value, onChange }: Filter
                 placeholder={placeholder}
                 value={toOptions(selected)}
                 onChange={(next) => onChange(next.length > 0 ? next : undefined)}
+                {...(onClear !== undefined ? { onClear } : {})}
+                {...(clearLabel !== undefined ? { clearLabel } : {})}
                 className={styles.control}
             />
         );
@@ -74,6 +84,8 @@ export function SelectFilter({ filter, label, options, value, onChange }: Filter
             placeholder={placeholder}
             value={toOptions(selected)[0] ?? null}
             onChange={(next) => onChange(next ?? undefined)}
+            {...(onClear !== undefined ? { onClear } : {})}
+            {...(clearLabel !== undefined ? { clearLabel } : {})}
             className={styles.control}
         />
     );
