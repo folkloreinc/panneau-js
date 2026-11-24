@@ -14,7 +14,15 @@ export interface LaravelSessionOptions {
     cookies?: () => string;
 }
 
-export interface LaravelAdapterOptions extends RestAdapterOptions, LaravelSessionOptions {}
+export interface LaravelAdapterOptions extends RestAdapterOptions, LaravelSessionOptions {
+    /**
+     * Sends a multipart `PATCH`, `PUT` or `DELETE` as `POST` with this form field, which
+     * Laravel's method spoofing routes to the right route: PHP below 8.4 (or Symfony below 7.4)
+     * doesn't parse a multipart body of another method. Defaults to `'_method'`; `false` sends
+     * the method as is.
+     */
+    multipartMethodOverride?: string | false;
+}
 
 function readCookie(cookies: string, name: string): string | null {
     for (const part of cookies.split(';')) {
@@ -75,8 +83,9 @@ export function createLaravelError(problem: Problem): ApiError {
 
 /**
  * The REST adapter set up for `laravel-panneau` with Laravel's session authentication: it sends
- * cookies, adds the CSRF token from the `XSRF-TOKEN` cookie to every request, and treats `419`
- * (expired CSRF token or session) as unauthorized.
+ * cookies, adds the CSRF token from the `XSRF-TOKEN` cookie to every request, treats `419`
+ * (expired CSRF token or session) as unauthorized, and sends a multipart update (a replaced file)
+ * as `POST` with `_method=PATCH`.
  */
 export function createLaravelAdapter({
     xsrfCookie = 'XSRF-TOKEN',
@@ -85,11 +94,13 @@ export function createLaravelAdapter({
     headers,
     credentials = 'include',
     createError,
+    multipartMethodOverride = '_method',
     ...options
 }: LaravelAdapterOptions): DataAdapter {
     return createRestAdapter({
         ...options,
         credentials,
+        multipartMethodOverride,
         headers: async () =>
             getLaravelHeaders({
                 headers: typeof headers === 'function' ? await headers() : headers,

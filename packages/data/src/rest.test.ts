@@ -247,6 +247,76 @@ describe('createRestAdapter', () => {
         expect(body?.get('values[header]')).toBe('1');
     });
 
+    describe('multipartMethodOverride', () => {
+        const item = { data: { id: '1', version: '3', abilities: {} } };
+        const file = () => new File(['png'], 'photo.png', { type: 'image/png' });
+
+        it('sends a multipart PATCH as is by default', async () => {
+            const { fetch, requests } = createStubFetch(() => jsonResponse(200, item));
+            const adapter = createRestAdapter({ baseUrl: BASE_URL, fetch });
+            await adapter.update('media', '1', { file: file() }, { version: '2' });
+            const body = await requests[0]?.formData();
+            expect(requests[0]?.method).toBe('PATCH');
+            expect(body?.has('_method')).toBe(false);
+        });
+
+        it('sends a multipart PATCH as POST with the method in the given field', async () => {
+            const { fetch, requests } = createStubFetch(() => jsonResponse(200, item));
+            const adapter = createRestAdapter({
+                baseUrl: BASE_URL,
+                fetch,
+                headers: { 'Accept-Language': 'fr' },
+                multipartMethodOverride: '_method',
+            });
+            await adapter.update(
+                'media',
+                '1',
+                { file: file(), alt: { fr: 'Photo' }, _method: 'DELETE' },
+                { version: '2' },
+            );
+            const request = requests[0];
+            const body = await request?.formData();
+            expect(request?.method).toBe('POST');
+            expect(request?.url).toBe('http://panneau.test/panneau/api/resources/media/1');
+            expect(request?.headers.get('Content-Type')).toMatch(/^multipart\/form-data/);
+            expect(request?.headers.get('If-Match')).toBe('"2"');
+            expect(request?.headers.get('Accept-Language')).toBe('fr');
+            // The field replaces a value of the same name
+            expect(body?.getAll('_method')).toEqual(['PATCH']);
+            expect((body?.get('file') as File | null)?.name).toBe('photo.png');
+            expect(body?.get('alt[fr]')).toBe('Photo');
+        });
+
+        it('overrides other methods with a multipart body, and keeps POST and JSON as is', async () => {
+            const { fetch, requests } = createStubFetch(() => jsonResponse(200, item));
+            const adapter = createRestAdapter({
+                baseUrl: BASE_URL,
+                fetch,
+                multipartMethodOverride: '_verb',
+            });
+            await adapter.updateAccount?.({ name: 'Ada', avatar: file() } as never);
+            await adapter.updatePassword?.({ avatar: file() } as never);
+            await adapter.update('pages', '1', { title: 'Home' }, { version: '2' });
+            await adapter.create('media', { file: file() });
+            await adapter.withContext?.({ site: 'a' }).update('media', '1', { file: file() });
+
+            expect(requests.map((request) => request.method)).toEqual([
+                'POST',
+                'POST',
+                'PATCH',
+                'POST',
+                'POST',
+            ]);
+            expect((await requests[0]?.formData())?.get('_verb')).toBe('PATCH');
+            expect((await requests[1]?.formData())?.get('_verb')).toBe('PUT');
+            expect(requests[2]?.headers.get('Content-Type')).toBe('application/json');
+            expect(requests[2]?.headers.get('If-Match')).toBe('"2"');
+            expect(await requests[2]?.json()).toEqual({ title: 'Home' });
+            expect((await requests[3]?.formData())?.has('_verb')).toBe(false);
+            expect((await requests[4]?.formData())?.get('_verb')).toBe('PATCH');
+        });
+    });
+
     it.each([
         [401, UnauthorizedError],
         [403, ForbiddenError],

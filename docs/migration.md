@@ -171,7 +171,7 @@ createPanneauApp({
 
 - **The keys are the types of the definition, in kebab case.** Check each one against the `type()` of its PHP field: v4 also found `video_or_embed` under `VideoOrEmbed`, Panneau 5 doesn't.
 - **The boot config replaces** `definition`, `routes`, `user` and `baseUrl` ([decisions/0019](decisions/0019-app-entry.md)). Messages come with the packages, and their CSS with their modules.
-- **Uploads** go to the storage of the media libraries, signed by the API ([decisions/0025](decisions/0025-presigned-uploads.md)): `uppy` and `MediasBrowserProvider` are dropped. Media and image fields need `mediaPlugin` of `@panneau/media` in the plugins.
+- **Uploads** go to the storage of the media libraries, signed by the API ([decisions/0025](decisions/0025-presigned-uploads.md)): `uppy` and `MediasBrowserProvider` are dropped. Media and image fields need `mediaPlugin` of `@panneau/media` in the plugins. Without direct uploads, files go in `multipart/form-data`: `createLaravelAdapter()` sends an update that replaces a file as `POST` with `_method=PATCH`, so it works on PHP 8.3 and Symfony below 7.4, which don't parse a multipart `PATCH`.
 - **Other namespaces:** `displays`, `pages`, `previews` and `actions` become the parts of the plugin with the same names (`lists` becomes `listLayouts`), whose props are those of 5, which the codemods report. `forms`, `modals`, `filters` and `buttons` have no part.
 - **The rest of the container is dropped**, and stays in git: check it for project code.
 
