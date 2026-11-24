@@ -1,7 +1,7 @@
 /** The French messages of `@panneau/forms`, by id. */
 export const formsFr: Record<string, string> = {
     'panneau.forms.save': 'Enregistrer',
-    'panneau.forms.saveShortcut': '{modifier} S ou {modifier} Entrée',
+    'panneau.forms.shortcutsGroup': 'Formulaires',
     'panneau.forms.nothingToSave': 'Aucune modification à enregistrer',
     'panneau.forms.loading': 'Chargement du formulaire…',
     'panneau.forms.sidebar': 'Panneau latéral',

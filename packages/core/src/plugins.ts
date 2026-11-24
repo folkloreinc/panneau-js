@@ -6,6 +6,7 @@ import { mergeThemes } from '@panneau/protocol/runtime';
 import type { CommandSource } from './commands';
 import type { PageProps } from './page';
 import type { PreviewProps } from './preview';
+import type { ShortcutSource } from './shortcuts';
 import type { WidgetProps } from './widget';
 
 /** A theme of `@panneau/ui`, as plain data: what plugins register (decision 0024). */
@@ -83,6 +84,11 @@ export type PanneauPlugin = PluginEntries & {
     id: string;
     /** Commands of the "Go to…" palette, or a function that makes them for the definition. */
     commands?: CommandSource;
+    /**
+     * Keyboard shortcuts of the app, or a function that makes them for the definition (decision
+     * 0112).
+     */
+    shortcuts?: ShortcutSource;
     /** UI messages, by locale. Messages of later plugins override earlier ones. */
     locales?: Record<string, MessagesLoader>;
     /** Themes, by id, that the theme of the definition can extend. */
@@ -90,7 +96,7 @@ export type PanneauPlugin = PluginEntries & {
 };
 
 /** What a plugin gives that isn't an entry of a kind. */
-const NOT_KINDS = new Set(['id', 'commands', 'locales', 'themes']);
+const NOT_KINDS = new Set(['id', 'commands', 'shortcuts', 'locales', 'themes']);
 
 /**
  * The kinds that Panneau's packages render: the registry has them, empty, without a plugin that
@@ -128,6 +134,8 @@ export type PluginRegistry = {
     plugins: readonly PanneauPlugin[];
     /** The commands of the plugins, in plugin order: `getCommands()` makes them. */
     commands: readonly CommandSource[];
+    /** The shortcuts of the plugins, in plugin order: `getShortcuts()` makes them. */
+    shortcuts: readonly ShortcutSource[];
     /** Message loaders of each locale, in plugin order. */
     locales: ReadonlyMap<string, readonly MessagesLoader[]>;
     themes: ReadonlyMap<string, Theme>;
@@ -187,6 +195,9 @@ export function createPluginRegistry(plugins: readonly PanneauPlugin[]): PluginR
         themes: new Map(plugins.flatMap((plugin) => Object.entries(plugin.themes ?? {}))),
         commands: plugins.flatMap((plugin) =>
             plugin.commands !== undefined ? [plugin.commands] : [],
+        ),
+        shortcuts: plugins.flatMap((plugin) =>
+            plugin.shortcuts !== undefined ? [plugin.shortcuts] : [],
         ),
     };
 }

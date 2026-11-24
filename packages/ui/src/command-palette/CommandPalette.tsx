@@ -1,5 +1,5 @@
 import { ArrowDownUp, CornerDownLeft, Search, X } from 'lucide-react';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 import {
     Autocomplete,
     Button,
@@ -20,9 +20,11 @@ import { Icon } from '../icon/Icon';
 import { messages } from '../intl/messages';
 import { usePanneauIntl } from '../intl/usePanneauIntl';
 import { usePortalContainer } from '../root/PanneauRoot';
+import { useShortcut } from '../shortcuts/useShortcut';
 import { cx } from '../utils/cx';
 import styles from './CommandPalette.module.css';
 import { type CommandPaletteGroup, matchCommands, splitMatches } from './match';
+import { COMMAND_PALETTE_KEYS } from './useCommandShortcut';
 
 export interface CommandPaletteProps {
     isOpen: boolean;
@@ -78,7 +80,8 @@ function Highlighted({ label, query, locale }: { label: string; query: string; l
  * the best matches first. Arrow keys move through the items, Enter opens one and closes the
  * palette, Escape clears the field, then closes it. A `scope` narrows what it searches, as a chip
  * before the field. `highlightMatches` marks what matches in labels. It knows no data or router: links go through
- * the app's `RouterProvider`. `useCommandShortcut()` opens it with ⌘K or Ctrl+K.
+ * the app's `RouterProvider`. `useCommandShortcut()` opens it with ⌘K or Ctrl+K, and the same keys
+ * close it.
  */
 export function CommandPalette({
     isOpen,
@@ -112,6 +115,16 @@ export function CommandPalette({
         }
         onOpenChange(open);
     };
+    // The keys that open it close it (`useCommandShortcut()`)
+    const dialog = useRef<HTMLElement>(null);
+    useShortcut({
+        id: 'panneau.goTo',
+        keys: COMMAND_PALETTE_KEYS,
+        label,
+        scope: dialog,
+        enabled: isOpen,
+        perform: () => changeOpen(false),
+    });
 
     if (container === null) {
         return null;
@@ -126,6 +139,7 @@ export function CommandPalette({
         >
             <Modal className={styles.modal}>
                 <Dialog
+                    ref={dialog}
                     aria-label={label}
                     className={cx('panneau-command-palette', styles.dialog, className)}
                 >

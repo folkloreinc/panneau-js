@@ -115,6 +115,7 @@ export {
     isSearchable,
 } from './commands';
 export { type PreviewProps } from './preview';
+export { type Shortcut, type ShortcutSource, getShortcuts } from './shortcuts';
 export { type WidgetProps } from './widget';
 export {
     type LeaveGuard,

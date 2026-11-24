@@ -6,10 +6,8 @@ import { defineMessage } from '../message';
  */
 export const formsMessages = {
     save: defineMessage({ id: 'panneau.forms.save', defaultMessage: 'Save' }),
-    saveShortcut: defineMessage<{ modifier: string }>({
-        id: 'panneau.forms.saveShortcut',
-        defaultMessage: '{modifier} S or {modifier} Enter',
-    }),
+    /** The group of the shortcuts of forms, in the help of shortcuts (decision 0112). */
+    shortcutsGroup: defineMessage({ id: 'panneau.forms.shortcutsGroup', defaultMessage: 'Forms' }),
     /** Why the Save button of an update without changes is disabled. */
     nothingToSave: defineMessage({
         id: 'panneau.forms.nothingToSave',

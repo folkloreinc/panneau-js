@@ -16,7 +16,7 @@ import {
     Icon,
     IconButton,
     Tooltip,
-    isApplePlatform,
+    useFormatShortcut,
     usePanneauIntl,
     usePreference,
 } from '@panneau/ui';
@@ -160,6 +160,7 @@ export function Sidebar({
     className,
 }: SidebarProps) {
     const intl = usePanneauIntl();
+    const formatShortcut = useFormatShortcut();
     const home = getHomeLink(intl.formatMessage(appMessages.home), basePath);
     const entries = getNavigation(definition, basePath);
     // What the links show as current: the route, or its nearest parent in them (decision 0093)
@@ -247,9 +248,9 @@ export function Sidebar({
             <Icon icon={ChevronsUpDown} size="sm" className={styles.userChevron} />
         </Button>
     );
-    const apple = isApplePlatform();
-    const shortcut = apple ? '⌘K' : 'Ctrl+K';
-    const keyShortcuts = apple ? 'Meta+K' : 'Control+K';
+    const goToKeys = formatShortcut('Mod+K');
+    const shortcut = goToKeys.labels[0];
+    const keyShortcuts = goToKeys.keys;
 
     return (
         <div className={cx(styles.sidebar, collapsed && styles.collapsed, className)}>
