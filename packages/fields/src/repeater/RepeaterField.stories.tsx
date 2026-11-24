@@ -612,5 +612,14 @@ export const InANarrowColumn: Story = {
             await expect(header.scrollWidth).toBeLessThanOrEqual(header.clientWidth);
         }
         await expect(canvas.getByRole('button', { name: 'Move Quote (item 4)' })).toBeVisible();
+        // "Expand all" is only an icon, at the end of the legend's line, which keeps one line
+        // (#503): its label stays its name
+        const legend = canvas.getByText('Blocks');
+        const expandAll = canvas.getByRole('button', { name: 'Expand all' });
+        const box = (element: Element) => element.getBoundingClientRect();
+        await expect(box(expandAll).width).toBeLessThanOrEqual(box(expandAll).height + 1);
+        await expect(box(expandAll).top).toBeLessThan(box(legend).bottom);
+        await expect(box(expandAll).bottom).toBeGreaterThan(box(legend).top);
+        await expect(box(expandAll).left).toBeGreaterThan(box(legend).left);
     },
 };

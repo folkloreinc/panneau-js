@@ -261,6 +261,12 @@ export const Default: Story = {
 
         await step('The blocks keep the room of their header for their title', async () => {
             const blocks = within(fields.getByRole('group', { name: 'Blocks' }));
+            // The legend keeps one line: "Expand all" is an icon at its end (#503)
+            const legend = blocks.getByText('Blocks');
+            const expandAll = blocks.getByRole('button', { name: 'Expand all' });
+            await expect(box(expandAll).width).toBeLessThanOrEqual(box(expandAll).height + 1);
+            await expect(box(expandAll).top).toBeLessThan(box(legend).bottom);
+            await expect(box(expandAll).bottom).toBeGreaterThan(box(legend).top);
             const toggle = blocks.getByRole('button', { name: /^1\s*Text/, expanded: false });
             const header = toggle.parentElement ?? toggle;
             // Their tools are in a menu: the title has most of the header
