@@ -93,6 +93,27 @@ describe('ReorderList', () => {
         expect(order()).toEqual(NAMES);
     });
 
+    it('puts the item back when the list goes while an item is held', async () => {
+        const user = userEvent.setup();
+        const { unmount } = render(
+            <>
+                <List />
+                <button type="button">Outside</button>
+            </>,
+        );
+        screen.getByRole('button', { name: 'Move Intro' }).focus();
+        await user.keyboard('{Enter}');
+        await waitFor(() => expect(document.activeElement).toHaveAttribute('data-reorder-gap'));
+        unmount();
+        // No drag is left: another list can start one, and nothing stays inert
+        expect(document.querySelectorAll('[inert], [aria-hidden="true"]')).toHaveLength(0);
+        render(<List />);
+        screen.getByRole('button', { name: 'Move Quote' }).focus();
+        await user.keyboard('{Enter}');
+        await waitFor(() => expect(document.activeElement).toHaveAttribute('data-reorder-gap'));
+        await user.keyboard('{Escape}');
+    });
+
     it('disables the handles of a disabled list or of a single item', () => {
         const { rerender } = render(
             <ReorderList itemCount={1} onMove={() => {}}>
