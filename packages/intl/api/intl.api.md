@@ -492,6 +492,10 @@ export const fieldsMessages: {
     item: PanneauMessage<    {
     index: number;
     }>;
+    namedItem: PanneauMessage<    {
+    name: string;
+    index: number;
+    }>;
     noItems: PanneauMessage<Record<never, never>>;
     collapseAll: PanneauMessage<Record<never, never>>;
     expandAll: PanneauMessage<Record<never, never>>;
@@ -1318,6 +1322,17 @@ export const uiMessages: {
     position: number;
     count: number;
     }>;
+    reorderMenu: PanneauMessage<    {
+    item: string;
+    }>;
+    reorderToStart: PanneauMessage<Record<never, never>>;
+    reorderMoveBefore: PanneauMessage<    {
+    item: string;
+    }>;
+    reorderMoveAfter: PanneauMessage<    {
+    item: string;
+    }>;
+    reorderToEnd: PanneauMessage<Record<never, never>>;
     shortcutsTitle: PanneauMessage<Record<never, never>>;
     shortcutsHelp: PanneauMessage<Record<never, never>>;
     shortcutsGeneral: PanneauMessage<Record<never, never>>;

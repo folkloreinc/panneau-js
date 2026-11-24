@@ -904,6 +904,11 @@ export interface InlineProps extends HTMLAttributes<HTMLElement> {
 export function isApplePlatform(): boolean;
 
 // @public
+export function isReorderDrag(types: {
+    has: (type: string) => boolean;
+}): boolean;
+
+// @public
 export function isSingleKey(combination: string): boolean;
 
 // @public
@@ -1065,6 +1070,9 @@ export interface MeterProps {
     value: number;
 }
 
+// @public
+export function moveItem<T>(list: readonly T[], from: number, to: number): T[];
+
 // @public (undocumented)
 export interface MultipleSelectProps extends SelectBaseProps {
     multiple: true;
@@ -1217,6 +1225,9 @@ export interface RegisteredShortcut extends Readonly<Omit<ShortcutOptions, 'perf
 }
 
 // @public
+export const REORDER_DRAG_TYPE = "application/x-panneau-reorder";
+
+// @public
 export function ReorderHandle(input: ReorderHandleProps): JSX.Element;
 
 // @public (undocumented)
@@ -1258,11 +1269,22 @@ export interface ReorderListProps extends Omit<HTMLAttributes<HTMLElement>, 'chi
     isDisabled?: boolean;
     itemCount: number;
     itemLabel?: (index: number) => string;
+    layout?: 'stack' | 'grid';
     onMove: (from: number, to: number) => void;
     // (undocumented)
     ref?: Ref<HTMLElement>;
     // (undocumented)
     style?: CSSProperties;
+}
+
+// @public
+export function ReorderMenu(input: ReorderMenuProps): JSX.Element | null;
+
+// @public (undocumented)
+export interface ReorderMenuProps {
+    // (undocumented)
+    className?: string;
+    size?: 'sm' | 'md';
 }
 
 // @public
@@ -1744,7 +1766,10 @@ export interface TileGroupProps {
     children?: ReactNode;
     // (undocumented)
     className?: string | undefined;
+    isReorderDisabled?: boolean | undefined;
+    itemLabel?: ((index: number) => string) | undefined;
     label?: string | undefined;
+    onMove?: ((from: number, to: number) => void) | undefined;
 }
 
 // @public (undocumented)
