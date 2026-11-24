@@ -18,6 +18,18 @@ export const formsMessages = {
     saved: defineMessage({ id: 'panneau.forms.saved', defaultMessage: 'Saved' }),
     loading: defineMessage({ id: 'panneau.forms.loading', defaultMessage: 'Loading the form…' }),
     sidebar: defineMessage({ id: 'panneau.forms.sidebar', defaultMessage: 'Sidebar' }),
+    contentLocale: defineMessage({
+        id: 'panneau.forms.contentLocale',
+        defaultMessage: 'Language of the content',
+    }),
+    contentLocaleInvalid: defineMessage<{ locale: string }>({
+        id: 'panneau.forms.contentLocaleInvalid',
+        defaultMessage: '{locale}, has errors',
+    }),
+    contentLocaleMissing: defineMessage<{ locale: string }>({
+        id: 'panneau.forms.contentLocaleMissing',
+        defaultMessage: '{locale}, required values missing',
+    }),
     unsaved: defineMessage({ id: 'panneau.forms.unsaved', defaultMessage: 'Unsaved changes' }),
     errorCount: defineMessage<{ count: number }>({
         id: 'panneau.forms.errorCount',

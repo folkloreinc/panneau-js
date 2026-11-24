@@ -299,6 +299,9 @@
                             "items": {
                                 "$ref": "#/$defs/LayoutNode"
                             }
+                        },
+                        "languageSwitch": {
+                            "type": "boolean"
                         }
                     },
                     "additionalProperties": {}
