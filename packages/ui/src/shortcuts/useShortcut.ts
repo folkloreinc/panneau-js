@@ -2,7 +2,13 @@ import { createContext, use, useEffect, useEffectEvent, useSyncExternalStore } f
 
 import { messages } from '../intl/messages';
 import { usePanneauIntl } from '../intl/usePanneauIntl';
-import { type FormattedShortcut, type ShortcutKeys, formatShortcut } from './keys';
+import {
+    type FormattedShortcut,
+    type ShortcutKeys,
+    formatShortcut,
+    getCombinations,
+    isSingleKey,
+} from './keys';
 import type { RegisteredShortcut, ShortcutOptions, ShortcutRegistry } from './registry';
 
 /** The registry of shortcuts of a `PanneauRoot`, and how to open its help. */
@@ -105,4 +111,23 @@ export function useShortcutLabel(): (keys: ShortcutKeys) => string {
     const intl = usePanneauIntl();
     const format = useFormatShortcut();
     return (keys) => intl.formatList(format(keys).labels, { type: 'disjunction' });
+}
+
+/**
+ * The label of a shortcut, for its hint at the end of a tooltip, a menu item or a command (#487):
+ * `null` without keys, or when they are single keys that the user turned off.
+ */
+export function useShortcutHint(): (keys: ShortcutKeys | undefined) => string | null {
+    const registry = use(ShortcutContext)?.registry;
+    const label = useShortcutLabel();
+    return (keys) => {
+        if (keys === undefined) {
+            return null;
+        }
+        const singleKeys = registry?.getSingleKeys() ?? true;
+        const usable = getCombinations(keys).filter(
+            (combination) => singleKeys || !isSingleKey(combination),
+        );
+        return usable.length > 0 ? label(usable) : null;
+    };
 }

@@ -37,6 +37,7 @@ import styles from './Sidebar.module.css';
 import { type ColorSchemePreference, UserAvatar, UserMenu, getUserMenuLabel } from './UserMenu';
 import type { DensityChoice } from './density';
 import { SiteLogo } from './frame';
+import { GO_TO_KEYS, SIDEBAR_KEYS } from './keys';
 import { getHomeLink, getLinkIcon } from './links';
 
 /** A group of the sidebar, opened or closed by the user (decision 0079). */
@@ -248,9 +249,7 @@ export function Sidebar({
             <Icon icon={ChevronsUpDown} size="sm" className={styles.userChevron} />
         </Button>
     );
-    const goToKeys = formatShortcut('Mod+K');
-    const shortcut = goToKeys.labels[0];
-    const keyShortcuts = goToKeys.keys;
+    const goToKeys = formatShortcut(GO_TO_KEYS).keys;
 
     return (
         <div className={cx(styles.sidebar, collapsed && styles.collapsed, className)}>
@@ -271,6 +270,7 @@ export function Sidebar({
                             collapsed ? appMessages.expandSidebar : appMessages.collapseSidebar,
                         )}
                         aria-expanded={!collapsed}
+                        shortcut={SIDEBAR_KEYS}
                         size="sm"
                         className={styles.toggle}
                         onPress={onToggle}
@@ -291,26 +291,29 @@ export function Sidebar({
                 collapsed ? (
                     <IconButton
                         icon={Search}
-                        label={`${intl.formatMessage(appMessages.goTo)} (${shortcut})`}
+                        label={intl.formatMessage(appMessages.goTo)}
                         aria-haspopup="dialog"
-                        aria-keyshortcuts={keyShortcuts}
+                        shortcut={GO_TO_KEYS}
                         size="sm"
                         className={styles.goToIcon}
                         onPress={onGoTo}
                     />
                 ) : (
-                    <Button
-                        aria-haspopup="dialog"
-                        aria-keyshortcuts={keyShortcuts}
-                        className={styles.goTo}
-                        onPress={onGoTo}
-                    >
-                        <Icon icon={Search} size="sm" className={styles.goToSearch} />
-                        <span className={styles.goToLabel}>
-                            {intl.formatMessage(appMessages.goTo)}
-                        </span>
-                        <kbd className={styles.goToKey}>{shortcut}</kbd>
-                    </Button>
+                    // Its keys in its tooltip, as every hint of a shortcut (#487)
+                    <Tooltip content={intl.formatMessage(appMessages.goTo)} shortcut={GO_TO_KEYS}>
+                        <Button
+                            aria-haspopup="dialog"
+                            // React Aria leaves `aria-keyshortcuts` out of the button's attributes
+                            render={(props) => <button {...props} aria-keyshortcuts={goToKeys} />}
+                            className={styles.goTo}
+                            onPress={onGoTo}
+                        >
+                            <Icon icon={Search} size="sm" className={styles.goToSearch} />
+                            <span className={styles.goToLabel}>
+                                {intl.formatMessage(appMessages.goTo)}
+                            </span>
+                        </Button>
+                    </Tooltip>
                 )
             ) : null}
             <nav aria-label={intl.formatMessage(appMessages.navigation)} className={styles.nav}>

@@ -21,6 +21,7 @@ import { getInterfaceLocales } from '../interfaceLocales';
 import { getProfilePath } from '../navigation';
 import styles from './UserMenu.module.css';
 import { DENSITY_CHOICES, DENSITY_ICONS, type DensityChoice } from './density';
+import { SHORTCUT_HELP_KEYS } from './keys';
 
 /** The color schemes the user can pick, in the order of the menu. */
 export const COLOR_SCHEMES = ['light', 'dark', 'auto'] as const;
@@ -206,7 +207,12 @@ export function UserMenu({
                 ) : null}
                 {openShortcutHelp !== null ? (
                     <MenuSection aria-label={intl.formatMessage(uiMessages.shortcutsTitle)}>
-                        <MenuItem id="shortcuts" icon={Keyboard} onAction={openShortcutHelp}>
+                        <MenuItem
+                            id="shortcuts"
+                            icon={Keyboard}
+                            shortcut={SHORTCUT_HELP_KEYS}
+                            onAction={openShortcutHelp}
+                        >
                             {intl.formatMessage(uiMessages.shortcutsTitle)}
                         </MenuItem>
                     </MenuSection>

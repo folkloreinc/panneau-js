@@ -3,7 +3,6 @@ import { LayoutGrid, List, Rows3 } from 'lucide-react';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { contrastRatio } from '../theme/color';
-
 import { SegmentedControl } from './SegmentedControl';
 
 const meta = {

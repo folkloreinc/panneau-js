@@ -9,6 +9,7 @@ import {
     MenuItem,
     MenuSection,
     MenuTrigger,
+    Tooltip,
     useFormatShortcut,
     usePanneauIntl,
 } from '@panneau/ui';
@@ -28,6 +29,7 @@ import { ActionRunsButton } from './ActionRunsButton';
 import styles from './Dock.module.css';
 import { type ColorSchemePreference, UserAvatar, UserMenu, getUserMenuLabel } from './UserMenu';
 import type { DensityChoice } from './density';
+import { GO_TO_KEYS } from './keys';
 import { getGroupIcon, getHomeLink, getLinkIcon } from './links';
 
 /** The entries of the menu that a phone shows in the dock, before "More". */
@@ -157,9 +159,7 @@ export function Dock({
     const user = definition.user ?? null;
     const profilePath = getProfilePath(definition, basePath);
     const currentPath = route.name !== 'not-found' ? routePath(route, basePath) : null;
-    const goToKeys = formatShortcut('Mod+K');
-    const shortcut = goToKeys.labels[0];
-    const keyShortcuts = goToKeys.keys;
+    const goToKeys = formatShortcut(GO_TO_KEYS).keys;
 
     return (
         <div className={cx(styles.dock, className)}>
@@ -234,16 +234,19 @@ export function Dock({
             </nav>
             <span aria-hidden="true" className={cx(styles.separator, styles.wideOnly)} />
             {onGoTo !== undefined ? (
-                <Button
-                    aria-label={`${intl.formatMessage(appMessages.goTo)} (${shortcut})`}
-                    aria-haspopup="dialog"
-                    aria-keyshortcuts={keyShortcuts}
-                    className={cx(styles.item, styles.wideOnly)}
-                    onPress={onGoTo}
-                >
-                    <Icon icon={Search} size="md" />
-                    <kbd className={styles.label}>{shortcut}</kbd>
-                </Button>
+                // Its keys in its tooltip, as every hint of a shortcut (#487)
+                <Tooltip content={intl.formatMessage(appMessages.goTo)} shortcut={GO_TO_KEYS}>
+                    <Button
+                        aria-haspopup="dialog"
+                        // React Aria leaves `aria-keyshortcuts` out of the button's attributes
+                        render={(props) => <button {...props} aria-keyshortcuts={goToKeys} />}
+                        className={cx(styles.item, styles.wideOnly)}
+                        onPress={onGoTo}
+                    >
+                        <Icon icon={Search} size="md" />
+                        <span className={styles.label}>{intl.formatMessage(appMessages.goTo)}</span>
+                    </Button>
+                </Tooltip>
             ) : null}
             <span className={styles.wideOnly}>
                 <ActionRunsButton appearance="tile" placement="top end" />

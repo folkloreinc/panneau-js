@@ -6,6 +6,7 @@ import {
     Dialog,
     Header,
     Input,
+    Keyboard,
     Menu,
     MenuItem,
     MenuSection,
@@ -20,7 +21,7 @@ import { Icon } from '../icon/Icon';
 import { messages } from '../intl/messages';
 import { usePanneauIntl } from '../intl/usePanneauIntl';
 import { usePortalContainer } from '../root/PanneauRoot';
-import { useShortcut } from '../shortcuts/useShortcut';
+import { useShortcut, useShortcutHint } from '../shortcuts/useShortcut';
 import { cx } from '../utils/cx';
 import styles from './CommandPalette.module.css';
 import { type CommandPaletteGroup, matchCommands, splitMatches } from './match';
@@ -99,6 +100,7 @@ export function CommandPalette({
 }: CommandPaletteProps) {
     const intl = usePanneauIntl();
     const container = usePortalContainer();
+    const hint = useShortcutHint();
     const [uncontrolledValue, setUncontrolledValue] = useState('');
     const value = controlledValue ?? uncontrolledValue;
     const setValue = (next: string) => {
@@ -253,6 +255,12 @@ export function CommandPalette({
                                                     </Text>
                                                 ) : null}
                                             </span>
+                                            {item.shortcut !== undefined &&
+                                            hint(item.shortcut) !== null ? (
+                                                <Keyboard className={styles.shortcut}>
+                                                    {hint(item.shortcut)}
+                                                </Keyboard>
+                                            ) : null}
                                         </MenuItem>
                                     ))}
                                 </MenuSection>

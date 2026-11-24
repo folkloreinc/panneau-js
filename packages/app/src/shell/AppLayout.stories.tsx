@@ -287,14 +287,24 @@ export const Phone: Story = {
     },
 };
 
-/** "Go to…" opens the command palette, with the navigation and the app's actions. */
+/**
+ * "Go to…" opens the command palette, with the navigation and the app's actions. Its keys are in
+ * its tooltip, not on the button (decision 0112), and the sidebar's toggle has its own.
+ */
 export const GoTo: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         const body = within(canvasElement.ownerDocument.body);
-        await userEvent.click(
-            within(canvas.getByRole('complementary')).getByRole('button', { name: /Go to…/ }),
-        );
+        const sidebar = within(canvas.getByRole('complementary'));
+        const goTo = sidebar.getByRole('button', { name: 'Go to…' });
+        await expect(goTo).toHaveTextContent(/^Go to…$/);
+        await expect(goTo.getAttribute('aria-keyshortcuts')).toMatch(/^(Meta|Control)\+K$/);
+        await userEvent.hover(goTo);
+        await expect(await body.findByRole('tooltip')).toHaveTextContent(/^Go to…(⌘K|Ctrl\+K)$/);
+        await userEvent.unhover(goTo);
+        const toggle = sidebar.getByRole('button', { name: 'Collapse the sidebar' });
+        await expect(toggle.getAttribute('aria-keyshortcuts')).toMatch(/^(Meta|Control)\+\\$/);
+        await userEvent.click(goTo);
         const field = await body.findByRole('searchbox', { name: 'Go to…' });
         await userEvent.type(field, 'arti');
         await expect(body.getByRole('menuitem', { name: 'Articles' })).toBeInTheDocument();

@@ -22,3 +22,15 @@ export const OnFocus: Story = {
         );
     },
 };
+
+/** The keys of a shortcut that does the same, at the end of the tooltip (decision 0112). */
+export const WithShortcut: Story = {
+    args: { content: 'Save', shortcut: 'Mod+S', children: <Button>Save</Button> },
+    play: async ({ canvasElement }) => {
+        await userEvent.tab();
+        const body = within(canvasElement.ownerDocument.body);
+        const tooltip = await body.findByRole('tooltip');
+        await expect(tooltip).toHaveTextContent(/^Save(⌘S|Ctrl\+S)$/);
+        await expect(within(tooltip).getByText(/⌘S|Ctrl\+S/).tagName).toBe('KBD');
+    },
+};

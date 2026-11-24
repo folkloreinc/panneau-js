@@ -40,3 +40,18 @@ export const TooltipOnFocus: Story = {
         await expect(await body.findByRole('tooltip')).toHaveTextContent('Edit');
     },
 };
+
+/**
+ * `shortcut`: its keys at the end of the tooltip, and as `aria-keyshortcuts`, rather than in its
+ * name (decision 0112).
+ */
+export const WithShortcut: Story = {
+    args: { shortcut: 'Mod+E' },
+    play: async ({ canvasElement }) => {
+        const button = within(canvasElement).getByRole('button', { name: 'Edit' });
+        await expect(button.getAttribute('aria-keyshortcuts')).toMatch(/^(Meta|Control)\+E$/i);
+        await userEvent.tab();
+        const body = within(canvasElement.ownerDocument.body);
+        await expect(await body.findByRole('tooltip')).toHaveTextContent(/^Edit(⌘E|Ctrl\+E)$/);
+    },
+};

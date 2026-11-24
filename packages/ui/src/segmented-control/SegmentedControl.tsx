@@ -1,4 +1,4 @@
-import { type ReactNode, useLayoutEffect, useRef, useState } from 'react';
+import { type ReactNode, type RefObject, useLayoutEffect, useRef, useState } from 'react';
 import { ToggleButton, ToggleButtonGroup } from 'react-aria-components';
 
 import { Icon, type IconComponent } from '../icon/Icon';
@@ -45,17 +45,15 @@ export interface SegmentedControlProps {
  * which is `0ms` when the user prefers reduced motion). Without it (before the first layout, or
  * without a selected segment), the selected segment has its own background.
  */
-function useIndicator(group: { current: HTMLDivElement | null }, selected: string | undefined) {
+function useIndicator(groupRef: RefObject<HTMLDivElement | null>, selected: string | undefined) {
     useLayoutEffect(() => {
-        const element = group.current;
+        const element = groupRef.current;
         if (element === null) {
             return undefined;
         }
         let frame = 0;
         const place = () => {
-            const segment = element.querySelector<HTMLElement>(
-                `.${styles.segment}[data-selected]`,
-            );
+            const segment = element.querySelector<HTMLElement>(`.${styles.segment}[data-selected]`);
             if (segment === null || segment.offsetWidth === 0) {
                 delete element.dataset.indicator;
                 return;
@@ -86,7 +84,7 @@ function useIndicator(group: { current: HTMLDivElement | null }, selected: strin
             cancelAnimationFrame(frame);
             observer?.disconnect();
         };
-    }, [group, selected]);
+    }, [groupRef, selected]);
 }
 
 /**
