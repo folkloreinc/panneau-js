@@ -36,4 +36,10 @@ export const uiFr: Record<string, string> = {
     'panneau.ui.avatarOthers': '{count, plural, one {# autre} other {# autres}}',
     'panneau.ui.breadcrumbs': 'Fil d’Ariane',
     'panneau.ui.moreBreadcrumbs': 'Plus de pages',
+    'panneau.ui.reorderItem': 'Élément {index, number}',
+    'panneau.ui.reorderHandle': 'Déplacer {item}',
+    'panneau.ui.reorderBefore': 'Avant {item}',
+    'panneau.ui.reorderAfter': 'Après {item}',
+    'panneau.ui.reorderMoved':
+        '{item}, maintenant en position {position, number} sur {count, number}',
 };

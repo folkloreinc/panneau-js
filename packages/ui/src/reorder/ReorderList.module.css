@@ -1,0 +1,93 @@
+.item {
+    position: relative;
+}
+
+/* The item that moves, while it is dragged. */
+.item[data-dragging] {
+    opacity: 0.5;
+}
+
+/*
+ * The handle: one target of the density (decision 0072) or a small control, whichever is larger.
+ * Its text can't be selected, so that a long press on a touch screen drags instead of selecting.
+ */
+.handle {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: max(var(--panneau-control-height-sm), var(--panneau-target-size));
+    block-size: max(var(--panneau-control-height-sm), var(--panneau-target-size));
+    color: var(--panneau-color-text-muted);
+    cursor: grab;
+    user-select: none;
+    -webkit-touch-callout: none;
+    border-radius: var(--panneau-radius-sm);
+    transition: background-color var(--panneau-duration) var(--panneau-ease-out);
+}
+
+.handle:hover {
+    color: var(--panneau-color-text);
+    background: var(--panneau-color-hover);
+}
+
+.handle:active,
+.handle[data-dragging] {
+    cursor: grabbing;
+}
+
+.handle:focus-visible {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: var(--panneau-focus-offset);
+}
+
+.handle[aria-disabled='true'] {
+    cursor: default;
+    opacity: 0.5;
+}
+
+.handle[aria-disabled='true']:hover {
+    color: var(--panneau-color-text-muted);
+    background: transparent;
+}
+
+/*
+ * A place where the item can go, before an item or after the last one: a line on the edge of the
+ * item, shown where the item would go. It doesn't take any room, and only shows while dragging.
+ */
+.gap {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    z-index: 1;
+    block-size: 0.1875rem;
+    pointer-events: none;
+    background: transparent;
+    border-radius: var(--panneau-radius-full);
+    transform: translateY(-50%);
+    transition: background-color var(--panneau-duration) var(--panneau-ease-out);
+}
+
+.gap[data-position='after'] {
+    top: auto;
+    bottom: 0;
+    transform: translateY(50%);
+}
+
+.gap[data-active] {
+    background: var(--panneau-color-focus);
+}
+
+/* The line is the focus: it only has the focus while it shows. */
+.gap:focus {
+    outline: none;
+}
+
+.status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
