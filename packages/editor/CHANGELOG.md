@@ -1,5 +1,33 @@
 # @panneau/editor
 
+## 5.0.0-alpha.47
+
+### Patch Changes
+
+- 8ad5274: Rich text: ⌘K (Ctrl+K elsewhere) opens the link dialog on the selection, rather than the app's "Go to…" palette, which still opens outside the editor. The tooltips of the toolbar name the shortcut of their button (⌘B, Ctrl+Shift+8), and buttons have `aria-keyshortcuts`; `RichTextButton` takes a `shortcut`. With a `resource`, a `richtext` field links to items of the site: its link dialog searches them with the relation source, as `page` links of `link` fields do, and still takes a URL (decision 0107). Such a link is `<a href="…" data-page-id="12" data-page-resource="pages">`, and the backend writes the item's URL in `href`. `@panneau/fields/link` exports `PagePicker`. HTML kept as it was written now says what it is ("Embedded video", "Embedded post", "Table", "Image") with its provider and URL, a video of a known provider shows a player drawn in its place, and its element (`figure.media`) is in a tooltip; `HtmlNodeOptions` takes `labels` by `KeptHtmlKind`.
+- Updated dependencies [2aab034]
+- Updated dependencies [79abfd4]
+- Updated dependencies [ff56beb]
+- Updated dependencies [35b9955]
+- Updated dependencies [a55f51b]
+- Updated dependencies [ecf96f3]
+- Updated dependencies [09cca06]
+- Updated dependencies [9e90547]
+- Updated dependencies [060c1e9]
+- Updated dependencies [b754dda]
+- Updated dependencies [3eb376c]
+- Updated dependencies [7e99405]
+- Updated dependencies [8ad5274]
+- Updated dependencies [55eced0]
+- Updated dependencies [f8c5d4f]
+- Updated dependencies [d256517]
+- Updated dependencies [4686a26]
+- Updated dependencies [1350d30]
+  - @panneau/intl@5.0.0-alpha.47
+  - @panneau/fields@5.0.0-alpha.47
+  - @panneau/ui@5.0.0-alpha.47
+  - @panneau/protocol@5.0.0-alpha.47
+
 ## 5.0.0-alpha.46
 
 ### Patch Changes

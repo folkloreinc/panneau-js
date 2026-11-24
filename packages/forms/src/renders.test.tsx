@@ -72,8 +72,10 @@ const VALUES = {
     ],
 };
 
-function renderCountedForm() {
+async function renderCountedForm() {
     renderForm(<Form fields={FIELDS} values={VALUES} components={{ counted: Counted }} />);
+    // Once the repeater of the blocks has loaded
+    await screen.findAllByRole('textbox', { name: 'Body', hidden: true });
     takeRenders();
 }
 
@@ -85,14 +87,14 @@ describe('Form renders on a keystroke', () => {
     });
 
     it('renders the field and the fields of its object only', async () => {
-        renderCountedForm();
+        await renderCountedForm();
         // The first keystroke also makes the form dirty
         await userEvent.type(screen.getByRole('textbox', { name: 'Title' }), 'abc');
         expect(takeRenders()).toEqual({ title: 3, summary: 3 });
     });
 
     it('renders the field of a block and the fields of its block only', async () => {
-        renderCountedForm();
+        await renderCountedForm();
         const [, second] = screen.getAllByRole('textbox', { name: 'Body' });
         await userEvent.type(second as HTMLElement, 'abc');
         expect(takeRenders()).toEqual({
@@ -105,7 +107,7 @@ describe('Form renders on a keystroke', () => {
     });
 
     it("doesn't render a field in error when another one changes", async () => {
-        renderCountedForm();
+        await renderCountedForm();
         // `Three` is too long: its error shows once the field loses focus
         const [, , third] = screen.getAllByRole('textbox', { name: 'Heading' });
         await userEvent.click(third as HTMLElement);

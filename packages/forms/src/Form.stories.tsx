@@ -273,6 +273,8 @@ export const ErrorsInCollapsedSections: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         const sections = ['Abstract', 'Place', 'References', 'Internal', 'Sharing'];
+        // Once the repeater of the references has loaded
+        await canvas.findByRole('textbox', { name: /URL/, hidden: true });
         const toggles = Object.fromEntries(
             // Sharing is in the hidden panel of the SEO tab
             sections.map((name) => [name, canvas.getByRole('button', { name, hidden: true })]),

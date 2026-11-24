@@ -3,6 +3,7 @@ import type { Key } from 'react-aria-components';
 
 import { Menu, MenuItem, MenuTrigger, usePanneauIntl } from '@panneau/ui';
 
+import { getColumnText } from '../columns';
 import { messages } from '../messages';
 import type { ListColumn } from '../types';
 import styles from './Toolbar.module.css';
@@ -18,7 +19,7 @@ export interface SortMenuProps {
 const DEFAULT = ':default';
 
 function labelOf(column: ListColumn): string {
-    return typeof column.label === 'string' ? column.label : column.id;
+    return getColumnText(column);
 }
 
 interface SortOption {

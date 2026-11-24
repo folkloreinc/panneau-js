@@ -1,5 +1,22 @@
 # @panneau/core
 
+## 5.0.0-alpha.47
+
+### Patch Changes
+
+- 35b9955: Fields, columns, filters and pages without a `label` show their key made readable instead of the key as written: `published_at` reads "Published at", `author_id` reads "Author", `seo.title` reads "Seo title". The same fallback names fields, list columns, filters and their chips, sort options, the columns menu, the details of an item, the error summary and the conflict dialog of a form, inline editing, the filters of the media picker, and the pages in the navigation and the "Go to…" palette. A label given by the definition is shown as given, an empty one included. `@panneau/protocol/runtime` exports the fallback: `humanizeKey()`, `labelOrKey()` and `getFieldLabel()`.
+- d256517: List filters say which are active, keep the secondary ones in "More filters", and fit a phone. A filter control with a value is marked, in the tones of what is selected (`--panneau-selected-*`), with a button that clears it. A filter of the definition shows first in the toolbar with `"primary": true`; the others are behind a "More filters" button, with the count of those that are active, and without any `primary`, the first 3 show first. A filter with a value keeps its chip under the toolbar. In a narrow list (a phone), every filter is behind one "Filters" button with the count of the active ones, which opens them in a sheet, next to the search. The page sizes of a list are a setting of the resource: `perPageOptions` of its list, 10, 20, 50 and 100 by default, which `resolveList()` of `@panneau/core` now gives (`DEFAULT_PER_PAGE_OPTIONS`) and the app offers. A page size the browser remembers for a list that it no longer offers falls back to the list's `perPage`.
+- 1350d30: A form no longer drops what is being typed when its item gets a new version (a refetch on focus, after an action, or a save while typing). A form without unsaved changes takes the new version; a form with unsaved changes keeps them, says that a newer version was saved, and its "Compare" opens the conflict dialog. New: `form.refresh(item)`, `form.reviewNewer()` and `newer` in the form state in `@panneau/core`, and the `item` prop of `Form` in `@panneau/forms`.
+- Updated dependencies [35b9955]
+- Updated dependencies [a55f51b]
+- Updated dependencies [060c1e9]
+- Updated dependencies [7e99405]
+- Updated dependencies [8ad5274]
+- Updated dependencies [55eced0]
+- Updated dependencies [d256517]
+- Updated dependencies [4686a26]
+  - @panneau/protocol@5.0.0-alpha.47
+
 ## 5.0.0-alpha.46
 
 ### Patch Changes

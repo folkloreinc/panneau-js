@@ -15,7 +15,7 @@ import { NumberFieldEntry } from '@panneau/fields/number';
 import { SelectFieldEntry } from '@panneau/fields/select';
 import { TextFieldEntry } from '@panneau/fields/text';
 import type { Field, RuleFailure } from '@panneau/protocol';
-import { checkValues } from '@panneau/protocol/runtime';
+import { checkValues, getFieldLabel } from '@panneau/protocol/runtime';
 import { Button, IconButton, Spinner, usePanneauIntl, useToast } from '@panneau/ui';
 
 import { messages } from '../messages';
@@ -105,7 +105,7 @@ export function InlineCell({
     const root = useRef<HTMLDivElement>(null);
     // Where focus goes once the cell has drawn its new state.
     const focus = useRef<'editor' | 'button' | null>(null);
-    const label = field.label ?? field.name;
+    const label = getFieldLabel(field);
     const value = item[field.name];
     const isBoolean = field.type === 'boolean';
     const Entry = ENTRIES[field.type as keyof typeof ENTRIES];

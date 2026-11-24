@@ -162,7 +162,17 @@ export const Rule = z
 export const BlockType = z.looseObject({
     id: z.string().min(1),
     label: z.string(),
-    icon: z.string().optional(),
+    icon: z.string().optional().meta({
+        description:
+            'The name of a Lucide icon (`quote`, `image`), shown before the label in the menu of types.',
+    }),
+    description: z.string().optional().meta({
+        description: 'What the block is for, under its label in the menu of types.',
+    }),
+    itemTitle: z.string().min(1).optional().meta({
+        description:
+            "The title of a block of this type in its collapsed header, in place of the repeater's `settings.itemTitle`: a field name (`heading`), or a template of field names in braces (`{name} ({role})`).",
+    }),
     // Return types are written out so that declaration files keep the recursion.
     get fields(): z.ZodArray<typeof Field> {
         return z.array(Field);
@@ -488,6 +498,22 @@ export const SelectSettings = z
     })
     .meta({ description: 'The `settings` of a `select` field.' });
 
+/** The `settings` of a `repeater` field. `validateDefinition()` checks them. */
+export const RepeaterSettings = z
+    .looseObject({
+        collapsible: z.boolean().optional().meta({
+            description:
+                'With `false`, every item stays expanded. Items collapse under their title by default (decision 0068).',
+        }),
+        itemTitle: z.string().min(1).optional().meta({
+            description:
+                "The title of an item in its header: a field name (`title`), or a template of field names in braces (`{first_name} {last_name}`). A localized value gives the text of the interface's locale, or the first one; a rich text gives its text without tags. When the item has no such value, the label of its type, or `Item 2`, with an excerpt of its first text. A block type's `itemTitle` takes its place for blocks of that type.",
+        }),
+    })
+    .meta({
+        description: 'The `settings` of a `repeater` field: how its items collapse and are titled.',
+    });
+
 /** The `settings` of a `money` field (decision 0053). `validateDefinition()` checks them. */
 export const MoneySettings = z
     .looseObject({
@@ -521,6 +547,8 @@ export type AddressSettings = z.infer<typeof AddressSettings>;
 export type DateShortcut = z.infer<typeof DateShortcut>;
 /** The `settings` of a `date` field. */
 export type DateSettings = z.infer<typeof DateSettings>;
+/** The `settings` of a `repeater` field. */
+export type RepeaterSettings = z.infer<typeof RepeaterSettings>;
 /** The `settings` of a `select` field. */
 export type SelectSettings = z.infer<typeof SelectSettings>;
 /** The `settings` of a `daterange` field. */

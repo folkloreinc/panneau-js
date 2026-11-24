@@ -1,5 +1,6 @@
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Quote } from 'lucide-react';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -9,11 +10,13 @@ import { PanneauRoot } from '@panneau/ui';
 import { Controlled, renderField } from '../__fixtures__/render';
 import { DefinitionField } from '../shared/DefinitionField';
 import { builtInFields } from '../shared/builtIn';
+import { FieldsProvider } from '../shared/context';
 import type { FieldEntryProps } from '../shared/types';
 import {
     RepeaterField,
     type RepeaterItem,
     getItemExcerpt,
+    getItemTitle,
     initialItemKeys,
     updateItemKeys,
 } from './RepeaterField';
@@ -243,7 +246,8 @@ describe('RepeaterField', () => {
                 )}
             </Controlled>,
         );
-        expect(screen.getByRole('listitem', { name: /Quote/ })).toBeInTheDocument();
+        // The repeater of the definition loads with its first use
+        expect(await screen.findByRole('listitem', { name: /Quote/ })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Remove item 1' })).toBeDisabled();
         await userEvent.click(screen.getByRole('button', { name: 'Add' }));
         await userEvent.click(await screen.findByRole('menuitem', { name: 'Video' }));
@@ -371,6 +375,276 @@ describe('RepeaterField', () => {
         );
         expect(screen.queryByRole('button')).not.toBeInTheDocument();
         expect(screen.getByRole('textbox', { name: 'Label' })).toBeDisabled();
+    });
+});
+
+describe('RepeaterField: duplicate and add in between', () => {
+    it('duplicates an item right after it, expanded, with the focus on its header', async () => {
+        const onChange = vi.fn();
+        renderField(<Links onChange={onChange} />);
+        await userEvent.click(screen.getByRole('button', { name: 'Duplicate item 1' }));
+        expect(onChange).toHaveBeenLastCalledWith([{ label: 'A' }, { label: 'A' }, { label: 'B' }]);
+        const [first, copy] = onChange.mock.lastCall?.[0] as RepeaterItem[];
+        // A copy, not the same object: editing it leaves the original alone
+        expect(copy).not.toBe(first);
+        const [, second] = toggles();
+        expect(second).toHaveAttribute('aria-expanded', 'true');
+        expect(second).toHaveFocus();
+        expect(toggles()[0]).toHaveAttribute('aria-expanded', 'false');
+
+        await userEvent.clear(screen.getByRole('textbox', { name: 'Label' }));
+        await userEvent.type(screen.getByRole('textbox', { name: 'Label' }), 'C');
+        expect(onChange).toHaveBeenLastCalledWith([{ label: 'A' }, { label: 'C' }, { label: 'B' }]);
+    });
+
+    it('copies the nested values of an item, which the copy doesn’t share', async () => {
+        const onChange = vi.fn();
+        const tags = ['a', 'b'];
+        renderField(
+            <Controlled<RepeaterItem[] | null> initial={[{ tags }]} onChange={onChange}>
+                {(value, setValue) => (
+                    <RepeaterField
+                        label="Lists"
+                        fields={[{ name: 'tags', type: 'json' }]}
+                        value={value}
+                        onChange={setValue}
+                    />
+                )}
+            </Controlled>,
+        );
+        await userEvent.click(screen.getByRole('button', { name: 'Duplicate item 1' }));
+        const [, copy] = onChange.mock.lastCall?.[0] as RepeaterItem[];
+        expect(copy?.tags).toEqual(['a', 'b']);
+        expect(copy?.tags).not.toBe(tags);
+    });
+
+    it('doesn’t duplicate or add in between at max', () => {
+        renderField(<Links onChange={() => undefined} max={2} />);
+        expect(screen.getByRole('button', { name: 'Duplicate item 1' })).toBeDisabled();
+        expect(
+            screen.queryByRole('button', { name: 'Add an item between items 1 and 2' }),
+        ).not.toBeInTheDocument();
+    });
+
+    it('adds an item between two others, expanded, with the focus on its header', async () => {
+        const onChange = vi.fn();
+        renderField(<Links onChange={onChange} />);
+        // Between items only: the footer adds at the end
+        expect(screen.getAllByRole('button', { name: /^Add an item between/ })).toHaveLength(1);
+        await userEvent.click(
+            screen.getByRole('button', { name: 'Add an item between items 1 and 2' }),
+        );
+        expect(onChange).toHaveBeenLastCalledWith([
+            { label: 'A' },
+            { url: 'https://' },
+            { label: 'B' },
+        ]);
+        const [, added] = toggles();
+        expect(added).toHaveAttribute('aria-expanded', 'true');
+        expect(added).toHaveFocus();
+        expect(screen.getAllByRole('button', { name: /^Add an item between/ })).toHaveLength(2);
+    });
+
+    it('reaches the control between items with the keyboard', async () => {
+        renderField(<Links onChange={() => undefined} />);
+        screen.getByRole('button', { name: 'Remove item 1' }).focus();
+        await userEvent.tab();
+        expect(
+            screen.getByRole('button', { name: 'Add an item between items 1 and 2' }),
+        ).toHaveFocus();
+    });
+
+    it('has no control between items when read-only', () => {
+        renderField(
+            <RepeaterField
+                label="Links"
+                fields={LINK_FIELDS}
+                value={[{ label: 'A' }, { label: 'B' }]}
+                readOnly
+            />,
+        );
+        expect(screen.queryByRole('button', { name: /^Add an item/ })).not.toBeInTheDocument();
+    });
+});
+
+const BLOCKS: Field = {
+    name: 'blocks',
+    type: 'repeater',
+    label: 'Blocks',
+    types: [
+        {
+            id: 'quote',
+            label: 'Quote',
+            icon: 'quote',
+            description: 'A quote and its author',
+            itemTitle: '{author}',
+            fields: [
+                { name: 'text', type: 'textarea', label: 'Text' },
+                { name: 'author', type: 'text', label: 'Author' },
+            ],
+        },
+        {
+            id: 'video',
+            label: 'Video',
+            fields: [{ name: 'url', type: 'url', label: 'Video URL' }],
+        },
+    ],
+};
+
+const iconLoader = (name: string) => Promise.resolve(name === 'quote' ? Quote : null);
+
+function Blocks({
+    field = BLOCKS,
+    initial,
+    onChange,
+}: {
+    field?: Field;
+    initial: unknown;
+    onChange?: (value: unknown) => void;
+}) {
+    return (
+        <PanneauRoot iconLoader={iconLoader}>
+            <FieldsProvider components={builtInFields}>
+                <Controlled<unknown> initial={initial} {...(onChange ? { onChange } : {})}>
+                    {(value, setValue) => (
+                        <DefinitionField
+                            field={field}
+                            path="blocks"
+                            value={value}
+                            onChange={setValue}
+                        />
+                    )}
+                </Controlled>
+            </FieldsProvider>
+        </PanneauRoot>
+    );
+}
+
+describe('RepeaterField: block types', () => {
+    it('shows the icon and the description of each type in the menu', async () => {
+        render(<Blocks initial={null} />);
+        await userEvent.click(await screen.findByRole('button', { name: 'Add' }));
+        const quote = await screen.findByRole('menuitem', { name: 'Quote' });
+        expect(quote).toHaveAccessibleDescription('A quote and its author');
+        await waitFor(() => {
+            expect(quote.querySelector('svg.lucide-quote')).not.toBeNull();
+        });
+        // A type without an icon keeps its place, so that labels align
+        const video = screen.getByRole('menuitem', { name: 'Video' });
+        expect(video.querySelector('svg')).toBeNull();
+        expect(video.firstElementChild?.firstElementChild).toBeEmptyDOMElement();
+    });
+
+    it('adds a block of a type between two others', async () => {
+        const onChange = vi.fn();
+        render(
+            <Blocks
+                initial={[
+                    { type: 'video', url: 'https://a' },
+                    { type: 'video', url: 'https://b' },
+                ]}
+                onChange={onChange}
+            />,
+        );
+        await userEvent.click(
+            await screen.findByRole('button', { name: 'Add an item between items 1 and 2' }),
+        );
+        await userEvent.click(await screen.findByRole('menuitem', { name: 'Quote' }));
+        expect(onChange).toHaveBeenLastCalledWith([
+            { type: 'video', url: 'https://a' },
+            { type: 'quote' },
+            { type: 'video', url: 'https://b' },
+        ]);
+        expect(screen.getByRole('textbox', { name: 'Author' })).toHaveAttribute(
+            'name',
+            'blocks.1.author',
+        );
+        expect(screen.getByRole('button', { name: '2 Quote', expanded: true })).toHaveFocus();
+    });
+
+    it('titles a block from the `itemTitle` of its type, or its label and first text', async () => {
+        render(
+            <Blocks
+                initial={[
+                    { type: 'quote', text: 'To be', author: 'Hamlet' },
+                    { type: 'quote', text: 'Or not' },
+                    { type: 'video', url: 'https://a' },
+                ]}
+            />,
+        );
+        const [hamlet, unsigned, video] = await screen.findAllByRole('listitem');
+        expect(hamlet).toHaveAccessibleName('1 Hamlet');
+        expect(unsigned).toHaveAccessibleName('2 Quote Or not');
+        expect(video).toHaveAccessibleName('3 Video https://a');
+    });
+});
+
+describe('RepeaterField: titles from the definition', () => {
+    it('titles items from the field that `settings.itemTitle` names', async () => {
+        renderField(
+            <DefinitionField
+                field={{
+                    name: 'people',
+                    type: 'repeater',
+                    settings: { itemTitle: '{first} {last} ({role})' },
+                    fields: [
+                        { name: 'first', type: 'text' },
+                        { name: 'last', type: 'text' },
+                        {
+                            name: 'role',
+                            type: 'select',
+                            options: [{ value: 'dir', label: 'Director' }],
+                        },
+                        { name: 'bio', type: 'textarea' },
+                    ],
+                }}
+                path="people"
+                value={[
+                    { first: 'Ada', last: 'Lovelace', role: 'dir' },
+                    { first: 'Jane' },
+                    { bio: 'Unnamed' },
+                ]}
+                onChange={() => undefined}
+            />,
+        );
+        const [ada, jane, unnamed] = await screen.findAllByRole('listitem');
+        expect(ada).toHaveAccessibleName('1 Ada Lovelace (Director)');
+        expect(jane).toHaveAccessibleName('2 Jane');
+        // Without a value for the title: "Item 3", and its first text
+        expect(unnamed).toHaveAccessibleName('3 Item 3 Unnamed');
+    });
+});
+
+describe('getItemTitle', () => {
+    const fields: Field[] = [
+        { name: 'title', type: 'text', localized: true },
+        { name: 'body', type: 'richtext' },
+        { name: 'year', type: 'number' },
+    ];
+
+    it('gives the value of a field name, or fills a template', () => {
+        expect(getItemTitle({ title: 'Summer' }, 'title', fields)).toBe('Summer');
+        expect(getItemTitle({ title: 'Summer', year: 2026 }, '{title}, {year}', fields)).toBe(
+            'Summer, 2026',
+        );
+        expect(getItemTitle({ body: '<p>Jazz &amp; <b>fire</b></p>' }, 'body', fields)).toBe(
+            'Jazz & fire',
+        );
+    });
+
+    it('gives the locale of the interface of a localized value, its language, or the first one', () => {
+        const item = { title: { fr: 'Été', en: 'Summer' } };
+        expect(getItemTitle(item, 'title', fields, 'fr')).toBe('Été');
+        expect(getItemTitle(item, 'title', fields, 'en-CA')).toBe('Summer');
+        expect(getItemTitle({ title: { fr: '', en: 'Summer' } }, 'title', fields, 'fr')).toBe(
+            'Summer',
+        );
+    });
+
+    it('gives null without any value, and drops the brackets of a missing one', () => {
+        expect(getItemTitle({}, '{title} ({year})', fields)).toBeNull();
+        expect(getItemTitle({ title: 'Summer' }, '{title} ({year})', fields)).toBe('Summer');
+        expect(getItemTitle({ year: [2026] }, 'year', fields)).toBeNull();
     });
 });
 

@@ -359,7 +359,9 @@ export function ResourceListPage({
                         onRetry={() => void refetch()}
                         fields={getVisibleFields(resource.fields)}
                         itemTitle={resource.itemTitle}
+                        resourceLabel={resource.label}
                         itemImage={itemImage}
+                        itemStatus={resource.itemStatus}
                         layouts={{ available: layouts }}
                         perPageOptions={definitionList.perPageOptions}
                         // Titles open the panel, with the list's query, or the form (`open` of the resource)

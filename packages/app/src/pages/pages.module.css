@@ -6,22 +6,29 @@
     margin-inline: auto;
 }
 
-.narrow {
+/* A narrow page narrows its content, not its header, from the start of the column: the header
+   keeps the same edges on every page, and so do its title and its actions (#415). */
+.narrow > :not(.header) {
     max-width: 64rem;
 }
 
+/* The parents above the title, then the title and the actions of the page on one row, the actions
+   at its end whatever the length of the title, which wraps (#423). Below 48rem of the root, the
+   actions go under the title. */
 .header {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--panneau-space-3);
 }
 
-.headerTitle {
+.headerParents {
     display: flex;
     flex-direction: column;
-    gap: var(--panneau-space-1);
+    /* With the space between the header's rows, a link that sits on its title */
+    margin-block-end: calc(var(--panneau-space-1) - var(--panneau-space-3));
+}
+
+.headerTitle {
     min-width: 0;
 }
 
@@ -29,6 +36,22 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--panneau-space-2);
+}
+
+@container panneau-root (min-width: 48rem) {
+    /* The title keeps at least 16rem; the actions take what they need of the rest, and wrap. */
+    .header {
+        grid-template-columns: minmax(min(16rem, 100%), 1fr) auto;
+        align-items: start;
+    }
+
+    .headerParents {
+        grid-column: 1 / -1;
+    }
+
+    .headerActions {
+        justify-content: flex-end;
+    }
 }
 
 .back {

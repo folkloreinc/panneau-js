@@ -2,6 +2,7 @@ import { ArrowDown, ArrowUp, Columns3 } from 'lucide-react';
 
 import { Button, Checkbox, IconButton, Popover, PopoverTrigger, usePanneauIntl } from '@panneau/ui';
 
+import { getColumnText } from '../columns';
 import { messages } from '../messages';
 import type { ListColumn } from '../types';
 import styles from './Toolbar.module.css';
@@ -19,7 +20,7 @@ export interface ColumnMenuProps {
 }
 
 function labelOf(column: ListColumn): string {
-    return typeof column.label === 'string' ? column.label : column.id;
+    return getColumnText(column);
 }
 
 /** The columns of a list, to show, hide and order, in a popover or a dialog. */

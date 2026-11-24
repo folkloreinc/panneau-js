@@ -1,6 +1,7 @@
-import { parseColor } from './color';
+import { type Rgb, ensureContrast, parseColor, parseColorOver, toHex } from './color';
 import type { ThemeFont } from './fonts';
 import {
+    MIN_CONTRAST_RATIO,
     TONE_VARIABLES,
     type ToneInput,
     type ToneSurfaces,
@@ -145,6 +146,79 @@ export function themeSurfaces(theme: Theme): ToneSurfaces {
     };
 }
 
+/** The token of the accent as text, which `getThemeCss()` derives when a theme sets the accent. */
+const ACCENT_STRONG = 'panneau-color-accent-strong';
+
+/**
+ * What the accent as text sits on, with the values of the default theme: the page, panels, and the
+ * subtle background of the accent tone (its subtle buttons, the tinted icons of rows).
+ */
+const ACCENT_STRONG_BACKGROUNDS: Record<'light' | 'dark', Record<string, string>> = {
+    light: {
+        'panneau-color-surface': '#ffffff',
+        'panneau-color-bg': '#ffffff',
+        'panneau-color-accent-subtle': '#f4f4f5',
+    },
+    dark: {
+        'panneau-color-surface': '#18181b',
+        'panneau-color-bg': '#09090b',
+        'panneau-color-accent-subtle': '#2e2e33',
+    },
+};
+
+/**
+ * The accent as text (`panneau-color-accent-strong`) of a theme that sets the accent but not this
+ * token, in each scheme: the accent, darkened (light backgrounds) or lightened (dark ones) until it
+ * reaches 4.5:1 on the theme's background, surface and accent subtle background, or those of the
+ * default theme, like the text of a tone derived from one color. A light accent, such as a yellow
+ * main action, gets a dark text; an accent that is already readable is kept as is.
+ *
+ * An accent Panneau can't read (a CSS variable of a site) gives `var(--panneau-color-accent)`, the
+ * fallback, which `checkTheme()` reports as unchecked. A scheme without a value is left out.
+ */
+export function deriveAccentStrong(theme: Theme): Partial<Record<'light' | 'dark', string>> {
+    const palette = paletteVariables(theme.palette);
+    const derive = (scheme: 'light' | 'dark'): string | undefined => {
+        const tokens = scheme === 'light' ? theme.tokens : { ...theme.tokens, ...theme.dark };
+        const accent = tokens['panneau-color-accent'];
+        // A value that getThemeCss() drops, since it could break out of its rule, sets nothing.
+        if (tokens[ACCENT_STRONG] !== undefined || accent === undefined || /[{};<]/.test(accent)) {
+            return undefined;
+        }
+        const variables = { ...palette, ...tokens };
+        const color = parseColor(resolveReference(accent, variables));
+        if (color === null) {
+            return 'var(--panneau-color-accent)';
+        }
+        const read = (name: string, under: Rgb | null): Rgb | null => {
+            const fallback = ACCENT_STRONG_BACKGROUNDS[scheme][name] ?? '#ffffff';
+            const value = tokens[name];
+            return (
+                (value !== undefined
+                    ? parseColorOver(resolveReference(value, variables), under)
+                    : null) ?? parseColor(fallback)
+            );
+        };
+        const surface = read('panneau-color-surface', null);
+        const backgrounds = Object.keys(ACCENT_STRONG_BACKGROUNDS[scheme])
+            .map((name) => read(name, surface))
+            .filter((background): background is Rgb => background !== null);
+        // Twice: making the text readable on one background can only help on the others when
+        // they are all light or all dark, and the second pass settles the rare remaining case.
+        const strong = [...backgrounds, ...backgrounds].reduce(
+            (current, background) => ensureContrast(current, background, MIN_CONTRAST_RATIO),
+            color,
+        );
+        return toHex(strong);
+    };
+    const light = derive('light');
+    const dark = derive('dark');
+    return {
+        ...(light !== undefined && { light }),
+        ...(dark !== undefined && { dark }),
+    };
+}
+
 /**
  * The rules of the densities of a theme. `auto` takes the comfortable values on fine pointers and
  * the touch ones on coarse pointers, like the default theme.
@@ -180,10 +254,26 @@ export function getThemeCss(theme: Theme, scope: string): string {
 
     const palette = paletteVariables(theme.palette);
     const surfaces = themeSurfaces(theme);
-    light.push(rule(root, declarations({ ...palette, ...theme.tokens })));
+    const accentStrong = deriveAccentStrong(theme);
+    light.push(
+        rule(
+            root,
+            declarations({
+                ...palette,
+                ...theme.tokens,
+                ...(accentStrong.light !== undefined && { [ACCENT_STRONG]: accentStrong.light }),
+            }),
+        ),
+    );
     light.push(densityCss(root, theme.densities));
-    if (theme.dark !== undefined) {
-        darkRules.push(rule('§', declarations(theme.dark)));
+    const darkTokens = {
+        ...theme.dark,
+        // The light rule applies to the dark scheme too: only a different value is written again.
+        ...(accentStrong.dark !== undefined &&
+            accentStrong.dark !== accentStrong.light && { [ACCENT_STRONG]: accentStrong.dark }),
+    };
+    if (Object.keys(darkTokens).length > 0) {
+        darkRules.push(rule('§', declarations(darkTokens)));
     }
     Object.entries(theme.tones ?? {})
         .filter(([name]) => NAME.test(name))

@@ -53,6 +53,7 @@ import { getLayoutComponents, resolveListLayout } from './layouts/resolve';
 import { useLeavingItems, withLeavingItems } from './leaving';
 import { messages } from './messages';
 import { countSelected, getPageSelection, isItemSelected } from './selection';
+import { getItemStatus } from './status';
 import { CursorPagination, Pagination } from './toolbar/Pagination';
 import { SearchField } from './toolbar/SearchField';
 import { ToolbarControls } from './toolbar/ToolbarControls';
@@ -229,11 +230,21 @@ export interface ListViewProps {
     /** The field that titles items, for their label (`itemTitle` of the resource). */
     itemTitle?: string;
     /**
+     * The labels of the resource, to name items in the confirmations of actions: "Delete 3
+     * articles?" (the `label` of the resource).
+     */
+    resourceLabel?: { readonly singular: string; readonly plural: string } | undefined;
+    /**
      * The field shown as the image of items (`itemImage` of the resource, or `media` in a media
      * library): a media reference, a media, a file or a URL. The `gallery` layout needs it
      * (decision 0044), and the table starts each title with its thumbnail (decision 0061).
      */
     itemImage?: string | undefined;
+    /**
+     * The field that holds the state of items (`itemStatus` of the resource, decision 0103),
+     * usually a `select` with tones: the calendar shows it next to each title, in its tone.
+     */
+    itemStatus?: string | undefined;
     /**
      * The calendar of the list (`calendar` of `resolveList()`), for its `calendar` layout. The list
      * state asks for its month when it is given the same calendar.
@@ -313,7 +324,9 @@ export function ListView({
     selectable: selectableProp,
     actions: actionOptions = NO_OPTIONS,
     itemTitle,
+    resourceLabel,
     itemImage,
+    itemStatus,
     calendar = null,
     getItemLabel: getItemLabelProp,
     getItemHref,
@@ -758,6 +771,19 @@ export function ListView({
                 getItemFileKind={
                     itemImage !== undefined ? (item) => getFileKind(item[itemImage]) : undefined
                 }
+                getItemStatus={
+                    itemStatus !== undefined
+                        ? (item) =>
+                              getItemStatus(
+                                  item,
+                                  itemStatus,
+                                  [...fields, ...allColumns.map((column) => column.field)].find(
+                                      (field) => field?.name === itemStatus,
+                                  ),
+                                  intl.locale,
+                              )
+                        : undefined
+                }
                 calendar={
                     inCalendar
                         ? {
@@ -769,6 +795,7 @@ export function ListView({
                               ),
                               month: view.month ?? currentMonth(),
                               onMonthChange: (month) => list.setMonth(month),
+                              isLoading,
                               more:
                                   total !== undefined && total > pageItems.length
                                       ? { total }
@@ -1010,6 +1037,10 @@ export function ListView({
             <ConfirmDialog
                 event={confirming}
                 preview={preview}
+                itemLabel={
+                    confirming?.item !== undefined ? getItemLabel(confirming.item) : undefined
+                }
+                labels={resourceLabel}
                 onConfirm={(event) => void execute(event)}
                 onCancel={closeConfirmation}
             />
