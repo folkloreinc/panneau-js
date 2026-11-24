@@ -48,6 +48,14 @@ export const fieldsMessages = {
         id: 'panneau.fields.item',
         defaultMessage: 'Item {index}',
     }),
+    /**
+     * An item of a repeater with a title of its own, where its number tells it apart: in the
+     * labels of its handle and of the places it can go (decision 0111).
+     */
+    namedItem: defineMessage<{ name: string; index: number }>({
+        id: 'panneau.fields.namedItem',
+        defaultMessage: '{name} (item {index})',
+    }),
     noItems: defineMessage({ id: 'panneau.fields.noItems', defaultMessage: 'No items yet.' }),
     collapseAll: defineMessage({
         id: 'panneau.fields.collapseAll',

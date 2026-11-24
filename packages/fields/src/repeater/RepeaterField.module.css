@@ -36,6 +36,15 @@
     border-start-end-radius: inherit;
 }
 
+/* The handle that drags the item, at the start of its header (decision 0111). */
+.header:has(> .handle) {
+    padding-inline-start: var(--panneau-space-1);
+}
+
+.handle + .toggle {
+    margin-inline-start: 0;
+}
+
 /* A collapsed item is its header alone. */
 .item:not([data-expanded]) > .header {
     border-bottom: 0;
