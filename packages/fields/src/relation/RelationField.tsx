@@ -8,6 +8,7 @@ import {
     Fieldset,
     Icon,
     IconButton,
+    ReorderMenu,
     Tile,
     TileGroup,
     type Tone,
@@ -29,6 +30,19 @@ import {
 } from '../shared/relation';
 import type { FieldEntryProps, FieldProps } from '../shared/types';
 import styles from './RelationField.module.css';
+
+/** Moves the value at `from` to `to`, as a card moves. */
+function moved<T>(list: readonly T[], from: number, to: number): T[] {
+    const next = [...list];
+    const [value] = next.splice(from, 1);
+    if (value !== undefined) {
+        next.splice(to, 0, value);
+    }
+    return next;
+}
+
+/** The first button of a card that the focus goes to: not its handle or its menu of moves. */
+const FIRST_BUTTON = 'button:not(.panneau-reorder-menu)';
 
 /** The id of the "Create “…”" option of the picker. */
 const CREATE_ID = '\u0000create';
@@ -302,6 +316,11 @@ interface CardsProps {
     onEdit?: ((reference: RelationReference, index: number) => void) | undefined;
     canEdit?: ((reference: RelationReference) => boolean) | undefined;
     onRemove?: ((reference: RelationReference) => void) | undefined;
+    /**
+     * Reorders the cards of a multiple field (decision 0111): a handle before each card drags it,
+     * and a menu in its actions moves it.
+     */
+    onMove?: ((from: number, to: number) => void) | undefined;
     removeLabel: (reference: RelationReference) => string;
     changeLabel: (reference: RelationReference) => string;
     editLabel: (reference: RelationReference) => string;
@@ -327,6 +346,7 @@ function RelationCards({
     onEdit,
     canEdit,
     onRemove,
+    onMove,
     removeLabel,
     changeLabel,
     editLabel,
@@ -335,7 +355,12 @@ function RelationCards({
     'aria-label': ariaLabel,
 }: CardsProps) {
     return (
-        <TileGroup appearance="outline" label={ariaLabel}>
+        <TileGroup
+            appearance="outline"
+            label={ariaLabel}
+            onMove={onMove}
+            itemLabel={(index) => references[index]?.label ?? ''}
+        >
             {references.map((reference, index) => {
                 const editable = onEdit !== undefined && canEdit?.(reference) !== false;
                 return (
@@ -353,6 +378,7 @@ function RelationCards({
                             onChange !== undefined ||
                             editable ||
                             onRemove !== undefined ||
+                            onMove !== undefined ||
                             reference.status !== undefined ? (
                                 <>
                                     <StatusBadge reference={reference} />
@@ -377,6 +403,7 @@ function RelationCards({
                                             {editText}
                                         </Button>
                                     ) : null}
+                                    {onMove !== undefined ? <ReorderMenu /> : null}
                                     {onRemove !== undefined ? (
                                         <IconButton
                                             icon={X}
@@ -469,8 +496,8 @@ export function RelationField(props: RelationFieldProps) {
             card !== undefined
                 ? typeof target === 'object'
                     ? (card.querySelector<HTMLElement>('[data-relation-action="edit"]') ??
-                      card.querySelector<HTMLElement>('button'))
-                    : card.querySelector<HTMLElement>('button')
+                      card.querySelector<HTMLElement>(FIRST_BUTTON))
+                    : card.querySelector<HTMLElement>(FIRST_BUTTON)
                 : container.current?.querySelector<HTMLElement>('input');
         element?.focus();
     });
@@ -740,6 +767,8 @@ export function RelationField(props: RelationFieldProps) {
                         <RelationCards
                             {...cards}
                             references={selected}
+                            // The value's order follows the cards
+                            onMove={(from, to) => set(moved(selected, from, to))}
                             onRemove={(reference) => {
                                 remove(reference);
                                 // The next card, or the last one, so that several go in a row

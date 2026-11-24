@@ -1035,3 +1035,91 @@ describe('RelationField: results and statuses', () => {
         expect(screen.getByText('Archived')).toHaveClass('panneau-tone-muted');
     });
 });
+
+describe('RelationField: reorder', () => {
+    function Authors({
+        onChange,
+        readOnly,
+    }: {
+        onChange?: (value: RelationReference[] | null) => void;
+        readOnly?: boolean;
+    }) {
+        return (
+            <Controlled<RelationReference[] | null> initial={AUTHORS} onChange={onChange}>
+                {(value, setValue) => (
+                    <RelationField
+                        multiple
+                        label="Authors"
+                        resource="authors"
+                        value={value}
+                        onChange={setValue}
+                        {...(readOnly !== undefined ? { readOnly } : {})}
+                    />
+                )}
+            </Controlled>
+        );
+    }
+    const cards = () =>
+        [...document.querySelectorAll('.panneau-tile')].map((card) =>
+            card.querySelector('[data-reorder-handle]')?.getAttribute('aria-label'),
+        );
+
+    it('moves a card by its handle with the keyboard, and the value follows', async () => {
+        const { source } = createSource();
+        const onChange = vi.fn();
+        renderField(<Authors onChange={onChange} />, { relationSource: source });
+        act(() => screen.getByRole('button', { name: 'Move Margaret Hamilton' }).focus());
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() => expect(document.activeElement).toHaveAttribute('data-reorder-gap'));
+        act(() => screen.getByRole('button', { name: 'Before Ada Lovelace' }).focus());
+        await userEvent.keyboard('{Enter}');
+        expect(onChange).toHaveBeenLastCalledWith([AUTHORS[2], AUTHORS[0], AUTHORS[1]]);
+        expect(cards()).toEqual([
+            'Move Margaret Hamilton',
+            'Move Ada Lovelace',
+            'Move Grace Hopper',
+        ]);
+        await waitFor(() =>
+            expect(screen.getByRole('button', { name: 'Move Margaret Hamilton' })).toHaveFocus(),
+        );
+        expect(screen.getByRole('status')).toHaveTextContent(
+            'Margaret Hamilton moved to position 1 of 3',
+        );
+    });
+
+    it('moves a card from its menu', async () => {
+        const { source } = createSource();
+        const onChange = vi.fn();
+        renderField(<Authors onChange={onChange} />, { relationSource: source });
+        await userEvent.click(screen.getByRole('button', { name: 'Reorder Ada Lovelace' }));
+        await userEvent.click(screen.getByRole('menuitem', { name: 'Move after Grace Hopper' }));
+        expect(onChange).toHaveBeenLastCalledWith([AUTHORS[1], AUTHORS[0], AUTHORS[2]]);
+    });
+
+    it('puts a removed card back before the card that followed it, after a move', async () => {
+        const { source } = createSource();
+        const onChange = vi.fn();
+        renderField(<Authors onChange={onChange} />, { relationSource: source });
+        await userEvent.click(screen.getByRole('button', { name: 'Remove Ada Lovelace' }));
+        // The focus goes to the next card's first button, not its handle or its menu
+        expect(screen.getByRole('button', { name: 'Remove Grace Hopper' })).toHaveFocus();
+        await userEvent.click(screen.getByRole('button', { name: 'Reorder Margaret Hamilton' }));
+        await userEvent.click(screen.getByRole('menuitem', { name: 'Move before Grace Hopper' }));
+        expect(onChange).toHaveBeenLastCalledWith([AUTHORS[2], AUTHORS[1]]);
+        await userEvent.click(screen.getByRole('button', { name: 'Undo' }));
+        expect(onChange).toHaveBeenLastCalledWith([AUTHORS[2], AUTHORS[0], AUTHORS[1]]);
+    });
+
+    it('has no handle or menu when read-only, or as chips', () => {
+        const { source } = createSource();
+        const { unmount } = renderField(<Authors readOnly />, { relationSource: source });
+        expect(document.querySelector('[data-reorder-handle]')).toBeNull();
+        expect(screen.queryByRole('button', { name: /^Reorder/ })).not.toBeInTheDocument();
+        unmount();
+        renderField(
+            <RelationField multiple compact label="Authors" resource="authors" value={AUTHORS} />,
+            { relationSource: source },
+        );
+        expect(document.querySelector('[data-reorder-handle]')).toBeNull();
+    });
+});
