@@ -25,7 +25,12 @@ const work = resolve(root, '.tmp/bundle-size');
 // requests don't raise it themselves.
 // 1375 / 448 KB: the waves together measure 1372 / 446 KB, over v5.x's 1360 / 442: list filters
 // (#455) +5 KB, the user's density (#447) +3, sticky rows (#456) +3, optimistic edits (#453) +1.
-const BUDGET = { minified: 1375 * 1024, gzip: 448 * 1024 };
+// 1395 / 455 KB: the shortcut registry (#482), the panel to create a related item (#484) and the
+// list toolbar (#477) each fit alone, not together. Loading more with import() no longer helps:
+// a lazy chunk that shares modules with the first page makes the bundler split them into many
+// small chunks (+17 KB gzip for a 6 KB panel, measured on #484). Reviewing the chunking is the
+// way to get weight back (#457).
+const BUDGET = { minified: 1395 * 1024, gzip: 455 * 1024 };
 
 const report = process.argv.includes('--report');
 

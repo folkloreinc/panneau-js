@@ -332,3 +332,68 @@ describe('the "Go to…" palette', () => {
         expect(palette().getByRole('group', { name: 'Navigation' })).toBeInTheDocument();
     });
 });
+
+describe('keyboard shortcuts (decision 0112)', () => {
+    beforeEach(() => {
+        window.history.replaceState(null, '', '/panneau');
+        window.localStorage.clear();
+    });
+
+    const help = () => within(screen.getByRole('dialog', { name: 'Keyboard shortcuts' }));
+
+    it('runs the shortcuts of plugins, and lists them in the help with those of the app', async () => {
+        const user = userEvent.setup();
+        const perform = vi.fn();
+        renderApp([
+            {
+                id: 'site',
+                shortcuts: ({ definition }) => [
+                    {
+                        id: 'clear',
+                        keys: 'Mod+Shift+L',
+                        label: `Clear the cache of ${definition?.name ?? 'the site'}`,
+                        group: 'Site',
+                        perform,
+                    },
+                ],
+            },
+        ]);
+        await screen.findByRole('complementary');
+        await user.keyboard('{Control>}{Shift>}l{/Shift}{/Control}');
+        expect(perform).toHaveBeenCalledOnce();
+
+        await user.keyboard('?');
+        await screen.findByRole('dialog', { name: 'Keyboard shortcuts' });
+        expect(help().getByRole('heading', { name: 'Site' })).toBeInTheDocument();
+        expect(help().getByText(/^Clear the cache of/)).toBeInTheDocument();
+        expect(help().getByText('Go to…')).toBeInTheDocument();
+        expect(help().getByText('Collapse or expand the sidebar')).toBeInTheDocument();
+        expect(help().getByText('Ctrl+Shift+L')).toBeInTheDocument();
+        // A shortcut of the page doesn't fire under the help
+        await user.keyboard('{Control>}{Shift>}l{/Shift}{/Control}');
+        expect(perform).toHaveBeenCalledOnce();
+    });
+
+    it('opens the help from the user’s menu and from "Go to…"', async () => {
+        const user = userEvent.setup();
+        renderApp();
+        const account = await within(screen.getByRole('complementary')).findByRole('button', {
+            name: /Your account/,
+        });
+        await user.click(account);
+        await user.click(await screen.findByRole('menuitem', { name: 'Keyboard shortcuts' }));
+        expect(
+            await screen.findByRole('dialog', { name: 'Keyboard shortcuts' }),
+        ).toBeInTheDocument();
+        await user.keyboard('{Escape}');
+        await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+
+        await user.click(goToButton());
+        await user.type(palette().getByRole('searchbox'), 'keyboard');
+        await user.click(palette().getByRole('menuitem', { name: 'Keyboard shortcuts' }));
+        expect(
+            await screen.findByRole('dialog', { name: 'Keyboard shortcuts' }),
+        ).toBeInTheDocument();
+        expect(screen.queryByRole('dialog', { name: 'Go to…' })).toBeNull();
+    });
+});

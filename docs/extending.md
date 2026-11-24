@@ -1,6 +1,6 @@
 # Extending Panneau
 
-A project extends Panneau with plugins: field types, displays, filters, list layouts, client actions, form components and panels, pages, dashboard widgets and previews, plus commands, messages and themes. Every kind is resolved the same way ([decision 0097](decisions/0097-one-way-to-resolve-plugin-entries.md)).
+A project extends Panneau with plugins: field types, displays, filters, list layouts, client actions, form components and panels, pages, dashboard widgets and previews, plus commands, shortcuts, messages and themes. Every kind is resolved the same way ([decision 0097](decisions/0097-one-way-to-resolve-plugin-entries.md)).
 
 ## Plugins
 
@@ -39,7 +39,7 @@ Each kind is keyed by the name the definition uses. The kinds a project sees are
 | `widgets`     | a widget's `type`                         | `ComponentType<WidgetProps>`                               | `@panneau/core`                    | an empty card             |
 | `previews`    | a resource's `features.preview.component` | `ComponentType<PreviewProps>`                              | `@panneau/core`                    | a warning                 |
 
-`commands`, `locales` and `themes` aren't kinds of entries: commands of the "Go to…" palette (a list, or a function of the definition), messages by locale (later plugins override earlier ones), and themes by id that the definition's theme `extends`.
+`commands`, `shortcuts`, `locales` and `themes` aren't kinds of entries: commands of the "Go to…" palette (a list, or a function of the definition), keyboard shortcuts (the same, see [Shortcuts](#shortcuts)), messages by locale (later plugins override earlier ones), and themes by id that the definition's theme `extends`.
 
 ### Fields
 
@@ -80,6 +80,32 @@ definePlugin({ id: 'folklore.writing', panels: { words: WordCount } });
 
 A page gets `PageProps`: its id, the definition, the base path, the values of its `params`, and its `props`. A widget gets `WidgetProps`: the widget, its data, the definition, and for the built-in types the currency and the period of the overview; the dashboard draws the card, the skeleton and the error of a plugin's widget ([0064](decisions/0064-dashboard-widgets.md)). A preview gets the item, its resource and the locale.
 
+### Shortcuts
+
+A plugin's `shortcuts` are keyboard shortcuts of the app ([decision 0112](decisions/0112-one-registry-of-keyboard-shortcuts.md)), given as its `commands`: a list, or a function of the definition. Each has an `id`, its `keys`, a `label` and an optional `group` for the help that `?` opens, and `perform`:
+
+```ts
+import { definePlugin } from '@panneau/core';
+
+export const sitePlugin = definePlugin({
+    id: 'folklore.site',
+    shortcuts: ({ definition }) => [
+        {
+            id: 'folklore.site.preview',
+            keys: 'Mod+Shift+P', // ⌘⇧P on Apple platforms, Ctrl+Shift+P elsewhere
+            label: `Preview ${definition?.name ?? 'the site'}`,
+            group: 'Site',
+            perform: () => window.open('/', '_blank'),
+        },
+    ],
+});
+```
+
+- **Keys** are written as `aria-keyshortcuts` writes them, with `Mod` for ⌘ on Apple platforms and Ctrl elsewhere: `Mod+Shift+P`, several (`['Mod+Shift+P', 'F2']`), or `{ apple, other }`.
+- They are **shortcuts of the page**: they never fire while a dialog is open, nor when something already handled the key (an editor's own shortcut).
+- A **single key** (`g`, `?`) never fires while the user types, and users can turn single keys off. Prefer a modifier.
+- The app registers them while the shell is shown. A component of a plugin (a page, a field, a panel) registers its own with `useShortcut()` of `@panneau/ui`, with an element as its scope: they then go first while the focus is in that element, and are listed in the help while it is shown.
+
 ## Replacing a built-in
 
 A plugin replaces a built-in entry by giving its name:
@@ -111,7 +137,7 @@ const Map = useEntry('maps', settings.map, { builtIn: builtInMaps });
 - **The containers of form layouts**: `row`, `column`, `section`, `tabs`, `tab`, `sidebar`, `field` and `text`. The extension point is the `component` node, whose children stay in the form.
 - **The built-in item actions and their semantics**: `show`, `edit`, `duplicate`, `delete` and `restore` ([0040](decisions/0040-row-links-and-open-mode.md)). A resource declares its own actions; a `client` action is the extension point.
 - **What the protocol defines**: the portable rules, the shapes of filter values, the data of the built-in widget types. A plugin adds a type and its backend sends what it reads; it doesn't change what the built-in ones mean.
-- **The shell**: the sidebar, the menus and the palette's own entries. A plugin adds pages and commands, and the definition adds menu entries.
+- **The shell**: the sidebar, the menus and the palette's own entries. A plugin adds pages, commands and shortcuts, and the definition adds menu entries.
 - **The tokens of the theme**: a theme sets their values and extends the themes of plugins ([0024](decisions/0024-theme-model.md)); it doesn't add tokens that components would read.
 
 ## A plugin with its backend

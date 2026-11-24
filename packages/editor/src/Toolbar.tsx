@@ -11,14 +11,19 @@ import {
 
 import { editorMessages as messages } from '@panneau/intl';
 import type { RichTextStyle } from '@panneau/protocol';
-import { type IconComponent, Select, Tooltip, isApplePlatform, usePanneauIntl } from '@panneau/ui';
+import {
+    type IconComponent,
+    Select,
+    Tooltip,
+    useFormatShortcut,
+    usePanneauIntl,
+} from '@panneau/ui';
 
 import { LinkDialog } from './LinkDialog';
 import styles from './RichTextField.module.css';
 import { type RichTextButton, builtInButtons } from './buttons';
 import { LINK_SHORTCUT, setLinkShortcut } from './extensions/shortcut';
 import type { NewTabLinks } from './settings';
-import { type FormattedShortcut, formatShortcut } from './shortcuts';
 import { applyStyle, canApplyStyle, getActiveStyle } from './styles';
 
 export interface ToolbarProps {
@@ -82,6 +87,12 @@ function getTextStyle(editor: Editor): string | null {
     return block.type.name === 'paragraph' ? 'paragraph' : null;
 }
 
+/** A shortcut of a button, as its tooltip shows it (`⌘B`, `Ctrl+B`) and `aria-keyshortcuts`. */
+interface ButtonShortcut {
+    label: string;
+    keys: string;
+}
+
 function ToolbarButton({
     label,
     icon: Icon,
@@ -92,7 +103,7 @@ function ToolbarButton({
 }: {
     label: string;
     icon: IconComponent;
-    shortcut: FormattedShortcut | undefined;
+    shortcut: ButtonShortcut | undefined;
     isActive: boolean | undefined;
     isDisabled: boolean;
     onPress: () => void;
@@ -162,9 +173,15 @@ export function Toolbar({
     onLinkOpenChange,
 }: ToolbarProps) {
     const intl = usePanneauIntl();
-    const apple = isApplePlatform();
-    const shortcutOf = (shortcut: string | undefined) =>
-        shortcut !== undefined ? formatShortcut(shortcut, apple) : undefined;
+    const formatShortcut = useFormatShortcut();
+    // TipTap writes keys `Mod-Shift-8`, and `@panneau/ui` `Mod+Shift+8`
+    const shortcutOf = (shortcut: string | undefined): ButtonShortcut | undefined => {
+        if (shortcut === undefined) {
+            return undefined;
+        }
+        const { labels, keys } = formatShortcut(shortcut.replace(/-(?!$)/g, '+'));
+        return { label: labels[0] ?? '', keys };
+    };
     const allButtons = new Map(
         [...builtInButtons, ...buttons].map((button) => [button.name, button]),
     );

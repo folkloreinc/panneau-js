@@ -159,6 +159,13 @@ export function ReorderList({
                 }
             });
         } else {
+            // Items that still slide from a move end there: React Aria measures where they are to
+            // pick the first place, the one nearest to the item
+            for (const element of itemsOf(list.current)) {
+                for (const animation of element.getAnimations?.() ?? []) {
+                    animation.finish();
+                }
+            }
             setDrag(next);
         }
         setPointerGap(null);
@@ -231,6 +238,19 @@ export function ReorderList({
             }
         },
     });
+
+    // A list that goes while an item is held with the keyboard puts it back: React Aria would
+    // otherwise keep the rest of the page inert. Its listener of Escape stops the key there.
+    useEffect(
+        () => () => {
+            if (current.current.drag?.mode === 'keyboard') {
+                document.dispatchEvent(
+                    new globalThis.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }),
+                );
+            }
+        },
+        [],
+    );
 
     // While an item moves with the keyboard, the arrows go from one place to the next, and Space
     // drops it as Enter does. React Aria stops the keys on the document: this listens before it.
