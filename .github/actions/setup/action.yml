@@ -12,11 +12,39 @@ runs:
         - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
           with:
               node-version-file: .nvmrc
-              cache: npm
+              package-manager-cache: false
+
+        # node_modules itself, for the lockfile and the version of Node: restoring it takes a few
+        # seconds, where restoring npm's cache then `npm ci` took about 25 seconds in every job.
+        # Only `npm ci` writes it, and it is saved right after, before anything else (Vite's cache
+        # in node_modules/.vite) can be added to it. A package can have its own node_modules, for
+        # a version of a dependency that differs from the root's (ajv in @panneau/protocol). Bump
+        # the `v` of the key when the paths change.
+        - name: Restore node_modules
+          id: node-modules
+          uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+          with:
+              path: |
+                  node_modules
+                  packages/*/node_modules
+              key: node-modules-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.nvmrc') }}-${{ hashFiles('package-lock.json') }}
 
         - name: Install dependencies
+          if: steps.node-modules.outputs.cache-hit != 'true'
           shell: bash
           run: npm ci
+
+        # Jobs that start together all miss the cache of a new lockfile: the first one to finish
+        # saves it, the others fail to save it and go on.
+        - name: Save node_modules
+          if: steps.node-modules.outputs.cache-hit != 'true'
+          uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+          continue-on-error: true
+          with:
+              path: |
+                  node_modules
+                  packages/*/node_modules
+              key: ${{ steps.node-modules.outputs.cache-primary-key }}
 
         # Only the headless shell, which headless Chromium uses, and no system packages: the
         # runner image already has what it needs, and installing them (`--with-deps`) took most of
