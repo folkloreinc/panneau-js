@@ -477,6 +477,53 @@ describe('createRelationSource: ids and creation', () => {
         await expect(closed).resolves.toBeNull();
     });
 
+    it('edits somewhere else with editItem, for the items the user can update', async () => {
+        const list = vi.fn(async () => ({
+            data: [
+                { ...item('1', { name: 'News' }), abilities: { update: true } },
+                { ...item('2', { name: 'Old' }), abilities: { update: false } },
+            ],
+        }));
+        let settle: (saved: ReturnType<typeof item> | null) => void = () => undefined;
+        const editItem = vi.fn(
+            (_resource: string, _id: string) =>
+                new Promise<ReturnType<typeof item> | null>((resolve) => {
+                    settle = resolve;
+                }),
+        );
+        const source = createRelationSource({ list }, { definition, editItem });
+        // Unknown items can't be edited until the source has them, with their abilities
+        expect(source.canEdit?.('tags', '1')).toBe(false);
+        await source.resolve?.('tags', ['1', '2'], { signal });
+        expect(source.canEdit?.('tags', '1')).toBe(true);
+        expect(source.canEdit?.('tags', '2')).toBe(false);
+        expect(source.edited?.('tags', '1')).toBeUndefined();
+
+        const edited = source.edit?.('tags', '1');
+        expect(editItem).toHaveBeenCalledWith('tags', '1');
+        settle({ ...item('1', { name: 'Breaking news' }), abilities: { update: true } });
+        await expect(edited).resolves.toEqual({ id: '1', label: 'Breaking news' });
+        // Fields show it as saved, in place of the label of their values
+        expect(source.edited?.('tags', '1')).toEqual({ id: '1', label: 'Breaking news' });
+        expect(source.peek?.('tags', '1')).toEqual({ id: '1', label: 'Breaking news' });
+
+        const closed = source.edit?.('tags', '2');
+        settle(null);
+        await expect(closed).resolves.toBeNull();
+        expect(source.edited?.('tags', '2')).toBeUndefined();
+    });
+
+    it('doesn’t edit without editItem, and opens links in a new tab with linksInNewTab', () => {
+        const source = createRelationSource({ list: async () => ({ data: [] }) }, { definition });
+        expect(source.edit).toBeUndefined();
+        expect(source.canEdit).toBeUndefined();
+        expect(source.linksInNewTab).toBeUndefined();
+        expect(
+            createRelationSource({ list: async () => ({ data: [] }) }, { linksInNewTab: true })
+                .linksInNewTab,
+        ).toBe(true);
+    });
+
     it('doesn’t create in a resource whose types all forbid it', () => {
         const typed = (abilities: Record<string, boolean>) => ({
             id: 'pages',

@@ -1,0 +1,40 @@
+# 0110: Related items are created and edited in a panel, over the form
+
+- Status: accepted
+- Date: 2026-11-23
+- Amends: [0067](0067-relation-cards.md) (the cards of a relation field have "Edit", and their links open in a new tab in the app's forms)
+- Issue: [#471](https://github.com/folkloreinc/panneau-js/issues/471)
+
+## Context
+
+A relation field picks existing items. To link an author that doesn't exist yet, an editor leaves the form and its unsaved changes, creates the author, comes back and picks it. To fix a typo in the name of an author already linked, they click its card, whose link goes to the author's page: a clean form leaves at once, a dirty one asks "Leave without saving?". The field already had a "Create “text”" option, through the `create()` of its `RelationSource`, which only sent the typed text as the title of the new item, and the app never turned it on. A resource whose items need more than a title, a type, or validation couldn't be created that way.
+
+## Decision
+
+- **A side panel, over the page.** "Create “text”" opens a panel on the right of the screen, the whole height of it, as the item panel goes over its list ([0099](0099-the-item-panel-goes-over-its-list.md)), and with the same `Aside` ([0074](0074-asides-next-to-lists-and-forms.md)): not a centered dialog. A resource's form needs the room, and the form underneath stays in view on its left. The panel is modal: the focus moves to it and stays in it, Escape and its close button close it, and the page under it can't be used until then.
+- **The full form of the related resource**: its fields, its layout, its validation, its `422` errors and its abilities, as its create page has them, after the choice of its type in a resource with types ([0077](0077-resource-types.md)), under the title "New Author". The typed text is the value of its `itemTitle` field. A short form for quick creation may come later, declared by the resource.
+    - **Its width:** the wide aside (half of the screen), at least 36rem, the whole width on a phone. Its layout adapts as it does on a page of that width: the `sidebar` nodes of the form go beside it from 56rem of the panel, below it otherwise ([0074](0074-asides-next-to-lists-and-forms.md)). They are not flattened into the form: below it, they stay the panels the form's layout declares.
+    - **Saving** creates the item and adds it to the relation: after the others in a multiple relation, in place of the item in a single one, with the "Undo" of a removal as before. The panel closes and the focus comes back to the field. The form underneath keeps its values, and now has unsaved changes.
+    - **Closing** it with unsaved changes asks first, as leaving a page does. The typed text alone isn't a change.
+    - **⌘ S and ⌘ Enter** save the form of the panel while it is open, never the form of the page: the panel is a dialog, which the save shortcut keeps apart.
+- **One level.** Inside the panel, relation fields pick existing items: they offer no "Create …" nor "Edit", and the links of their cards open in a new tab, which leaves neither the panel nor the form under it. A panel never opens over a panel.
+- **"Edit" on a card edits its item in the same panel**, under the title of the item (the label of the panel is "Edit the person"), with the form of its edit page: its fields, its layout, its type, its validation, its `422` errors and its version conflicts. The panel loads the item again when it opens, and draws the skeleton of its form until then: the item that a list or a field cached may be older, or a lighter version of it. An item that is gone, or that the user can't view, says so in the panel; one that failed to load says so with "Try again".
+    - **Saving** updates the item and closes the panel. The item's query and the lists of its resource show it at once, as its edit page does. Its card shows it as saved (its label, its description, its image), and the focus comes back to its "Edit". The value of the field doesn't change, since it is the same item: the form underneath keeps its values and its unsaved changes, and gets none.
+    - **Closing** it with unsaved changes asks first, and ⌘ S saves the form of the panel, as when creating.
+    - **"Edit" follows the abilities**, as the rest of the app decides it: it shows on the items whose `abilities.update` is `true` ([0046](0046-abilities-in-the-ui.md)). Those are in the items of the source: a field whose source edits asks `resolve()` for the items of its cards that it doesn't have yet, in the request that every field of the form shares. An item the source doesn't know has no "Edit" until then.
+    - **No actions of the item in the panel**, such as "Delete" or "Duplicate": the `actions` panel of its sidebar is empty there. Deleting the item from the panel would leave the field with the card of an item that is gone; its page has them.
+    - "Edit" is offered by fields that can change (not `readOnly` nor `disabled`), on cards, not on the chips of the compact field (the filters of lists).
+- **The link of a card opens a new tab in the app's forms.** A card still links to the item's page ([0067](0067-relation-cards.md)), but that link no longer leaves the form: it opens the page in a new tab, and "Edit" is how a card changes its item without leaving it. The details of an item (its panel next to its list) still follow the link in the same tab: leaving them loses nothing. Opening the panel on a click on the card was rejected: a link that doesn't go where it says, and that does something else for the items the user can't update, is harder to understand than a link and a button.
+- **"Create …" follows the abilities**: it shows when the user can create in the related resource (`abilities.create`, [0046](0046-abilities-in-the-ui.md)), and, in a resource with types, when one of them can be created.
+- **Fields don't need the app.** The panel is something the app gives to fields, through their relation source: `createRelationSource()` takes `createItem(resource, values)`, which creates the item somewhere else and resolves with it, or with `null` when nothing was created, and `editItem(resource, id)`, which edits it somewhere else and resolves with it once saved, or with `null`. A source says that the links of its cards open in a new tab with `linksInNewTab`. Without them, fields behave as before: `create()` sends the title through the adapter, or `onCreate` of the field opens what a project wants, and cards have no "Edit".
+
+## Not decided here
+
+- **Creating without typing first**: "Create …" needs a text, as the option did.
+- **The actions of the item in the panel** ("Delete", "Duplicate"), and what a field does with the card of an item deleted from it.
+- **Other fields that show the same item**: they show it as saved once they render again, from the source; the field of the card that edited it does at once.
+
+## Consequences
+
+- `@panneau/fields`: `RelationSourceOptions` has `createItem`, `editItem` and `linksInNewTab`, `RelationSource` has `linksInNewTab`, `edit()`, `canEdit()` and `edited()` (the items saved by `edit()`, which fields show in place of what their values say). A created or edited item goes into the source's cache, so that its card shows at once. A source doesn't offer creation in a resource whose types all forbid it. `RelationField` brings the focus back to the field once `create()` or `onCreate` settles, and to the card's "Edit" once `edit()` does. `useRelationReferences()` takes `resolveAll`, to ask `resolve()` for every item it doesn't have.
+- `@panneau/app`: its relation source turns `create` and `edit` on, through a panel that the shell shows over the page, and opens the links of cards in a new tab. A form whose relations hold items the app hasn't cached makes one request per related resource for them. The panel comes with the first page's JavaScript, about 6 KB: what it needs (the form, the aside, the modal) is already there, and a chunk loaded with `import()` would split the modules it shares with that page into small chunks, which weighed 17 KB more when measured.

@@ -530,6 +530,14 @@ export const appMessages = {
         id: 'panneau.app.itemForbidden',
         defaultMessage: 'You can’t view this {resource}.',
     }),
+    itemUpdateForbidden: defineMessage<{ resource: string }>({
+        id: 'panneau.app.itemUpdateForbidden',
+        defaultMessage: 'You can’t edit this {resource}.',
+    }),
+    itemGone: defineMessage<{ resource: string }>({
+        id: 'panneau.app.itemGone',
+        defaultMessage: 'This {resource} doesn’t exist anymore, or you can’t see it.',
+    }),
     backHome: defineMessage({ id: 'panneau.app.backHome', defaultMessage: 'Back to home' }),
     forbidden: defineMessage({ id: 'panneau.app.forbidden', defaultMessage: 'Access denied' }),
     forbiddenText: defineMessage({
