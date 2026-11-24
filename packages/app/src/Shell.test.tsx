@@ -692,13 +692,14 @@ describe('the app shell', () => {
             name: 'Your account (Ada)',
         });
         await user.click(account);
+        // Who is logged in, at the top of the menu, opens their profile (#487)
         await user.click(
-            within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Profile' }),
+            within(await screen.findByRole('dialog')).getByRole('link', { name: /^Ada/ }),
         );
         await waitFor(() =>
             expect(window.location.pathname).toBe('/panneau/resources/users/usr_1/edit'),
         );
-        expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
         // The button of the menu shows that the profile is the current page
         expect(account).toHaveAttribute('data-current', 'true');
     });
@@ -706,7 +707,7 @@ describe('the app shell', () => {
     describe("the user's menu (decision 0086)", () => {
         const sidebar = () => within(screen.getByRole('complementary'));
 
-        it('opens from the keyboard, with the user, their profile, the appearance and "Log out"', async () => {
+        it('opens from the keyboard, with the user and their profile, the preferences, then "Log out"', async () => {
             const user = userEvent.setup();
             renderApp({
                 resources: [...createDefinition().resources, USERS_RESOURCE],
@@ -719,61 +720,101 @@ describe('the app shell', () => {
             // Only one button in the footer: no buttons of the appearance or the language
             expect(sidebar().queryByRole('button', { name: /Appearance/ })).toBeNull();
             expect(sidebar().queryByRole('button', { name: 'Log out' })).toBeNull();
-            expect(account).toHaveAttribute('aria-haspopup', 'true');
+            expect(account).toHaveAttribute('aria-haspopup', 'dialog');
             expect(account).toHaveAttribute('aria-expanded', 'false');
 
             account.focus();
             await user.keyboard('{Enter}');
-            const menu = await screen.findByRole('menu', { name: 'Your account (Ada Lovelace)' });
+            const dialog = await screen.findByRole('dialog', {
+                name: 'Your account (Ada Lovelace)',
+            });
+            const popover = within(dialog);
+            const menu = popover.getByRole('menu', { name: 'Your account (Ada Lovelace)' });
             expect(account).toHaveAttribute('aria-expanded', 'true');
-            // The first item has the focus
-            await waitFor(() =>
-                expect(within(menu).getByRole('menuitem', { name: 'Profile' })).toHaveFocus(),
-            );
-            // Who is logged in, with the whole email, labels the profile's group
-            expect(
-                within(menu).getByRole('group', {
-                    name: 'Ada Lovelace ada.lovelace@example.com',
-                }),
-            ).toContainElement(within(menu).getByRole('menuitem', { name: 'Profile' }));
-            const appearance = within(within(menu).getByRole('group', { name: 'Appearance' }));
+            // Who is logged in describes the menu, and "Log out" is its last item
+            expect(menu).toHaveAccessibleDescription('Ada Lovelace ada.lovelace@example.com');
+            expect(within(menu).getAllByRole('menuitem').at(-1)).toHaveAccessibleName('Log out');
+
+            // Tab goes through the popover in the order shown (#487): who is logged in, a link to
+            // their profile; the preferences, closed at first…
+            await user.tab();
+            expect(popover.getByRole('link', { name: /^Ada Lovelace/ })).toHaveFocus();
+            await user.tab();
+            const preferences = popover.getByText('Preferences');
+            expect(preferences).toHaveFocus();
+            expect(preferences.closest('details')).not.toHaveAttribute('open');
+            // A native summary: the browser opens it with Enter or Space, user-event does not
+            await user.click(preferences);
+            expect(preferences.closest('details')).toHaveAttribute('open');
+            expect(preferences).toHaveFocus();
+            // …and in them the appearance, a row of icons named by their tooltips…
+            await user.tab();
+            const appearance = within(popover.getByRole('radiogroup', { name: 'Appearance' }));
             expect(
                 appearance
-                    .getAllByRole('menuitemradio')
-                    .map((item) => [item.textContent, item.getAttribute('aria-checked')]),
+                    .getAllByRole('radio')
+                    .map((item) => [
+                        item.getAttribute('aria-label'),
+                        item.getAttribute('aria-checked'),
+                    ]),
             ).toEqual([
                 ['Light', 'true'],
                 ['Dark', 'false'],
                 ['Same as the system', 'false'],
             ]);
-            expect(within(menu).getByRole('menuitem', { name: 'Log out' })).toBeInTheDocument();
-
-            await user.keyboard('{ArrowDown}{ArrowDown}');
-            expect(appearance.getByRole('menuitemradio', { name: 'Dark' })).toHaveFocus();
-            await user.keyboard('{Enter}');
+            expect(appearance.getByRole('radio', { name: 'Light' })).toHaveFocus();
+            await user.keyboard('{ArrowRight}');
+            expect(appearance.getByRole('radio', { name: 'Dark' })).toHaveFocus();
+            await user.keyboard(' ');
             expect(window.localStorage.getItem('panneau:color-scheme')).toBe('dark');
-            // The menu closes, and gives the focus back to its button
-            await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument());
-            await waitFor(() => expect(account).toHaveFocus());
-
-            await user.keyboard('{Enter}');
-            const reopened = await screen.findByRole('menu');
-            expect(within(reopened).getByRole('menuitemradio', { name: 'Dark' })).toHaveAttribute(
+            // It stays open, to compare
+            expect(appearance.getByRole('radio', { name: 'Dark' })).toHaveAttribute(
                 'aria-checked',
                 'true',
             );
+            // …then the other preferences, and the menu of the actions, each after the last
+            let previous = document.activeElement;
+            while (previous !== null && !menu.contains(previous)) {
+                await user.tab();
+                const next = document.activeElement;
+                expect(next).not.toBeNull();
+                if (next === null) {
+                    break;
+                }
+                expect(previous.compareDocumentPosition(next)).toBe(
+                    Node.DOCUMENT_POSITION_FOLLOWING,
+                );
+                previous = next;
+            }
+            // Escape closes it and gives the focus back to its button
             await user.keyboard('{Escape}');
-            await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument());
+            await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
             await waitFor(() => expect(account).toHaveFocus());
+
+            await user.keyboard('{Enter}');
+            const reopened = await screen.findByRole('dialog');
+            // The preferences are closed again
+            expect(
+                within(reopened).getByText('Preferences').closest('details'),
+            ).not.toHaveAttribute('open');
+            expect(within(reopened).getByRole('radio', { name: 'Dark' })).toHaveAttribute(
+                'aria-checked',
+                'true',
+            );
+            // An item of the menu closes it
+            await user.click(within(reopened).getByRole('menuitem', { name: 'Log out' }));
+            await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
         });
 
         it('has no profile without the resource of users', async () => {
             const user = userEvent.setup();
             renderApp();
             await user.click(sidebar().getByRole('button', { name: 'Your account (Ada)' }));
-            const menu = await screen.findByRole('menu');
-            expect(within(menu).queryByRole('menuitem', { name: 'Profile' })).toBeNull();
-            expect(within(menu).getByRole('group', { name: 'Appearance' })).toBeInTheDocument();
+            const dialog = within(await screen.findByRole('dialog'));
+            // Who is logged in, but not a link
+            expect(dialog.getByText('Ada')).toBeInTheDocument();
+            expect(dialog.queryByRole('link')).toBeNull();
+            expect(dialog.getByRole('radiogroup', { name: 'Appearance' })).toBeInTheDocument();
         });
 
         it('opens the same menu from the avatar of the rail', async () => {
@@ -782,8 +823,8 @@ describe('the app shell', () => {
             await user.click(screen.getByRole('button', { name: 'Collapse the sidebar' }));
             const account = sidebar().getByRole('button', { name: 'Your account (Ada)' });
             await user.click(account);
-            const menu = await screen.findByRole('menu', { name: 'Your account (Ada)' });
-            expect(within(menu).getByRole('menuitemradio', { name: 'Light' })).toHaveAttribute(
+            const menu = await screen.findByRole('dialog', { name: 'Your account (Ada)' });
+            expect(within(menu).getByRole('radio', { name: 'Light' })).toHaveAttribute(
                 'aria-checked',
                 'true',
             );
@@ -862,12 +903,13 @@ describe('the app shell', () => {
             await user.click(screen.getByRole('button', { name: 'Your account (Ada)' }));
             // The same menu as the sidebar's, named after its button
             const menu = await screen.findByRole('menu', { name: 'Your account (Ada)' });
-            expect(within(menu).getByRole('group', { name: 'Ada' })).toBeInTheDocument();
-            expect(within(menu).getByRole('menuitemradio', { name: 'Light' })).toHaveAttribute(
+            expect(menu).toHaveAccessibleDescription('Ada');
+            const popover = within(screen.getByRole('dialog', { name: 'Your account (Ada)' }));
+            expect(popover.getByRole('radio', { name: 'Light' })).toHaveAttribute(
                 'aria-checked',
                 'true',
             );
-            await user.click(within(menu).getByRole('menuitemradio', { name: 'Dark' }));
+            await user.click(popover.getByRole('radio', { name: 'Dark' }));
             expect(window.localStorage.getItem('panneau:color-scheme')).toBe('dark');
         });
     });

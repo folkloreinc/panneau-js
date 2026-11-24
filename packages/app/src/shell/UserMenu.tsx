@@ -1,26 +1,33 @@
-import { Keyboard, LogOut, Monitor, Moon, Sun, UserRound } from 'lucide-react';
-import type { ReactElement } from 'react';
+import { ChevronRight, Keyboard, LogOut, Monitor, Moon, Sun } from 'lucide-react';
+import { type ReactElement, useId, useState } from 'react';
+import { Link } from 'react-aria-components';
 
 import { appMessages, uiMessages } from '@panneau/intl';
 import type { Definition } from '@panneau/protocol';
 import {
     Avatar,
     type AvatarSize,
+    Icon,
     type IconComponent,
     Menu,
     MenuItem,
     type MenuProps,
-    MenuSection,
     MenuSeparator,
-    MenuTrigger,
+    Popover,
+    PopoverTrigger,
+    SegmentedControl,
+    Select,
+    Tooltip,
     usePanneauIntl,
     useShortcutHelp,
 } from '@panneau/ui';
 
+import { cx } from '../cx';
 import { getInterfaceLocales } from '../interfaceLocales';
 import { getProfilePath } from '../navigation';
 import styles from './UserMenu.module.css';
 import { DENSITY_CHOICES, DENSITY_ICONS, type DensityChoice } from './density';
+import { SHORTCUT_HELP_KEYS } from './keys';
 
 /** The color schemes the user can pick, in the order of the menu. */
 export const COLOR_SCHEMES = ['light', 'dark', 'auto'] as const;
@@ -81,10 +88,12 @@ export interface UserMenuProps {
 }
 
 /**
- * The user's menu (decision 0086), behind their avatar and name: who is logged in, their profile,
- * the appearance, the density (decision 0104) and the language as choices with a check, the
- * help of keyboard shortcuts (decision 0112), and "Log out". The sidebar and the dock
- * share it.
+ * The user's menu (decision 0086), behind their avatar and name, top to bottom (#487): who is
+ * logged in, a link to their profile when they have one; their preferences, closed at first, one
+ * row each with a small label: the appearance and the density (decision 0104) as rows of icons,
+ * the language as a select; then a menu of the actions: the help of keyboard shortcuts (decision
+ * 0112), and "Log out" alone at the end. It is a popover, a dialog: Tab goes through it in the
+ * order shown. The sidebar and the dock share it.
  */
 export function UserMenu({
     definition,
@@ -99,127 +108,181 @@ export function UserMenu({
     placement,
     children,
 }: UserMenuProps) {
+    // Not memoized: what it renders is mounted only while the menu is open, and the memoization
+    // of each element would weigh about 1.8 KB in the first page's JavaScript (#487).
+    'use no memo';
     const intl = usePanneauIntl();
+    const [isOpen, setOpen] = useState(false);
     const user = definition.user ?? null;
+    const label = getUserMenuLabel(definition, intl);
     // The user's profile, when the definition has the resource of users
     const profilePath = getProfilePath(definition, basePath);
     const locales = onLocaleChange !== undefined ? getInterfaceLocales(definition) : [];
     const openShortcutHelp = useShortcutHelp();
+    const appearanceId = useId();
+    const densityId = useId();
+    const identityId = useId();
+    const close = () => setOpen(false);
 
-    return (
-        <MenuTrigger>
-            {children}
-            <Menu placement={placement} popoverClassName={styles.popover}>
-                {user !== null ? (
-                    <MenuSection
-                        title={
-                            <span className={styles.user}>
-                                <span className={styles.name}>{user.name}</span>
-                                {/* Read as two words, though shown on two lines */}{' '}
-                                {user.email !== undefined ? (
-                                    <span className={styles.email}>{user.email}</span>
-                                ) : null}
-                            </span>
-                        }
-                        headerClassName={styles.header}
-                    >
-                        {profilePath !== null ? (
-                            <MenuItem
-                                id="profile"
-                                href={profilePath}
-                                icon={UserRound}
-                                onAction={onNavigate}
-                            >
-                                {intl.formatMessage(appMessages.accountProfile)}
-                            </MenuItem>
-                        ) : null}
-                    </MenuSection>
+    // Who is logged in: it opens their profile, when they have one
+    const identity =
+        user !== null ? (
+            <span className={styles.identity}>
+                <span className={styles.name}>{user.name}</span>
+                {/* Read as two words, though shown on two lines */}{' '}
+                {user.email !== undefined ? (
+                    <span className={styles.email}>{user.email}</span>
                 ) : null}
-                {user !== null ? <MenuSeparator /> : null}
-                <MenuSection
-                    title={intl.formatMessage(appMessages.appearance)}
-                    selectionMode="single"
-                    disallowEmptySelection
-                    selectedKeys={[colorScheme]}
-                    onSelectionChange={(keys) => {
-                        const [key] = keys === 'all' ? [] : [...keys];
-                        const scheme = COLOR_SCHEMES.find((value) => value === key);
-                        if (scheme !== undefined) {
-                            onColorSchemeChange(scheme);
-                        }
-                    }}
-                >
-                    {COLOR_SCHEMES.map((scheme) => (
-                        <MenuItem key={scheme} id={scheme} icon={SCHEME_ICONS[scheme]}>
-                            {intl.formatMessage(appMessages.colorSchemeOption, { scheme })}
-                        </MenuItem>
-                    ))}
-                </MenuSection>
-                {onDensityChange !== undefined ? (
-                    <MenuSection
-                        title={intl.formatMessage(appMessages.densityTitle)}
-                        selectionMode="single"
-                        disallowEmptySelection
-                        // Prefixed: the ids of a menu are unique
-                        selectedKeys={[`density-${density}`]}
-                        onSelectionChange={(keys) => {
-                            const [key] = keys === 'all' ? [] : [...keys];
-                            const choice = DENSITY_CHOICES.find(
-                                (value) => `density-${value}` === key,
-                            );
-                            if (choice !== undefined) {
-                                onDensityChange(choice);
-                            }
-                        }}
-                    >
-                        {DENSITY_CHOICES.map((choice) => (
-                            <MenuItem
-                                key={choice}
-                                id={`density-${choice}`}
-                                icon={DENSITY_ICONS[choice]}
-                            >
-                                {intl.formatMessage(appMessages.densityOption, { density: choice })}
-                            </MenuItem>
-                        ))}
-                    </MenuSection>
-                ) : null}
-                {locales.length > 0 ? (
-                    <MenuSection
-                        title={intl.formatMessage(appMessages.language)}
-                        selectionMode="single"
-                        disallowEmptySelection
-                        // Prefixed: the ids of a menu are unique, and a locale could be "dark"
-                        selectedKeys={[`locale-${definition.locale}`]}
-                        onSelectionChange={(keys) => {
-                            const [key] = keys === 'all' ? [] : [...keys];
-                            if (typeof key === 'string' && key.startsWith('locale-')) {
-                                onLocaleChange?.(key.slice('locale-'.length));
-                            }
-                        }}
-                    >
-                        {locales.map(({ locale, label }) => (
-                            <MenuItem key={locale} id={`locale-${locale}`} textValue={label}>
-                                <span lang={locale}>{label}</span>
-                            </MenuItem>
-                        ))}
-                    </MenuSection>
-                ) : null}
+            </span>
+        ) : null;
+
+    // The actions: the help of shortcuts, and "Log out" alone at the end
+    const menu =
+        openShortcutHelp !== null || onLogOut !== undefined ? (
+            <Menu
+                isInline
+                aria-label={label}
+                aria-describedby={user !== null ? identityId : undefined}
+                onAction={close}
+                className={styles.menu}
+            >
+                {/* One item each: no sections, a separator between them */}
                 {openShortcutHelp !== null ? (
-                    <MenuSection aria-label={intl.formatMessage(uiMessages.shortcutsTitle)}>
-                        <MenuItem id="shortcuts" icon={Keyboard} onAction={openShortcutHelp}>
-                            {intl.formatMessage(uiMessages.shortcutsTitle)}
-                        </MenuItem>
-                    </MenuSection>
+                    <MenuItem
+                        id="shortcuts"
+                        icon={Keyboard}
+                        shortcut={SHORTCUT_HELP_KEYS}
+                        onAction={openShortcutHelp}
+                    >
+                        {intl.formatMessage(uiMessages.shortcutsTitle)}
+                    </MenuItem>
                 ) : null}
-                {onLogOut !== undefined ? <MenuSeparator /> : null}
+                {openShortcutHelp !== null && onLogOut !== undefined ? <MenuSeparator /> : null}
                 {onLogOut !== undefined ? (
-                    <MenuSection aria-label={intl.formatMessage(appMessages.logOut)}>
-                        <MenuItem id="logout" icon={LogOut} onAction={onLogOut}>
-                            {intl.formatMessage(appMessages.logOut)}
-                        </MenuItem>
-                    </MenuSection>
+                    <MenuItem id="logout" icon={LogOut} onAction={onLogOut}>
+                        {intl.formatMessage(appMessages.logOut)}
+                    </MenuItem>
                 ) : null}
             </Menu>
-        </MenuTrigger>
+        ) : null;
+
+    return (
+        <PopoverTrigger isOpen={isOpen} onOpenChange={setOpen}>
+            {children}
+            <Popover
+                placement={placement}
+                aria-label={label}
+                className={styles.popover}
+                dialogClassName={styles.dialog}
+            >
+                {user !== null && profilePath !== null ? (
+                    <Tooltip content={intl.formatMessage(appMessages.accountProfile)}>
+                        <Link
+                            id={identityId}
+                            href={profilePath}
+                            onPress={() => {
+                                close();
+                                onNavigate?.();
+                            }}
+                            className={cx(styles.user, styles.profile)}
+                        >
+                            {identity}
+                            <Icon icon={ChevronRight} size="sm" className={styles.chevron} />
+                        </Link>
+                    </Tooltip>
+                ) : user !== null ? (
+                    <p id={identityId} className={styles.user}>
+                        {identity}
+                    </p>
+                ) : null}
+                {/* The preferences, closed at first: one row each, a small label and its control */}
+                <details className={styles.preferences}>
+                    <summary className={styles.summary}>
+                        {intl.formatMessage(appMessages.preferences)}
+                        <Icon icon={ChevronRight} size="sm" className={styles.chevron} />
+                    </summary>
+                    <div className={styles.settings}>
+                        <div className={styles.setting}>
+                            <span id={appearanceId} className={styles.settingLabel}>
+                                {intl.formatMessage(appMessages.appearance)}
+                            </span>
+                            <SegmentedControl
+                                aria-labelledby={appearanceId}
+                                size="sm"
+                                hideLabels
+                                value={colorScheme}
+                                onChange={(value) => {
+                                    const scheme = COLOR_SCHEMES.find((option) => option === value);
+                                    if (scheme !== undefined) {
+                                        onColorSchemeChange(scheme);
+                                    }
+                                }}
+                                options={COLOR_SCHEMES.map((scheme) => ({
+                                    value: scheme,
+                                    label: intl.formatMessage(appMessages.colorSchemeOption, {
+                                        scheme,
+                                    }),
+                                    icon: SCHEME_ICONS[scheme],
+                                }))}
+                            />
+                        </div>
+                        {onDensityChange !== undefined ? (
+                            <div className={styles.setting}>
+                                <span id={densityId} className={styles.settingLabel}>
+                                    {intl.formatMessage(appMessages.densityTitle)}
+                                </span>
+                                <SegmentedControl
+                                    aria-labelledby={densityId}
+                                    size="sm"
+                                    hideLabels
+                                    value={density}
+                                    onChange={(value) => {
+                                        const choice = DENSITY_CHOICES.find(
+                                            (option) => option === value,
+                                        );
+                                        if (choice !== undefined) {
+                                            onDensityChange(choice);
+                                        }
+                                    }}
+                                    options={DENSITY_CHOICES.map((choice) => ({
+                                        value: choice,
+                                        label: intl.formatMessage(appMessages.densityOption, {
+                                            density: choice,
+                                        }),
+                                        icon: DENSITY_ICONS[choice],
+                                    }))}
+                                />
+                            </div>
+                        ) : null}
+                        {locales.length > 0 ? (
+                            <div className={styles.setting}>
+                                <span className={styles.settingLabel} aria-hidden="true">
+                                    {intl.formatMessage(appMessages.language)}
+                                </span>
+                                <Select
+                                    aria-label={intl.formatMessage(appMessages.language)}
+                                    isRequired
+                                    options={locales.map(({ locale, label: name }) => ({
+                                        value: locale,
+                                        label: name,
+                                        lang: locale,
+                                    }))}
+                                    value={definition.locale}
+                                    onChange={(locale) => {
+                                        if (typeof locale === 'string') {
+                                            close();
+                                            onLocaleChange?.(locale);
+                                        }
+                                    }}
+                                    className={styles.language}
+                                    triggerClassName={styles.languageTrigger}
+                                />
+                            </div>
+                        ) : null}
+                    </div>
+                </details>
+                {menu}
+            </Popover>
+        </PopoverTrigger>
     );
 }

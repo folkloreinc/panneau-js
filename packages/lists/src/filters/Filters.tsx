@@ -99,16 +99,21 @@ export function FilterControls({
                     return null;
                 }
                 const label = getFilterLabel(filter, columns, fields);
+                const clear = () => onChange(filter.id, undefined);
+                const clearLabel = intl.formatMessage(messages.clearFilter, { filter: label });
                 return (
                     <FilterItem
                         key={filter.id}
-                        label={label}
-                        // A switch says itself whether it is on
-                        clearable={filter.type !== 'toggle'}
+                        clearLabel={clearLabel}
+                        // A switch says itself whether it is on, and the built-in select clears
+                        // in its box, in place of its arrow
+                        clearable={filter.type !== 'toggle' && Control !== builtInFilters.select}
                         isActive={isFilterActive(values, filter)}
-                        onClear={() => onChange(filter.id, undefined)}
+                        onClear={clear}
                     >
                         <Control
+                            onClear={clear}
+                            clearLabel={clearLabel}
                             filter={filter}
                             label={label}
                             options={getFilterOptions(filter, columns, fields)}
@@ -125,7 +130,8 @@ export function FilterControls({
 }
 
 interface FilterItemProps {
-    label: string;
+    /** The name of the button that clears the filter. */
+    clearLabel: string;
     isActive: boolean;
     clearable: boolean;
     onClear: () => void;
@@ -133,8 +139,7 @@ interface FilterItemProps {
 }
 
 /** A filter control, marked when it has a value, with a button that clears it. */
-function FilterItem({ label, isActive, clearable, onClear, children }: FilterItemProps) {
-    const intl = usePanneauIntl();
+function FilterItem({ clearLabel, isActive, clearable, onClear, children }: FilterItemProps) {
     const item = useRef<HTMLDivElement>(null);
     return (
         <div
@@ -146,7 +151,7 @@ function FilterItem({ label, isActive, clearable, onClear, children }: FilterIte
             {isActive && clearable ? (
                 <IconButton
                     icon={X}
-                    label={intl.formatMessage(messages.clearFilter, { filter: label })}
+                    label={clearLabel}
                     className={styles.clear}
                     onPress={() => {
                         onClear();

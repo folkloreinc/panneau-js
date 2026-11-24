@@ -96,6 +96,30 @@
     background-color: var(--panneau-color-border);
 }
 
+/* The trigger, and the button that empties the select over the place of its arrow. */
+.triggerBox {
+    position: relative;
+    display: flex;
+    min-width: 0;
+}
+
+.trigger[data-clearable] .chevron {
+    visibility: hidden;
+}
+
+/* Centered on the arrow it replaces. */
+.clear.clear {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: calc(
+        var(--panneau-input-padding-x, var(--panneau-control-padding-x)) + 0.5rem -
+            var(--panneau-control-height-sm) / 2
+    );
+    height: var(--panneau-control-height-sm);
+    min-height: 0;
+    margin-block: auto;
+}
+
 .trigger {
     justify-content: space-between;
     gap: var(--panneau-space-2);

@@ -19,12 +19,21 @@
 
 /* A permalink: the start of the URL, muted, runs into the slug, and reads with it as one address
  * (`example.com/fr/ete-a-montreal`). The adornment that holds it touches the slug, and gives up
- * room to it, down to half. */
+ * its room to the slug first, down to its last characters: in a narrow field (a sidebar), the
+ * prefix is cut, not the slug. */
 .withPrefix.withPrefix > :first-child {
-    flex: 0 1 auto;
-    min-width: 0;
-    max-width: min(24rem, 50%);
+    flex: 0 1000 auto;
+    min-width: 2.5rem;
+    max-width: 24rem;
     margin-inline-end: 0;
+}
+
+/* As wide as the slug, where browsers size inputs by their content, and never narrower than a few
+ * characters. */
+.withPrefix.withPrefix > input {
+    flex: 1 1 auto;
+    min-width: 5rem;
+    field-sizing: content;
 }
 
 .prefix {

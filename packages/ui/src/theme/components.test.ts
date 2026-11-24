@@ -53,7 +53,10 @@ function readVars(css: string): { name: string; fallback: string | null }[] {
             fallback: css
                 .slice(from, index - 1)
                 .trim()
-                .replace(/\s+/g, ' '),
+                .replace(/\s+/g, ' ')
+                // A long fallback that Prettier breaks after `(` and before `)`
+                .replace(/\( /g, '(')
+                .replace(/ \)/g, ')'),
         });
     }
     return found;

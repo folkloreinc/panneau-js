@@ -8,6 +8,7 @@ import {
     MenuSection as AriaMenuSection,
     type MenuSectionProps as AriaMenuSectionProps,
     Header,
+    Keyboard,
     Separator,
     Text,
 } from 'react-aria-components';
@@ -15,6 +16,8 @@ import {
 import { Icon, type IconComponent } from '../icon/Icon';
 import { PopoverSurface } from '../popover/Popover';
 import listBoxStyles from '../select/ListBox.module.css';
+import type { ShortcutKeys } from '../shortcuts/keys';
+import { useShortcutHint } from '../shortcuts/useShortcut';
 import { cx } from '../utils/cx';
 import styles from './Menu.module.css';
 
@@ -28,6 +31,11 @@ export interface MenuProps<T extends object> extends Omit<AriaMenuProps<T>, 'cla
      */
     footer?: ReactNode;
     footerClassName?: string;
+    /**
+     * The menu without its popover, inside one that has more than the menu: a `Popover` with
+     * other controls (#487). Its `onClose` closes that popover after an item's action.
+     */
+    isInline?: boolean;
 }
 
 /**
@@ -41,6 +49,7 @@ export function Menu<T extends object>({
     placement = 'bottom start',
     footer,
     footerClassName,
+    isInline = false,
     ...props
 }: MenuProps<T>) {
     const footerId = useId();
@@ -56,18 +65,22 @@ export function Menu<T extends object>({
             className={cx('panneau-menu', listBoxStyles.listBox, className)}
         />
     );
+    const content = hasFooter ? (
+        <div className={styles.layout}>
+            {menu}
+            <div id={footerId} className={cx(styles.footer, footerClassName)}>
+                {footer}
+            </div>
+        </div>
+    ) : (
+        menu
+    );
+    if (isInline) {
+        return content;
+    }
     return (
         <PopoverSurface placement={placement} className={popoverClassName}>
-            {hasFooter ? (
-                <div className={styles.layout}>
-                    {menu}
-                    <div id={footerId} className={cx(styles.footer, footerClassName)}>
-                        {footer}
-                    </div>
-                </div>
-            ) : (
-                menu
-            )}
+            {content}
         </PopoverSurface>
     );
 }
@@ -83,12 +96,18 @@ export interface MenuItemProps extends Omit<AriaMenuItemProps, 'className' | 'st
     description?: string;
     /** Styles the item as destructive. */
     isDanger?: boolean;
+    /**
+     * The keys of the shortcut that does the same, at the end of the item (decision 0112). The
+     * item is described by them.
+     */
+    shortcut?: ShortcutKeys | undefined;
     className?: string;
 }
 
 /**
  * An item of a `Menu`. In a menu with a `selectionMode`, a selected item has a check at its end,
- * and the role of a radio (single) or a checkbox (multiple) item.
+ * and the role of a radio (single) or a checkbox (multiple) item. A `shortcut` shows its keys at
+ * the end.
  */
 export function MenuItem({
     children,
@@ -96,10 +115,12 @@ export function MenuItem({
     media,
     description,
     isDanger = false,
+    shortcut,
     className,
     textValue,
     ...props
 }: MenuItemProps) {
+    const hint = useShortcutHint()(shortcut);
     return (
         <AriaMenuItem
             {...props}
@@ -124,6 +145,7 @@ export function MenuItem({
                             </Text>
                         ) : null}
                     </span>
+                    {hint !== null ? <Keyboard className={styles.shortcut}>{hint}</Keyboard> : null}
                     {selectionMode !== 'none' ? (
                         <span className={styles.check}>
                             {isSelected ? <Icon icon={Check} size="sm" /> : null}

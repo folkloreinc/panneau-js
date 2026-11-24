@@ -77,15 +77,6 @@
     white-space: nowrap;
 }
 
-.goToKey {
-    flex: none;
-    padding: 0 var(--panneau-space-1);
-    border: var(--panneau-border-width) solid var(--panneau-color-border);
-    border-radius: var(--panneau-radius-sm);
-    font-family: inherit;
-    font-size: var(--panneau-font-size-xs);
-}
-
 .goToIcon {
     flex: none;
     color: var(--panneau-color-text-muted);

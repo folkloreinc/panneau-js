@@ -43,16 +43,15 @@ const MoreMenu = lazy(async () => ({ default: (await import('./MoreMenu')).MoreM
 function SelectButton({ isSelecting, onPress }: { isSelecting: boolean; onPress: () => void }) {
     const intl = usePanneauIntl();
     const label = intl.formatMessage(isSelecting ? messages.endSelection : messages.startSelection);
-    // "Done" says what pressing it does, which its icon doesn't: it keeps its label (#424).
+    // Only its icon in both states (#487): solid while selecting, named and with a tooltip that
+    // says what pressing it does ("Select", "Done").
     return (
         <ToolbarButton
             icon={ListChecks}
             label={label}
             appearance={isSelecting ? 'solid' : 'outline'}
             onPress={onPress}
-        >
-            {isSelecting ? label : null}
-        </ToolbarButton>
+        />
     );
 }
 

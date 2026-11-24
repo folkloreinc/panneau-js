@@ -2,14 +2,7 @@ import { CircleCheck } from 'lucide-react';
 import { type ReactNode, createContext, useId } from 'react';
 
 import type { Field } from '@panneau/protocol';
-import {
-    Button,
-    Icon,
-    Tooltip,
-    useFormatShortcut,
-    usePanneauIntl,
-    useShortcutLabel,
-} from '@panneau/ui';
+import { Button, Icon, Tooltip, useFormatShortcut, usePanneauIntl } from '@panneau/ui';
 
 import styles from '../Form.module.css';
 import { cx } from '../cx';
@@ -51,7 +44,6 @@ export const SummaryContext = createContext<SummaryState | null>(null);
 export function SaveControls({ status, isSubmitting, canSave, actions, submitLabel }: SaveState) {
     const intl = usePanneauIntl();
     const formatShortcut = useFormatShortcut();
-    const shortcutLabel = useShortcutLabel();
     // "⌘S or ⌘↩", and `Meta+S Meta+Enter`
     const keys = formatShortcut(SAVE_KEYS).keys;
     const reasonId = useId();
@@ -79,12 +71,14 @@ export function SaveControls({ status, isSubmitting, canSave, actions, submitLab
             </span>
             {actions}
             {submitLabel !== null ? (
+                // The keys at the end of its tooltip, as every hint of a shortcut (decision 0112)
                 <Tooltip
                     content={
                         canSave
-                            ? shortcutLabel(SAVE_KEYS)
+                            ? (submitLabel ?? intl.formatMessage(messages.save))
                             : intl.formatMessage(messages.nothingToSave)
                     }
+                    shortcut={canSave ? SAVE_KEYS : undefined}
                 >
                     <Button
                         type="submit"

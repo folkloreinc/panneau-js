@@ -18,15 +18,21 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/** Actions, with the keys of their shortcuts at their end. */
 export const Actions: Story = {
     render: (args) => (
         <MenuTrigger>
             <IconButton icon={Ellipsis} label="More actions" showTooltip={false} />
             <Menu {...args}>
-                <MenuItem id="edit" icon={Pencil}>
+                <MenuItem id="edit" icon={Pencil} shortcut="e">
                     Edit
                 </MenuItem>
-                <MenuItem id="duplicate" icon={Copy} description="With its blocks">
+                <MenuItem
+                    id="duplicate"
+                    icon={Copy}
+                    description="With its blocks"
+                    shortcut="Mod+Shift+D"
+                >
                     Duplicate
                 </MenuItem>
                 <MenuSeparator />
@@ -39,7 +45,14 @@ export const Actions: Story = {
     play: async ({ args, canvasElement }) => {
         const canvas = within(canvasElement);
         await userEvent.click(canvas.getByRole('button', { name: 'More actions' }));
-        await userEvent.click(await canvas.findByRole('menuitem', { name: /Duplicate/ }));
+        // The keys of a shortcut at the end of its item, which they describe (decision 0112)
+        const edit = await canvas.findByRole('menuitem', { name: 'Edit' });
+        await expect(edit).toHaveAccessibleDescription('E');
+        const duplicate = canvas.getByRole('menuitem', { name: 'Duplicate' });
+        await expect(duplicate).toHaveAccessibleDescription(
+            /With its blocks.*(⇧⌘D|Ctrl\+Shift\+D)/,
+        );
+        await userEvent.click(duplicate);
         await expect(args.onAction).toHaveBeenCalled();
     },
 };

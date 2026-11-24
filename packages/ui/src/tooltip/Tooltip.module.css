@@ -11,6 +11,18 @@
     z-index: var(--panneau-z-overlay);
 }
 
+/* The keys of a shortcut, after the label (decision 0112). */
+.withShortcut {
+    display: inline-flex;
+    gap: var(--panneau-space-2);
+    align-items: baseline;
+}
+
+.shortcut {
+    font-family: inherit;
+    opacity: 0.75;
+}
+
 .tooltip[data-entering] {
     animation: fade var(--panneau-duration);
 }

@@ -3,16 +3,23 @@
 }
 
 .input {
-    display: flex;
     flex: 1 1 auto;
-    align-items: center;
     min-width: 0;
+    padding-block: var(--panneau-space-1);
     overflow-x: auto;
     white-space: nowrap;
     font-variant-numeric: var(--panneau-font-numeric);
 }
 
+/* The space between the date and the time is the only place where a date-time wraps: in a narrow
+ * control, the time goes under the date (the time may follow a bidi isolate). */
+.segment[data-type='literal']:has(+ .segment[data-type='hour']),
+.segment[data-type='literal']:has(+ .segment[data-type='literal'] + .segment[data-type='hour']) {
+    white-space: pre-wrap;
+}
+
 .segment {
+    /* Room for the highlight of the focused segment: the end of a narrow field matches it */
     padding: 0 0.0625rem;
     border-radius: var(--panneau-radius-sm);
     outline: none;
@@ -33,6 +40,11 @@
 .segment[data-focused] {
     color: var(--panneau-selected-text, var(--panneau-color-accent-text));
     background-color: var(--panneau-selected-bg, var(--panneau-color-accent));
+}
+
+/* With content after the date, the width of the field decides where that content goes. */
+.withEnd {
+    container: panneau-date-picker / inline-size;
 }
 
 /* Content after the date: a time zone. */
@@ -66,6 +78,27 @@
 .button[data-focus-visible] {
     outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
     outline-offset: calc(-1 * var(--panneau-focus-width));
+}
+
+/* In a narrow field (a sidebar), the content after the date goes on its own line, under the date
+ * and the calendar button, rather than cutting the date. */
+@container panneau-date-picker (max-width: 24rem) {
+    .control.control {
+        flex-wrap: wrap;
+    }
+
+    /* The calendar button stays beside the date, which wraps first */
+    .input {
+        flex-basis: 0;
+    }
+
+    /* Its text starts where the text of the date and the time does, after the inset of their
+     * segments */
+    .end {
+        order: 1;
+        flex-basis: 100%;
+        padding: 0 0 var(--panneau-space-1) 0.0625rem;
+    }
 }
 
 /* As wide as the calendar, not as the field. */

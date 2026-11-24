@@ -23,11 +23,54 @@
     width: 6rem;
 }
 
+.pageButtons {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-1);
+}
+
+/* The current page: a quiet button, which opens "Go to page" in its place. */
+.currentPage {
+    display: inline-flex;
+    align-items: center;
+}
+
+.pageButton.pageButton {
+    font-size: inherit;
+    font-weight: var(--panneau-font-weight-normal);
+    color: inherit;
+    font-variant-numeric: tabular-nums;
+}
+
+.goToPage {
+    width: 8rem;
+}
+
+.lastPage {
+    color: var(--panneau-color-text-muted);
+    white-space: nowrap;
+}
+
 /* A button of the toolbar with only its icon, as an icon button is (#424). Doubled: more specific
  * than the button's own padding, whatever the CSS order. */
 .iconOnly.iconOnly {
     width: var(--panneau-control-height);
     padding: 0;
+}
+
+/* A button that holds a value other than the default, such as a sort: in the tones of what is
+ * selected, as a filter with a value is (#487). Doubled: over the button's own colors. */
+.active.active {
+    background-color: var(--panneau-selected-subtle, var(--panneau-color-accent-subtle));
+    border-color: var(--panneau-selected-bg, var(--panneau-color-accent));
+}
+
+.active.active[data-hovered] {
+    background-color: color-mix(
+        in srgb,
+        var(--panneau-tone-text) 6%,
+        var(--panneau-selected-subtle, var(--panneau-color-accent-subtle))
+    );
 }
 
 /* The column of the sort, cut when it is long: the button stays in the toolbar's row. */

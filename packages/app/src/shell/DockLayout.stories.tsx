@@ -153,29 +153,34 @@ export const Group: Story = {
     },
 };
 
-/** The user's menu, the sidebar's (decision 0086): the color scheme, the language, "Log out". */
+/**
+ * The user's menu, the sidebar's (decision 0086): the language, "Log out", then the color scheme
+ * as a row of icons (#487).
+ */
 export const UserMenu: Story = {
     play: async ({ args, canvasElement }) => {
         const canvas = within(canvasElement);
         const body = within(canvasElement.ownerDocument.body);
         await userEvent.click(canvas.getByRole('button', { name: 'Your account (Ada Lovelace)' }));
-        const menu = await body.findByRole('menu', { name: 'Your account (Ada Lovelace)' });
-        await expect(within(menu).getByRole('menuitemradio', { name: 'Light' })).toHaveAttribute(
+        const popover = await body.findByRole('dialog', { name: 'Your account (Ada Lovelace)' });
+        // The preferences are closed at first (#487)
+        await userEvent.click(within(popover).getByText('Preferences'));
+        await expect(within(popover).getByRole('radio', { name: 'Light' })).toHaveAttribute(
             'aria-checked',
             'true',
         );
-        await expect(
-            within(within(menu).getByRole('group', { name: 'Language' })).getByRole(
-                'menuitemradio',
-                { name: 'English' },
-            ),
-        ).toHaveAttribute('aria-checked', 'true');
+        const menu = within(popover).getByRole('menu', { name: 'Your account (Ada Lovelace)' });
+        await expect(within(popover).getByRole('button', { name: /Language/ })).toHaveTextContent(
+            'English',
+        );
         await userEvent.click(within(menu).getByRole('menuitem', { name: 'Log out' }));
         await expect(args.onLogOut).toHaveBeenCalledTimes(1);
 
         await userEvent.click(canvas.getByRole('button', { name: 'Your account (Ada Lovelace)' }));
-        const reopened = await body.findByRole('menu', { name: 'Your account (Ada Lovelace)' });
-        await userEvent.click(within(reopened).getByRole('menuitemradio', { name: 'Français' }));
+        const reopened = await body.findByRole('dialog', { name: 'Your account (Ada Lovelace)' });
+        await userEvent.click(within(reopened).getByText('Preferences'));
+        await userEvent.click(within(reopened).getByRole('button', { name: /Language/ }));
+        await userEvent.click(await body.findByRole('option', { name: 'Français' }));
         await expect(args.onLocaleChange).toHaveBeenCalledWith('fr');
     },
 };

@@ -102,7 +102,12 @@
     scroll-margin: var(--panneau-space-10);
 }
 
-/* Sticks to the bottom of the window, above what the frame of the app puts there (a dock). */
+/* Sticks to the bottom of the window, above what the frame of the app puts there (a dock). On a
+ * phone (#487), its buttons stay clear of the home indicator and of the rounded corners: the frame
+ * keeps the bottom inset when it has a dock (`--panneau-frame-bottom`), the footer keeps the rest.
+ * The insets are 0 unless the page covers the whole screen (`viewport-fit=cover`). Sticky rather
+ * than fixed, it follows the visible viewport as the browser's bars come and go, without a height
+ * in viewport units. */
 .footer {
     position: sticky;
     bottom: var(--panneau-frame-bottom);
@@ -112,7 +117,12 @@
     align-items: center;
     justify-content: flex-end;
     gap: var(--panneau-space-2) var(--panneau-space-3);
-    padding: var(--panneau-space-3) 0;
+    padding: var(--panneau-space-3) env(safe-area-inset-right, 0px)
+        calc(
+            var(--panneau-space-3) +
+                max(0px, env(safe-area-inset-bottom, 0px) - var(--panneau-frame-bottom))
+        )
+        env(safe-area-inset-left, 0px);
     background-color: var(--panneau-color-bg);
     border-top: var(--panneau-border-width) solid var(--panneau-color-border);
 }
@@ -151,6 +161,12 @@
     margin-inline-end: auto;
     font-size: var(--panneau-font-size-sm);
     color: var(--panneau-color-text-muted);
+}
+
+/* Without a status, out of the row, so that its gap doesn't push the buttons in a narrow footer;
+ * still there for the status that comes. */
+.status:empty {
+    position: absolute;
 }
 
 .statusError {

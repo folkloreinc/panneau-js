@@ -2,6 +2,8 @@ import type { CSSProperties } from 'react';
 
 import { Button, type ButtonProps } from '../button/Button';
 import type { IconComponent } from '../icon/Icon';
+import type { ShortcutKeys } from '../shortcuts/keys';
+import { useFormatShortcut } from '../shortcuts/useShortcut';
 import { Tooltip } from '../tooltip/Tooltip';
 import { cx } from '../utils/cx';
 import styles from './IconButton.module.css';
@@ -15,6 +17,11 @@ export interface IconButtonProps extends Omit<
     label: string;
     /** Shows the label in a tooltip on hover and focus. Defaults to true. */
     showTooltip?: boolean;
+    /**
+     * The keys of the shortcut that does the same: shown at the end of the tooltip, and given as
+     * `aria-keyshortcuts` (decision 0112).
+     */
+    shortcut?: ShortcutKeys | undefined;
     className?: string;
     style?: CSSProperties;
 }
@@ -26,12 +33,17 @@ export function IconButton({
     appearance = 'ghost',
     size = 'md',
     showTooltip = true,
+    shortcut,
     className,
     ...props
 }: IconButtonProps) {
+    const format = useFormatShortcut();
     const button = (
         <Button
             {...props}
+            {...(shortcut !== undefined && props['aria-keyshortcuts'] === undefined
+                ? { 'aria-keyshortcuts': format(shortcut).keys }
+                : {})}
             appearance={appearance}
             size={size}
             icon={icon}
@@ -47,5 +59,9 @@ export function IconButton({
     if (!showTooltip) {
         return button;
     }
-    return <Tooltip content={label}>{button}</Tooltip>;
+    return (
+        <Tooltip content={label} shortcut={shortcut}>
+            {button}
+        </Tooltip>
+    );
 }

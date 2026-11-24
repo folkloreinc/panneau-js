@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { RouterProvider } from 'react-aria-components';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { ActionRunnerProvider } from '@panneau/actions';
 import { createRestAdapter } from '@panneau/data';
@@ -209,9 +209,19 @@ export const CollapsibleGroups: Story = {
     },
 };
 
+/** Opens the preferences of the user's menu, closed at first (#487). */
+const openPreferences = async (dialog: HTMLElement) => {
+    const summary = within(dialog).getByText('Preferences');
+    await expect(summary.closest('details')).not.toHaveAttribute('open');
+    await userEvent.click(summary);
+    await expect(summary.closest('details')).toHaveAttribute('open');
+};
+
 /**
- * The user's menu (decision 0086), the only button of the footer: who is logged in, their profile,
- * the appearance and the language (decision 0083) with a check on the current one, and "Log out".
+ * The user's menu (decision 0086), the only button of the footer, top to bottom (#487): who is
+ * logged in, a link to their profile; their preferences, closed at first: the appearance and the
+ * density as rows of icons named by their tooltips, which leave it open, and the language (decision
+ * 0083); then the actions, and "Log out" last.
  */
 export const UserMenu: Story = {
     play: async ({ args, canvasElement }) => {
@@ -219,29 +229,64 @@ export const UserMenu: Story = {
         const body = within(canvasElement.ownerDocument.body);
         const account = canvas.getByRole('button', { name: 'Your account (Ada Lovelace)' });
         await userEvent.click(account);
-        const menu = within(await body.findByRole('menu', { name: 'Your account (Ada Lovelace)' }));
-        await expect(menu.getByRole('menuitem', { name: 'Profile' })).toHaveAttribute(
-            'href',
-            '/admin/resources/users/1/edit',
+        const dialog = await body.findByRole('dialog', { name: 'Your account (Ada Lovelace)' });
+        const popover = within(dialog);
+        const menu = within(popover.getByRole('menu', { name: 'Your account (Ada Lovelace)' }));
+        // Who is logged in opens their profile, named by its tooltip
+        const profile = popover.getByRole('link', { name: /^Ada Lovelace/ });
+        await expect(profile).toHaveAttribute('href', '/admin/resources/users/1/edit');
+        await userEvent.hover(profile);
+        await expect(await body.findByRole('tooltip')).toHaveTextContent('Profile');
+        await userEvent.unhover(profile);
+        // The preferences are closed at first, between who is logged in and the actions
+        const summary = popover.getByText('Preferences');
+        await expect(popover.getByRole('radiogroup', { name: 'Appearance' })).not.toBeVisible();
+        await expect(summary.getBoundingClientRect().top).toBeGreaterThan(
+            profile.getBoundingClientRect().bottom,
         );
-        await expect(menu.getByRole('menuitemradio', { name: 'Light' })).toHaveAttribute(
+        await openPreferences(dialog);
+        // Top to bottom: who is logged in, the preferences, the actions, and "Log out" last
+        const top = (element: Element) => element.getBoundingClientRect().top;
+        const preferences = popover.getByRole('radiogroup', { name: 'Appearance' });
+        const language = popover.getByRole('button', { name: /Language/ });
+        const items = menu.getAllByRole('menuitem');
+        await expect(top(profile)).toBeLessThan(top(preferences));
+        await expect(top(preferences)).toBeLessThan(top(language));
+        await expect(top(language)).toBeLessThan(top(items[0] ?? language));
+        await expect(items.at(-1)).toHaveAccessibleName('Log out');
+        // The rows of the preferences end on the same edge
+        const right = (element: Element) => element.getBoundingClientRect().right;
+        await expect(Math.abs(right(preferences) - right(language))).toBeLessThanOrEqual(1);
+        const appearance = within(preferences);
+        await expect(appearance.getByRole('radio', { name: 'Light' })).toHaveAttribute(
             'aria-checked',
             'true',
         );
-        await userEvent.click(menu.getByRole('menuitemradio', { name: 'Dark' }));
+        // Each icon is named by its tooltip
+        const dark = appearance.getByRole('radio', { name: 'Dark' });
+        await expect(dark).toHaveTextContent('');
+        await userEvent.hover(dark);
+        await expect(await body.findByRole('tooltip')).toHaveTextContent('Dark');
+        await userEvent.click(dark);
+        await expect(dark).toHaveAttribute('aria-checked', 'true');
+        // Both choices fit on one line each, beside their label
+        const density = popover.getByRole('radiogroup', { name: 'Density' });
+        await expect(density.getBoundingClientRect().height).toBeLessThan(48);
+        await userEvent.keyboard('{Escape}');
+        await waitFor(() => expect(body.queryByRole('dialog')).toBeNull());
 
         await userEvent.click(account);
-        const reopened = within(await body.findByRole('menu'));
-        await expect(reopened.getByRole('menuitemradio', { name: 'Dark' })).toHaveAttribute(
+        const reopenedDialog = await body.findByRole('dialog');
+        const reopened = within(reopenedDialog);
+        await openPreferences(reopenedDialog);
+        await expect(reopened.getByRole('radio', { name: 'Dark' })).toHaveAttribute(
             'aria-checked',
             'true',
         );
-        const language = within(reopened.getByRole('group', { name: 'Language' }));
-        await expect(language.getByRole('menuitemradio', { name: 'English' })).toHaveAttribute(
-            'aria-checked',
-            'true',
-        );
-        await userEvent.click(language.getByRole('menuitemradio', { name: 'Français' }));
+        const select = reopened.getByRole('button', { name: /Language/ });
+        await expect(select).toHaveTextContent('English');
+        await userEvent.click(select);
+        await userEvent.click(await body.findByRole('option', { name: 'Français' }));
         await expect(args.onLocaleChange).toHaveBeenCalledWith('fr');
 
         await userEvent.click(account);
@@ -287,14 +332,24 @@ export const Phone: Story = {
     },
 };
 
-/** "Go to…" opens the command palette, with the navigation and the app's actions. */
+/**
+ * "Go to…" opens the command palette, with the navigation and the app's actions. Its keys are in
+ * its tooltip, not on the button (decision 0112), and the sidebar's toggle has its own.
+ */
 export const GoTo: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         const body = within(canvasElement.ownerDocument.body);
-        await userEvent.click(
-            within(canvas.getByRole('complementary')).getByRole('button', { name: /Go to…/ }),
-        );
+        const sidebar = within(canvas.getByRole('complementary'));
+        const goTo = sidebar.getByRole('button', { name: 'Go to…' });
+        await expect(goTo).toHaveTextContent(/^Go to…$/);
+        await expect(goTo.getAttribute('aria-keyshortcuts')).toMatch(/^(Meta|Control)\+K$/);
+        await userEvent.hover(goTo);
+        await expect(await body.findByRole('tooltip')).toHaveTextContent(/^Go to…(⌘K|Ctrl\+K)$/);
+        await userEvent.unhover(goTo);
+        const toggle = sidebar.getByRole('button', { name: 'Collapse the sidebar' });
+        await expect(toggle.getAttribute('aria-keyshortcuts')).toMatch(/^(Meta|Control)\+\\$/);
+        await userEvent.click(goTo);
         const field = await body.findByRole('searchbox', { name: 'Go to…' });
         await userEvent.type(field, 'arti');
         await expect(body.getByRole('menuitem', { name: 'Articles' })).toBeInTheDocument();
@@ -315,13 +370,14 @@ export const Density: Story = {
         await expect(scope).toHaveAttribute('data-density', 'touch');
         const account = canvas.getByRole('button', { name: 'Your account (Ada Lovelace)' });
         await userEvent.click(account);
-        const menu = within(await body.findByRole('menu'));
-        const density = within(menu.getByRole('group', { name: 'Density' }));
-        await expect(density.getByRole('menuitemradio', { name: 'Default' })).toHaveAttribute(
+        const dialog = await body.findByRole('dialog');
+        await openPreferences(dialog);
+        const density = within(within(dialog).getByRole('radiogroup', { name: 'Density' }));
+        await expect(density.getByRole('radio', { name: 'Default' })).toHaveAttribute(
             'aria-checked',
             'true',
         );
-        await userEvent.click(density.getByRole('menuitemradio', { name: 'Compact' }));
+        await userEvent.click(density.getByRole('radio', { name: 'Compact' }));
         await expect(scope).toHaveAttribute('data-density', 'compact');
         await expect(window.localStorage.getItem('panneau:density')).toBe('compact');
     },
@@ -343,8 +399,10 @@ export const RememberedDensity: Story = {
         await userEvent.click(
             within(canvasElement).getByRole('button', { name: 'Your account (Ada Lovelace)' }),
         );
-        const menu = within(await body.findByRole('menu'));
-        await expect(menu.getByRole('menuitemradio', { name: 'Comfortable' })).toHaveAttribute(
+        const dialog = await body.findByRole('dialog');
+        await openPreferences(dialog);
+        const menu = within(dialog);
+        await expect(menu.getByRole('radio', { name: 'Comfortable' })).toHaveAttribute(
             'aria-checked',
             'true',
         );
@@ -367,8 +425,10 @@ export const LockedDensity: Story = {
         await userEvent.click(
             within(canvasElement).getByRole('button', { name: 'Your account (Ada Lovelace)' }),
         );
-        const menu = within(await body.findByRole('menu'));
-        await expect(menu.getByRole('group', { name: 'Appearance' })).toBeInTheDocument();
-        await expect(menu.queryByRole('group', { name: 'Density' })).toBeNull();
+        const dialog = await body.findByRole('dialog');
+        await openPreferences(dialog);
+        const menu = within(dialog);
+        await expect(menu.getByRole('radiogroup', { name: 'Appearance' })).toBeInTheDocument();
+        await expect(menu.queryByRole('radiogroup', { name: 'Density' })).toBeNull();
     },
 };

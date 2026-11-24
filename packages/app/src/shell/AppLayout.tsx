@@ -22,6 +22,7 @@ import { Sidebar } from './Sidebar';
 import type { ColorSchemePreference } from './UserMenu';
 import type { DensityChoice } from './density';
 import { CONTENT_ID, SkipLink } from './frame';
+import { SIDEBAR_KEYS } from './keys';
 import { useRouteFocus } from './useRouteFocus';
 
 export const SIDEBAR_STATES = ['expanded', 'collapsed'] as const;
@@ -41,9 +42,6 @@ export interface AppLayoutProps {
     onLocaleChange?: ((locale: string) => void) | undefined;
     children?: ReactNode;
 }
-
-/** The keys that collapse or expand the sidebar. */
-const SIDEBAR_KEYS = 'Mod+\\';
 
 /**
  * The frame of the app. From the `lg` width of the Panneau root (64rem): the sidebar on the

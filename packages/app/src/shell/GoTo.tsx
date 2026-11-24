@@ -49,6 +49,7 @@ import { readRecentItems, useRecentScope } from '../recentItems';
 import { routePath } from '../routes';
 import { COLOR_SCHEMES, type ColorSchemePreference } from './UserMenu';
 import { type DensityChoice, useDensityCommands } from './density';
+import { SHORTCUT_HELP_KEYS } from './keys';
 
 /** The pause after typing before the palette searches the server. */
 const SEARCH_DELAY = 300;
@@ -276,6 +277,7 @@ export function GoTo({
                       label: intl.formatMessage(uiMessages.shortcutsTitle),
                       keywords: [intl.formatMessage(uiMessages.shortcutsHelp)],
                       icon: Keyboard,
+                      shortcut: SHORTCUT_HELP_KEYS,
                       onAction: openShortcutHelp,
                   },
               ]

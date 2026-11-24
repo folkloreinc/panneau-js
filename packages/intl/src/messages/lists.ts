@@ -237,6 +237,13 @@ export const listsMessages = {
         defaultMessage: 'Previous page',
     }),
     nextPage: defineMessage({ id: 'panneau.lists.nextPage', defaultMessage: 'Next page' }),
+    firstPage: defineMessage({ id: 'panneau.lists.firstPage', defaultMessage: 'First page' }),
+    lastPage: defineMessage({ id: 'panneau.lists.lastPage', defaultMessage: 'Last page' }),
+    goToPage: defineMessage({ id: 'panneau.lists.goToPage', defaultMessage: 'Go to page' }),
+    ofLastPage: defineMessage<{ lastPage: number }>({
+        id: 'panneau.lists.ofLastPage',
+        defaultMessage: 'of {lastPage, number}',
+    }),
     perPage: defineMessage({ id: 'panneau.lists.perPage', defaultMessage: 'Per page' }),
     editValue: defineMessage<{ field: string; item: string }>({
         id: 'panneau.lists.editValue',

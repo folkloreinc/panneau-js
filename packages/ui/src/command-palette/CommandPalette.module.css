@@ -194,6 +194,16 @@
     min-width: 0;
 }
 
+/* The keys of the item's shortcut, at its end (decision 0112). */
+.shortcut {
+    flex: none;
+    margin-inline-start: auto;
+    padding-inline-start: var(--panneau-space-3);
+    font-family: inherit;
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-text-muted);
+}
+
 .label,
 .description {
     overflow: hidden;

@@ -5,16 +5,50 @@
     max-width: min(20rem, calc(100vw - 2 * var(--panneau-space-4)));
 }
 
-/* Who is logged in, above their profile: the name and the whole email, not an eyebrow. */
-.header {
-    text-transform: none;
-    letter-spacing: normal;
-}
-
-.user {
+/* The menu, then the rows of the appearance and the density, without the padding of a dialog.
+ * Doubled: over the dialog's own padding, whatever the CSS order. */
+.dialog.dialog {
     display: flex;
     flex-direction: column;
+    max-height: inherit;
+    padding: 0;
+}
+
+/* Who is logged in, first: the name and the whole email. */
+.user {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    margin: var(--panneau-space-1);
+    padding: var(--panneau-space-2);
+    font-size: var(--panneau-font-size-xs);
+    line-height: var(--panneau-line-height-tight);
+    color: var(--panneau-color-text-muted);
+    text-decoration: none;
+    border-radius: var(--panneau-radius-md);
+    outline: none;
+}
+
+/* A link to their profile, like an item of the menu */
+.profile {
+    cursor: pointer;
+}
+
+.profile[data-hovered] {
+    background-color: var(--panneau-color-hover);
+}
+
+.profile[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: calc(-1 * var(--panneau-focus-width));
+}
+
+.identity {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
     gap: var(--panneau-space-1);
+    min-width: 0;
 }
 
 .name {
@@ -24,6 +58,82 @@
 }
 
 .email {
-    font-weight: var(--panneau-font-weight-normal);
     overflow-wrap: anywhere;
+}
+
+.chevron {
+    flex: 0 0 auto;
+}
+
+/* The preferences, closed at first (#487): a row like an item of the menu opens them. */
+.preferences {
+    border-top: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
+.summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: var(--panneau-space-1);
+    padding: var(--panneau-space-1) var(--panneau-space-2);
+    font-size: var(--panneau-font-size-sm);
+    border-radius: var(--panneau-radius-md);
+    cursor: pointer;
+    list-style: none;
+}
+
+.summary::-webkit-details-marker {
+    display: none;
+}
+
+.summary:hover {
+    background-color: var(--panneau-color-hover);
+}
+
+.summary:focus-visible {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: calc(-1 * var(--panneau-focus-width));
+}
+
+.summary .chevron {
+    transition: rotate var(--panneau-duration);
+}
+
+.preferences[open] .chevron {
+    rotate: 90deg;
+}
+
+/* Each one a small label, and its control at the end */
+.settings {
+    display: grid;
+    gap: var(--panneau-space-1);
+    padding: 0 var(--panneau-space-3) var(--panneau-space-2);
+}
+
+.setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--panneau-space-3);
+}
+
+.settingLabel {
+    font-size: var(--panneau-font-size-xs);
+    color: var(--panneau-color-text-muted);
+}
+
+/* The language: a select as compact as the rows of icons */
+.language {
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
+.languageTrigger.languageTrigger {
+    min-height: var(--panneau-control-height-sm);
+    font-size: var(--panneau-font-size-sm);
+}
+
+/* The actions, under the preferences */
+.menu {
+    border-top: var(--panneau-border-width) solid var(--panneau-color-border);
 }

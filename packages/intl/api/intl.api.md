@@ -229,6 +229,7 @@ export const appMessages: {
     openMenu: PanneauMessage<Record<never, never>>;
     closeMenu: PanneauMessage<Record<never, never>>;
     more: PanneauMessage<Record<never, never>>;
+    preferences: PanneauMessage<Record<never, never>>;
     appearance: PanneauMessage<Record<never, never>>;
     colorSchemeOption: PanneauMessage<    {
     scheme: string;
@@ -954,6 +955,12 @@ export const listsMessages: {
     }>;
     previousPage: PanneauMessage<Record<never, never>>;
     nextPage: PanneauMessage<Record<never, never>>;
+    firstPage: PanneauMessage<Record<never, never>>;
+    lastPage: PanneauMessage<Record<never, never>>;
+    goToPage: PanneauMessage<Record<never, never>>;
+    ofLastPage: PanneauMessage<    {
+    lastPage: number;
+    }>;
     perPage: PanneauMessage<Record<never, never>>;
     editValue: PanneauMessage<    {
     field: string;

@@ -1,4 +1,5 @@
 import type { IconComponent } from '../icon/Icon';
+import type { ShortcutKeys } from '../shortcuts/keys';
 
 /** An item of a `CommandPalette`: a link to follow, or an action to run. */
 export interface CommandPaletteItem {
@@ -18,6 +19,8 @@ export interface CommandPaletteItem {
     onAction?: () => void;
     /** The palette stays open after `onAction`, such as an item that narrows the search. */
     keepsOpen?: boolean;
+    /** The keys of the shortcut that does the same, at the end of the item (decision 0112). */
+    shortcut?: ShortcutKeys;
 }
 
 /** A titled group of items. */

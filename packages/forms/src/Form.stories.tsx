@@ -134,6 +134,51 @@ export const Layout: Story = {
     },
 };
 
+/**
+ * On a phone, 375px wide (#487): the footer sticks to the bottom of the window, its buttons as wide
+ * as it, clear of the home indicator and of the rounded corners when the page covers the whole
+ * screen (`env(safe-area-inset-*)`, 0 here).
+ */
+export const OnAPhone: Story = {
+    decorators: [
+        (Story) => (
+            <div style={{ width: '375px', maxWidth: '100%' }}>
+                <Story />
+            </div>
+        ),
+    ],
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const save = canvas.getByRole('button', { name: 'Save' });
+        let footer: HTMLElement | null = save;
+        while (footer !== null && getComputedStyle(footer).position !== 'sticky') {
+            footer = footer.parentElement;
+        }
+        await expect(footer).not.toBeNull();
+        if (footer === null) {
+            return;
+        }
+        const style = getComputedStyle(footer);
+        // The padding with the insets is a valid length: the space under the buttons stays
+        await expect(parseFloat(style.paddingBottom)).toBeGreaterThanOrEqual(
+            parseFloat(style.paddingTop),
+        );
+        // Without a status, the button is as wide as the footer: nothing before it takes room
+        const box = footer.getBoundingClientRect();
+        await expect(Math.abs(save.getBoundingClientRect().left - box.left)).toBeLessThanOrEqual(1);
+        await expect(Math.abs(save.getBoundingClientRect().right - box.right)).toBeLessThanOrEqual(
+            1,
+        );
+        // With one, both fit in the footer
+        await userEvent.type(canvas.getByRole('textbox', { name: /Name/ }), 'Ada');
+        const status = await within(footer).findByText('Unsaved changes');
+        // It fades in
+        await waitFor(() => expect(status).toBeVisible());
+        await expect(save.getBoundingClientRect().right).toBeLessThanOrEqual(box.right + 1);
+        await expect(footer.scrollWidth).toBeLessThanOrEqual(footer.clientWidth + 1);
+    },
+};
+
 /** ⌘ Enter on Apple platforms, Ctrl Enter elsewhere, as `userEvent.keyboard()` writes it. */
 function saveShortcut(): string {
     return isApplePlatform() ? '{Meta>}{Enter}{/Meta}' : '{Control>}{Enter}{/Control}';
