@@ -164,7 +164,12 @@ export function DatePicker({
             isReadOnly={isReadOnly}
             isInvalid={invalid}
             validationBehavior="aria"
-            className={cx('panneau-date-picker', fieldStyles.field, className)}
+            className={cx(
+                'panneau-date-picker',
+                fieldStyles.field,
+                end !== undefined && end !== null && styles.withEnd,
+                className,
+            )}
         >
             <FieldLabel isRequired={isRequired} className={labelClassName}>
                 {label}

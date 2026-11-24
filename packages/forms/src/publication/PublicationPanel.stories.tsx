@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { CSSProperties } from 'react';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { PanneauProvider, definePlugin } from '@panneau/core';
@@ -198,5 +199,61 @@ export const WithoutButton: Story = {
         const panel = sidebarOf(canvasElement);
         await expect(panel.getByText('Not published')).toBeVisible();
         await expect(panel.queryByRole('button', { name: 'Publish' })).toBeNull();
+    },
+};
+
+/**
+ * A narrow sidebar (`--panneau-aside-width: 18rem`): the date-time puts its time zone under the date and,
+ * narrower, its time under its date; the start of the address of a slug gives up its room to the
+ * slug, cut at its start. Nothing is cut at the edge of the panel.
+ */
+export const NarrowSidebar: Story = {
+    args: {
+        fields: [
+            ...STATUS_FIELDS,
+            {
+                name: 'slug',
+                type: 'slug',
+                label: 'Slug',
+                settings: { prefix: 'https://example.com/fr/magazine/vacances/' },
+            },
+        ],
+        layout: panelLayout(['status', 'published_at', 'slug']),
+        values: {
+            title: 'Summer',
+            status: 'draft',
+            published_at: '2026-10-15T13:30:00Z',
+            slug: 'un-ete-a-montreal',
+        },
+    },
+    decorators: [
+        (Story) => (
+            // The form puts its sidebar beside it from 56rem
+            <div style={{ width: '56rem', maxWidth: '100%', '--panneau-aside-width': '18rem' } as CSSProperties}>
+                <Story />
+            </div>
+        ),
+    ],
+    play: async ({ canvasElement }) => {
+        const sidebar = within(canvasElement).getByRole('region', { name: 'Sidebar' });
+        const panel = within(sidebar);
+        const edge = sidebar.getBoundingClientRect().right;
+        const fits = (element: Element) =>
+            expect(element.getBoundingClientRect().right).toBeLessThanOrEqual(edge + 0.5);
+
+        // The date and the time are whole, inside the panel, with the zone under them
+        const date = panel.getByRole('group', { name: 'Publication date' });
+        await fits(date);
+        await expect(date.scrollWidth).toBeLessThanOrEqual(date.clientWidth + 1);
+        const segments = within(date).getAllByRole('spinbutton');
+        for (const segment of segments) {
+            await fits(segment);
+        }
+
+        // The slug keeps room to be read and typed: the prefix is cut, not the input
+        const slug = panel.getByRole('textbox', { name: 'Slug' });
+        await fits(slug);
+        await expect(slug.scrollWidth).toBeLessThanOrEqual(slug.clientWidth + 1);
+        await expect(slug).toHaveValue('un-ete-a-montreal');
     },
 };
