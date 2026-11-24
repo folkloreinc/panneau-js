@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { RouterProvider } from 'react-aria-components';
 import { expect, userEvent, within } from 'storybook/test';
 
+import { Badge } from '../badge/Badge';
 import { Button } from '../button/Button';
 import { CommandPalette } from './CommandPalette';
 import type { CommandPaletteGroup } from './match';
@@ -20,6 +21,33 @@ const groups: CommandPaletteGroup[] = [
                 description: 'Article · City',
                 icon: Newspaper,
                 href: '/articles/1/edit',
+            },
+        ],
+    },
+    {
+        id: 'tools',
+        label: 'Tools',
+        items: [
+            {
+                id: 'recipes',
+                label: 'Recipes',
+                description: 'Plan the recipes of the week',
+                // An app's own glyph: here, an emoji on a colour
+                media: (
+                    <span
+                        style={{
+                            display: 'grid',
+                            placeItems: 'center',
+                            width: '100%',
+                            height: '100%',
+                            backgroundColor: '#ffe27a',
+                        }}
+                    >
+                        🍲
+                    </span>
+                ),
+                badge: <Badge tone="warning">Draft</Badge>,
+                href: '/tools/recipes',
             },
         ],
     },
@@ -179,5 +207,17 @@ export const Scoped: Story = {
         await userEvent.clear(field);
         await userEvent.type(field, '{Backspace}');
         await expect(body.getByRole('searchbox', { name: 'Go to…' })).toBeInTheDocument();
+    },
+};
+
+/**
+ * Items with `media`, an app's own glyph in place of an icon, and a `badge` after the label, which
+ * screen readers read with it.
+ */
+export const MediaAndBadge: Story = {
+    play: async ({ canvasElement }) => {
+        const body = within(canvasElement.ownerDocument.body);
+        await userEvent.type(await body.findByRole('searchbox', { name: 'Go to…' }), 'reci');
+        await expect(body.getByRole('menuitem', { name: 'Recipes Draft' })).toBeInTheDocument();
     },
 };

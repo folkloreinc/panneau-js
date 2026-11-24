@@ -112,6 +112,43 @@ describe('CommandPalette', () => {
         expect(screen.getByRole('menuitem', { name: 'Authors' }).querySelector('mark')).toBeNull();
     });
 
+    it('shows media and a badge, the badge in the accessible name', async () => {
+        const user = userEvent.setup();
+        render(
+            <Palette
+                groups={[
+                    {
+                        id: 'tools',
+                        label: 'Tools',
+                        items: [
+                            {
+                                id: 'recipes',
+                                label: 'Recipes',
+                                media: <span data-testid="glyph">R</span>,
+                                badge: <span>Draft</span>,
+                                href: '/tools/recipes',
+                            },
+                        ],
+                    },
+                ]}
+                highlightMatches
+            />,
+        );
+        await user.click(screen.getByRole('button', { name: 'Go to…' }));
+        await user.type(await screen.findByRole('searchbox'), 'draft');
+        // The badge is not matched
+        expect(screen.getByRole('status')).toHaveTextContent('No results');
+        await user.clear(screen.getByRole('searchbox'));
+        await user.type(screen.getByRole('searchbox'), 'rec');
+        const item = screen.getByRole('menuitem', { name: 'Recipes Draft' });
+        expect(within(item).getByTestId('glyph').parentElement).toHaveAttribute(
+            'aria-hidden',
+            'true',
+        );
+        // Only the label is highlighted
+        expect([...item.querySelectorAll('mark')].map((mark) => mark.textContent)).toEqual(['Rec']);
+    });
+
     it('says when nothing matches', async () => {
         const user = userEvent.setup();
         render(<Palette groups={groups} />);
