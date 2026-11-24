@@ -104,6 +104,32 @@ function inEnglish<T>(node: T): T {
 }
 
 /**
+ * The layout of the form of a page, with its localized slug in its `Publication` panel, after its
+ * date: the example has the field, but leaves it out of its form, where the playground reviews it
+ * (#503).
+ */
+function withSlugInPublication(resource: ResourceInput): ResourceInput {
+    const { form } = resource;
+    if (form?.layout === undefined) {
+        return resource;
+    }
+    return {
+        ...resource,
+        form: {
+            ...form,
+            layout: form.layout.map((node) =>
+                node.type === 'sidebar' && node.panel === 'publication'
+                    ? {
+                          ...node,
+                          children: [...(node.children ?? []), { type: 'field', name: 'slug' }],
+                      }
+                    : node,
+            ),
+        },
+    };
+}
+
+/**
  * The admin of a small publication: the pages and the media library of the protocol's example
  * definition, in English, articles, categories, authors and users, in a menu with groups and
  * icons.
@@ -115,7 +141,7 @@ export function createPlaygroundDefinition(): DefinitionInput {
     if (examplePages === undefined || media === undefined) {
         throw new Error('The example definition has no pages or no media library.');
     }
-    const pages = inEnglish(examplePages);
+    const pages = withSlugInPublication(inEnglish(examplePages));
     return {
         ...example,
         name: 'Northwind Journal',
@@ -531,6 +557,13 @@ export function createPlaygroundItems(): Record<string, Values[]> {
         pages: ['About us', 'Contact', 'Advertise', 'Privacy', 'Terms'].map((title, index) => ({
             id: String(index + 1),
             title: { en: title, fr: title },
+            // The last page has no French address yet: French offers to copy the English one
+            slug: {
+                en: title.toLowerCase().replaceAll(' ', '-'),
+                ...(index < 4
+                    ? { fr: ['a-propos', 'contact', 'annoncer', 'confidentialite'][index] }
+                    : {}),
+            },
             status: index < 3 ? 'published' : 'draft',
             ...(index < 3 ? { published_at: '2026-09-01T13:30:00Z' } : {}),
             author: reference(pick(authors, 0)),
