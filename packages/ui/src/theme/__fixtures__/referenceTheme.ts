@@ -63,6 +63,7 @@ export const referenceTheme = defineTheme({
         'panneau-selected-bg': '#1d1b16',
         'panneau-selected-text': '#fffdf7',
         'panneau-selected-subtle': '#efe9dc',
+        'panneau-selected-strong': '#1d1b16',
         // A soft, wide focus ring on inputs, outlined filled buttons that sink when pressed
         'panneau-input-border-color-focus': '#1d1b16',
         'panneau-input-focus-ring': '0 0 0 3px rgb(180 83 9 / 0.3)',
@@ -93,6 +94,7 @@ export const referenceTheme = defineTheme({
         'panneau-selected-bg': '#f1ede2',
         'panneau-selected-text': '#1b1e17',
         'panneau-selected-subtle': '#2c3025',
+        'panneau-selected-strong': '#f1ede2',
         'panneau-input-border-color-focus': '#f1ede2',
         'panneau-input-focus-ring': '0 0 0 3px rgb(245 158 11 / 0.35)',
         'panneau-button-solid-border-color': '#f1ede2',

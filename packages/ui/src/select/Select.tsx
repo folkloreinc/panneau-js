@@ -138,7 +138,11 @@ export function Select(props: SelectProps) {
             ? (props.value ?? []).length > 0
             : props.value !== undefined && props.value !== null;
     const clearable = onClear !== undefined && hasValue && isDisabled !== true;
-    const placeholder = props.placeholder ?? intl.formatMessage(messages.selectPlaceholder);
+    const placeholder =
+        // As a default value did: only when the prop is left out, not when it is `null`.
+        props.placeholder === undefined
+            ? intl.formatMessage(messages.selectPlaceholder)
+            : props.placeholder;
     const invalid = errors.length > 0;
     const items = options.map((option, index) => ({ ...option, key: String(index) }));
     const withEmpty = props.multiple !== true && !isRequired;

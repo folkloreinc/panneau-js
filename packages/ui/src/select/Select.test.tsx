@@ -47,6 +47,20 @@ describe('Select', () => {
         expect(trigger).toHaveTextContent('Select…');
     });
 
+    it('uses its placeholder only when the prop is left out, as a default value', () => {
+        render(
+            <PanneauRoot>
+                <Select label="Left out" options={OPTIONS} />
+                <Select label="Own" options={OPTIONS} placeholder="Pick a status" />
+                {/* A JavaScript caller can pass null: it is kept, as a default value keeps it. */}
+                <Select label="Null" options={OPTIONS} placeholder={null as unknown as string} />
+            </PanneauRoot>,
+        );
+        expect(screen.getByRole('button', { name: /Left out/ })).toHaveTextContent('Select…');
+        expect(screen.getByRole('button', { name: /Own/ })).toHaveTextContent('Pick a status');
+        expect(screen.getByRole('button', { name: /Null/ })).not.toHaveTextContent('Select…');
+    });
+
     it('has no empty option when required', async () => {
         render(
             <PanneauRoot>

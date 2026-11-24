@@ -426,7 +426,9 @@ export function RelationField(props: RelationFieldProps) {
         controlClassName,
         compact = false,
     } = props;
-    const placeholder = props.placeholder ?? intl.formatMessage(messages.search);
+    const placeholder =
+        // As a default value did: only when the prop is left out, not when it is `null`.
+        props.placeholder === undefined ? intl.formatMessage(messages.search) : props.placeholder;
     const editable = source !== null && disabled !== true && readOnly !== true;
     // Its cards offer "Edit" where the source edits items (decision 0110): the source then needs
     // to know the items, for whether the user can edit them

@@ -83,6 +83,12 @@ Components use CSS Modules (`Button.module.css`) that read the design tokens. Th
 
 So any bundler, Vite or webpack, only includes the CSS of the components a project imports, and needs no CSS Modules support. `sideEffects: ["*.css"]` keeps these imports from being tree-shaken. A package that ships CSS adds `*.module.css` declarations to `src/env.d.ts`, as `@panneau/ui` does.
 
+## The React Compiler in builds
+
+The shared build of React packages runs the React Compiler (`config/react-compiler.ts`), and fails when it skips a component or a hook, with each function it skipped and the reasons under it. A function opts out with a `'use no memo'` directive at the start of its body, or a file at its top, with a comment that says why; the same words anywhere else, such as in a comment, don't count.
+
+`@babel/core` stays on Babel 7 (`^7.29.7`): React Compiler 1.0 relies on Babel 7's `LVal` alias, which Babel 8 no longer gives to default values, so on Babel 8 it skips every component with a default value in its props.
+
 ## API reports
 
 Each package keeps a report of its public API in `api/`, generated with [API Extractor](https://api-extractor.com/) from its type declarations. A change to the public API changes a report, so it shows up in review.

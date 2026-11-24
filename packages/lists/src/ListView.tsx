@@ -544,8 +544,9 @@ export function ListView({
                         : {}),
                     tone: 'danger',
                 });
-            });
-        setPending(null);
+            })
+            // Even when the toast throws, as a `finally` block would.
+            .finally(() => setPending(null));
     };
 
     const run = (event: ListActionEvent) => {

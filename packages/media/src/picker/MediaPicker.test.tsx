@@ -251,6 +251,34 @@ describe('MediaPicker', () => {
         ).toBeInTheDocument();
     });
 
+    it('keeps the changes when they fail to save, says why, and lets the user try again', async () => {
+        const { media } = open();
+        const update = vi
+            .spyOn(media, 'update')
+            .mockRejectedValueOnce(new Error('The server is down.'));
+
+        await userEvent.click(await card('harbour at dawn'));
+        const details = screen.getByRole('complementary', { name: 'Details of harbour at dawn' });
+        const alt = within(details).getByRole('textbox', { name: 'Alt text' });
+        await userEvent.clear(alt);
+        await userEvent.type(alt, 'Boats');
+        const save = within(details).getByRole('button', { name: 'Save' });
+        await userEvent.click(save);
+
+        expect(await within(details).findByRole('alert')).toHaveTextContent(
+            'The changes couldn’t be saved: The server is down.',
+        );
+        // No longer saving: the field and the button work again, with the changes kept.
+        expect(alt).toBeEnabled();
+        expect(alt).toHaveValue('Boats');
+        expect(save).toBeEnabled();
+
+        await userEvent.click(save);
+        await waitFor(() => expect(update).toHaveBeenCalledTimes(2));
+        await waitFor(() => expect(within(details).queryByRole('alert')).not.toBeInTheDocument());
+        expect(save).toBeDisabled();
+    });
+
     it('asks before closing with changed details: "Stay" keeps them', async () => {
         const { onOpenChange } = open();
         await userEvent.click(await card('harbour at dawn'));

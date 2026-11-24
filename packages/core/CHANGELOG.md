@@ -483,6 +483,7 @@
 
 ### Patch Changes
 
+- 9c6c087: Built with Babel 7 again, on which React Compiler 1.0 memoizes the components and hooks that it skipped on Babel 8. The source of this package didn't change, but its build output did. (Added after the release, #133: the changeset of #132 left this package out.)
 - Updated dependencies [060e0de]
   - @panneau/protocol@5.0.0-alpha.7
 
