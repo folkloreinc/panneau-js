@@ -1,4 +1,4 @@
-import { Inbox, ListChecks, Plus, SearchX } from 'lucide-react';
+import { Inbox, Plus, SearchX } from 'lucide-react';
 import {
     type CSSProperties,
     type ReactNode,
@@ -54,11 +54,9 @@ import { useLeavingItems, withLeavingItems } from './leaving';
 import { messages } from './messages';
 import { countSelected, getPageSelection, isItemSelected } from './selection';
 import { getItemStatus } from './status';
-import { ColumnMenu } from './toolbar/ColumnMenu';
-import { LayoutSwitch } from './toolbar/LayoutSwitch';
 import { CursorPagination, Pagination } from './toolbar/Pagination';
 import { SearchField } from './toolbar/SearchField';
-import { SortSelect } from './toolbar/SortSelect';
+import { ToolbarControls } from './toolbar/ToolbarControls';
 import type {
     DisplayEntry,
     FilterEntry,
@@ -71,6 +69,7 @@ import type {
     ListLayoutEntry,
 } from './types';
 import { useListState } from './useListState';
+import { useNarrow } from './useNarrow';
 import { useRenderValue } from './useRenderValue';
 import { getColumnValue, toText } from './values';
 
@@ -370,6 +369,7 @@ export function ListView({
     // The confirmation a dry run belongs to: a later one, or a cancel, discards its answer.
     const confirmation = useRef(0);
     const root = useRef<HTMLDivElement>(null);
+    const narrow = useNarrow(root);
     const [pending, setPending] = useState<string | null>(null);
     // Checkboxes show once the user asks for them ("Select"), or while items are selected: until
     // then, rows read without a column of empty space before them.
@@ -406,7 +406,7 @@ export function ListView({
     const sort = query.sort ?? [];
 
     const allLayouts = getLayoutComponents(plugins, layoutComponents);
-    const { layouts, layout } = resolveListLayout({
+    const { layouts, layout: chosenLayout } = resolveListLayout({
         components: allLayouts,
         layouts: layoutsProp,
         chosen: view.layout,
@@ -414,6 +414,13 @@ export function ListView({
         itemImage,
         calendar,
     });
+    // On a phone, the table shows each row as a card, with the labels of its values, its
+    // thumbnail and its edits in place: where the list has both, the cards would show the same
+    // thing with less, so the layout switch leaves them out, and the table is what it says (#406).
+    // The chosen layout stays the view's, back once the list is wide again.
+    const narrowTable = narrow && layouts.includes('table');
+    const layout = narrowTable && chosenLayout === 'cards' ? 'table' : chosenLayout;
+    const switchLayouts = narrowTable ? layouts.filter((id) => id !== 'cards') : layouts;
     const columns = getShownColumns(allColumns, view.columns);
     const Layout = allLayouts[layout] ?? builtInLayouts.table;
     const inCalendar = layout === 'calendar' && calendar !== null;
@@ -667,16 +674,23 @@ export function ListView({
         />
     );
 
-    const sortable = allColumns.some((column) => column.sortable === true);
-    const choosesColumns = columnChoice && allColumns.length > 1;
+    // Each layout shows the controls that change it (#412): the calendar is in date order, shows
+    // titles and selects nothing; the gallery shows titles.
+    const sortable = !inCalendar && allColumns.some((column) => column.sortable === true);
+    const choosesColumns =
+        columnChoice && allColumns.length > 1 && !inCalendar && layout !== 'gallery';
+    const selects = selectable && !inCalendar;
+    const shownResourceActions = resourceActions.filter(
+        (action) => selectedCount === 0 || !hasScope(action, 'selection'),
+    );
     const showToolbar =
         search ||
         filters.length > 0 ||
         sortable ||
         choosesColumns ||
-        layouts.length > 1 ||
-        resourceActions.length > 0 ||
-        selectable ||
+        switchLayouts.length > 1 ||
+        shownResourceActions.length > 0 ||
+        selects ||
         toolbar !== undefined;
 
     function clearFilters() {
@@ -856,64 +870,63 @@ export function ListView({
                         ) : null}
                     </div>
                     <div className={styles.toolbarEnd}>
-                        {sortable ? (
-                            <div className={layout === 'table' ? styles.tableSort : undefined}>
-                                <SortSelect
-                                    columns={allColumns}
-                                    sort={sort}
-                                    onChange={(next) => list.setSort(next)}
-                                />
-                            </div>
-                        ) : null}
-                        {layouts.length > 1 ? (
-                            <LayoutSwitch
-                                layouts={layouts}
-                                value={layout}
-                                onChange={(next) => {
-                                    if (controlledLayout === undefined) {
-                                        list.setLayout(next);
-                                    }
-                                    onLayoutChange?.(next);
-                                }}
-                            />
-                        ) : null}
-                        {choosesColumns ? (
-                            <ColumnMenu
-                                columns={allColumns}
-                                shown={columns}
-                                onChange={(ids) => list.setColumns(ids)}
-                                onReset={
-                                    view.columns !== undefined ? () => list.resetColumns() : null
-                                }
-                            />
-                        ) : null}
-                        {selectable ? (
-                            <Button
-                                icon={ListChecks}
-                                appearance={showsChecks ? 'solid' : 'outline'}
-                                onPress={() => (showsChecks ? endSelection() : setSelecting(true))}
-                            >
-                                {intl.formatMessage(
-                                    showsChecks ? messages.endSelection : messages.startSelection,
-                                )}
-                            </Button>
-                        ) : null}
-                        {resourceActions
-                            .filter(
-                                (action) => selectedCount === 0 || !hasScope(action, 'selection'),
-                            )
-                            .map((action) => (
-                                <ActionButton
-                                    key={action.id}
-                                    action={action}
-                                    icons={actionIcons}
-                                    size="md"
-                                    href={fillActionUrl(action)}
-                                    isPending={pending === keyOf(action)}
-                                    onPress={() => runOnResource(action)}
-                                />
-                            ))}
-                        {toolbar}
+                        <ToolbarControls
+                            narrow={narrow}
+                            sort={
+                                sortable
+                                    ? {
+                                          columns: allColumns,
+                                          sort,
+                                          onChange: (next) => list.setSort(next),
+                                      }
+                                    : null
+                            }
+                            columns={
+                                choosesColumns
+                                    ? {
+                                          columns: allColumns,
+                                          shown: columns,
+                                          onChange: (ids) => list.setColumns(ids),
+                                          onReset:
+                                              view.columns !== undefined
+                                                  ? () => list.resetColumns()
+                                                  : null,
+                                      }
+                                    : null
+                            }
+                            layouts={
+                                switchLayouts.length > 1
+                                    ? {
+                                          layouts: switchLayouts,
+                                          value: layout,
+                                          onChange: (next) => {
+                                              if (controlledLayout === undefined) {
+                                                  list.setLayout(next);
+                                              }
+                                              onLayoutChange?.(next);
+                                          },
+                                      }
+                                    : null
+                            }
+                            selection={
+                                selects
+                                    ? {
+                                          isSelecting: showsChecks,
+                                          onPress: () =>
+                                              showsChecks ? endSelection() : setSelecting(true),
+                                      }
+                                    : null
+                            }
+                            actions={shownResourceActions.map((action) => ({
+                                action,
+                                href: fillActionUrl(action),
+                                isPending: pending === keyOf(action),
+                            }))}
+                            onAction={(action) => runOnResource(action)}
+                            icons={actionIcons}
+                        >
+                            {toolbar}
+                        </ToolbarControls>
                     </div>
                 </div>
             ) : null}

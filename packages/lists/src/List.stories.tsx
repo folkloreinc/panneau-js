@@ -597,7 +597,14 @@ export const EditInPlace: Story = {
     },
 };
 
+/**
+ * On a phone (#406): the search and the "Filters" button, then one row of controls, with the sort
+ * and the actions of the list in a menu, so that the first items show on the first screen. The
+ * table shows each row as a card, with the labels of its values: the layout switch leaves out the
+ * cards, and here has no other layout.
+ */
 export const OnAPhone: Story = {
+    args: { actions: { available: actions, onRun: fn() } },
     decorators: [
         (Story) => (
             <div style={{ maxWidth: 360 }}>
@@ -605,13 +612,106 @@ export const OnAPhone: Story = {
             </div>
         ),
     ],
+    play: async ({ args, canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        const table = canvas.getByRole('table', { name: 'Members' });
+        // The headers are replaced by the labels of the values
+        await expect(table.querySelector('thead')).not.toBeVisible();
+        await expect(canvas.queryByRole('radiogroup', { name: 'Layout' })).toBeNull();
+        const select = canvas.getByRole('button', { name: 'Select' });
+        // The menu's code loads on phones only: its button, once it is there
+        await waitFor(() =>
+            expect(canvas.getByRole('button', { name: 'More options' })).toHaveAttribute(
+                'aria-haspopup',
+            ),
+        );
+        const more = canvas.getByRole('button', { name: 'More options' });
+        await expect(more.getBoundingClientRect().top).toBe(select.getBoundingClientRect().top);
+        await expect(canvas.queryByRole('button', { name: 'Export' })).toBeNull();
+        // Two rows of controls, then the first item
+        const search = canvas.getByRole('searchbox', { name: 'Search' });
+        await expect(select.getBoundingClientRect().top).toBeGreaterThan(
+            search.getBoundingClientRect().top,
+        );
+        await expect(
+            table.getBoundingClientRect().top - search.getBoundingClientRect().top,
+        ).toBeLessThan(160);
+
+        await userEvent.click(more);
+        const menu = await body.findByRole('menu', { name: 'More options' });
+        await userEvent.click(
+            within(menu).getByRole('menuitemradio', { name: 'Name, descending' }),
+        );
+        await waitFor(() =>
+            // The row of the headers is hidden: the first row is the first item
+            expect(within(table).getAllByRole('row')[0]).toHaveTextContent('Tim Berners-Lee'),
+        );
+        await userEvent.click(more);
+        await userEvent.click(await body.findByRole('menuitem', { name: 'Export' }));
+        await expect(args.actions?.onRun).toHaveBeenCalledWith(
+            expect.objectContaining({ scope: 'resource' }),
+        );
+    },
+};
+
+/**
+ * The toolbar stays in place (#412): the layout switch doesn't move when the layout or the
+ * selection changes. Each layout shows only the controls that change it: the calendar has no
+ * sort, no columns and no "Select". "Columns" and "Select" are icon buttons, named by their
+ * tooltips (#424); "Done" keeps its label.
+ */
+export const ToolbarInPlace: Story = {
+    args: {
+        layouts: { available: ['table', 'cards', 'calendar'] },
+        calendar: { field: 'joined_on', filter: 'joined_on' },
+        actions: { available: actions, onRun: fn() },
+        router: createMemoryRouter('month=2026-03'),
+    },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        // The headers are replaced by the labels of the values, and by the sort select.
+        const body = within(canvasElement.ownerDocument.body);
+        const layoutSwitch = canvas.getByRole('radiogroup', { name: 'Layout' });
+        const place = () => {
+            const { top, right } = layoutSwitch.getBoundingClientRect();
+            return { top: Math.round(top), right: Math.round(right) };
+        };
+        const start = place();
+        const columnsButton = canvas.getByRole('button', { name: 'Columns' });
+        await userEvent.hover(columnsButton);
+        await expect(await body.findByRole('tooltip')).toHaveTextContent('Columns');
+        await userEvent.unhover(columnsButton);
+
+        await userEvent.click(canvas.getByRole('radio', { name: 'Cards' }));
+        await expect(place()).toEqual(start);
+        await expect(canvas.getByRole('button', { name: 'Sort by' })).toBeVisible();
+
+        await userEvent.click(canvas.getByRole('radio', { name: 'Calendar' }));
+        await canvas.findByRole('table', { name: 'Members, March 2026' });
+        await expect(place()).toEqual(start);
+        await expect(canvas.queryByRole('button', { name: 'Sort by' })).toBeNull();
+        await expect(canvas.queryByRole('button', { name: 'Columns' })).toBeNull();
+        await expect(canvas.queryByRole('button', { name: 'Select' })).toBeNull();
+
+        await userEvent.click(canvas.getByRole('radio', { name: 'Table' }));
+        const select = canvas.getByRole('button', { name: 'Select' });
+        await userEvent.click(select);
+        await expect(canvas.getByRole('button', { name: 'Done' })).toHaveTextContent('Done');
+        await expect(canvas.getByRole('button', { name: 'Done' })).toHaveFocus();
+        await expect(place()).toEqual(start);
+        await userEvent.click(canvas.getByRole('checkbox', { name: 'Select Ada Lovelace' }));
+        await expect(place()).toEqual(start);
+        await userEvent.click(canvas.getByRole('button', { name: 'Done' }));
+
+        // The sort says its column, and its direction in its name
+        await userEvent.click(canvas.getByRole('button', { name: 'Sort by' }));
+        await userEvent.click(
+            await body.findByRole('menuitemradio', { name: 'Joined, descending' }),
+        );
         await expect(
-            canvas.getByRole('table', { name: 'Members' }).querySelector('thead'),
-        ).not.toBeVisible();
-        await expect(canvas.getByRole('button', { name: /Sort by/ })).toBeVisible();
+            canvas.getByRole('button', { name: 'Sort by: Joined, descending' }),
+        ).toHaveTextContent('Joined');
+        await expect(place()).toEqual(start);
     },
 };
 

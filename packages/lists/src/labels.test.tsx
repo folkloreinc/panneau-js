@@ -45,10 +45,14 @@ describe('the labels of columns', () => {
         await user.click(screen.getByRole('radio', { name: 'Cards' }));
         const cards = screen.getByRole('list', { name: 'Items' });
         expect(within(cards).getAllByRole('listitem')[0]).toHaveTextContent('Published atMonday');
-        await user.click(screen.getByRole('button', { name: /Sort by/ }));
+        await user.click(screen.getByRole('button', { name: 'Sort by' }));
+        await user.click(
+            await screen.findByRole('menuitemradio', { name: 'Published at, descending' }),
+        );
+        // The button of the sort names its column too
         expect(
-            await screen.findByRole('option', { name: 'Published at, descending' }),
-        ).toBeInTheDocument();
+            screen.getByRole('button', { name: 'Sort by: Published at, descending' }),
+        ).toHaveTextContent('Published at');
     });
 
     it('name the values of the details of an item', () => {
