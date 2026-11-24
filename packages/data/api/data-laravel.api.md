@@ -51,6 +51,7 @@ export function getLaravelHeaders(input?: LaravelSessionOptions & {
 //
 // @public (undocumented)
 export interface LaravelAdapterOptions extends RestAdapterOptions, LaravelSessionOptions {
+    multipartMethodOverride?: string | false;
 }
 
 // @public

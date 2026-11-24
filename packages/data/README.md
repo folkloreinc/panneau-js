@@ -33,8 +33,9 @@ A `DataAdapter` is everything the engine and the app need from a backend: the de
     - `application/problem+json` errors become typed errors, by status: `401` `UnauthorizedError`, `403` `ForbiddenError`, `404` `NotFoundError`, `412` `ConflictError` (with `current`), `422` `ValidationError` (with `errors` keyed by dot path), others `ApiError`. Responses that are not problems get a problem built from their status;
     - `update()` sends `If-Match` from the `version` it is given;
     - list queries use `toSearchParams()` from `@panneau/protocol`;
-    - values that contain a `Blob` (imports, uploads) are sent as `multipart/form-data`.
-- **`createLaravelAdapter()`** is the preset for `laravel-panneau` with session authentication. Laravel specifics stay there, not in the protocol.
+    - values that contain a `Blob` (imports, uploads) are sent as `multipart/form-data`;
+    - `multipartMethodOverride: '_method'` sends a multipart request whose method is not `POST` (an update that replaces a file, without direct uploads) as `POST`, with its method in that form field. PHP below 8.4 (or Symfony below 7.4) only parses a multipart body for `POST`, and Laravel, Symfony and Rails route `_method` to the right route. The headers stay, `If-Match` included, and JSON bodies keep their method. The field replaces a top-level value of the same name. Off by default.
+- **`createLaravelAdapter()`** is the preset for `laravel-panneau` with session authentication. Laravel specifics stay there, not in the protocol. It turns on `multipartMethodOverride: '_method'`, which a stock Laravel app understands (`false` turns it off).
 - **A custom adapter** implements `DataAdapter` over another API. A product that only needs a few resources can throw from the methods it doesn't support.
 
 ### An app's own endpoints
@@ -83,7 +84,7 @@ uppy.on('upload-success', async (file, response) => {
 });
 ```
 
-It is plain `fetch` and doesn't import Uppy. Without direct uploads, `create()` sends a file in `multipart/form-data`.
+It is plain `fetch` and doesn't import Uppy. Without direct uploads, `create()` sends a file in `multipart/form-data`, and so does `update()` (as `POST` with `_method=PATCH` in the Laravel preset).
 
 The REST adapter gives the same object, with its own base URL, headers, credentials and errors: `adapter.presignedUploads({ endpoint: definition.uploads.endpoint })` (optional in `DataAdapter`). The fields of `@panneau/fields` and `@panneau/media` upload through it with `createUppyUploadSource()` of `@panneau/fields/uppy`.
 

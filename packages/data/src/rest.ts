@@ -51,6 +51,15 @@ export interface RestAdapterOptions {
      * the status (`createApiError()`). The Laravel preset uses it for `419`.
      */
     createError?: (problem: Problem, response: Response) => ApiError | undefined;
+    /**
+     * Sends a `multipart/form-data` request whose method is not `POST` (an update that replaces a
+     * file: `PATCH`) as `POST`, with its method in this form field: `'_method'` for Laravel,
+     * Symfony or Rails. PHP only parses a multipart body for `POST` (below PHP 8.4 and Symfony
+     * 7.4). The headers stay, `If-Match` included, and JSON bodies keep their method. The field
+     * replaces a value of the same name at the top of the body. Off by default; the Laravel
+     * preset turns it on.
+     */
+    multipartMethodOverride?: string | false;
 }
 
 interface Request {
@@ -128,11 +137,21 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
         headers.set('Accept', ACCEPT);
         new Headers(requestHeaders).forEach((value, name) => headers.set(name, value));
 
+        let sentMethod = method;
         let payload: BodyInit | undefined;
         if (body !== undefined) {
             if (hasBlob(body)) {
                 const data = new FormData();
                 appendFormData(data, '', body);
+                const override = options.multipartMethodOverride;
+                if (
+                    override !== undefined &&
+                    override !== false &&
+                    !['GET', 'HEAD', 'POST'].includes(method.toUpperCase())
+                ) {
+                    data.set(override, method.toUpperCase());
+                    sentMethod = 'POST';
+                }
                 payload = data;
             } else {
                 headers.set('Content-Type', 'application/json');
@@ -141,7 +160,7 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
         }
 
         const search = query?.toString() ?? '';
-        const init: RequestInit = { method, headers };
+        const init: RequestInit = { method: sentMethod, headers };
         if (payload !== undefined) {
             init.body = payload;
         }
