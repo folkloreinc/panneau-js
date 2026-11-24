@@ -43,6 +43,7 @@ export function useShortcut({
     scope = 'page',
     enabled = true,
     inInputs,
+    whenHandled,
     perform,
 }: ShortcutOptions): void {
     const context = use(ShortcutContext);
@@ -59,9 +60,10 @@ export function useShortcut({
             group,
             scope,
             inInputs,
+            whenHandled,
             perform: (event) => onKey(event),
         });
-    }, [context, enabled, id, keysValue, label, group, scope, inInputs]);
+    }, [context, enabled, id, keysValue, label, group, scope, inInputs, whenHandled]);
 }
 
 /**

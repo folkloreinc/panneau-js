@@ -1329,6 +1329,7 @@ export interface ShortcutOptions {
     label: string;
     perform: (event: KeyboardEvent) => void;
     scope?: ShortcutScope | undefined;
+    whenHandled?: boolean | undefined;
 }
 
 // @public

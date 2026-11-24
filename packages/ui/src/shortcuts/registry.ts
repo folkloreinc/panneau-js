@@ -36,6 +36,13 @@ export interface ShortcutOptions {
      * `true` with a modifier (⌘S), and is always `false` for single keys (`?`, `j`).
      */
     inInputs?: boolean | undefined;
+    /**
+     * Whether it fires when what holds the focus already handled the key (prevented its default).
+     * Defaults to `false`: an editor's own ⌘K for links wins over the "Go to…" palette. The save
+     * shortcuts of forms set it: rich text editors prevent the default of every Enter, and ⌘ Enter
+     * saves from any field.
+     */
+    whenHandled?: boolean | undefined;
     /** Called with the key press, whose default is prevented. Not called when the key repeats. */
     perform: (event: KeyboardEvent) => void;
 }
@@ -118,14 +125,16 @@ export function createShortcutRegistry({
     const notify = () => listeners.forEach((listener) => listener());
 
     const handleKeyDown = (event: KeyboardEvent): boolean => {
-        // A key that something already handled (an editor's ⌘K) is theirs
-        if (event.defaultPrevented || event.isComposing) {
+        if (event.isComposing) {
             return false;
         }
+        // A key that something already handled (an editor's ⌘K) is theirs, unless a shortcut
+        // says otherwise
+        const handled = event.defaultPrevented;
         const target = event.target instanceof Element ? event.target : null;
         const typing = isTextInput(target);
         const matching = shortcuts.filter((shortcut) => {
-            if (!matchesKeys(event, shortcut.keys)) {
+            if ((handled && shortcut.whenHandled !== true) || !matchesKeys(event, shortcut.keys)) {
                 return false;
             }
             const single = !hasModifier(shortcut.keys);

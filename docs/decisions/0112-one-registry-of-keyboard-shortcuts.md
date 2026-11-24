@@ -23,7 +23,7 @@ Lists and the editor will add more: `j`/`k`, `/`, `x` in lists are single keys, 
 - **`PanneauRoot` keeps the registry**, with one `keydown` listener on the document. Fields, forms and lists work without the app, so it can't live in `@panneau/app`. A root inside another one uses the outer registry.
 - **`useShortcut()` registers a shortcut while its component is mounted**: its keys, a label and a group for the help, a scope, an `enabled` flag, whether it fires in text inputs, and what it does (`perform`). Without a root, it does nothing, and components still work.
 - **Keys are written once for every platform**, as `aria-keyshortcuts` writes them, with `Mod` for ⌘ on Apple platforms and Ctrl elsewhere: `Mod+K`, `['Mod+S', 'Mod+Enter']`, `?`. Keys that differ by platform take `{ apple, other }`.
-- **A key that something already handled is left alone** (its default prevented): the editor's ⌘K for links (#452) wins inside the editor. A key that repeats only prevents the browser's default.
+- **A key that something already handled is left alone** (its default prevented): the editor's ⌘K for links (#452) wins inside the editor. A shortcut can opt out with `whenHandled`: the save shortcuts of forms do, as the form's own listener did, since rich text editors prevent the default of every Enter and ⌘ Enter saves from any field (#227), the editor included. The opt-out is on the shortcut that needs it, rather than a flag every editor would have to set for the keys it owns: one place to get right, and fields of plugins need nothing. A key that repeats only prevents the browser's default.
 
 ### Scopes decide who gets a key
 

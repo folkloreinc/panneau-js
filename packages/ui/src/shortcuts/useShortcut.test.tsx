@@ -80,6 +80,25 @@ describe('useShortcut', () => {
         expect(perform).toHaveBeenCalledOnce();
     });
 
+    it('fires after something handled the key only when the shortcut asks for it', () => {
+        const palette = vi.fn();
+        const save = vi.fn();
+        render(
+            <PanneauRoot>
+                <Shortcut keys="Mod+K" label="Go to" perform={palette} />
+                <Shortcut keys="Mod+Enter" label="Save" whenHandled perform={save} />
+            </PanneauRoot>,
+        );
+        const editor = document.createElement('div');
+        document.body.append(editor);
+        editor.addEventListener('keydown', (event) => event.preventDefault());
+        press(editor, 'k', { ctrlKey: true });
+        press(editor, 'Enter', { ctrlKey: true });
+        editor.remove();
+        expect(palette).not.toHaveBeenCalled();
+        expect(save).toHaveBeenCalledOnce();
+    });
+
     it('gives the key to the scope that holds the focus, then to the last of the page', () => {
         const first = vi.fn();
         const second = vi.fn();

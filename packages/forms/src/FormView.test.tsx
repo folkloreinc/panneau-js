@@ -1,12 +1,20 @@
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useState } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { useForm } from '@panneau/core';
 import { editorPlugin } from '@panneau/editor';
 import { type UploadSource, useFieldsContext } from '@panneau/fields';
 import type { Field, LayoutNode } from '@panneau/protocol';
-import { Button, Dialog, DialogTrigger, TextArea } from '@panneau/ui';
+import {
+    Button,
+    CommandPalette,
+    Dialog,
+    DialogTrigger,
+    TextArea,
+    useCommandShortcut,
+} from '@panneau/ui';
 
 import { FormView, type FormViewProps } from './FormView';
 import { problemError, renderForm } from './__fixtures__/render';
@@ -425,5 +433,66 @@ describe('FormView after a failed save', () => {
             'true',
         );
         expect(screen.getByRole('tab', { name: /SEO/ })).toHaveAccessibleName('SEO 1 error');
+    });
+});
+
+describe('FormView shortcuts in the rich text editor (decision 0112)', () => {
+    const fields: Field[] = [
+        { name: 'title', type: 'text', label: 'Title' },
+        { name: 'body', type: 'richtext', label: 'Body' },
+    ];
+
+    /** The form, and the "Go to…" palette of the page on ⌘K. */
+    function Page({
+        onSubmit,
+    }: {
+        onSubmit: (values: Record<string, unknown>) => Promise<unknown>;
+    }) {
+        const [open, setOpen] = useState(false);
+        useCommandShortcut(() => setOpen((isOpen) => !isOpen), { isOpen: open });
+        return (
+            <>
+                <Editor fields={fields} components={editorPlugin.fields} onSubmit={onSubmit} />
+                <CommandPalette
+                    isOpen={open}
+                    onOpenChange={setOpen}
+                    groups={[]}
+                    aria-label="Go to…"
+                />
+            </>
+        );
+    }
+
+    it('saves with Ctrl Enter and Ctrl S from the editor, where Ctrl K opens its link dialog', async () => {
+        const onSubmit = vi.fn(async (_values: Record<string, unknown>) => undefined);
+        renderForm(<Page onSubmit={onSubmit} />);
+        const body = await screen.findByRole('textbox', { name: 'Body' });
+        await userEvent.click(body);
+        await userEvent.keyboard('Hello');
+        await userEvent.keyboard('{Control>}{Enter}{/Control}');
+        await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
+        expect(onSubmit.mock.calls[0]?.[0]).toMatchObject({ body: '<p>Hello</p>' });
+
+        await userEvent.keyboard(' again');
+        // The browser's "Save page" doesn't open either
+        expect(fireEvent.keyDown(body, { key: 's', ctrlKey: true })).toBe(false);
+        await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(2));
+        expect(onSubmit.mock.calls[1]?.[0]).toMatchObject({ body: '<p>Hello again</p>' });
+
+        await userEvent.keyboard('{Shift>}{ArrowLeft}{ArrowLeft}{ArrowLeft}{/Shift}');
+        await userEvent.keyboard('{Control>}k{/Control}');
+        expect(await screen.findByRole('dialog', { name: 'Link' })).toBeInTheDocument();
+        expect(screen.queryByRole('dialog', { name: 'Go to…' })).toBeNull();
+        expect(onSubmit).toHaveBeenCalledTimes(2);
+    });
+
+    it('saves even when the field that has the focus handled the key', async () => {
+        const onSubmit = vi.fn(async (_values: Record<string, unknown>) => undefined);
+        renderForm(<Editor fields={fields} components={editorPlugin.fields} onSubmit={onSubmit} />);
+        const title = screen.getByRole('textbox', { name: 'Title' });
+        // As a rich text editor does with every Enter
+        title.addEventListener('keydown', (event) => event.preventDefault());
+        fireEvent.keyDown(title, { key: 'Enter', ctrlKey: true });
+        await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
     });
 });

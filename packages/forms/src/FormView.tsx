@@ -332,6 +332,8 @@ function useSaveShortcut(root: RefObject<HTMLFormElement | null>, isShown: boole
         group: intl.formatMessage(messages.shortcutsGroup),
         scope: root,
         enabled: isShown,
+        // Rich text editors prevent the default of every Enter: ⌘ Enter still saves from them
+        whenHandled: true,
         perform: () => root.current?.requestSubmit(),
     });
 }
