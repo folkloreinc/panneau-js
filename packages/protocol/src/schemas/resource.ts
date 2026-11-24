@@ -128,7 +128,15 @@ export const Resource = z
                 "The built-in item actions the resource shows, in their order (decision 0040): some of `show`, `edit`, `duplicate` and `delete`. Defaults to all four. Each one is shown on the items whose abilities allow it (`view`, `update`, `duplicate`, `delete`). `[]` shows none. Clients ignore ids they don't know.",
         }),
         fields: z.array(Field),
-        form: z.looseObject({ layout: z.array(LayoutNode).optional() }).optional(),
+        form: z
+            .looseObject({
+                layout: z.array(LayoutNode).optional(),
+                languageSwitch: z.boolean().optional().meta({
+                    description:
+                        "One language switch above the form's fields, which sets the language of every localized field at once, the user's choice remembered by the browser (decision 0108). Without it, or with `false`, each localized field has its own switch only. Clients show it when the form has localized fields and the definition more than one locale.",
+                }),
+            })
+            .optional(),
         list: ListDefinition.optional(),
         actions: z.array(Action).optional(),
         abilities: Abilities.optional(),

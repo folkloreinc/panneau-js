@@ -56,6 +56,12 @@ export {
 } from './compound/summary';
 export { MissingFieldEntry } from './missing/MissingField';
 export {
+    type ContentLocale,
+    ContentLocaleContext,
+    useContentLocale,
+    useFieldLocale,
+} from './shared/contentLocale';
+export {
     type RevealRegistry,
     type Revealer,
     RevealContext,
