@@ -194,6 +194,30 @@
     min-width: 0;
 }
 
+/* `media`: an app's own glyph, in the box of the icon, without its background. */
+.media {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    overflow: hidden;
+    border-radius: var(--panneau-radius-sm);
+}
+
+/* The label and its `badge`, which a long label never hides. */
+.labelLine {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    min-width: 0;
+}
+
+.badge {
+    display: inline-flex;
+    flex: none;
+}
+
 /* The keys of the item's shortcut, at its end (decision 0112). */
 .shortcut {
     flex: none;

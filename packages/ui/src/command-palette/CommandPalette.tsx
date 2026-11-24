@@ -221,7 +221,11 @@ export function CommandPalette({
                                             }}
                                             className={styles.item}
                                         >
-                                            {item.imageUrl !== undefined ? (
+                                            {item.media !== undefined && item.media !== null ? (
+                                                <span className={styles.media} aria-hidden="true">
+                                                    {item.media}
+                                                </span>
+                                            ) : item.imageUrl !== undefined ? (
                                                 <img
                                                     src={item.imageUrl}
                                                     alt=""
@@ -235,16 +239,28 @@ export function CommandPalette({
                                                 </span>
                                             )}
                                             <span className={styles.text}>
-                                                <Text slot="label" className={styles.label}>
-                                                    {highlightMatches ? (
-                                                        <Highlighted
-                                                            label={item.label}
-                                                            query={value}
-                                                            locale={intl.locale}
-                                                        />
-                                                    ) : (
-                                                        item.label
-                                                    )}
+                                                <Text slot="label" className={styles.labelLine}>
+                                                    <span className={styles.label}>
+                                                        {highlightMatches ? (
+                                                            <Highlighted
+                                                                label={item.label}
+                                                                query={value}
+                                                                locale={intl.locale}
+                                                            />
+                                                        ) : (
+                                                            item.label
+                                                        )}
+                                                    </span>
+                                                    {item.badge !== undefined &&
+                                                    item.badge !== null ? (
+                                                        // In the accessible name, after a space
+                                                        <>
+                                                            {' '}
+                                                            <span className={styles.badge}>
+                                                                {item.badge}
+                                                            </span>
+                                                        </>
+                                                    ) : null}
                                                 </Text>
                                                 {item.description !== undefined ? (
                                                     <Text

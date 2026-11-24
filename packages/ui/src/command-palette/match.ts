@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 import type { IconComponent } from '../icon/Icon';
 import type { ShortcutKeys } from '../shortcuts/keys';
 
@@ -13,6 +15,16 @@ export interface CommandPaletteItem {
     icon?: IconComponent;
     /** An image instead of an icon, such as the thumbnail of an item. */
     imageUrl?: string;
+    /**
+     * Leading media instead of an icon or an image, in the same box: an app's own glyph, such as
+     * the icon of a tool in its colour, or an emoji. Decorative.
+     */
+    media?: ReactNode;
+    /**
+     * A badge right after the label, such as the state of the item ("Draft"). It is part of the
+     * item's accessible name, and neither matched by the query nor highlighted.
+     */
+    badge?: ReactNode;
     /** A path or URL to go to, through the app's `RouterProvider`. */
     href?: string;
     /** Runs when the item is chosen, after which the palette closes. */
