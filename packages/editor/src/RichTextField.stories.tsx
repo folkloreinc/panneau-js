@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { TiptapEditorHTMLElement } from '@tiptap/core';
 import { useState } from 'react';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
@@ -19,6 +20,40 @@ const modKey = (key: string) => {
     const modifier = isApplePlatform() ? 'Meta' : 'Control';
     return `{${modifier}>}${key}{/${modifier}}`;
 };
+
+/** The text the editor has selected, from its state rather than from the page. */
+function getEditorSelection(textbox: HTMLElement) {
+    const { editor } = textbox as TiptapEditorHTMLElement;
+    if (editor === undefined) {
+        return null;
+    }
+    const { from, to } = editor.state.selection;
+    return editor.state.doc.textBetween(from, to);
+}
+
+/**
+ * Selects the text of a block with a triple click on it, and waits for the editor to have it.
+ *
+ * Without coordinates, `userEvent.tripleClick()` clicks at the corner of the page: ProseMirror
+ * finds no position there and leaves the clicks to the browser, and `userEvent` selects the text
+ * in the page itself. ProseMirror reads that selection on the next `selectionchange`, but it also
+ * writes its own selection back to the page 20 ms after it gets the focus, which the first click
+ * gives it. On a slow machine, that comes first, and the selection of the double click (the last
+ * word) replaces the one of the paragraph (#492). With coordinates in the text, ProseMirror handles
+ * the triple click itself, as it does for a person, and selects the block in a transaction.
+ */
+async function selectBlock(textbox: HTMLElement, text: string) {
+    const block = within(textbox).getByText(text);
+    const range = block.ownerDocument.createRange();
+    range.selectNodeContents(block);
+    const { left, top, width, height } = range.getBoundingClientRect();
+    await userEvent.pointer({
+        keys: '[MouseLeft][MouseLeft][MouseLeft]',
+        target: block,
+        coords: { clientX: left + width / 2, clientY: top + height / 2 },
+    });
+    await waitFor(() => expect(getEditorSelection(textbox)).toBe(text));
+}
 
 const PAGES = [
     { id: '1', label: 'Home' },
@@ -108,7 +143,7 @@ export const Default: Story = {
                 'Big paragraph',
             ),
         );
-        await userEvent.tripleClick(within(textbox).getByText('A quote.'));
+        await selectBlock(textbox, 'A quote.');
         await userEvent.click(canvas.getByRole('button', { name: 'Bold' }));
         await expect(canvas.getByRole('button', { name: 'Bold' })).toHaveAttribute(
             'aria-pressed',
@@ -185,7 +220,7 @@ export const Shortcuts: Story = {
             isApplePlatform() ? 'Bold⌘B' : 'BoldCtrl+B',
         );
         await userEvent.unhover(bold);
-        await userEvent.tripleClick(canvas.getByText('Read the documentation.'));
+        await selectBlock(canvas.getByRole('textbox', { name: 'Body' }), 'Read the documentation.');
         await userEvent.keyboard(modKey('k'));
         const dialog = await body.findByRole('dialog', { name: 'Link' });
         await userEvent.type(
@@ -224,12 +259,19 @@ export const LinksToPages: Story = {
         const canvas = within(canvasElement);
         const body = within(canvasElement.ownerDocument.body);
         const textbox = canvas.getByRole('textbox', { name: 'Body' });
-        await userEvent.tripleClick(within(textbox).getByText('Write to us.'));
+        await selectBlock(textbox, 'Write to us.');
         await userEvent.click(canvas.getByRole('button', { name: 'Link' }));
         const dialog = await body.findByRole('dialog', { name: 'Link' });
         await expect(within(dialog).getByRole('radio', { name: 'Page' })).toBeChecked();
         await userEvent.type(within(dialog).getByRole('combobox', { name: 'Page' }), 'cont');
-        await userEvent.click(await body.findByRole('option', { name: 'Contact' }));
+        // The pages of the first search (all of them) stay in the list until the search for
+        // `cont` answers: pick "Contact" from its answer
+        await waitFor(() =>
+            expect(body.getAllByRole('option').map((option) => option.textContent)).toEqual([
+                'Contact',
+            ]),
+        );
+        await userEvent.click(body.getByRole('option', { name: 'Contact' }));
         await userEvent.click(within(dialog).getByRole('button', { name: 'Apply' }));
         await waitFor(() =>
             expect(within(textbox).getByRole('link', { name: 'Write to us.' })).toHaveAttribute(
