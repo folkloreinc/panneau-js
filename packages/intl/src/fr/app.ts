@@ -124,6 +124,7 @@ export const appFr: Record<string, string> = {
     'panneau.app.openMenu': 'Ouvrir le menu',
     'panneau.app.closeMenu': 'Fermer le menu',
     'panneau.app.more': 'Plus',
+    'panneau.app.preferences': 'Préférences',
     'panneau.app.appearance': 'Apparence',
     'panneau.app.colorSchemeOption':
         '{scheme, select, light {Claire} dark {Sombre} other {Celle du système}}',

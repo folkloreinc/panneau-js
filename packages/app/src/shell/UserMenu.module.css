@@ -65,15 +65,49 @@
     flex: 0 0 auto;
 }
 
-/* The preferences, a compact group: a small label, and a row of icons at the end (#487). */
+/* The preferences, closed at first (#487): a row like an item of the menu opens them. */
+.preferences {
+    border-top: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
+.summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: var(--panneau-space-1);
+    padding: var(--panneau-space-1) var(--panneau-space-2);
+    font-size: var(--panneau-font-size-sm);
+    border-radius: var(--panneau-radius-md);
+    cursor: pointer;
+    list-style: none;
+}
+
+.summary::-webkit-details-marker {
+    display: none;
+}
+
+.summary:hover {
+    background-color: var(--panneau-color-hover);
+}
+
+.summary:focus-visible {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: calc(-1 * var(--panneau-focus-width));
+}
+
+.summary .chevron {
+    transition: rotate var(--panneau-duration);
+}
+
+.preferences[open] .chevron {
+    rotate: 90deg;
+}
+
+/* Each one a small label, and its control at the end */
 .settings {
     display: grid;
     gap: var(--panneau-space-1);
-    padding: var(--panneau-space-2) var(--panneau-space-3);
-}
-
-.user + .settings {
-    padding-top: var(--panneau-space-1);
+    padding: 0 var(--panneau-space-3) var(--panneau-space-2);
 }
 
 .setting {

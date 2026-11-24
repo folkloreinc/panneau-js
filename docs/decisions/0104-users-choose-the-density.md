@@ -1,6 +1,6 @@
 # 0104: Users choose the density
 
-- Status: accepted, amended by [#487](https://github.com/folkloreinc/panneau-js/issues/487): the density is a row of icons, after the appearance's, among the preferences above the actions
+- Status: accepted, amended by [#487](https://github.com/folkloreinc/panneau-js/issues/487): the density is a row of icons, after the appearance's, in the "Preferences" section of the menu, closed at first, above the actions
 - Date: 2026-11-23
 - Issue: [#440](https://github.com/folkloreinc/panneau-js/issues/440)
 - Amends: who sets the density in [0024](0024-theme-model.md) (section 5) and the user's menu of [0086](0086-one-user-menu.md)
@@ -13,7 +13,7 @@ The density of the app is the definition's: `theme.density`, `auto` without one 
 
 ## Decision
 
-- **The user's menu has "Density"**, after "Appearance", as a row of icons each named by its tooltip, with a small label, among the preferences above the actions (since #487; it was a group of the menu, with a check on the current choice):
+- **The user's menu has "Density"**, after "Appearance", as a row of icons each named by its tooltip, with a small label, in the "Preferences" section, closed at first, above the actions (since #487; it was a group of the menu, with a check on the current choice):
     - **Compact** and **Comfortable**, the densities of a mouse and a keyboard;
     - **Default**, the definition's density, checked until the user picks another. It is how the user goes back to what the site sets, and follows the site if it changes its density.
 

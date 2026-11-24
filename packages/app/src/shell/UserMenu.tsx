@@ -12,7 +12,6 @@ import {
     Menu,
     MenuItem,
     type MenuProps,
-    MenuSection,
     MenuSeparator,
     Popover,
     PopoverTrigger,
@@ -90,11 +89,11 @@ export interface UserMenuProps {
 
 /**
  * The user's menu (decision 0086), behind their avatar and name, top to bottom (#487): who is
- * logged in, a link to their profile when they have one; their preferences, one row each with a
- * small label: the appearance and the density (decision 0104) as rows of icons, the language as a
- * select; then a menu of the actions: the help of keyboard shortcuts (decision 0112), and "Log
- * out" alone at the end. It is a popover, a dialog: Tab goes through it in the order shown. The
- * sidebar and the dock share it.
+ * logged in, a link to their profile when they have one; their preferences, closed at first, one
+ * row each with a small label: the appearance and the density (decision 0104) as rows of icons,
+ * the language as a select; then a menu of the actions: the help of keyboard shortcuts (decision
+ * 0112), and "Log out" alone at the end. It is a popover, a dialog: Tab goes through it in the
+ * order shown. The sidebar and the dock share it.
  */
 export function UserMenu({
     definition,
@@ -109,6 +108,9 @@ export function UserMenu({
     placement,
     children,
 }: UserMenuProps) {
+    // Not memoized: what it renders is mounted only while the menu is open, and the memoization
+    // of each element would weigh about 1.8 KB in the first page's JavaScript (#487).
+    'use no memo';
     const intl = usePanneauIntl();
     const [isOpen, setOpen] = useState(false);
     const user = definition.user ?? null;
@@ -144,25 +146,22 @@ export function UserMenu({
                 onAction={close}
                 className={styles.menu}
             >
+                {/* One item each: no sections, a separator between them */}
                 {openShortcutHelp !== null ? (
-                    <MenuSection aria-label={intl.formatMessage(uiMessages.shortcutsTitle)}>
-                        <MenuItem
-                            id="shortcuts"
-                            icon={Keyboard}
-                            shortcut={SHORTCUT_HELP_KEYS}
-                            onAction={openShortcutHelp}
-                        >
-                            {intl.formatMessage(uiMessages.shortcutsTitle)}
-                        </MenuItem>
-                    </MenuSection>
+                    <MenuItem
+                        id="shortcuts"
+                        icon={Keyboard}
+                        shortcut={SHORTCUT_HELP_KEYS}
+                        onAction={openShortcutHelp}
+                    >
+                        {intl.formatMessage(uiMessages.shortcutsTitle)}
+                    </MenuItem>
                 ) : null}
                 {openShortcutHelp !== null && onLogOut !== undefined ? <MenuSeparator /> : null}
                 {onLogOut !== undefined ? (
-                    <MenuSection aria-label={intl.formatMessage(appMessages.logOut)}>
-                        <MenuItem id="logout" icon={LogOut} onAction={onLogOut}>
-                            {intl.formatMessage(appMessages.logOut)}
-                        </MenuItem>
-                    </MenuSection>
+                    <MenuItem id="logout" icon={LogOut} onAction={onLogOut}>
+                        {intl.formatMessage(appMessages.logOut)}
+                    </MenuItem>
                 ) : null}
             </Menu>
         ) : null;
@@ -196,86 +195,92 @@ export function UserMenu({
                         {identity}
                     </p>
                 ) : null}
-                {/* The preferences, one row each: a small label, and its control at the end */}
-                <div className={styles.settings}>
-                    <div className={styles.setting}>
-                        <span id={appearanceId} className={styles.settingLabel}>
-                            {intl.formatMessage(appMessages.appearance)}
-                        </span>
-                        <SegmentedControl
-                            aria-labelledby={appearanceId}
-                            size="sm"
-                            hideLabels
-                            value={colorScheme}
-                            onChange={(value) => {
-                                const scheme = COLOR_SCHEMES.find((option) => option === value);
-                                if (scheme !== undefined) {
-                                    onColorSchemeChange(scheme);
-                                }
-                            }}
-                            options={COLOR_SCHEMES.map((scheme) => ({
-                                value: scheme,
-                                label: intl.formatMessage(appMessages.colorSchemeOption, {
-                                    scheme,
-                                }),
-                                icon: SCHEME_ICONS[scheme],
-                            }))}
-                        />
-                    </div>
-                    {onDensityChange !== undefined ? (
+                {/* The preferences, closed at first: one row each, a small label and its control */}
+                <details className={styles.preferences}>
+                    <summary className={styles.summary}>
+                        {intl.formatMessage(appMessages.preferences)}
+                        <Icon icon={ChevronRight} size="sm" className={styles.chevron} />
+                    </summary>
+                    <div className={styles.settings}>
                         <div className={styles.setting}>
-                            <span id={densityId} className={styles.settingLabel}>
-                                {intl.formatMessage(appMessages.densityTitle)}
+                            <span id={appearanceId} className={styles.settingLabel}>
+                                {intl.formatMessage(appMessages.appearance)}
                             </span>
                             <SegmentedControl
-                                aria-labelledby={densityId}
+                                aria-labelledby={appearanceId}
                                 size="sm"
                                 hideLabels
-                                value={density}
+                                value={colorScheme}
                                 onChange={(value) => {
-                                    const choice = DENSITY_CHOICES.find(
-                                        (option) => option === value,
-                                    );
-                                    if (choice !== undefined) {
-                                        onDensityChange(choice);
+                                    const scheme = COLOR_SCHEMES.find((option) => option === value);
+                                    if (scheme !== undefined) {
+                                        onColorSchemeChange(scheme);
                                     }
                                 }}
-                                options={DENSITY_CHOICES.map((choice) => ({
-                                    value: choice,
-                                    label: intl.formatMessage(appMessages.densityOption, {
-                                        density: choice,
+                                options={COLOR_SCHEMES.map((scheme) => ({
+                                    value: scheme,
+                                    label: intl.formatMessage(appMessages.colorSchemeOption, {
+                                        scheme,
                                     }),
-                                    icon: DENSITY_ICONS[choice],
+                                    icon: SCHEME_ICONS[scheme],
                                 }))}
                             />
                         </div>
-                    ) : null}
-                    {locales.length > 0 ? (
-                        <div className={styles.setting}>
-                            <span className={styles.settingLabel} aria-hidden="true">
-                                {intl.formatMessage(appMessages.language)}
-                            </span>
-                            <Select
-                                aria-label={intl.formatMessage(appMessages.language)}
-                                isRequired
-                                options={locales.map(({ locale, label: name }) => ({
-                                    value: locale,
-                                    label: name,
-                                    lang: locale,
-                                }))}
-                                value={definition.locale}
-                                onChange={(locale) => {
-                                    if (typeof locale === 'string') {
-                                        close();
-                                        onLocaleChange?.(locale);
-                                    }
-                                }}
-                                className={styles.language}
-                                triggerClassName={styles.languageTrigger}
-                            />
-                        </div>
-                    ) : null}
-                </div>
+                        {onDensityChange !== undefined ? (
+                            <div className={styles.setting}>
+                                <span id={densityId} className={styles.settingLabel}>
+                                    {intl.formatMessage(appMessages.densityTitle)}
+                                </span>
+                                <SegmentedControl
+                                    aria-labelledby={densityId}
+                                    size="sm"
+                                    hideLabels
+                                    value={density}
+                                    onChange={(value) => {
+                                        const choice = DENSITY_CHOICES.find(
+                                            (option) => option === value,
+                                        );
+                                        if (choice !== undefined) {
+                                            onDensityChange(choice);
+                                        }
+                                    }}
+                                    options={DENSITY_CHOICES.map((choice) => ({
+                                        value: choice,
+                                        label: intl.formatMessage(appMessages.densityOption, {
+                                            density: choice,
+                                        }),
+                                        icon: DENSITY_ICONS[choice],
+                                    }))}
+                                />
+                            </div>
+                        ) : null}
+                        {locales.length > 0 ? (
+                            <div className={styles.setting}>
+                                <span className={styles.settingLabel} aria-hidden="true">
+                                    {intl.formatMessage(appMessages.language)}
+                                </span>
+                                <Select
+                                    aria-label={intl.formatMessage(appMessages.language)}
+                                    isRequired
+                                    options={locales.map(({ locale, label: name }) => ({
+                                        value: locale,
+                                        label: name,
+                                        lang: locale,
+                                    }))}
+                                    value={definition.locale}
+                                    onChange={(locale) => {
+                                        if (typeof locale === 'string') {
+                                            close();
+                                            onLocaleChange?.(locale);
+                                        }
+                                    }}
+                                    className={styles.language}
+                                    triggerClassName={styles.languageTrigger}
+                                />
+                            </div>
+                        ) : null}
+                    </div>
+                </details>
                 {menu}
             </Popover>
         </PopoverTrigger>

@@ -736,9 +736,18 @@ describe('the app shell', () => {
             expect(within(menu).getAllByRole('menuitem').at(-1)).toHaveAccessibleName('Log out');
 
             // Tab goes through the popover in the order shown (#487): who is logged in, a link to
-            // their profile; the appearance, a row of icons named by their tooltips…
+            // their profile; the preferences, closed at first…
             await user.tab();
             expect(popover.getByRole('link', { name: /^Ada Lovelace/ })).toHaveFocus();
+            await user.tab();
+            const preferences = popover.getByText('Preferences');
+            expect(preferences).toHaveFocus();
+            expect(preferences.closest('details')).not.toHaveAttribute('open');
+            // A native summary: the browser opens it with Enter or Space, user-event does not
+            await user.click(preferences);
+            expect(preferences.closest('details')).toHaveAttribute('open');
+            expect(preferences).toHaveFocus();
+            // …and in them the appearance, a row of icons named by their tooltips…
             await user.tab();
             const appearance = within(popover.getByRole('radiogroup', { name: 'Appearance' }));
             expect(
@@ -784,6 +793,10 @@ describe('the app shell', () => {
 
             await user.keyboard('{Enter}');
             const reopened = await screen.findByRole('dialog');
+            // The preferences are closed again
+            expect(
+                within(reopened).getByText('Preferences').closest('details'),
+            ).not.toHaveAttribute('open');
             expect(within(reopened).getByRole('radio', { name: 'Dark' })).toHaveAttribute(
                 'aria-checked',
                 'true',

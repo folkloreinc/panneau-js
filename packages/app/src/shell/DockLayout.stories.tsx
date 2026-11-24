@@ -163,6 +163,8 @@ export const UserMenu: Story = {
         const body = within(canvasElement.ownerDocument.body);
         await userEvent.click(canvas.getByRole('button', { name: 'Your account (Ada Lovelace)' }));
         const popover = await body.findByRole('dialog', { name: 'Your account (Ada Lovelace)' });
+        // The preferences are closed at first (#487)
+        await userEvent.click(within(popover).getByText('Preferences'));
         await expect(within(popover).getByRole('radio', { name: 'Light' })).toHaveAttribute(
             'aria-checked',
             'true',
@@ -176,6 +178,7 @@ export const UserMenu: Story = {
 
         await userEvent.click(canvas.getByRole('button', { name: 'Your account (Ada Lovelace)' }));
         const reopened = await body.findByRole('dialog', { name: 'Your account (Ada Lovelace)' });
+        await userEvent.click(within(reopened).getByText('Preferences'));
         await userEvent.click(within(reopened).getByRole('button', { name: /Language/ }));
         await userEvent.click(await body.findByRole('option', { name: 'Français' }));
         await expect(args.onLocaleChange).toHaveBeenCalledWith('fr');
