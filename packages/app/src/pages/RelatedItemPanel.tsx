@@ -232,6 +232,7 @@ export function RelatedItemPanel({
                                     : (type?.id ?? 'new')
                             }
                             aria-label={title}
+                            footerClassName={styles.footer}
                             isLoading={mode === 'update' && item === undefined}
                             fields={fields}
                             layout={layout}

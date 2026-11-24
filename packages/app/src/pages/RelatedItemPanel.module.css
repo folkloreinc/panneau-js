@@ -38,6 +38,20 @@
     box-shadow: var(--panneau-shadow-lg);
 }
 
+/* The footer of the form, at the bottom of the panel as its body scrolls (#503): from edge to edge,
+   on the background of the panel, not of the page, and down to the bottom of the panel, over the
+   padding of its body, clear of the home indicator on a phone (the form's footer keeps it). */
+.footer.footer {
+    --_panneau-related-padding: var(--panneau-aside-padding, var(--panneau-space-4));
+
+    bottom: calc(-1 * var(--_panneau-related-padding));
+    margin-inline: calc(-1 * var(--_panneau-related-padding));
+    margin-bottom: calc(-1 * var(--_panneau-related-padding));
+    padding-inline: max(env(safe-area-inset-left, 0px), var(--_panneau-related-padding))
+        max(env(safe-area-inset-right, 0px), var(--_panneau-related-padding));
+    background-color: var(--panneau-aside-bg, var(--panneau-color-surface));
+}
+
 @keyframes fade {
     from {
         opacity: 0;
