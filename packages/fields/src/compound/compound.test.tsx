@@ -37,7 +37,8 @@ describe('compound fields without their plugin', () => {
                 )}
             </Controlled>,
         );
-        expect(screen.getByRole('group', { name: 'Team' })).toBeInTheDocument();
+        // The repeater loads with its first use
+        expect(await screen.findByRole('group', { name: 'Team' })).toBeInTheDocument();
         expect(screen.getByRole('textbox', { name: 'Name', hidden: true })).toHaveValue('Ada');
         await userEvent.click(screen.getByRole('button', { name: 'Add' }));
         expect(onChange).toHaveBeenLastCalledWith([{ name: 'Ada' }, {}]);
@@ -83,7 +84,8 @@ describe('defineCompoundField', () => {
         );
         const items = screen.getAllByRole('listitem');
         expect(items[0]).toHaveAccessibleName(/^1\s*Ada$/);
-        expect(items[1]).toHaveAccessibleName(/^2\s*Item 2$/);
+        // Without a summary, its number and its first text (decision 0109)
+        expect(items[1]).toHaveAccessibleName(/^2\s*Item 2\s*Design$/);
         const layout = within(items[0] as HTMLElement).getByTestId('layout');
         const inputs = within(layout).getAllByRole('textbox', { hidden: true });
         expect(inputs.map((input) => input.getAttribute('name'))).toEqual([

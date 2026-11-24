@@ -100,6 +100,10 @@ export const listsMessages = {
         defaultMessage:
             'The calendar shows the first {shown, plural, one {# item} other {# items}}. Filter the list to see the others.',
     }),
+    calendarEmpty: defineMessage<{ month: string }>({
+        id: 'panneau.lists.calendarEmpty',
+        defaultMessage: 'No items in {month}',
+    }),
     columns: defineMessage({ id: 'panneau.lists.columns', defaultMessage: 'Columns' }),
     moveColumnUp: defineMessage<{ column: string }>({
         id: 'panneau.lists.moveColumnUp',
@@ -159,6 +163,19 @@ export const listsMessages = {
     confirmMessage: defineMessage<{ count: number; action: string }>({
         id: 'panneau.lists.confirmMessage',
         defaultMessage: '“{action}” will apply to {count, plural, one {# item} other {# items}}.',
+    }),
+    /**
+     * The title that confirms the built-in `delete`, with what it deletes: the item by its title,
+     * or the count with the resource's labels (`subjectItem` and `subjectCount` of the actions).
+     */
+    confirmDeleteTitle: defineMessage<{ subject: string }>({
+        id: 'panneau.lists.confirmDeleteTitle',
+        defaultMessage: 'Delete {subject}?',
+    }),
+    /** What a confirmed action applies to, named: the item by its title, or the count of items. */
+    confirmMessageFor: defineMessage<{ action: string; subject: string }>({
+        id: 'panneau.lists.confirmMessageFor',
+        defaultMessage: '“{action}” will apply to {subject}.',
     }),
     confirmSkipped: defineMessage<{ count: number }>({
         id: 'panneau.lists.confirmSkipped',

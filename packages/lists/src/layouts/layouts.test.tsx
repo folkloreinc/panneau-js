@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createList, createMemoryRouter } from '@panneau/core';
+import type { Field } from '@panneau/protocol';
 
 import { List } from '../List';
 import { ListView } from '../ListView';
@@ -230,7 +231,8 @@ describe('the calendar', () => {
             />,
             { locale: 'fr-CA' },
         );
-        const grid = screen.getByRole('table', { name: 'Items, mars 2027' });
+        // The calendar's code loads when it shows
+        const grid = await screen.findByRole('table', { name: 'Items, mars 2027' });
         // The filter of the calendar is its own
         expect(screen.queryByRole('group', { name: 'Date' })).toBeNull();
         const fifteenth = within(grid)
@@ -252,7 +254,7 @@ describe('the calendar', () => {
         );
     });
 
-    it('shows a date range on each day it covers, and asks for the ranges that overlap the month', () => {
+    it('shows a date range on each day it covers, and asks for the ranges that overlap the month', async () => {
         const router = createMemoryRouter('month=2027-03');
         const festivals: ListItem[] = [
             { id: '1', title: 'Festival', dates: { start: '2027-02-27', end: '2027-03-02' } },
@@ -271,7 +273,7 @@ describe('the calendar', () => {
                 router={router}
             />,
         );
-        const grid = screen.getByRole('table', { name: 'Items, March 2027' });
+        const grid = await screen.findByRole('table', { name: 'Items, March 2027' });
         const itemsOn = (day: string) => {
             const cell = within(grid)
                 .getAllByRole('cell')
@@ -292,7 +294,7 @@ describe('the calendar', () => {
         expect(grid).not.toHaveTextContent('Winter');
     });
 
-    it('says when a month has more items than it shows', () => {
+    it('says when a month has more items than it shows', async () => {
         renderList(
             <ListView
                 list={createList({
@@ -309,11 +311,93 @@ describe('the calendar', () => {
             />,
         );
         expect(
-            screen
-                .getByText('The calendar shows 2 of 12 items. Filter the list to see the others.')
-                .closest('[role="status"]'),
+            (
+                await screen.findByText(
+                    'The calendar shows 2 of 12 items. Filter the list to see the others.',
+                )
+            ).closest('[role="status"]'),
         ).not.toBeNull();
         expect(screen.queryByRole('navigation', { name: 'Pagination' })).toBeNull();
+    });
+});
+
+describe('the calendar of an empty month, and the state of items (#413)', () => {
+    const statusField: Field = {
+        name: 'status',
+        type: 'select',
+        label: 'Status',
+        options: [
+            { value: 'draft', label: 'Draft' },
+            { value: 'review', label: 'In review', tone: 'warning' },
+        ],
+    };
+
+    it('says that a month has no items, and keeps its buttons to the other months', async () => {
+        const user = userEvent.setup();
+        const router = createMemoryRouter('month=2027-05');
+        renderList(
+            <List
+                columns={eventColumns}
+                items={events}
+                layouts={{ available: ['calendar'] }}
+                calendar={calendar}
+                router={router}
+            />,
+        );
+        expect(await screen.findByText('No items in May 2027')).toBeVisible();
+        expect(screen.queryByRole('table')).toBeNull();
+        await user.click(screen.getByRole('button', { name: 'Previous month' }));
+        expect(await screen.findByRole('table', { name: 'Items, April 2027' })).toHaveTextContent(
+            'Ceremony',
+        );
+        expect(screen.queryByText('No items in May 2027')).toBeNull();
+    });
+
+    it('doesn’t say a month is empty while its items load', async () => {
+        renderList(
+            <ListView
+                list={createList({ router: createMemoryRouter('month=2027-06') })}
+                columns={eventColumns}
+                items={events}
+                isLoading
+                layouts={{ available: ['calendar'] }}
+                calendar={calendar}
+            />,
+        );
+        expect(await screen.findByRole('table', { name: 'Items, June 2027' })).toBeInTheDocument();
+        expect(screen.queryByText('No items in June 2027')).toBeNull();
+    });
+
+    it('shows the state of each item, in the tone of its option, and its whole title', async () => {
+        renderList(
+            <ListView
+                list={createList({ router: createMemoryRouter('month=2027-03') })}
+                columns={eventColumns}
+                fields={[statusField]}
+                itemStatus="status"
+                items={
+                    [
+                        { ...events[0], status: 'review' },
+                        { ...events[1], status: 'draft' },
+                        { ...events[2], status: 'archived' },
+                    ] as ListItem[]
+                }
+                layouts={{ available: ['calendar'] }}
+                calendar={calendar}
+            />,
+        );
+        const grid = await screen.findByRole('table', { name: 'Items, March 2027' });
+        const item = (title: string) =>
+            within(grid)
+                .getAllByRole('listitem')
+                .find((element) => element.title === title) as HTMLElement;
+        expect(item('Kick-off')).toHaveTextContent('In reviewKick-off');
+        expect(item('Kick-off').querySelector('.panneau-badge')).toHaveClass(
+            'panneau-tone-warning',
+        );
+        expect(item('Judging').querySelector('.panneau-badge')).toHaveClass('panneau-tone-neutral');
+        // A value without an option shows as text
+        expect(item('Briefing')).toHaveTextContent('archivedBriefing');
     });
 });
 

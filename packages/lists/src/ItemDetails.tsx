@@ -1,6 +1,7 @@
 import { LoadingRegion, Skeleton, usePanneauIntl } from '@panneau/ui';
 
 import styles from './ItemDetails.module.css';
+import { getColumnLabel } from './columns';
 import { cx } from './cx';
 import { messages } from './messages';
 import type { DisplayEntry, ListColumn, ListItem } from './types';
@@ -56,7 +57,7 @@ export function ItemDetails({
         entryColumns: readonly ItemDetailsColumn[],
     ) =>
         entryColumns.map((column, index) => {
-            const label = <dt className={styles.label}>{column.label ?? column.id}</dt>;
+            const label = <dt className={styles.label}>{getColumnLabel(column)}</dt>;
             if (column.columns !== undefined) {
                 // The values of a group are those of an item made of the value of the column.
                 const value =

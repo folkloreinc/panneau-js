@@ -108,6 +108,23 @@ describe('shared block types (decision 0094)', () => {
         expect(result.issues.some((issue) => issue.path.endsWith('.settings.toolbar'))).toBe(true);
     });
 
+    it('checks the settings of a repeater', () => {
+        const result = validateDefinition(
+            withSets(
+                createPages([
+                    { name: 'blocks', type: 'repeater', settings: { itemTitle: 3 }, fields: [] },
+                ]),
+                {},
+            ),
+        );
+
+        expect(result.success).toBe(false);
+        if (result.success) return;
+        expect(result.issues.some((issue) => issue.path.endsWith('.settings.itemTitle'))).toBe(
+            true,
+        );
+    });
+
     it('refuses a set that is missing, a field with types and a typeSet, and a set that holds itself', () => {
         const loop: BlockType = {
             id: 'stack',

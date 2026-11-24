@@ -108,6 +108,26 @@
     white-space: nowrap;
 }
 
+/* The state of an item: a dot in the solid color of its tone, its label for assistive
+ * technologies (#413). Doubled: over the badge's own size, whatever the CSS order. */
+.status.status {
+    display: inline-block;
+    width: 0.5rem;
+    min-width: 0;
+    height: 0.5rem;
+    margin-inline-end: var(--panneau-space-1);
+    padding: 0;
+    vertical-align: middle;
+    border-radius: 999px;
+}
+
+/* An empty month, where its grid would be: the calendar keeps its header to go to other months. */
+.empty {
+    background-color: var(--panneau-color-surface);
+    border: var(--panneau-border-width) dashed var(--panneau-color-border);
+    border-radius: var(--panneau-radius-lg);
+}
+
 .items li[data-current] {
     font-weight: var(--panneau-font-weight-medium);
 }

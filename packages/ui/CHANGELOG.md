@@ -1,5 +1,34 @@
 # @panneau/ui
 
+## 5.0.0-alpha.47
+
+### Minor Changes
+
+- 060c1e9: Relation fields reach every result, say how many there are, and show where each item stands (#436, decision 0103). The picker loads the next results as its list scrolls to the end, and says "20 of 45 results" when the source counts them: a `RelationSource` can give `searchPage(resource, query, { signal, next })`, which `createRelationSource()` does from the `meta` of the list (page numbers or cursors). A resource can name the field that holds the state of its items with `itemStatus`, a new optional setting of the protocol, usually a `select` with tones: results and cards show its label as a badge in its tone (`RelationReference.status`). The empty single field now takes the width of its column, as its card does, and its list is as wide (#410). `ComboBox` takes a `badge` on its items, `onLoadMore` and `isLoadingMore`, and a `footer`.
+
+### Patch Changes
+
+- 79abfd4: Undo a removal in a field: removing an item of a repeater, a card of a relation or a media of a media field now offers "Undo" in a toast (decision 0063), which puts it back at its place, with its value. Outside a `PanneauRoot`, where there is no toast region, the removal stays immediate. Repeater items now have a stable key, which isn't part of their value: the state of their fields (an editor's history), whether they are expanded and the focus follow them when they move. `@panneau/ui` exports `useUndoToast()`, which offers "Undo" in a toast and is `null` outside a `PanneauRoot`.
+- 09cca06: A token for the accent as text, for theme authors: `--panneau-color-accent-strong`. The outline, subtle and ghost appearances of the accent tone (the Edit action of each row), the icon of a context page, and links that fall back to the accent now write it instead of the accent itself, which stays the fill of the main action with `--panneau-color-accent-text` on it. A theme that sets `panneau-color-accent` gets a value derived from it: the accent, darkened or lightened until it reaches 4.5:1 on the theme's background, surface and accent subtle background, in each scheme. So a light accent, such as a yellow main action, keeps its accent-toned text readable with tokens only. A theme can set the token itself, and a project that overrides the accent with its own class sets it too. `checkTheme()` checks it on the background, the surface and the accent subtle background, and `bootstrapTheme` maps it to `--bs-primary-text-emphasis`. The default theme is unchanged.
+- 9e90547: The "Go to…" palette opens an item where its title opens in its list: its form, or its panel when its resource has `"open": "panel"` or the user can't update the item (decision 0082). Search results and recent items used to always open the form. Recent items now remember whether the user could update the item; those recorded before open the show route, which goes to the form once the item says it can be updated. The palette also highlights, in labels, the first match of each word of the query, ignoring case and accents. `CommandPalette` of `@panneau/ui` takes `highlightMatches` for this, with the `match-bg`, `match-color` and `match-font-weight` tokens; the marks are presentational, so screen readers read labels as before.
+- 3eb376c: Fixes in fields. An invalid `Select` has the red border and focus ring of an invalid text input. The map of a location or an address field no longer zooms when the page scrolls over it: the wheel scrolls the page, with a hint to hold ⌘ (Ctrl elsewhere) or to click the map, which then zooms with the wheel; its buttons, a pinch, a double click and the + and − keys still zoom it. Date-time and date range fields name the time zone they are typed in, in the locale, with its offset on that day (`Eastern Time (UTC−4)`), and lists show ranges in another zone the same way. `DatePicker` takes `end`, content at the end of its control.
+- f8c5d4f: Lists keep their header and their selection in view, open an item from anywhere on its row, and offer to create the first item (#443). `@panneau/lists`: the header of the table and the selection bar, with its actions, stick under the top of the window while the list scrolls, in every density; a table wider than the list scrolls in its own box, as high as the window, where its header sticks. A click on a row, a card or a tile outside its controls (checkbox, actions, cells edited in place, links) follows the link of its title, so ⌘-click, Ctrl-click and a middle click open it in a new tab; the title stays the only link and tab stop of the row, and text in a row can still be selected. In select mode, a click on a row selects its item. `ListView` takes `emptyAction`, a node or `{ label, href }`, shown in a list without items, filters or search. A selected row of the table reads darker than a hovered one, which still shows over it (#405). `@panneau/ui`: `--panneau-frame-top`, a semantic token (`0px`), the space the frame of the app takes at the top of the window, under which what sticks to the top stays. `@panneau/app`: the top bar of a small screen sets it, and an empty list of a resource the user can create in shows "New …", with the menu of its types.
+- Updated dependencies [2aab034]
+- Updated dependencies [79abfd4]
+- Updated dependencies [ff56beb]
+- Updated dependencies [a55f51b]
+- Updated dependencies [ecf96f3]
+- Updated dependencies [060c1e9]
+- Updated dependencies [b754dda]
+- Updated dependencies [3eb376c]
+- Updated dependencies [7e99405]
+- Updated dependencies [8ad5274]
+- Updated dependencies [55eced0]
+- Updated dependencies [d256517]
+- Updated dependencies [4686a26]
+- Updated dependencies [1350d30]
+  - @panneau/intl@5.0.0-alpha.47
+
 ## 5.0.0-alpha.46
 
 ### Patch Changes

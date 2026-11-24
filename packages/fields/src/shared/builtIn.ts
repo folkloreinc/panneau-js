@@ -8,7 +8,6 @@ import { GroupFieldEntry } from '../group/GroupField';
 import { NumberFieldEntry } from '../number/NumberField';
 import { RangeFieldEntry } from '../range/RangeField';
 import { RelationFieldEntry } from '../relation/RelationField';
-import { RepeaterFieldEntry } from '../repeater/RepeaterField';
 import { SelectFieldEntry } from '../select/SelectField';
 import { SlugFieldEntry } from '../slug/SlugField';
 import { TagsFieldEntry } from '../tags/TagsField';
@@ -46,7 +45,10 @@ export const builtInFields: Readonly<Record<string, FieldEntry>> = {
     file: lazyFieldEntry(async () => (await import('../file/FileField')).FileFieldEntry),
     relation: RelationFieldEntry,
     group: GroupFieldEntry,
-    repeater: RepeaterFieldEntry,
+    // Loaded with its first repeater: the first page of an app (a list) doesn't need it
+    repeater: lazyFieldEntry(
+        async () => (await import('../repeater/RepeaterField')).RepeaterFieldEntry,
+    ),
     tel: lazyFieldEntry(async () => (await import('../tel/TelField')).TelFieldEntry),
     range: RangeFieldEntry,
     duration: lazyFieldEntry(

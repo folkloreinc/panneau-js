@@ -68,7 +68,8 @@ export const WithoutPlugin: Story = {
     render: () => <Credits components={builtInFields} />,
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        await expect(canvas.getByRole('group', { name: 'Credits' })).toBeInTheDocument();
+        // The repeater loads with its first use
+        await expect(await canvas.findByRole('group', { name: 'Credits' })).toBeInTheDocument();
         await expect(canvas.getByRole('button', { name: 'Add' })).toBeInTheDocument();
     },
 };

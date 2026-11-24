@@ -83,7 +83,7 @@ import {
     - **Links in a new tab.** A source with `linksInNewTab` opens the links of its cards in a new tab, for fields in a panel over a form, which a link would leave.
 - **Files** upload through the `uploadSource` of the provider (below). Without one, the value holds the files themselves.
 - **Plugin slot:** a type without an entry, such as `richtext` and `media` without their plugins (`@panneau/editor`, `@panneau/media`), renders a placeholder that names it. A plugin that provides the type replaces it.
-- **Loaded on first use.** The entries of `builtInFields` with heavy code (`tel` and the metadata of phone numbers, `location`, `address`, `link`, `embed`, `file`, `country`, `region`, `color`, `json`, `daterange`, `duration`, `money`) load it the first time a form shows one, with the skeleton of the field until then. `lazyFieldEntry()` does the same for the type of a plugin: `lazyFieldEntry(async () => (await import('./ChartField')).ChartFieldEntry)`. The entries of the subpaths (`TelFieldEntry`…) are the components themselves.
+- **Loaded on first use.** The entries of `builtInFields` with heavy code (`tel` and the metadata of phone numbers, `location`, `address`, `link`, `embed`, `file`, `country`, `region`, `color`, `json`, `daterange`, `duration`, `money`, `repeater`) load it the first time a form shows one, with the skeleton of the field until then. `lazyFieldEntry()` does the same for the type of a plugin: `lazyFieldEntry(async () => (await import('./ChartField')).ChartFieldEntry)`. The entries of the subpaths (`TelFieldEntry`…) are the components themselves.
 
 ### Compound fields
 

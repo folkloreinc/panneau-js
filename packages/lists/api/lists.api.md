@@ -89,6 +89,11 @@ export function ConfirmDialog(input: ConfirmDialogProps): JSX.Element | null;
 // @public (undocumented)
 export interface ConfirmDialogProps {
     event: ListActionEvent | null;
+    itemLabel?: string | undefined;
+    labels?: {
+        readonly singular: string;
+        readonly plural: string;
+    } | undefined;
     // (undocumented)
     onCancel: () => void;
     // (undocumented)
@@ -286,6 +291,7 @@ export type ListActions = readonly Action[] | Partial<Record<ActionPlacement, re
 export interface ListCalendarProps {
     field: string;
     isLeaving?: ((item: ListItem) => boolean) | undefined;
+    isLoading?: boolean | undefined;
     month: string;
     more: {
         total: number | null;
@@ -344,6 +350,13 @@ export interface ListItem {
 }
 
 // @public
+export interface ListItemStatus {
+    // (undocumented)
+    label: string;
+    tone?: string | undefined;
+}
+
+// @public
 export type ListLayoutEntry = ComponentType<ListLayoutProps>;
 
 // @public
@@ -355,6 +368,7 @@ export interface ListLayoutProps {
     getItemHref?: ((item: ListItem) => string | null) | undefined;
     getItemImage?: ((item: ListItem) => string | null) | undefined;
     getItemLabel: (item: ListItem) => string;
+    getItemStatus?: ((item: ListItem) => ListItemStatus | null) | undefined;
     isCurrent?: ((item: ListItem) => boolean) | undefined;
     isHighlighted?: ((item: ListItem) => boolean) | undefined;
     isLeaving?: ((item: ListItem) => boolean) | undefined;
@@ -455,6 +469,7 @@ export interface ListViewProps {
     isLoading?: boolean;
     itemImage?: string | undefined;
     items: readonly ListItem[] | undefined;
+    itemStatus?: string | undefined;
     itemTitle?: string;
     layouts?: ListViewLayouts;
     list: List_2;
@@ -462,6 +477,10 @@ export interface ListViewProps {
     // (undocumented)
     onRetry?: () => void;
     perPageOptions?: readonly number[];
+    resourceLabel?: {
+        readonly singular: string;
+        readonly plural: string;
+    } | undefined;
     search?: boolean;
     selectable?: boolean;
     toolbar?: ReactNode;
