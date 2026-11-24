@@ -14,6 +14,7 @@ import {
     referenceTo,
 } from './__fixtures__/images';
 import { createMemorySource, libraryMedia } from './__fixtures__/mediaSources';
+import { afterSlides, dragHandle } from './__fixtures__/reorder';
 
 const cover = referenceTo(harbour, 'med_h', { transform: harbourBanner });
 
@@ -221,6 +222,125 @@ export const Gallery: Story = {
         await expect(
             canvas.getByRole('button', { name: 'Edit hiker under the pine' }),
         ).toBeVisible();
+    },
+};
+
+const handleNames = (element: HTMLElement) =>
+    [...element.querySelectorAll('[data-reorder-handle]')].map((handle) =>
+        handle.getAttribute('aria-label'),
+    );
+
+function ReorderableGallery() {
+    const [value, setValue] = useState<MediaReference[] | null>([
+        referenceTo(harbour, 'med_1', { label: 'harbour' }),
+        referenceTo(hiker, 'med_2', { label: 'hiker' }),
+        referenceTo(harbour, 'med_3', { label: 'lighthouse', transform: harbourBanner }),
+        referenceTo(hiker, 'med_4', { label: 'summit' }),
+    ]);
+    return (
+        <ImageField
+            label="Gallery"
+            resource="media"
+            multiple
+            adapter={null}
+            value={value}
+            onChange={setValue}
+        />
+    );
+}
+
+/**
+ * The images of a gallery reorder (decision 0111): by the handle at the start of their name, with
+ * the pointer, on the side of a tile in its row, or the keyboard; or from the menu of moves at the
+ * end of their name. The tools over the image stay as they are.
+ */
+export const ReorderGallery: Story = {
+    render: () => (
+        <div style={{ maxWidth: '40rem' }}>
+            <ReorderableGallery />
+        </div>
+    ),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByRole('list')).toHaveAttribute('data-layout', 'grid');
+
+        // The pointer: on the left half of the first tile, in its row
+        const [first] = canvas.getAllByRole('listitem') as HTMLElement[];
+        const rect = (first as HTMLElement).getBoundingClientRect();
+        await dragHandle(
+            canvas.getByRole('button', { name: 'Move lighthouse' }),
+            first as HTMLElement,
+            rect.top + rect.height / 2,
+            rect.left + 8,
+        );
+        await waitFor(() =>
+            expect(handleNames(canvasElement)).toEqual([
+                'Move lighthouse',
+                'Move harbour',
+                'Move hiker',
+                'Move summit',
+            ]),
+        );
+        await expect(canvas.getByRole('status')).toHaveTextContent(
+            'lighthouse moved to position 1 of 4',
+        );
+        await afterSlides();
+
+        // The keyboard: the arrows go from one place to the next
+        canvas.getByRole('button', { name: 'Move summit' }).focus();
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() => expect(document.activeElement).toHaveAttribute('data-reorder-gap'));
+        for (let step = 0; step < 5; step += 1) {
+            if (document.activeElement?.getAttribute('aria-label') === 'Before harbour') {
+                break;
+            }
+            await userEvent.keyboard('{ArrowRight}');
+            await new Promise((resolve) => requestAnimationFrame(resolve));
+        }
+        await expect(document.activeElement).toHaveAccessibleName('Before harbour');
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() =>
+            expect(handleNames(canvasElement)).toEqual([
+                'Move lighthouse',
+                'Move summit',
+                'Move harbour',
+                'Move hiker',
+            ]),
+        );
+        await waitFor(() =>
+            expect(canvas.getByRole('button', { name: 'Move summit' })).toHaveFocus(),
+        );
+        await afterSlides();
+
+        // The menu
+        await userEvent.click(canvas.getByRole('button', { name: 'Reorder lighthouse' }));
+        await userEvent.click(await screen.findByRole('menuitem', { name: 'Move to the end' }));
+        await waitFor(() =>
+            expect(handleNames(canvasElement)).toEqual([
+                'Move summit',
+                'Move harbour',
+                'Move hiker',
+                'Move lighthouse',
+            ]),
+        );
+    },
+};
+
+/** In a narrow column, as the sidebar of a form: two tiles a row, which keep their tools. */
+export const ReorderGalleryInANarrowColumn: Story = {
+    render: () => (
+        <div style={{ maxWidth: '18rem' }}>
+            <ReorderableGallery />
+        </div>
+    ),
+    play: async ({ canvasElement }) => {
+        for (const tile of canvasElement.querySelectorAll<HTMLElement>('li')) {
+            await expect(tile.scrollWidth).toBeLessThanOrEqual(tile.clientWidth);
+            const handle = tile.querySelector('[data-reorder-handle]');
+            const menu = tile.querySelector('.panneau-reorder-menu');
+            await expect(handle).toBeVisible();
+            await expect(menu).toBeVisible();
+        }
     },
 };
 

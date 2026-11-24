@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -237,6 +237,75 @@ describe('ImageField', () => {
         expect(
             Array.from(editor.querySelectorAll('image'), (drawn) => drawn.getAttribute('href')),
         ).toContain(harbour.url);
+    });
+});
+
+describe('ImageField: reorder', () => {
+    const GALLERY = [
+        referenceTo(harbour, 'med_1', { label: 'harbour' }),
+        referenceTo(hiker, 'med_2', { label: 'hiker' }),
+        referenceTo(harbour, 'med_3', { label: 'lighthouse' }),
+    ];
+    const handles = () =>
+        [...document.querySelectorAll('[data-reorder-handle]')].map((handle) =>
+            handle.getAttribute('aria-label'),
+        );
+    const ids = (value: unknown) => (value as MediaReference[]).map((entry) => entry.id);
+
+    function Gallery({
+        onChange,
+        readOnly,
+    }: {
+        onChange?: (value: MediaReference[] | null) => void;
+        readOnly?: boolean;
+    }) {
+        return (
+            <Controlled<MediaReference[] | null> initial={GALLERY} onChange={onChange}>
+                {(value, setValue) => (
+                    <ImageField
+                        label="Gallery"
+                        resource="media"
+                        multiple
+                        adapter={null}
+                        value={value}
+                        onChange={setValue}
+                        {...(readOnly !== undefined ? { readOnly } : {})}
+                    />
+                )}
+            </Controlled>
+        );
+    }
+
+    it('moves an image of a gallery by its handle with the keyboard, and the value follows', async () => {
+        const onChange = vi.fn();
+        renderInRoot(<Gallery onChange={onChange} />);
+        expect(screen.getByRole('list')).toHaveAttribute('data-layout', 'grid');
+        expect(handles()).toEqual(['Move harbour', 'Move hiker', 'Move lighthouse']);
+        act(() => screen.getByRole('button', { name: 'Move lighthouse' }).focus());
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() => expect(document.activeElement).toHaveAttribute('data-reorder-gap'));
+        act(() => screen.getByRole('button', { name: 'Before harbour' }).focus());
+        await userEvent.keyboard('{Enter}');
+        expect(ids(onChange.mock.lastCall?.[0])).toEqual(['med_3', 'med_1', 'med_2']);
+        expect(handles()).toEqual(['Move lighthouse', 'Move harbour', 'Move hiker']);
+        await waitFor(() =>
+            expect(screen.getByRole('button', { name: 'Move lighthouse' })).toHaveFocus(),
+        );
+        expect(screen.getByRole('status')).toHaveTextContent('lighthouse moved to position 1 of 3');
+    });
+
+    it('moves an image from its menu', async () => {
+        const onChange = vi.fn();
+        renderInRoot(<Gallery onChange={onChange} />);
+        await userEvent.click(screen.getByRole('button', { name: 'Reorder harbour' }));
+        await userEvent.click(screen.getByRole('menuitem', { name: 'Move after hiker' }));
+        expect(ids(onChange.mock.lastCall?.[0])).toEqual(['med_2', 'med_1', 'med_3']);
+    });
+
+    it('has no handle or menu when it is read-only', () => {
+        renderInRoot(<Gallery readOnly />);
+        expect(document.querySelector('[data-reorder-handle]')).toBeNull();
+        expect(screen.queryByRole('button')).not.toBeInTheDocument();
     });
 });
 

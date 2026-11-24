@@ -3,7 +3,16 @@ import type { ReactNode } from 'react';
 
 import { fieldsMessages, mediaMessages as messages } from '@panneau/intl';
 import type { MediaReference } from '@panneau/protocol';
-import { Badge, Button, IconButton, Text, usePanneauIntl } from '@panneau/ui';
+import {
+    Badge,
+    Button,
+    IconButton,
+    ReorderHandle,
+    ReorderItem,
+    ReorderMenu,
+    Text,
+    usePanneauIntl,
+} from '@panneau/ui';
 
 import styles from './MediaField.module.css';
 import { TransformedImage, ratioLabel, renderedImage } from './editor/draw';
@@ -51,6 +60,11 @@ export interface ImageItemProps {
     cropRequired: boolean;
     /** The status badge of a media being processed. */
     status: ReactNode;
+    /**
+     * Its place in a gallery that reorders its images (decision 0111), with a key that stays when
+     * it moves: a handle at the start of its name, and a menu of moves at its end.
+     */
+    reorder?: { index: number; id: string } | null;
     onEdit: (() => void) | null;
     onRemove: (() => void) | null;
 }
@@ -61,6 +75,7 @@ export function ImageItem({
     tile,
     cropRequired,
     status,
+    reorder = null,
     onEdit,
     onRemove,
 }: ImageItemProps) {
@@ -155,10 +170,18 @@ export function ImageItem({
         ) : null;
 
     if (tile) {
-        return (
-            <li className={styles.tile}>
+        const content = (
+            <>
                 {preview}
-                <span className={styles.name}>{name}</span>
+                {reorder !== null ? (
+                    <span className={styles.tileName}>
+                        <ReorderHandle />
+                        <span className={styles.name}>{name}</span>
+                        <ReorderMenu />
+                    </span>
+                ) : (
+                    <span className={styles.name}>{name}</span>
+                )}
                 {badges}
                 {edit !== null || remove !== null ? (
                     <span className={styles.tileActions}>
@@ -166,7 +189,14 @@ export function ImageItem({
                         {remove}
                     </span>
                 ) : null}
-            </li>
+            </>
+        );
+        return reorder !== null ? (
+            <ReorderItem id={reorder.id} index={reorder.index} className={styles.tile}>
+                {content}
+            </ReorderItem>
+        ) : (
+            <li className={styles.tile}>{content}</li>
         );
     }
     return (

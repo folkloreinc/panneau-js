@@ -648,6 +648,72 @@ describe('MediaField', () => {
     });
 });
 
+describe('MediaField: reorder', () => {
+    const MEDIA = [
+        reference(),
+        reference({ type: 'audio' }, { id: 'med_2', label: 'song.mp3' }),
+        reference({ type: 'document' }, { id: 'med_3', label: 'notes.pdf' }),
+    ];
+    const ids = (value: unknown) => (value as MediaReference[]).map((entry) => entry.id);
+
+    function Files({
+        onChange,
+        readOnly,
+    }: {
+        onChange?: (value: MediaReference[] | null) => void;
+        readOnly?: boolean;
+    }) {
+        return (
+            <Controlled<MediaReference[] | null> initial={MEDIA} onChange={onChange}>
+                {(value, setValue) => (
+                    <MediaField
+                        label="Attachments"
+                        resource="media"
+                        multiple
+                        adapter={{ create: vi.fn(), get: vi.fn() }}
+                        value={value}
+                        onChange={setValue}
+                        {...(readOnly !== undefined ? { readOnly } : {})}
+                    />
+                )}
+            </Controlled>
+        );
+    }
+
+    it('moves a media by its handle with the keyboard, not to its drop zone', async () => {
+        const onChange = vi.fn();
+        renderInRoot(<Files onChange={onChange} />);
+        act(() => screen.getByRole('button', { name: 'Move notes.pdf' }).focus());
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() => expect(document.activeElement).toHaveAttribute('data-reorder-gap'));
+        act(() => screen.getByRole('button', { name: 'Before clip.mp4' }).focus());
+        await userEvent.keyboard('{Enter}');
+        expect(ids(onChange.mock.lastCall?.[0])).toEqual(['med_3', 'med_1', 'med_2']);
+        await waitFor(() =>
+            expect(screen.getByRole('button', { name: 'Move notes.pdf' })).toHaveFocus(),
+        );
+    });
+
+    it('moves a media from its menu, and puts a removed media back at its new place', async () => {
+        const onChange = vi.fn();
+        renderInRoot(<Files onChange={onChange} />);
+        await userEvent.click(screen.getByRole('button', { name: 'Reorder clip.mp4' }));
+        await userEvent.click(screen.getByRole('menuitem', { name: 'Move to the end' }));
+        expect(ids(onChange.mock.lastCall?.[0])).toEqual(['med_2', 'med_3', 'med_1']);
+
+        await userEvent.click(screen.getByRole('button', { name: 'Remove song.mp3' }));
+        expect(ids(onChange.mock.lastCall?.[0])).toEqual(['med_3', 'med_1']);
+        await userEvent.click(screen.getByRole('button', { name: 'Undo' }));
+        expect(ids(onChange.mock.lastCall?.[0])).toEqual(['med_2', 'med_3', 'med_1']);
+    });
+
+    it('has no handle or menu when it is read-only', () => {
+        renderInRoot(<Files readOnly />);
+        expect(document.querySelector('[data-reorder-handle]')).toBeNull();
+        expect(screen.queryByRole('button', { name: /^Reorder / })).not.toBeInTheDocument();
+    });
+});
+
 describe('mediaPlugin', () => {
     it('provides the media and image types: the file type is built into the fields', () => {
         expect(Object.keys(mediaPlugin.fields)).toEqual(['media', 'image']);

@@ -27,9 +27,12 @@ import {
     Button,
     Fieldset,
     IconButton,
+    ReorderList,
+    ReorderMenu,
     Spinner,
     Tile,
     TileGroup,
+    moveItem,
     usePanneauIntl,
     useUndoToast,
 } from '@panneau/ui';
@@ -506,28 +509,53 @@ export function MediaField(props: MediaFieldProps) {
         return transform === null || transform === undefined ? rest : { ...rest, transform };
     };
 
+    // Several media reorder, by a handle or a menu of moves, unless the field is read only.
+    const reorderable = multiple && enabled;
+    const move = (from: number, to: number) => set(moveItem(latest.current, from, to));
+    const nameAt = (index: number) => {
+        const item = media[index];
+        return item !== undefined ? (item.label ?? item.id) : '';
+    };
+    const images =
+        imageOptions !== null
+            ? media.map((item, index) => (
+                  <ImageItem
+                      key={keyOf(item, resource)}
+                      reference={item}
+                      tile={multiple}
+                      reorder={reorderable ? { index, id: keyOf(item, resource) } : null}
+                      cropRequired={editable && imageOptions.cropRequired === true}
+                      status={statusBadge(item)}
+                      onEdit={
+                          enabled && editable
+                              ? () => setEditing({ key: keyOf(item, resource) })
+                              : null
+                      }
+                      onRemove={canUpload || canPick ? () => remove(item) : null}
+                  />
+              ))
+            : null;
+
     const content = (
         <div className={styles.field}>
-            {media.length > 0 && imageOptions !== null ? (
-                <ul className={multiple ? styles.gallery : styles.media}>
-                    {media.map((item) => (
-                        <ImageItem
-                            key={keyOf(item, resource)}
-                            reference={item}
-                            tile={multiple}
-                            cropRequired={editable && imageOptions.cropRequired === true}
-                            status={statusBadge(item)}
-                            onEdit={
-                                enabled && editable
-                                    ? () => setEditing({ key: keyOf(item, resource) })
-                                    : null
-                            }
-                            onRemove={canUpload || canPick ? () => remove(item) : null}
-                        />
-                    ))}
-                </ul>
+            {media.length > 0 && images !== null && reorderable ? (
+                <ReorderList
+                    elementType="ul"
+                    layout="grid"
+                    className={styles.gallery}
+                    itemCount={media.length}
+                    itemLabel={nameAt}
+                    onMove={move}
+                >
+                    {images}
+                </ReorderList>
+            ) : media.length > 0 && images !== null ? (
+                <ul className={multiple ? styles.gallery : styles.media}>{images}</ul>
             ) : media.length > 0 ? (
-                <TileGroup appearance="outline">
+                <TileGroup
+                    appearance="outline"
+                    {...(reorderable ? { onMove: move, itemLabel: nameAt } : {})}
+                >
                     {media.map((item) => {
                         const name = item.label ?? item.id;
                         const size = item.media?.size;
@@ -554,15 +582,21 @@ export function MediaField(props: MediaFieldProps) {
                                       }
                                     : { icon: FileImage })}
                                 actions={
-                                    canUpload || canPick ? (
-                                        <IconButton
-                                            icon={X}
-                                            size="sm"
-                                            label={intl.formatMessage(fieldsMessages.removeFile, {
-                                                name,
-                                            })}
-                                            onPress={() => remove(item)}
-                                        />
+                                    reorderable || canUpload || canPick ? (
+                                        <>
+                                            {reorderable ? <ReorderMenu /> : null}
+                                            {canUpload || canPick ? (
+                                                <IconButton
+                                                    icon={X}
+                                                    size="sm"
+                                                    label={intl.formatMessage(
+                                                        fieldsMessages.removeFile,
+                                                        { name },
+                                                    )}
+                                                    onPress={() => remove(item)}
+                                                />
+                                            ) : null}
+                                        </>
                                     ) : undefined
                                 }
                             >

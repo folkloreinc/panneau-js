@@ -6,8 +6,16 @@
 
 const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
 
-/** Drags `handle` over `target`, and drops it at `clientY`, in the coordinates of the viewport. */
-export async function dragHandle(handle: HTMLElement, target: HTMLElement, clientY: number) {
+/**
+ * Drags `handle` over `target`, and drops it at `clientY`, in the coordinates of the viewport, and
+ * at `clientX` in a grid (the middle of the handle by default).
+ */
+export async function dragHandle(
+    handle: HTMLElement,
+    target: HTMLElement,
+    clientY: number,
+    clientX?: number,
+) {
     const dataTransfer = new DataTransfer();
     // Outside of a real drag, a browser keeps the effects at "none": keep what is set, as in one
     const effects = { effectAllowed: 'uninitialized', dropEffect: 'none' };
@@ -20,18 +28,18 @@ export async function dragHandle(handle: HTMLElement, target: HTMLElement, clien
         });
     }
     const start = handle.getBoundingClientRect();
-    const clientX = start.x + start.width / 2;
-    const fire = (element: Element, type: string, y: number) =>
+    const startX = start.x + start.width / 2;
+    const fire = (element: Element, type: string, y: number, x = clientX ?? startX) =>
         element.dispatchEvent(
             new DragEvent(type, {
                 bubbles: true,
                 cancelable: true,
                 dataTransfer,
-                clientX,
+                clientX: x,
                 clientY: y,
             }),
         );
-    fire(handle, 'dragstart', start.y + start.height / 2);
+    fire(handle, 'dragstart', start.y + start.height / 2, startX);
     await nextFrame();
     fire(target, 'dragenter', clientY);
     fire(target, 'dragover', clientY);
