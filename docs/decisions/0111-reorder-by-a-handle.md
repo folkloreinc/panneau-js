@@ -3,6 +3,7 @@
 - Status: accepted
 - Date: 2026-11-23
 - Issue: [#473](https://github.com/folkloreinc/panneau-js/issues/473)
+- Updated: 2026-11-24: lists inside items, and the fields that use it
 - Uses: [0068](0068-collapsed-items-and-lighter-controls.md) (the tools of an item), [0072](0072-touch-targets-follow-the-density.md) (targets), [0081](0081-motion-tokens-and-leaving-items.md) (motion), [0095](0095-focus-and-announcements-in-lists.md) (focus and status messages)
 
 ## Context
@@ -23,6 +24,7 @@ A prototype with a text input and the rich text editor in each item showed that 
 - **A handle, not the item.** Only `ReorderHandle` is `draggable`. It is one target of the density or a small control, whichever is larger ([0072](0072-touch-targets-follow-the-density.md)): the size of the small icon buttons of an item's header. It is named "Move" and the name of the item.
 - **Controlled.** The list calls `onMove(from, to)`, and never changes the order itself. Each item has a key that stays when it moves (`id`), so that the caller's state follows it ([#417](https://github.com/folkloreinc/panneau-js/issues/417)).
 - **Within one list.** The dragged data has a type of its own list: another list, or another drop zone, refuses it.
+- **Lists inside items**, as a repeater in a repeater: a list takes the drops of the pointer only while one of its own items is dragged. React Aria stops the events of a drag at a drop target, even one that refuses it: a list that always listened would keep the drags of the list around it from going through it, and the files dragged to a drop zone around it. Each list has its own handles and places, and an item of an inner list stays in it.
 - **The pointer and touch** use the browser's drag and drop (a long press on touch screens). The list takes the drop at the gap nearest to the pointer: before the item whose middle is past it, or after the last one. The image that follows the pointer is a copy of the item, or of its part marked `data-reorder-preview`, such as its header.
 - **The keyboard and screen readers**: Enter or Space on the handle picks the item up. The places it can go are drop targets of React Aria, named "Before Quote" or "After Credits"; Tab, Shift+Tab and the arrows go through them, Enter or Space drops, Escape puts the item back. The two places around the item, which don't move it, aren't targets. After a drop, the focus goes back to the handle, at the item's new place.
 - **A line shows where the item would go**, on the edge of the item before it or after the last one, in the focus color: under the pointer, or on the target that has the focus.

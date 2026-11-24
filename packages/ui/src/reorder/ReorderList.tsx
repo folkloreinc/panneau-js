@@ -133,6 +133,9 @@ export function ReorderList({
     const list = useRef<HTMLElement | null>(null);
     const [drag, setDrag] = useState<Drag | null>(null);
     const [pointerGap, setPointerGap] = useState<number | null>(null);
+    // Whether one of its items is dragged with the pointer: only then the list takes drops. Set at
+    // once, unlike `drag`: a list inside an item lets the drags of other lists go through it.
+    const [isPointerDrag, setPointerDrag] = useState(false);
     const [message, setMessage] = useState('');
     // Read by the handlers of drag and drop, outside of rendering
     const current = useRef<{ drag: Drag | null; gap: number | null }>({ drag: null, gap: null });
@@ -152,6 +155,7 @@ export function ReorderList({
     const start = (next: Drag) => {
         current.current = { drag: next, gap: null };
         if (next.mode === 'pointer') {
+            setPointerDrag(true);
             // A frame later, once the browser took the image of what is dragged
             requestAnimationFrame(() => {
                 if (current.current.drag === next) {
@@ -173,6 +177,7 @@ export function ReorderList({
     const end = () => {
         current.current = { drag: null, gap: null };
         setDrag(null);
+        setPointerDrag(false);
         setPointerGap(null);
     };
     const drop = (gap: number) => {
@@ -206,7 +211,9 @@ export function ReorderList({
         onMove(dragged.index, to);
     };
 
-    // The pointer: the list takes the drop, at the gap nearest to the pointer
+    // The pointer: the list takes the drop, at the gap nearest to the pointer. Only while one of
+    // its own items is dragged: React Aria stops the events of a drag at a drop target, so a list
+    // inside an item of another list, or inside a drop zone of files, would refuse their drags.
     const gapFor = (y: number) => {
         const element = list.current;
         if (element === null) {
@@ -224,7 +231,7 @@ export function ReorderList({
     const onPointerMove = (event: { y: number }) => setGap(gapFor(event.y));
     const { dropProps } = useDrop({
         ref: list,
-        isDisabled,
+        isDisabled: isDisabled || !isPointerDrag,
         getDropOperation: (types) =>
             types.has(type) && current.current.drag?.mode === 'pointer' ? 'move' : 'cancel',
         onDropEnter: onPointerMove,

@@ -250,3 +250,122 @@ export const SingleItem: Story = {
 };
 
 export const Disabled: Story = { args: { isDisabled: true } };
+
+interface Section {
+    id: string;
+    items: string[];
+}
+
+const SECTIONS: readonly Section[] = [
+    { id: 'Morning', items: ['Coffee', 'News'] },
+    { id: 'Noon', items: ['Lunch', 'Walk', 'Nap'] },
+];
+
+/** Sections, each with a list of its own inside: an item of one list doesn't go in another. */
+function Sections() {
+    const [sections, setSections] = useState(SECTIONS);
+    const box = {
+        display: 'grid',
+        gap: 8,
+        padding: 8,
+        border: '1px solid var(--panneau-color-border)',
+        borderRadius: 'var(--panneau-radius-md)',
+    };
+    const list = { display: 'grid', gap: 8, padding: 0, margin: 0, listStyle: 'none' };
+    return (
+        <ReorderList
+            aria-label="Sections"
+            itemCount={sections.length}
+            itemLabel={(index) => sections[index]?.id ?? ''}
+            onMove={(from, to) => setSections(moved(sections, from, to))}
+            style={list}
+        >
+            {sections.map((section, index) => (
+                <ReorderItem key={section.id} id={section.id} index={index} style={box}>
+                    <div data-reorder-preview style={{ display: 'flex', alignItems: 'center' }}>
+                        <ReorderHandle />
+                        <strong>{section.id}</strong>
+                    </div>
+                    <ReorderList
+                        aria-label={`Items of ${section.id}`}
+                        itemCount={section.items.length}
+                        itemLabel={(item) => section.items[item] ?? ''}
+                        onMove={(from, to) =>
+                            setSections(
+                                sections.map((current) =>
+                                    current === section
+                                        ? { ...current, items: moved(current.items, from, to) }
+                                        : current,
+                                ),
+                            )
+                        }
+                        style={list}
+                    >
+                        {section.items.map((item, itemIndex) => (
+                            <ReorderItem
+                                key={item}
+                                id={item}
+                                index={itemIndex}
+                                data-testid={`item-${item}`}
+                                style={{ ...box, display: 'flex', alignItems: 'center' }}
+                            >
+                                <ReorderHandle />
+                                {item}
+                            </ReorderItem>
+                        ))}
+                    </ReorderList>
+                </ReorderItem>
+            ))}
+        </ReorderList>
+    );
+}
+
+const orderIn = (list: HTMLElement) =>
+    [...list.querySelectorAll<HTMLElement>(':scope > [data-reorder-item]')].map(
+        (item) => item.dataset.reorderId,
+    );
+
+/**
+ * A list inside the items of another one. A section drags over the list inside another section,
+ * and goes before or after that section; an item of an inner list moves within its list only.
+ */
+export const Nested: Story = {
+    render: () => <Sections />,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const outer = canvas.getByRole('list', { name: 'Sections' });
+        // Dropped over the inner list of Noon, on its lower half: after Noon
+        const nap = canvas.getByTestId('item-Nap');
+        await drag(
+            canvas.getByRole('button', { name: 'Move Morning' }),
+            nap,
+            nap.getBoundingClientRect().bottom - 2,
+        );
+        await waitFor(() => expect(orderIn(outer)).toEqual(['Noon', 'Morning']));
+        await Promise.all(document.getAnimations().map((animation) => animation.finished));
+
+        // An item of an inner list moves in its list, and the sections stay
+        const walk = canvas.getByTestId('item-Walk');
+        await drag(
+            canvas.getByRole('button', { name: 'Move Nap' }),
+            walk,
+            walk.getBoundingClientRect().top + 2,
+        );
+        const noon = canvas.getByRole('list', { name: 'Items of Noon' });
+        await waitFor(() => expect(orderIn(noon)).toEqual(['Lunch', 'Nap', 'Walk']));
+        await expect(orderIn(outer)).toEqual(['Noon', 'Morning']);
+        await Promise.all(document.getAnimations().map((animation) => animation.finished));
+
+        // With the keyboard, the places of a section are the sections'
+        canvas.getByRole('button', { name: 'Move Morning' }).focus();
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() => expect(document.activeElement).toHaveAccessibleName('Before Noon'));
+        await expect(
+            [...canvasElement.querySelectorAll('[data-reorder-gap]')].map((gap) =>
+                gap.getAttribute('aria-label'),
+            ),
+        ).toEqual(['Before Noon']);
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() => expect(orderIn(outer)).toEqual(['Morning', 'Noon']));
+    },
+};
