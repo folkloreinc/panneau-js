@@ -90,6 +90,29 @@ describe('RelationField', () => {
         expect(search).toHaveBeenCalledWith('authors', expect.any(String), expect.anything());
     });
 
+    it('uses its placeholder only when the prop is left out, as a default value', () => {
+        const { source } = createSource();
+        renderField(
+            <>
+                <RelationField label="Left out" resource="authors" value={null} />
+                <RelationField label="Own" resource="authors" value={null} placeholder="Who?" />
+                {/* A JavaScript caller can pass null: it is kept, as a default value keeps it. */}
+                <RelationField
+                    label="Null"
+                    resource="authors"
+                    value={null}
+                    placeholder={null as unknown as string}
+                />
+            </>,
+            { relationSource: source },
+        );
+        const placeholder = (name: string) =>
+            screen.getByRole('combobox', { name }).getAttribute('placeholder');
+        expect(placeholder('Left out')).toBe('Search…');
+        expect(placeholder('Own')).toBe('Who?');
+        expect(placeholder('Null')).toBeNull();
+    });
+
     it('shows the selected item as a card, and removes it', async () => {
         const { source } = createSource();
         const onChange = vi.fn();

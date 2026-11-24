@@ -94,6 +94,42 @@ describe('version conflicts', () => {
         expect(await screen.findByText('Saved')).toBeInTheDocument();
     });
 
+    it('stays open while it saves over the current version, and closes when that save fails', async () => {
+        let fail: (error: unknown) => void = () => undefined;
+        const onSubmit = vi
+            .fn()
+            .mockRejectedValueOnce(problemError({ status: 412, current: CURRENT }))
+            .mockImplementationOnce(
+                () =>
+                    new Promise((_resolve, reject) => {
+                        fail = reject;
+                    }),
+            );
+        renderForm(
+            <Form fields={FIELDS} values={{ title: 'Min' }} version="2" onSubmit={onSubmit} />,
+        );
+        await userEvent.type(screen.getByRole('textbox', { name: 'Title' }), 'e');
+        await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+        const dialog = await screen.findByRole('alertdialog', {
+            name: 'Someone else saved this item',
+        });
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Save mine anyway' }));
+        await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(2));
+        // While it saves, the dialog stays, its button pending.
+        expect(dialog).toBeInTheDocument();
+        expect(within(dialog).getByRole('button', { name: /Save mine anyway/ })).toHaveAttribute(
+            'aria-disabled',
+            'true',
+        );
+        fail(problemError({ status: 500, detail: 'The database is down.' }));
+        await waitFor(() =>
+            expect(
+                screen.queryByRole('alertdialog', { name: 'Someone else saved this item' }),
+            ).not.toBeInTheDocument(),
+        );
+        expect(await screen.findByText(/The database is down\./)).toBeInTheDocument();
+    });
+
     it('asks to reload when the backend did not send the current item', async () => {
         const onReload = vi.fn();
         renderForm(
