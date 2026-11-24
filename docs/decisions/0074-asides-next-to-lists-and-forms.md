@@ -1,6 +1,6 @@
 # 0074: One aside, next to lists and forms
 
-- Status: accepted, amended by [0099](0099-the-item-panel-goes-over-its-list.md): on list pages, the item panel goes over the list at every width
+- Status: accepted, amended by [0099](0099-the-item-panel-goes-over-its-list.md): on list pages, the item panel goes over the list at every width; amended by [0075](0075-panels-of-a-form-sidebar.md): below 56rem, the sidebar of a form comes before it, collapsed (`before`), not below it
 - Date: 2026-11-09
 - Amends: [0028](0028-item-panel.md) (the layout of the item panel and its tokens), and the `sidebar` node of form layouts ([protocol](../protocol.md#form-layout))
 - Part of: [#6](https://github.com/folkloreinc/panneau-js/issues/6), 5.x (Sidebars, a general principle)
@@ -20,7 +20,7 @@ The roadmap makes sidebars a general principle: next to a list, the whole item o
 
 - **`Aside` in `@panneau/ui`**: the column next to the main content of a page or a form, made of panels. `AsideLayout` places it next to its main content.
     - **Beside the content from 56rem of the layout** (`AsideLayout` is a container), so that the content keeps at least 32rem. One threshold for lists and forms, measured where the aside is, not on the root.
-    - **Below that width, the page chooses** (`narrow` of `AsideLayout`): `below` the content, for forms, or `overlay`, over the content on its right, the whole width on a phone, for the item panel, which opens on demand and closes.
+    - **Below that width, the page chooses** (`narrow` of `AsideLayout`): `below` the content, for forms (`before` since [0075](0075-panels-of-a-form-sidebar.md), for #501), or `overlay`, over the content on its right, the whole width on a phone, for the item panel, which opens on demand and closes.
     - **Beside the content, it stays in view**: sticky at the top, as tall as the screen at most, and its body scrolls.
     - **One look**: a card on the surface, with a border, a radius and a light shadow. Over the content, the shadow of overlays.
     - **A header**, optional: a title and the buttons of the aside, then a toolbar (the actions of an item).

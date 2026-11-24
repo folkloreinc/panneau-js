@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Aside, AsideLayout, AsidePanel } from './Aside';
 
@@ -146,5 +146,99 @@ describe('AsideLayout', () => {
         expect(grid?.className).toMatch(/overlay/);
         expect(grid?.className).toMatch(/alwaysOverlay/);
         expect(grid?.className).not.toMatch(/withAside/);
+    });
+
+    describe('with narrow="before"', () => {
+        let width = 0;
+        const observers: (() => void)[] = [];
+        const resize = (next: number) => {
+            width = next;
+            act(() => {
+                for (const observe of observers) {
+                    observe();
+                }
+            });
+        };
+        beforeEach(() => {
+            observers.length = 0;
+            vi.stubGlobal(
+                'ResizeObserver',
+                class {
+                    constructor(callback: () => void) {
+                        observers.push(callback);
+                    }
+                    observe() {}
+                    disconnect() {}
+                },
+            );
+            vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(() => width);
+        });
+        afterEach(() => {
+            vi.unstubAllGlobals();
+            vi.restoreAllMocks();
+        });
+
+        const renderLayout = (onBeforeChange = vi.fn()) =>
+            render(
+                <AsideLayout
+                    narrow="before"
+                    onBeforeChange={onBeforeChange}
+                    aside={
+                        <Aside label="Sidebar" title="Sidebar" summary="Publication · Files">
+                            <input aria-label="Date" />
+                        </Aside>
+                    }
+                >
+                    <input aria-label="Title" />
+                </AsideLayout>,
+            );
+
+        it('puts the aside beside the content from 56rem, after it in the page', () => {
+            width = 1000;
+            const onBeforeChange = vi.fn();
+            renderLayout(onBeforeChange);
+            const aside = screen.getByRole('region', { name: 'Sidebar' });
+            expect(aside).not.toHaveAttribute('data-before');
+            expect(
+                screen.getByRole('textbox', { name: 'Title' }).compareDocumentPosition(aside) &
+                    Node.DOCUMENT_POSITION_FOLLOWING,
+            ).toBeTruthy();
+            expect(screen.getByRole('heading', { name: 'Sidebar' })).toBeInTheDocument();
+            expect(screen.queryByRole('button', { name: 'Publication · Files' })).toBeNull();
+            expect(onBeforeChange).toHaveBeenLastCalledWith(false);
+        });
+
+        it('puts it before the content when narrower, collapsed, with its summary', async () => {
+            width = 400;
+            const onBeforeChange = vi.fn();
+            renderLayout(onBeforeChange);
+            const aside = screen.getByRole('region', { name: 'Sidebar' });
+            expect(aside).toHaveAttribute('data-before');
+            expect(
+                aside.compareDocumentPosition(screen.getByRole('textbox', { name: 'Title' })) &
+                    Node.DOCUMENT_POSITION_FOLLOWING,
+            ).toBeTruthy();
+            expect(onBeforeChange).toHaveBeenLastCalledWith(true);
+            const toggle = screen.getByRole('button', { name: 'Publication · Files' });
+            expect(toggle).toHaveAttribute('aria-expanded', 'false');
+            expect(screen.queryByRole('textbox', { name: 'Date' })).toBeNull();
+            await userEvent.click(toggle);
+            expect(toggle).toHaveAttribute('aria-expanded', 'true');
+            expect(screen.getByRole('textbox', { name: 'Date' })).toBeVisible();
+        });
+
+        it('moves the aside without losing what it holds', async () => {
+            width = 1000;
+            renderLayout();
+            const date = screen.getByRole('textbox', { name: 'Date' });
+            await userEvent.type(date, '2026');
+            resize(400);
+            await userEvent.click(screen.getByRole('button', { name: 'Publication · Files' }));
+            expect(screen.getByRole('textbox', { name: 'Date' })).toBe(date);
+            expect(date).toHaveValue('2026');
+            resize(1000);
+            expect(screen.getByRole('textbox', { name: 'Date' })).toBe(date);
+            expect(screen.queryByRole('button', { name: 'Publication · Files' })).toBeNull();
+        });
     });
 });

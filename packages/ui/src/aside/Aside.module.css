@@ -40,6 +40,69 @@
         0 0 0 var(--panneau-focus-width) var(--panneau-color-focus);
 }
 
+/* Before the content of a narrow layout (`narrow="before"`): one box, its button. Expanded, its
+   panels follow without the card, as wide as the content: the boxes they hold (the sections of a
+   form) are the only level of boxes, as in the content (#501). */
+.aside[data-before] {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.aside[data-before] > .body {
+    padding: var(--panneau-space-4) 0 0;
+    overflow: visible;
+}
+
+.aside[data-before] > .body[hidden] {
+    display: none;
+}
+
+.toggleHeading {
+    margin: 0;
+    font: inherit;
+}
+
+.toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-2);
+    box-sizing: border-box;
+    width: 100%;
+    min-height: var(--panneau-control-height, 2.5rem);
+    padding: var(--panneau-space-2) var(--panneau-space-4);
+    font: inherit;
+    font-weight: var(--panneau-font-weight-bold);
+    color: var(--panneau-color-text);
+    text-align: start;
+    cursor: pointer;
+    background: var(--panneau-aside-bg, var(--panneau-color-surface));
+    border: var(
+        --panneau-aside-border,
+        var(--panneau-border-width) solid var(--panneau-color-border)
+    );
+    border-radius: var(--panneau-aside-radius, var(--panneau-radius-lg));
+}
+
+.toggle[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: var(--panneau-focus-offset);
+}
+
+/* The titles of its panels, on one line. */
+.toggleText {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.toggle[aria-expanded='true'] .chevron {
+    transform: rotate(90deg);
+}
+
 /* Over the content, on its right: the whole height of the screen, the whole width on a phone. */
 .overlay > .aside {
     position: fixed;

@@ -90,7 +90,8 @@ export interface AsideLayoutProps {
     className?: string;
     // (undocumented)
     mainClassName?: string;
-    narrow?: 'below' | 'overlay';
+    narrow?: 'below' | 'before' | 'overlay';
+    onBeforeChange?: (isBefore: boolean) => void;
     placement?: 'beside' | 'overlay';
 }
 
@@ -123,13 +124,18 @@ export interface AsideProps {
     // (undocumented)
     className?: string;
     headingLevel?: HeadingLevel;
+    isExpanded?: boolean;
     isLoading?: boolean;
     isWidenable?: boolean;
     label: string;
     onClose?: () => void;
     // (undocumented)
+    onExpandedChange?: (isExpanded: boolean) => void;
+    // (undocumented)
     ref?: Ref<HTMLElement>;
     storageKey?: string;
+    summary?: ReactNode;
+    summaryEnd?: ReactNode;
     tabIndex?: number;
     title?: ReactNode;
     toolbar?: ReactNode;

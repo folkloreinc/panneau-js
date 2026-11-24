@@ -18,6 +18,7 @@ import { routePath } from '../routes';
 import { ErrorPage, getErrorPageKind } from './ErrorPage';
 import { ItemActions } from './ItemActions';
 import { PageHeader, PageLayout } from './PageHeader';
+import styles from './ResourceFormPage.module.css';
 import { setCreatedItem } from './createdItem';
 import { ActionsPanel, FormPageContext } from './formPage';
 import { useItemActionRunner } from './itemActionRunner';
@@ -169,6 +170,8 @@ export function ResourceFormPage({
         <Form
             key={mode === 'create' ? 'new' : (item?.id ?? 'loading')}
             aria-label={title}
+            className={styles.form}
+            footerClassName={styles.footer}
             isLoading={mode === 'update' && item === undefined}
             fields={fields}
             layout={layout}

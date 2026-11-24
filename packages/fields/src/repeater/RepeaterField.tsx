@@ -6,6 +6,7 @@ import {
     ChevronsUpDown,
     CircleAlert,
     Copy,
+    Ellipsis,
     Plus,
     Trash2,
 } from 'lucide-react';
@@ -720,6 +721,62 @@ export function RepeaterField({
                                                 onPress={() => remove(index)}
                                             />
                                         </span>
+                                    ) : null}
+                                    {/* In a narrow repeater (a phone), the same tools in a menu,
+                                        so that the title keeps the room of the header (see the
+                                        CSS). */}
+                                    {editable ? (
+                                        <MenuTrigger>
+                                            <IconButton
+                                                icon={Ellipsis}
+                                                size="sm"
+                                                label={intl.formatMessage(messages.itemActions, {
+                                                    index: number,
+                                                })}
+                                                className={styles.toolsMenu}
+                                            />
+                                            <Menu
+                                                placement="bottom end"
+                                                disabledKeys={[
+                                                    ...(index === 0 ? ['up'] : []),
+                                                    ...(index === items.length - 1 ? ['down'] : []),
+                                                    ...(canAdd ? [] : ['duplicate']),
+                                                    ...(canRemove ? [] : ['remove']),
+                                                ]}
+                                                onAction={(key) => {
+                                                    if (key === 'up') {
+                                                        move(index, index - 1);
+                                                    } else if (key === 'down') {
+                                                        move(index, index + 1);
+                                                    } else if (key === 'duplicate') {
+                                                        duplicate(index);
+                                                    } else if (key === 'remove') {
+                                                        remove(index);
+                                                    }
+                                                }}
+                                            >
+                                                <MenuItem id="up" icon={ArrowUp}>
+                                                    {intl.formatMessage(messages.moveUp, {
+                                                        index: number,
+                                                    })}
+                                                </MenuItem>
+                                                <MenuItem id="down" icon={ArrowDown}>
+                                                    {intl.formatMessage(messages.moveDown, {
+                                                        index: number,
+                                                    })}
+                                                </MenuItem>
+                                                <MenuItem id="duplicate" icon={Copy}>
+                                                    {intl.formatMessage(messages.duplicateItem, {
+                                                        index: number,
+                                                    })}
+                                                </MenuItem>
+                                                <MenuItem id="remove" icon={Trash2} isDanger>
+                                                    {intl.formatMessage(messages.removeItem, {
+                                                        index: number,
+                                                    })}
+                                                </MenuItem>
+                                            </Menu>
+                                        </MenuTrigger>
                                     ) : null}
                                 </div>
                                 {/* Hidden, not removed: the fields keep their state, such as an

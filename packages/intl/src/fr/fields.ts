@@ -11,6 +11,7 @@ export const fieldsFr: Record<string, string> = {
     'panneau.fields.moveUp': 'Monter l’élément {index}',
     'panneau.fields.moveDown': 'Descendre l’élément {index}',
     'panneau.fields.duplicateItem': 'Dupliquer l’élément {index}',
+    'panneau.fields.itemActions': 'Actions de l’élément {index}',
     'panneau.fields.insertItem': 'Ajouter un élément entre les éléments {before} et {after}',
     'panneau.fields.item': 'Élément {index}',
     'panneau.fields.namedItem': '{name} (élément {index})',

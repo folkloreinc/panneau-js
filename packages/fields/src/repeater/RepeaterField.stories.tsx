@@ -160,7 +160,8 @@ export const TypedBlocks: Story = {
         const toggles = within(canvas.getByRole('list'))
             .getAllByRole('button')
             .filter((button) => button.closest('[data-header]') !== null)
-            .filter((button) => button.hasAttribute('aria-expanded'));
+            .filter((button) => button.hasAttribute('aria-expanded'))
+            .filter((button) => !button.hasAttribute('aria-haspopup'));
         await expect(toggles).toHaveLength(4);
         for (const toggle of toggles) {
             await expect(toggle).toHaveAttribute('aria-expanded', 'false');
@@ -431,9 +432,11 @@ function Blocks(args: Parameters<typeof RepeaterField>[0]) {
 
 /** The headers of the items, in their order: their number and title. */
 const titles = (canvasElement: HTMLElement) =>
-    [...canvasElement.querySelectorAll<HTMLElement>('[data-header] [aria-expanded]')].map(
-        (toggle) => toggle.querySelector('[id]')?.textContent?.split(' ').slice(0, 2).join(' '),
-    );
+    [
+        ...canvasElement.querySelectorAll<HTMLElement>(
+            '[data-header] [aria-expanded]:not([aria-haspopup])',
+        ),
+    ].map((toggle) => toggle.querySelector('[id]')?.textContent?.split(' ').slice(0, 2).join(' '));
 
 /**
  * The handle at the start of an item's header drags it (decision 0111): with the pointer, the item

@@ -33,7 +33,9 @@ const work = resolve(root, '.tmp/bundle-size');
 // 1405 / 458 KB: editing a related item in the panel (#471) measures 1398 / 455 KB.
 // 1445 / 470 KB: reordering the items of fields (#473) measures 1441 / 468 KB. Tiles, on the first
 // page, now carry the handle and the menu of moves of ReorderList, and React Aria's drag and drop.
-const BUDGET = { minified: 1445 * 1024, gzip: 470 * 1024 };
+// 1450 / 472 KB: forms on phones (#501) measure 1445 / 470 KB, just over: the aside measures its
+// width to put a form's sidebar first, and the item menu of a narrow repeater.
+const BUDGET = { minified: 1450 * 1024, gzip: 472 * 1024 };
 
 const report = process.argv.includes('--report');
 

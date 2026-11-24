@@ -157,12 +157,22 @@
 }
 
 /* A legend with controls at the end of its line. */
+/* The legend and the controls at its end, such as the locales of a value. The controls stay on the
+ * line of the legend while it has room for a few words: a long legend wraps before they do (#501).
+ * The line is a container (`panneau-fieldset-legend`): its controls can be more compact in a narrow
+ * group. */
 .legendRow {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--panneau-space-1) var(--panneau-space-3);
     min-height: var(--panneau-control-height-sm);
+    container: panneau-fieldset-legend / inline-size;
+}
+
+.legendRow > .label {
+    flex: 1 1 0;
+    min-width: 6rem;
 }
 
 .legendEnd {

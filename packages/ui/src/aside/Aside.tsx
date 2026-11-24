@@ -1,5 +1,18 @@
 import { ChevronRight, Maximize2, Minimize2, X } from 'lucide-react';
-import { type KeyboardEvent, type ReactNode, type Ref, createContext, use } from 'react';
+import {
+    Fragment,
+    type KeyboardEvent,
+    type ReactNode,
+    type Ref,
+    createContext,
+    use,
+    useEffect,
+    useEffectEvent,
+    useId,
+    useLayoutEffect,
+    useRef,
+    useState,
+} from 'react';
 import {
     Button as AriaButton,
     Disclosure as AriaDisclosure,
@@ -23,6 +36,43 @@ const PANEL_STATES = ['expanded', 'collapsed'] as const;
 /** The key under which the panels of an aside remember whether they are collapsed. */
 const StorageKeyContext = createContext<string | null>(null);
 
+/**
+ * Whether the aside is before the content of a narrow layout (`narrow="before"`), where it is a
+ * disclosure, collapsed by default.
+ */
+const BeforeContext = createContext(false);
+
+/** The width from which the aside goes beside the content, as in `Aside.module.css`. */
+const BESIDE_WIDTH_REM = 56;
+
+/**
+ * Whether a layout is wide enough to put its aside beside its content, measured as its container
+ * query does: `null` until it is measured, and while it has no size (not rendered, or in jsdom).
+ */
+function useIsBeside(isActive: boolean) {
+    const ref = useRef<HTMLDivElement>(null);
+    const [isBeside, setIsBeside] = useState<boolean | null>(null);
+    useLayoutEffect(() => {
+        const element = ref.current;
+        if (!isActive || element === null || typeof ResizeObserver === 'undefined') {
+            return undefined;
+        }
+        const measure = () => {
+            const width = element.clientWidth;
+            if (width === 0) {
+                return;
+            }
+            const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+            setIsBeside(width >= BESIDE_WIDTH_REM * rem);
+        };
+        measure();
+        const observer = new ResizeObserver(measure);
+        observer.observe(element);
+        return () => observer.disconnect();
+    }, [isActive]);
+    return [ref, isBeside] as const;
+}
+
 export interface AsideLayoutProps {
     /** The main content: a list, a form. */
     children: ReactNode;
@@ -30,10 +80,12 @@ export interface AsideLayoutProps {
     aside?: ReactNode;
     /**
      * Where the aside goes when the layout is too narrow to put it beside the content (56rem):
-     * `below` the content, or `overlay`, over the content on its right, the whole width on a phone,
-     * for an aside that opens on demand and closes. Defaults to `below`.
+     * `below` the content; `before` it, in the order of the page too, as a disclosure collapsed by
+     * default, without the card of the aside, for what says what the content is (the sidebar of a
+     * form, decision 0075); or `overlay`, over the content on its right, the whole width on a
+     * phone, for an aside that opens on demand and closes. Defaults to `below`.
      */
-    narrow?: 'below' | 'overlay';
+    narrow?: 'below' | 'before' | 'overlay';
     /**
      * Where the aside goes when the layout is wide enough: `beside` the content from 56rem, or
      * `overlay`, over the content on its right at every width, so that the content never reflows
@@ -41,28 +93,45 @@ export interface AsideLayoutProps {
      * changes nothing. Defaults to `beside`.
      */
     placement?: 'beside' | 'overlay';
+    /**
+     * Called when the aside goes before the content (`narrow="before"`) or leaves that place: the
+     * page can follow the order shown, such as a form for the order of its errors.
+     */
+    onBeforeChange?: (isBefore: boolean) => void;
     className?: string;
     mainClassName?: string;
 }
 
 /**
  * Places an aside next to the main content of a page or a form (decision 0074): beside it from
- * 56rem of the layout, below it or over it otherwise. Beside the content, the aside stays in view
- * as the page scrolls. With `placement="overlay"`, it is over the content at every width (decision
- * 0099).
+ * 56rem of the layout, below it, before it or over it otherwise. Beside the content, the aside
+ * stays in view as the page scrolls. With `placement="overlay"`, it is over the content at every
+ * width (decision 0099).
+ *
+ * Before the content, the aside moves in the page, not only on the screen: the order of reading
+ * and of the keyboard is the one shown. The layout measures its width for that; until it has one,
+ * the aside is after the content.
  */
 export function AsideLayout({
     children,
     aside,
     narrow = 'below',
     placement = 'beside',
+    onBeforeChange,
     className,
     mainClassName,
 }: AsideLayoutProps) {
     const isOverlay = placement === 'overlay';
     const hasAside = aside !== undefined && aside !== null && aside !== false;
+    const [ref, isBeside] = useIsBeside(hasAside && !isOverlay && narrow === 'before');
+    const isBefore = hasAside && !isOverlay && narrow === 'before' && isBeside === false;
+    const reportBefore = useEffectEvent((value: boolean) => onBeforeChange?.(value));
+    useEffect(() => reportBefore(isBefore), [isBefore]);
+    // Keyed, the aside and the content move rather than mount again when the aside changes place:
+    // fields keep their state.
+    const placed = <Fragment key="aside">{aside}</Fragment>;
     return (
-        <div className={cx('panneau-aside-layout', styles.layout, className)}>
+        <div ref={ref} className={cx('panneau-aside-layout', styles.layout, className)}>
             <div
                 className={cx(
                     styles.grid,
@@ -71,8 +140,15 @@ export function AsideLayout({
                     isOverlay && styles.alwaysOverlay,
                 )}
             >
-                <div className={cx(styles.main, mainClassName)}>{children}</div>
-                {aside}
+                <BeforeContext value={isBefore}>
+                    {[
+                        isBefore ? placed : null,
+                        <div key="main" className={cx(styles.main, mainClassName)}>
+                            {children}
+                        </div>,
+                        isBefore ? null : placed,
+                    ]}
+                </BeforeContext>
             </div>
         </div>
     );
@@ -101,6 +177,20 @@ export interface AsideProps {
      * page.
      */
     storageKey?: string;
+    /**
+     * Before the content of a narrow layout (`narrow="before"` of `AsideLayout`), where the aside
+     * is a disclosure: what its button shows of it while it is collapsed, such as the titles of its
+     * panels. Its title or its label otherwise.
+     */
+    summary?: ReactNode;
+    /** After the summary, on its button: a count of errors. */
+    summaryEnd?: ReactNode;
+    /**
+     * Before the content of a narrow layout, whether its disclosure is expanded, for an aside that
+     * something else opens, such as a form to show an error. Collapsed by default.
+     */
+    isExpanded?: boolean;
+    onExpandedChange?: (isExpanded: boolean) => void;
     /** `-1` makes it focusable, to move the focus to it when it shows something else. */
     tabIndex?: number;
     ref?: Ref<HTMLElement>;
@@ -122,12 +212,24 @@ export function Aside({
     isWidenable = false,
     onClose,
     storageKey,
+    summary,
+    summaryEnd,
+    isExpanded,
+    onExpandedChange,
     tabIndex,
     ref,
     className,
     bodyClassName,
 }: AsideProps) {
     const intl = usePanneauIntl();
+    const isBefore = use(BeforeContext);
+    const bodyId = useId();
+    const [ownExpanded, setOwnExpanded] = useState(false);
+    const expanded = isExpanded ?? ownExpanded;
+    const setExpanded = (next: boolean) => {
+        setOwnExpanded(next);
+        onExpandedChange?.(next);
+    };
     const [size, setSize] = usePreference(
         storageKey !== undefined ? `${storageKey}-size` : null,
         SIZES,
@@ -150,9 +252,26 @@ export function Aside({
             tabIndex={tabIndex}
             className={cx('panneau-aside', styles.aside, className)}
             data-wide={wide || undefined}
+            data-before={isBefore || undefined}
             onKeyDown={onKeyDown}
         >
-            {hasHeader ? (
+            {isBefore ? (
+                <AriaHeading level={headingLevel} className={styles.toggleHeading}>
+                    <AriaButton
+                        className={styles.toggle}
+                        aria-expanded={expanded}
+                        aria-controls={bodyId}
+                        onPress={() => setExpanded(!expanded)}
+                    >
+                        <span className={styles.toggleText}>
+                            {summary ?? (hasTitle ? title : label)}
+                        </span>
+                        {summaryEnd}
+                        <Icon icon={ChevronRight} className={styles.chevron} />
+                    </AriaButton>
+                </AriaHeading>
+            ) : null}
+            {hasHeader && !isBefore ? (
                 <header className={styles.header}>
                     {hasTitle ? (
                         <Heading level={headingLevel} className={styles.title}>
@@ -189,7 +308,12 @@ export function Aside({
             {toolbar !== undefined && toolbar !== null ? (
                 <div className={styles.toolbar}>{toolbar}</div>
             ) : null}
-            <div className={cx(styles.body, bodyClassName)}>
+            {/* The same element in every place: what it holds keeps its state */}
+            <div
+                id={bodyId}
+                className={cx(styles.body, bodyClassName)}
+                hidden={isBefore && !expanded}
+            >
                 <StorageKeyContext value={storageKey ?? null}>{children}</StorageKeyContext>
             </div>
         </section>

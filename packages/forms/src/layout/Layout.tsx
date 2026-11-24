@@ -21,6 +21,7 @@ import {
 } from '@panneau/core';
 import { NestedField, isWideField } from '@panneau/fields';
 import type { Field, LayoutNode } from '@panneau/protocol';
+import { getFieldLabel } from '@panneau/protocol/runtime';
 import {
     AsidePanel,
     Badge,
@@ -50,7 +51,8 @@ function containsPath(names: readonly string[], path: string): boolean {
     return name !== undefined && names.includes(name);
 }
 
-function ErrorBadge({ form, names }: { form: Form; names: readonly string[] }) {
+/** The count of errors of some fields, as a badge, or nothing. */
+export function ErrorBadge({ form, names }: { form: Form; names: readonly string[] }) {
     const intl = usePanneauIntl();
     const count = useFormSelector(form, (state) => selectErrorCount(state, names));
     if (count === 0) {
@@ -258,6 +260,40 @@ export function SidebarNode({ node, fields, storageKey }: SidebarNodeProps) {
                 : content}
         </AsidePanel>
     );
+}
+
+/**
+ * What the sidebar of a form holds, by title, for its button before the form on a narrow screen
+ * (#501): the title of each panel, or, for a panel without one, the titles of the sections and
+ * the labels of the fields in it. Panels that show beside the form only, and those with nothing to
+ * name (`actions`), give nothing.
+ */
+export function getSidebarTitles(
+    nodes: readonly LayoutNode[],
+    fields: ReadonlyMap<string, Field>,
+): string[] {
+    const titleOf = (node: LayoutNode): string[] => {
+        if (node.type === 'field') {
+            const field = node.name !== undefined ? fields.get(node.name) : undefined;
+            return field !== undefined ? [getFieldLabel(field)] : [];
+        }
+        if (node.label !== undefined && node.label !== '') {
+            return [node.label];
+        }
+        return (node.children ?? []).flatMap(titleOf);
+    };
+    return nodes
+        .filter((node) => node.panel === undefined || !BESIDE_ONLY_PANELS.has(node.panel))
+        .flatMap(titleOf);
+}
+
+/** The titles of a sidebar on its button, or nothing when it has none: its label then. */
+export function sidebarSummary(
+    nodes: readonly LayoutNode[],
+    fields: ReadonlyMap<string, Field>,
+): string | undefined {
+    const titles = getSidebarTitles(nodes, fields);
+    return titles.length > 0 ? titles.join(' · ') : undefined;
 }
 
 declare module '@panneau/core' {

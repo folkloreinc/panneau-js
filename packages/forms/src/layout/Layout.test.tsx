@@ -7,7 +7,7 @@ import type { Field, LayoutNode } from '@panneau/protocol';
 
 import { Form } from '../Form';
 import { renderForm } from '../__fixtures__/render';
-import type { LayoutComponentProps } from './Layout';
+import { type LayoutComponentProps, sidebarSummary } from './Layout';
 
 const FIELDS: Field[] = [
     { name: 'title', type: 'text', label: 'Title', rules: [{ rule: 'required' }] },
@@ -286,5 +286,34 @@ describe('Form layout', () => {
             'aria-invalid',
             'true',
         );
+    });
+});
+
+describe('sidebarSummary', () => {
+    const fields = new Map(FIELDS.map((field) => [field.name, field]));
+
+    it('names the panels by their titles, or by their fields without one', () => {
+        const nodes: LayoutNode[] = [
+            { type: 'sidebar', panel: 'save' },
+            { type: 'sidebar', panel: 'errors' },
+            {
+                type: 'sidebar',
+                panel: 'publication',
+                label: 'Publication',
+                children: [{ type: 'field', name: 'status' }],
+            },
+            {
+                type: 'sidebar',
+                children: [
+                    { type: 'field', name: 'meta_title' },
+                    { type: 'field', name: 'share' },
+                ],
+            },
+        ];
+        expect(sidebarSummary(nodes, fields)).toBe('Publication · Meta title · Share text');
+    });
+
+    it('is nothing for a sidebar that only saves', () => {
+        expect(sidebarSummary([{ type: 'sidebar', panel: 'save' }], fields)).toBeUndefined();
     });
 });

@@ -8,7 +8,8 @@ export interface FieldsetProps {
     legend?: ReactNode;
     /**
      * Controls at the end of the legend's line, such as the locales of a value. The group is then
-     * named by the legend through `aria-labelledby`, since a `<legend>` can't share its line.
+     * named by the legend through `aria-labelledby`, since a `<legend>` can't share its line. The
+     * line is the container `panneau-fieldset-legend`, for compact controls in a narrow group.
      */
     legendEnd?: ReactNode;
     description?: ReactNode;
