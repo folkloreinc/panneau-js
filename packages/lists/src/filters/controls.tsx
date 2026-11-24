@@ -71,8 +71,8 @@ export function SelectFilter({
                 placeholder={placeholder}
                 value={toOptions(selected)}
                 onChange={(next) => onChange(next.length > 0 ? next : undefined)}
-                {...(onClear !== undefined ? { onClear } : {})}
-                {...(clearLabel !== undefined ? { clearLabel } : {})}
+                onClear={onClear}
+                clearLabel={clearLabel}
                 className={styles.control}
             />
         );
@@ -84,8 +84,8 @@ export function SelectFilter({
             placeholder={placeholder}
             value={toOptions(selected)[0] ?? null}
             onChange={(next) => onChange(next ?? undefined)}
-            {...(onClear !== undefined ? { onClear } : {})}
-            {...(clearLabel !== undefined ? { clearLabel } : {})}
+            onClear={onClear}
+            clearLabel={clearLabel}
             className={styles.control}
         />
     );

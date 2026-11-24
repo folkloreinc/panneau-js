@@ -730,18 +730,22 @@ describe('the app shell', () => {
             await waitFor(() =>
                 expect(within(menu).getByRole('menuitem', { name: 'Profile' })).toHaveFocus(),
             );
-            // Who is logged in, with the whole email, labels the profile's group
+            // Who is logged in, with the whole email, describes the menu
+            expect(menu).toHaveAccessibleDescription('Ada Lovelace ada.lovelace@example.com');
+            // "Log out" is the last item
+            expect(within(menu).getAllByRole('menuitem').at(-1)).toHaveAccessibleName('Log out');
+            // The appearance before the menu, as a row of icons named by their tooltips (#487)
+            const dialog = screen.getByRole('dialog', { name: 'Your account (Ada Lovelace)' });
+            const popover = within(dialog);
+            const group = popover.getByRole('radiogroup', { name: 'Appearance' });
             expect(
-                within(menu).getByRole('group', {
-                    name: 'Ada Lovelace ada.lovelace@example.com',
-                }),
-            ).toContainElement(within(menu).getByRole('menuitem', { name: 'Profile' }));
-            expect(within(menu).getByRole('menuitem', { name: 'Log out' })).toBeInTheDocument();
-            // The appearance after the menu, as a row of icons named by their tooltips (#487)
-            const popover = within(
-                screen.getByRole('dialog', { name: 'Your account (Ada Lovelace)' }),
-            );
-            const appearance = within(popover.getByRole('radiogroup', { name: 'Appearance' }));
+                group.compareDocumentPosition(menu) & Node.DOCUMENT_POSITION_FOLLOWING,
+            ).toBeTruthy();
+            expect(
+                popover.getByText('ada.lovelace@example.com').compareDocumentPosition(group) &
+                    Node.DOCUMENT_POSITION_FOLLOWING,
+            ).toBeTruthy();
+            const appearance = within(group);
             expect(
                 appearance
                     .getAllByRole('radio')
@@ -755,10 +759,14 @@ describe('the app shell', () => {
                 ['Same as the system', 'false'],
             ]);
 
-            // Tab goes from the menu to the appearance, where the arrows move
-            await user.tab();
-            expect(appearance.getByRole('radio', { name: 'Light' })).toHaveFocus();
-            await user.keyboard('{ArrowRight}');
+            // Shift Tab goes from the menu back to the preferences above it, where the arrows move
+            await user.tab({ shift: true });
+            if (popover.queryByRole('radiogroup', { name: 'Density' }) !== null) {
+                await user.tab({ shift: true });
+            }
+            // React Aria enters a group from its end, going back
+            expect(appearance.getByRole('radio', { name: 'Same as the system' })).toHaveFocus();
+            await user.keyboard('{ArrowLeft}');
             expect(appearance.getByRole('radio', { name: 'Dark' })).toHaveFocus();
             await user.keyboard(' ');
             expect(window.localStorage.getItem('panneau:color-scheme')).toBe('dark');
@@ -877,7 +885,7 @@ describe('the app shell', () => {
             await user.click(screen.getByRole('button', { name: 'Your account (Ada)' }));
             // The same menu as the sidebar's, named after its button
             const menu = await screen.findByRole('menu', { name: 'Your account (Ada)' });
-            expect(within(menu).getByRole('group', { name: 'Ada' })).toBeInTheDocument();
+            expect(menu).toHaveAccessibleDescription('Ada');
             const popover = within(screen.getByRole('dialog', { name: 'Your account (Ada)' }));
             expect(popover.getByRole('radio', { name: 'Light' })).toHaveAttribute(
                 'aria-checked',

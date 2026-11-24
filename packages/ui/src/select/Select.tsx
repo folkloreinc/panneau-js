@@ -63,9 +63,9 @@ export interface SelectBaseProps extends FieldChromeProps {
      * Empties the select. With a value, a button in place of the arrow calls it: a filter, whose
      * value can be removed in one click. The focus then goes back to the select.
      */
-    onClear?: () => void;
+    onClear?: (() => void) | undefined;
     /** The name of the button that empties the select. Defaults to "Clear". */
-    clearLabel?: string;
+    clearLabel?: string | undefined;
 }
 
 export interface SingleSelectProps extends SelectBaseProps {

@@ -14,12 +14,37 @@
     padding: 0;
 }
 
-/* The appearance and the density: a label, and a row of icons at the end (#487). */
+/* Who is logged in, first: the name and the whole email. */
+.user {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-1);
+    margin: 0;
+    padding: var(--panneau-space-3) var(--panneau-space-3) var(--panneau-space-2);
+    font-size: var(--panneau-font-size-xs);
+    line-height: var(--panneau-line-height-tight);
+    color: var(--panneau-color-text-muted);
+}
+
+.name {
+    color: var(--panneau-color-text);
+    font-size: var(--panneau-font-size-sm);
+    font-weight: var(--panneau-font-weight-medium);
+}
+
+.email {
+    overflow-wrap: anywhere;
+}
+
+/* The preferences, a compact group: a small label, and a row of icons at the end (#487). */
 .settings {
     display: grid;
-    gap: var(--panneau-space-2);
+    gap: var(--panneau-space-1);
     padding: var(--panneau-space-2) var(--panneau-space-3);
-    border-top: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
+.user + .settings {
+    padding-top: 0;
 }
 
 .setting {
@@ -30,29 +55,11 @@
 }
 
 .settingLabel {
-    font-size: var(--panneau-font-size-sm);
+    font-size: var(--panneau-font-size-xs);
     color: var(--panneau-color-text-muted);
 }
 
-/* Who is logged in, above their profile: the name and the whole email, not an eyebrow. */
-.header {
-    text-transform: none;
-    letter-spacing: normal;
-}
-
-.user {
-    display: flex;
-    flex-direction: column;
-    gap: var(--panneau-space-1);
-}
-
-.name {
-    color: var(--panneau-color-text);
-    font-size: var(--panneau-font-size-sm);
-    font-weight: var(--panneau-font-weight-medium);
-}
-
-.email {
-    font-weight: var(--panneau-font-weight-normal);
-    overflow-wrap: anywhere;
+/* The other items, under the preferences */
+.menu {
+    border-top: var(--panneau-border-width) solid var(--panneau-color-border);
 }

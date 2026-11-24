@@ -58,16 +58,15 @@ function useIndicator(groupRef: RefObject<HTMLDivElement | null>, selected: stri
                 delete element.dataset.indicator;
                 return;
             }
-            element.style.setProperty('--segmented-control-indicator-x', `${segment.offsetLeft}px`);
-            element.style.setProperty('--segmented-control-indicator-y', `${segment.offsetTop}px`);
-            element.style.setProperty(
-                '--segmented-control-indicator-width',
-                `${segment.offsetWidth}px`,
-            );
-            element.style.setProperty(
-                '--segmented-control-indicator-height',
-                `${segment.offsetHeight}px`,
-            );
+            const box = {
+                x: segment.offsetLeft,
+                y: segment.offsetTop,
+                width: segment.offsetWidth,
+                height: segment.offsetHeight,
+            };
+            for (const [name, value] of Object.entries(box)) {
+                element.style.setProperty(`--segmented-control-indicator-${name}`, `${value}px`);
+            }
             // Placed first without moving, then free to slide
             if (element.dataset.indicator === undefined) {
                 element.dataset.indicator = 'placed';

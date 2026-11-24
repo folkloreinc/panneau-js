@@ -84,11 +84,12 @@ export interface UserMenuProps {
 }
 
 /**
- * The user's menu (decision 0086), behind their avatar and name: who is logged in, their profile,
- * the language as choices with a check, the help of keyboard shortcuts (decision 0112) and "Log
- * out", then the appearance and the density (decision 0104) as rows of icons, each named by its
- * tooltip (#487). It is a popover, for these controls are not menu items: Tab goes from the menu to
- * them. The sidebar and the dock share it.
+ * The user's menu (decision 0086), behind their avatar and name, top to bottom: who is logged in,
+ * the appearance and the density (decision 0104) as rows of icons with a small label each, then a
+ * menu of their profile, the language as choices with a check and the help of keyboard shortcuts
+ * (decision 0112), and "Log out" alone at the end. It is a popover, for the rows are not menu
+ * items: the menu has the focus when it opens, and Tab goes through the popover in the order shown
+ * (#487). The sidebar and the dock share it.
  */
 export function UserMenu({
     definition,
@@ -113,6 +114,7 @@ export function UserMenu({
     const openShortcutHelp = useShortcutHelp();
     const appearanceId = useId();
     const densityId = useId();
+    const identityId = useId();
     const close = () => setOpen(false);
 
     return (
@@ -124,75 +126,15 @@ export function UserMenu({
                 className={styles.popover}
                 dialogClassName={styles.dialog}
             >
-                <Menu isInline aria-label={label} autoFocus="first" onAction={close}>
-                    {user !== null ? (
-                        <MenuSection
-                            title={
-                                <span className={styles.user}>
-                                    <span className={styles.name}>{user.name}</span>
-                                    {/* Read as two words, though shown on two lines */}{' '}
-                                    {user.email !== undefined ? (
-                                        <span className={styles.email}>{user.email}</span>
-                                    ) : null}
-                                </span>
-                            }
-                            headerClassName={styles.header}
-                        >
-                            {profilePath !== null ? (
-                                <MenuItem
-                                    id="profile"
-                                    href={profilePath}
-                                    icon={UserRound}
-                                    onAction={onNavigate}
-                                >
-                                    {intl.formatMessage(appMessages.accountProfile)}
-                                </MenuItem>
-                            ) : null}
-                        </MenuSection>
-                    ) : null}
-                    {locales.length > 0 ? (
-                        <MenuSection
-                            title={intl.formatMessage(appMessages.language)}
-                            selectionMode="single"
-                            disallowEmptySelection
-                            // Prefixed: the ids of a menu are unique
-                            selectedKeys={[`locale-${definition.locale}`]}
-                            onSelectionChange={(keys) => {
-                                const [key] = keys === 'all' ? [] : [...keys];
-                                if (typeof key === 'string' && key.startsWith('locale-')) {
-                                    close();
-                                    onLocaleChange?.(key.slice('locale-'.length));
-                                }
-                            }}
-                        >
-                            {locales.map(({ locale, label: name }) => (
-                                <MenuItem key={locale} id={`locale-${locale}`} textValue={name}>
-                                    <span lang={locale}>{name}</span>
-                                </MenuItem>
-                            ))}
-                        </MenuSection>
-                    ) : null}
-                    {openShortcutHelp !== null ? (
-                        <MenuSection aria-label={intl.formatMessage(uiMessages.shortcutsTitle)}>
-                            <MenuItem
-                                id="shortcuts"
-                                icon={Keyboard}
-                                shortcut={SHORTCUT_HELP_KEYS}
-                                onAction={openShortcutHelp}
-                            >
-                                {intl.formatMessage(uiMessages.shortcutsTitle)}
-                            </MenuItem>
-                        </MenuSection>
-                    ) : null}
-                    {onLogOut !== undefined ? <MenuSeparator /> : null}
-                    {onLogOut !== undefined ? (
-                        <MenuSection aria-label={intl.formatMessage(appMessages.logOut)}>
-                            <MenuItem id="logout" icon={LogOut} onAction={onLogOut}>
-                                {intl.formatMessage(appMessages.logOut)}
-                            </MenuItem>
-                        </MenuSection>
-                    ) : null}
-                </Menu>
+                {user !== null ? (
+                    <p id={identityId} className={styles.user}>
+                        <span className={styles.name}>{user.name}</span>
+                        {/* Read as two words, though shown on two lines */}{' '}
+                        {user.email !== undefined ? (
+                            <span className={styles.email}>{user.email}</span>
+                        ) : null}
+                    </p>
+                ) : null}
                 {/* Choices that stay open, to compare them: one row of icons each */}
                 <div className={styles.settings}>
                     <div className={styles.setting}>
@@ -248,6 +190,67 @@ export function UserMenu({
                         </div>
                     ) : null}
                 </div>
+                <Menu
+                    isInline
+                    aria-label={label}
+                    aria-describedby={user !== null ? identityId : undefined}
+                    autoFocus="first"
+                    onAction={close}
+                    className={styles.menu}
+                >
+                    {profilePath !== null ? (
+                        <MenuItem
+                            id="profile"
+                            href={profilePath}
+                            icon={UserRound}
+                            onAction={onNavigate}
+                        >
+                            {intl.formatMessage(appMessages.accountProfile)}
+                        </MenuItem>
+                    ) : null}
+                    {locales.length > 0 ? (
+                        <MenuSection
+                            title={intl.formatMessage(appMessages.language)}
+                            selectionMode="single"
+                            disallowEmptySelection
+                            // Prefixed: the ids of a menu are unique
+                            selectedKeys={[`locale-${definition.locale}`]}
+                            onSelectionChange={(keys) => {
+                                const [key] = keys === 'all' ? [] : [...keys];
+                                if (typeof key === 'string' && key.startsWith('locale-')) {
+                                    close();
+                                    onLocaleChange?.(key.slice('locale-'.length));
+                                }
+                            }}
+                        >
+                            {locales.map(({ locale, label: name }) => (
+                                <MenuItem key={locale} id={`locale-${locale}`} textValue={name}>
+                                    <span lang={locale}>{name}</span>
+                                </MenuItem>
+                            ))}
+                        </MenuSection>
+                    ) : null}
+                    {openShortcutHelp !== null ? (
+                        <MenuSection aria-label={intl.formatMessage(uiMessages.shortcutsTitle)}>
+                            <MenuItem
+                                id="shortcuts"
+                                icon={Keyboard}
+                                shortcut={SHORTCUT_HELP_KEYS}
+                                onAction={openShortcutHelp}
+                            >
+                                {intl.formatMessage(uiMessages.shortcutsTitle)}
+                            </MenuItem>
+                        </MenuSection>
+                    ) : null}
+                    {onLogOut !== undefined ? <MenuSeparator /> : null}
+                    {onLogOut !== undefined ? (
+                        <MenuSection aria-label={intl.formatMessage(appMessages.logOut)}>
+                            <MenuItem id="logout" icon={LogOut} onAction={onLogOut}>
+                                {intl.formatMessage(appMessages.logOut)}
+                            </MenuItem>
+                        </MenuSection>
+                    ) : null}
+                </Menu>
             </Popover>
         </PopoverTrigger>
     );

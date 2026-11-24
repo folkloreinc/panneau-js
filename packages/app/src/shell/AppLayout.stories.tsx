@@ -228,7 +228,18 @@ export const UserMenu: Story = {
             'href',
             '/admin/resources/users/1/edit',
         );
-        const appearance = within(popover.getByRole('radiogroup', { name: 'Appearance' }));
+        // Top to bottom: who is logged in, the preferences, the other items, and "Log out" last
+        const top = (element: Element) => element.getBoundingClientRect().top;
+        const identity = popover.getByText('Ada Lovelace');
+        const preferences = popover.getByRole('radiogroup', { name: 'Appearance' });
+        const items = menu.getAllByRole('menuitem');
+        await expect(top(identity)).toBeLessThan(top(preferences));
+        await expect(top(preferences)).toBeLessThan(top(items[0] ?? preferences));
+        await expect(items.at(-1)).toHaveAccessibleName('Log out');
+        await expect(
+            popover.getByRole('menu', { name: 'Your account (Ada Lovelace)' }),
+        ).toHaveAccessibleDescription(/^Ada Lovelace/);
+        const appearance = within(preferences);
         await expect(appearance.getByRole('radio', { name: 'Light' })).toHaveAttribute(
             'aria-checked',
             'true',

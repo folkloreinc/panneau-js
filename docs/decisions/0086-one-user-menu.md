@@ -1,6 +1,6 @@
 # 0086: One user's menu, at the bottom of the sidebar and in the dock
 
-- Status: accepted, amended by [0104](0104-users-choose-the-density.md): the menu has a choice of the density, after the appearance, and by [#487](https://github.com/folkloreinc/panneau-js/issues/487): the appearance and the density are rows of icons after the menu
+- Status: accepted, amended by [0104](0104-users-choose-the-density.md): the menu has a choice of the density, after the appearance, and by [#487](https://github.com/folkloreinc/panneau-js/issues/487): who is logged in, then the appearance and the density as rows of icons, above the menu
 - Date: 2026-11-17
 - Issue: [#316](https://github.com/folkloreinc/panneau-js/issues/316)
 - Amends: where the language switcher sits in [0083](0083-a-language-switcher-in-the-shell.md), the "Log out" button of [0037](0037-login-page-token-and-logout.md), the link of the user's name in [0050](0050-account-page.md), and the user's menu of the dock in [0076](0076-a-dock-in-place-of-the-sidebar.md)
@@ -18,13 +18,15 @@ The dock already gathers the same controls in a user's menu ([0076](0076-a-dock-
     - In the rail, the avatar alone is the button, with the label in its tooltip.
     - Without a user in the definition, the button is "Your account", with the icon of a user.
     - On the user's profile, the button has the current state of a link of the sidebar.
-- **The user's menu**, in this order:
-    - who is logged in, their name and their whole email, as the title of a first group; in it, **"Profile"**, when the user has one (their account page, or their item in the resource of users, as in 0050);
-    - **"Language"**: the interface locales, each in its own language, with a check on the current one, only with more than one (0083);
-    - "Keyboard shortcuts", which opens their help ([0112](0112-one-registry-of-keyboard-shortcuts.md));
-    - a line, then **"Log out"**, when the app can log out (0037);
-    - after the menu, a line, then **"Appearance"**: Light, Dark and Same as the system, as a row of icons (a segmented control), each named by its tooltip. Amended by #487: it was a group of the menu, with a check on the current choice, which took four lines. The menu and the row share a popover, a non-modal dialog named as the button: Tab goes from the menu to the row, a choice there leaves it open, and an item of the menu closes it.
-- **The dock has the same menu** behind its user's tab. Its first group, the user with their name and email, replaces the item with the avatar of 0076.
+- **The user's menu**, a popover, top to bottom (amended by #487):
+    - who is logged in, their name and their whole email, which describes the menu for assistive technologies;
+    - the preferences, a compact group of one row each, with a small label: **"Appearance"** (Light, Dark and Same as the system) and the density (0104), as rows of icons (a segmented control), each named by its tooltip;
+    - a line, then the menu: **"Profile"**, when the user has one (their account page, or their item in the resource of users, as in 0050); **"Language"**: the interface locales, each in its own language, with a check on the current one, only with more than one (0083); "Keyboard shortcuts", which opens their help ([0112](0112-one-registry-of-keyboard-shortcuts.md));
+    - a line, then **"Log out"**, alone and last, when the app can log out (0037).
+
+    The popover is a non-modal dialog named as the button. The first item of the menu has the focus when it opens; Tab and Shift Tab go through the popover in the order shown, a choice of the preferences leaves it open, and an item of the menu closes it. Before #487, who was logged in titled the group of "Profile", and the appearance was a group of the menu with a check on the current choice, which took four lines.
+
+- **The dock has the same menu** behind its user's tab. Its top, the user with their name and email, replaces the item with the avatar of 0076.
 - "Go to…" keeps its commands of the appearance and of the languages (0029, 0083).
 
 ## Consequences

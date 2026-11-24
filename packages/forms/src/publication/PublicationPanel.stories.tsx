@@ -257,6 +257,19 @@ export const NarrowSidebar: Story = {
         for (const segment of segments) {
             await fits(segment);
         }
+        // The text of the date and of the zone under it start on the same edge
+        const textStart = (element: Element) => {
+            const range = element.ownerDocument.createRange();
+            range.selectNodeContents(element);
+            return range.getBoundingClientRect().left;
+        };
+        const zone = within(date).getByText(/Time/);
+        await expect(zone.getBoundingClientRect().top).toBeGreaterThan(
+            segments[0]?.getBoundingClientRect().bottom ?? Infinity,
+        );
+        await expect(
+            Math.abs(textStart(zone) - textStart(segments[0] ?? zone)),
+        ).toBeLessThanOrEqual(0.5);
 
         // The slug keeps room to be read and typed: the prefix is cut, not the input
         const slug = panel.getByRole('textbox', { name: 'Slug' });

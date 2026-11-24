@@ -19,6 +19,7 @@
 }
 
 .segment {
+    /* Room for the highlight of the focused segment: the end of a narrow field matches it */
     padding: 0 0.0625rem;
     border-radius: var(--panneau-radius-sm);
     outline: none;
@@ -91,10 +92,12 @@
         flex-basis: 0;
     }
 
+    /* Its text starts where the text of the date and the time does, after the inset of their
+     * segments */
     .end {
         order: 1;
         flex-basis: 100%;
-        padding: 0 0 var(--panneau-space-1);
+        padding: 0 0 var(--panneau-space-1) 0.0625rem;
     }
 }
 

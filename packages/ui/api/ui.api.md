@@ -1327,7 +1327,7 @@ export interface SelectBaseProps extends FieldChromeProps {
     appearance?: 'field' | 'bare';
     // (undocumented)
     autoFocus?: boolean;
-    clearLabel?: string;
+    clearLabel?: string | undefined;
     // (undocumented)
     id?: string;
     // (undocumented)
@@ -1338,7 +1338,7 @@ export interface SelectBaseProps extends FieldChromeProps {
     name?: string;
     // (undocumented)
     onBlur?: () => void;
-    onClear?: () => void;
+    onClear?: (() => void) | undefined;
     // (undocumented)
     options: readonly SelectOption[];
     placeholder?: string;
