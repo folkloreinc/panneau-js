@@ -1,7 +1,7 @@
 import type { ClipboardEvent, ReactNode } from 'react';
 import { DropZone } from 'react-aria-components';
 
-import { usePanneauIntl } from '@panneau/ui';
+import { isReorderDrag, usePanneauIntl } from '@panneau/ui';
 
 import { cx } from '../shared/cx';
 import { messages } from '../shared/messages';
@@ -89,6 +89,10 @@ export function FileDropZone({
         <div className={cx(styles.root, className)} onPaste={onPaste}>
             <DropZone
                 className={styles.zone}
+                // Files only: not the items of a list that reorders them (decision 0111)
+                getDropOperation={(types, allowed) =>
+                    isReorderDrag(types) ? 'cancel' : (allowed[0] ?? 'cancel')
+                }
                 aria-label={ariaLabel ?? intl.formatMessage(messages.dropZone)}
                 isDisabled={isDisabled}
                 onDrop={(event) => {

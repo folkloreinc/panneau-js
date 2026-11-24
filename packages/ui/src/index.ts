@@ -144,6 +144,7 @@ export {
     ReorderMenu,
     type ReorderMenuProps,
 } from './reorder/ReorderList';
+export { REORDER_DRAG_TYPE, isReorderDrag, moveItem } from './reorder/reorder';
 export { LoadingRegion, type LoadingRegionProps } from './skeleton/LoadingRegion';
 export { Skeleton, type SkeletonProps } from './skeleton/Skeleton';
 export { Sparkline, type SparklineProps } from './sparkline/Sparkline';

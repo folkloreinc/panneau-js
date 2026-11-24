@@ -5,6 +5,7 @@ import { expect, userEvent, waitFor, within } from 'storybook/test';
 import { TextArea } from '../text-area/TextArea';
 import { TextInput } from '../text-input/TextInput';
 import { ReorderHandle, ReorderItem, ReorderList, ReorderMenu } from './ReorderList';
+import { moveItem } from './reorder';
 
 interface Block {
     id: number;
@@ -18,15 +19,6 @@ const BLOCKS: readonly Block[] = [
     { id: 3, title: 'Gallery', body: 'Photos of the opening.' },
     { id: 4, title: 'Credits', body: 'Who wrote this.' },
 ];
-
-function moved<T>(items: readonly T[], from: number, to: number): T[] {
-    const next = [...items];
-    const [item] = next.splice(from, 1);
-    if (item !== undefined) {
-        next.splice(to, 0, item);
-    }
-    return next;
-}
 
 /** Blocks with fields, reordered by their handles. */
 function Blocks({
@@ -46,7 +38,7 @@ function Blocks({
             aria-label="Blocks"
             itemCount={blocks.length}
             itemLabel={(index) => blocks[index]?.title ?? ''}
-            onMove={(from, to) => setBlocks(moved(blocks, from, to))}
+            onMove={(from, to) => setBlocks(moveItem(blocks, from, to))}
             {...(isDisabled !== undefined ? { isDisabled } : {})}
             style={{ display: 'grid', gap: 12, padding: 0, margin: 0, listStyle: 'none' }}
         >
@@ -291,7 +283,7 @@ function Sections() {
             aria-label="Sections"
             itemCount={sections.length}
             itemLabel={(index) => sections[index]?.id ?? ''}
-            onMove={(from, to) => setSections(moved(sections, from, to))}
+            onMove={(from, to) => setSections(moveItem(sections, from, to))}
             style={list}
         >
             {sections.map((section, index) => (
@@ -308,7 +300,7 @@ function Sections() {
                             setSections(
                                 sections.map((current) =>
                                     current === section
-                                        ? { ...current, items: moved(current.items, from, to) }
+                                        ? { ...current, items: moveItem(current.items, from, to) }
                                         : current,
                                 ),
                             )
@@ -429,7 +421,7 @@ function Gallery() {
             layout="grid"
             itemCount={photos.length}
             itemLabel={(index) => photos[index] ?? ''}
-            onMove={(from, to) => setPhotos(moved(photos, from, to))}
+            onMove={(from, to) => setPhotos(moveItem(photos, from, to))}
             style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(3, 8rem)',

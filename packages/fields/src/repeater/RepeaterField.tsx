@@ -24,6 +24,7 @@ import {
     ReorderItem,
     ReorderList,
     getNamedIcon,
+    moveItem,
     usePanneauIntl,
     useUndoToast,
 } from '@panneau/ui';
@@ -250,16 +251,6 @@ export function updateItemKeys(previous: ItemKeys, items: readonly RepeaterItem[
     return { items, keys, next };
 }
 
-/** Moves the value at `from` to `to`, as items move. */
-function moved<T>(list: readonly T[], from: number, to: number): T[] {
-    const next = [...list];
-    const [value] = next.splice(from, 1);
-    if (value !== undefined) {
-        next.splice(to, 0, value);
-    }
-    return next;
-}
-
 /**
  * A list of items, each with the same fields, or typed blocks with the fields of their type. Items
  * can be added, moved and removed. Each field renders at the path `<list>.<index>.<field>`. An
@@ -379,7 +370,7 @@ export function RepeaterField({
         onChange?.(next.length > 0 ? next : null);
     };
     const move = (from: number, to: number) => {
-        set(moved(items, from, to), moved(keys, from, to));
+        set(moveItem(items, from, to), moveItem(keys, from, to));
         // The focus follows the item, on the button that moved it, or on the other one at an end
         const tool = from < to ? 'down' : 'up';
         focusNext.current = {
@@ -559,7 +550,7 @@ export function RepeaterField({
                     className={styles.items}
                     itemCount={items.length}
                     itemLabel={nameOf}
-                    onMove={(from, to) => set(moved(items, from, to), moved(keys, from, to))}
+                    onMove={(from, to) => set(moveItem(items, from, to), moveItem(keys, from, to))}
                     isDisabled={!editable}
                 >
                     {items.map((item, index) => {

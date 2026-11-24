@@ -13,6 +13,7 @@ import {
     TileGroup,
     type Tone,
     getNamedIcon,
+    moveItem,
     usePanneauIntl,
     useUndoToast,
 } from '@panneau/ui';
@@ -30,16 +31,6 @@ import {
 } from '../shared/relation';
 import type { FieldEntryProps, FieldProps } from '../shared/types';
 import styles from './RelationField.module.css';
-
-/** Moves the value at `from` to `to`, as a card moves. */
-function moved<T>(list: readonly T[], from: number, to: number): T[] {
-    const next = [...list];
-    const [value] = next.splice(from, 1);
-    if (value !== undefined) {
-        next.splice(to, 0, value);
-    }
-    return next;
-}
 
 /** The first button of a card that the focus goes to: not its handle or its menu of moves. */
 const FIRST_BUTTON = 'button:not(.panneau-reorder-menu)';
@@ -768,7 +759,7 @@ export function RelationField(props: RelationFieldProps) {
                             {...cards}
                             references={selected}
                             // The value's order follows the cards
-                            onMove={(from, to) => set(moved(selected, from, to))}
+                            onMove={(from, to) => set(moveItem(selected, from, to))}
                             onRemove={(reference) => {
                                 remove(reference);
                                 // The next card, or the last one, so that several go in a row

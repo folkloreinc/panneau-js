@@ -3,9 +3,37 @@
  * is before the first item, gap `count` after the last one. An item dropped in a gap moves there.
  */
 
+/**
+ * The type of the data of every drag of a `ReorderList`, beside the type of its own list: other
+ * drop targets, such as a drop zone of files around the list, refuse it (`isReorderDrag()`).
+ */
+export const REORDER_DRAG_TYPE = 'application/x-panneau-reorder';
+
+/**
+ * Whether a drag is one of the items of a `ReorderList`, from the types of its data, as React
+ * Aria's `getDropOperation` gets them. A drop target outside the list refuses it, or a keyboard
+ * drag would go to it.
+ */
+export function isReorderDrag(types: { has: (type: string) => boolean }): boolean {
+    return types.has(REORDER_DRAG_TYPE);
+}
+
 /** Whether dropping the item at `from` in `gap` leaves it where it is: the gaps on either side. */
 export function isSameGap(from: number, gap: number): boolean {
     return gap === from || gap === from + 1;
+}
+
+/**
+ * A copy of `list` with the value at `from` moved to `to`: what the `onMove` of a `ReorderList`
+ * does to the values of its items.
+ */
+export function moveItem<T>(list: readonly T[], from: number, to: number): T[] {
+    const next = [...list];
+    const [value] = next.splice(from, 1);
+    if (value !== undefined) {
+        next.splice(to, 0, value);
+    }
+    return next;
 }
 
 /** The index the item at `from` takes once dropped in `gap`. */

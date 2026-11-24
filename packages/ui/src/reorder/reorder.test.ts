@@ -1,8 +1,31 @@
 import { describe, expect, it } from 'vitest';
 
-import { gapAt, gapAtPoint, indexForGap, isSameGap, parseDuration } from './reorder';
+import {
+    REORDER_DRAG_TYPE,
+    gapAt,
+    gapAtPoint,
+    indexForGap,
+    isReorderDrag,
+    isSameGap,
+    moveItem,
+    parseDuration,
+} from './reorder';
 
 describe('reorder', () => {
+    it('moves a value of a list to another index, in a copy', () => {
+        const list = ['a', 'b', 'c', 'd'];
+        expect(moveItem(list, 3, 0)).toEqual(['d', 'a', 'b', 'c']);
+        expect(moveItem(list, 0, 2)).toEqual(['b', 'c', 'a', 'd']);
+        expect(moveItem(list, 1, 1)).toEqual(list);
+        expect(moveItem(list, 5, 0)).toEqual(list);
+        expect(list).toEqual(['a', 'b', 'c', 'd']);
+    });
+
+    it('tells the drags of reorderable items from other drags', () => {
+        expect(isReorderDrag(new Set([REORDER_DRAG_TYPE, 'application/x-list']))).toBe(true);
+        expect(isReorderDrag(new Set(['image/png']))).toBe(false);
+    });
+
     it('leaves an item in place in the gaps on either side of it', () => {
         expect(isSameGap(2, 2)).toBe(true);
         expect(isSameGap(2, 3)).toBe(true);

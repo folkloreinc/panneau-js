@@ -24,7 +24,14 @@ import { Menu, MenuItem, MenuTrigger } from '../menu/Menu';
 import { cx } from '../utils/cx';
 import { prefersReducedMotion } from '../utils/motion';
 import styles from './ReorderList.module.css';
-import { gapAt, gapAtPoint, indexForGap, isSameGap, parseDuration } from './reorder';
+import {
+    REORDER_DRAG_TYPE,
+    gapAt,
+    gapAtPoint,
+    indexForGap,
+    isSameGap,
+    parseDuration,
+} from './reorder';
 
 /** How an item is moved: the pointer and touch use the browser's drag and drop. */
 type DragMode = 'pointer' | 'keyboard' | 'menu';
@@ -570,7 +577,9 @@ export function ReorderHandle({ label, className, style }: ReorderHandleProps) {
 
     const { dragProps, isDragging } = useDrag({
         isDisabled,
-        getItems: () => [{ [context.type]: String(item.index) }],
+        getItems: () => [
+            { [context.type]: String(item.index), [REORDER_DRAG_TYPE]: String(item.id) },
+        ],
         getAllowedDropOperations: () => ['move'],
         preview,
         onDragStart: () => {
