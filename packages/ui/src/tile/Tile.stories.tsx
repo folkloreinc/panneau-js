@@ -1,13 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Ellipsis, FileText, KeyRound, Laptop, LogOut, Smartphone } from 'lucide-react';
+import { useState } from 'react';
 import { RouterProvider } from 'react-aria-components';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { Avatar } from '../avatar/Avatar';
 import { Badge } from '../badge/Badge';
 import { Button } from '../button/Button';
 import { IconButton } from '../icon-button/IconButton';
 import { Menu, MenuItem, MenuTrigger } from '../menu/Menu';
+import { ReorderMenu } from '../reorder/ReorderList';
 import { Tile, TileGroup } from './Tile';
 
 const meta = {
@@ -128,4 +130,58 @@ export const Sessions: Story = {
             </TileGroup>
         </div>
     ),
+};
+
+/**
+ * A group with `onMove` reorders its tiles (decision 0111): a handle before the media of each tile
+ * drags it, and a `ReorderMenu` in its actions moves it without dragging.
+ */
+export const Reorderable: Story = {
+    render: function Render() {
+        const [files, setFiles] = useState(['Brief.pdf', 'Budget.xlsx', 'Notes.txt']);
+        return (
+            <div style={{ maxWidth: '24rem' }}>
+                <TileGroup
+                    appearance="outline"
+                    label="Files"
+                    itemLabel={(index) => files[index] ?? ''}
+                    onMove={(from, to) =>
+                        setFiles(files.toSpliced(from, 1).toSpliced(to, 0, files[from] ?? ''))
+                    }
+                >
+                    {files.map((file) => (
+                        <Tile
+                            key={file}
+                            appearance="outline"
+                            icon={FileText}
+                            title={file}
+                            description="12 KB"
+                            actions={<ReorderMenu />}
+                        />
+                    ))}
+                </TileGroup>
+            </div>
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        canvas.getByRole('button', { name: 'Move Notes.txt' }).focus();
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() => expect(document.activeElement).toHaveAttribute('data-reorder-gap'));
+        await userEvent.keyboard('{ArrowUp}');
+        await waitFor(() =>
+            expect(document.activeElement).toHaveAccessibleName('Before Brief.pdf'),
+        );
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() =>
+            expect(canvas.getAllByRole('listitem').map((item) => item.textContent)).toEqual([
+                'Notes.txt12 KB',
+                'Brief.pdf12 KB',
+                'Budget.xlsx12 KB',
+            ]),
+        );
+        await waitFor(() =>
+            expect(canvas.getByRole('button', { name: 'Move Notes.txt' })).toHaveFocus(),
+        );
+    },
 };

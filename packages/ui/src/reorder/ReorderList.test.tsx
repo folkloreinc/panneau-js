@@ -141,6 +141,35 @@ describe('ReorderList', () => {
         );
     });
 
+    it('lets the drags of other lists go through it while none of its items is dragged', () => {
+        render(
+            <ReorderList itemCount={1} onMove={() => {}} aria-label="Outer">
+                <ReorderItem id="a" index={0}>
+                    <ReorderHandle label="Move A" />
+                    <ReorderList itemCount={2} onMove={() => {}} aria-label="Inner">
+                        <ReorderItem id="b" index={0}>
+                            B
+                        </ReorderItem>
+                        <ReorderItem id="c" index={1}>
+                            C
+                        </ReorderItem>
+                    </ReorderList>
+                </ReorderItem>
+            </ReorderList>,
+        );
+        const reached = vi.fn();
+        document.addEventListener('dragover', reached);
+        const event = new Event('dragover', { bubbles: true, cancelable: true });
+        Object.defineProperty(event, 'dataTransfer', {
+            value: { types: ['application/x-other'], effectAllowed: 'move', dropEffect: 'none' },
+        });
+        screen.getByRole('list', { name: 'Inner' }).dispatchEvent(event);
+        document.removeEventListener('dragover', reached);
+        // Neither list stopped it: an outer list, or a drop zone, gets it
+        expect(reached).toHaveBeenCalled();
+        expect(event.defaultPrevented).toBe(false);
+    });
+
     it('asks for a list around its items', () => {
         vi.spyOn(console, 'error').mockImplementation(() => {});
         expect(() =>

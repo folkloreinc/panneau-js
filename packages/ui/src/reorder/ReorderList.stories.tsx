@@ -4,7 +4,8 @@ import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { TextArea } from '../text-area/TextArea';
 import { TextInput } from '../text-input/TextInput';
-import { ReorderHandle, ReorderItem, ReorderList } from './ReorderList';
+import { ReorderHandle, ReorderItem, ReorderList, ReorderMenu } from './ReorderList';
+import { moveItem } from './reorder';
 
 interface Block {
     id: number;
@@ -19,17 +20,16 @@ const BLOCKS: readonly Block[] = [
     { id: 4, title: 'Credits', body: 'Who wrote this.' },
 ];
 
-function moved<T>(items: readonly T[], from: number, to: number): T[] {
-    const next = [...items];
-    const [item] = next.splice(from, 1);
-    if (item !== undefined) {
-        next.splice(to, 0, item);
-    }
-    return next;
-}
-
 /** Blocks with fields, reordered by their handles. */
-function Blocks({ count = BLOCKS.length, isDisabled }: { count?: number; isDisabled?: boolean }) {
+function Blocks({
+    count = BLOCKS.length,
+    isDisabled,
+    hasMenu = false,
+}: {
+    count?: number;
+    isDisabled?: boolean;
+    hasMenu?: boolean;
+}) {
     const [blocks, setBlocks] = useState(() => BLOCKS.slice(0, count));
     const update = (index: number, patch: Partial<Block>) =>
         setBlocks(blocks.map((block, i) => (i === index ? { ...block, ...patch } : block)));
@@ -38,7 +38,7 @@ function Blocks({ count = BLOCKS.length, isDisabled }: { count?: number; isDisab
             aria-label="Blocks"
             itemCount={blocks.length}
             itemLabel={(index) => blocks[index]?.title ?? ''}
-            onMove={(from, to) => setBlocks(moved(blocks, from, to))}
+            onMove={(from, to) => setBlocks(moveItem(blocks, from, to))}
             {...(isDisabled !== undefined ? { isDisabled } : {})}
             style={{ display: 'grid', gap: 12, padding: 0, margin: 0, listStyle: 'none' }}
         >
@@ -62,7 +62,8 @@ function Blocks({ count = BLOCKS.length, isDisabled }: { count?: number; isDisab
                         style={{ display: 'flex', alignItems: 'center', gap: 4 }}
                     >
                         <ReorderHandle />
-                        <strong>{block.title}</strong>
+                        <strong style={{ flex: 1 }}>{block.title}</strong>
+                        {hasMenu ? <ReorderMenu /> : null}
                     </div>
                     <TextInput
                         label={`Title of block ${block.id}`}
@@ -101,6 +102,12 @@ const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve))
  * Test drivers can't start a native drag in the frame of a story, so the events are dispatched.
  */
 async function drag(source: HTMLElement, target: HTMLElement, clientY: number) {
+    const start = source.getBoundingClientRect();
+    await dragAt(source, target, start.x + start.width / 2, clientY);
+}
+
+/** Drags an element to a point, as `drag` does. */
+async function dragAt(source: HTMLElement, target: HTMLElement, clientX: number, clientY: number) {
     const dataTransfer = new DataTransfer();
     // Outside of a real drag, a browser keeps the effects at "none": keep what is set, as in one
     const effects = { effectAllowed: 'uninitialized', dropEffect: 'none' };
@@ -113,18 +120,17 @@ async function drag(source: HTMLElement, target: HTMLElement, clientY: number) {
         });
     }
     const start = source.getBoundingClientRect();
-    const clientX = start.x + start.width / 2;
-    const fire = (element: Element, type: string, y: number) =>
+    const fire = (element: Element, type: string, y: number, x = clientX) =>
         element.dispatchEvent(
             new DragEvent(type, {
                 bubbles: true,
                 cancelable: true,
                 dataTransfer,
-                clientX,
+                clientX: x,
                 clientY: y,
             }),
         );
-    fire(source, 'dragstart', start.y + start.height / 2);
+    fire(source, 'dragstart', start.y + start.height / 2, start.x + start.width / 2);
     await nextFrame();
     fire(target, 'dragenter', clientY);
     fire(target, 'dragover', clientY);
@@ -250,3 +256,249 @@ export const SingleItem: Story = {
 };
 
 export const Disabled: Story = { args: { isDisabled: true } };
+
+interface Section {
+    id: string;
+    items: string[];
+}
+
+const SECTIONS: readonly Section[] = [
+    { id: 'Morning', items: ['Coffee', 'News'] },
+    { id: 'Noon', items: ['Lunch', 'Walk', 'Nap'] },
+];
+
+/** Sections, each with a list of its own inside: an item of one list doesn't go in another. */
+function Sections() {
+    const [sections, setSections] = useState(SECTIONS);
+    const box = {
+        display: 'grid',
+        gap: 8,
+        padding: 8,
+        border: '1px solid var(--panneau-color-border)',
+        borderRadius: 'var(--panneau-radius-md)',
+    };
+    const list = { display: 'grid', gap: 8, padding: 0, margin: 0, listStyle: 'none' };
+    return (
+        <ReorderList
+            aria-label="Sections"
+            itemCount={sections.length}
+            itemLabel={(index) => sections[index]?.id ?? ''}
+            onMove={(from, to) => setSections(moveItem(sections, from, to))}
+            style={list}
+        >
+            {sections.map((section, index) => (
+                <ReorderItem key={section.id} id={section.id} index={index} style={box}>
+                    <div data-reorder-preview style={{ display: 'flex', alignItems: 'center' }}>
+                        <ReorderHandle />
+                        <strong>{section.id}</strong>
+                    </div>
+                    <ReorderList
+                        aria-label={`Items of ${section.id}`}
+                        itemCount={section.items.length}
+                        itemLabel={(item) => section.items[item] ?? ''}
+                        onMove={(from, to) =>
+                            setSections(
+                                sections.map((current) =>
+                                    current === section
+                                        ? { ...current, items: moveItem(current.items, from, to) }
+                                        : current,
+                                ),
+                            )
+                        }
+                        style={list}
+                    >
+                        {section.items.map((item, itemIndex) => (
+                            <ReorderItem
+                                key={item}
+                                id={item}
+                                index={itemIndex}
+                                data-testid={`item-${item}`}
+                                style={{ ...box, display: 'flex', alignItems: 'center' }}
+                            >
+                                <ReorderHandle />
+                                {item}
+                            </ReorderItem>
+                        ))}
+                    </ReorderList>
+                </ReorderItem>
+            ))}
+        </ReorderList>
+    );
+}
+
+const orderIn = (list: HTMLElement) =>
+    [...list.querySelectorAll<HTMLElement>(':scope > [data-reorder-item]')].map(
+        (item) => item.dataset.reorderId,
+    );
+
+/**
+ * A list inside the items of another one. A section drags over the list inside another section,
+ * and goes before or after that section; an item of an inner list moves within its list only.
+ */
+export const Nested: Story = {
+    render: () => <Sections />,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const outer = canvas.getByRole('list', { name: 'Sections' });
+        // Dropped over the inner list of Noon, on its lower half: after Noon
+        const nap = canvas.getByTestId('item-Nap');
+        await drag(
+            canvas.getByRole('button', { name: 'Move Morning' }),
+            nap,
+            nap.getBoundingClientRect().bottom - 2,
+        );
+        await waitFor(() => expect(orderIn(outer)).toEqual(['Noon', 'Morning']));
+        await Promise.all(document.getAnimations().map((animation) => animation.finished));
+
+        // An item of an inner list moves in its list, and the sections stay
+        const walk = canvas.getByTestId('item-Walk');
+        await drag(
+            canvas.getByRole('button', { name: 'Move Nap' }),
+            walk,
+            walk.getBoundingClientRect().top + 2,
+        );
+        const noon = canvas.getByRole('list', { name: 'Items of Noon' });
+        await waitFor(() => expect(orderIn(noon)).toEqual(['Lunch', 'Nap', 'Walk']));
+        await expect(orderIn(outer)).toEqual(['Noon', 'Morning']);
+        await Promise.all(document.getAnimations().map((animation) => animation.finished));
+
+        // With the keyboard, the places of a section are the sections'
+        canvas.getByRole('button', { name: 'Move Morning' }).focus();
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() => expect(document.activeElement).toHaveAccessibleName('Before Noon'));
+        await expect(
+            [...canvasElement.querySelectorAll('[data-reorder-gap]')].map((gap) =>
+                gap.getAttribute('aria-label'),
+            ),
+        ).toEqual(['Before Noon']);
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() => expect(orderIn(outer)).toEqual(['Morning', 'Noon']));
+    },
+};
+
+/**
+ * A `ReorderMenu` with the tools of an item moves it without dragging: to the start, before the
+ * item before it, after the item after it, or to the end. The move is announced as a drop is.
+ */
+export const Menu: Story = {
+    args: { hasMenu: true },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        await userEvent.click(canvas.getByRole('button', { name: 'Reorder Gallery' }));
+        await expect(body.getAllByRole('menuitem').map((item) => item.textContent)).toEqual([
+            'Move to the start',
+            'Move before Quote',
+            'Move after Credits',
+        ]);
+        await userEvent.click(body.getByRole('menuitem', { name: 'Move to the start' }));
+        await waitFor(() => expect(order(canvasElement)).toEqual(['3', '1', '2', '4']));
+        await expect(canvas.getByRole('status')).toHaveTextContent(
+            'Gallery moved to position 1 of 4',
+        );
+        // The focus goes back to the menu's button, at the item's new place
+        await waitFor(() =>
+            expect(canvas.getByRole('button', { name: 'Reorder Gallery' })).toHaveFocus(),
+        );
+        // The last item: before the one before it, or at the start
+        await userEvent.click(canvas.getByRole('button', { name: 'Reorder Credits' }));
+        await expect(body.getAllByRole('menuitem').map((item) => item.textContent)).toEqual([
+            'Move to the start',
+            'Move before Quote',
+        ]);
+        await userEvent.keyboard('{Escape}');
+    },
+};
+
+const PHOTOS = ['Dawn', 'Noon', 'Dusk', 'Night', 'Stars'];
+
+/** Tiles in rows: an item goes before or after the tile beside the pointer. */
+function Gallery() {
+    const [photos, setPhotos] = useState(PHOTOS);
+    return (
+        <ReorderList
+            aria-label="Photos"
+            layout="grid"
+            itemCount={photos.length}
+            itemLabel={(index) => photos[index] ?? ''}
+            onMove={(from, to) => setPhotos(moveItem(photos, from, to))}
+            style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 8rem)',
+                gap: 12,
+                padding: 0,
+                margin: 0,
+                listStyle: 'none',
+            }}
+        >
+            {photos.map((photo, index) => (
+                <ReorderItem
+                    key={photo}
+                    id={photo}
+                    index={index}
+                    data-testid={`photo-${photo}`}
+                    style={{
+                        display: 'grid',
+                        gap: 4,
+                        padding: 8,
+                        border: '1px solid var(--panneau-color-border)',
+                        borderRadius: 'var(--panneau-radius-md)',
+                    }}
+                >
+                    <div
+                        style={{ height: 48, background: 'var(--panneau-color-surface-sunken)' }}
+                    />
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <ReorderHandle />
+                        <span style={{ flex: 1 }}>{photo}</span>
+                        <ReorderMenu />
+                    </div>
+                </ReorderItem>
+            ))}
+        </ReorderList>
+    );
+}
+
+/**
+ * `layout="grid"`: the place under the pointer is before the tile whose middle is past it on its
+ * row. The keyboard goes through the places with all four arrows.
+ */
+export const Grid: Story = {
+    render: () => <Gallery />,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        // Dropped on the left half of Noon, on the first row: before it
+        const noon = canvas.getByTestId('photo-Noon');
+        const rect = noon.getBoundingClientRect();
+        await dragAt(
+            canvas.getByRole('button', { name: 'Move Night' }),
+            noon,
+            rect.left + 4,
+            rect.top + rect.height / 2,
+        );
+        await waitFor(() =>
+            expect(order(canvasElement)).toEqual(['Dawn', 'Night', 'Noon', 'Dusk', 'Stars']),
+        );
+        await Promise.all(document.getAnimations().map((animation) => animation.finished));
+        // The line is on the side of the tile
+        const handle = canvas.getByRole('button', { name: 'Move Dawn' });
+        handle.focus();
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() => expect(document.activeElement).toHaveAttribute('data-reorder-gap'));
+        const gap = document.activeElement as HTMLElement;
+        await expect(gap.getBoundingClientRect().height).toBeGreaterThan(
+            gap.getBoundingClientRect().width,
+        );
+        for (let step = 0; step < 5; step += 1) {
+            if (document.activeElement?.getAttribute('aria-label') === 'Before Dusk') {
+                break;
+            }
+            await userEvent.keyboard('{ArrowRight}');
+        }
+        await expect(document.activeElement).toHaveAccessibleName('Before Dusk');
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() =>
+            expect(order(canvasElement)).toEqual(['Night', 'Noon', 'Dawn', 'Dusk', 'Stars']),
+        );
+    },
+};

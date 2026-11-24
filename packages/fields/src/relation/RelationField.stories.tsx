@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { createEditableRelationSource, exampleRelationSource } from '../__fixtures__/fields';
+import { afterSlides, dragHandle } from '../__fixtures__/reorder';
 import type { RelationReference, RelationSearchPage, RelationSource } from '../shared/relation';
 import { RelationField } from './RelationField';
 
@@ -401,5 +402,106 @@ export const FullWidth: Story = {
         await userEvent.click(await canvas.findByRole('option', { name: 'Grace Hopper' }));
         const card = within(author).getByRole('listitem');
         await expect(card.closest('ul')?.getBoundingClientRect().width).toBeCloseTo(width, 0);
+    },
+};
+
+function Reorderable() {
+    const [value, setValue] = useState<RelationReference[] | null>(PEOPLE);
+    return (
+        <RelationField
+            multiple
+            resource="people"
+            source={describedSource}
+            label="People"
+            value={value}
+            onChange={setValue}
+        />
+    );
+}
+
+const cardNames = (canvasElement: HTMLElement) =>
+    [...canvasElement.querySelectorAll('.panneau-tile [data-reorder-handle]')].map((handle) =>
+        handle.getAttribute('aria-label'),
+    );
+
+/**
+ * The cards of a multiple relation reorder (decision 0111): a handle before each card drags it, with
+ * the pointer, touch or the keyboard, and "Reorder" in its actions moves it without dragging. The
+ * value's order follows.
+ */
+export const Reorder: Story = {
+    render: () => <Reorderable />,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        const handle = canvas.getByRole('button', { name: 'Move Katherine Johnson' });
+        // Above the link of the card, which covers the rest of it
+        const rect = handle.getBoundingClientRect();
+        await expect(
+            handle.contains(
+                document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2),
+            ),
+        ).toBe(true);
+
+        // The pointer: on the upper half of the first card
+        const first = canvas.getAllByRole('listitem')[0] as HTMLElement;
+        await dragHandle(handle, first, first.getBoundingClientRect().top + 4);
+        await waitFor(() =>
+            expect(cardNames(canvasElement)).toEqual([
+                'Move Katherine Johnson',
+                'Move Ada Lovelace',
+                'Move Grace Hopper',
+            ]),
+        );
+        await expect(canvas.getByRole('status')).toHaveTextContent(
+            'Katherine Johnson moved to position 1 of 3',
+        );
+        await afterSlides();
+
+        // The keyboard
+        canvas.getByRole('button', { name: 'Move Grace Hopper' }).focus();
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() => expect(document.activeElement).toHaveAttribute('data-reorder-gap'));
+        await userEvent.keyboard('{ArrowUp}');
+        await waitFor(() =>
+            expect(document.activeElement).toHaveAccessibleName('Before Katherine Johnson'),
+        );
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() =>
+            expect(cardNames(canvasElement)).toEqual([
+                'Move Grace Hopper',
+                'Move Katherine Johnson',
+                'Move Ada Lovelace',
+            ]),
+        );
+        await waitFor(() =>
+            expect(canvas.getByRole('button', { name: 'Move Grace Hopper' })).toHaveFocus(),
+        );
+        await afterSlides();
+
+        // The menu
+        await userEvent.click(canvas.getByRole('button', { name: 'Reorder Grace Hopper' }));
+        await userEvent.click(await body.findByRole('menuitem', { name: 'Move to the end' }));
+        await waitFor(() =>
+            expect(cardNames(canvasElement)).toEqual([
+                'Move Katherine Johnson',
+                'Move Ada Lovelace',
+                'Move Grace Hopper',
+            ]),
+        );
+    },
+};
+
+/** In a narrow column, as the sidebar of a form: the cards keep their tools, and cut their titles. */
+export const ReorderInANarrowColumn: Story = {
+    render: () => (
+        <div style={{ maxWidth: '18rem' }}>
+            <Reorderable />
+        </div>
+    ),
+    play: async ({ canvasElement }) => {
+        for (const card of canvasElement.querySelectorAll<HTMLElement>('.panneau-tile')) {
+            await expect(card.scrollWidth).toBeLessThanOrEqual(card.clientWidth);
+        }
     },
 };

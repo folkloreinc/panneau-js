@@ -124,6 +124,16 @@
     gap: var(--panneau-space-1);
 }
 
+/*
+ * The handle of a tile in a group that reorders them (decision 0111), before its media: above the
+ * link of a linked tile, as its actions are.
+ */
+.handle {
+    position: relative;
+    z-index: 1;
+    margin-inline: calc(-1 * var(--panneau-space-1));
+}
+
 /* TileGroup: a list, with a line between its tiles. */
 .group {
     display: flex;

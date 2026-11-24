@@ -1,7 +1,7 @@
 import { Upload } from 'lucide-react';
 import { DropZone, FileTrigger } from 'react-aria-components';
 
-import { Button, usePanneauIntl } from '@panneau/ui';
+import { Button, isReorderDrag, usePanneauIntl } from '@panneau/ui';
 
 import { cx } from '../shared/cx';
 import { messages } from '../shared/messages';
@@ -64,6 +64,10 @@ export function FilePicker({
     return (
         <DropZone
             className={cx(styles.zone, className)}
+            // Files only: not the items of a list that reorders them (decision 0111)
+            getDropOperation={(types, allowed) =>
+                isReorderDrag(types) ? 'cancel' : (allowed[0] ?? 'cancel')
+            }
             aria-label={intl.formatMessage(messages.dropZone)}
             isDisabled={isDisabled}
             onDrop={(event) => {

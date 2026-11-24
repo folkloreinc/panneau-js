@@ -4,6 +4,7 @@
 - Date: 2026-11-23
 - Extends: [0068](0068-collapsed-items-and-lighter-controls.md) (the items of a `repeater`)
 - Issue: [#463](https://github.com/folkloreinc/panneau-js/issues/463)
+- Updated: 2026-11-24, by [0111](0111-reorder-by-a-handle.md): a handle drags an item ([#473](https://github.com/folkloreinc/panneau-js/issues/473))
 
 ## Context
 
@@ -17,6 +18,8 @@ The blocks of a page are a `repeater` with typed blocks ([0068](0068-collapsed-i
 ## Decision
 
 **"Duplicate" is one of the tools of an item**, after its arrows and before "Remove". It adds a copy right after the item (deep, so that the copy shares nothing with it), with a key of its own, expanded, and the focus on its header. It is disabled at `max`. Four small icon buttons fit in the header, so the tools don't move into a menu.
+
+**A handle at the start of the header drags an item** ([0111](0111-reorder-by-a-handle.md)), with the pointer, touch and the keyboard; the header is the image that follows the pointer. "Move up" and "Move down" stay in the tools, unchanged: they are the path on phones. The handle is named after the item and its number, "Move Quote (item 4)", or "Move Item 4" without a title of its own: blocks of one type share their label. The state of the item follows it by its key, as with the arrows: its values, whether it is expanded, the state of its fields, and an error collapsed by hand stays collapsed. A list that can't be edited has no handle.
 
 **An item is added between two others** from a control in the gap above each item but the first: a round "+" on a line, named "Add an item between items 1 and 2". It shows on hover and while it has the focus, and always on touch screens (`@media (hover: none)`), as the controls of [0068](0068-collapsed-items-and-lighter-controls.md); hidden, it keeps its place in the order of tabs. For typed blocks it opens the same menu of types as "Add". The new item is expanded, and gets the focus on its header. There is no control at `max`, or in a list that can't be edited. "Add", under the list, still adds at the end.
 
@@ -36,5 +39,5 @@ The setting is additive: a client that doesn't know it shows the title it showed
 
 - `@panneau/protocol`: `RepeaterSettings` (`collapsible`, `itemTitle`), and `description` and `itemTitle` on `BlockType`.
 - `@panneau/fields`: `RepeaterField` duplicates items and adds them in between; `RepeaterFieldEntry` passes the title of the definition. An `itemTitle` that gives `null` for an item now leaves it its excerpt. The built-in `repeater` is loaded with `import()`: tests that render one through `DefinitionField` or a form wait for it (`findBy…`), as for the other lazy types.
-- `@panneau/intl`: "Duplicate item {index}" and "Add an item between items {before} and {after}", in English and French.
+- `@panneau/intl`: "Duplicate item {index}" and "Add an item between items {before} and {after}", in English and French; then "{name} (item {index})", the name of a titled item for its handle.
 - `laravel-panneau` can describe a block type's `description` and `itemTitle`, and a repeater's `itemTitle`, in its builders.

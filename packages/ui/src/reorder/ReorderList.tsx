@@ -1,4 +1,4 @@
-import { GripVertical } from 'lucide-react';
+import { ArrowUpDown, GripVertical } from 'lucide-react';
 import {
     type CSSProperties,
     type DragEvent,
@@ -16,16 +16,31 @@ import {
 } from 'react';
 import { type DragPreviewRenderer, useDrag, useDrop } from 'react-aria-components';
 
+import { IconButton } from '../icon-button/IconButton';
 import { Icon } from '../icon/Icon';
 import { messages } from '../intl/messages';
 import { usePanneauIntl } from '../intl/usePanneauIntl';
+import { Menu, MenuItem, MenuTrigger } from '../menu/Menu';
 import { cx } from '../utils/cx';
 import { prefersReducedMotion } from '../utils/motion';
 import styles from './ReorderList.module.css';
-import { gapAt, indexForGap, isSameGap, parseDuration } from './reorder';
+import {
+    REORDER_DRAG_TYPE,
+    gapAt,
+    gapAtPoint,
+    indexForGap,
+    isSameGap,
+    parseDuration,
+} from './reorder';
 
-/** How an item is dragged: the pointer and touch use the browser's drag and drop. */
-type DragMode = 'pointer' | 'keyboard';
+/** How an item is moved: the pointer and touch use the browser's drag and drop. */
+type DragMode = 'pointer' | 'keyboard' | 'menu';
+
+/** Where an item is on the page, before a move. */
+interface Position {
+    left: number;
+    top: number;
+}
 
 interface Drag {
     index: number;
@@ -38,6 +53,7 @@ interface ReorderContextValue {
     type: string;
     count: number;
     isDisabled: boolean;
+    layout: 'stack' | 'grid';
     drag: Drag | null;
     /** The gap under the pointer while an item is dragged with it. */
     pointerGap: number | null;
@@ -45,11 +61,13 @@ interface ReorderContextValue {
     start: (drag: Drag) => void;
     end: () => void;
     drop: (gap: number) => void;
+    /** Moves an item to an index, from its menu. */
+    move: (from: number, to: number) => void;
     list: RefObject<HTMLElement | null>;
     /** Whether the handle of an item takes the focus, once it moved with the keyboard: once. */
     takeFocus: (id: string) => boolean;
     /** Where the items were before a move, so that they move from there. */
-    takePosition: (id: string, top: number) => number | undefined;
+    takePosition: (id: string, at: Position) => Position | undefined;
 }
 
 const ReorderContext = createContext<ReorderContextValue | null>(null);
@@ -100,6 +118,11 @@ export interface ReorderListProps extends Omit<HTMLAttributes<HTMLElement>, 'chi
     itemLabel?: (index: number) => string;
     /** Items can't be dragged. */
     isDisabled?: boolean;
+    /**
+     * How the items are laid out: one under the other (`stack`, the default), or in rows of a grid,
+     * as the tiles of a gallery, where an item goes before or after the item beside the pointer.
+     */
+    layout?: 'stack' | 'grid';
     /** Defaults to `ol`. */
     elementType?: 'ol' | 'ul' | 'div';
     ref?: Ref<HTMLElement>;
@@ -120,6 +143,7 @@ export function ReorderList({
     onMove,
     itemLabel,
     isDisabled = false,
+    layout = 'stack',
     elementType: Element = 'ol',
     ref,
     className,
@@ -133,11 +157,14 @@ export function ReorderList({
     const list = useRef<HTMLElement | null>(null);
     const [drag, setDrag] = useState<Drag | null>(null);
     const [pointerGap, setPointerGap] = useState<number | null>(null);
+    // Whether one of its items is dragged with the pointer: only then the list takes drops. Set at
+    // once, unlike `drag`: a list inside an item lets the drags of other lists go through it.
+    const [isPointerDrag, setPointerDrag] = useState(false);
     const [message, setMessage] = useState('');
     // Read by the handlers of drag and drop, outside of rendering
     const current = useRef<{ drag: Drag | null; gap: number | null }>({ drag: null, gap: null });
     const focusAfter = useRef<string | null>(null);
-    const positions = useRef<Map<string, number> | null>(null);
+    const positions = useRef<Map<string, Position> | null>(null);
 
     const labelOf = (index: number) =>
         itemLabel?.(index) ?? intl.formatMessage(messages.reorderItem, { index: index + 1 });
@@ -152,6 +179,7 @@ export function ReorderList({
     const start = (next: Drag) => {
         current.current = { drag: next, gap: null };
         if (next.mode === 'pointer') {
+            setPointerDrag(true);
             // A frame later, once the browser took the image of what is dragged
             requestAnimationFrame(() => {
                 if (current.current.drag === next) {
@@ -173,58 +201,72 @@ export function ReorderList({
     const end = () => {
         current.current = { drag: null, gap: null };
         setDrag(null);
+        setPointerDrag(false);
         setPointerGap(null);
     };
-    const drop = (gap: number) => {
-        const dragged = current.current.drag;
-        if (dragged === null || isSameGap(dragged.index, gap)) {
-            return;
-        }
-        const to = indexForGap(dragged.index, gap);
+    /** Moves the item at `from` to `to`: it says so, and the items slide to their places. */
+    const move = (from: number, to: number, id: string, mode: DragMode) => {
         // The items move from where they were to their new places
         positions.current = new Map(
-            itemsOf(list.current).map((element) => [
-                element.dataset.reorderId ?? '',
-                element.getBoundingClientRect().top,
-            ]),
+            itemsOf(list.current).map((element) => {
+                const rect = element.getBoundingClientRect();
+                return [element.dataset.reorderId ?? '', { left: rect.left, top: rect.top }];
+            }),
         );
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 positions.current = null;
             });
         });
-        if (dragged.mode === 'keyboard') {
-            focusAfter.current = dragged.id;
+        if (mode === 'keyboard') {
+            focusAfter.current = id;
         }
         setMessage(
             intl.formatMessage(messages.reorderMoved, {
-                item: labelOf(dragged.index),
+                item: labelOf(from),
                 position: to + 1,
                 count: itemCount,
             }),
         );
-        onMove(dragged.index, to);
+        onMove(from, to);
+    };
+    const drop = (gap: number) => {
+        const dragged = current.current.drag;
+        if (dragged === null || isSameGap(dragged.index, gap)) {
+            return;
+        }
+        move(dragged.index, indexForGap(dragged.index, gap), dragged.id, dragged.mode);
     };
 
-    // The pointer: the list takes the drop, at the gap nearest to the pointer
-    const gapFor = (y: number) => {
+    // The pointer: the list takes the drop, at the gap nearest to the pointer. Only while one of
+    // its own items is dragged: React Aria stops the events of a drag at a drop target, so a list
+    // inside an item of another list, or inside a drop zone of files, would refuse their drags.
+    const gapFor = (x: number, y: number) => {
         const element = list.current;
         if (element === null) {
             return null;
         }
-        const top = element.getBoundingClientRect().top;
-        return gapAt(
-            itemsOf(element).map((item) => {
-                const rect = item.getBoundingClientRect();
-                return rect.top - top + rect.height / 2;
-            }),
-            y,
-        );
+        const origin = element.getBoundingClientRect();
+        const boxes = itemsOf(element).map((item) => {
+            const rect = item.getBoundingClientRect();
+            return {
+                left: rect.left - origin.left,
+                top: rect.top - origin.top,
+                width: rect.width,
+                height: rect.height,
+            };
+        });
+        return layout === 'grid'
+            ? gapAtPoint(boxes, x, y, getComputedStyle(element).direction === 'rtl')
+            : gapAt(
+                  boxes.map((box) => box.top + box.height / 2),
+                  y,
+              );
     };
-    const onPointerMove = (event: { y: number }) => setGap(gapFor(event.y));
+    const onPointerMove = (event: { x: number; y: number }) => setGap(gapFor(event.x, event.y));
     const { dropProps } = useDrop({
         ref: list,
-        isDisabled,
+        isDisabled: isDisabled || !isPointerDrag,
         getDropOperation: (types) =>
             types.has(type) && current.current.drag?.mode === 'pointer' ? 'move' : 'cancel',
         onDropEnter: onPointerMove,
@@ -232,7 +274,7 @@ export function ReorderList({
         onDropExit: () => setGap(null),
         // Where it is dropped, which may not have been dragged over yet
         onDrop: (event) => {
-            const gap = gapFor(event.y) ?? current.current.gap;
+            const gap = gapFor(event.x, event.y) ?? current.current.gap;
             if (gap !== null) {
                 drop(gap);
             }
@@ -255,6 +297,7 @@ export function ReorderList({
     // While an item moves with the keyboard, the arrows go from one place to the next, and Space
     // drops it as Enter does. React Aria stops the keys on the document: this listens before it.
     const isKeyboard = drag?.mode === 'keyboard';
+    const isGrid = layout === 'grid';
     useEffect(() => {
         if (!isKeyboard) {
             return;
@@ -262,11 +305,21 @@ export function ReorderList({
         const gaps = () => [
             ...(list.current?.querySelectorAll<HTMLElement>('[data-reorder-gap]') ?? []),
         ];
+        const isRtl = list.current !== null && getComputedStyle(list.current).direction === 'rtl';
+        // In a grid, the arrows across go from one place to the next too
+        const forward = new Set([
+            'ArrowDown',
+            ...(isGrid ? [isRtl ? 'ArrowLeft' : 'ArrowRight'] : []),
+        ]);
+        const backward = new Set([
+            'ArrowUp',
+            ...(isGrid ? [isRtl ? 'ArrowRight' : 'ArrowLeft'] : []),
+        ]);
         const onKeyDown = (event: globalThis.KeyboardEvent) => {
             const all = gaps();
             const index = all.findIndex((gap) => gap === document.activeElement);
-            if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-                const step = event.key === 'ArrowDown' ? 1 : -1;
+            if (forward.has(event.key) || backward.has(event.key)) {
+                const step = forward.has(event.key) ? 1 : -1;
                 const next = index === -1 ? all.at(step === 1 ? 0 : -1) : all[index + step];
                 next?.focus();
             }
@@ -284,18 +337,20 @@ export function ReorderList({
             window.removeEventListener('keydown', onKeyDown, true);
             window.removeEventListener('keyup', onKeyUp, true);
         };
-    }, [isKeyboard]);
+    }, [isKeyboard, isGrid]);
 
     const context: ReorderContextValue = {
         type,
         count: itemCount,
         isDisabled,
+        layout,
         drag,
         pointerGap,
         labelOf,
         start,
         end,
         drop,
+        move: (from, to) => move(from, to, '', 'menu'),
         list,
         takeFocus: (id) => {
             if (focusAfter.current !== id) {
@@ -305,9 +360,9 @@ export function ReorderList({
             return true;
         },
         // Where an item was before the move, once it is somewhere else
-        takePosition: (id, top) => {
+        takePosition: (id, at) => {
             const from = positions.current?.get(id);
-            if (from === undefined || from === top) {
+            if (from === undefined || (from.left === at.left && from.top === at.top)) {
                 return undefined;
             }
             positions.current?.delete(id);
@@ -325,6 +380,7 @@ export function ReorderList({
                     assignRef(ref, node);
                 }}
                 className={cx('panneau-reorder-list', className)}
+                data-layout={layout}
                 data-dragging={drag !== null || undefined}
             >
                 {children}
@@ -375,18 +431,18 @@ export function ReorderItem({
         if (node === null) {
             return;
         }
-        const top = node.getBoundingClientRect().top;
-        const from = context.takePosition(key, top);
+        const rect = node.getBoundingClientRect();
+        const from = context.takePosition(key, { left: rect.left, top: rect.top });
         if (from === undefined) {
             return;
         }
-        const offset = from - top;
         const style = getComputedStyle(node);
         const duration = parseDuration(style.getPropertyValue('--panneau-duration-slow'));
         if (duration === 0 || prefersReducedMotion() || typeof node.animate !== 'function') {
             return;
         }
-        node.animate([{ transform: `translateY(${offset}px)` }, { transform: 'none' }], {
+        const offset = `translate(${from.left - rect.left}px, ${from.top - rect.top}px)`;
+        node.animate([{ transform: offset }, { transform: 'none' }], {
             duration,
             easing: style.getPropertyValue('--panneau-ease-out').trim() || 'ease-out',
         });
@@ -458,6 +514,7 @@ function ReorderGap({ gap }: { gap: number }) {
             ref={ref}
             className={styles.gap}
             data-reorder-gap
+            data-layout={context.layout}
             data-position={isAfter ? 'after' : 'before'}
             data-active={isActive || undefined}
         />
@@ -520,7 +577,9 @@ export function ReorderHandle({ label, className, style }: ReorderHandleProps) {
 
     const { dragProps, isDragging } = useDrag({
         isDisabled,
-        getItems: () => [{ [context.type]: String(item.index) }],
+        getItems: () => [
+            { [context.type]: String(item.index), [REORDER_DRAG_TYPE]: String(item.id) },
+        ],
         getAllowedDropOperations: () => ['move'],
         preview,
         onDragStart: () => {
@@ -575,5 +634,84 @@ export function ReorderHandle({ label, className, style }: ReorderHandleProps) {
         >
             <Icon icon={GripVertical} size="sm" />
         </div>
+    );
+}
+
+export interface ReorderMenuProps {
+    /** Defaults to `sm`, as the other tools of an item. */
+    size?: 'sm' | 'md';
+    className?: string;
+}
+
+/**
+ * The buttons that move an item, without dragging it, in a menu: to the start, before the item
+ * before it, after the item after it, or to the end. They are the path on phones, where a long press
+ * isn't obvious. Put it with the tools of a `ReorderItem`: the move is announced as a drop is. A
+ * list of one item, or a disabled list, has none.
+ */
+export function ReorderMenu({ size = 'sm', className }: ReorderMenuProps) {
+    const context = useReorder();
+    const { index } = useReorderItem();
+    const intl = usePanneauIntl();
+    const { count } = context;
+    if (context.isDisabled || count < 2) {
+        return null;
+    }
+    const actions = [
+        ...(index > 1
+            ? [{ id: 'start', to: 0, label: intl.formatMessage(messages.reorderToStart) }]
+            : []),
+        ...(index > 0
+            ? [
+                  {
+                      id: 'before',
+                      to: index - 1,
+                      label: intl.formatMessage(messages.reorderMoveBefore, {
+                          item: context.labelOf(index - 1),
+                      }),
+                  },
+              ]
+            : []),
+        ...(index < count - 1
+            ? [
+                  {
+                      id: 'after',
+                      to: index + 1,
+                      label: intl.formatMessage(messages.reorderMoveAfter, {
+                          item: context.labelOf(index + 1),
+                      }),
+                  },
+              ]
+            : []),
+        ...(index < count - 2
+            ? [{ id: 'end', to: count - 1, label: intl.formatMessage(messages.reorderToEnd) }]
+            : []),
+    ];
+    return (
+        <MenuTrigger>
+            <IconButton
+                icon={ArrowUpDown}
+                size={size}
+                label={intl.formatMessage(messages.reorderMenu, {
+                    item: context.labelOf(index),
+                })}
+                className={cx('panneau-reorder-menu', className)}
+            />
+            <Menu
+                placement="bottom end"
+                onAction={(key) => {
+                    const action = actions.find((candidate) => candidate.id === key);
+                    if (action !== undefined) {
+                        context.move(index, action.to);
+                    }
+                }}
+            >
+                {actions.map((action) => (
+                    <MenuItem key={action.id} id={action.id}>
+                        {action.label}
+                    </MenuItem>
+                ))}
+            </Menu>
+        </MenuTrigger>
     );
 }

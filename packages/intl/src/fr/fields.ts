@@ -13,6 +13,7 @@ export const fieldsFr: Record<string, string> = {
     'panneau.fields.duplicateItem': 'Dupliquer l’élément {index}',
     'panneau.fields.insertItem': 'Ajouter un élément entre les éléments {before} et {after}',
     'panneau.fields.item': 'Élément {index}',
+    'panneau.fields.namedItem': '{name} (élément {index})',
     'panneau.fields.noItems': 'Aucun élément pour l’instant.',
     'panneau.fields.collapseAll': 'Tout replier',
     'panneau.fields.expandAll': 'Tout déplier',

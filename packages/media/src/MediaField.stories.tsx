@@ -12,6 +12,7 @@ import {
     instantUploadSource,
     libraryMedia,
 } from './__fixtures__/mediaSources';
+import { afterSlides, dragHandle } from './__fixtures__/reorder';
 
 const reference = (
     media: Partial<MediaInfo> = {},
@@ -156,6 +157,91 @@ export const Gallery: Story = {
     },
 };
 
+const handleNames = (element: HTMLElement) =>
+    [...element.querySelectorAll('[data-reorder-handle]')].map((handle) =>
+        handle.getAttribute('aria-label'),
+    );
+
+/**
+ * Media other than images reorder as cards (decision 0111): by the handle at their start, with the
+ * pointer or the keyboard, or from the menu of moves before their button to remove them. A drag
+ * of a card is not a drag of files: the field, which takes dropped files, lets it go.
+ */
+export const Reorder: Story = {
+    render: function Render() {
+        const [adapter] = useState(createExampleAdapter);
+        const [value, setValue] = useState<MediaReference[] | null>([
+            reference(),
+            reference({ type: 'audio', size: 4_200_000 }, { id: 'med_2', label: 'theme.mp3' }),
+            reference({ type: 'document', size: 82_000 }, { id: 'med_3', label: 'script.pdf' }),
+        ]);
+        return (
+            <MediaField
+                label="Attachments"
+                resource="media"
+                multiple
+                adapter={adapter}
+                uploadSource={null}
+                value={value}
+                onChange={setValue}
+            />
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+
+        // The pointer: on the upper half of the first card, without the overlay of a file drop
+        const first = canvas.getAllByRole('listitem')[0] as HTMLElement;
+        await dragHandle(
+            canvas.getByRole('button', { name: 'Move script.pdf' }),
+            first,
+            first.getBoundingClientRect().top + 4,
+        );
+        await waitFor(() =>
+            expect(handleNames(canvasElement)).toEqual([
+                'Move script.pdf',
+                'Move interview.mp4',
+                'Move theme.mp3',
+            ]),
+        );
+        await expect(canvas.queryByText('Drop to upload')).not.toBeInTheDocument();
+        await afterSlides();
+
+        // The keyboard: the places of the list, not the drop zone of the field
+        canvas.getByRole('button', { name: 'Move theme.mp3' }).focus();
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() => expect(document.activeElement).toHaveAttribute('data-reorder-gap'));
+        for (let step = 0; step < 4; step += 1) {
+            if (document.activeElement?.getAttribute('aria-label') === 'Before script.pdf') {
+                break;
+            }
+            await userEvent.keyboard('{ArrowUp}');
+            await new Promise((resolve) => requestAnimationFrame(resolve));
+        }
+        await expect(document.activeElement).toHaveAccessibleName('Before script.pdf');
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() =>
+            expect(handleNames(canvasElement)).toEqual([
+                'Move theme.mp3',
+                'Move script.pdf',
+                'Move interview.mp4',
+            ]),
+        );
+        await afterSlides();
+
+        // The menu
+        await userEvent.click(canvas.getByRole('button', { name: 'Reorder theme.mp3' }));
+        await userEvent.click(await screen.findByRole('menuitem', { name: 'Move to the end' }));
+        await waitFor(() =>
+            expect(handleNames(canvasElement)).toEqual([
+                'Move script.pdf',
+                'Move interview.mp4',
+                'Move theme.mp3',
+            ]),
+        );
+    },
+};
+
 /**
  * Files can be dropped anywhere on the field, its media included: it shows and announces where
  * they go while they are dragged over it, and says why a file is refused, as its button does.
@@ -186,7 +272,7 @@ export const DropOnField: Story = {
         dragFiles(poster, [new File(['image'], 'photo.jpg', { type: 'image/jpeg' })], {
             drop: false,
         });
-        await expect(await canvas.findByRole('status')).toHaveTextContent('Drop to upload');
+        await expect(await canvas.findByText('Drop to upload')).toHaveAttribute('role', 'status');
         await expect(canvas.getByText('Drop to upload')).toBeVisible();
 
         dragFiles(poster, [new File(['image'], 'photo.jpg', { type: 'image/jpeg' })]);

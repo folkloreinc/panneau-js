@@ -4,6 +4,7 @@ import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import type { BlockType } from '@panneau/protocol';
 
+import { afterSlides, dragHandle } from '../__fixtures__/reorder';
 import { DefinitionField } from '../shared/DefinitionField';
 import { builtInFields } from '../shared/builtIn';
 import { FieldsProvider } from '../shared/context';
@@ -112,6 +113,29 @@ const BLOCKS: RepeaterItem[] = [
     { type: 'quote', text: 'Montréal is the best city in the world in summer.' },
 ];
 
+const SIMPLE_TYPES: BlockType[] = [
+    {
+        id: 'heading',
+        label: 'Heading',
+        fields: [{ name: 'text', type: 'text', label: 'Heading' }],
+    },
+    {
+        id: 'text',
+        label: 'Text',
+        fields: [{ name: 'body', type: 'textarea', label: 'Body' }],
+    },
+    {
+        id: 'quote',
+        label: 'Quote',
+        fields: [{ name: 'text', type: 'textarea', label: 'Text' }],
+    },
+    {
+        id: 'video',
+        label: 'Video',
+        fields: [{ name: 'url', type: 'url', label: 'Video URL' }],
+    },
+];
+
 /**
  * The blocks of a page: saved blocks start collapsed, with their type and their first text. A
  * block added expands, and "Expand all" or "Collapse all" opens or closes every block.
@@ -124,28 +148,7 @@ export const TypedBlocks: Story = {
                 {...args}
                 label="Blocks"
                 fields={undefined}
-                types={[
-                    {
-                        id: 'heading',
-                        label: 'Heading',
-                        fields: [{ name: 'text', type: 'text', label: 'Heading' }],
-                    },
-                    {
-                        id: 'text',
-                        label: 'Text',
-                        fields: [{ name: 'body', type: 'textarea', label: 'Body' }],
-                    },
-                    {
-                        id: 'quote',
-                        label: 'Quote',
-                        fields: [{ name: 'text', type: 'textarea', label: 'Text' }],
-                    },
-                    {
-                        id: 'video',
-                        label: 'Video',
-                        fields: [{ name: 'url', type: 'url', label: 'Video URL' }],
-                    },
-                ]}
+                types={SIMPLE_TYPES}
                 value={value}
                 onChange={setValue}
             />
@@ -407,5 +410,204 @@ export const TitlesFromTheDefinition: Story = {
         await userEvent.click(canvas.getByRole('button', { name: '2 Grace Hopper' }));
         await userEvent.type(canvas.getByRole('textbox', { name: 'First name' }), ' B.');
         await expect(canvas.getByRole('button', { name: '2 Grace B. Hopper' })).toBeInTheDocument();
+    },
+};
+
+/** The blocks of a page, as `TypedBlocks`, for the stories of drag and drop. */
+function Blocks(args: Parameters<typeof RepeaterField>[0]) {
+    const [value, setValue] = useState<RepeaterItem[] | null>(BLOCKS);
+    return (
+        <RepeaterField
+            {...args}
+            label="Blocks"
+            name="blocks"
+            fields={undefined}
+            types={SIMPLE_TYPES}
+            value={value}
+            onChange={setValue}
+        />
+    );
+}
+
+/** The headers of the items, in their order: their number and title. */
+const titles = (canvasElement: HTMLElement) =>
+    [...canvasElement.querySelectorAll<HTMLElement>('[data-header] [aria-expanded]')].map(
+        (toggle) => toggle.querySelector('[id]')?.textContent?.split(' ').slice(0, 2).join(' '),
+    );
+
+/**
+ * The handle at the start of an item's header drags it (decision 0111): with the pointer, the item
+ * goes before or after the item it is dropped on. Collapsed and expanded items drag, and keep their
+ * values and their state; a status message says where the item went. "Move up" and "Move down"
+ * stay in the tools of each item.
+ */
+export const DragAndDrop: Story = {
+    render: (args) => <Blocks {...args} />,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await userEvent.click(canvas.getByRole('button', { name: /^2 Text/ }));
+        const body = canvas.getByRole('textbox', { name: 'Body' });
+        await userEvent.type(body, ' Again.');
+
+        // The collapsed quote, dropped on the upper half of the first block: first
+        const first = canvas.getAllByRole('listitem')[0] as HTMLElement;
+        await dragHandle(
+            canvas.getByRole('button', { name: 'Move Quote (item 4)' }),
+            first,
+            first.getBoundingClientRect().top + 4,
+        );
+        await waitFor(() =>
+            expect(titles(canvasElement)).toEqual(['1 Quote', '2 Heading', '3 Text', '4 Video']),
+        );
+        await expect(canvas.getByRole('status')).toHaveTextContent(
+            'Quote (item 4) moved to position 1 of 4',
+        );
+        // The expanded block moved down with its value, and stayed expanded
+        await expect(canvas.getByRole('button', { name: /^3 Text/ })).toHaveAttribute(
+            'aria-expanded',
+            'true',
+        );
+        await expect(
+            (canvas.getByRole('textbox', { name: 'Body' }) as HTMLTextAreaElement).value,
+        ).toContain('fireworks.</p> Again.');
+        await afterSlides();
+
+        // The expanded block, dropped on the lower half of the last one: last
+        const last = canvas.getAllByRole('listitem')[3] as HTMLElement;
+        await dragHandle(
+            canvas.getByRole('button', { name: 'Move Text (item 3)' }),
+            last,
+            last.getBoundingClientRect().bottom - 4,
+        );
+        await waitFor(() =>
+            expect(titles(canvasElement)).toEqual(['1 Quote', '2 Heading', '3 Video', '4 Text']),
+        );
+        await expect(canvas.getByRole('textbox', { name: 'Body' })).toBeVisible();
+        await expect(canvas.getByRole('button', { name: 'Move item 4 up' })).toBeInTheDocument();
+    },
+};
+
+/**
+ * With the keyboard, Enter or Space on the handle picks the item up; Tab or the arrows go through
+ * the places it can go, and Enter drops it there. The focus goes back to its handle.
+ */
+export const KeyboardReorder: Story = {
+    render: (args) => <Blocks {...args} />,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await userEvent.click(canvas.getByRole('button', { name: /^1 Heading/ }));
+        canvas.getByRole('button', { name: 'Move Heading (item 1)' }).focus();
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() => expect(document.activeElement).toHaveAttribute('data-reorder-gap'));
+        // Down to the place after the last block
+        for (let step = 0; step < 4; step += 1) {
+            if (document.activeElement?.getAttribute('aria-label') === 'After Quote (item 4)') {
+                break;
+            }
+            await userEvent.keyboard('{ArrowDown}');
+        }
+        await expect(document.activeElement).toHaveAccessibleName('After Quote (item 4)');
+        await userEvent.keyboard('{Enter}');
+        await waitFor(() =>
+            expect(titles(canvasElement)).toEqual(['1 Text', '2 Video', '3 Quote', '4 Heading']),
+        );
+        await waitFor(() =>
+            expect(canvas.getByRole('button', { name: 'Move Heading (item 4)' })).toHaveFocus(),
+        );
+        await expect(canvas.getByRole('button', { name: /^4 Heading/ })).toHaveAttribute(
+            'aria-expanded',
+            'true',
+        );
+        await expect(canvas.getByRole('status')).toHaveTextContent(
+            'Heading (item 1) moved to position 4 of 4',
+        );
+    },
+};
+
+/**
+ * A repeater in the items of a repeater: each list has its own handles. A section drags over the
+ * list inside another section, and an item of an inner list stays in its list.
+ */
+export const NestedRepeaters: Story = {
+    render: function Render() {
+        const [value, setValue] = useState<unknown>([
+            { title: 'Morning', steps: [{ label: 'Coffee' }, { label: 'News' }] },
+            { title: 'Noon', steps: [{ label: 'Lunch' }, { label: 'Walk' }] },
+        ]);
+        return (
+            <DefinitionField
+                field={{
+                    name: 'sections',
+                    type: 'repeater',
+                    label: 'Sections',
+                    settings: { itemTitle: 'title', collapsible: false },
+                    fields: [
+                        { name: 'title', type: 'text', label: 'Title' },
+                        {
+                            name: 'steps',
+                            type: 'repeater',
+                            label: 'Steps',
+                            settings: { itemTitle: 'label', collapsible: false },
+                            fields: [{ name: 'label', type: 'text', label: 'Label' }],
+                        },
+                    ],
+                }}
+                path="sections"
+                value={value}
+                onChange={setValue}
+            />
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const morning = await canvas.findByRole('button', { name: 'Move Morning (item 1)' });
+        const sections = () =>
+            canvas
+                .getAllByRole('textbox', { name: 'Title' })
+                .map((input) => (input as HTMLInputElement).value);
+        const steps = () =>
+            canvas
+                .getAllByRole('textbox', { name: 'Label' })
+                .map((input) => (input as HTMLInputElement).value);
+
+        // Over the steps of Noon, on the lower half of its last step: after Noon
+        const lastStep = canvas
+            .getByRole('button', { name: 'Move Walk (item 2)' })
+            .closest('li') as HTMLElement;
+        await dragHandle(morning, lastStep, lastStep.getBoundingClientRect().bottom - 2);
+        await waitFor(() => expect(sections()).toEqual(['Noon', 'Morning']));
+        await expect(steps()).toEqual(['Lunch', 'Walk', 'Coffee', 'News']);
+        await afterSlides();
+
+        // A step moves within its section
+        const lunch = canvas
+            .getByRole('button', { name: 'Move Lunch (item 1)' })
+            .closest('li') as HTMLElement;
+        await dragHandle(
+            canvas.getByRole('button', { name: 'Move Walk (item 2)' }),
+            lunch,
+            lunch.getBoundingClientRect().top + 2,
+        );
+        await waitFor(() => expect(steps()).toEqual(['Walk', 'Lunch', 'Coffee', 'News']));
+        await expect(sections()).toEqual(['Noon', 'Morning']);
+    },
+};
+
+/**
+ * In a narrow column, as the sidebar of a form: the handle, the title and the tools of an item
+ * stay on one line, and the title is cut.
+ */
+export const InANarrowColumn: Story = {
+    render: (args) => (
+        <div style={{ maxWidth: '18rem' }}>
+            <Blocks {...args} />
+        </div>
+    ),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        for (const header of canvasElement.querySelectorAll<HTMLElement>('[data-header]')) {
+            await expect(header.scrollWidth).toBeLessThanOrEqual(header.clientWidth);
+        }
+        await expect(canvas.getByRole('button', { name: 'Move Quote (item 4)' })).toBeVisible();
     },
 };

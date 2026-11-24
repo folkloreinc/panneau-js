@@ -21,6 +21,12 @@
     border-radius: var(--panneau-radius-md);
 }
 
+/* The handle of a file in a list that reorders them (decision 0111), at its start. */
+.handle {
+    flex: none;
+    margin-inline-end: calc(-1 * var(--panneau-space-2));
+}
+
 /* A square for the image, or the icon of the type. */
 .thumbnail {
     display: block;

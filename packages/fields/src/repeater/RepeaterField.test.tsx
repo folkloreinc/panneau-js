@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Quote } from 'lucide-react';
 import { useState } from 'react';
@@ -375,6 +375,131 @@ describe('RepeaterField', () => {
         );
         expect(screen.queryByRole('button')).not.toBeInTheDocument();
         expect(screen.getByRole('textbox', { name: 'Label' })).toBeDisabled();
+    });
+});
+
+/** Picks an item up by its handle with the keyboard, and drops it at the place named `place`. */
+async function dragWithKeyboard(handle: string, place: string) {
+    act(() => screen.getByRole('button', { name: handle }).focus());
+    await userEvent.keyboard('{Enter}');
+    await waitFor(() => expect(document.activeElement).toHaveAttribute('data-reorder-gap'));
+    act(() => screen.getByRole('button', { name: place }).focus());
+    await userEvent.keyboard('{Enter}');
+}
+
+const items = () =>
+    screen.getAllByRole('listitem').map((item) => item.getAttribute('aria-labelledby'));
+
+describe('RepeaterField: drag and drop', () => {
+    it('has a handle at the start of the header of each item, named after it', () => {
+        renderField(<Links onChange={() => undefined} />);
+        const [first] = screen.getAllByRole('listitem');
+        const header = (first as HTMLElement).querySelector('[data-header]');
+        expect(header?.firstElementChild).toBe(screen.getByRole('button', { name: 'Move Item 1' }));
+        expect(header).toHaveAttribute('data-reorder-preview');
+        // The buttons that move an item stay in its tools
+        expect(screen.getByRole('button', { name: 'Move item 1 down' })).toBeInTheDocument();
+    });
+
+    it('moves an item with the keyboard, with its value, its state and the focus', async () => {
+        const onChange = vi.fn();
+        renderField(
+            <Controlled<RepeaterItem[] | null>
+                initial={[{ label: 'A' }, { label: 'B' }, { label: 'C' }]}
+                onChange={onChange}
+            >
+                {(value, setValue) => (
+                    <RepeaterField
+                        label="Notes"
+                        name="notes"
+                        fields={[{ name: 'count', type: 'counter', label: 'Count' }]}
+                        itemTitle={(item) => (typeof item.label === 'string' ? item.label : null)}
+                        value={value}
+                        onChange={setValue}
+                    />
+                )}
+            </Controlled>,
+            { components: { ...builtInFields, counter: Counter } },
+        );
+        await userEvent.click(toggles()[0] as HTMLElement);
+        await userEvent.click(screen.getByRole('button', { name: 'Count 0' }));
+        const before = items();
+
+        await dragWithKeyboard('Move A (item 1)', 'After C (item 3)');
+        expect(onChange).toHaveBeenLastCalledWith([{ label: 'B' }, { label: 'C' }, { label: 'A' }]);
+        // The item and its state moved: its key, its expanded fields, the state of its field
+        expect(items()).toEqual([before[1], before[2], before[0]]);
+        const [, , last] = toggles();
+        expect(last).toHaveAccessibleName('3 A');
+        expect(last).toHaveAttribute('aria-expanded', 'true');
+        expect(screen.getByRole('button', { name: 'Count 1' })).toBeVisible();
+        await waitFor(() =>
+            expect(screen.getByRole('button', { name: 'Move A (item 3)' })).toHaveFocus(),
+        );
+        expect(screen.getByRole('status')).toHaveTextContent('A (item 1) moved to position 3 of 3');
+    });
+
+    it('keeps an item with an error collapsed by hand when it moves', async () => {
+        const a = { label: 'A' };
+        const b = { label: '' };
+        const props = { label: 'Links', name: 'links', fields: LINK_FIELDS };
+        const { rerender } = renderField(
+            <RepeaterField {...props} value={[a, b]} invalidPaths={['links.1.label']} />,
+        );
+        await userEvent.click(toggles()[1] as HTMLElement);
+        expect(toggles()[1]).toHaveAttribute('aria-expanded', 'false');
+        // The form gives the error at the new path of the item
+        rerender(
+            <PanneauRoot>
+                <FieldsProvider components={builtInFields}>
+                    <RepeaterField {...props} value={[b, a]} invalidPaths={['links.0.label']} />
+                </FieldsProvider>
+            </PanneauRoot>,
+        );
+        const [first] = toggles();
+        expect(first).toHaveAccessibleName('1 Item 1 Has errors');
+        expect(first).toHaveAttribute('aria-expanded', 'false');
+    });
+
+    it('puts a removed item back before the item that followed it, after a move', async () => {
+        const onChange = vi.fn();
+        renderField(
+            <Controlled<RepeaterItem[] | null>
+                initial={[{ label: 'A' }, { label: 'B' }, { label: 'C' }]}
+                onChange={onChange}
+            >
+                {(value, setValue) => (
+                    <RepeaterField
+                        label="Links"
+                        name="links"
+                        fields={LINK_FIELDS}
+                        itemTitle={(item) => (typeof item.label === 'string' ? item.label : null)}
+                        value={value}
+                        onChange={setValue}
+                    />
+                )}
+            </Controlled>,
+        );
+        await userEvent.click(screen.getByRole('button', { name: 'Remove item 1' }));
+        await dragWithKeyboard('Move C (item 2)', 'Before B (item 1)');
+        expect(onChange).toHaveBeenLastCalledWith([{ label: 'C' }, { label: 'B' }]);
+        await userEvent.click(screen.getByRole('button', { name: 'Undo' }));
+        expect(onChange).toHaveBeenLastCalledWith([{ label: 'C' }, { label: 'A' }, { label: 'B' }]);
+    });
+
+    it('has no handle when read-only or disabled', () => {
+        const { rerender } = renderField(
+            <RepeaterField label="Links" fields={LINK_FIELDS} value={[{}, {}]} readOnly />,
+        );
+        expect(screen.queryByRole('button', { name: /^Move Item/ })).not.toBeInTheDocument();
+        rerender(
+            <PanneauRoot>
+                <FieldsProvider components={builtInFields}>
+                    <RepeaterField label="Links" fields={LINK_FIELDS} value={[{}, {}]} disabled />
+                </FieldsProvider>
+            </PanneauRoot>,
+        );
+        expect(document.querySelector('[data-reorder-handle]')).toBeNull();
     });
 });
 

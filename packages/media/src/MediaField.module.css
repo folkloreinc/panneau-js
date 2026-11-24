@@ -115,6 +115,23 @@
     border-radius: var(--panneau-radius-md);
 }
 
+/*
+ * The name of an image in a gallery that reorders them (decision 0111): the handle at its start,
+ * the menu of moves at its end, under the image, so the tools over it stay as they are.
+ */
+.tileName {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-1);
+    min-width: 0;
+    margin-inline: calc(-1 * var(--panneau-space-1));
+}
+
+.tileName > .name {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
 .tilePreview {
     display: grid;
     place-items: center;

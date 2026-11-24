@@ -3,7 +3,16 @@ import { useEffect, useRef, useState } from 'react';
 
 import type { StoredFile } from '@panneau/protocol';
 import { getImageUrl } from '@panneau/protocol/runtime';
-import { Fieldset, IconButton, usePanneauIntl } from '@panneau/ui';
+import {
+    Fieldset,
+    IconButton,
+    ReorderHandle,
+    ReorderItem,
+    ReorderList,
+    ReorderMenu,
+    moveItem,
+    usePanneauIntl,
+} from '@panneau/ui';
 
 import { useFieldsContext } from '../shared/context';
 import { getAccept, getFieldProps, getMaxSize } from '../shared/entry';
@@ -96,13 +105,45 @@ function usePreviewUrl(file: FileValue): string | null {
     return getImageUrl(file);
 }
 
+/** The files chosen in this page, which have nothing else that stays when they move. */
+const localKeys = new WeakMap<Blob, string>();
+let lastLocalKey = 0;
+
+/**
+ * Keys of the files of a value that stay when they move: the upload, the URL of a stored file, or
+ * one given to a file chosen in this page. The same file twice gets two keys.
+ */
+function fileKeys(files: readonly FileValue[]): string[] {
+    const seen = new Map<string, number>();
+    return files.map((file) => {
+        let key: string;
+        if (file instanceof Blob) {
+            key = localKeys.get(file) ?? `local:${String((lastLocalKey += 1))}`;
+            localKeys.set(file, key);
+        } else if ('upload' in file && typeof file.upload === 'string') {
+            key = `upload:${file.upload}`;
+        } else {
+            key = `stored:${fileUrl(file) ?? file.name}`;
+        }
+        const count = seen.get(key) ?? 0;
+        seen.set(key, count + 1);
+        return count > 0 ? `${key}#${String(count)}` : key;
+    });
+}
+
 interface FileCardProps {
     file: FileValue;
+    /** Its place in a list that reorders its files, with a key that stays when it moves. */
+    reorder: { index: number; id: string } | null;
     onRemove: (() => void) | null;
 }
 
-/** A file of the value: its thumbnail (or the icon of its type), its name, type and size. */
-function FileCard({ file, onRemove }: FileCardProps) {
+/**
+ * A file of the value: its thumbnail (or the icon of its type), its name, type and size. In a
+ * list that reorders its files (decision 0111), a handle before it, and a menu of moves before
+ * its button to remove it.
+ */
+function FileCard({ file, reorder, onRemove }: FileCardProps) {
     const intl = usePanneauIntl();
     const { name } = file;
     const url = fileUrl(file);
@@ -121,8 +162,9 @@ function FileCard({ file, onRemove }: FileCardProps) {
             imageClassName={styles.thumbnailImage}
         />
     );
-    return (
-        <li className={styles.file} data-kind={kind}>
+    const content = (
+        <>
+            {reorder !== null ? <ReorderHandle className={styles.handle} /> : null}
             {url !== null ? (
                 <a
                     href={url}
@@ -153,6 +195,7 @@ function FileCard({ file, onRemove }: FileCardProps) {
                     </span>
                 ) : null}
             </span>
+            {reorder !== null ? <ReorderMenu /> : null}
             {onRemove !== null ? (
                 <IconButton
                     icon={X}
@@ -162,6 +205,15 @@ function FileCard({ file, onRemove }: FileCardProps) {
                     className={styles.remove}
                 />
             ) : null}
+        </>
+    );
+    return reorder !== null ? (
+        <ReorderItem id={reorder.id} index={reorder.index} className={styles.file} data-kind={kind}>
+            {content}
+        </ReorderItem>
+    ) : (
+        <li className={styles.file} data-kind={kind}>
+            {content}
         </li>
     );
 }
@@ -241,6 +293,23 @@ export function FileField(props: FileFieldProps) {
             setRejections((current) => [...current, rejectionMessage(file, reason)]),
     });
 
+    // Several files reorder, by a handle or a menu of moves, unless the field is read only.
+    const reorderable = multiple && editable;
+    const keys = fileKeys(files);
+    const cards = files.map((file, index) => {
+        const key = keys[index] ?? String(index);
+        return (
+            <FileCard
+                key={key}
+                file={file}
+                reorder={reorderable ? { index, id: key } : null}
+                onRemove={
+                    editable ? () => set(latest.current.filter((_, at) => at !== index)) : null
+                }
+            />
+        );
+    });
+
     return (
         <Fieldset
             legend={label}
@@ -254,20 +323,18 @@ export function FileField(props: FileFieldProps) {
             errorsClassName={errorsClassName}
         >
             <div className={styles.field}>
-                {files.length > 0 ? (
-                    <ul className={styles.files}>
-                        {files.map((file, index) => (
-                            <FileCard
-                                key={`${String(index)}-${file.name}`}
-                                file={file}
-                                onRemove={
-                                    editable
-                                        ? () => set(latest.current.filter((_, at) => at !== index))
-                                        : null
-                                }
-                            />
-                        ))}
-                    </ul>
+                {files.length > 0 && reorderable ? (
+                    <ReorderList
+                        elementType="ul"
+                        className={styles.files}
+                        itemCount={files.length}
+                        itemLabel={(index) => files[index]?.name ?? ''}
+                        onMove={(from, to) => set(moveItem(latest.current, from, to))}
+                    >
+                        {cards}
+                    </ReorderList>
+                ) : files.length > 0 ? (
+                    <ul className={styles.files}>{cards}</ul>
                 ) : upload.items.length === 0 ? (
                     <span className={styles.none}>{intl.formatMessage(messages.noFile)}</span>
                 ) : null}

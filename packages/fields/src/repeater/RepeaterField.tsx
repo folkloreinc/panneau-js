@@ -20,7 +20,11 @@ import {
     Menu,
     MenuItem,
     MenuTrigger,
+    ReorderHandle,
+    ReorderItem,
+    ReorderList,
     getNamedIcon,
+    moveItem,
     usePanneauIntl,
     useUndoToast,
 } from '@panneau/ui';
@@ -247,16 +251,6 @@ export function updateItemKeys(previous: ItemKeys, items: readonly RepeaterItem[
     return { items, keys, next };
 }
 
-/** Moves the value at `from` to `to`, as items move. */
-function moved<T>(list: readonly T[], from: number, to: number): T[] {
-    const next = [...list];
-    const [value] = next.splice(from, 1);
-    if (value !== undefined) {
-        next.splice(to, 0, value);
-    }
-    return next;
-}
-
 /**
  * A list of items, each with the same fields, or typed blocks with the fields of their type. Items
  * can be added, moved and removed. Each field renders at the path `<list>.<index>.<field>`. An
@@ -318,7 +312,7 @@ export function RepeaterField({
 
     // Where the focus goes once the list changed: a button of an item that moved, or the header
     // of an item put back. The item may only show once its value comes back from the form.
-    const list = useRef<HTMLOListElement>(null);
+    const list = useRef<HTMLElement>(null);
     const focusNext = useRef<{
         key: number;
         index: number;
@@ -354,15 +348,19 @@ export function RepeaterField({
 
     // Items that get an error expand, once: their fields show it, and the error summary can
     // focus them. The state is adjusted while rendering, when the paths in error change.
+    // By the keys of the items: an item that moves with an error doesn't expand again.
     const invalid = invalidIndexes(base, invalidPaths);
-    const invalidKey = [...invalid].sort((a, b) => a - b).join(',');
+    const invalidKey = [...invalid]
+        .map(keyAt)
+        .sort((a, b) => a - b)
+        .join(',');
     const [seenInvalid, setSeenInvalid] = useState('');
     if (invalidKey !== seenInvalid) {
         const before = new Set(seenInvalid === '' ? [] : seenInvalid.split(',').map(Number));
         setSeenInvalid(invalidKey);
-        const opened = [...invalid].filter((index) => !before.has(index));
+        const opened = [...invalid].map(keyAt).filter((key) => !before.has(key));
         if (opened.length > 0) {
-            setExpanded(new Set([...expanded, ...opened.map(keyAt)]));
+            setExpanded(new Set([...expanded, ...opened]));
         }
     }
 
@@ -372,7 +370,7 @@ export function RepeaterField({
         onChange?.(next.length > 0 ? next : null);
     };
     const move = (from: number, to: number) => {
-        set(moved(items, from, to), moved(keys, from, to));
+        set(moveItem(items, from, to), moveItem(keys, from, to));
         // The focus follows the item, on the button that moved it, or on the other one at an end
         const tool = from < to ? 'down' : 'up';
         focusNext.current = {
@@ -391,6 +389,18 @@ export function RepeaterField({
                 ? item.type
                 : intl.formatMessage(messages.item, { index: index + 1 }))
         );
+    };
+    /**
+     * The name of an item for its handle, the places it can go and the announcement of a move: its
+     * title, with its number when it has a title of its own, as blocks of a type have.
+     */
+    const nameOf = (index: number) => {
+        const item = items[index];
+        const generic = intl.formatMessage(messages.item, { index: index + 1 });
+        const title = item !== undefined ? titleOf(item, index) : generic;
+        return title === generic
+            ? title
+            : intl.formatMessage(messages.namedItem, { name: title, index: index + 1 });
     };
     const remove = (index: number) => {
         const item = items[index];
@@ -532,7 +542,17 @@ export function RepeaterField({
                 </div>
             ) : null}
             {items.length > 0 ? (
-                <ol ref={list} className={styles.items}>
+                // The handle drags an item, and the keyboard through it (decision 0111): its state
+                // follows it, by its key. The buttons that move it stay in its tools.
+                <ReorderList
+                    ref={list}
+                    elementType="ol"
+                    className={styles.items}
+                    itemCount={items.length}
+                    itemLabel={nameOf}
+                    onMove={(from, to) => set(moveItem(items, from, to), moveItem(keys, from, to))}
+                    isDisabled={!editable}
+                >
                     {items.map((item, index) => {
                         const type =
                             types !== undefined
@@ -602,9 +622,11 @@ export function RepeaterField({
                             />
                         );
                         return (
-                            <li
+                            <ReorderItem
                                 // A stable key: the state of its fields follows the item
                                 key={key}
+                                id={key}
+                                index={index}
                                 data-key={key}
                                 className={cx(styles.item, itemClassName)}
                                 aria-labelledby={titleId}
@@ -625,7 +647,9 @@ export function RepeaterField({
                                         )}
                                     </div>
                                 ) : null}
-                                <div className={styles.header} data-header>
+                                {/* The header follows the pointer while the item is dragged */}
+                                <div className={styles.header} data-header data-reorder-preview>
+                                    {editable ? <ReorderHandle className={styles.handle} /> : null}
                                     {collapsible && disabled !== true ? (
                                         <button
                                             type="button"
@@ -713,10 +737,10 @@ export function RepeaterField({
                                           )
                                         : itemFields.map(renderField)}
                                 </div>
-                            </li>
+                            </ReorderItem>
                         );
                     })}
-                </ol>
+                </ReorderList>
             ) : (
                 <p className={styles.empty}>{intl.formatMessage(messages.noItems)}</p>
             )}
