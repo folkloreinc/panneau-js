@@ -5456,6 +5456,10 @@
                                 "items": {
                                     "$ref": "#/components/schemas/LayoutNode"
                                 }
+                            },
+                            "languageSwitch": {
+                                "description": "One language switch above the form's fields, which sets the language of every localized field at once, the user's choice remembered by the browser (decision 0108). Without it, or with `false`, each localized field has its own switch only. Clients show it when the form has localized fields and the definition more than one locale.",
+                                "type": "boolean"
                             }
                         },
                         "additionalProperties": {}

@@ -92,6 +92,8 @@ export function createExampleDefinition(): DefinitionInput {
                     },
                 ],
                 form: {
+                    // One language switch for the localized fields of a page (decision 0108)
+                    languageSwitch: true,
                     layout: [
                         {
                             type: 'tabs',
