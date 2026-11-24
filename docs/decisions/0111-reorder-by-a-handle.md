@@ -46,4 +46,4 @@ A prototype with a text input and the rich text editor in each item showed that 
 - A field that is read-only or disabled has no handle and no menu. Its value follows the order of the items, and "Undo" after a removal puts the item back by its key, at its new place.
 - Moving an item to another list is out of scope.
 - A drag with the pointer can't be driven by the test runner in the frame of a story: stories dispatch the events of the browser's drag and drop. The drag on touch screens is the browser's, and isn't checked by CI.
-- `@panneau/ui` only depends on `react-aria-components`; nothing loads the drag manager of React Aria until a list uses it.
+- `@panneau/ui` only depends on `react-aria-components`. Tiles, which the first page of an app shows, now import `ReorderList` and React Aria's drag and drop: the initial JavaScript of a minimal app measures 1441 KB minified, 468 KB gzip, over the budget of 1405 / 458 KB, which is raised to 1445 / 470 KB.

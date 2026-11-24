@@ -31,7 +31,9 @@ const work = resolve(root, '.tmp/bundle-size');
 // small chunks (+17 KB gzip for a 6 KB panel, measured on #484). Reviewing the chunking is the
 // way to get weight back (#457).
 // 1405 / 458 KB: editing a related item in the panel (#471) measures 1398 / 455 KB.
-const BUDGET = { minified: 1405 * 1024, gzip: 458 * 1024 };
+// 1445 / 470 KB: reordering the items of fields (#473) measures 1441 / 468 KB. Tiles, on the first
+// page, now carry the handle and the menu of moves of ReorderList, and React Aria's drag and drop.
+const BUDGET = { minified: 1445 * 1024, gzip: 470 * 1024 };
 
 const report = process.argv.includes('--report');
 
