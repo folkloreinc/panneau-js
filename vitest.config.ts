@@ -9,6 +9,8 @@ export default defineConfig({
             'packages/*',
             // Tests of the shared build config.
             { test: { name: 'config', include: ['config/**/*.test.ts'], environment: 'node' } },
+            // Tests of the scripts of CI.
+            { test: { name: 'scripts', include: ['scripts/**/*.test.js'], environment: 'node' } },
             // Tests of the playground's definition and data, on the sources of the packages.
             {
                 ssr: { resolve: { conditions: [SOURCE_CONDITION, ...defaultServerConditions] } },
