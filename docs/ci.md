@@ -25,7 +25,7 @@ node scripts/affected.js --base origin/v5.x
 
 Pushes to `v5.x` and the merge queue run everything, so a dependency that the script misses (an import that is not in a `package.json`) is still caught before the change reaches `v5.x`.
 
-**Shared setup.** [`.github/actions/setup`](../.github/actions/setup/action.yml) restores `node_modules` from a cache keyed by the lockfile and `.nvmrc`, and runs `npm ci` only when the cache misses. It then saves `node_modules` at once, before a job adds anything to it.
+**Shared setup.** [`.github/actions/setup`](../.github/actions/setup/action.yml) restores `node_modules` (and the `node_modules` of packages that have their own) from a cache keyed by the lockfile and `.nvmrc`, and runs `npm ci` only when the cache misses. It then saves `node_modules` at once, before a job adds anything to it.
 
 **Cancelled runs.** A new push to a pull request cancels the run of its previous commit. Runs on `v5.x` and in the merge queue always finish.
 
