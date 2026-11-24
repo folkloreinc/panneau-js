@@ -63,6 +63,16 @@ export interface CompoundSummaryContext {
 }
 
 // @public
+export interface ContentLocale {
+    changes: number;
+    locale: string;
+    setLocale: (locale: string) => void;
+}
+
+// @public
+export const ContentLocaleContext: Context<ContentLocale | null>;
+
+// @public
 export function createEmbedSource(adapter: EmbedAdapter): EmbedSource | null;
 
 // Warning: (tsdoc-code-span-missing-delimiter) The code span is missing its closing backtick
@@ -654,6 +664,16 @@ export interface UploadSource {
         onUploaded: (file: UploadedFile) => void;
     }): Uploader;
 }
+
+// @public
+export function useContentLocale(): ContentLocale | null;
+
+// @public
+export function useFieldLocale(locales: readonly string[]): {
+    locale: string | undefined;
+    select: (locale: string) => void;
+    reveal: (locale: string) => void;
+};
 
 // @public
 export function useFieldsContext(): FieldsContextValue;

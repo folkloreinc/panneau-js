@@ -1,4 +1,13 @@
-import { type ReactNode, type RefObject, useEffect, useEffectEvent, useRef, useState } from 'react';
+import {
+    type ReactNode,
+    type RefObject,
+    Suspense,
+    lazy,
+    useEffect,
+    useEffectEvent,
+    useRef,
+    useState,
+} from 'react';
 
 import {
     type Form,
@@ -15,6 +24,8 @@ import {
     usePlugins,
 } from '@panneau/core';
 import {
+    type ContentLocale,
+    ContentLocaleContext,
     type FieldCheckSource,
     type FieldEntry,
     FieldsProvider,
@@ -31,6 +42,7 @@ import {
     Button,
     prefersReducedMotion,
     usePanneauIntl,
+    usePreference,
     useShortcut,
     useToast,
     useToastOffset,
@@ -41,6 +53,7 @@ import { ErrorSummary } from './ErrorSummary';
 import styles from './Form.module.css';
 import { FormBinding } from './FormBinding';
 import { FormSkeleton } from './FormSkeleton';
+import { hasLocalizedFields } from './contentLocale';
 import { ErrorSectionsContext, FormContext, RevealContext, createRevealRegistry } from './context';
 import { cx } from './cx';
 import { FieldFlow, LayoutNodes, SidebarNode } from './layout/Layout';
@@ -49,6 +62,12 @@ import { SaveContext, SaveControls, type SaveState, SummaryContext } from './pan
 import { type FormPanelComponent, PanelsContext, builtInPanels } from './panels/panels';
 import { SAVE_KEYS } from './saveKeys';
 import { useBeforeUnloadGuard, useLeaveConfirmation } from './unsaved';
+
+// The language switch loads with the first form that has localized fields in several locales: the
+// first page of an app doesn't need it
+const ContentLocaleSwitch = lazy(async () => ({
+    default: (await import('./ContentLocaleSwitch')).ContentLocaleSwitch,
+}));
 
 // Defaults shared by every render: the React Compiler doesn't memoize what is computed from an
 // array made before a hook, and every render of the form would render all of its fields.
@@ -86,6 +105,13 @@ export interface FormViewProps {
     layout?: readonly LayoutNode[];
     /** Locales of localized fields. Defaults to the definition's, from `PanneauProvider`. */
     locales?: readonly string[];
+    /**
+     * One language switch above the fields, which sets the language of every localized field at
+     * once (`form.languageSwitch` of a resource, decision 0108). It shows when the form has
+     * localized fields and more than one locale. Defaults to false: each localized field has its
+     * own switch only.
+     */
+    languageSwitch?: boolean;
     /** Where relation fields search. Defaults to the one of a parent `FieldsProvider`. */
     relationSource?: RelationSource | null;
     /**
@@ -310,6 +336,35 @@ function useSaveShortcut(root: RefObject<HTMLFormElement | null>, isShown: boole
     });
 }
 
+/**
+ * The language of the content of a form with a language switch, which every localized field in it
+ * shows: the user's last choice, remembered by the browser for every form with the switch
+ * (`panneau:content-locale`), or the first locale. `null` without a switch: not asked for
+ * (`languageSwitch`), a single locale, or no localized field. Each field then keeps its own
+ * language, and nothing is read from the browser.
+ */
+function useContentLocaleState(
+    locales: readonly string[],
+    isAsked: boolean,
+    hasSwitch: boolean,
+): ContentLocale | null {
+    const [stored, store] = usePreference(isAsked ? 'content-locale' : null, locales);
+    const [changes, setChanges] = useState(0);
+    const locale = stored !== null && locales.includes(stored) ? stored : locales[0];
+    if (!isAsked || !hasSwitch || locale === undefined) {
+        return null;
+    }
+    return {
+        locale,
+        changes,
+        setLocale: (next) => {
+            store(next);
+            // A field switched on its own follows the form again, even to the same locale
+            setChanges((count) => count + 1);
+        },
+    };
+}
+
 /** Whether a form has something to save. */
 function canSaveState(mode: Form['mode'], dirty: boolean, status: FormStatus): boolean {
     return mode === 'create' || dirty || status === 'error';
@@ -343,6 +398,7 @@ export function FormView({
     fields,
     layout = NO_LAYOUT,
     locales,
+    languageSwitch = false,
     relationSource,
     uploadSource,
     checkSource,
@@ -409,6 +465,11 @@ export function FormView({
 
     const formLocales = locales ?? definition?.locales ?? NO_LOCALES;
     const { resolved, laidOut, flow, sidebar, order } = useFormLayout(form, fields, layout);
+    const contentLocale = useContentLocaleState(
+        formLocales,
+        languageSwitch,
+        languageSwitch && formLocales.length > 1 && hasLocalizedFields(resolved.fields),
+    );
     const panelEntries = getEntries(plugins, 'panels', {
         builtIn: builtInPanels,
         overrides: panels,
@@ -504,132 +565,157 @@ export function FormView({
                     >
                         <RevealContext value={registry}>
                             <ErrorSectionsContext value={errorSections}>
-                                <FieldsProvider
-                                    components={entries}
-                                    locales={formLocales}
-                                    {...(relationSource !== undefined ? { relationSource } : {})}
-                                    {...(uploadSource !== undefined ? { uploadSource } : {})}
-                                    {...(checkSource !== undefined ? { checkSource } : {})}
-                                    binding={FormBinding}
-                                >
-                                    <form
-                                        ref={root}
-                                        id={id}
-                                        aria-label={ariaLabel}
-                                        noValidate
-                                        className={cx(styles.form, className)}
-                                        onSubmit={(event) => {
-                                            event.preventDefault();
-                                            // Enter in a field, or a shortcut, with nothing to
-                                            // save: no request. Read from the form now: a submit
-                                            // button can set values first (Publish), before this
-                                            // render knows them.
-                                            const latest = form.getState();
-                                            if (
-                                                canSaveState(form.mode, latest.dirty, latest.status)
-                                            ) {
-                                                void form.submit().then(handle);
-                                            }
-                                        }}
+                                <ContentLocaleContext value={contentLocale}>
+                                    <FieldsProvider
+                                        components={entries}
+                                        locales={formLocales}
+                                        {...(relationSource !== undefined
+                                            ? { relationSource }
+                                            : {})}
+                                        {...(uploadSource !== undefined ? { uploadSource } : {})}
+                                        {...(checkSource !== undefined ? { checkSource } : {})}
+                                        binding={FormBinding}
                                     >
-                                        {showSummary ? (
-                                            <ErrorSummary
-                                                errors={orderedErrors}
-                                                fields={resolved.fields}
-                                                onSelect={goTo}
-                                                className={cx(
-                                                    summaryClassName ?? styles.summary,
-                                                    hasPanel('errors') && styles.besideAsideHidden,
-                                                )}
-                                            />
-                                        ) : null}
-                                        {status === 'error' ? (
-                                            <Alert
-                                                tone="danger"
-                                                role="alert"
-                                                title={intl.formatMessage(messages.saveFailed)}
-                                                actions={
-                                                    <Button size="sm" type="submit">
-                                                        {intl.formatMessage(messages.retry)}
-                                                    </Button>
+                                        <form
+                                            ref={root}
+                                            id={id}
+                                            aria-label={ariaLabel}
+                                            noValidate
+                                            className={cx(styles.form, className)}
+                                            onSubmit={(event) => {
+                                                event.preventDefault();
+                                                // Enter in a field, or a shortcut, with nothing to
+                                                // save: no request. Read from the form now: a submit
+                                                // button can set values first (Publish), before this
+                                                // render knows them.
+                                                const latest = form.getState();
+                                                if (
+                                                    canSaveState(
+                                                        form.mode,
+                                                        latest.dirty,
+                                                        latest.status,
+                                                    )
+                                                ) {
+                                                    void form.submit().then(handle);
                                                 }
-                                            >
-                                                {errorDetail}
-                                            </Alert>
-                                        ) : null}
-                                        {hasNewer ? (
-                                            <Alert
-                                                tone="warning"
-                                                role="status"
-                                                title={intl.formatMessage(messages.newerTitle)}
-                                                actions={
-                                                    <Button
-                                                        size="sm"
-                                                        onPress={() => form.reviewNewer()}
-                                                    >
-                                                        {intl.formatMessage(messages.reviewNewer)}
-                                                    </Button>
-                                                }
-                                            >
-                                                {intl.formatMessage(messages.newerMessage)}
-                                            </Alert>
-                                        ) : null}
-                                        <AsideLayout
-                                            className={layoutClassName}
-                                            mainClassName={styles.stack}
-                                            aside={
-                                                sidebar.length > 0 ? (
-                                                    <Aside
-                                                        label={intl.formatMessage(messages.sidebar)}
-                                                        className={sidebarClassName}
-                                                    >
-                                                        {sidebar.map((node, index) => (
-                                                            <SidebarNode
-                                                                key={index}
-                                                                node={node}
-                                                                fields={resolved.fieldsByName}
-                                                                storageKey={sidebarStorageKey}
-                                                            />
-                                                        ))}
-                                                    </Aside>
-                                                ) : null
-                                            }
+                                            }}
                                         >
-                                            <LayoutNodes
-                                                nodes={laidOut}
-                                                fields={resolved.fieldsByName}
-                                            />
-                                            {flow.length > 0 ? (
-                                                <FieldFlow
-                                                    nodes={flow}
-                                                    fields={resolved.fieldsByName}
+                                            {showSummary ? (
+                                                <ErrorSummary
+                                                    errors={orderedErrors}
+                                                    fields={resolved.fields}
+                                                    onSelect={goTo}
+                                                    className={cx(
+                                                        summaryClassName ?? styles.summary,
+                                                        hasPanel('errors') &&
+                                                            styles.besideAsideHidden,
+                                                    )}
                                                 />
                                             ) : null}
-                                        </AsideLayout>
-                                        {hasFooter ? (
-                                            <div
-                                                ref={footer}
-                                                className={cx(
-                                                    styles.footer,
-                                                    hasPanel('save') && styles.besideAsideHidden,
-                                                    footerClassName,
-                                                )}
+                                            {status === 'error' ? (
+                                                <Alert
+                                                    tone="danger"
+                                                    role="alert"
+                                                    title={intl.formatMessage(messages.saveFailed)}
+                                                    actions={
+                                                        <Button size="sm" type="submit">
+                                                            {intl.formatMessage(messages.retry)}
+                                                        </Button>
+                                                    }
+                                                >
+                                                    {errorDetail}
+                                                </Alert>
+                                            ) : null}
+                                            {hasNewer ? (
+                                                <Alert
+                                                    tone="warning"
+                                                    role="status"
+                                                    title={intl.formatMessage(messages.newerTitle)}
+                                                    actions={
+                                                        <Button
+                                                            size="sm"
+                                                            onPress={() => form.reviewNewer()}
+                                                        >
+                                                            {intl.formatMessage(
+                                                                messages.reviewNewer,
+                                                            )}
+                                                        </Button>
+                                                    }
+                                                >
+                                                    {intl.formatMessage(messages.newerMessage)}
+                                                </Alert>
+                                            ) : null}
+                                            {contentLocale !== null ? (
+                                                <Suspense fallback={null}>
+                                                    <ContentLocaleSwitch
+                                                        form={form}
+                                                        fields={resolved.fields}
+                                                        locales={formLocales}
+                                                        locale={contentLocale.locale}
+                                                        onChange={contentLocale.setLocale}
+                                                    />
+                                                </Suspense>
+                                            ) : null}
+                                            <AsideLayout
+                                                className={layoutClassName}
+                                                mainClassName={styles.stack}
+                                                aside={
+                                                    sidebar.length > 0 ? (
+                                                        <Aside
+                                                            label={intl.formatMessage(
+                                                                messages.sidebar,
+                                                            )}
+                                                            className={sidebarClassName}
+                                                        >
+                                                            {sidebar.map((node, index) => (
+                                                                <SidebarNode
+                                                                    key={index}
+                                                                    node={node}
+                                                                    fields={resolved.fieldsByName}
+                                                                    storageKey={sidebarStorageKey}
+                                                                />
+                                                            ))}
+                                                        </Aside>
+                                                    ) : null
+                                                }
                                             >
-                                                <SaveControls {...save} />
-                                            </div>
-                                        ) : null}
-                                    </form>
-                                    <FormConflictDialog
-                                        form={form}
-                                        isOpen={status === 'conflict' || resolving}
-                                        fields={resolved.fields}
-                                        current={conflict?.current ?? null}
-                                        isPending={resolving}
-                                        onReload={() => void resolve('reload')}
-                                        onOverwrite={() => void resolve('overwrite')}
-                                    />
-                                    {leave.dialog}
-                                </FieldsProvider>
+                                                <LayoutNodes
+                                                    nodes={laidOut}
+                                                    fields={resolved.fieldsByName}
+                                                />
+                                                {flow.length > 0 ? (
+                                                    <FieldFlow
+                                                        nodes={flow}
+                                                        fields={resolved.fieldsByName}
+                                                    />
+                                                ) : null}
+                                            </AsideLayout>
+                                            {hasFooter ? (
+                                                <div
+                                                    ref={footer}
+                                                    className={cx(
+                                                        styles.footer,
+                                                        hasPanel('save') &&
+                                                            styles.besideAsideHidden,
+                                                        footerClassName,
+                                                    )}
+                                                >
+                                                    <SaveControls {...save} />
+                                                </div>
+                                            ) : null}
+                                        </form>
+                                        <FormConflictDialog
+                                            form={form}
+                                            isOpen={status === 'conflict' || resolving}
+                                            fields={resolved.fields}
+                                            current={conflict?.current ?? null}
+                                            isPending={resolving}
+                                            onReload={() => void resolve('reload')}
+                                            onOverwrite={() => void resolve('overwrite')}
+                                        />
+                                        {leave.dialog}
+                                    </FieldsProvider>
+                                </ContentLocaleContext>
                             </ErrorSectionsContext>
                         </RevealContext>
                     </SummaryContext>
