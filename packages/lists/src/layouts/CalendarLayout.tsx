@@ -1,8 +1,8 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { currentMonth, isMonth, shiftMonth } from '@panneau/core';
 import { isDateRangeValue } from '@panneau/fields/daterange';
-import { Button, IconButton, usePanneauIntl } from '@panneau/ui';
+import { Badge, Button, EmptyState, IconButton, type Tone, usePanneauIntl } from '@panneau/ui';
 
 import { messages } from '../messages';
 import type { ListItem, ListLayoutProps } from '../types';
@@ -67,6 +67,7 @@ export function CalendarLayout({
     renderValue,
     getItemLabel,
     getItemHref,
+    getItemStatus,
     onItemIntent,
     isCurrent,
     isHighlighted,
@@ -106,6 +107,8 @@ export function CalendarLayout({
         });
     }
     const more = calendar?.more ?? null;
+    // A month without items says so, once its items are there (#413): not a grid of empty days.
+    const isEmpty = byDay.size === 0 && calendar?.isLoading !== true;
 
     return (
         <div className={styles.calendar}>
@@ -145,85 +148,121 @@ export function CalendarLayout({
                           })}
                 </p>
             ) : null}
-            <table className={styles.grid} aria-label={`${label}, ${monthLabel}`}>
-                <thead>
-                    <tr>
-                        {(weeks[0] ?? []).map((day) => {
-                            const date = new Date(`${day}T00:00:00Z`);
-                            return (
-                                <th key={day} scope="col">
-                                    <abbr title={weekday('long').format(date)}>
-                                        {weekday('short').format(date)}
-                                    </abbr>
-                                </th>
-                            );
-                        })}
-                    </tr>
-                </thead>
-                <tbody>
-                    {weeks.map((week) => (
-                        <tr key={week[0]}>
-                            {week.map((day) => {
-                                const entries = [...(byDay.get(day) ?? [])].sort((a, b) =>
-                                    a.value.localeCompare(b.value),
-                                );
+            {isEmpty ? (
+                <EmptyState
+                    className={styles.empty}
+                    icon={CalendarDays}
+                    title={intl.formatMessage(messages.calendarEmpty, { month: monthLabel })}
+                />
+            ) : (
+                <table className={styles.grid} aria-label={`${label}, ${monthLabel}`}>
+                    <thead>
+                        <tr>
+                            {(weeks[0] ?? []).map((day) => {
+                                const date = new Date(`${day}T00:00:00Z`);
                                 return (
-                                    <td
-                                        key={day}
-                                        data-outside={!day.startsWith(month) || undefined}
-                                        data-empty={entries.length === 0 || undefined}
-                                        aria-current={day === todayDay ? 'date' : undefined}
-                                    >
-                                        <time dateTime={day} className={styles.day}>
-                                            <span aria-hidden="true" className={styles.dayNumber}>
-                                                {Number(day.slice(8))}
-                                            </span>
-                                            <span className={styles.dayLabel}>
-                                                {dayLabel.format(new Date(`${day}T00:00:00Z`))}
-                                            </span>
-                                        </time>
-                                        {entries.length > 0 ? (
-                                            <ul className={styles.items}>
-                                                {entries.map(({ item }) => (
-                                                    <li
-                                                        key={item.id}
-                                                        className={
-                                                            isHighlighted?.(item) === true
-                                                                ? highlight.highlighted
-                                                                : undefined
-                                                        }
-                                                        data-current={
-                                                            isCurrent?.(item) === true || undefined
-                                                        }
-                                                        data-highlighted={
-                                                            isHighlighted?.(item) === true ||
-                                                            undefined
-                                                        }
-                                                    >
-                                                        <ItemTitle
-                                                            href={getItemHref?.(item) ?? null}
-                                                            onIntent={
-                                                                onItemIntent !== undefined
-                                                                    ? () => onItemIntent(item)
-                                                                    : undefined
-                                                            }
-                                                            current={isCurrent?.(item) ?? false}
-                                                        >
-                                                            {title !== undefined
-                                                                ? renderValue(item, title)
-                                                                : getItemLabel(item)}
-                                                        </ItemTitle>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        ) : null}
-                                    </td>
+                                    <th key={day} scope="col">
+                                        <abbr title={weekday('long').format(date)}>
+                                            {weekday('short').format(date)}
+                                        </abbr>
+                                    </th>
                                 );
                             })}
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {weeks.map((week) => (
+                            <tr key={week[0]}>
+                                {week.map((day) => {
+                                    const entries = [...(byDay.get(day) ?? [])].sort((a, b) =>
+                                        a.value.localeCompare(b.value),
+                                    );
+                                    return (
+                                        <td
+                                            key={day}
+                                            data-outside={!day.startsWith(month) || undefined}
+                                            data-empty={entries.length === 0 || undefined}
+                                            aria-current={day === todayDay ? 'date' : undefined}
+                                        >
+                                            <time dateTime={day} className={styles.day}>
+                                                <span
+                                                    aria-hidden="true"
+                                                    className={styles.dayNumber}
+                                                >
+                                                    {Number(day.slice(8))}
+                                                </span>
+                                                <span className={styles.dayLabel}>
+                                                    {dayLabel.format(new Date(`${day}T00:00:00Z`))}
+                                                </span>
+                                            </time>
+                                            {entries.length > 0 ? (
+                                                <ul className={styles.items}>
+                                                    {entries.map(({ item }) => {
+                                                        const status =
+                                                            getItemStatus?.(item) ?? null;
+                                                        return (
+                                                            <li
+                                                                key={item.id}
+                                                                className={
+                                                                    isHighlighted?.(item) === true
+                                                                        ? highlight.highlighted
+                                                                        : undefined
+                                                                }
+                                                                data-current={
+                                                                    isCurrent?.(item) === true ||
+                                                                    undefined
+                                                                }
+                                                                data-highlighted={
+                                                                    isHighlighted?.(item) ===
+                                                                        true || undefined
+                                                                }
+                                                                // The whole title, where the day cuts it
+                                                                title={getItemLabel(item)}
+                                                            >
+                                                                {status !== null ? (
+                                                                    // The state, in the tone of its badge in
+                                                                    // the other layouts, and in words
+                                                                    <Badge
+                                                                        tone={
+                                                                            (status.tone ??
+                                                                                'neutral') as Tone
+                                                                        }
+                                                                        appearance="solid"
+                                                                        label={status.label}
+                                                                        className={styles.status}
+                                                                    />
+                                                                ) : null}
+                                                                <ItemTitle
+                                                                    href={
+                                                                        getItemHref?.(item) ?? null
+                                                                    }
+                                                                    onIntent={
+                                                                        onItemIntent !== undefined
+                                                                            ? () =>
+                                                                                  onItemIntent(item)
+                                                                            : undefined
+                                                                    }
+                                                                    current={
+                                                                        isCurrent?.(item) ?? false
+                                                                    }
+                                                                >
+                                                                    {title !== undefined
+                                                                        ? renderValue(item, title)
+                                                                        : getItemLabel(item)}
+                                                                </ItemTitle>
+                                                            </li>
+                                                        );
+                                                    })}
+                                                </ul>
+                                            ) : null}
+                                        </td>
+                                    );
+                                })}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
         </div>
     );
 }

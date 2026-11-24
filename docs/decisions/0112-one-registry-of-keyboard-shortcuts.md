@@ -1,4 +1,4 @@
-# 0110: One registry of keyboard shortcuts, and a "?" help
+# 0112: One registry of keyboard shortcuts, and a "?" help
 
 - Status: accepted
 - Date: 2026-11-23

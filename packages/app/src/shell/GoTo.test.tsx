@@ -333,7 +333,7 @@ describe('the "Go to…" palette', () => {
     });
 });
 
-describe('keyboard shortcuts (decision 0110)', () => {
+describe('keyboard shortcuts (decision 0112)', () => {
     beforeEach(() => {
         window.history.replaceState(null, '', '/panneau');
         window.localStorage.clear();

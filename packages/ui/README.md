@@ -83,6 +83,8 @@ Components with a color take a `tone`, like Bootstrap's theme colors: `neutral`,
 
 The aliases of the first alphas, `variant="primary"`, `secondary`, `ghost` and `danger`, were removed before 5.0: `npx @panneau/codemods button-variants` gives each button the tone and the appearance it stood for. `variant` names a variant of the theme.
 
+The accent has two jobs. It fills the main action (`--panneau-color-accent`, with `--panneau-color-accent-text` on it), and it is the text, icons and outlines of the outline, subtle and ghost appearances of the accent tone: `--panneau-color-accent-strong`, the accent as text. A theme that sets the accent gets an accent as text derived from it, darkened or lightened until it reaches 4.5:1 on the theme's background, surface and accent subtle background in each scheme, so that a light accent (a yellow main action) stays readable as text. A theme can set it instead, and a project that overrides the accent with its own class sets both. The other tones already keep the two apart: `--panneau-color-danger` is the text, `--panneau-color-danger-solid` the fill.
+
 A theme adds tones, from one color (Panneau derives a readable text color, the hover, the subtle background and the border) or with every value, and named variants of components:
 
 ```tsx

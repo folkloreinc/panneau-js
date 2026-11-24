@@ -1,5 +1,21 @@
 # @panneau/data
 
+## 5.0.0-alpha.47
+
+### Patch Changes
+
+- 1c63342: Items open from the cache when their link in a list was hovered or focused: the form or the panel shows without its skeleton. Resting the pointer on the link of an item for 100 ms, or focusing it, prefetches the item, unless it is still fresh; a pointer crossing rows and the hover of touch fetch nothing. New: `usePrefetchItem()` in `@panneau/data/query`, and the `onItemIntent` prop of `ListView` and of list layouts in `@panneau/lists`, which lists without a data layer can leave out.
+- 9a26df5: Edits in place show at once (decision 0105). A cell of a list shows the value it saves right away and stays usable: a value picked while it saves is saved after it, with the version the first save got, and a failed save puts the value back and says why. `useUpdateItem(resource, { optimistic: true })` writes the values at once in the cached item and in every cached list that holds it, sends the edits of an item one after the other without a stale `If-Match`, and puts back only the edit that failed. The list of a resource in the app uses it; the form's save is unchanged.
+- Updated dependencies [35b9955]
+- Updated dependencies [a55f51b]
+- Updated dependencies [060c1e9]
+- Updated dependencies [7e99405]
+- Updated dependencies [8ad5274]
+- Updated dependencies [55eced0]
+- Updated dependencies [d256517]
+- Updated dependencies [4686a26]
+  - @panneau/protocol@5.0.0-alpha.47
+
 ## 5.0.0-alpha.46
 
 ### Patch Changes

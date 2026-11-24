@@ -1,7 +1,7 @@
 import type { CommandContext } from './commands';
 
 /**
- * A keyboard shortcut that a plugin adds (decision 0110), registered by the app while it is shown
+ * A keyboard shortcut that a plugin adds (decision 0112), registered by the app while it is shown
  * and listed in the help of shortcuts.
  */
 export interface Shortcut {

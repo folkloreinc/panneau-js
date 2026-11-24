@@ -1,5 +1,41 @@
 # @panneau/lists
 
+## 5.0.0-alpha.47
+
+### Patch Changes
+
+- 35b9955: Fields, columns, filters and pages without a `label` show their key made readable instead of the key as written: `published_at` reads "Published at", `author_id` reads "Author", `seo.title` reads "Seo title". The same fallback names fields, list columns, filters and their chips, sort options, the columns menu, the details of an item, the error summary and the conflict dialog of a form, inline editing, the filters of the media picker, and the pages in the navigation and the "Go to…" palette. A label given by the definition is shown as given, an empty one included. `@panneau/protocol/runtime` exports the fallback: `humanizeKey()`, `labelOrKey()` and `getFieldLabel()`.
+- a55f51b: Confirmations and toasts of actions name the item or the resource (decision 0062). The confirmation of the built-in `delete` names what it deletes in its title: "Delete “Spring contest”?", "Delete 3 articles?"; the confirmation of another action says it in its message: "“Archive” will apply to 3 articles.". `ConfirmDialog` takes `itemLabel` (the title of the item) and `labels` (the resource's singular and plural), and `ListView` takes `resourceLabel` for its confirmations: the app passes them, by the `itemTitle` and `label` of the resource. An action that fails from the header of an item names it: "“Archive” failed for “Spring contest”.". The mock backend's delete writes the message we want backends to write: "“Spring contest” deleted.", "Page deleted.", "3 pages deleted.", in place of "1 deleted.". New messages in `@panneau/intl`, in English and French: `confirmDeleteTitle` and `confirmMessageFor` of `listsMessages`. `ConfirmDialog` loads its dialog with `import()` when a confirmation first opens, out of the JavaScript of the first page.
+- ecf96f3: The calendar of a list says when a month has no items ("No items in November 2026"), in an empty state where its grid would be, with its buttons to the other months above it, rather than a grid of empty days; it doesn't say so while the items of the month load. Each item shows its state next to its title, as a dot in the tone of its option, the tone of its badge in the table and the cards, with the state's label for screen readers, and its whole title on hover. `ListView` takes `itemStatus`, the field that holds the state of items (`itemStatus` of the resource, decision 0103), which the app passes; layouts get `getItemStatus()`, and `ListCalendarProps` has `isLoading`. The built-in calendar layout loads with `import()` when a list shows it, with a skeleton of its grid meanwhile.
+- 1c63342: Items open from the cache when their link in a list was hovered or focused: the form or the panel shows without its skeleton. Resting the pointer on the link of an item for 100 ms, or focusing it, prefetches the item, unless it is still fresh; a pointer crossing rows and the hover of touch fetch nothing. New: `usePrefetchItem()` in `@panneau/data/query`, and the `onItemIntent` prop of `ListView` and of list layouts in `@panneau/lists`, which lists without a data layer can leave out.
+- f8c5d4f: Lists keep their header and their selection in view, open an item from anywhere on its row, and offer to create the first item (#443). `@panneau/lists`: the header of the table and the selection bar, with its actions, stick under the top of the window while the list scrolls, in every density; a table wider than the list scrolls in its own box, as high as the window, where its header sticks. A click on a row, a card or a tile outside its controls (checkbox, actions, cells edited in place, links) follows the link of its title, so ⌘-click, Ctrl-click and a middle click open it in a new tab; the title stays the only link and tab stop of the row, and text in a row can still be selected. In select mode, a click on a row selects its item. `ListView` takes `emptyAction`, a node or `{ label, href }`, shown in a list without items, filters or search. A selected row of the table reads darker than a hovered one, which still shows over it (#405). `@panneau/ui`: `--panneau-frame-top`, a semantic token (`0px`), the space the frame of the app takes at the top of the window, under which what sticks to the top stays. `@panneau/app`: the top bar of a small screen sets it, and an empty list of a resource the user can create in shows "New …", with the menu of its types.
+- d256517: List filters say which are active, keep the secondary ones in "More filters", and fit a phone. A filter control with a value is marked, in the tones of what is selected (`--panneau-selected-*`), with a button that clears it. A filter of the definition shows first in the toolbar with `"primary": true`; the others are behind a "More filters" button, with the count of those that are active, and without any `primary`, the first 3 show first. A filter with a value keeps its chip under the toolbar. In a narrow list (a phone), every filter is behind one "Filters" button with the count of the active ones, which opens them in a sheet, next to the search. The page sizes of a list are a setting of the resource: `perPageOptions` of its list, 10, 20, 50 and 100 by default, which `resolveList()` of `@panneau/core` now gives (`DEFAULT_PER_PAGE_OPTIONS`) and the app offers. A page size the browser remembers for a list that it no longer offers falls back to the list's `perPage`.
+- 52083a1: The details of an item show its values in full, as list cells don't. Displays get a `variant` (`DisplayVariant`): `cell` in lists, where nothing changes, and `details` in `ItemDetails`, which plugins' displays get too. In details, related items are a list linked to their items, through the `getItemHref()` of the relation source of the fields (the app gives it), with their image, their description and the labels of plain ids; every media shows, not the first one; rich text keeps its formatting, sanitized by DOMPurify (a new dependency of `@panneau/lists`, loaded with the first rich text shown in details, and plain text until then: HTML only, without scripts, event handlers, `style` and `class` attributes, `<style>` blocks or form controls, links to `http`, `https`, `mailto`, `tel` and relative URLs only, and `rel="noopener noreferrer"` on those that open a new tab); text keeps its line breaks and JSON is indented, without the two-line clamp of a cell; and a localized value shows each of its locales under its name, the interface's locale first.
+- 9a26df5: Edits in place show at once (decision 0105). A cell of a list shows the value it saves right away and stays usable: a value picked while it saves is saved after it, with the version the first save got, and a failed save puts the value back and says why. `useUpdateItem(resource, { optimistic: true })` writes the values at once in the cached item and in every cached list that holds it, sends the edits of an item one after the other without a stale `If-Match`, and puts back only the edit that failed. The list of a resource in the app uses it; the form's save is unchanged.
+- Updated dependencies [2aab034]
+- Updated dependencies [79abfd4]
+- Updated dependencies [ff56beb]
+- Updated dependencies [35b9955]
+- Updated dependencies [a55f51b]
+- Updated dependencies [ecf96f3]
+- Updated dependencies [09cca06]
+- Updated dependencies [9e90547]
+- Updated dependencies [060c1e9]
+- Updated dependencies [b754dda]
+- Updated dependencies [3eb376c]
+- Updated dependencies [7e99405]
+- Updated dependencies [8ad5274]
+- Updated dependencies [55eced0]
+- Updated dependencies [f8c5d4f]
+- Updated dependencies [d256517]
+- Updated dependencies [4686a26]
+- Updated dependencies [1350d30]
+  - @panneau/intl@5.0.0-alpha.47
+  - @panneau/fields@5.0.0-alpha.47
+  - @panneau/ui@5.0.0-alpha.47
+  - @panneau/protocol@5.0.0-alpha.47
+  - @panneau/core@5.0.0-alpha.47
+
 ## 5.0.0-alpha.46
 
 ### Patch Changes

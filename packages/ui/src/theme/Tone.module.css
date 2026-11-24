@@ -15,15 +15,17 @@
     --panneau-tone-solid-text: var(--panneau-color-bg);
 }
 
+/* The accent fills the main action; as text and outlines, it is the accent as text, which a theme
+ * with a light accent makes darker (decision 0024, issue #421). */
 .accent {
-    --panneau-tone-text: var(--panneau-color-accent);
+    --panneau-tone-text: var(--panneau-color-accent-strong, var(--panneau-color-accent));
     --panneau-tone-subtle: var(--panneau-color-accent-subtle);
     --panneau-tone-border: color-mix(
         in srgb,
         var(--panneau-color-accent) 35%,
         var(--panneau-color-surface)
     );
-    --panneau-tone-outline: var(--panneau-color-accent);
+    --panneau-tone-outline: var(--panneau-color-accent-strong, var(--panneau-color-accent));
     --panneau-tone-solid: var(--panneau-color-accent);
     --panneau-tone-solid-hover: var(--panneau-color-accent-hover);
     --panneau-tone-solid-text: var(--panneau-color-accent-text);

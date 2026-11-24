@@ -16,7 +16,7 @@ export interface ShortcutOptions {
     /** Its group in the help. Defaults to "General". */
     group?: string | undefined;
     /**
-     * Who gets the keys (decision 0110), from the focus outwards:
+     * Who gets the keys (decision 0112), from the focus outwards:
      *
      * 1. the innermost element scope that holds the focus;
      * 2. otherwise, the last shortcut registered in the dialog that holds the focus, element scopes

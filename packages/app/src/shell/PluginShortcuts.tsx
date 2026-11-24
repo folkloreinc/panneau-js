@@ -14,7 +14,7 @@ function PluginShortcut({ shortcut }: { shortcut: Shortcut }) {
 }
 
 /**
- * The shortcuts of plugins (`shortcuts` of `PanneauPlugin`, decision 0110), shortcuts of the page
+ * The shortcuts of plugins (`shortcuts` of `PanneauPlugin`, decision 0112), shortcuts of the page
  * while the shell is shown, in plugin order.
  */
 export function PluginShortcuts({ definition }: { definition: Definition }) {

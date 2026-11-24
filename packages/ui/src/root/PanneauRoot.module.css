@@ -30,6 +30,11 @@
     --panneau-color-accent-hover: #3f3f46;
     --panneau-color-accent-text: #ffffff;
     --panneau-color-accent-subtle: #f4f4f5;
+    /* The accent as text, icons and outlines on the page's backgrounds: components read it with the
+     * accent as its fallback. It is reset here, and wherever the accent is set again, so that it
+     * follows the accent of this root or scope, unless a theme sets it or Panneau derives it from
+     * the theme's accent (getThemeCss()). */
+    --panneau-color-accent-strong: initial;
     --panneau-color-focus: #2563eb;
 
     /* Tones: text on surfaces, subtle backgrounds, borders */
@@ -195,6 +200,7 @@
     --panneau-color-accent-hover: #3f3f46;
     --panneau-color-accent-text: #ffffff;
     --panneau-color-accent-subtle: #f4f4f5;
+    --panneau-color-accent-strong: initial;
     --panneau-color-focus: #2563eb;
     --panneau-color-danger: #b91c1c;
     --panneau-color-danger-subtle: #fef2f2;
@@ -257,6 +263,7 @@
     --panneau-color-accent-hover: #d4d4d8;
     --panneau-color-accent-text: #18181b;
     --panneau-color-accent-subtle: #2e2e33;
+    --panneau-color-accent-strong: initial;
     --panneau-color-focus: #60a5fa;
     --panneau-color-danger: #fca5a5;
     --panneau-color-danger-subtle: rgb(127 29 29 / 0.35);
@@ -320,6 +327,7 @@
         --panneau-color-accent-hover: #d4d4d8;
         --panneau-color-accent-text: #18181b;
         --panneau-color-accent-subtle: #2e2e33;
+        --panneau-color-accent-strong: initial;
         --panneau-color-focus: #60a5fa;
         --panneau-color-danger: #fca5a5;
         --panneau-color-danger-subtle: rgb(127 29 29 / 0.35);

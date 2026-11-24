@@ -13,7 +13,7 @@ export const COMMAND_PALETTE_KEYS = 'Mod+K';
 /**
  * Calls `onToggle` on ⌘K (Apple) or Ctrl+K (elsewhere), to open a `CommandPalette`, which closes
  * itself on the same keys. Inside a `PanneauRoot`, it is a shortcut of the page in the root's
- * registry (decision 0110), listed in the help as `label` ("Search" by default): it leaves the key
+ * registry (decision 0112), listed in the help as `label` ("Search" by default): it leaves the key
  * to what already handled it (an editor that links with Mod-K), and to an open modal dialog.
  *
  * Above a root, it listens on its own, with the same rules: the key is left alone when something

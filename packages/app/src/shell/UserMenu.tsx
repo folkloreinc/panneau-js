@@ -83,7 +83,7 @@ export interface UserMenuProps {
 /**
  * The user's menu (decision 0086), behind their avatar and name: who is logged in, their profile,
  * the appearance, the density (decision 0104) and the language as choices with a check, the
- * help of keyboard shortcuts (decision 0110), and "Log out". The sidebar and the dock
+ * help of keyboard shortcuts (decision 0112), and "Log out". The sidebar and the dock
  * share it.
  */
 export function UserMenu({

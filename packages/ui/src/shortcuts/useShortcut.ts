@@ -24,7 +24,7 @@ function keysKey(keys: ShortcutKeys): string {
 
 /**
  * Registers a keyboard shortcut while the component is mounted, in the registry of the closest
- * `PanneauRoot` (decision 0110): its keys, a label and a group for the help, a scope, and what it
+ * `PanneauRoot` (decision 0112): its keys, a label and a group for the help, a scope, and what it
  * does. Without a root, it does nothing.
  *
  * The scope decides who gets the keys: the innermost element scope that holds the focus, then the

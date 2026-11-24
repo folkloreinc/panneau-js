@@ -38,7 +38,7 @@ function groupShortcuts(
 }
 
 /**
- * The help of shortcuts (decision 0110): a dialog that lists the shortcuts registered now, by
+ * The help of shortcuts (decision 0112): a dialog that lists the shortcuts registered now, by
  * group, with the keys of the platform, and the user's choice about single-key shortcuts. A
  * `PanneauRoot` opens it with `?`, and `useShortcutHelp()` from a menu or a command.
  */

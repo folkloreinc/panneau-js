@@ -80,7 +80,7 @@ export const uiMessages = {
         id: 'panneau.ui.moreBreadcrumbs',
         defaultMessage: 'More pages',
     }),
-    /** The help of keyboard shortcuts (decision 0110): its title, and what opens it. */
+    /** The help of keyboard shortcuts (decision 0112): its title, and what opens it. */
     shortcutsTitle: defineMessage({
         id: 'panneau.ui.shortcutsTitle',
         defaultMessage: 'Keyboard shortcuts',

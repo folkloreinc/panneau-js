@@ -86,7 +86,7 @@ export type PanneauPlugin = PluginEntries & {
     commands?: CommandSource;
     /**
      * Keyboard shortcuts of the app, or a function that makes them for the definition (decision
-     * 0110).
+     * 0112).
      */
     shortcuts?: ShortcutSource;
     /** UI messages, by locale. Messages of later plugins override earlier ones. */

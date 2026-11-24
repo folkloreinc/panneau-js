@@ -229,7 +229,7 @@ function PanneauIntlProvider({
  * that they get the tokens too. Panneau components must render inside one. A project can override
  * any token with its own class on the root. Without an `IntlProvider` above it, it provides one
  * with Panneau's messages in its `locale`. It keeps the registry of keyboard shortcuts
- * (`useShortcut()`), whose help opens with `?` (decision 0110).
+ * (`useShortcut()`), whose help opens with `?` (decision 0112).
  */
 export function PanneauRoot({
     theme = null,

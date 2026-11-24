@@ -268,7 +268,7 @@ export function GoTo({
                 icon: Languages,
                 onAction: () => onLocaleChange?.(other),
             })),
-        // The help of shortcuts (decision 0110)
+        // The help of shortcuts (decision 0112)
         ...(openShortcutHelp !== null
             ? [
                   {

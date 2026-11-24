@@ -291,7 +291,7 @@ function useGoToField(registry: RevealRegistry) {
 
 /**
  * Lets the form of `root` take ⌘ S and ⌘ Enter (Ctrl elsewhere) while it is shown, through the
- * registry of shortcuts (decision 0110), with the form as its scope: the form that holds the
+ * registry of shortcuts (decision 0112), with the form as its scope: the form that holds the
  * focus, otherwise the last form shown in the dialog of the focus, or of the page outside of every
  * dialog. The parameters of an action take the keys while their dialog is open, not the page under
  * it, and the dialog a field opens (a media picker) saves nothing. ⌘ S never opens the browser's

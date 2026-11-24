@@ -82,7 +82,7 @@ A page gets `PageProps`: its id, the definition, the base path, the values of it
 
 ### Shortcuts
 
-A plugin's `shortcuts` are keyboard shortcuts of the app ([decision 0110](decisions/0110-one-registry-of-keyboard-shortcuts.md)), given as its `commands`: a list, or a function of the definition. Each has an `id`, its `keys`, a `label` and an optional `group` for the help that `?` opens, and `perform`:
+A plugin's `shortcuts` are keyboard shortcuts of the app ([decision 0112](decisions/0112-one-registry-of-keyboard-shortcuts.md)), given as its `commands`: a list, or a function of the definition. Each has an `id`, its `keys`, a `label` and an optional `group` for the help that `?` opens, and `perform`:
 
 ```ts
 import { definePlugin } from '@panneau/core';

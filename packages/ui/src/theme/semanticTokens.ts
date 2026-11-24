@@ -1,7 +1,8 @@
 /**
  * The semantic tokens of Panneau, without the leading `--`: what the default theme defines on the
  * root (`PanneauRoot.module.css`), and what a theme sets to restyle every component at once
- * (decision 0024). A test keeps this list in sync with the stylesheet.
+ * (decision 0024). A test keeps this list in sync with the stylesheet. The root only resets the
+ * tokens of `FALLBACK_SEMANTIC_TOKENS` (to `initial`), which stylesheets read with a fallback.
  */
 export const SEMANTIC_TOKENS = [
     'panneau-color-bg',
@@ -20,6 +21,7 @@ export const SEMANTIC_TOKENS = [
     'panneau-color-accent-hover',
     'panneau-color-accent-text',
     'panneau-color-accent-subtle',
+    'panneau-color-accent-strong',
     'panneau-color-focus',
     'panneau-color-danger',
     'panneau-color-danger-subtle',
@@ -119,3 +121,17 @@ export const SEMANTIC_TOKENS = [
 
 /** The name of a semantic token, without the leading `--`. */
 export type SemanticTokenName = (typeof SEMANTIC_TOKENS)[number];
+
+/**
+ * Semantic tokens without a value of their own in the default theme: the root resets them to
+ * `initial`, and stylesheets read them with a fallback, so that they follow the token they default
+ * to wherever it changes (a scope, a project's class), as the selection tokens do (decision 0073). A theme that sets the token it defaults to gets a derived
+ * value from `getThemeCss()`, unless it sets them too.
+ *
+ * - `panneau-color-accent-strong`: the accent as text, icons and outlines on the page's
+ *   backgrounds (the outline, subtle and ghost appearances of the accent tone). The accent itself
+ *   is the fill of the main action, with `panneau-color-accent-text` on it.
+ */
+export const FALLBACK_SEMANTIC_TOKENS: Readonly<Partial<Record<SemanticTokenName, string>>> = {
+    'panneau-color-accent-strong': 'var(--panneau-color-accent)',
+};
