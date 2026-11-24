@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { SEARCH_MAX_LIMIT } from '../search';
 import { ActionScope } from './action';
 import { ActionResult, Item, ListResponse, SearchResponse, Selection } from './api';
-import { Id, Option } from './common';
+import { Abilities, Id, Option } from './common';
 import { DefinitionContext } from './definition';
 import { Filter } from './list';
 
@@ -56,6 +56,10 @@ export const AgentField = z
             .union([z.string().min(1), z.array(z.string().min(1))])
             .optional()
             .meta({ description: 'The resource of a relation, whose item ids the value holds.' }),
+        example: z.unknown().optional().meta({
+            description:
+                'An example of the value `save_item` takes, given by the fields whose value is not a plain scalar (a `money`, a `daterange`, an `address`, a `link`).',
+        }),
         // The return types are written out so that declaration files keep the recursion.
         get fields(): z.ZodOptional<z.ZodArray<typeof AgentField>> {
             return z.array(AgentField).optional().meta({
@@ -205,7 +209,21 @@ export const AgentFindItemsArguments = z
         }
     });
 
-export const AgentFindItemsResult = z.union([ListResponse, SearchResponse]);
+export const AgentListItem = Item.extend({
+    abilities: Abilities.optional().meta({
+        description: 'Left out by `find_items`, to keep lists light: `get_item` gives them.',
+    }),
+}).meta({
+    description:
+        'An item, as `find_items` answers it: its `id`, `version` and the fields asked for, without its abilities.',
+});
+
+export const AgentFindItemsResult = z.union([
+    ListResponse.extend({ data: z.array(AgentListItem) }),
+    SearchResponse.extend({
+        data: z.array(SearchResponse.shape.data.element.extend({ items: z.array(AgentListItem) })),
+    }),
+]);
 
 export const AgentGetItemArguments = z.strictObject({
     resource: z.string().min(1),
@@ -296,6 +314,7 @@ export type AgentResourceList = z.infer<typeof AgentResourceList>;
 export type AgentDescribeArguments = z.infer<typeof AgentDescribeArguments>;
 export type AgentDescribeResult = z.infer<typeof AgentDescribeResult>;
 export type AgentFindItemsArguments = z.infer<typeof AgentFindItemsArguments>;
+export type AgentListItem = z.infer<typeof AgentListItem>;
 export type AgentFindItemsResult = z.infer<typeof AgentFindItemsResult>;
 export type AgentGetItemArguments = z.infer<typeof AgentGetItemArguments>;
 export type AgentSaveItemArguments = z.infer<typeof AgentSaveItemArguments>;

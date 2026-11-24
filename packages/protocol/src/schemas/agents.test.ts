@@ -14,6 +14,7 @@ import {
     AgentRunActionResult,
     AgentSaveItemArguments,
     Item,
+    ListResponse,
     agentToolSchemas,
 } from './index';
 
@@ -34,6 +35,7 @@ const description = {
             type: 'repeater',
             types: [{ id: 'text', label: 'Text', fields: [{ name: 'body', type: 'richtext' }] }],
         },
+        { name: 'price', type: 'money', example: { amount: 1999, currency: 'CAD' } },
         { name: 'seo', type: 'group', fields: [{ name: 'title', type: 'text', readOnly: true }] },
     ],
     types: [{ id: 'news', label: 'News', fields: [] }],
@@ -109,6 +111,16 @@ describe('the tools of agents', () => {
         expect(
             result({ data: [item], meta: { page: 1, perPage: 50, total: 1, lastPage: 1 } }),
         ).toBe(true);
+    });
+
+    it('lists items without their abilities, which the HTTP list requires', () => {
+        const light = { id: '12', version: 'v3', title: 'Hello' };
+        const page = { data: [light], meta: { page: 1, perPage: 50, total: 1, lastPage: 1 } };
+        expect(accepts(AgentFindItemsResult)(page)).toBe(true);
+        expect(accepts(AgentFindItemsResult)({ data: [{ resource: 'a', items: [light] }] })).toBe(
+            true,
+        );
+        expect(accepts(ListResponse)(page)).toBe(false);
     });
 
     it('gets an item, with its version and its abilities', () => {
