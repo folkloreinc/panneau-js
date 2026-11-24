@@ -3,6 +3,7 @@ import { createRestAdapter } from '@panneau/data';
 import { editorPlugin } from '@panneau/editor';
 import { createNominatimSource } from '@panneau/fields';
 import { publicationPlugin } from '@panneau/forms/publication';
+import { mediaPlugin } from '@panneau/media';
 import { type MockMail, createMockBackend } from '@panneau/protocol/mock';
 
 import { PUBLICATIONS, createPlaygroundDefinition, createPlaygroundItems } from './definition';
@@ -186,6 +187,8 @@ createPanneauApp({
     element,
     plugins: [
         editorPlugin,
+        // The `media` and `image` fields, with the picker of the media library (see `media.ts`)
+        mediaPlugin,
         publicationPlugin,
         {
             id: 'playground',

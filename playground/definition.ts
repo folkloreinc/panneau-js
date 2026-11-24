@@ -1,6 +1,8 @@
 import type { ActionInput, DefinitionInput, ResourceInput } from '@panneau/protocol';
 import { createExampleDefinition } from '@panneau/protocol/mock';
 
+import { createPlaygroundMedia, mediaReference } from './media';
+
 type FieldInput = ResourceInput['fields'][number];
 
 type Values = Record<string, unknown>;
@@ -35,15 +37,85 @@ export const PUBLICATIONS = [
 ];
 
 /**
- * The admin of a small publication: the pages of the protocol's example definition, articles,
- * categories, authors and users, in a menu with groups and icons.
+ * The labels of the protocol's example definition, which is in French, as this English admin shows
+ * them. The example stays as it is: it is the definition of the protocol's tests and stories.
+ */
+const ENGLISH: Readonly<Record<string, string>> = {
+    Titre: 'Title',
+    Brouillon: 'Draft',
+    Publiée: 'Published',
+    Texte: 'Text',
+    Contenu: 'Content',
+    'Pièce jointe': 'Attachment',
+    Publier: 'Publish',
+    'Publier {count} pages ?': 'Publish {count} pages?',
+    Vidéos: 'Videos',
+};
+
+/** Labels for the fields of the example that have none, by name. */
+const FIELD_LABELS: Readonly<Record<string, string>> = {
+    status: 'Status',
+    published_at: 'Publication date',
+    author: 'Author',
+    blocks: 'Blocks',
+    body: 'Text',
+    image: 'Image',
+    slug: 'Address',
+    notify: 'Notify subscribers',
+    file: 'File',
+    name: 'Name',
+    alt: 'Alternative text',
+};
+
+/**
+ * A resource of the example definition in English: its labels translated, a label for each of its
+ * fields, and its sidebar panel of files apart from the field in it.
+ */
+function inEnglish<T>(node: T): T {
+    if (Array.isArray(node)) {
+        return node.map((child: unknown) => inEnglish(child)) as T;
+    }
+    if (node === null || typeof node !== 'object') {
+        return node;
+    }
+    const entries = Object.entries(node as Record<string, unknown>).map(([key, value]) => [
+        key,
+        (key === 'label' || key === 'message') && typeof value === 'string'
+            ? (ENGLISH[value] ?? value)
+            : inEnglish(value),
+    ]);
+    const result = Object.fromEntries(entries) as Record<string, unknown>;
+    const { type, name, label } = result;
+    // A field without a label (not a field of a layout, which has its field's)
+    if (
+        typeof name === 'string' &&
+        typeof type === 'string' &&
+        type !== 'field' &&
+        label === undefined &&
+        FIELD_LABELS[name] !== undefined
+    ) {
+        result.label = FIELD_LABELS[name];
+    }
+    // The panel of the attachment, which the example titles as its field
+    if (type === 'sidebar' && label === 'Attachment') {
+        result.label = 'Files';
+    }
+    return result as T;
+}
+
+/**
+ * The admin of a small publication: the pages and the media library of the protocol's example
+ * definition, in English, articles, categories, authors and users, in a menu with groups and
+ * icons.
  */
 export function createPlaygroundDefinition(): DefinitionInput {
     const example = createExampleDefinition();
-    const pages = example.resources.find((resource) => resource.id === 'pages');
-    if (pages === undefined) {
-        throw new Error('The example definition has no pages.');
+    const examplePages = example.resources.find((resource) => resource.id === 'pages');
+    const media = example.resources.find((resource) => resource.id === 'media');
+    if (examplePages === undefined || media === undefined) {
+        throw new Error('The example definition has no pages or no media library.');
     }
+    const pages = inEnglish(examplePages);
     return {
         ...example,
         name: 'Northwind Journal',
@@ -292,15 +364,28 @@ export function createPlaygroundDefinition(): DefinitionInput {
                 actions: [DELETE],
                 abilities: { viewAny: true, create: true },
             },
+            // The media library of the Image blocks of pages and of the photos of authors, with
+            // the media picker (decision 0027)
+            {
+                ...inEnglish(media),
+                label: { singular: 'media item', plural: 'media' },
+                description: 'Images, videos and documents, used in pages and by authors.',
+                icon: 'image',
+            },
             {
                 id: 'authors',
                 label: { singular: 'author', plural: 'authors' },
                 icon: 'pen-line',
+                // Read more than edited: their titles open the item panel over the list, with
+                // "Edit" in it (decisions 0082 and 0099).
+                open: 'panel',
                 itemTitle: 'name',
                 itemSubtitle: 'email',
+                itemImage: 'photo',
                 fields: [
                     { name: 'name', type: 'text', label: 'Name', rules: [{ rule: 'required' }] },
                     { name: 'email', type: 'email', label: 'Email' },
+                    { name: 'photo', type: 'image', label: 'Photo', ratios: ['1:1'] },
                     { name: 'bio', type: 'textarea', label: 'Biography' },
                 ],
                 list: {
@@ -356,6 +441,7 @@ export function createPlaygroundDefinition(): DefinitionInput {
                         { type: 'resource', resource: 'pages' },
                         { type: 'resource', resource: 'articles' },
                         { type: 'resource', resource: 'categories' },
+                        { type: 'resource', resource: 'media' },
                     ],
                 },
                 {
@@ -425,19 +511,21 @@ const STATUSES = ['published', 'draft', 'review'];
 
 /** Items of every resource, for the mock backend. */
 export function createPlaygroundItems(): Record<string, Values[]> {
+    // The item at an index, cycling through the list.
+    const pick = <T>(list: readonly T[], index: number) => list[index % list.length] as T;
     const categories = [
         { id: '1', name: 'City', color: '#2563eb', background: 'night' },
         { id: '2', name: 'Culture', color: '#db2777', background: 'sand' },
         { id: '3', name: 'Outdoors', color: '#16a34a' },
         { id: '4', name: 'Food', color: '#ea580c' },
     ];
+    const media = createPlaygroundMedia();
+    const image = (index: number) => mediaReference(pick(media, index));
     const authors = [
         { id: '1', name: 'Ada Lovelace', email: 'ada@example.com' },
         { id: '2', name: 'Grace Hopper', email: 'grace@example.com' },
         { id: '3', name: 'Katherine Johnson', email: 'katherine@example.com' },
     ];
-    // The item at an index, cycling through the list.
-    const pick = <T>(list: readonly T[], index: number) => list[index % list.length] as T;
     const reference = (item: { id: string; name: string }) => ({ id: item.id, label: item.name });
     return {
         pages: ['About us', 'Contact', 'Advertise', 'Privacy', 'Terms'].map((title, index) => ({
@@ -451,7 +539,8 @@ export function createPlaygroundItems(): Record<string, Values[]> {
                     type: 'text',
                     body: `<p>${title}: everything you need to know about the Northwind Journal, its team and the city it covers.</p>`,
                 },
-                { type: 'image', image: null },
+                // The first pages show an image of the library, the others an empty block
+                { type: 'image', image: index < 3 ? image(index) : null },
             ],
             updated: `2026-10-${String(10 + index).padStart(2, '0')}`,
         })),
@@ -482,7 +571,11 @@ export function createPlaygroundItems(): Record<string, Values[]> {
                     : null,
         })),
         categories,
-        authors,
+        media,
+        authors: authors.map((author, index) => ({
+            ...author,
+            photo: index < 2 ? image(index + 1) : null,
+        })),
         users: [
             { id: '1', name: 'Ada Lovelace', email: 'ada@example.com', role: 'admin' },
             { id: '2', name: 'Grace Hopper', email: 'grace@example.com', role: 'editor' },
