@@ -914,6 +914,41 @@ export function createOpenApiDocument(): JsonObject {
                     },
                 },
             },
+            '/account/connections': {
+                get: {
+                    operationId: 'listConnections',
+                    summary:
+                        'With `agents.mcp`: the connections of the current user to the MCP server, the newest first (decision 0113).',
+                    responses: {
+                        200: ok('The connections of the current user.', ref('ConnectionsResponse')),
+                        ...problems(401, 403),
+                    },
+                },
+            },
+            '/account/connections/tokens': {
+                post: {
+                    operationId: 'createConnectionToken',
+                    summary:
+                        "With `agents.mcp`: makes a personal token of the current user, whose plain text is answered once. A `409` when the account can't make one: `agents.mcp.tokens` isn't true.",
+                    requestBody: { required: true, content: json(ref('ConnectionTokenRequest')) },
+                    responses: {
+                        201: ok('The token, and its connection.', ref('ConnectionTokenResponse')),
+                        ...problems(401, 403, 409, 422, 423),
+                    },
+                },
+            },
+            '/account/connections/{connection}': {
+                parameters: [pathParameter('connection', 'The opaque `id` of the connection.')],
+                delete: {
+                    operationId: 'revokeConnection',
+                    summary:
+                        'With `agents.mcp`: revokes a connection, which stops working at once. Revoking a client revokes all its tokens for the user. A `404` for an id that is not a connection of the user.',
+                    responses: {
+                        204: ok('Revoked.'),
+                        ...problems(401, 403, 404, 423),
+                    },
+                },
+            },
             '/search': {
                 get: {
                     operationId: 'search',

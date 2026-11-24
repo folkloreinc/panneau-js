@@ -39,12 +39,12 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     "search": { "enabled": true },
     "theme": { "colorScheme": "auto", "density": "auto", "navigation": "sidebar" }, // density: "compact", "comfortable", "touch" or "auto" (touch on touch screens), the default of the user's choice; lockDensity: true hides that choice (decision 0104); navigation: "sidebar" or "dock" (decision 0076)
     "user": { "id": "usr_123", "name": "Ada", "abilities": { "panneau.view": true } },
-    "agents": { "mcp": { "url": "/panneau/mcp" }, "assistant": false }, // decisions 0090 and 0106
+    "agents": { "mcp": { "url": "/panneau/mcp", "tokens": true }, "assistant": false }, // decisions 0090, 0106 and 0113
 }
 ```
 
 - **Languages.** `locales` are the languages of the content, those of localized fields. `interfaceLocales`, optional, are the languages the user can switch the interface to, `locale` among them, each with its `label` in its own language. With two or more, the shell has a language switcher, with the user's settings ([0083](decisions/0083-a-language-switcher-in-the-shell.md)): choosing one is a full navigation to its `url`, with `next` (the path and query of the page), and the backend comes back to it, the definition then in the new locale. `GET /locale/{locale}` is an optional endpoint for that `url`: it redirects to `next`, a local path under the base path, and answers `404` for a locale it doesn't offer.
-- **Agents.** `agents`, optional, says what agents can use ([Agents](#agents)): `mcp.url`, the URL of the MCP server that outside clients connect to, whose connections the account page lists; `assistant`, whether the app offers its assistant. Without it, the Panneau has neither.
+- **Agents.** `agents`, optional, says what agents can use ([Agents](#agents)): `mcp.url`, the URL of the MCP server that outside clients connect to, whose connections the account page lists ([Connections](#connections)); `mcp.tokens`, whether the user can make a personal token there, `false` when absent; `assistant`, whether the app offers its assistant. Without it, the Panneau has neither.
 - **The density.** `theme.density` is the density of the app until the user picks one in their menu or in "Go to…": compact, comfortable, or the default, the definition's again. The browser remembers the choice, as it does the color scheme. With `auto`, touch screens keep the touch density whatever the user chose, and have no choice. `theme.lockDensity: true` makes the definition's density the only one: the user has no choice, and one they made earlier is ignored ([0104](decisions/0104-users-choose-the-density.md)).
 - **The user's profile.** Without `auth.account`, the user's name links to their item in the resource of users: `user.resource`, or the resource `users` without it. A backend sets `user.resource` to `null` when the user has no item they can edit there, such as a user outside the resource's scope: the app then shows no link to a profile, instead of a page that isn't found.
 
@@ -1128,19 +1128,20 @@ A media library is a resource of kind `media` ([0026](decisions/0026-media-libra
 
 These endpoints only exist with `auth.mode = "panneau"`:
 
-| Endpoint                                                                                               | Purpose                                                                         |
-| ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
-| `GET /auth/session`                                                                                    | current user and abilities, or `401`                                            |
-| `POST /auth/login`, `POST /auth/logout`                                                                | login (password or token) and logout                                            |
-| `GET /auth/providers/{provider}/redirect`                                                              | OAuth start; the callback is handled by the backend                             |
-| `POST /auth/password/forgot`, `POST /auth/password/reset`                                              | password reset                                                                  |
-| `POST /auth/email/verification`, `POST /auth/email/verify`                                             | email verification: send a link, verify its token                               |
-| `POST /auth/two-factor/challenge`                                                                      | second factor at login                                                          |
-| `POST /auth/password/confirm`                                                                          | confirms the password, for operations that need it                              |
-| `POST /auth/passkeys/options`, `POST /auth/passkeys/login`                                             | WebAuthn login                                                                  |
-| `GET`/`PATCH /account`, `PUT /account/password`                                                        | the account: name and email, password                                           |
-| `GET`/`POST`/`DELETE /account/two-factor`, `…/confirm`, `…/recovery-codes`                             | two-factor authentication: status, setup, confirmation, new recovery codes, off |
-| `GET`/`POST /account/passkeys`, `POST /account/passkeys/options`, `DELETE /account/passkeys/{passkey}` | the passkeys of the account                                                     |
+| Endpoint                                                                                                   | Purpose                                                                                           |
+| ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `GET /auth/session`                                                                                        | current user and abilities, or `401`                                                              |
+| `POST /auth/login`, `POST /auth/logout`                                                                    | login (password or token) and logout                                                              |
+| `GET /auth/providers/{provider}/redirect`                                                                  | OAuth start; the callback is handled by the backend                                               |
+| `POST /auth/password/forgot`, `POST /auth/password/reset`                                                  | password reset                                                                                    |
+| `POST /auth/email/verification`, `POST /auth/email/verify`                                                 | email verification: send a link, verify its token                                                 |
+| `POST /auth/two-factor/challenge`                                                                          | second factor at login                                                                            |
+| `POST /auth/password/confirm`                                                                              | confirms the password, for operations that need it                                                |
+| `POST /auth/passkeys/options`, `POST /auth/passkeys/login`                                                 | WebAuthn login                                                                                    |
+| `GET`/`PATCH /account`, `PUT /account/password`                                                            | the account: name and email, password                                                             |
+| `GET`/`POST`/`DELETE /account/two-factor`, `…/confirm`, `…/recovery-codes`                                 | two-factor authentication: status, setup, confirmation, new recovery codes, off                   |
+| `GET`/`POST /account/passkeys`, `POST /account/passkeys/options`, `DELETE /account/passkeys/{passkey}`     | the passkeys of the account                                                                       |
+| `GET /account/connections`, `POST /account/connections/tokens`, `DELETE /account/connections/{connection}` | with `agents.mcp`: the connections of the account to the MCP server ([Connections](#connections)) |
 
 With `auth.mode = "external"`, the frontend only calls `GET /auth/session` and sends unauthenticated users to `auth.loginUrl`.
 
@@ -1189,6 +1190,28 @@ Agents work in a Panneau through five tools, served by the backend's MCP server 
 - **`run_action` asks first when the app would.** When the action has a `confirm`, or destroys and can't be undone, or its selection is a query, or holds more than `UNDO_LIMIT` (100) items, a first call doesn't run it and answers `{ "status": "confirmation_required", "message", "preview", "confirmation" }`: `preview` is the result of its dry run, or the `count` of its selection. The agent shows it to its user; a second call with the same arguments and `confirmation` runs exactly what was previewed, within 5 minutes. Undoable actions run at once and answer their `undo`. The built-in `duplicate` answers the copy, in `item`. A selection above the backend's synchronous limit is refused.
 - **Errors are problems,** as in the HTTP API ([Errors](#errors)): a `422` keyed by the path of the argument or the value, `403`, `404`, `412`, `429` with `retryAfter`.
 - **A read connection** lists `describe`, `find_items` and `get_item` only, and the backend refuses the others.
+
+### Connections
+
+The account page lists what lets an agent in as the user, makes personal tokens and revokes them ([0113](decisions/0113-the-connections-of-the-account.md)). The endpoints exist only when the definition has `agents.mcp`, beside the other endpoints of the account.
+
+```jsonc
+{
+    "id": "token:12", // opaque: sent back to revoke it, never parsed
+    "type": "token", // "token": a personal token; "client": an OAuth client the user authorized
+    "name": "Claude",
+    "write": true, // its agents can use the tools that write
+    "createdAt": "2026-11-24T10:00:00+00:00",
+    "lastUsedAt": null, // null when unused, or when the backend doesn't record use
+    "expiresAt": null, // null for never
+}
+```
+
+- **`GET /account/connections`** answers `{ "data": [Connection] }`, the newest first (`ConnectionsResponse`).
+- **`POST /account/connections/tokens`** takes `{ "name", "write" }` (`ConnectionTokenRequest`; `write` defaults to `false`) and answers `201` with `{ "token", "connection" }` (`ConnectionTokenResponse`): the plain text of the token, once, never again. **A `409` problem when the account can't make a personal token.** The definition says so beforehand: the app offers a token only when `agents.mcp.tokens` is `true`, and treats its absence as `false`.
+- **`DELETE /account/connections/{connection}`** answers `204`, and the connection stops working at once; a `404` for an id that isn't a connection of the user.
+- **A client stands for all its tokens:** one line however often it refreshed its token, and revoking it revokes all its tokens for the user, not the client.
+- **Creating and revoking can need a recent password** (`423`, [Password confirmation](#auth)); listing doesn't.
 
 ## Conformance
 

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { type Definition, User } from '../schemas';
-import { Passkey, TwoFactorStatus, WebAuthnOptions } from '../schemas/api';
+import { ConnectionsResponse, Passkey, TwoFactorStatus, WebAuthnOptions } from '../schemas/api';
 import { UNKNOWN } from './check';
 import { type ConformanceRun } from './run';
 
@@ -10,7 +10,7 @@ const PasskeysResponse = z.looseObject({ data: z.array(Passkey) });
 
 /**
  * Authentication: password reset and email verification, the account, OAuth providers, passkeys and
- * two-factor authentication (decisions 0048 to 0052).
+ * two-factor authentication (decisions 0048 to 0052), and the connections of the account (0113).
  */
 export async function checkAuth(ctx: ConformanceRun): Promise<void> {
     const { request, run } = ctx;
@@ -181,6 +181,23 @@ export async function checkAuth(ctx: ConformanceRun): Promise<void> {
             const reply = await request('/account/passkeys');
             if (check.expectStatus(reply, 200)) {
                 check.expectSchema(PasskeysResponse, reply.body, 'The passkeys');
+            }
+        },
+    );
+
+    // The connections of the account to the MCP server (decision 0113): listing changes nothing.
+    await run(
+        'account.connections',
+        'GET /account/connections lists the connections of the user',
+        async (check) => {
+            const current = definition as Definition | null;
+            if (current?.agents?.mcp === undefined || current.auth?.mode !== 'panneau') {
+                check.skip('The definition has no `agents.mcp` with the `panneau` auth mode.');
+                return;
+            }
+            const reply = await request('/account/connections');
+            if (check.expectStatus(reply, 200)) {
+                check.expectSchema(ConnectionsResponse, reply.body, 'The connections');
             }
         },
     );

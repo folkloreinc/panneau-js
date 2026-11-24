@@ -4,8 +4,8 @@ import {
     EMAIL_UNVERIFIED_PROBLEM_TYPE,
     TWO_FACTOR_REQUIRED_PROBLEM_TYPE,
 } from '../constants';
-import type { Auth, User } from '../schemas';
-import type { Problem, TwoFactorStatus } from '../schemas/api';
+import type { Agents, Auth, User } from '../schemas';
+import type { Connection, Problem, TwoFactorStatus } from '../schemas/api';
 import { PROBLEM_CONTENT_TYPE } from '../version';
 
 /** A user of the mock backend. */
@@ -32,6 +32,12 @@ export interface MockUser {
      * mock doesn't check signatures: a credential with one of these ids logs in.
      */
     passkeys?: { id: string; name: string }[];
+    /**
+     * The connections of the user to the MCP server, for `agents.mcp` (decision 0113), the newest
+     * first. `type` defaults to `token`, `write` to false. They were made at the epoch and never
+     * used or expire.
+     */
+    connections?: { name: string; type?: Connection['type']; write?: boolean }[];
 }
 
 /** An email that the mock backend "sends", with the path of its link under the app's base path. */
@@ -76,6 +82,7 @@ interface Account {
     recoveryCodes: string[];
     twoFactorRequired: boolean;
     passkeys: StoredPasskey[];
+    connections: Connection[];
 }
 
 interface StoredPasskey {
@@ -161,8 +168,13 @@ export interface MockAuth {
     refuse(): Response | null;
 }
 
-export function createMockAuth(options: MockAuthOptions, settings: Auth | undefined): MockAuth {
+export function createMockAuth(
+    options: MockAuthOptions,
+    settings: Auth | undefined,
+    agents?: Agents,
+): MockAuth {
     let nextPasskey = 1;
+    let nextConnection = 1;
     const accounts: Account[] = options.users.map((user, index) => ({
         id: user.id ?? String(index + 1),
         name: user.name ?? user.email,
@@ -178,6 +190,15 @@ export function createMockAuth(options: MockAuthOptions, settings: Auth | undefi
             name: passkey.name,
             createdAt: new Date(0).toISOString(),
             lastUsedAt: null,
+        })),
+        connections: (user.connections ?? []).map(({ name, type = 'token', write = false }) => ({
+            id: `${type}:${nextConnection++}`,
+            type,
+            name,
+            write,
+            createdAt: new Date(0).toISOString(),
+            lastUsedAt: null,
+            expiresAt: null,
         })),
     }));
     const code = options.twoFactorCode ?? '123456';
@@ -522,6 +543,54 @@ export function createMockAuth(options: MockAuthOptions, settings: Auth | undefi
         }
         return problem(404, 'Not found.');
     };
+    // The connections of the account to the MCP server, with `agents.mcp` (decision 0113). The
+    // mock doesn't ask for a recent password: it never answers `423`.
+    const connectionRoutes = async (
+        account: Account,
+        method: string,
+        segments: string[],
+        body: () => Promise<Values>,
+    ): Promise<Response> => {
+        const [, second] = segments;
+        if (method === 'GET' && segments.length === 1) {
+            return json(200, { data: account.connections });
+        }
+        if (method === 'POST' && second === 'tokens' && segments.length === 2) {
+            const { name, write } = await body();
+            const errors: Record<string, string[]> = {};
+            if (typeof name !== 'string' || name.trim() === '') {
+                errors.name = ['The name field is required.'];
+            }
+            if (write !== undefined && typeof write !== 'boolean') {
+                errors.write = ['The write field must be true or false.'];
+            }
+            if (Object.keys(errors).length > 0) {
+                return invalid(errors);
+            }
+            if (agents?.mcp?.tokens !== true) {
+                return problem(409, 'Conflict.', {
+                    detail: "This account can't make personal tokens.",
+                });
+            }
+            const connection: Connection = {
+                id: `token:${nextConnection++}`,
+                type: 'token',
+                name: name as string,
+                write: write === true,
+                createdAt: new Date().toISOString(),
+                lastUsedAt: null,
+                expiresAt: null,
+            };
+            account.connections.unshift(connection);
+            return json(201, { token: `mcp_${randomToken()}`, connection });
+        }
+        const index = account.connections.findIndex((connection) => connection.id === second);
+        if (method === 'DELETE' && segments.length === 2 && index !== -1) {
+            account.connections.splice(index, 1);
+            return json(204, null);
+        }
+        return problem(404, 'Not found.');
+    };
     const refuseUnverified = (account: Account) =>
         settings?.emailVerification === true && !account.emailVerified
             ? problem(403, 'Your email address is not verified.', {
@@ -534,7 +603,8 @@ export function createMockAuth(options: MockAuthOptions, settings: Auth | undefi
         account: (segments, method, readBody) => {
             const twoFactor = segments[0] === 'two-factor' && settings?.twoFactor === true;
             const passkeys = segments[0] === 'passkeys' && settings?.passkeys === true;
-            if (!twoFactor && !passkeys && settings?.account !== true) {
+            const connections = segments[0] === 'connections' && agents?.mcp !== undefined;
+            if (!twoFactor && !passkeys && !connections && settings?.account !== true) {
                 return null;
             }
             if (current === null) {
@@ -545,6 +615,12 @@ export function createMockAuth(options: MockAuthOptions, settings: Auth | undefi
                 return refusedPasskeys !== null
                     ? Promise.resolve(refusedPasskeys)
                     : passkeyRoutes(current, method, segments, readBody);
+            }
+            if (connections) {
+                const refusedConnections = refuse();
+                return refusedConnections !== null
+                    ? Promise.resolve(refusedConnections)
+                    : connectionRoutes(current, method, segments, readBody);
             }
             const refused = twoFactor ? refuseUnverified(current) : refuse();
             const route = twoFactor

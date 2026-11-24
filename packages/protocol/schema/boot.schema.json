@@ -190,6 +190,9 @@
                                 "url": {
                                     "type": "string",
                                     "minLength": 1
+                                },
+                                "tokens": {
+                                    "type": "boolean"
                                 }
                             },
                             "required": [

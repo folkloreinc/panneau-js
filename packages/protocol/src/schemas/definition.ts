@@ -236,11 +236,15 @@ export const Agents = z
                     description:
                         'The URL of the MCP server (Streamable HTTP), which outside clients connect to.',
                 }),
+                tokens: z.boolean().optional().meta({
+                    description:
+                        "Whether the user can make a personal token on the account page (`POST /account/connections/tokens`). Without it, clients assume they can't (decision 0113).",
+                }),
             })
             .optional()
             .meta({
                 description:
-                    'The MCP server of the Panneau: the account page lists the connections of the user.',
+                    'The MCP server of the Panneau: the account page lists the connections of the user (`/account/connections`).',
             }),
         assistant: z
             .boolean()
