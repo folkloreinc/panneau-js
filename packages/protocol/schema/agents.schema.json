@@ -451,6 +451,7 @@
                         }
                     ]
                 },
+                "example": {},
                 "fields": {
                     "type": "array",
                     "items": {
@@ -667,40 +668,70 @@
         "AgentFindItemsResult": {
             "anyOf": [
                 {
-                    "$ref": "#/$defs/ListResponse"
+                    "type": "object",
+                    "properties": {
+                        "data": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/$defs/AgentListItem"
+                            }
+                        },
+                        "meta": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/$defs/Pagination"
+                                },
+                                {
+                                    "$ref": "#/$defs/CursorPagination"
+                                }
+                            ]
+                        }
+                    },
+                    "required": [
+                        "data",
+                        "meta"
+                    ],
+                    "additionalProperties": {}
                 },
                 {
-                    "$ref": "#/$defs/SearchResponse"
+                    "type": "object",
+                    "properties": {
+                        "data": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "resource": {
+                                        "type": "string"
+                                    },
+                                    "items": {
+                                        "type": "array",
+                                        "items": {
+                                            "$ref": "#/$defs/AgentListItem"
+                                        }
+                                    },
+                                    "total": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 9007199254740991
+                                    }
+                                },
+                                "required": [
+                                    "resource",
+                                    "items"
+                                ],
+                                "additionalProperties": {}
+                            }
+                        }
+                    },
+                    "required": [
+                        "data"
+                    ],
+                    "additionalProperties": {}
                 }
             ]
         },
-        "ListResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/$defs/Item"
-                    }
-                },
-                "meta": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/$defs/Pagination"
-                        },
-                        {
-                            "$ref": "#/$defs/CursorPagination"
-                        }
-                    ]
-                }
-            },
-            "required": [
-                "data",
-                "meta"
-            ],
-            "additionalProperties": {}
-        },
-        "Item": {
+        "AgentListItem": {
             "type": "object",
             "properties": {
                 "id": {
@@ -722,8 +753,7 @@
             },
             "required": [
                 "id",
-                "version",
-                "abilities"
+                "version"
             ],
             "additionalProperties": {}
         },
@@ -821,42 +851,6 @@
             ],
             "additionalProperties": {}
         },
-        "SearchResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "resource": {
-                                "type": "string"
-                            },
-                            "items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/$defs/Item"
-                                }
-                            },
-                            "total": {
-                                "type": "integer",
-                                "minimum": 0,
-                                "maximum": 9007199254740991
-                            }
-                        },
-                        "required": [
-                            "resource",
-                            "items"
-                        ],
-                        "additionalProperties": {}
-                    }
-                }
-            },
-            "required": [
-                "data"
-            ],
-            "additionalProperties": {}
-        },
         "AgentGetItemArguments": {
             "type": "object",
             "properties": {
@@ -881,6 +875,33 @@
                 "id"
             ],
             "additionalProperties": false
+        },
+        "Item": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "$ref": "#/$defs/Id"
+                },
+                "version": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "abilities": {
+                    "$ref": "#/$defs/Abilities"
+                },
+                "type": {
+                    "type": "string",
+                    "minLength": 1
+                }
+            },
+            "required": [
+                "id",
+                "version",
+                "abilities"
+            ],
+            "additionalProperties": {}
         },
         "AgentSaveItemArguments": {
             "type": "object",

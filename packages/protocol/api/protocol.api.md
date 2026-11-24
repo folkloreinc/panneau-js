@@ -586,6 +586,7 @@ export const AgentAction: z.ZodObject<{
             tone: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>>>;
         resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
+        example: z.ZodOptional<z.ZodUnknown>;
         fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
         types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
     }, z.core.$loose>>>;
@@ -737,6 +738,7 @@ export const AgentDescribeResult: z.ZodUnion<readonly [z.ZodObject<{
             tone: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>>>;
         resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
+        example: z.ZodOptional<z.ZodUnknown>;
         fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
         types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
     }, z.core.$loose>>>;
@@ -766,6 +768,7 @@ export const AgentDescribeResult: z.ZodUnion<readonly [z.ZodObject<{
                 tone: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>>>;
             resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
+            example: z.ZodOptional<z.ZodUnknown>;
             fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
             types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
         }, z.core.$loose>>;
@@ -821,6 +824,7 @@ export const AgentDescribeResult: z.ZodUnion<readonly [z.ZodObject<{
                 tone: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>>>;
             resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
+            example: z.ZodOptional<z.ZodUnknown>;
             fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
             types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
         }, z.core.$loose>>>;
@@ -858,6 +862,7 @@ export const AgentField: z.ZodObject<{
         tone: z.ZodOptional<z.ZodString>;
     }, z.core.$loose>>>;
     resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
+    example: z.ZodOptional<z.ZodUnknown>;
     fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
     types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
 }, z.core.$loose>;
@@ -883,12 +888,6 @@ export type AgentFindItemsArguments = z.infer<typeof AgentFindItemsArguments>;
 
 // @public (undocumented)
 export const AgentFindItemsResult: z.ZodUnion<readonly [z.ZodObject<{
-    data: z.ZodArray<z.ZodObject<{
-        id: z.ZodString;
-        version: z.ZodNullable<z.ZodString>;
-        abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
-        type: z.ZodOptional<z.ZodString>;
-    }, z.core.$loose>>;
     meta: z.ZodUnion<readonly [z.ZodObject<{
         page: z.ZodNumber;
         perPage: z.ZodNumber;
@@ -900,16 +899,22 @@ export const AgentFindItemsResult: z.ZodUnion<readonly [z.ZodObject<{
         previousCursor: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         total: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
     }, z.core.$loose>]>;
+    data: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        version: z.ZodNullable<z.ZodString>;
+        type: z.ZodOptional<z.ZodString>;
+        abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
+    }, z.core.$loose>>;
 }, z.core.$loose>, z.ZodObject<{
     data: z.ZodArray<z.ZodObject<{
         resource: z.ZodString;
+        total: z.ZodOptional<z.ZodNumber>;
         items: z.ZodArray<z.ZodObject<{
             id: z.ZodString;
             version: z.ZodNullable<z.ZodString>;
-            abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
             type: z.ZodOptional<z.ZodString>;
+            abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
         }, z.core.$loose>>;
-        total: z.ZodOptional<z.ZodNumber>;
     }, z.core.$loose>>;
 }, z.core.$loose>]>;
 
@@ -925,6 +930,17 @@ export const AgentGetItemArguments: z.ZodObject<{
 
 // @public (undocumented)
 export type AgentGetItemArguments = z.infer<typeof AgentGetItemArguments>;
+
+// @public (undocumented)
+export const AgentListItem: z.ZodObject<{
+    id: z.ZodString;
+    version: z.ZodNullable<z.ZodString>;
+    type: z.ZodOptional<z.ZodString>;
+    abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type AgentListItem = z.infer<typeof AgentListItem>;
 
 // @public (undocumented)
 export const AgentResourceDescription: z.ZodObject<{
@@ -956,6 +972,7 @@ export const AgentResourceDescription: z.ZodObject<{
             tone: z.ZodOptional<z.ZodString>;
         }, z.core.$loose>>>;
         resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
+        example: z.ZodOptional<z.ZodUnknown>;
         fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
         types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
     }, z.core.$loose>>>;
@@ -985,6 +1002,7 @@ export const AgentResourceDescription: z.ZodObject<{
                 tone: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>>>;
             resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
+            example: z.ZodOptional<z.ZodUnknown>;
             fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
             types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
         }, z.core.$loose>>;
@@ -1040,6 +1058,7 @@ export const AgentResourceDescription: z.ZodObject<{
                 tone: z.ZodOptional<z.ZodString>;
             }, z.core.$loose>>>;
             resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
+            example: z.ZodOptional<z.ZodUnknown>;
             fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
             types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
         }, z.core.$loose>>>;
@@ -1310,6 +1329,7 @@ export const agentToolSchemas: {
                     tone: z.ZodOptional<z.ZodString>;
                 }, z.core.$loose>>>;
                 resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
+                example: z.ZodOptional<z.ZodUnknown>;
                 fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
                 types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
             }, z.core.$loose>>>;
@@ -1339,6 +1359,7 @@ export const agentToolSchemas: {
                         tone: z.ZodOptional<z.ZodString>;
                     }, z.core.$loose>>>;
                     resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
+                    example: z.ZodOptional<z.ZodUnknown>;
                     fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
                     types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
                 }, z.core.$loose>>;
@@ -1394,6 +1415,7 @@ export const agentToolSchemas: {
                         tone: z.ZodOptional<z.ZodString>;
                     }, z.core.$loose>>>;
                     resource: z.ZodOptional<z.ZodUnion<readonly [z.ZodString, z.ZodArray<z.ZodString>]>>;
+                    example: z.ZodOptional<z.ZodUnknown>;
                     fields: z.ZodOptional<z.ZodArray<typeof AgentField>>;
                     types: z.ZodOptional<z.ZodArray<typeof AgentBlockType>>;
                 }, z.core.$loose>>>;
@@ -1418,12 +1440,6 @@ export const agentToolSchemas: {
             fields: z.ZodOptional<z.ZodArray<z.ZodString>>;
         }, z.core.$strict>;
         result: z.ZodUnion<readonly [z.ZodObject<{
-            data: z.ZodArray<z.ZodObject<{
-                id: z.ZodString;
-                version: z.ZodNullable<z.ZodString>;
-                abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
-                type: z.ZodOptional<z.ZodString>;
-            }, z.core.$loose>>;
             meta: z.ZodUnion<readonly [z.ZodObject<{
                 page: z.ZodNumber;
                 perPage: z.ZodNumber;
@@ -1435,16 +1451,22 @@ export const agentToolSchemas: {
                 previousCursor: z.ZodOptional<z.ZodNullable<z.ZodString>>;
                 total: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
             }, z.core.$loose>]>;
+            data: z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                version: z.ZodNullable<z.ZodString>;
+                type: z.ZodOptional<z.ZodString>;
+                abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
+            }, z.core.$loose>>;
         }, z.core.$loose>, z.ZodObject<{
             data: z.ZodArray<z.ZodObject<{
                 resource: z.ZodString;
+                total: z.ZodOptional<z.ZodNumber>;
                 items: z.ZodArray<z.ZodObject<{
                     id: z.ZodString;
                     version: z.ZodNullable<z.ZodString>;
-                    abilities: z.ZodRecord<z.ZodString, z.ZodBoolean>;
                     type: z.ZodOptional<z.ZodString>;
+                    abilities: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodBoolean>>;
                 }, z.core.$loose>>;
-                total: z.ZodOptional<z.ZodNumber>;
             }, z.core.$loose>>;
         }, z.core.$loose>]>;
     };
