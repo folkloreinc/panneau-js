@@ -26,6 +26,7 @@ A shared part of component tokens, like `input` and `field`: `--panneau-selected
 
 - They are component tokens rather than semantic tokens on purpose. A semantic token is declared on the root, so `--panneau-selected-bg: var(--panneau-color-accent)` would be computed there: a `ThemeScope` that changes the accent would keep the root's selections. Read with the accent as fallback and never declared, they follow the accent wherever it changes, unless a theme sets them.
 - Every component that shows a selection reads them: `Checkbox`, `RadioGroup`, `Switch`, `Slider`, `Tabs`, the calendars and date segments of `DatePicker` and `DateRangePicker`, the selected rows, cards and gallery items of `@panneau/lists`, today in the calendar layout, `MediaPicker`, the ratios of `ImageEditor`, the drop zone of `FilePicker`, the selection bar of `ListView` and the formats of the rich text toolbar. Their own component tokens (`--panneau-checkbox-checked-bg`…) now default to them.
+- `--panneau-selected-strong` is the selection as text and icons, on the page's backgrounds and on `selected-subtle`: the label of the selected ratio of `ImageEditor`. `selected-bg` is a fill, checked at 3:1, and a light selection written as text is unreadable. It defaults to the accent as text (`var(--panneau-color-accent-strong, var(--panneau-color-accent))`). Added after [#476](https://github.com/folkloreinc/panneau-js/issues/476): text never reads `selected-bg`.
 - The accent keeps the main action, the skip link, progress bars, highlights and the logo.
 
 ### Focus, outlines and presses
@@ -40,7 +41,7 @@ A shared part of component tokens, like `input` and `field`: `--panneau-selected
 
 - Translucent colors are checked as they show over what is under them: the surface for a background, the background for a foreground. A translucent color over a color it can't read is unchecked.
 - Explicit tone values that refer to the palette or to tokens are checked as what they refer to, like tokens.
-- Two pairs are added: the selected text on the selection (4.5:1), and the selection on the surface (3:1). A theme that doesn't set the selection is checked with its accent, so a light accent is reported.
+- Two pairs are added: the selected text on the selection (4.5:1), and the selection on the surface (3:1). A theme that doesn't set the selection is checked with its accent, so a light accent is reported. The selection as text (`selected-strong`) is checked at 4.5:1 on the surface and on `selected-subtle`, as the accent as text when the theme doesn't set it.
 
 ## Consequences
 

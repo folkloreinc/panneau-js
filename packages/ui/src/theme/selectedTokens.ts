@@ -16,4 +16,10 @@ export const selectedTokens = defineComponentTokens('selected', {
     text: 'var(--panneau-color-accent-text)',
     /** Background of a selected row, card, or range of days. */
     subtle: 'var(--panneau-color-accent-subtle)',
+    /**
+     * The selection as text and icons on the page's backgrounds and on `subtle`: the label of a
+     * selected option that has no fill. `bg` is a fill, checked at 3:1 only; this one is checked at
+     * 4.5:1. It defaults to the accent as text.
+     */
+    strong: 'var(--panneau-color-accent-strong, var(--panneau-color-accent))',
 });

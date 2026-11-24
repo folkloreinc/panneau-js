@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Stamp } from 'lucide-react';
 import { expect, fn, userEvent, within } from 'storybook/test';
 
-import { Text } from '@panneau/ui';
+import { PanneauRoot, Text, defineTheme } from '@panneau/ui';
 
 import { harbour, harbourBanner, hiker } from '../__fixtures__/images';
 import { ImageEditor } from './ImageEditor';
@@ -245,4 +245,92 @@ export const InANarrowPanel: Story = {
 export const Phone: Story = {
     args: { image: hiker, value: null, onCancel: fn() },
     globals: phone,
+};
+
+/**
+ * A theme with a light accent and no selection tokens, as a yellow brand color gives. The selected
+ * ratio writes the selection as text (`--panneau-selected-strong`), which defaults to the accent as
+ * text that Panneau derives, not the yellow fill.
+ */
+const yellowTheme = defineTheme({
+    tokens: {
+        'panneau-color-accent': '#ffea00',
+        'panneau-color-accent-hover': '#e6d300',
+        'panneau-color-accent-text': '#18181b',
+        'panneau-color-accent-subtle': '#fffbd1',
+    },
+    dark: { 'panneau-color-accent-subtle': '#3a3500' },
+});
+
+/** A computed color as sRGB with its opacity, through a canvas, which reads any CSS color. */
+function readColor(value: string): { color: [number, number, number]; alpha: number } {
+    const context = document.createElement('canvas').getContext('2d', {
+        willReadFrequently: true,
+    });
+    if (context === null) {
+        throw new Error('No 2D canvas to read colors with.');
+    }
+    context.clearRect(0, 0, 1, 1);
+    context.fillStyle = value;
+    context.fillRect(0, 0, 1, 1);
+    const [r = 0, g = 0, b = 0, a = 0] = context.getImageData(0, 0, 1, 1).data;
+    return { color: [r, g, b], alpha: a / 255 };
+}
+
+/** The WCAG 2 contrast ratio of two sRGB colors. */
+function contrast(first: [number, number, number], second: [number, number, number]): number {
+    const luminance = (color: [number, number, number]) => {
+        const [r = 0, g = 0, b = 0] = color.map((channel) => {
+            const value = channel / 255;
+            return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+        });
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    };
+    const [light, dark] = [luminance(first), luminance(second)].sort((a, b) => b - a);
+    return ((light ?? 0) + 0.05) / ((dark ?? 0) + 0.05);
+}
+
+/**
+ * With a light accent, in both schemes: the label and the shape of the selected ratio stay readable
+ * (4.5:1) on the selection's subtle background.
+ */
+export const LightAccent: Story = {
+    args: { value: harbourBanner, ratios: ['16:9', '1:1'], enforceRatios: true },
+    render: (args) => (
+        <div style={{ display: 'grid', gap: '1rem' }}>
+            {(['light', 'dark'] as const).map((scheme) => (
+                <PanneauRoot
+                    key={scheme}
+                    theme={yellowTheme}
+                    colorScheme={scheme}
+                    role="region"
+                    aria-label={`Yellow accent, ${scheme}`}
+                    style={{ padding: '1rem', background: 'var(--panneau-color-bg)' }}
+                >
+                    <ImageEditor {...args} />
+                </PanneauRoot>
+            ))}
+        </div>
+    ),
+    play: async ({ canvasElement }) => {
+        for (const scheme of ['light', 'dark']) {
+            const region = within(
+                within(canvasElement).getByRole('region', { name: `Yellow accent, ${scheme}` }),
+            );
+            const radio = await region.findByRole('radio', { name: '16:9' });
+            await expect(radio).toBeChecked();
+            const ratio = radio.closest('[data-selected]');
+            await expect(ratio).not.toBeNull();
+            if (ratio === null) {
+                return;
+            }
+            const style = getComputedStyle(ratio);
+            const background = readColor(style.backgroundColor);
+            await expect(background.alpha, scheme).toBe(1);
+            await expect(
+                contrast(readColor(style.color).color, background.color),
+                scheme,
+            ).toBeGreaterThanOrEqual(4.5);
+        }
+    },
 };

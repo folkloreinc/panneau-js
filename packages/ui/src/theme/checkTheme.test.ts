@@ -147,9 +147,12 @@ describe('checkTheme', () => {
             'panneau-color-accent': '#ffdd00',
             'panneau-color-accent-text': '#000000',
         };
+        // The fills: the selection as text is checked on its own, below.
+        const isSelectionFill = (name: string) =>
+            name.includes('selected') && !name.includes('as text');
         expect(
             checkTheme({ tokens: yellow })
-                .failures.filter((check) => check.name.includes('selected'))
+                .failures.filter((check) => isSelectionFill(check.name))
                 .map((check) => `${check.scheme} ${check.name}`),
         ).toEqual(['light tokens: selected on surface', 'dark tokens: selected on surface']);
         expect(
@@ -159,8 +162,40 @@ describe('checkTheme', () => {
                     'panneau-selected-bg': '#000000',
                     'panneau-selected-text': '#ffffff',
                 },
-            }).failures.filter((check) => check.name.includes('selected')),
+            }).failures.filter((check) => isSelectionFill(check.name)),
         ).toEqual([]);
+    });
+
+    it('checks the selection as text at 4.5:1, as the accent as text unless the theme sets it', () => {
+        const yellow = {
+            tokens: {
+                'panneau-color-accent': '#ffea00',
+                'panneau-color-accent-text': '#18181b',
+                'panneau-color-accent-subtle': '#fffbd1',
+            },
+            dark: { 'panneau-color-accent-subtle': '#3a3500' },
+        };
+        const report = checkTheme(yellow);
+        const selectedAsText = report.checks.filter((check) =>
+            check.name.includes('selected as text'),
+        );
+        expect(selectedAsText.map((check) => `${check.scheme} ${check.name}`)).toEqual([
+            'light tokens: selected as text on selected subtle',
+            'light tokens: selected as text on surface',
+            'dark tokens: selected as text on selected subtle',
+            'dark tokens: selected as text on surface',
+        ]);
+        expect(selectedAsText.every((check) => check.minimum === 4.5)).toBe(true);
+        expect(report.failures).toEqual([]);
+        // A light selection used as text is reported, though it passes as a fill on black text.
+        const unreadable = checkTheme({
+            ...yellow,
+            tokens: { ...yellow.tokens, 'panneau-selected-strong': '#ffea00' },
+        });
+        expect(unreadable.failures.map((check) => `${check.scheme} ${check.name}`)).toEqual([
+            'light tokens: selected as text on selected subtle',
+            'light tokens: selected as text on surface',
+        ]);
     });
 
     it('checks the accent as text, as Panneau derives it when the theme sets the accent only', () => {
@@ -188,9 +223,12 @@ describe('checkTheme', () => {
             ...yellow,
             tokens: { ...yellow.tokens, 'panneau-color-accent-strong': '#ffea00' },
         });
+        // The selection as text follows it, unless the theme sets it.
         expect(unreadable.failures.map((check) => `${check.scheme} ${check.name}`)).toEqual([
             'light tokens: accent as text on accent subtle',
+            'light tokens: selected as text on selected subtle',
             'light tokens: accent as text on surface',
+            'light tokens: selected as text on surface',
         ]);
     });
 

@@ -53,6 +53,8 @@ const CHART_TOKENS = [
 const FALLBACKS: Readonly<Record<string, string>> = {
     'panneau-selected-bg': 'panneau-color-accent',
     'panneau-selected-text': 'panneau-color-accent-text',
+    'panneau-selected-subtle': 'panneau-color-accent-subtle',
+    'panneau-selected-strong': 'panneau-color-accent-strong',
 };
 
 /** Non-text elements (borders of controls, outlines) need 3:1 (WCAG 2 non-text contrast). */
@@ -96,6 +98,14 @@ const TOKEN_PAIRS: [name: string, foreground: string, background: string, minimu
         MIN_CONTRAST_RATIO,
     ],
     ['selected on surface', 'panneau-selected-bg', 'panneau-color-surface', MIN_NON_TEXT_RATIO],
+    // The selection as text: the label of a selected option without a fill (and on the surface,
+    // below).
+    [
+        'selected as text on selected subtle',
+        'panneau-selected-strong',
+        'panneau-selected-subtle',
+        MIN_CONTRAST_RATIO,
+    ],
     // The muted tone has no fill: its text and its outline sit on the surface.
     [
         'muted tone text on surface',
@@ -130,7 +140,8 @@ const TOKEN_PAIRS: [name: string, foreground: string, background: string, minimu
  * on the surface, its solid text on the solid background and its hover), and chart colors (3:1
  * against the surface, and categorical colors distinct with color vision deficiencies). Pairs where a color comes
  * from the default theme and is not set by the theme are skipped, except the surface, which falls
- * back to the default one. Selections (`panneau-selected-*`) are checked against the surface, as
+ * back to the default one. Selections (`panneau-selected-*`) are checked against the surface, the
+ * selection as text (`panneau-selected-strong`) also on `panneau-selected-subtle` at 4.5:1, as
  * the accent when the theme doesn't set them. Values that refer to the theme's palette or tokens
  * with `var()` are checked as what they refer to, in tokens and in tones, and translucent colors as
  * they show over what is under them; colors Panneau can't read are listed as unchecked.
@@ -203,6 +214,16 @@ export function checkTheme(theme: Theme): ThemeReport {
             add(
                 'tokens: accent as text on surface',
                 accentStrongValue,
+                surfaceValue,
+                MIN_CONTRAST_RATIO,
+                surfaceColor,
+            );
+        }
+        const selectedStrongValue = tokens['panneau-selected-strong'];
+        if (selectedStrongValue !== undefined) {
+            add(
+                'tokens: selected as text on surface',
+                selectedStrongValue,
                 surfaceValue,
                 MIN_CONTRAST_RATIO,
                 surfaceColor,
