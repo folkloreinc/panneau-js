@@ -166,6 +166,18 @@ export interface ListCalendarProps {
      * doesn't count them).
      */
     more: { total: number | null } | null;
+    /**
+     * Whether the items of the month load: an empty month says so once they are there, not while
+     * the items of another month are still shown.
+     */
+    isLoading?: boolean | undefined;
+}
+
+/** The state of an item (`itemStatus` of its resource, decision 0103): its label and its tone. */
+export interface ListItemStatus {
+    label: string;
+    /** A tone of the theme, as the options of a `select` have. Without it, `neutral`. */
+    tone?: string | undefined;
 }
 
 /** Props of a list layout: renders the items of the current page. */
@@ -221,6 +233,11 @@ export interface ListLayoutProps {
      * item without an image to show (a PDF) shows the icon of its kind, never a broken image.
      */
     getItemFileKind?: ((item: ListItem) => FileKind | null) | undefined;
+    /**
+     * The state of an item (`itemStatus` of the resource), or `null` for an item without one.
+     * `undefined` when items have no state. The calendar shows it next to the title.
+     */
+    getItemStatus?: ((item: ListItem) => ListItemStatus | null) | undefined;
     /** The month of the calendar, in the `calendar` layout. */
     calendar?: ListCalendarProps | undefined;
     /**

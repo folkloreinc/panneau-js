@@ -216,7 +216,8 @@ export function ResourceFormPage({
         />
     );
 
-    // A form with a sidebar takes the width of a list: its main column stays wide enough
+    // A form with a sidebar takes the width of a list: its main column stays wide enough. Without
+    // one, the form narrows under a header that keeps the edges of every page (#415).
     const hasSidebar = layout.some((node) => node.type === 'sidebar');
     // The `actions` panel of its sidebar takes the actions of the header (decision 0075)
     const hasActionsPanel = layout.some(

@@ -1,5 +1,42 @@
 # @panneau/fields
 
+## 5.0.0-alpha.47
+
+### Minor Changes
+
+- 060c1e9: Relation fields reach every result, say how many there are, and show where each item stands (#436, decision 0103). The picker loads the next results as its list scrolls to the end, and says "20 of 45 results" when the source counts them: a `RelationSource` can give `searchPage(resource, query, { signal, next })`, which `createRelationSource()` does from the `meta` of the list (page numbers or cursors). A resource can name the field that holds the state of its items with `itemStatus`, a new optional setting of the protocol, usually a `select` with tones: results and cards show its label as a badge in its tone (`RelationReference.status`). The empty single field now takes the width of its column, as its card does, and its list is as wide (#410). `ComboBox` takes a `badge` on its items, `onLoadMore` and `isLoadingMore`, and a `footer`.
+
+### Patch Changes
+
+- 79abfd4: Undo a removal in a field: removing an item of a repeater, a card of a relation or a media of a media field now offers "Undo" in a toast (decision 0063), which puts it back at its place, with its value. Outside a `PanneauRoot`, where there is no toast region, the removal stays immediate. Repeater items now have a stable key, which isn't part of their value: the state of their fields (an editor's history), whether they are expanded and the focus follow them when they move. `@panneau/ui` exports `useUndoToast()`, which offers "Undo" in a toast and is `null` outside a `PanneauRoot`.
+- 35b9955: Fields, columns, filters and pages without a `label` show their key made readable instead of the key as written: `published_at` reads "Published at", `author_id` reads "Author", `seo.title` reads "Seo title". The same fallback names fields, list columns, filters and their chips, sort options, the columns menu, the details of an item, the error summary and the conflict dialog of a form, inline editing, the filters of the media picker, and the pages in the navigation and the "Go to…" palette. A label given by the definition is shown as given, an empty one included. `@panneau/protocol/runtime` exports the fallback: `humanizeKey()`, `labelOrKey()` and `getFieldLabel()`.
+- b754dda: Media fields take files dropped anywhere on them, their media included, with a visible and announced drop state and the same checks as their button (types, size, one file without `multiple`), and files pasted while the focus is inside them, except in a text input. The search of the media picker, and its text filters, wait for a pause in typing (300 ms), and Enter searches at once. A media uploaded in the picker or the media library now shows first in the library it went to, whatever the sort, until the next search, filter or sort, and once only when the pages that follow have it too. `@panneau/fields` exports `FileDropZone`, the zone that takes these drops and pastes, and `FilePicker` gets `isDroppable`, `false` inside one.
+- 3eb376c: Fixes in fields. An invalid `Select` has the red border and focus ring of an invalid text input. The map of a location or an address field no longer zooms when the page scrolls over it: the wheel scrolls the page, with a hint to hold ⌘ (Ctrl elsewhere) or to click the map, which then zooms with the wheel; its buttons, a pinch, a double click and the + and − keys still zoom it. Date-time and date range fields name the time zone they are typed in, in the locale, with its offset on that day (`Eastern Time (UTC−4)`), and lists show ranges in another zone the same way. `DatePicker` takes `end`, content at the end of its control.
+- 7e99405: A definition can turn on the shortcuts of a `date` field: `settings.shortcuts` lists `today`, `yesterday`, `tomorrow`, or dates worked out from today or from another date field of the same object (`{ "label": "A year after the start", "from": "starts_on", "years": 1 }`), disabled while that field is empty. A single `select` with more than 10 options, or with `settings.search: true`, is a combo box whose options are filtered as the user types, with the same value; `settings.search: false` keeps the dropdown. The protocol describes both settings (`DateSettings`, `DateShortcut`, `SelectSettings`, `DATE_SHORTCUTS`), and `validateDefinition()` checks them.
+- 8ad5274: Rich text: ⌘K (Ctrl+K elsewhere) opens the link dialog on the selection, rather than the app's "Go to…" palette, which still opens outside the editor. The tooltips of the toolbar name the shortcut of their button (⌘B, Ctrl+Shift+8), and buttons have `aria-keyshortcuts`; `RichTextButton` takes a `shortcut`. With a `resource`, a `richtext` field links to items of the site: its link dialog searches them with the relation source, as `page` links of `link` fields do, and still takes a URL (decision 0107). Such a link is `<a href="…" data-page-id="12" data-page-resource="pages">`, and the backend writes the item's URL in `href`. `@panneau/fields/link` exports `PagePicker`. HTML kept as it was written now says what it is ("Embedded video", "Embedded post", "Table", "Image") with its provider and URL, a video of a known provider shows a player drawn in its place, and its element (`figure.media`) is in a tooltip; `HtmlNodeOptions` takes `labels` by `KeptHtmlKind`.
+- 4686a26: Repeater and blocks (decision 0109). Each item has "Duplicate", which adds a copy right after it, expanded, with the focus on its header. Between two items, a control that shows on hover and keyboard focus adds an item there, or opens the menu of block types. That menu shows each type's `icon` and its new `description`. A repeater's `settings.itemTitle`, or a block type's `itemTitle`, names the field (`"title"`) or the template (`"{first_name} {last_name}"`) that titles each item; `RepeaterSettings` describes the settings of a repeater, and `validateDefinition()` checks them. The built-in repeater now loads with its first use, as the other heavy field types do: the first page of an app doesn't load it.
+- Updated dependencies [2aab034]
+- Updated dependencies [79abfd4]
+- Updated dependencies [ff56beb]
+- Updated dependencies [35b9955]
+- Updated dependencies [a55f51b]
+- Updated dependencies [ecf96f3]
+- Updated dependencies [09cca06]
+- Updated dependencies [9e90547]
+- Updated dependencies [060c1e9]
+- Updated dependencies [b754dda]
+- Updated dependencies [3eb376c]
+- Updated dependencies [7e99405]
+- Updated dependencies [8ad5274]
+- Updated dependencies [55eced0]
+- Updated dependencies [f8c5d4f]
+- Updated dependencies [d256517]
+- Updated dependencies [4686a26]
+- Updated dependencies [1350d30]
+  - @panneau/intl@5.0.0-alpha.47
+  - @panneau/ui@5.0.0-alpha.47
+  - @panneau/protocol@5.0.0-alpha.47
+
 ## 5.0.0-alpha.46
 
 ### Patch Changes

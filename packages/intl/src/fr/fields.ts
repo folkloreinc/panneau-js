@@ -10,6 +10,8 @@ export const fieldsFr: Record<string, string> = {
     'panneau.fields.restored': '« {name} » remis en place',
     'panneau.fields.moveUp': 'Monter l’élément {index}',
     'panneau.fields.moveDown': 'Descendre l’élément {index}',
+    'panneau.fields.duplicateItem': 'Dupliquer l’élément {index}',
+    'panneau.fields.insertItem': 'Ajouter un élément entre les éléments {before} et {after}',
     'panneau.fields.item': 'Élément {index}',
     'panneau.fields.noItems': 'Aucun élément pour l’instant.',
     'panneau.fields.collapseAll': 'Tout replier',

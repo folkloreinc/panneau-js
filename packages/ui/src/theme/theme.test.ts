@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
 import { bootstrapTheme } from './bootstrap';
-import { getThemeCss, hashString, resolveReference } from './theme';
+import { WHITE, contrastRatio, parseColor } from './color';
+import { deriveAccentStrong, getThemeCss, hashString, resolveReference } from './theme';
+
+const ratio = (a: string, b: string) =>
+    contrastRatio(parseColor(a) ?? WHITE, parseColor(b) ?? WHITE);
 
 describe('getThemeCss', () => {
     it('scopes the tokens of a theme, with dark overrides', () => {
@@ -13,9 +17,10 @@ describe('getThemeCss', () => {
             'abc',
         );
         expect(css).toBe(
-            '[data-panneau-theme="abc"]{--panneau-color-accent:#05f;}' +
-                '[data-panneau-theme="abc"][data-color-scheme="dark"]{--panneau-color-accent:#9cf;}' +
-                '@media (prefers-color-scheme: dark){[data-panneau-theme="abc"][data-color-scheme="auto"]{--panneau-color-accent:#9cf;}}',
+            // The accent as text is the accent itself when it is readable.
+            '[data-panneau-theme="abc"]{--panneau-color-accent:#05f;--panneau-color-accent-strong:#0055ff;}' +
+                '[data-panneau-theme="abc"][data-color-scheme="dark"]{--panneau-color-accent:#9cf;--panneau-color-accent-strong:#99ccff;}' +
+                '@media (prefers-color-scheme: dark){[data-panneau-theme="abc"][data-color-scheme="auto"]{--panneau-color-accent:#9cf;--panneau-color-accent-strong:#99ccff;}}',
         );
     });
 
@@ -78,7 +83,7 @@ describe('getThemeCss', () => {
             'abc',
         );
         expect(css).toContain(
-            '[data-panneau-theme="abc"]{--panneau-palette-orange:#f25c05;--panneau-color-accent:var(--panneau-palette-orange);}',
+            '[data-panneau-theme="abc"]{--panneau-palette-orange:#f25c05;--panneau-color-accent:var(--panneau-palette-orange);--panneau-color-accent-strong:#b84604;}',
         );
         expect(css).toContain('--panneau-tone-solid:#f25c05;');
     });
@@ -135,5 +140,76 @@ describe('bootstrapTheme', () => {
     it('maps tokens to Bootstrap variables', () => {
         expect(bootstrapTheme.tokens['panneau-color-accent']).toBe('var(--bs-primary)');
         expect(bootstrapTheme.dark).toBeUndefined();
+    });
+});
+
+describe('deriveAccentStrong', () => {
+    // A theme with a light accent, as a yellow brand color gives: dark text on the yellow.
+    const yellow = {
+        tokens: {
+            'panneau-color-accent': '#ffea00',
+            'panneau-color-accent-text': '#18181b',
+            'panneau-color-accent-subtle': '#fffbd1',
+        },
+        dark: { 'panneau-color-accent-subtle': '#3a3500' },
+    };
+
+    it('makes a light accent readable as text on the backgrounds of each scheme', () => {
+        const { light, dark } = deriveAccentStrong(yellow);
+        ['#ffffff', '#fffbd1'].forEach((background) => {
+            expect(ratio(light ?? '', background)).toBeGreaterThanOrEqual(4.5);
+        });
+        ['#09090b', '#18181b', '#3a3500'].forEach((background) => {
+            expect(ratio(dark ?? '', background)).toBeGreaterThanOrEqual(4.5);
+        });
+        // In the dark scheme, the yellow is readable as it is.
+        expect(dark).toBe('#ffea00');
+    });
+
+    it('follows the surfaces of the theme', () => {
+        const surface = '#2b2b2b';
+        const { light } = deriveAccentStrong({
+            tokens: {
+                'panneau-color-accent': '#3b82f6',
+                'panneau-color-surface': surface,
+                'panneau-color-bg': surface,
+                'panneau-color-accent-subtle': '#1e3a5f',
+            },
+        });
+        expect(ratio(light ?? '', surface)).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it('keeps the value a theme sets, in the schemes it applies to', () => {
+        expect(
+            deriveAccentStrong({
+                tokens: { 'panneau-color-accent': '#ffea00' },
+                dark: { 'panneau-color-accent-strong': '#fff36b' },
+            }).dark,
+        ).toBeUndefined();
+        expect(
+            deriveAccentStrong({
+                tokens: {
+                    'panneau-color-accent': '#ffea00',
+                    'panneau-color-accent-strong': '#5c5300',
+                },
+            }),
+        ).toEqual({});
+    });
+
+    it('falls back to the accent when it can not read it, and derives nothing without one', () => {
+        expect(deriveAccentStrong({ tokens: { 'panneau-color-accent': 'var(--brand)' } })).toEqual({
+            light: 'var(--panneau-color-accent)',
+            dark: 'var(--panneau-color-accent)',
+        });
+        expect(deriveAccentStrong({ tokens: { 'panneau-color-text': '#000' } })).toEqual({});
+    });
+
+    it('is written by getThemeCss() in each scheme where it differs', () => {
+        const css = getThemeCss(yellow, 'abc');
+        const { light } = deriveAccentStrong(yellow);
+        expect(css).toContain(`--panneau-color-accent-strong:${light};}`);
+        expect(css).toContain(
+            '[data-panneau-theme="abc"][data-color-scheme="dark"]{--panneau-color-accent-subtle:#3a3500;--panneau-color-accent-strong:#ffea00;}',
+        );
     });
 });

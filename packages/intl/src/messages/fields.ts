@@ -35,6 +35,15 @@ export const fieldsMessages = {
         id: 'panneau.fields.moveDown',
         defaultMessage: 'Move item {index} down',
     }),
+    duplicateItem: defineMessage<{ index: number }>({
+        id: 'panneau.fields.duplicateItem',
+        defaultMessage: 'Duplicate item {index}',
+    }),
+    /** The control between two items of a repeater that adds one there. */
+    insertItem: defineMessage<{ before: number; after: number }>({
+        id: 'panneau.fields.insertItem',
+        defaultMessage: 'Add an item between items {before} and {after}',
+    }),
     item: defineMessage<{ index: number }>({
         id: 'panneau.fields.item',
         defaultMessage: 'Item {index}',

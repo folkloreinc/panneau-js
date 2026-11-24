@@ -12,6 +12,7 @@ import {
     type Field,
     LinkSettings,
     MoneySettings,
+    RepeaterSettings,
     RichTextSettings,
     SelectSettings,
 } from './schemas/field';
@@ -53,12 +54,13 @@ const SETTINGS: Readonly<Record<string, z.ZodType>> = {
     money: MoneySettings,
     link: LinkSettings,
     address: AddressSettings,
+    repeater: RepeaterSettings,
 };
 
 /**
  * Checks the settings of the fields whose type the protocol describes the settings of (`date`,
- * `select`, `richtext`, `duration`, `daterange`, `money`, `link`, `address`), nested ones
- * included.
+ * `select`, `richtext`, `duration`, `daterange`, `money`, `link`, `address`, `repeater`), nested
+ * ones included.
  */
 function checkFieldSettings(fields: readonly Field[], path: string): ValidationIssue[] {
     return fields.flatMap((field, index) => {
@@ -85,7 +87,8 @@ function checkFieldSettings(fields: readonly Field[], path: string): ValidationI
  * Validates a definition, as returned by `GET /definition`: against the schema, then the
  * shared block types, which it resolves (see `resolveBlockTypeSets()`), the references between its parts (see `lintDefinition()`), and the settings of field types that
  * the protocol describes (`DateSettings`, `SelectSettings`, `RichTextSettings`,
- * `DurationSettings`, `DateRangeSettings`, `MoneySettings`, `LinkSettings`, `AddressSettings`).
+ * `DurationSettings`, `DateRangeSettings`, `MoneySettings`, `LinkSettings`, `AddressSettings`,
+ * `RepeaterSettings`).
  */
 export function validateDefinition(input: unknown): ValidationResult<Definition> {
     const result = validate(Definition, input);

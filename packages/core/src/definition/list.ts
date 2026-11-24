@@ -3,7 +3,9 @@ import {
     BUILT_IN_ITEM_ACTIONS,
     type BuiltInItemAction,
     UNDO_LIMIT,
+    getFieldLabel,
     getNestedShape,
+    humanizeKey,
     isBuiltInItemAction,
 } from '@panneau/protocol/runtime';
 
@@ -196,7 +198,7 @@ export function resolveList(resource: Resource): ResolvedList {
         const resolved: ResolvedColumn = {
             id,
             field,
-            label: column.label ?? field?.label ?? id,
+            label: column.label ?? (field !== null ? getFieldLabel(field) : humanizeKey(id)),
             display: column.display ?? field?.display ?? field?.type ?? null,
             sortable:
                 column.sortable ?? (column.field !== undefined && sorts.includes(column.field)),

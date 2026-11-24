@@ -474,6 +474,13 @@ export const fieldsMessages: {
     moveDown: PanneauMessage<    {
     index: number;
     }>;
+    duplicateItem: PanneauMessage<    {
+    index: number;
+    }>;
+    insertItem: PanneauMessage<    {
+    before: number;
+    after: number;
+    }>;
     item: PanneauMessage<    {
     index: number;
     }>;
@@ -851,6 +858,9 @@ export const listsMessages: {
     calendarMoreUnknown: PanneauMessage<    {
     shown: number;
     }>;
+    calendarEmpty: PanneauMessage<    {
+    month: string;
+    }>;
     columns: PanneauMessage<Record<never, never>>;
     moveColumnUp: PanneauMessage<    {
     column: string;
@@ -889,6 +899,13 @@ export const listsMessages: {
     confirmMessage: PanneauMessage<    {
     count: number;
     action: string;
+    }>;
+    confirmDeleteTitle: PanneauMessage<    {
+    subject: string;
+    }>;
+    confirmMessageFor: PanneauMessage<    {
+    action: string;
+    subject: string;
     }>;
     confirmSkipped: PanneauMessage<    {
     count: number;

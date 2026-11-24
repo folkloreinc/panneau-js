@@ -1,5 +1,37 @@
 # @panneau/actions
 
+## 5.0.0-alpha.47
+
+### Patch Changes
+
+- 06f3e83: Ask before losing unsaved changes when closing the parameters of an action or the media picker, with the dialog and the words of leaving a form page ("Leave without saving?", "Stay" keeps the values). Closing them unchanged doesn't ask. The parameters of an action are also guarded when the page is reloaded or left through the app's router.
+- Updated dependencies [2aab034]
+- Updated dependencies [79abfd4]
+- Updated dependencies [ff56beb]
+- Updated dependencies [35b9955]
+- Updated dependencies [a55f51b]
+- Updated dependencies [ecf96f3]
+- Updated dependencies [09cca06]
+- Updated dependencies [1c63342]
+- Updated dependencies [9e90547]
+- Updated dependencies [060c1e9]
+- Updated dependencies [b754dda]
+- Updated dependencies [3eb376c]
+- Updated dependencies [7e99405]
+- Updated dependencies [8ad5274]
+- Updated dependencies [55eced0]
+- Updated dependencies [f8c5d4f]
+- Updated dependencies [d256517]
+- Updated dependencies [4686a26]
+- Updated dependencies [1350d30]
+- Updated dependencies [9a26df5]
+  - @panneau/forms@5.0.0-alpha.47
+  - @panneau/intl@5.0.0-alpha.47
+  - @panneau/ui@5.0.0-alpha.47
+  - @panneau/protocol@5.0.0-alpha.47
+  - @panneau/core@5.0.0-alpha.47
+  - @panneau/data@5.0.0-alpha.47
+
 ## 5.0.0-alpha.46
 
 ### Patch Changes

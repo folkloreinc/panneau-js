@@ -1,5 +1,40 @@
 # @panneau/media
 
+## 5.0.0-alpha.47
+
+### Patch Changes
+
+- 79abfd4: Undo a removal in a field: removing an item of a repeater, a card of a relation or a media of a media field now offers "Undo" in a toast (decision 0063), which puts it back at its place, with its value. Outside a `PanneauRoot`, where there is no toast region, the removal stays immediate. Repeater items now have a stable key, which isn't part of their value: the state of their fields (an editor's history), whether they are expanded and the focus follow them when they move. `@panneau/ui` exports `useUndoToast()`, which offers "Undo" in a toast and is `null` outside a `PanneauRoot`.
+- 06f3e83: Ask before losing unsaved changes when closing the parameters of an action or the media picker, with the dialog and the words of leaving a form page ("Leave without saving?", "Stay" keeps the values). Closing them unchanged doesn't ask. The parameters of an action are also guarded when the page is reloaded or left through the app's router.
+- 35b9955: Fields, columns, filters and pages without a `label` show their key made readable instead of the key as written: `published_at` reads "Published at", `author_id` reads "Author", `seo.title` reads "Seo title". The same fallback names fields, list columns, filters and their chips, sort options, the columns menu, the details of an item, the error summary and the conflict dialog of a form, inline editing, the filters of the media picker, and the pages in the navigation and the "Go to…" palette. A label given by the definition is shown as given, an empty one included. `@panneau/protocol/runtime` exports the fallback: `humanizeKey()`, `labelOrKey()` and `getFieldLabel()`.
+- b754dda: Media fields take files dropped anywhere on them, their media included, with a visible and announced drop state and the same checks as their button (types, size, one file without `multiple`), and files pasted while the focus is inside them, except in a text input. The search of the media picker, and its text filters, wait for a pause in typing (300 ms), and Enter searches at once. A media uploaded in the picker or the media library now shows first in the library it went to, whatever the sort, until the next search, filter or sort, and once only when the pages that follow have it too. `@panneau/fields` exports `FileDropZone`, the zone that takes these drops and pastes, and `FilePicker` gets `isDroppable`, `false` inside one.
+- Updated dependencies [2aab034]
+- Updated dependencies [79abfd4]
+- Updated dependencies [ff56beb]
+- Updated dependencies [35b9955]
+- Updated dependencies [a55f51b]
+- Updated dependencies [ecf96f3]
+- Updated dependencies [09cca06]
+- Updated dependencies [1c63342]
+- Updated dependencies [9e90547]
+- Updated dependencies [060c1e9]
+- Updated dependencies [b754dda]
+- Updated dependencies [3eb376c]
+- Updated dependencies [7e99405]
+- Updated dependencies [8ad5274]
+- Updated dependencies [55eced0]
+- Updated dependencies [f8c5d4f]
+- Updated dependencies [d256517]
+- Updated dependencies [4686a26]
+- Updated dependencies [1350d30]
+- Updated dependencies [9a26df5]
+  - @panneau/intl@5.0.0-alpha.47
+  - @panneau/fields@5.0.0-alpha.47
+  - @panneau/ui@5.0.0-alpha.47
+  - @panneau/protocol@5.0.0-alpha.47
+  - @panneau/core@5.0.0-alpha.47
+  - @panneau/data@5.0.0-alpha.47
+
 ## 5.0.0-alpha.46
 
 ### Patch Changes

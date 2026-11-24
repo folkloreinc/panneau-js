@@ -1,3 +1,4 @@
+import { getFieldLabel } from '@panneau/protocol/runtime';
 import { usePanneauIntl } from '@panneau/ui';
 
 import { cx } from '../shared/cx';
@@ -14,7 +15,7 @@ export function MissingFieldEntry({ field, className }: FieldEntryProps) {
     const intl = usePanneauIntl();
     return (
         <div className={cx(styles.missing, className)} data-field-type={field.type}>
-            <span className={styles.label}>{field.label ?? field.name}</span>
+            <span className={styles.label}>{getFieldLabel(field)}</span>
             <p className={styles.notice} role="note">
                 {intl.formatMessage(messages.missingPlugin, { type: field.type })}
             </p>
