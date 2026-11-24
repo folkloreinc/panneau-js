@@ -264,6 +264,8 @@ export function Dock({
             >
                 <Button
                     aria-label={getUserMenuLabel(definition, intl)}
+                    // The user's menu is a popover: a menu, then the appearance and the density
+                    aria-haspopup="dialog"
                     className={cx(styles.item, styles.user)}
                     data-current={
                         (profilePath !== null && currentPath === profilePath) || undefined

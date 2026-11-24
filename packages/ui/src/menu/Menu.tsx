@@ -31,6 +31,11 @@ export interface MenuProps<T extends object> extends Omit<AriaMenuProps<T>, 'cla
      */
     footer?: ReactNode;
     footerClassName?: string;
+    /**
+     * The menu without its popover, inside one that has more than the menu: a `Popover` with
+     * other controls (#487). Its `onClose` closes that popover after an item's action.
+     */
+    isInline?: boolean;
 }
 
 /**
@@ -44,6 +49,7 @@ export function Menu<T extends object>({
     placement = 'bottom start',
     footer,
     footerClassName,
+    isInline = false,
     ...props
 }: MenuProps<T>) {
     const footerId = useId();
@@ -59,18 +65,22 @@ export function Menu<T extends object>({
             className={cx('panneau-menu', listBoxStyles.listBox, className)}
         />
     );
+    const content = hasFooter ? (
+        <div className={styles.layout}>
+            {menu}
+            <div id={footerId} className={cx(styles.footer, footerClassName)}>
+                {footer}
+            </div>
+        </div>
+    ) : (
+        menu
+    );
+    if (isInline) {
+        return content;
+    }
     return (
         <PopoverSurface placement={placement} className={popoverClassName}>
-            {hasFooter ? (
-                <div className={styles.layout}>
-                    {menu}
-                    <div id={footerId} className={cx(styles.footer, footerClassName)}>
-                        {footer}
-                    </div>
-                </div>
-            ) : (
-                menu
-            )}
+            {content}
         </PopoverSurface>
     );
 }

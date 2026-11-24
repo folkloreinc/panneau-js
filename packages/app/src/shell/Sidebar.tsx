@@ -234,6 +234,8 @@ export function Sidebar({
     const userButton = (
         <Button
             aria-label={userLabel}
+            // The user's menu is a popover: a menu, then the appearance and the density
+            aria-haspopup="dialog"
             className={styles.user}
             data-current={(profilePath !== null && currentPath === profilePath) || undefined}
         >

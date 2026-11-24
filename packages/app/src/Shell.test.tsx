@@ -719,7 +719,7 @@ describe('the app shell', () => {
             // Only one button in the footer: no buttons of the appearance or the language
             expect(sidebar().queryByRole('button', { name: /Appearance/ })).toBeNull();
             expect(sidebar().queryByRole('button', { name: 'Log out' })).toBeNull();
-            expect(account).toHaveAttribute('aria-haspopup', 'true');
+            expect(account).toHaveAttribute('aria-haspopup', 'dialog');
             expect(account).toHaveAttribute('aria-expanded', 'false');
 
             account.focus();
@@ -736,35 +736,50 @@ describe('the app shell', () => {
                     name: 'Ada Lovelace ada.lovelace@example.com',
                 }),
             ).toContainElement(within(menu).getByRole('menuitem', { name: 'Profile' }));
-            const appearance = within(within(menu).getByRole('group', { name: 'Appearance' }));
+            expect(within(menu).getByRole('menuitem', { name: 'Log out' })).toBeInTheDocument();
+            // The appearance after the menu, as a row of icons named by their tooltips (#487)
+            const popover = within(
+                screen.getByRole('dialog', { name: 'Your account (Ada Lovelace)' }),
+            );
+            const appearance = within(popover.getByRole('radiogroup', { name: 'Appearance' }));
             expect(
                 appearance
-                    .getAllByRole('menuitemradio')
-                    .map((item) => [item.textContent, item.getAttribute('aria-checked')]),
+                    .getAllByRole('radio')
+                    .map((item) => [
+                        item.getAttribute('aria-label'),
+                        item.getAttribute('aria-checked'),
+                    ]),
             ).toEqual([
                 ['Light', 'true'],
                 ['Dark', 'false'],
                 ['Same as the system', 'false'],
             ]);
-            expect(within(menu).getByRole('menuitem', { name: 'Log out' })).toBeInTheDocument();
 
-            await user.keyboard('{ArrowDown}{ArrowDown}');
-            expect(appearance.getByRole('menuitemradio', { name: 'Dark' })).toHaveFocus();
-            await user.keyboard('{Enter}');
+            // Tab goes from the menu to the appearance, where the arrows move
+            await user.tab();
+            expect(appearance.getByRole('radio', { name: 'Light' })).toHaveFocus();
+            await user.keyboard('{ArrowRight}');
+            expect(appearance.getByRole('radio', { name: 'Dark' })).toHaveFocus();
+            await user.keyboard(' ');
             expect(window.localStorage.getItem('panneau:color-scheme')).toBe('dark');
-            // The menu closes, and gives the focus back to its button
-            await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument());
-            await waitFor(() => expect(account).toHaveFocus());
-
-            await user.keyboard('{Enter}');
-            const reopened = await screen.findByRole('menu');
-            expect(within(reopened).getByRole('menuitemradio', { name: 'Dark' })).toHaveAttribute(
+            // It stays open, to compare; Escape closes it and gives the focus back to its button
+            expect(appearance.getByRole('radio', { name: 'Dark' })).toHaveAttribute(
                 'aria-checked',
                 'true',
             );
             await user.keyboard('{Escape}');
-            await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument());
+            await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
             await waitFor(() => expect(account).toHaveFocus());
+
+            await user.keyboard('{Enter}');
+            const reopened = await screen.findByRole('dialog');
+            expect(within(reopened).getByRole('radio', { name: 'Dark' })).toHaveAttribute(
+                'aria-checked',
+                'true',
+            );
+            // An item of the menu closes it
+            await user.keyboard('{Enter}');
+            await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
         });
 
         it('has no profile without the resource of users', async () => {
@@ -773,7 +788,7 @@ describe('the app shell', () => {
             await user.click(sidebar().getByRole('button', { name: 'Your account (Ada)' }));
             const menu = await screen.findByRole('menu');
             expect(within(menu).queryByRole('menuitem', { name: 'Profile' })).toBeNull();
-            expect(within(menu).getByRole('group', { name: 'Appearance' })).toBeInTheDocument();
+            expect(screen.getByRole('radiogroup', { name: 'Appearance' })).toBeInTheDocument();
         });
 
         it('opens the same menu from the avatar of the rail', async () => {
@@ -782,8 +797,8 @@ describe('the app shell', () => {
             await user.click(screen.getByRole('button', { name: 'Collapse the sidebar' }));
             const account = sidebar().getByRole('button', { name: 'Your account (Ada)' });
             await user.click(account);
-            const menu = await screen.findByRole('menu', { name: 'Your account (Ada)' });
-            expect(within(menu).getByRole('menuitemradio', { name: 'Light' })).toHaveAttribute(
+            const menu = await screen.findByRole('dialog', { name: 'Your account (Ada)' });
+            expect(within(menu).getByRole('radio', { name: 'Light' })).toHaveAttribute(
                 'aria-checked',
                 'true',
             );
@@ -863,11 +878,12 @@ describe('the app shell', () => {
             // The same menu as the sidebar's, named after its button
             const menu = await screen.findByRole('menu', { name: 'Your account (Ada)' });
             expect(within(menu).getByRole('group', { name: 'Ada' })).toBeInTheDocument();
-            expect(within(menu).getByRole('menuitemradio', { name: 'Light' })).toHaveAttribute(
+            const popover = within(screen.getByRole('dialog', { name: 'Your account (Ada)' }));
+            expect(popover.getByRole('radio', { name: 'Light' })).toHaveAttribute(
                 'aria-checked',
                 'true',
             );
-            await user.click(within(menu).getByRole('menuitemradio', { name: 'Dark' }));
+            await user.click(popover.getByRole('radio', { name: 'Dark' }));
             expect(window.localStorage.getItem('panneau:color-scheme')).toBe('dark');
         });
     });

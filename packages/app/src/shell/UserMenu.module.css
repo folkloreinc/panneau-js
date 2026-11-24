@@ -5,6 +5,35 @@
     max-width: min(20rem, calc(100vw - 2 * var(--panneau-space-4)));
 }
 
+/* The menu, then the rows of the appearance and the density, without the padding of a dialog.
+ * Doubled: over the dialog's own padding, whatever the CSS order. */
+.dialog.dialog {
+    display: flex;
+    flex-direction: column;
+    max-height: inherit;
+    padding: 0;
+}
+
+/* The appearance and the density: a label, and a row of icons at the end (#487). */
+.settings {
+    display: grid;
+    gap: var(--panneau-space-2);
+    padding: var(--panneau-space-2) var(--panneau-space-3);
+    border-top: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
+.setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--panneau-space-3);
+}
+
+.settingLabel {
+    font-size: var(--panneau-font-size-sm);
+    color: var(--panneau-color-text-muted);
+}
+
 /* Who is logged in, above their profile: the name and the whole email, not an eyebrow. */
 .header {
     text-transform: none;

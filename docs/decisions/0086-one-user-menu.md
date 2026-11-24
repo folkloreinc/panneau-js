@@ -1,6 +1,6 @@
 # 0086: One user's menu, at the bottom of the sidebar and in the dock
 
-- Status: accepted, amended by [0104](0104-users-choose-the-density.md): the menu has a choice of the density, after the appearance
+- Status: accepted, amended by [0104](0104-users-choose-the-density.md): the menu has a choice of the density, after the appearance, and by [#487](https://github.com/folkloreinc/panneau-js/issues/487): the appearance and the density are rows of icons after the menu
 - Date: 2026-11-17
 - Issue: [#316](https://github.com/folkloreinc/panneau-js/issues/316)
 - Amends: where the language switcher sits in [0083](0083-a-language-switcher-in-the-shell.md), the "Log out" button of [0037](0037-login-page-token-and-logout.md), the link of the user's name in [0050](0050-account-page.md), and the user's menu of the dock in [0076](0076-a-dock-in-place-of-the-sidebar.md)
@@ -20,9 +20,10 @@ The dock already gathers the same controls in a user's menu ([0076](0076-a-dock-
     - On the user's profile, the button has the current state of a link of the sidebar.
 - **The user's menu**, in this order:
     - who is logged in, their name and their whole email, as the title of a first group; in it, **"Profile"**, when the user has one (their account page, or their item in the resource of users, as in 0050);
-    - **"Appearance"**: Light, Dark and Same as the system, as choices with a check on the current one;
     - **"Language"**: the interface locales, each in its own language, with a check on the current one, only with more than one (0083);
-    - a line, then **"Log out"**, when the app can log out (0037).
+    - "Keyboard shortcuts", which opens their help ([0112](0112-one-registry-of-keyboard-shortcuts.md));
+    - a line, then **"Log out"**, when the app can log out (0037);
+    - after the menu, a line, then **"Appearance"**: Light, Dark and Same as the system, as a row of icons (a segmented control), each named by its tooltip. Amended by #487: it was a group of the menu, with a check on the current choice, which took four lines. The menu and the row share a popover, a non-modal dialog named as the button: Tab goes from the menu to the row, a choice there leaves it open, and an item of the menu closes it.
 - **The dock has the same menu** behind its user's tab. Its first group, the user with their name and email, replaces the item with the avatar of 0076.
 - "Go to…" keeps its commands of the appearance and of the languages (0029, 0083).
 
@@ -30,5 +31,5 @@ The dock already gathers the same controls in a user's menu ([0076](0076-a-dock-
 
 - The footer has room for a long email, and the menu shows it whole. Every setting of the user is in one place, the same in the sidebar, the rail and the dock.
 - Changing the appearance or the language takes two clicks instead of one, and the choices are named instead of guessed from an icon.
-- The profile, the appearance and the logout are no longer buttons and links of the sidebar but items of a menu: tests and stories find them in the menu (`menuitem`, `menuitemradio`).
+- The profile and the logout are no longer buttons and links of the sidebar but items of a menu: tests and stories find them in the menu (`menuitem`, `menuitemradio`). The appearance is a radio group in the popover (`radiogroup`, `radio`, since #487).
 - The shell's `Sidebar` and `Dock` share the menu (`UserMenu`, internal to `@panneau/app`). `@panneau/intl` gains `panneau.app.userMenu`, the label of the button.

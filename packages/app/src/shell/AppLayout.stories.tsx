@@ -211,7 +211,8 @@ export const CollapsibleGroups: Story = {
 
 /**
  * The user's menu (decision 0086), the only button of the footer: who is logged in, their profile,
- * the appearance and the language (decision 0083) with a check on the current one, and "Log out".
+ * the language (decision 0083) with a check on the current one, and "Log out", then the appearance
+ * and the density as rows of icons named by their tooltips (#487), which leave it open.
  */
 export const UserMenu: Story = {
     play: async ({ args, canvasElement }) => {
@@ -219,20 +220,34 @@ export const UserMenu: Story = {
         const body = within(canvasElement.ownerDocument.body);
         const account = canvas.getByRole('button', { name: 'Your account (Ada Lovelace)' });
         await userEvent.click(account);
-        const menu = within(await body.findByRole('menu', { name: 'Your account (Ada Lovelace)' }));
+        const popover = within(
+            await body.findByRole('dialog', { name: 'Your account (Ada Lovelace)' }),
+        );
+        const menu = within(popover.getByRole('menu', { name: 'Your account (Ada Lovelace)' }));
         await expect(menu.getByRole('menuitem', { name: 'Profile' })).toHaveAttribute(
             'href',
             '/admin/resources/users/1/edit',
         );
-        await expect(menu.getByRole('menuitemradio', { name: 'Light' })).toHaveAttribute(
+        const appearance = within(popover.getByRole('radiogroup', { name: 'Appearance' }));
+        await expect(appearance.getByRole('radio', { name: 'Light' })).toHaveAttribute(
             'aria-checked',
             'true',
         );
-        await userEvent.click(menu.getByRole('menuitemradio', { name: 'Dark' }));
+        // Each icon is named by its tooltip
+        const dark = appearance.getByRole('radio', { name: 'Dark' });
+        await expect(dark).toHaveTextContent('');
+        await userEvent.hover(dark);
+        await expect(await body.findByRole('tooltip')).toHaveTextContent('Dark');
+        await userEvent.click(dark);
+        await expect(dark).toHaveAttribute('aria-checked', 'true');
+        // Both choices fit on one line each, beside their label
+        const density = popover.getByRole('radiogroup', { name: 'Density' });
+        await expect(density.getBoundingClientRect().height).toBeLessThan(48);
+        await userEvent.keyboard('{Escape}');
 
         await userEvent.click(account);
-        const reopened = within(await body.findByRole('menu'));
-        await expect(reopened.getByRole('menuitemradio', { name: 'Dark' })).toHaveAttribute(
+        const reopened = within(await body.findByRole('dialog'));
+        await expect(reopened.getByRole('radio', { name: 'Dark' })).toHaveAttribute(
             'aria-checked',
             'true',
         );
@@ -325,13 +340,13 @@ export const Density: Story = {
         await expect(scope).toHaveAttribute('data-density', 'touch');
         const account = canvas.getByRole('button', { name: 'Your account (Ada Lovelace)' });
         await userEvent.click(account);
-        const menu = within(await body.findByRole('menu'));
-        const density = within(menu.getByRole('group', { name: 'Density' }));
-        await expect(density.getByRole('menuitemradio', { name: 'Default' })).toHaveAttribute(
+        const menu = within(await body.findByRole('dialog'));
+        const density = within(menu.getByRole('radiogroup', { name: 'Density' }));
+        await expect(density.getByRole('radio', { name: 'Default' })).toHaveAttribute(
             'aria-checked',
             'true',
         );
-        await userEvent.click(density.getByRole('menuitemradio', { name: 'Compact' }));
+        await userEvent.click(density.getByRole('radio', { name: 'Compact' }));
         await expect(scope).toHaveAttribute('data-density', 'compact');
         await expect(window.localStorage.getItem('panneau:density')).toBe('compact');
     },
@@ -353,8 +368,8 @@ export const RememberedDensity: Story = {
         await userEvent.click(
             within(canvasElement).getByRole('button', { name: 'Your account (Ada Lovelace)' }),
         );
-        const menu = within(await body.findByRole('menu'));
-        await expect(menu.getByRole('menuitemradio', { name: 'Comfortable' })).toHaveAttribute(
+        const menu = within(await body.findByRole('dialog'));
+        await expect(menu.getByRole('radio', { name: 'Comfortable' })).toHaveAttribute(
             'aria-checked',
             'true',
         );
@@ -377,8 +392,8 @@ export const LockedDensity: Story = {
         await userEvent.click(
             within(canvasElement).getByRole('button', { name: 'Your account (Ada Lovelace)' }),
         );
-        const menu = within(await body.findByRole('menu'));
-        await expect(menu.getByRole('group', { name: 'Appearance' })).toBeInTheDocument();
-        await expect(menu.queryByRole('group', { name: 'Density' })).toBeNull();
+        const menu = within(await body.findByRole('dialog'));
+        await expect(menu.getByRole('radiogroup', { name: 'Appearance' })).toBeInTheDocument();
+        await expect(menu.queryByRole('radiogroup', { name: 'Density' })).toBeNull();
     },
 };

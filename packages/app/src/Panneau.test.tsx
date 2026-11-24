@@ -48,7 +48,8 @@ const navigation = () => within(screen.getByRole('navigation', { name: 'Main nav
 /** Opens the user's menu (decision 0086). */
 async function openUserMenu(user: ReturnType<typeof userEvent.setup>) {
     await user.click(screen.getByRole('button', { name: /^Your account/ }));
-    return within(await screen.findByRole('menu'));
+    // The menu, and the appearance and density after it (#487)
+    return within(await screen.findByRole('dialog', { name: /^Your account/ }));
 }
 
 const createQueryClient = () => new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -146,27 +147,32 @@ describe('Panneau', () => {
             renderWithTheme({ density: 'touch' });
             expect(root()).toHaveAttribute('data-density', 'touch');
             const menu = await openUserMenu(user);
-            const density = within(menu.getByRole('group', { name: 'Density' }));
+            const density = within(menu.getByRole('radiogroup', { name: 'Density' }));
             expect(
                 density
-                    .getAllByRole('menuitemradio')
-                    .map((item) => [item.textContent, item.getAttribute('aria-checked')]),
+                    .getAllByRole('radio')
+                    .map((item) => [
+                        item.getAttribute('aria-label'),
+                        item.getAttribute('aria-checked'),
+                    ]),
             ).toEqual([
                 ['Compact', 'false'],
                 ['Comfortable', 'false'],
                 ['Default', 'true'],
             ]);
-            await user.click(density.getByRole('menuitemradio', { name: 'Compact' }));
+            await user.click(density.getByRole('radio', { name: 'Compact' }));
             expect(root()).toHaveAttribute('data-density', 'compact');
             expect(window.localStorage.getItem('panneau:density')).toBe('compact');
 
             // "Default" goes back to the definition's
+            await user.keyboard('{Escape}');
+            await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
             const reopened = await openUserMenu(user);
-            expect(reopened.getByRole('menuitemradio', { name: 'Compact' })).toHaveAttribute(
+            expect(reopened.getByRole('radio', { name: 'Compact' })).toHaveAttribute(
                 'aria-checked',
                 'true',
             );
-            await user.click(reopened.getByRole('menuitemradio', { name: 'Default' }));
+            await user.click(reopened.getByRole('radio', { name: 'Default' }));
             expect(root()).toHaveAttribute('data-density', 'touch');
         });
 
@@ -174,7 +180,7 @@ describe('Panneau', () => {
             const user = userEvent.setup();
             const { unmount } = renderWithTheme({ density: 'auto' });
             const menu = await openUserMenu(user);
-            await user.click(menu.getByRole('menuitemradio', { name: 'Comfortable' }));
+            await user.click(menu.getByRole('radio', { name: 'Comfortable' }));
             unmount();
             renderWithTheme({ density: 'auto' });
             expect(root()).toHaveAttribute('data-density', 'comfortable');
@@ -200,8 +206,8 @@ describe('Panneau', () => {
             renderWithTheme({ density: 'comfortable', lockDensity: true });
             expect(root()).toHaveAttribute('data-density', 'comfortable');
             const menu = await openUserMenu(user);
-            expect(menu.getByRole('group', { name: 'Appearance' })).toBeInTheDocument();
-            expect(menu.queryByRole('group', { name: 'Density' })).toBeNull();
+            expect(menu.getByRole('radiogroup', { name: 'Appearance' })).toBeInTheDocument();
+            expect(menu.queryByRole('radiogroup', { name: 'Density' })).toBeNull();
         });
 
         it('keeps the touch targets of `auto` on touch screens, whatever the choice', async () => {

@@ -106,8 +106,8 @@ describe('the language switcher (decision 0083)', () => {
         const user = userEvent.setup();
         renderApp({ interfaceLocales: LOCALES.slice(0, 1) });
         await user.click(await screen.findByRole('button', { name: 'Your account (Ada)' }));
-        const menu = within(await screen.findByRole('menu'));
-        expect(menu.getByRole('group', { name: 'Appearance' })).toBeInTheDocument();
+        const menu = within(await screen.findByRole('dialog', { name: 'Your account (Ada)' }));
+        expect(menu.getByRole('radiogroup', { name: 'Appearance' })).toBeInTheDocument();
         expect(menu.queryByRole('group', { name: 'Language' })).not.toBeInTheDocument();
     });
 

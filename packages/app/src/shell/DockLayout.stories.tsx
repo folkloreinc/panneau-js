@@ -153,17 +153,21 @@ export const Group: Story = {
     },
 };
 
-/** The user's menu, the sidebar's (decision 0086): the color scheme, the language, "Log out". */
+/**
+ * The user's menu, the sidebar's (decision 0086): the language, "Log out", then the color scheme
+ * as a row of icons (#487).
+ */
 export const UserMenu: Story = {
     play: async ({ args, canvasElement }) => {
         const canvas = within(canvasElement);
         const body = within(canvasElement.ownerDocument.body);
         await userEvent.click(canvas.getByRole('button', { name: 'Your account (Ada Lovelace)' }));
-        const menu = await body.findByRole('menu', { name: 'Your account (Ada Lovelace)' });
-        await expect(within(menu).getByRole('menuitemradio', { name: 'Light' })).toHaveAttribute(
+        const popover = await body.findByRole('dialog', { name: 'Your account (Ada Lovelace)' });
+        await expect(within(popover).getByRole('radio', { name: 'Light' })).toHaveAttribute(
             'aria-checked',
             'true',
         );
+        const menu = within(popover).getByRole('menu', { name: 'Your account (Ada Lovelace)' });
         await expect(
             within(within(menu).getByRole('group', { name: 'Language' })).getByRole(
                 'menuitemradio',
