@@ -620,6 +620,12 @@ export const OnAPhone: Story = {
         await expect(table.querySelector('thead')).not.toBeVisible();
         await expect(canvas.queryByRole('radiogroup', { name: 'Layout' })).toBeNull();
         const select = canvas.getByRole('button', { name: 'Select' });
+        // The menu's code loads on phones only: its button, once it is there
+        await waitFor(() =>
+            expect(canvas.getByRole('button', { name: 'More options' })).toHaveAttribute(
+                'aria-haspopup',
+            ),
+        );
         const more = canvas.getByRole('button', { name: 'More options' });
         await expect(more.getBoundingClientRect().top).toBe(select.getBoundingClientRect().top);
         await expect(canvas.queryByRole('button', { name: 'Export' })).toBeNull();
