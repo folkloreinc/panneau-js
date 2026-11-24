@@ -192,8 +192,10 @@ export interface RelationFieldBaseProps extends Omit<FieldProps<never>, 'value' 
     source?: RelationSource | null;
     /**
      * Creates an item from the typed text, offered as "Create “…”" in the picker: it can open a
-     * dialog, and resolves with the new reference, or `null` when nothing was created. Defaults to
-     * the source's `create()`. `null` turns creating off.
+     * dialog or a panel, and resolves with the new reference, or `null` when nothing was created.
+     * The new item is added (after the others in a multiple field, in place of the item in a single
+     * one), and the focus comes back to the field. Defaults to the source's `create()`. `null`
+     * turns creating off.
      */
     onCreate?: ((text: string) => Promise<RelationReference | null>) | null;
     placeholder?: string;
@@ -292,6 +294,8 @@ interface CardsProps {
     references: readonly RelationReference[];
     info: RelationResourceInfo | null;
     getHref: (reference: RelationReference) => string | null;
+    /** Their links open in a new tab (`linksInNewTab` of the source). */
+    external: boolean;
     /** Picks another item in place of this one: the single field's "Change". */
     onChange?: ((reference: RelationReference) => void) | undefined;
     onRemove?: ((reference: RelationReference) => void) | undefined;
@@ -312,6 +316,7 @@ function RelationCards({
     references,
     info,
     getHref,
+    external,
     onChange,
     onRemove,
     removeLabel,
@@ -328,6 +333,7 @@ function RelationCards({
                     description={reference.description}
                     // Through React Aria: an app's `RouterProvider` opens it with its router
                     href={getHref(reference) ?? undefined}
+                    external={external}
                     {...(reference.imageUrl !== undefined
                         ? { media: <img src={reference.imageUrl} alt="" loading="lazy" /> }
                         : { icon: placeholderIcon(info) })}
@@ -498,6 +504,9 @@ export function RelationField(props: RelationFieldProps) {
         setCreateError(null);
         create(text)
             .then((reference) => {
+                // Back to the field, from the dialog or the panel that created it: on the picker,
+                // or on the new card that `add` focuses
+                focusNext.current = 'picker';
                 if (reference !== null) {
                     add(reference);
                     setQuery(null);
@@ -517,6 +526,7 @@ export function RelationField(props: RelationFieldProps) {
     const cards = {
         info,
         getHref,
+        external: source?.linksInNewTab === true,
         removeLabel,
         changeLabel,
         changeText: intl.formatMessage(messages.change),

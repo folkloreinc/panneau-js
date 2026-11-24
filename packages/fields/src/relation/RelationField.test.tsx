@@ -493,6 +493,83 @@ describe('RelationField', () => {
         );
     });
 
+    it('adds the item that a panel created, and brings the focus back to the field', async () => {
+        const { source } = createFullSource();
+        // A panel over the page: the field waits until it is saved or closed
+        let settle: (reference: RelationReference | null) => void = () => undefined;
+        const onCreate = vi.fn(
+            (_text: string) =>
+                new Promise<RelationReference | null>((resolve) => {
+                    settle = resolve;
+                }),
+        );
+        const onChange = vi.fn();
+        renderField(
+            <Controlled<RelationReference[] | null>
+                initial={[{ id: '1', label: 'Ada Lovelace' }]}
+                onChange={onChange}
+            >
+                {(value, setValue) => (
+                    <RelationField
+                        multiple
+                        label="Authors"
+                        resource="authors"
+                        value={value}
+                        onChange={setValue}
+                        onCreate={onCreate}
+                    />
+                )}
+            </Controlled>,
+            { relationSource: source },
+        );
+        const picker = screen.getByRole('combobox', { name: 'Authors' });
+        await userEvent.type(picker, 'Jean');
+        await userEvent.click(await screen.findByRole('option', { name: 'Create “Jean”' }));
+        expect(onCreate).toHaveBeenCalledWith('Jean');
+        // The panel took the focus
+        picker.blur();
+        act(() => settle({ id: '10', label: 'Jean' }));
+        await waitFor(() =>
+            expect(onChange).toHaveBeenLastCalledWith([
+                { id: '1', label: 'Ada Lovelace' },
+                { id: '10', label: 'Jean' },
+            ]),
+        );
+        expect(screen.getByLabelText('Remove Jean')).toBeInTheDocument();
+        await waitFor(() =>
+            expect(screen.getByRole('combobox', { name: 'Authors' })).toHaveFocus(),
+        );
+
+        // Closed without saving: nothing added, and the focus is back too
+        await userEvent.type(screen.getByRole('combobox', { name: 'Authors' }), 'Lin');
+        await userEvent.click(await screen.findByRole('option', { name: 'Create “Lin”' }));
+        screen.getByRole('combobox', { name: 'Authors' }).blur();
+        act(() => settle(null));
+        await waitFor(() =>
+            expect(screen.getByRole('combobox', { name: 'Authors' })).toHaveFocus(),
+        );
+        expect(onChange).toHaveBeenCalledTimes(1);
+    });
+
+    it('opens the links of its cards in a new tab when the source says so', () => {
+        const source: RelationSource = {
+            search: async () => [],
+            getItemHref: (_resource, id) => `/authors/${id}`,
+            linksInNewTab: true,
+        };
+        renderField(
+            <RelationField
+                label="Author"
+                resource="authors"
+                value={{ id: '1', label: 'Ada Lovelace' }}
+            />,
+            { relationSource: source },
+        );
+        const link = screen.getByRole('link', { name: 'Ada Lovelace' });
+        expect(link).toHaveAttribute('href', '/authors/1');
+        expect(link).toHaveAttribute('target', '_blank');
+    });
+
     it('doesn’t offer to create an item that the search found', async () => {
         const { source } = createFullSource();
         renderField(<RelationField label="Author" resource="authors" value={null} />, {

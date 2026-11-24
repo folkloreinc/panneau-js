@@ -1,0 +1,63 @@
+/* The panel that creates a related item, over the page (decision 0110): on the right, the whole
+   height of the screen, as the item panel over its list (decision 0099), and wide enough for the
+   form of a resource: the wide aside, at least 36rem, the whole width on a phone. */
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--panneau-z-overlay);
+    background-color: var(--panneau-dialog-backdrop, var(--panneau-color-backdrop));
+}
+
+.overlay[data-entering] {
+    animation: fade var(--panneau-duration) var(--panneau-ease-out);
+}
+
+.modal {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-end: 0;
+    display: flex;
+    width: min(100%, max(36rem, var(--panneau-aside-width-wide, 50%)));
+    outline: none;
+}
+
+.dialog {
+    display: flex;
+    flex: 1 1 auto;
+    min-width: 0;
+    outline: none;
+}
+
+.panel {
+    flex: 1 1 auto;
+    height: 100%;
+    border-block: 0;
+    border-inline-end: 0;
+    border-radius: 0;
+    box-shadow: var(--panneau-shadow-lg);
+}
+
+.skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-5);
+}
+
+.skeletonField {
+    display: flex;
+    flex-direction: column;
+    gap: var(--panneau-space-2);
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .overlay[data-entering] {
+        animation: none;
+    }
+}

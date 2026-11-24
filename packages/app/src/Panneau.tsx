@@ -58,6 +58,7 @@ import { loadPage, navigate, usePathname } from './location';
 import { usePluginMessages } from './messages';
 import { usePageStyles } from './pageStyles';
 import { ErrorPage, getErrorPageKind } from './pages/ErrorPage';
+import { createRelatedItemRequests } from './relatedItems';
 import { createAppRelationSource } from './relationSource';
 import {
     type AppRoute,
@@ -174,6 +175,8 @@ function Content({
         session: SessionState;
     }) {
     const [router] = useState(createHistoryRouter);
+    // The items that relation fields create in a panel over the page (decision 0110)
+    const [relatedItems] = useState(createRelatedItemRequests);
     const queryClient = useQueryClient();
     const status = useSyncExternalStore(session.subscribe, session.getStatus);
     // The inlined definition is that of the user the page was loaded for: after a login or a
@@ -497,6 +500,7 @@ function Content({
                                     definition,
                                     queryClient,
                                     url.basePath,
+                                    relatedItems.open,
                                 )}
                                 maps={maps}
                             >
@@ -508,6 +512,7 @@ function Content({
                                     density={density.choice}
                                     onDensityChange={density.onChange}
                                     onLogOut={logOut}
+                                    relatedItems={relatedItems}
                                 />
                             </FieldsProvider>
                         </CurrentContextProvider>

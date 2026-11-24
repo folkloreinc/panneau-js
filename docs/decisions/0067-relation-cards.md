@@ -1,6 +1,6 @@
 # 0067: Relation fields show their items as cards
 
-- Status: accepted, extended by [0103](0103-the-status-of-an-item.md)
+- Status: accepted, extended by [0103](0103-the-status-of-an-item.md); amended by [0110](0110-related-items-are-created-in-a-panel.md): in the panel that creates a related item, the links of cards open in a new tab
 - Date: 2026-11-05
 - Changes: how a `relation` field shows its value
 
