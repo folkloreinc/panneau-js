@@ -263,7 +263,8 @@ export const NarrowSidebar: Story = {
             range.selectNodeContents(element);
             return range.getBoundingClientRect().left;
         };
-        const zone = within(date).getByText(/Time/);
+        // The zone's IANA id is its title: its name depends on the zone of the browser
+        const zone = within(date).getByTitle(/.+/);
         await expect(zone.getBoundingClientRect().top).toBeGreaterThan(
             segments[0]?.getBoundingClientRect().bottom ?? Infinity,
         );
