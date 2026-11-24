@@ -260,6 +260,7 @@ export interface RestAdapterOptions {
     credentials?: RequestCredentials;
     fetch?: (input: string, init: RequestInit) => Promise<Response>;
     headers?: HeadersInit | (() => HeadersInit | Promise<HeadersInit>);
+    multipartMethodOverride?: string | false;
 }
 
 // @public

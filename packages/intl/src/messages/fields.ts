@@ -161,6 +161,15 @@ export const fieldsMessages = {
         id: 'panneau.fields.changeRelation',
         defaultMessage: 'Change {item}',
     }),
+    edit: defineMessage({ id: 'panneau.fields.edit', defaultMessage: 'Edit' }),
+    editRelation: defineMessage<{ item: string }>({
+        id: 'panneau.fields.editRelation',
+        defaultMessage: 'Edit {item}',
+    }),
+    editRelationFailed: defineMessage<{ item: string }>({
+        id: 'panneau.fields.editRelationFailed',
+        defaultMessage: '“{item}” couldn’t be edited.',
+    }),
     cancelChange: defineMessage({
         id: 'panneau.fields.cancelChange',
         defaultMessage: 'Cancel',

@@ -298,11 +298,17 @@ interface CardsProps {
     external: boolean;
     /** Picks another item in place of this one: the single field's "Change". */
     onChange?: ((reference: RelationReference) => void) | undefined;
+    /** Edits the item, where the source does (`edit()`), for the cards that `canEdit` allows. */
+    onEdit?: ((reference: RelationReference, index: number) => void) | undefined;
+    canEdit?: ((reference: RelationReference) => boolean) | undefined;
     onRemove?: ((reference: RelationReference) => void) | undefined;
     removeLabel: (reference: RelationReference) => string;
     changeLabel: (reference: RelationReference) => string;
+    editLabel: (reference: RelationReference) => string;
     /** The visible text of the button that changes the item. */
     changeText: string;
+    /** The visible text of the button that edits the item. */
+    editText: string;
     /** Names the list, for screen readers. */
     'aria-label'?: string | undefined;
 }
@@ -310,7 +316,7 @@ interface CardsProps {
 /**
  * The chosen items, as tiles (decisions 0067 and 0092): the image of each one, or its resource's
  * icon, its label, linked to the item when the source says where it opens, its description, its
- * status (decision 0103), and the buttons that change or remove it.
+ * status (decision 0103), and the buttons that change, edit (decision 0110) or remove it.
  */
 function RelationCards({
     references,
@@ -318,54 +324,73 @@ function RelationCards({
     getHref,
     external,
     onChange,
+    onEdit,
+    canEdit,
     onRemove,
     removeLabel,
     changeLabel,
+    editLabel,
     changeText,
+    editText,
     'aria-label': ariaLabel,
 }: CardsProps) {
     return (
         <TileGroup appearance="outline" label={ariaLabel}>
-            {references.map((reference) => (
-                <Tile
-                    key={reference.id}
-                    title={reference.label}
-                    description={reference.description}
-                    // Through React Aria: an app's `RouterProvider` opens it with its router
-                    href={getHref(reference) ?? undefined}
-                    external={external}
-                    {...(reference.imageUrl !== undefined
-                        ? { media: <img src={reference.imageUrl} alt="" loading="lazy" /> }
-                        : { icon: placeholderIcon(info) })}
-                    actions={
-                        onChange !== undefined ||
-                        onRemove !== undefined ||
-                        reference.status !== undefined ? (
-                            <>
-                                <StatusBadge reference={reference} />
-                                {onChange !== undefined ? (
-                                    <Button
-                                        size="sm"
-                                        appearance="ghost"
-                                        aria-label={changeLabel(reference)}
-                                        onPress={() => onChange(reference)}
-                                    >
-                                        {changeText}
-                                    </Button>
-                                ) : null}
-                                {onRemove !== undefined ? (
-                                    <IconButton
-                                        icon={X}
-                                        size="sm"
-                                        label={removeLabel(reference)}
-                                        onPress={() => onRemove(reference)}
-                                    />
-                                ) : null}
-                            </>
-                        ) : undefined
-                    }
-                />
-            ))}
+            {references.map((reference, index) => {
+                const editable = onEdit !== undefined && canEdit?.(reference) !== false;
+                return (
+                    <Tile
+                        key={reference.id}
+                        title={reference.label}
+                        description={reference.description}
+                        // Through React Aria: an app's `RouterProvider` opens it with its router
+                        href={getHref(reference) ?? undefined}
+                        external={external}
+                        {...(reference.imageUrl !== undefined
+                            ? { media: <img src={reference.imageUrl} alt="" loading="lazy" /> }
+                            : { icon: placeholderIcon(info) })}
+                        actions={
+                            onChange !== undefined ||
+                            editable ||
+                            onRemove !== undefined ||
+                            reference.status !== undefined ? (
+                                <>
+                                    <StatusBadge reference={reference} />
+                                    {onChange !== undefined ? (
+                                        <Button
+                                            size="sm"
+                                            appearance="ghost"
+                                            aria-label={changeLabel(reference)}
+                                            onPress={() => onChange(reference)}
+                                        >
+                                            {changeText}
+                                        </Button>
+                                    ) : null}
+                                    {editable ? (
+                                        <Button
+                                            size="sm"
+                                            appearance="ghost"
+                                            aria-label={editLabel(reference)}
+                                            data-relation-action="edit"
+                                            onPress={() => onEdit(reference, index)}
+                                        >
+                                            {editText}
+                                        </Button>
+                                    ) : null}
+                                    {onRemove !== undefined ? (
+                                        <IconButton
+                                            icon={X}
+                                            size="sm"
+                                            label={removeLabel(reference)}
+                                            onPress={() => onRemove(reference)}
+                                        />
+                                    ) : null}
+                                </>
+                            ) : undefined
+                        }
+                    />
+                );
+            })}
         </TileGroup>
     );
 }
@@ -402,17 +427,33 @@ export function RelationField(props: RelationFieldProps) {
         compact = false,
     } = props;
     const placeholder = props.placeholder ?? intl.formatMessage(messages.search);
-    const selected = useRelationReferences(source, resource, toReferences(props.value));
+    const editable = source !== null && disabled !== true && readOnly !== true;
+    // Its cards offer "Edit" where the source edits items (decision 0110): the source then needs
+    // to know the items, for whether the user can edit them
+    const sourceEdit = editable && !compact ? source.edit : undefined;
+    // The items saved from their card: they show as saved, in place of what the value says
+    const [edited, setEdited] = useState<Readonly<Record<string, RelationReference>>>({});
+    const selected = useRelationReferences(source, resource, toReferences(props.value), {
+        resolveAll: sourceEdit !== undefined,
+    }).map(
+        (reference) =>
+            edited[`${resource}\u0000${reference.id}`] ??
+            source?.edited?.(resource, reference.id) ??
+            reference,
+    );
     const info = source?.describe?.(resource) ?? null;
     const [query, setQuery] = useState<string | null>(null);
     const [creating, setCreating] = useState(false);
     const [createError, setCreateError] = useState<string | null>(null);
+    const [editError, setEditError] = useState<string | null>(null);
+    // The item being edited, until `edit()` settles
+    const [editing, setEditing] = useState<string | null>(null);
     // The single field picks another item in place of its card
     const [changing, setChanging] = useState(false);
     const container = useRef<HTMLDivElement>(null);
     // Where the focus goes once the field changed: the picker, or the card that replaced it
-    // (the first button of a card, by its index)
-    const focusNext = useRef<'picker' | number | null>(null);
+    // (the first button of a card, by its index), or the "Edit" of a card once its item is saved
+    const focusNext = useRef<'picker' | number | { edit: number } | null>(null);
     useEffect(() => {
         const target = focusNext.current;
         if (target === null) {
@@ -420,14 +461,17 @@ export function RelationField(props: RelationFieldProps) {
         }
         focusNext.current = null;
         const cards = container.current?.querySelectorAll('.panneau-tile') ?? [];
-        const card = target !== 'picker' ? cards[Math.min(target, cards.length - 1)] : undefined;
+        const index = typeof target === 'object' ? target.edit : target;
+        const card = index !== 'picker' ? cards[Math.min(index, cards.length - 1)] : undefined;
         const element =
             card !== undefined
-                ? card.querySelector<HTMLElement>('button')
+                ? typeof target === 'object'
+                    ? (card.querySelector<HTMLElement>('[data-relation-action="edit"]') ??
+                      card.querySelector<HTMLElement>('button'))
+                    : card.querySelector<HTMLElement>('button')
                 : container.current?.querySelector<HTMLElement>('input');
         element?.focus();
     });
-    const editable = source !== null && disabled !== true && readOnly !== true;
 
     // "Undo" after a removal (decision 0063): the item goes back at its place, in the latest value
     const undoToast = useUndoToast();
@@ -494,7 +538,8 @@ export function RelationField(props: RelationFieldProps) {
                 item.label.toLocaleLowerCase(intl.locale) === text.toLocaleLowerCase(intl.locale),
         );
     const isLoading = searching || creating;
-    const allErrors = createError !== null ? [...(errors ?? []), createError] : errors;
+    const fieldErrors = [createError, editError].filter((error) => error !== null);
+    const allErrors = fieldErrors.length > 0 ? [...(errors ?? []), ...fieldErrors] : errors;
     /** Creates an item from the text, then adds its reference with `add`. */
     const createFrom = (add: (reference: RelationReference) => void) => {
         if (create === null) {
@@ -517,6 +562,32 @@ export function RelationField(props: RelationFieldProps) {
             )
             .finally(() => setCreating(false));
     };
+    /** Edits the item of a card where the source does, then shows it as saved. */
+    const edit = (reference: RelationReference, index: number) => {
+        if (sourceEdit === undefined || source === null || editing !== null) {
+            return;
+        }
+        setEditing(reference.id);
+        setEditError(null);
+        sourceEdit
+            .call(source, resource, reference.id)
+            .then((saved) => {
+                if (saved !== null) {
+                    const key = `${resource}\u0000${saved.id}`;
+                    setEdited((current) => ({ ...current, [key]: saved }));
+                }
+            })
+            .catch(() =>
+                setEditError(
+                    intl.formatMessage(messages.editRelationFailed, { item: reference.label }),
+                ),
+            )
+            .finally(() => {
+                // Back to the card, from the panel that edited its item
+                focusNext.current = { edit: index };
+                setEditing(null);
+            });
+    };
     const removeLabel = (reference: RelationReference) =>
         `${intl.formatMessage(messages.remove)} ${reference.label}`;
     const changeLabel = (reference: RelationReference) =>
@@ -529,7 +600,17 @@ export function RelationField(props: RelationFieldProps) {
         external: source?.linksInNewTab === true,
         removeLabel,
         changeLabel,
+        editLabel: (reference: RelationReference) =>
+            intl.formatMessage(messages.editRelation, { item: reference.label }),
         changeText: intl.formatMessage(messages.change),
+        editText: intl.formatMessage(messages.edit),
+        ...(sourceEdit !== undefined
+            ? {
+                  onEdit: edit,
+                  canEdit: (reference: RelationReference) =>
+                      source?.canEdit?.(resource, reference.id) !== false,
+              }
+            : {}),
     };
     const chrome = {
         legend: label,

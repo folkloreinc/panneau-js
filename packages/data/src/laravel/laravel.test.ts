@@ -42,6 +42,42 @@ describe('createLaravelAdapter', () => {
         expect(requests[0]?.credentials).toBe('same-origin');
     });
 
+    it('sends a multipart update as POST with _method, which Laravel routes to PATCH', async () => {
+        const { fetch, requests } = createStubFetch(() =>
+            jsonResponse(200, { data: { id: '1', version: '3', abilities: {} } }),
+        );
+        document.cookie = 'XSRF-TOKEN=abc';
+        const adapter = createLaravelAdapter({ baseUrl: BASE_URL, fetch });
+        const file = new File(['png'], 'photo.png', { type: 'image/png' });
+        await adapter.update('media', '1', { file, name: 'Photo' }, { version: '2' });
+        await adapter.update('media', '1', { name: 'Photo' }, { version: '3' });
+
+        const body = await requests[0]?.formData();
+        expect(requests[0]?.method).toBe('POST');
+        expect(body?.get('_method')).toBe('PATCH');
+        expect(body?.get('name')).toBe('Photo');
+        expect(body?.has('file')).toBe(true);
+        expect(requests[0]?.headers.get('If-Match')).toBe('"2"');
+        expect(requests[0]?.headers.get('X-XSRF-TOKEN')).toBe('abc');
+        expect(requests[1]?.method).toBe('PATCH');
+        expect(await requests[1]?.json()).toEqual({ name: 'Photo' });
+    });
+
+    it('sends a multipart update as PATCH when the override is off', async () => {
+        const { fetch, requests } = createStubFetch(() =>
+            jsonResponse(200, { data: { id: '1', version: '3', abilities: {} } }),
+        );
+        const adapter = createLaravelAdapter({
+            baseUrl: BASE_URL,
+            fetch,
+            multipartMethodOverride: false,
+        });
+        const file = new File(['png'], 'photo.png', { type: 'image/png' });
+        await adapter.update('media', '1', { file });
+        expect(requests[0]?.method).toBe('PATCH');
+        expect((await requests[0]?.formData())?.has('_method')).toBe(false);
+    });
+
     it('treats 419 as unauthorized', async () => {
         const { fetch } = createStubFetch(() =>
             jsonResponse(419, { message: 'CSRF token mismatch.' }),

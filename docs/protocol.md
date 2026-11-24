@@ -1019,7 +1019,7 @@ Errors use [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) `application/probl
 
 - **Signing:** the first request of a file (`CreateMultipartUpload`, or `PutObject` for a small file) creates the upload and its key. Later requests (`UploadPart`, `ListParts`, `CompleteMultipartUpload`, `AbortMultipartUpload`) are signed only for a key of the same user's open uploads, and get `404` otherwise. `headers` lists the headers a URL was signed with.
 - **Completion** checks that the object exists, and gives the upload. Its optional `name` names the file, since the key the backend chose doesn't keep it.
-- **Without direct uploads**, requests with files are sent in `multipart/form-data`.
+- **Without direct uploads**, requests with files are sent in `multipart/form-data`. A backend whose stack only parses a multipart body for `POST` (PHP below 8.4) can ask the client to send a multipart `PATCH`, `PUT` or `DELETE` as `POST` with the method in a form field: the `multipartMethodOverride` option of the REST adapter, on in its Laravel preset (`_method`).
 - **`uploads.endpoint`** moves the two routes elsewhere, for a backend whose upload routes are not under its API.
 
 ### Media

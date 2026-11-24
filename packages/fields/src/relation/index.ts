@@ -15,6 +15,7 @@ export {
     type RelationResourceInfo,
     type RelationSearchPage,
     type RelationSource,
+    type RelationReferencesOptions,
     type RelationSourceOptions,
     type RelationStatus,
     createRelationSource,

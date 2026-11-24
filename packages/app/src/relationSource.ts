@@ -5,6 +5,7 @@ import { queryKeys } from '@panneau/data/query';
 import { type RelationSource, createRelationSource } from '@panneau/fields';
 import type { Definition, Item } from '@panneau/protocol';
 
+import type { RelatedItemRequests } from './relatedItems';
 import { routePath } from './routes';
 
 /**
@@ -15,19 +16,28 @@ import { routePath } from './routes';
  * client doesn't have, and caches those it gets there. The cards link to the show route of their
  * items, which goes to the form of an item that opens there (decision 0067).
  *
- * With `createItem`, the fields offer "Create …" in the resources where the user can create, and
- * create the item there: in a panel with the form of its resource (decision 0110).
+ * With `related`, the panel over the page with the form of a resource (decision 0110): the fields
+ * offer "Create …" in the resources where the user can create, and the cards "Edit" on the items
+ * the user can update, and do it there. Their links then open in a new tab, which never leaves the
+ * form: "Edit" is how a card changes its item without leaving it.
  */
 export function createAppRelationSource(
     adapter: DataAdapter,
     definition: Definition,
     queryClient: QueryClient,
     basePath: string,
-    createItem?: (resource: string, values: Record<string, unknown>) => Promise<Item | null>,
+    related?: Pick<RelatedItemRequests, 'open' | 'edit'>,
 ): RelationSource {
     return createRelationSource(adapter, {
         definition,
-        ...(createItem !== undefined ? { create: true, createItem } : {}),
+        ...(related !== undefined
+            ? {
+                  create: true,
+                  createItem: related.open,
+                  editItem: related.edit,
+                  linksInNewTab: true,
+              }
+            : {}),
         items: {
             get: (resource, id) => queryClient.getQueryData<Item>(queryKeys.item(resource, id)),
             set: (resource, item) =>

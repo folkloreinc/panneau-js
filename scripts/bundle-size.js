@@ -30,7 +30,8 @@ const work = resolve(root, '.tmp/bundle-size');
 // a lazy chunk that shares modules with the first page makes the bundler split them into many
 // small chunks (+17 KB gzip for a 6 KB panel, measured on #484). Reviewing the chunking is the
 // way to get weight back (#457).
-const BUDGET = { minified: 1395 * 1024, gzip: 455 * 1024 };
+// 1405 / 458 KB: editing a related item in the panel (#471) measures 1398 / 455 KB.
+const BUDGET = { minified: 1405 * 1024, gzip: 458 * 1024 };
 
 const report = process.argv.includes('--report');
 
