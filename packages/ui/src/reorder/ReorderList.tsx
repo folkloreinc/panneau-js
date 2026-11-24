@@ -14,15 +14,15 @@ import {
     useRef,
     useState,
 } from 'react';
-import { type DragPreviewRenderer, type DropMoveEvent, useDrag, useDrop } from 'react-aria-components';
+import { type DragPreviewRenderer, useDrag, useDrop } from 'react-aria-components';
 
 import { Icon } from '../icon/Icon';
 import { messages } from '../intl/messages';
 import { usePanneauIntl } from '../intl/usePanneauIntl';
 import { cx } from '../utils/cx';
 import { prefersReducedMotion } from '../utils/motion';
-import { gapAt, indexForGap, isSameGap, parseDuration } from './reorder';
 import styles from './ReorderList.module.css';
+import { gapAt, indexForGap, isSameGap, parseDuration } from './reorder';
 
 /** How an item is dragged: the pointer and touch use the browser's drag and drop. */
 type DragMode = 'pointer' | 'keyboard';
@@ -46,10 +46,10 @@ interface ReorderContextValue {
     end: () => void;
     drop: (gap: number) => void;
     list: RefObject<HTMLElement | null>;
-    /** The item whose handle takes the focus once it moved with the keyboard. */
-    focusAfter: RefObject<string | null>;
+    /** Whether the handle of an item takes the focus, once it moved with the keyboard: once. */
+    takeFocus: (id: string) => boolean;
     /** Where the items were before a move, so that they move from there. */
-    positions: RefObject<Map<string, number> | null>;
+    takePosition: (id: string, top: number) => number | undefined;
 }
 
 const ReorderContext = createContext<ReorderContextValue | null>(null);
@@ -214,7 +214,7 @@ export function ReorderList({
             y,
         );
     };
-    const onPointerMove = (event: DropMoveEvent) => setGap(gapFor(event.y));
+    const onPointerMove = (event: { y: number }) => setGap(gapFor(event.y));
     const { dropProps } = useDrop({
         ref: list,
         isDisabled,
@@ -277,8 +277,22 @@ export function ReorderList({
         end,
         drop,
         list,
-        focusAfter,
-        positions,
+        takeFocus: (id) => {
+            if (focusAfter.current !== id) {
+                return false;
+            }
+            focusAfter.current = null;
+            return true;
+        },
+        // Where an item was before the move, once it is somewhere else
+        takePosition: (id, top) => {
+            const from = positions.current?.get(id);
+            if (from === undefined || from === top) {
+                return undefined;
+            }
+            positions.current?.delete(id);
+            return from;
+        },
     };
 
     return (
@@ -338,35 +352,31 @@ export function ReorderItem({
     // After a move, the item slides from where it was
     useLayoutEffect(() => {
         const node = element.current;
-        const from = context.positions.current?.get(key);
-        if (node === null || from === undefined) {
+        if (node === null) {
             return;
         }
-        const offset = from - node.getBoundingClientRect().top;
-        if (offset === 0) {
+        const top = node.getBoundingClientRect().top;
+        const from = context.takePosition(key, top);
+        if (from === undefined) {
             return;
         }
-        context.positions.current?.delete(key);
+        const offset = from - top;
         const style = getComputedStyle(node);
         const duration = parseDuration(style.getPropertyValue('--panneau-duration-slow'));
         if (duration === 0 || prefersReducedMotion() || typeof node.animate !== 'function') {
             return;
         }
-        node.animate(
-            [{ transform: `translateY(${offset}px)` }, { transform: 'none' }],
-            {
-                duration,
-                easing: style.getPropertyValue('--panneau-ease-out').trim() || 'ease-out',
-            },
-        );
+        node.animate([{ transform: `translateY(${offset}px)` }, { transform: 'none' }], {
+            duration,
+            easing: style.getPropertyValue('--panneau-ease-out').trim() || 'ease-out',
+        });
     });
 
     // After a move with the keyboard, the focus goes back to the handle of the item
     useEffect(() => {
-        if (context.focusAfter.current !== key) {
+        if (!context.takeFocus(key)) {
             return;
         }
-        context.focusAfter.current = null;
         element.current?.querySelector<HTMLElement>('[data-reorder-handle]')?.focus();
     });
 

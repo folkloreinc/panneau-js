@@ -40,5 +40,6 @@ export const uiFr: Record<string, string> = {
     'panneau.ui.reorderHandle': 'Déplacer {item}',
     'panneau.ui.reorderBefore': 'Avant {item}',
     'panneau.ui.reorderAfter': 'Après {item}',
-    'panneau.ui.reorderMoved': '{item}, maintenant en position {position, number} sur {count, number}',
+    'panneau.ui.reorderMoved':
+        '{item}, maintenant en position {position, number} sur {count, number}',
 };

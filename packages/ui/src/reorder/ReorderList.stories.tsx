@@ -116,7 +116,13 @@ async function drag(source: HTMLElement, target: HTMLElement, clientY: number) {
     const clientX = start.x + start.width / 2;
     const fire = (element: Element, type: string, y: number) =>
         element.dispatchEvent(
-            new DragEvent(type, { bubbles: true, cancelable: true, dataTransfer, clientX, clientY: y }),
+            new DragEvent(type, {
+                bubbles: true,
+                cancelable: true,
+                dataTransfer,
+                clientX,
+                clientY: y,
+            }),
         );
     fire(source, 'dragstart', start.y + start.height / 2);
     await nextFrame();
