@@ -2,6 +2,7 @@ import {
     Clock,
     File,
     House,
+    Keyboard,
     Languages,
     Link2,
     List,
@@ -19,7 +20,7 @@ import { useEffect, useState } from 'react';
 import { getCommands, getSearchableResources, resolveResource, usePlugins } from '@panneau/core';
 import { isApiError } from '@panneau/data';
 import { useSearch } from '@panneau/data/query';
-import { appMessages } from '@panneau/intl';
+import { appMessages, uiMessages } from '@panneau/intl';
 import { getImageUrl, toText } from '@panneau/lists';
 import type { Definition, Item, Resource } from '@panneau/protocol';
 import {
@@ -37,6 +38,7 @@ import {
     type IconComponent,
     getNamedIcon,
     usePanneauIntl,
+    useShortcutHelp,
 } from '@panneau/ui';
 
 import { getInterfaceLocales } from '../interfaceLocales';
@@ -119,6 +121,7 @@ export function GoTo({
 }: GoToProps) {
     const intl = usePanneauIntl();
     const densityCommands = useDensityCommands(density, onDensityChange);
+    const openShortcutHelp = useShortcutHelp();
     const plugins = usePlugins();
     const user = useRecentScope();
     const [query, setQuery] = useState('');
@@ -265,6 +268,18 @@ export function GoTo({
                 icon: Languages,
                 onAction: () => onLocaleChange?.(other),
             })),
+        // The help of shortcuts (decision 0110)
+        ...(openShortcutHelp !== null
+            ? [
+                  {
+                      id: 'shortcuts',
+                      label: intl.formatMessage(uiMessages.shortcutsTitle),
+                      keywords: [intl.formatMessage(uiMessages.shortcutsHelp)],
+                      icon: Keyboard,
+                      onAction: openShortcutHelp,
+                  },
+              ]
+            : []),
     ];
 
     const searchIn: CommandPaletteItem[] = searchEnabled

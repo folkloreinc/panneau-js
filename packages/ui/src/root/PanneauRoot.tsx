@@ -13,6 +13,7 @@ import { IntlContext, IntlProvider, type IntlShape } from 'react-intl';
 import { getLoadedPanneauMessages, loadPanneauMessages } from '@panneau/intl';
 
 import { type NamedIconLoader, NamedIconLoaderContext } from '../icon/namedIcons';
+import { ShortcutProvider } from '../shortcuts/ShortcutProvider';
 import { getFontFaceCss, getFontStylesheets } from '../theme/fonts';
 import {
     type ColorScheme,
@@ -227,7 +228,8 @@ function PanneauIntlProvider({
  * element (no global CSS), applies a theme and a color scheme, and hosts overlays and toasts so
  * that they get the tokens too. Panneau components must render inside one. A project can override
  * any token with its own class on the root. Without an `IntlProvider` above it, it provides one
- * with Panneau's messages in its `locale`.
+ * with Panneau's messages in its `locale`. It keeps the registry of keyboard shortcuts
+ * (`useShortcut()`), whose help opens with `?` (decision 0110).
  */
 export function PanneauRoot({
     theme = null,
@@ -269,7 +271,7 @@ export function PanneauRoot({
                                     'data-panneau-theme': scope,
                                 }}
                             >
-                                {children}
+                                <ShortcutProvider>{children}</ShortcutProvider>
                             </ToastProvider>
                         </PortalContext>
                     </ScopeContext>

@@ -41,6 +41,7 @@ import { resolveRoute } from './routeReference';
 import { type AppRoute, matchRoute, routePath } from './routes';
 import { AppLayout } from './shell/AppLayout';
 import { DockLayout } from './shell/DockLayout';
+import { PluginShortcuts } from './shell/PluginShortcuts';
 import type { ColorSchemePreference } from './shell/UserMenu';
 import type { DensityChoice } from './shell/density';
 
@@ -352,6 +353,7 @@ export function Shell({
                         onLogOut={logOut}
                         onLocaleChange={switchLocale}
                     >
+                        <PluginShortcuts definition={definition} />
                         <PageErrorBoundary
                             homeHref={routePath({ name: 'home' }, basePath)}
                             path={pathname}

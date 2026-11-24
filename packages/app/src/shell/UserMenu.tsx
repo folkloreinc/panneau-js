@@ -1,7 +1,7 @@
-import { LogOut, Monitor, Moon, Sun, UserRound } from 'lucide-react';
+import { Keyboard, LogOut, Monitor, Moon, Sun, UserRound } from 'lucide-react';
 import type { ReactElement } from 'react';
 
-import { appMessages } from '@panneau/intl';
+import { appMessages, uiMessages } from '@panneau/intl';
 import type { Definition } from '@panneau/protocol';
 import {
     Avatar,
@@ -14,6 +14,7 @@ import {
     MenuSeparator,
     MenuTrigger,
     usePanneauIntl,
+    useShortcutHelp,
 } from '@panneau/ui';
 
 import { getInterfaceLocales } from '../interfaceLocales';
@@ -81,8 +82,8 @@ export interface UserMenuProps {
 
 /**
  * The user's menu (decision 0086), behind their avatar and name: who is logged in, their profile,
- * the appearance, the density (decision 0104) and the language as choices with a check, and
- * "Log out". The sidebar and the dock
+ * the appearance, the density (decision 0104) and the language as choices with a check, the
+ * help of keyboard shortcuts (decision 0110), and "Log out". The sidebar and the dock
  * share it.
  */
 export function UserMenu({
@@ -103,6 +104,7 @@ export function UserMenu({
     // The user's profile, when the definition has the resource of users
     const profilePath = getProfilePath(definition, basePath);
     const locales = onLocaleChange !== undefined ? getInterfaceLocales(definition) : [];
+    const openShortcutHelp = useShortcutHelp();
 
     return (
         <MenuTrigger>
@@ -200,6 +202,13 @@ export function UserMenu({
                                 <span lang={locale}>{label}</span>
                             </MenuItem>
                         ))}
+                    </MenuSection>
+                ) : null}
+                {openShortcutHelp !== null ? (
+                    <MenuSection aria-label={intl.formatMessage(uiMessages.shortcutsTitle)}>
+                        <MenuItem id="shortcuts" icon={Keyboard} onAction={openShortcutHelp}>
+                            {intl.formatMessage(uiMessages.shortcutsTitle)}
+                        </MenuItem>
                     </MenuSection>
                 ) : null}
                 {onLogOut !== undefined ? <MenuSeparator /> : null}

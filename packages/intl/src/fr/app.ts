@@ -120,6 +120,7 @@ export const appFr: Record<string, string> = {
     'panneau.app.navigation': 'Navigation principale',
     'panneau.app.collapseSidebar': 'Réduire la barre latérale',
     'panneau.app.expandSidebar': 'Déployer la barre latérale',
+    'panneau.app.toggleSidebar': 'Réduire ou déployer la barre latérale',
     'panneau.app.openMenu': 'Ouvrir le menu',
     'panneau.app.closeMenu': 'Fermer le menu',
     'panneau.app.more': 'Plus',

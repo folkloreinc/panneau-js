@@ -9,7 +9,7 @@ import {
     MenuItem,
     MenuSection,
     MenuTrigger,
-    isApplePlatform,
+    useFormatShortcut,
     usePanneauIntl,
 } from '@panneau/ui';
 
@@ -129,6 +129,7 @@ export function Dock({
     className,
 }: DockProps) {
     const intl = usePanneauIntl();
+    const formatShortcut = useFormatShortcut();
     const home = getHomeLink(intl.formatMessage(appMessages.home), basePath);
     // A group without a label is its links: a button needs one.
     const entries: NavEntry[] = [
@@ -156,8 +157,9 @@ export function Dock({
     const user = definition.user ?? null;
     const profilePath = getProfilePath(definition, basePath);
     const currentPath = route.name !== 'not-found' ? routePath(route, basePath) : null;
-    const shortcut = isApplePlatform() ? '⌘K' : 'Ctrl+K';
-    const keyShortcuts = isApplePlatform() ? 'Meta+K' : 'Control+K';
+    const goToKeys = formatShortcut('Mod+K');
+    const shortcut = goToKeys.labels[0];
+    const keyShortcuts = goToKeys.keys;
 
     return (
         <div className={cx(styles.dock, className)}>

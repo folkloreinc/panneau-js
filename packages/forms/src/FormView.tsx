@@ -31,6 +31,7 @@ import {
     Button,
     prefersReducedMotion,
     usePanneauIntl,
+    useShortcut,
     useToast,
     useToastOffset,
 } from '@panneau/ui';
@@ -46,7 +47,7 @@ import { FieldFlow, LayoutNodes, SidebarNode } from './layout/Layout';
 import { messages } from './messages';
 import { SaveContext, SaveControls, type SaveState, SummaryContext } from './panels/SaveControls';
 import { type FormPanelComponent, PanelsContext, builtInPanels } from './panels/panels';
-import { addSaveShortcut } from './shortcuts';
+import { SAVE_KEYS } from './saveKeys';
 import { useBeforeUnloadGuard, useLeaveConfirmation } from './unsaved';
 
 // Defaults shared by every render: the React Compiler doesn't memoize what is computed from an
@@ -289,17 +290,24 @@ function useGoToField(registry: RevealRegistry) {
 }
 
 /**
- * Lets the form of `root` take ⌘ S and ⌘ Enter (Ctrl elsewhere) from anywhere on the page while
- * it is shown (see `addSaveShortcut()`).
+ * Lets the form of `root` take ⌘ S and ⌘ Enter (Ctrl elsewhere) while it is shown, through the
+ * registry of shortcuts (decision 0110), with the form as its scope: the form that holds the
+ * focus, otherwise the last form shown in the dialog of the focus, or of the page outside of every
+ * dialog. The parameters of an action take the keys while their dialog is open, not the page under
+ * it, and the dialog a field opens (a media picker) saves nothing. ⌘ S never opens the browser's
+ * "Save page" while a form is shown.
  */
 function useSaveShortcut(root: RefObject<HTMLFormElement | null>, isShown: boolean): void {
-    useEffect(() => {
-        const element = root.current;
-        if (!isShown || element === null) {
-            return undefined;
-        }
-        return addSaveShortcut(element);
-    }, [root, isShown]);
+    const intl = usePanneauIntl();
+    useShortcut({
+        id: 'panneau.forms.save',
+        keys: SAVE_KEYS,
+        label: intl.formatMessage(messages.save),
+        group: intl.formatMessage(messages.shortcutsGroup),
+        scope: root,
+        enabled: isShown,
+        perform: () => root.current?.requestSubmit(),
+    });
 }
 
 /** Whether a form has something to save. */

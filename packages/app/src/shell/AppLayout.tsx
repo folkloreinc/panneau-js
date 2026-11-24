@@ -1,5 +1,5 @@
 import { Menu, Search } from 'lucide-react';
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 import { Dialog, Link, Modal, ModalOverlay } from 'react-aria-components';
 
 import { appMessages } from '@panneau/intl';
@@ -10,6 +10,7 @@ import {
     usePanneauIntl,
     usePortalContainer,
     usePreference,
+    useShortcut,
 } from '@panneau/ui';
 
 import { cx } from '../cx';
@@ -41,12 +42,8 @@ export interface AppLayoutProps {
     children?: ReactNode;
 }
 
-function isEditable(target: EventTarget | null): boolean {
-    return (
-        target instanceof HTMLElement &&
-        (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName))
-    );
-}
+/** The keys that collapse or expand the sidebar. */
+const SIDEBAR_KEYS = 'Mod+\\';
 
 /**
  * The frame of the app. From the `lg` width of the Panneau root (64rem): the sidebar on the
@@ -74,7 +71,10 @@ export function AppLayout({
     const [sidebar, setSidebar] = usePreference('sidebar', SIDEBAR_STATES);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [goToOpen, setGoToOpen] = useState(false);
-    useCommandShortcut(() => setGoToOpen((open) => !open), { isOpen: goToOpen });
+    useCommandShortcut(() => setGoToOpen((open) => !open), {
+        isOpen: goToOpen,
+        label: intl.formatMessage(appMessages.goTo),
+    });
     const openGoTo = () => {
         setDrawerOpen(false);
         setGoToOpen(true);
@@ -85,20 +85,13 @@ export function AppLayout({
     const main = useRef<HTMLElement>(null);
     useRouteFocus(main, route, basePath);
 
-    useEffect(() => {
-        const onKeyDown = (event: KeyboardEvent) => {
-            if (
-                event.key === '\\' &&
-                (event.metaKey || event.ctrlKey) &&
-                !event.altKey &&
-                !isEditable(event.target)
-            ) {
-                event.preventDefault();
-                toggle();
-            }
-        };
-        window.addEventListener('keydown', onKeyDown);
-        return () => window.removeEventListener('keydown', onKeyDown);
+    // Not while typing: ⌘\ is a key of some editors
+    useShortcut({
+        id: 'panneau.app.sidebar',
+        keys: SIDEBAR_KEYS,
+        label: intl.formatMessage(appMessages.toggleSidebar),
+        inInputs: false,
+        perform: toggle,
     });
 
     const sidebarProps = {
