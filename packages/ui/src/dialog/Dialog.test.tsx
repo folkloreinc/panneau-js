@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { Button } from '../button/Button';
@@ -105,5 +106,47 @@ describe('Dialog', () => {
         await userEvent.click(await screen.findByRole('button', { name: 'Create' }));
         expect(inner).toHaveBeenCalledTimes(1);
         expect(outer).not.toHaveBeenCalled();
+    });
+    it('is suspended for a moment: hidden, the page usable, its content kept', async () => {
+        const onOpenChange = vi.fn();
+        const onOutside = vi.fn();
+        function Counter() {
+            const [count, setCount] = useState(0);
+            return <Button onPress={() => setCount(count + 1)}>Count {count}</Button>;
+        }
+        function Page({ isSuspended }: { isSuspended: boolean }) {
+            return (
+                <PanneauRoot>
+                    <button type="button" onClick={onOutside}>
+                        Outside
+                    </button>
+                    <Dialog
+                        title="Import"
+                        isOpen
+                        isSuspended={isSuspended}
+                        onOpenChange={onOpenChange}
+                    >
+                        <Counter />
+                    </Dialog>
+                </PanneauRoot>
+            );
+        }
+        const { rerender } = render(<Page isSuspended={false} />);
+        await userEvent.click(await screen.findByRole('button', { name: 'Count 0' }));
+        expect(screen.getByRole('button', { name: 'Count 1' })).toBeInTheDocument();
+        // Open, the page around it is hidden from assistive technologies
+        expect(screen.queryByRole('button', { name: 'Outside' })).not.toBeInTheDocument();
+
+        rerender(<Page isSuspended />);
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+        const outside = screen.getByRole('button', { name: 'Outside' });
+        await userEvent.click(outside);
+        expect(onOutside).toHaveBeenCalledOnce();
+        expect(outside).toHaveFocus();
+        expect(onOpenChange).not.toHaveBeenCalled();
+
+        rerender(<Page isSuspended={false} />);
+        expect(await screen.findByRole('dialog', { name: 'Import' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Count 1' })).toBeInTheDocument();
     });
 });
