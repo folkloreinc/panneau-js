@@ -1,5 +1,31 @@
 # @panneau/app
 
+## 5.0.0-alpha.48
+
+### Minor Changes
+
+- 54fbe80: One registry of keyboard shortcuts, and a "?" help (decision 0112). `PanneauRoot` keeps the registry, with one listener on the document: `useShortcut()` of `@panneau/ui` registers a shortcut while a component is mounted, with its keys (`Mod+K`, ⌘ on Apple platforms and Ctrl elsewhere), a label, a group, a scope and `perform`. The element that holds the focus gets a key first, then the open dialog, then the page; a shortcut of the page never fires under a dialog. Single keys (`?`) never fire while the user types, and users can turn them off in the help, which the browser remembers (`panneau:single-key-shortcuts`). `?` opens the help, a dialog that lists the shortcuts registered now by group, also from the user's menu and "Go to…" (`useShortcutHelp()`); it loads when it first opens. `formatShortcut()`, `useFormatShortcut()` and `useShortcutLabel()` format keys for tooltips and `aria-keyshortcuts`, in the Save button, the sidebar, the dock and the editor's toolbar. ⌘K, ⌘\ and ⌘S / ⌘Enter move to the registry with the same behaviour, except that ⌘\ is ⌘\ only on Apple platforms and no longer works under a dialog; a form shown without a `PanneauRoot` no longer takes ⌘S. Plugins add `shortcuts`, as they add `commands`: an id, keys, a label, a group and `perform` (`Shortcut`, `getShortcuts()` of `@panneau/core`). `@panneau/intl`: `panneau.forms.saveShortcut` is gone (the tooltip of Save comes from the formatter); new messages for the help, `panneau.app.toggleSidebar` and `panneau.forms.shortcutsGroup`.
+
+### Patch Changes
+
+- 9298806: "Copy from …" for localized fields, and an optional language switch for a form. An empty language of a localized field can be copied from a filled one, which makes the form dirty like any edit. A form can ask for one language switch above its fields: `form.languageSwitch: true` on a resource in the definition, or `languageSwitch` on `FormView` and `Form`. It sets the language of every localized field at once, says which languages have errors or miss required values, is remembered by the browser for every form with the switch, and moves to the language of an error reached from the summary or after a failed save; a field can still switch on its own until the form's switch changes again. Without the setting, the default, each localized field keeps its own switch only, as before. `@panneau/fields` exports `ContentLocaleContext`, `useContentLocale()` and `useFieldLocale()` (decision 0108).
+- 674aeec: Create a related item without leaving the form (decision 0110). In the app, a relation field offers "Create “text”" when the user can create in the related resource: it opens a panel over the page with the whole create form of that resource (its type first, when it has types), with the text as its title. Saving adds the new item to the field, closes the panel and brings the focus back to the field, and the form underneath keeps its unsaved values. Closing the panel with unsaved changes asks first, and ⌘ S saves the panel's form, not the page's. Inside the panel, relation fields don't offer to create, and their cards open in a new tab. `createRelationSource()` takes `createItem`, which creates the item somewhere else (such as that panel) and resolves with it; a source with `linksInNewTab` opens the links of its cards in a new tab; a resource whose types all forbid creation offers no "Create …".
+- Updated dependencies [291ac00]
+- Updated dependencies [9298806]
+- Updated dependencies [54fbe80]
+- Updated dependencies [f9ff33d]
+- Updated dependencies [2451268]
+- Updated dependencies [674aeec]
+  - @panneau/lists@5.0.0-alpha.48
+  - @panneau/intl@5.0.0-alpha.48
+  - @panneau/protocol@5.0.0-alpha.48
+  - @panneau/fields@5.0.0-alpha.48
+  - @panneau/forms@5.0.0-alpha.48
+  - @panneau/ui@5.0.0-alpha.48
+  - @panneau/core@5.0.0-alpha.48
+  - @panneau/actions@5.0.0-alpha.48
+  - @panneau/data@5.0.0-alpha.48
+
 ## 5.0.0-alpha.47
 
 ### Patch Changes

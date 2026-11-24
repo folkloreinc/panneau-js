@@ -1,5 +1,22 @@
 # @panneau/lists
 
+## 5.0.0-alpha.48
+
+### Patch Changes
+
+- 291ac00: The toolbar of lists stays in place, and takes less room. Each layout shows only the controls that change it: the calendar has no sort, no "Columns" and no "Select", and the gallery no "Columns". The sort is a menu in every other layout, table included: its button shows the column it sorts by and an arrow of its direction ("Sort by: Title, descending" for screen readers), or only its icon with the default sort, instead of a select whose value was cut. "Columns" and "Select" are icon buttons, named by their tooltips, with the same accessible names as before; "Done" keeps its label while selecting. The controls that come and go with the layout or the selection sit before the layout switch, which no longer moves when the layout or the selection changes. On a phone (a list 40rem wide or less), the layout switch, "Select" and a "More options" menu take one row, under the search and the "Filters" button: the menu holds the sort, the columns (in a dialog) and the actions of the list. The table already shows its rows as cards there, with their labels, thumbnails and edits in place, so the layout switch leaves out the cards on a phone, and a list that chose them shows its table. The `.panneau-list-view-table-sort` class is removed. The menu of a narrow toolbar and the built-in calendar layout load with `import()` when a list shows them, with a skeleton of the calendar meanwhile: the first page of an app doesn't load their code.
+- Updated dependencies [291ac00]
+- Updated dependencies [9298806]
+- Updated dependencies [54fbe80]
+- Updated dependencies [f9ff33d]
+- Updated dependencies [2451268]
+- Updated dependencies [674aeec]
+  - @panneau/intl@5.0.0-alpha.48
+  - @panneau/protocol@5.0.0-alpha.48
+  - @panneau/fields@5.0.0-alpha.48
+  - @panneau/ui@5.0.0-alpha.48
+  - @panneau/core@5.0.0-alpha.48
+
 ## 5.0.0-alpha.47
 
 ### Patch Changes
