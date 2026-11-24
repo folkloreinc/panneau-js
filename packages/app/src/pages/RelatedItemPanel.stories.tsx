@@ -19,7 +19,7 @@ import { createMockBackend } from '@panneau/protocol/mock';
 
 import { createRelatedItemRequests } from '../relatedItems';
 import { createAppRelationSource } from '../relationSource';
-import { RelatedItemPanelHost, RelatedItemPanelSkeleton } from './RelatedItemPanelHost';
+import { RelatedItemPanelHost } from './RelatedItemPanelHost';
 
 const input: DefinitionInput = {
     protocol: 1,
@@ -148,22 +148,5 @@ export const Default: Story = {
         await waitFor(() => expect(picker).toHaveFocus());
         await userEvent.keyboard('{Escape}');
         await waitFor(() => expect(page.queryByRole('listbox')).toBeNull());
-    },
-};
-
-/** The panel while its form loads, with `import()`: its title, and a skeleton (decision 0034). */
-export const Loading: Story = {
-    render: () => (
-        <div style={{ display: 'flex', height: '32rem', maxWidth: '40rem' }}>
-            <RelatedItemPanelSkeleton title="New person" onClose={() => undefined} />
-        </div>
-    ),
-    play: async ({ canvasElement }) => {
-        const canvas = within(canvasElement);
-        const panel = canvas.getByRole('region', { name: 'New person' });
-        await expect(within(panel).getByRole('heading', { name: 'New person' })).toBeVisible();
-        await expect(within(panel).getByRole('status')).toHaveTextContent('Loading…');
-        await expect(panel.querySelector('[aria-busy="true"] .panneau-skeleton')).not.toBeNull();
-        await expect(within(panel).getByRole('button', { name: 'Close' })).toBeInTheDocument();
     },
 };

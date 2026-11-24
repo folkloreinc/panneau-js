@@ -38,18 +38,6 @@
     box-shadow: var(--panneau-shadow-lg);
 }
 
-.skeleton {
-    display: flex;
-    flex-direction: column;
-    gap: var(--panneau-space-5);
-}
-
-.skeletonField {
-    display: flex;
-    flex-direction: column;
-    gap: var(--panneau-space-2);
-}
-
 @keyframes fade {
     from {
         opacity: 0;

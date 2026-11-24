@@ -29,4 +29,4 @@ A relation field picks existing items. To link an author that doesn't exist yet,
 ## Consequences
 
 - `@panneau/fields`: `RelationSourceOptions` has `createItem`, `RelationSource` has `linksInNewTab`. A created item goes into the source's cache, so that its card shows at once. A source doesn't offer creation in a resource whose types all forbid it. `RelationField` brings the focus back to the field once `create()` or `onCreate` settles.
-- `@panneau/app`: its relation source turns `create` on, through a panel that the shell shows over the page. The panel's code loads with `import()`, with a skeleton until then.
+- `@panneau/app`: its relation source turns `create` on, through a panel that the shell shows over the page. The panel comes with the first page's JavaScript, about 6 KB: what it needs (the form, the aside, the modal) is already there, and a chunk loaded with `import()` would split the modules it shares with that page into small chunks, which weighed 17 KB more when measured.
