@@ -954,6 +954,12 @@ export const listsMessages: {
     }>;
     previousPage: PanneauMessage<Record<never, never>>;
     nextPage: PanneauMessage<Record<never, never>>;
+    firstPage: PanneauMessage<Record<never, never>>;
+    lastPage: PanneauMessage<Record<never, never>>;
+    goToPage: PanneauMessage<Record<never, never>>;
+    ofLastPage: PanneauMessage<    {
+    lastPage: number;
+    }>;
     perPage: PanneauMessage<Record<never, never>>;
     editValue: PanneauMessage<    {
     field: string;

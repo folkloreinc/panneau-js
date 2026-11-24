@@ -229,7 +229,15 @@ export const NarrowSidebar: Story = {
     decorators: [
         (Story) => (
             // The form puts its sidebar beside it from 56rem
-            <div style={{ width: '56rem', maxWidth: '100%', '--panneau-aside-width': '18rem' } as CSSProperties}>
+            <div
+                style={
+                    {
+                        width: '56rem',
+                        maxWidth: '100%',
+                        '--panneau-aside-width': '18rem',
+                    } as CSSProperties
+                }
+            >
                 <Story />
             </div>
         ),

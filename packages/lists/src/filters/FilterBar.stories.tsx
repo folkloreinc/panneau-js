@@ -183,7 +183,12 @@ export const SortedBy: Story = {
         await userEvent.click(sort);
         await userEvent.click(await body.findByRole('menuitemradio', { name: 'Default' }));
         const unsorted = await canvas.findByRole('button', { name: 'Sort by' });
-        await expect(getComputedStyle(unsorted).backgroundColor).not.toBe(background);
+        // Without the pointer on it, whose hover tone may match the tint
+        await userEvent.unhover(unsorted);
+        await userEvent.click(canvasElement);
+        await waitFor(() =>
+            expect(getComputedStyle(unsorted).backgroundColor).not.toBe(background),
+        );
     },
 };
 

@@ -69,7 +69,9 @@ function useIndicator(groupRef: RefObject<HTMLDivElement | null>, selected: stri
                 `${segment.offsetHeight}px`,
             );
             // Placed first without moving, then free to slide
-            element.dataset.indicator ??= 'placed';
+            if (element.dataset.indicator === undefined) {
+                element.dataset.indicator = 'placed';
+            }
         };
         place();
         if (element.dataset.indicator === 'placed') {

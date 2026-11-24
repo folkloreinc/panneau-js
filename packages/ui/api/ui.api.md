@@ -493,6 +493,7 @@ export interface CommandPaletteItem {
     // (undocumented)
     label: string;
     onAction?: () => void;
+    shortcut?: ShortcutKeys;
 }
 
 // @public (undocumented)
@@ -856,6 +857,7 @@ export interface IconButtonProps extends Omit<ButtonProps, 'icon' | 'iconEnd' | 
     // (undocumented)
     icon: IconComponent;
     label: string;
+    shortcut?: ShortcutKeys | undefined;
     showTooltip?: boolean;
     // (undocumented)
     style?: CSSProperties;
@@ -1008,6 +1010,7 @@ export interface MenuItemProps extends Omit<MenuItemProps_2, 'className' | 'styl
     icon?: IconComponent;
     isDanger?: boolean;
     media?: ReactNode;
+    shortcut?: ShortcutKeys | undefined;
 }
 
 // @public (undocumented)
@@ -1017,6 +1020,7 @@ export interface MenuProps<T extends object> extends Omit<MenuProps_2<T>, 'class
     footer?: ReactNode;
     // (undocumented)
     footerClassName?: string;
+    isInline?: boolean;
     // (undocumented)
     placement?: 'bottom start' | 'bottom end' | 'top start' | 'top end';
     // (undocumented)
@@ -1322,6 +1326,7 @@ export interface SelectBaseProps extends FieldChromeProps {
     appearance?: 'field' | 'bare';
     // (undocumented)
     autoFocus?: boolean;
+    clearLabel?: string;
     // (undocumented)
     id?: string;
     // (undocumented)
@@ -1332,6 +1337,7 @@ export interface SelectBaseProps extends FieldChromeProps {
     name?: string;
     // (undocumented)
     onBlur?: () => void;
+    onClear?: () => void;
     // (undocumented)
     options: readonly SelectOption[];
     placeholder?: string;
@@ -1836,6 +1842,7 @@ export interface TooltipProps {
     isDisabled?: boolean;
     // (undocumented)
     placement?: TooltipProps_2['placement'];
+    shortcut?: ShortcutKeys | undefined;
 }
 
 // @public

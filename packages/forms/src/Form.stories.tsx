@@ -171,7 +171,9 @@ export const OnAPhone: Story = {
         );
         // With one, both fit in the footer
         await userEvent.type(canvas.getByRole('textbox', { name: /Name/ }), 'Ada');
-        await expect(await within(footer).findByText('Unsaved changes')).toBeVisible();
+        const status = await within(footer).findByText('Unsaved changes');
+        // It fades in
+        await waitFor(() => expect(status).toBeVisible());
         await expect(save.getBoundingClientRect().right).toBeLessThanOrEqual(box.right + 1);
         await expect(footer.scrollWidth).toBeLessThanOrEqual(footer.clientWidth + 1);
     },

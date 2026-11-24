@@ -182,11 +182,13 @@ export function FileDisplay(input: DisplayProps): JSX.Element;
 
 // @public
 export interface FilterControlProps {
+    clearLabel?: string;
     // (undocumented)
     filter: Filter;
     getValueLabel: (value: string) => string | null;
     label: string;
     onChange: (value: FilterValue | undefined) => void;
+    onClear?: () => void;
     onLabel: (value: string, label: string) => void;
     options: readonly Option_2[];
     value: unknown;
