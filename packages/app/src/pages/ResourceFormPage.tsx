@@ -23,6 +23,7 @@ import { ActionsPanel, FormPageContext } from './formPage';
 import { useItemActionRunner } from './itemActionRunner';
 import { createLinkResolver, getItemPath } from './itemLinks';
 import { getItemTitle } from './itemTitle';
+import styles from './ResourceFormPage.module.css';
 
 /** The panels of the app, for the sidebars of its forms (decision 0075). */
 const PANELS = { actions: ActionsPanel };
@@ -169,6 +170,8 @@ export function ResourceFormPage({
         <Form
             key={mode === 'create' ? 'new' : (item?.id ?? 'loading')}
             aria-label={title}
+            className={styles.form}
+            footerClassName={styles.footer}
             isLoading={mode === 'update' && item === undefined}
             fields={fields}
             layout={layout}

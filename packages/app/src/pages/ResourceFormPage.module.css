@@ -1,0 +1,34 @@
+/* The footer of the form of a page, below the `lg` width of the root, where the page is a card as
+ * wide as the screen (#501). A bar of its own at the bottom of the screen, from edge to edge, on
+ * the background of the card: fixed rather than sticky, since Safari on iOS draws the background
+ * of a bar fixed at the bottom of the window under its own toolbar, down to the edge of the screen,
+ * where a sticky one stops above the toolbar and lets the page scroll under it. The form keeps the
+ * room of the footer under its fields (`--_panneau-form-footer-height`). Its buttons line up with
+ * the content of the card, and stay clear of the rounded corners and of the home indicator. */
+@container panneau-root (width < 64rem) {
+    .form {
+        padding-bottom: var(--_panneau-form-footer-height, 0px);
+    }
+
+    .footer.footer {
+        position: fixed;
+        inset-inline: 0;
+        bottom: var(--panneau-frame-bottom);
+        z-index: 2;
+        padding-inline: max(
+                env(safe-area-inset-left, 0px),
+                calc(
+                    var(--panneau-shell-inset, var(--panneau-space-2)) + var(--panneau-space-4) +
+                        var(--panneau-border-width)
+                )
+            )
+            max(
+                env(safe-area-inset-right, 0px),
+                calc(
+                    var(--panneau-shell-inset, var(--panneau-space-2)) + var(--panneau-space-4) +
+                        var(--panneau-border-width)
+                )
+            );
+        background-color: var(--panneau-shell-panel-bg, var(--panneau-color-surface));
+    }
+}

@@ -68,9 +68,14 @@ function Counter({ field }: FieldEntryProps) {
     );
 }
 
-/** The buttons that expand and collapse the items, in order. */
+/** The buttons that expand and collapse the items, in order: not the menus of their tools. */
 function toggles(): HTMLElement[] {
-    return screen.getAllByRole('button').filter((button) => button.hasAttribute('aria-expanded'));
+    return screen
+        .getAllByRole('button')
+        .filter(
+            (button) =>
+                button.hasAttribute('aria-expanded') && !button.hasAttribute('aria-haspopup'),
+        );
 }
 
 describe('RepeaterField', () => {
@@ -572,7 +577,8 @@ describe('RepeaterField: duplicate and add in between', () => {
 
     it('reaches the control between items with the keyboard', async () => {
         renderField(<Links onChange={() => undefined} />);
-        screen.getByRole('button', { name: 'Remove item 1' }).focus();
+        // The last tool of the header: the menu of its tools, which the CSS shows when narrow
+        screen.getByRole('button', { name: 'Actions for item 1' }).focus();
         await userEvent.tab();
         expect(
             screen.getByRole('button', { name: 'Add an item between items 1 and 2' }),

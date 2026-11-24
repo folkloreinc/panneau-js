@@ -485,6 +485,9 @@ export const fieldsMessages: {
     duplicateItem: PanneauMessage<    {
     index: number;
     }>;
+    itemActions: PanneauMessage<    {
+    index: number;
+    }>;
     insertItem: PanneauMessage<    {
     before: number;
     after: number;

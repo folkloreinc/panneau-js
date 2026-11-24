@@ -39,6 +39,11 @@ export const fieldsMessages = {
         id: 'panneau.fields.duplicateItem',
         defaultMessage: 'Duplicate item {index}',
     }),
+    /** The menu of the tools of an item of a narrow repeater: move, duplicate, remove. */
+    itemActions: defineMessage<{ index: number }>({
+        id: 'panneau.fields.itemActions',
+        defaultMessage: 'Actions for item {index}',
+    }),
     /** The control between two items of a repeater that adds one there. */
     insertItem: defineMessage<{ before: number; after: number }>({
         id: 'panneau.fields.insertItem',

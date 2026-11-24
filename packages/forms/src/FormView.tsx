@@ -56,7 +56,13 @@ import { FormSkeleton } from './FormSkeleton';
 import { hasLocalizedFields } from './contentLocale';
 import { ErrorSectionsContext, FormContext, RevealContext, createRevealRegistry } from './context';
 import { cx } from './cx';
-import { FieldFlow, LayoutNodes, SidebarNode } from './layout/Layout';
+import {
+    ErrorBadge,
+    FieldFlow,
+    LayoutNodes,
+    SidebarNode,
+    sidebarSummary,
+} from './layout/Layout';
 import { messages } from './messages';
 import { SaveContext, SaveControls, type SaveState, SummaryContext } from './panels/SaveControls';
 import { type FormPanelComponent, PanelsContext, builtInPanels } from './panels/panels';
@@ -299,6 +305,34 @@ function useFormLayout(form: Form, fields: readonly Field[], layout: readonly La
 }
 
 /**
+ * The height of the footer, on the form as `--_panneau-form-footer-height`: a page that fixes the
+ * footer to the bottom of the screen (the app, on a phone) keeps that room under the form.
+ */
+function useFooterHeight(
+    root: RefObject<HTMLFormElement | null>,
+    footer: RefObject<HTMLDivElement | null>,
+    isShown: boolean,
+): void {
+    useEffect(() => {
+        const form = root.current;
+        const element = footer.current;
+        if (!isShown || form === null || element === null) {
+            return undefined;
+        }
+        const measure = () =>
+            form.style.setProperty('--_panneau-form-footer-height', `${element.offsetHeight}px`);
+        measure();
+        const observer =
+            typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null;
+        observer?.observe(element);
+        return () => {
+            observer?.disconnect();
+            form.style.removeProperty('--_panneau-form-footer-height');
+        };
+    }, [root, footer, isShown]);
+}
+
+/**
  * The ref of a form's element, and `goTo()`, which opens the tab, section or locale of a path,
  * then scrolls to its field and focuses it.
  *
@@ -448,6 +482,7 @@ export function FormView({
     const hasFooter = submitLabel !== null || actions !== undefined;
     // Toasts rise above the footer, which sticks to the bottom of the page.
     useToastOffset(footer, hasFooter && !isLoading);
+    useFooterHeight(root, footer, hasFooter && !isLoading);
     // "Saved" in the footer, from the last submit or from before the form started over, until the
     // values change.
     const [savedShown, setSavedShown] = useState(saved);
@@ -466,7 +501,34 @@ export function FormView({
     useLeaveGuard(guarded, leave.confirmLeave);
 
     const formLocales = locales ?? definition?.locales ?? NO_LOCALES;
-    const { resolved, laidOut, flow, sidebar, order } = useFormLayout(form, fields, layout);
+    const { resolved, laidOut, flow, sidebar, order: mainFirst } = useFormLayout(
+        form,
+        fields,
+        layout,
+    );
+    // Before the form on a narrow screen, the sidebar is a disclosure, collapsed until the user
+    // opens it, or until it must show a field (an error, a link of the summary). Its fields then
+    // come first in the order of errors, as on the screen (#501).
+    const sidebarNames = getLayoutFieldNames(sidebar.flatMap((node) => node.children ?? []));
+    const [sidebarBefore, setSidebarBefore] = useState(false);
+    const [sidebarExpanded, setSidebarExpanded] = useState(false);
+    useEffect(() => {
+        const open = (path: string) => {
+            const name = path.split('.')[0];
+            if (name !== undefined && sidebarNames.includes(name)) {
+                setSidebarExpanded(true);
+            }
+        };
+        const removeRevealer = registry.add(open);
+        const removeOpener = errorSections.add(open);
+        return () => {
+            removeRevealer();
+            removeOpener();
+        };
+    }, [registry, errorSections, sidebarNames]);
+    const order = sidebarBefore
+        ? [...sidebarNames, ...mainFirst.filter((name) => !sidebarNames.includes(name))]
+        : mainFirst;
     const contentLocale = useContentLocaleState(
         formLocales,
         languageSwitch,
@@ -661,6 +723,8 @@ export function FormView({
                                             <AsideLayout
                                                 className={layoutClassName}
                                                 mainClassName={styles.stack}
+                                                narrow="before"
+                                                onBeforeChange={setSidebarBefore}
                                                 aside={
                                                     sidebar.length > 0 ? (
                                                         <Aside
@@ -668,6 +732,18 @@ export function FormView({
                                                                 messages.sidebar,
                                                             )}
                                                             className={sidebarClassName}
+                                                            summary={sidebarSummary(
+                                                                sidebar,
+                                                                resolved.fieldsByName,
+                                                            )}
+                                                            summaryEnd={
+                                                                <ErrorBadge
+                                                                    form={form}
+                                                                    names={sidebarNames}
+                                                                />
+                                                            }
+                                                            isExpanded={sidebarExpanded}
+                                                            onExpandedChange={setSidebarExpanded}
                                                         >
                                                             {sidebar.map((node, index) => (
                                                                 <SidebarNode

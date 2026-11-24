@@ -14,6 +14,7 @@ import {
 
 import styles from './Form.module.css';
 import { cx } from './cx';
+import { sidebarSummary } from './layout/Layout';
 import { messages } from './messages';
 
 /** The height of a field's control, by type: one line, unless the type says otherwise. */
@@ -175,10 +176,12 @@ export function FormSkeleton({
             <AsideLayout
                 {...(layoutClassName !== undefined ? { className: layoutClassName } : {})}
                 mainClassName={styles.stack}
+                narrow="before"
                 aside={
                     sidebar.length > 0 ? (
                         <Aside
                             label={intl.formatMessage(messages.sidebar)}
+                            summary={sidebarSummary(sidebar, fields)}
                             {...(sidebarClassName !== undefined
                                 ? { className: sidebarClassName }
                                 : {})}

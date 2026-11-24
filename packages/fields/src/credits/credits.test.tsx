@@ -61,7 +61,7 @@ describe('CreditsFieldEntry', () => {
         );
         expect(screen.getAllByRole('listitem')[0]).toHaveAccessibleName(/^1\s*Jane Doe \(Music\)$/);
         // Items start collapsed (decision 0068).
-        await userEvent.click(screen.getByRole('button', { expanded: false }));
+        await userEvent.click(screen.getAllByRole('button', { expanded: false })[0] as HTMLElement);
         expect(screen.getByRole('textbox', { name: 'Name' })).toHaveAttribute(
             'name',
             'credits.0.name',

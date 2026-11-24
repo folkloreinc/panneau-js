@@ -11,6 +11,7 @@
     margin: 0;
     padding: 0;
     list-style: none;
+    container: panneau-repeater / inline-size;
 }
 
 .item {
@@ -145,6 +146,27 @@
     display: flex;
     flex: 0 0 auto;
     gap: var(--panneau-space-1);
+}
+
+/* In a narrow repeater (a phone, a sidebar), the tools of an item are in a menu, and its header
+ * is tighter: its title keeps the room of the header (#501). */
+.toolsMenu.toolsMenu {
+    display: none;
+}
+
+@container panneau-repeater (width < 30rem) {
+    .tools {
+        display: none;
+    }
+
+    .toolsMenu.toolsMenu {
+        display: inline-flex;
+        flex: none;
+    }
+
+    .header {
+        gap: var(--panneau-space-1);
+    }
 }
 
 .body {

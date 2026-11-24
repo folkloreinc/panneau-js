@@ -105,12 +105,21 @@ export const Beside: Story = {
     },
 };
 
-/** Below a narrow form, the sidebar has no Save button: the footer keeps it. */
-export const Below: Story = {
+/**
+ * In a narrow form, the sidebar comes first, collapsed to a line that names its panels (#501). It
+ * has no Save button: the footer keeps it.
+ */
+export const Narrow: Story = {
     args: { width: '36rem' },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         const sidebar = canvas.getByRole('region', { name: 'Sidebar' });
+        const toggle = await within(sidebar).findByRole('button', { expanded: false });
+        await expect(
+            toggle.compareDocumentPosition(canvas.getByRole('textbox', { name: /Title/ })) &
+                Node.DOCUMENT_POSITION_FOLLOWING,
+        ).toBeTruthy();
+        await userEvent.click(toggle);
         const saves = canvas.getAllByRole('button', { name: 'Save' });
         await expect(saves.filter((button) => button.checkVisibility())).toHaveLength(1);
         await expect(sidebar).not.toContainElement(

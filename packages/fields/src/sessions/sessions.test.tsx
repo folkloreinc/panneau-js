@@ -51,7 +51,7 @@ describe('SessionsFieldEntry', () => {
         );
         expect(screen.getByRole('group', { name: 'Sessions' })).toBeInTheDocument();
         // Items start collapsed (decision 0068).
-        await userEvent.click(screen.getByRole('button', { expanded: false }));
+        await userEvent.click(screen.getAllByRole('button', { expanded: false })[0] as HTMLElement);
         expect(screen.getByRole('textbox', { name: 'Tickets' })).toHaveAttribute(
             'name',
             'sessions.0.tickets',
