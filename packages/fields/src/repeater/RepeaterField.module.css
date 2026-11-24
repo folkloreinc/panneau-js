@@ -29,6 +29,9 @@
     padding: 0;
     list-style: none;
     container: panneau-repeater / inline-size;
+    /* What floats over the items (the "+" between two of them, the place of a dragged item) stays
+     * under what sticks in the frame of the app, such as its top bar, as the page scrolls (#503). */
+    isolation: isolate;
 }
 
 .item {

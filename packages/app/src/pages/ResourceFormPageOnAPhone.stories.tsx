@@ -281,6 +281,32 @@ export const Default: Story = {
             await userEvent.keyboard('{Escape}');
         });
 
+        await step('What floats over the blocks passes under the top bar (#503)', async () => {
+            const blocks = fields.getByRole('group', { name: 'Blocks' });
+            // Expanded, the blocks make the page long enough to scroll one under the top bar
+            await userEvent.click(within(blocks).getByRole('button', { name: 'Expand all' }));
+            const insert = blocks.querySelectorAll<HTMLElement>('[data-insert]')[2];
+            // The first banner: the top bar of the app, before the header of the page
+            const [topBar] = canvas.getAllByRole('banner');
+            await expect(insert).toBeDefined();
+            if (insert === undefined || topBar === undefined) {
+                return;
+            }
+            // The "+" between two blocks, scrolled under the top bar
+            const view = canvasElement.ownerDocument.defaultView ?? window;
+            const middle = (box(topBar).top + box(topBar).bottom) / 2;
+            view.scrollBy(0, (box(insert).top + box(insert).bottom) / 2 - middle);
+            await waitFor(() => expect(box(insert).top).toBeLessThan(middle));
+            await expect(box(insert).bottom).toBeGreaterThan(middle);
+            const hit = canvasElement.ownerDocument.elementFromPoint(
+                (box(insert).left + box(insert).right) / 2,
+                middle,
+            );
+            await expect(topBar.contains(hit)).toBe(true);
+            view.scrollTo(0, 0);
+            await userEvent.click(within(blocks).getByRole('button', { name: 'Collapse all' }));
+        });
+
         await step('The save bar is at the bottom of the screen, from edge to edge', async () => {
             const save = fields.getByRole('button', { name: 'Save' });
             let footer: HTMLElement | null = save;
