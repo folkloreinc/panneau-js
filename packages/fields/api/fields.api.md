@@ -524,6 +524,7 @@ export interface RelationSource {
     create?(resource: string, text: string): Promise<RelationReference | null>;
     describe?(resource: string): RelationResourceInfo | null;
     getItemHref?(resource: string, id: string): string | null;
+    linksInNewTab?: boolean;
     peek?(resource: string, id: string): RelationReference | null | undefined;
     resolve?(resource: string, ids: readonly string[], options: {
         signal: AbortSignal;
@@ -540,6 +541,7 @@ export interface RelationSource {
 // @public (undocumented)
 export interface RelationSourceOptions {
     create?: boolean | ((text: string, resource: string) => Record<string, unknown> | null);
+    createItem?: (resource: string, values: Record<string, unknown>) => Promise<Item | null>;
     definition?: (Pick<Definition, 'resources'> & Partial<Pick<Definition, 'locales'>>) | null;
     getItemHref?: (resource: string, id: string) => string | null;
     getLabel?: (item: Item, resource: string) => string;

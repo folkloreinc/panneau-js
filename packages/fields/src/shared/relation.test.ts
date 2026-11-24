@@ -450,6 +450,53 @@ describe('createRelationSource: ids and creation', () => {
         ).toEqual([true, true, false, false, false]);
     });
 
+    it('creates somewhere else with createItem, such as a panel, and shows the item at once', async () => {
+        const list = vi.fn(async () => ({ data: [] }));
+        let settle: (created: ReturnType<typeof item> | null) => void = () => undefined;
+        const createItem = vi.fn(
+            (_resource: string, _values: Record<string, unknown>) =>
+                new Promise<ReturnType<typeof item> | null>((resolve) => {
+                    settle = resolve;
+                }),
+        );
+        // Without the adapter's create(): the panel saves the item
+        const source = createRelationSource({ list }, { definition, create: true, createItem });
+        expect(source.canCreate?.('tags')).toBe(true);
+        expect(source.canCreate?.('locked')).toBe(false);
+
+        const created = source.create?.('people', 'Ada');
+        expect(createItem).toHaveBeenCalledWith('people', { title: { fr: 'Ada', en: 'Ada' } });
+        settle(item('5', { title: { en: 'Ada Lovelace' } }));
+        await expect(created).resolves.toEqual({ id: '5', label: 'Ada Lovelace' });
+        // Its card has it without a request
+        expect(source.peek?.('people', '5')).toEqual({ id: '5', label: 'Ada Lovelace' });
+        expect(list).not.toHaveBeenCalled();
+
+        const closed = source.create?.('tags', 'News');
+        settle(null);
+        await expect(closed).resolves.toBeNull();
+    });
+
+    it('doesn’t create in a resource whose types all forbid it', () => {
+        const typed = (abilities: Record<string, boolean>) => ({
+            id: 'pages',
+            label: { singular: 'page', plural: 'pages' },
+            fields: [{ name: 'title', type: 'text' }],
+            itemTitle: 'title',
+            types: [
+                { id: 'home', label: 'Home', fields: [], abilities: { create: false } },
+                { id: 'news', label: 'News', fields: [], abilities },
+            ],
+        });
+        const sourceOf = (abilities: Record<string, boolean>) =>
+            createRelationSource(
+                { list: async () => ({ data: [] }), create: async () => item('1', {}) },
+                { definition: { resources: [typed(abilities)] }, create: true },
+            );
+        expect(sourceOf({}).canCreate?.('pages')).toBe(true);
+        expect(sourceOf({ create: false }).canCreate?.('pages')).toBe(false);
+    });
+
     it('creates with the values of a function, or nothing when it gives null', async () => {
         const create = vi.fn(async (_resource: string, values: Record<string, unknown>) =>
             item('8', values),

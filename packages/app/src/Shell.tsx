@@ -34,9 +34,11 @@ import { ContextPage } from './pages/ContextPage';
 import { ErrorPage } from './pages/ErrorPage';
 import { HomePage } from './pages/HomePage';
 import { PageErrorBoundary } from './pages/PageErrorBoundary';
+import { RelatedItemPanelHost } from './pages/RelatedItemPanelHost';
 import { ResourceFormPage } from './pages/ResourceFormPage';
 import { ResourceListPage } from './pages/ResourceListPage';
 import { ResourceTypesPage } from './pages/ResourceTypesPage';
+import type { RelatedItemRequests } from './relatedItems';
 import { resolveRoute } from './routeReference';
 import { type AppRoute, matchRoute, routePath } from './routes';
 import { AppLayout } from './shell/AppLayout';
@@ -55,6 +57,8 @@ export interface ShellProps {
     onDensityChange?: ((density: DensityChoice) => void) | undefined;
     /** Logs the user out. Without it, the shell offers no logout. */
     onLogOut?: () => Promise<void> | void;
+    /** The items that relation fields create, in a panel over the page (decision 0110). */
+    relatedItems?: RelatedItemRequests | undefined;
 }
 
 interface PageProps {
@@ -253,6 +257,7 @@ export function Shell({
     density,
     onDensityChange,
     onLogOut,
+    relatedItems,
 }: ShellProps) {
     const intl = usePanneauIntl();
     const toasts = useToast();
@@ -363,6 +368,13 @@ export function Shell({
                             </PageRouteContext>
                         </PageErrorBoundary>
                     </Layout>
+                    {relatedItems !== undefined ? (
+                        <RelatedItemPanelHost
+                            requests={relatedItems}
+                            definition={definition}
+                            basePath={basePath}
+                        />
+                    ) : null}
                 </ActionRunnerProvider>
             </RouterProvider>
         </LeaveGuardsProvider>

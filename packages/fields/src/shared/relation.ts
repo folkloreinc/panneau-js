@@ -4,8 +4,10 @@ import type { Definition, Field, Item, ListQuery, Resource } from '@panneau/prot
 import {
     IDS_FILTER,
     IDS_FILTER_LIMIT,
+    getCreatableTypes,
     getImageUrl,
     getItemImageField,
+    hasResourceTypes,
 } from '@panneau/protocol/runtime';
 
 /**
@@ -106,6 +108,11 @@ export interface RelationSource {
     describe?(resource: string): RelationResourceInfo | null;
     /** Where an item opens, for the link of its card. Without it, or `null`, the card has none. */
     getItemHref?(resource: string, id: string): string | null;
+    /**
+     * The links of cards open in a new tab, such as in a panel over a form, which a link would
+     * leave (decision 0110).
+     */
+    linksInNewTab?: boolean;
 }
 
 /** What `createRelationSource()` needs from an adapter: the `list()` and `create()` of `@panneau/data`. */
@@ -156,6 +163,12 @@ export interface RelationSourceOptions {
     create?: boolean | ((text: string, resource: string) => Record<string, unknown> | null);
     /** Where an item opens, for the link of its card, such as its page in the app. */
     getItemHref?: (resource: string, id: string) => string | null;
+    /**
+     * Creates the item in place of the adapter's `create()`, such as in a panel with the form of
+     * its resource (decision 0110): it gets the values of the typed text, and resolves with the
+     * new item, or `null` when nothing was created. It needs the `create` option.
+     */
+    createItem?: (resource: string, values: Record<string, unknown>) => Promise<Item | null>;
     /**
      * Where the items that `resolve()` gets are kept, such as the item queries of the app's query
      * client. Defaults to a cache of the source's own.
@@ -274,6 +287,7 @@ export function createRelationSource(
         getLabel,
         create,
         getItemHref,
+        createItem: openCreate,
         items = createItemCache(),
     }: RelationSourceOptions = {},
 ): RelationSource {
@@ -426,16 +440,36 @@ export function createRelationSource(
         return missing.has(keyOf(resource, id)) ? null : undefined;
     };
 
-    const { create: createItem } = adapter;
+    const createItem =
+        openCreate ??
+        (adapter.create !== undefined
+            ? (resource: string, values: Record<string, unknown>) =>
+                  adapter.create?.(resource, values) ?? Promise.resolve(null)
+            : undefined);
     if (create !== undefined && create !== false && createItem !== undefined) {
-        source.canCreate = (resource) =>
-            resourceOf(resource)?.abilities?.create !== false && valuesOf('', resource) !== null;
+        // A resource with types creates one of them: not when none of them can be (decision 0077)
+        source.canCreate = (resource) => {
+            const definitionResource = resourceOf(resource);
+            return (
+                definitionResource?.abilities?.create !== false &&
+                (definitionResource === undefined ||
+                    !hasResourceTypes(definitionResource) ||
+                    getCreatableTypes(definitionResource).length > 0) &&
+                valuesOf('', resource) !== null
+            );
+        };
         source.create = async (resource, text) => {
             const values = valuesOf(text, resource);
             if (values === null) {
                 return null;
             }
-            return toReference(await createItem.call(adapter, resource, values), resource);
+            const created = await createItem(resource, values);
+            if (created === null) {
+                return null;
+            }
+            // Its card shows at once, with its image and its description
+            items.set(resource, created);
+            return toReference(created, resource);
         };
     }
     return source;
