@@ -1277,6 +1277,23 @@ export const uiMessages: {
     }>;
     breadcrumbs: PanneauMessage<Record<never, never>>;
     moreBreadcrumbs: PanneauMessage<Record<never, never>>;
+    reorderItem: PanneauMessage<    {
+    index: number;
+    }>;
+    reorderHandle: PanneauMessage<    {
+    item: string;
+    }>;
+    reorderBefore: PanneauMessage<    {
+    item: string;
+    }>;
+    reorderAfter: PanneauMessage<    {
+    item: string;
+    }>;
+    reorderMoved: PanneauMessage<    {
+    item: string;
+    position: number;
+    count: number;
+    }>;
     shortcutsTitle: PanneauMessage<Record<never, never>>;
     shortcutsHelp: PanneauMessage<Record<never, never>>;
     shortcutsGeneral: PanneauMessage<Record<never, never>>;
