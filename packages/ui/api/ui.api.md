@@ -1355,6 +1355,7 @@ export interface SelectOption {
     disabled?: boolean;
     // (undocumented)
     label: string;
+    lang?: string;
     prefix?: ReactNode;
     // (undocumented)
     value: OptionValue;

@@ -48,7 +48,7 @@ const navigation = () => within(screen.getByRole('navigation', { name: 'Main nav
 /** Opens the user's menu (decision 0086). */
 async function openUserMenu(user: ReturnType<typeof userEvent.setup>) {
     await user.click(screen.getByRole('button', { name: /^Your account/ }));
-    // The menu, and the appearance and density after it (#487)
+    // Who is logged in, the preferences, then the menu of the actions (#487)
     return within(await screen.findByRole('dialog', { name: /^Your account/ }));
 }
 
@@ -854,7 +854,8 @@ describe('Panneau', () => {
             renderAt('/panneau');
             await screen.findByRole('heading', { name: 'Test site' });
             const account = screen.getByRole('button', { name: 'Your account (Ada)' });
-            const profile = (await openUserMenu(user)).getByRole('menuitem', { name: 'Profile' });
+            // Who is logged in opens their profile (#487)
+            const profile = (await openUserMenu(user)).getByRole('link', { name: /^Ada/ });
             expect(profile).toHaveAttribute('href', '/panneau/account');
             await user.click(profile);
             expect(

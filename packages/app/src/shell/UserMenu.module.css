@@ -17,13 +17,38 @@
 /* Who is logged in, first: the name and the whole email. */
 .user {
     display: flex;
-    flex-direction: column;
-    gap: var(--panneau-space-1);
-    margin: 0;
-    padding: var(--panneau-space-3) var(--panneau-space-3) var(--panneau-space-2);
+    align-items: center;
+    gap: var(--panneau-space-2);
+    margin: var(--panneau-space-1);
+    padding: var(--panneau-space-2);
     font-size: var(--panneau-font-size-xs);
     line-height: var(--panneau-line-height-tight);
     color: var(--panneau-color-text-muted);
+    text-decoration: none;
+    border-radius: var(--panneau-radius-md);
+    outline: none;
+}
+
+/* A link to their profile, like an item of the menu */
+.profile {
+    cursor: pointer;
+}
+
+.profile[data-hovered] {
+    background-color: var(--panneau-color-hover);
+}
+
+.profile[data-focus-visible] {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: calc(-1 * var(--panneau-focus-width));
+}
+
+.identity {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: var(--panneau-space-1);
+    min-width: 0;
 }
 
 .name {
@@ -36,6 +61,10 @@
     overflow-wrap: anywhere;
 }
 
+.chevron {
+    flex: 0 0 auto;
+}
+
 /* The preferences, a compact group: a small label, and a row of icons at the end (#487). */
 .settings {
     display: grid;
@@ -44,7 +73,7 @@
 }
 
 .user + .settings {
-    padding-top: 0;
+    padding-top: var(--panneau-space-1);
 }
 
 .setting {
@@ -59,7 +88,18 @@
     color: var(--panneau-color-text-muted);
 }
 
-/* The other items, under the preferences */
+/* The language: a select as compact as the rows of icons */
+.language {
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
+.languageTrigger.languageTrigger {
+    min-height: var(--panneau-control-height-sm);
+    font-size: var(--panneau-font-size-sm);
+}
+
+/* The actions, under the preferences */
 .menu {
     border-top: var(--panneau-border-width) solid var(--panneau-color-border);
 }

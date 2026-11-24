@@ -168,18 +168,16 @@ export const UserMenu: Story = {
             'true',
         );
         const menu = within(popover).getByRole('menu', { name: 'Your account (Ada Lovelace)' });
-        await expect(
-            within(within(menu).getByRole('group', { name: 'Language' })).getByRole(
-                'menuitemradio',
-                { name: 'English' },
-            ),
-        ).toHaveAttribute('aria-checked', 'true');
+        await expect(within(popover).getByRole('button', { name: /Language/ })).toHaveTextContent(
+            'English',
+        );
         await userEvent.click(within(menu).getByRole('menuitem', { name: 'Log out' }));
         await expect(args.onLogOut).toHaveBeenCalledTimes(1);
 
         await userEvent.click(canvas.getByRole('button', { name: 'Your account (Ada Lovelace)' }));
-        const reopened = await body.findByRole('menu', { name: 'Your account (Ada Lovelace)' });
-        await userEvent.click(within(reopened).getByRole('menuitemradio', { name: 'Français' }));
+        const reopened = await body.findByRole('dialog', { name: 'Your account (Ada Lovelace)' });
+        await userEvent.click(within(reopened).getByRole('button', { name: /Language/ }));
+        await userEvent.click(await body.findByRole('option', { name: 'Français' }));
         await expect(args.onLocaleChange).toHaveBeenCalledWith('fr');
     },
 };

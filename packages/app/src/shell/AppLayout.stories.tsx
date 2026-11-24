@@ -224,21 +224,23 @@ export const UserMenu: Story = {
             await body.findByRole('dialog', { name: 'Your account (Ada Lovelace)' }),
         );
         const menu = within(popover.getByRole('menu', { name: 'Your account (Ada Lovelace)' }));
-        await expect(menu.getByRole('menuitem', { name: 'Profile' })).toHaveAttribute(
-            'href',
-            '/admin/resources/users/1/edit',
-        );
-        // Top to bottom: who is logged in, the preferences, the other items, and "Log out" last
+        // Who is logged in opens their profile, named by its tooltip
+        const profile = popover.getByRole('link', { name: /^Ada Lovelace/ });
+        await expect(profile).toHaveAttribute('href', '/admin/resources/users/1/edit');
+        await userEvent.hover(profile);
+        await expect(await body.findByRole('tooltip')).toHaveTextContent('Profile');
+        // Top to bottom: who is logged in, the preferences, the actions, and "Log out" last
         const top = (element: Element) => element.getBoundingClientRect().top;
-        const identity = popover.getByText('Ada Lovelace');
         const preferences = popover.getByRole('radiogroup', { name: 'Appearance' });
+        const language = popover.getByRole('button', { name: /Language/ });
         const items = menu.getAllByRole('menuitem');
-        await expect(top(identity)).toBeLessThan(top(preferences));
-        await expect(top(preferences)).toBeLessThan(top(items[0] ?? preferences));
+        await expect(top(profile)).toBeLessThan(top(preferences));
+        await expect(top(preferences)).toBeLessThan(top(language));
+        await expect(top(language)).toBeLessThan(top(items[0] ?? language));
         await expect(items.at(-1)).toHaveAccessibleName('Log out');
-        await expect(
-            popover.getByRole('menu', { name: 'Your account (Ada Lovelace)' }),
-        ).toHaveAccessibleDescription(/^Ada Lovelace/);
+        // The rows of the preferences end on the same edge
+        const right = (element: Element) => element.getBoundingClientRect().right;
+        await expect(Math.abs(right(preferences) - right(language))).toBeLessThanOrEqual(1);
         const appearance = within(preferences);
         await expect(appearance.getByRole('radio', { name: 'Light' })).toHaveAttribute(
             'aria-checked',
@@ -262,12 +264,10 @@ export const UserMenu: Story = {
             'aria-checked',
             'true',
         );
-        const language = within(reopened.getByRole('group', { name: 'Language' }));
-        await expect(language.getByRole('menuitemradio', { name: 'English' })).toHaveAttribute(
-            'aria-checked',
-            'true',
-        );
-        await userEvent.click(language.getByRole('menuitemradio', { name: 'Français' }));
+        const select = reopened.getByRole('button', { name: /Language/ });
+        await expect(select).toHaveTextContent('English');
+        await userEvent.click(select);
+        await userEvent.click(await body.findByRole('option', { name: 'Français' }));
         await expect(args.onLocaleChange).toHaveBeenCalledWith('fr');
 
         await userEvent.click(account);

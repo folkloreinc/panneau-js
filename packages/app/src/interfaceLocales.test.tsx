@@ -76,15 +76,12 @@ describe('the language switcher (decision 0083)', () => {
         const user = userEvent.setup();
         renderApp();
         await user.click(await screen.findByRole('button', { name: 'Your account (Ada)' }));
-        // A group of the user's menu (decision 0086)
-        const menu = within(
-            within(await screen.findByRole('menu')).getByRole('group', { name: 'Language' }),
-        );
-        expect(menu.getByRole('menuitemradio', { name: 'English' })).toHaveAttribute(
-            'aria-checked',
-            'true',
-        );
-        const french = menu.getByRole('menuitemradio', { name: 'Français' });
+        // A preference of the user's menu (decision 0086), a select since #487
+        const dialog = within(await screen.findByRole('dialog', { name: 'Your account (Ada)' }));
+        const select = dialog.getByRole('button', { name: /Language/ });
+        expect(select).toHaveTextContent('English');
+        await user.click(select);
+        const french = await screen.findByRole('option', { name: 'Français' });
         expect(within(french).getByText('Français')).toHaveAttribute('lang', 'fr');
 
         await user.click(french);
@@ -97,8 +94,10 @@ describe('the language switcher (decision 0083)', () => {
         const user = userEvent.setup();
         renderApp();
         await user.click(await screen.findByRole('button', { name: 'Your account (Ada)' }));
-        const menu = await screen.findByRole('menu');
-        await user.click(within(menu).getByRole('menuitemradio', { name: 'English' }));
+        await user.click(
+            within(await screen.findByRole('dialog')).getByRole('button', { name: /Language/ }),
+        );
+        await user.click(await screen.findByRole('option', { name: 'English' }));
         expect(loadPage).not.toHaveBeenCalled();
     });
 
@@ -108,7 +107,7 @@ describe('the language switcher (decision 0083)', () => {
         await user.click(await screen.findByRole('button', { name: 'Your account (Ada)' }));
         const menu = within(await screen.findByRole('dialog', { name: 'Your account (Ada)' }));
         expect(menu.getByRole('radiogroup', { name: 'Appearance' })).toBeInTheDocument();
-        expect(menu.queryByRole('group', { name: 'Language' })).not.toBeInTheDocument();
+        expect(menu.queryByRole('button', { name: /Language/ })).not.toBeInTheDocument();
     });
 
     it('switches the language from "Go to…"', async () => {
@@ -135,13 +134,11 @@ describe('the language switcher (decision 0083)', () => {
         const user = userEvent.setup();
         renderApp({ theme: { navigation: 'dock' } });
         await user.click(await screen.findByRole('button', { name: 'Your account (Ada)' }));
-        const menu = await screen.findByRole('menu', { name: 'Your account (Ada)' });
-        const language = within(menu).getByRole('group', { name: 'Language' });
-        expect(within(language).getByRole('menuitemradio', { name: 'English' })).toHaveAttribute(
-            'aria-checked',
-            'true',
-        );
-        await user.click(within(language).getByRole('menuitemradio', { name: 'Français' }));
+        const dialog = within(await screen.findByRole('dialog', { name: 'Your account (Ada)' }));
+        const select = dialog.getByRole('button', { name: /Language/ });
+        expect(select).toHaveTextContent('English');
+        await user.click(select);
+        await user.click(await screen.findByRole('option', { name: 'Français' }));
         expect(loadPage).toHaveBeenCalledWith(
             '/panneau/api/locale/fr?from=app&next=%2Fpanneau%2Fresources%2Fpages%3Fq%3Dnews',
         );

@@ -692,13 +692,14 @@ describe('the app shell', () => {
             name: 'Your account (Ada)',
         });
         await user.click(account);
+        // Who is logged in, at the top of the menu, opens their profile (#487)
         await user.click(
-            within(await screen.findByRole('menu')).getByRole('menuitem', { name: 'Profile' }),
+            within(await screen.findByRole('dialog')).getByRole('link', { name: /^Ada/ }),
         );
         await waitFor(() =>
             expect(window.location.pathname).toBe('/panneau/resources/users/usr_1/edit'),
         );
-        expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
         // The button of the menu shows that the profile is the current page
         expect(account).toHaveAttribute('data-current', 'true');
     });
@@ -706,7 +707,7 @@ describe('the app shell', () => {
     describe("the user's menu (decision 0086)", () => {
         const sidebar = () => within(screen.getByRole('complementary'));
 
-        it('opens from the keyboard, with the user, their profile, the appearance and "Log out"', async () => {
+        it('opens from the keyboard, with the user and their profile, the preferences, then "Log out"', async () => {
             const user = userEvent.setup();
             renderApp({
                 resources: [...createDefinition().resources, USERS_RESOURCE],
@@ -724,28 +725,22 @@ describe('the app shell', () => {
 
             account.focus();
             await user.keyboard('{Enter}');
-            const menu = await screen.findByRole('menu', { name: 'Your account (Ada Lovelace)' });
-            expect(account).toHaveAttribute('aria-expanded', 'true');
-            // The first item has the focus
-            await waitFor(() =>
-                expect(within(menu).getByRole('menuitem', { name: 'Profile' })).toHaveFocus(),
-            );
-            // Who is logged in, with the whole email, describes the menu
-            expect(menu).toHaveAccessibleDescription('Ada Lovelace ada.lovelace@example.com');
-            // "Log out" is the last item
-            expect(within(menu).getAllByRole('menuitem').at(-1)).toHaveAccessibleName('Log out');
-            // The appearance before the menu, as a row of icons named by their tooltips (#487)
-            const dialog = screen.getByRole('dialog', { name: 'Your account (Ada Lovelace)' });
+            const dialog = await screen.findByRole('dialog', {
+                name: 'Your account (Ada Lovelace)',
+            });
             const popover = within(dialog);
-            const group = popover.getByRole('radiogroup', { name: 'Appearance' });
-            expect(
-                group.compareDocumentPosition(menu) & Node.DOCUMENT_POSITION_FOLLOWING,
-            ).toBeTruthy();
-            expect(
-                popover.getByText('ada.lovelace@example.com').compareDocumentPosition(group) &
-                    Node.DOCUMENT_POSITION_FOLLOWING,
-            ).toBeTruthy();
-            const appearance = within(group);
+            const menu = popover.getByRole('menu', { name: 'Your account (Ada Lovelace)' });
+            expect(account).toHaveAttribute('aria-expanded', 'true');
+            // Who is logged in describes the menu, and "Log out" is its last item
+            expect(menu).toHaveAccessibleDescription('Ada Lovelace ada.lovelace@example.com');
+            expect(within(menu).getAllByRole('menuitem').at(-1)).toHaveAccessibleName('Log out');
+
+            // Tab goes through the popover in the order shown (#487): who is logged in, a link to
+            // their profile; the appearance, a row of icons named by their tooltips…
+            await user.tab();
+            expect(popover.getByRole('link', { name: /^Ada Lovelace/ })).toHaveFocus();
+            await user.tab();
+            const appearance = within(popover.getByRole('radiogroup', { name: 'Appearance' }));
             expect(
                 appearance
                     .getAllByRole('radio')
@@ -758,23 +753,31 @@ describe('the app shell', () => {
                 ['Dark', 'false'],
                 ['Same as the system', 'false'],
             ]);
-
-            // Shift Tab goes from the menu back to the preferences above it, where the arrows move
-            await user.tab({ shift: true });
-            if (popover.queryByRole('radiogroup', { name: 'Density' }) !== null) {
-                await user.tab({ shift: true });
-            }
-            // React Aria enters a group from its end, going back
-            expect(appearance.getByRole('radio', { name: 'Same as the system' })).toHaveFocus();
-            await user.keyboard('{ArrowLeft}');
+            expect(appearance.getByRole('radio', { name: 'Light' })).toHaveFocus();
+            await user.keyboard('{ArrowRight}');
             expect(appearance.getByRole('radio', { name: 'Dark' })).toHaveFocus();
             await user.keyboard(' ');
             expect(window.localStorage.getItem('panneau:color-scheme')).toBe('dark');
-            // It stays open, to compare; Escape closes it and gives the focus back to its button
+            // It stays open, to compare
             expect(appearance.getByRole('radio', { name: 'Dark' })).toHaveAttribute(
                 'aria-checked',
                 'true',
             );
+            // …then the other preferences, and the menu of the actions, each after the last
+            let previous = document.activeElement;
+            while (previous !== null && !menu.contains(previous)) {
+                await user.tab();
+                const next = document.activeElement;
+                expect(next).not.toBeNull();
+                if (next === null) {
+                    break;
+                }
+                expect(previous.compareDocumentPosition(next)).toBe(
+                    Node.DOCUMENT_POSITION_FOLLOWING,
+                );
+                previous = next;
+            }
+            // Escape closes it and gives the focus back to its button
             await user.keyboard('{Escape}');
             await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
             await waitFor(() => expect(account).toHaveFocus());
@@ -786,7 +789,7 @@ describe('the app shell', () => {
                 'true',
             );
             // An item of the menu closes it
-            await user.keyboard('{Enter}');
+            await user.click(within(reopened).getByRole('menuitem', { name: 'Log out' }));
             await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
         });
 
@@ -794,9 +797,11 @@ describe('the app shell', () => {
             const user = userEvent.setup();
             renderApp();
             await user.click(sidebar().getByRole('button', { name: 'Your account (Ada)' }));
-            const menu = await screen.findByRole('menu');
-            expect(within(menu).queryByRole('menuitem', { name: 'Profile' })).toBeNull();
-            expect(screen.getByRole('radiogroup', { name: 'Appearance' })).toBeInTheDocument();
+            const dialog = within(await screen.findByRole('dialog'));
+            // Who is logged in, but not a link
+            expect(dialog.getByText('Ada')).toBeInTheDocument();
+            expect(dialog.queryByRole('link')).toBeNull();
+            expect(dialog.getByRole('radiogroup', { name: 'Appearance' })).toBeInTheDocument();
         });
 
         it('opens the same menu from the avatar of the rail', async () => {

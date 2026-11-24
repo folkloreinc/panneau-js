@@ -37,6 +37,8 @@ export interface SelectOption {
     disabled?: boolean;
     /** Decorative content before the label, such as a flag. Assistive technologies skip it. */
     prefix?: ReactNode;
+    /** The language of the label, when it differs from the interface's: a language's own name. */
+    lang?: string;
 }
 
 /** Props of both single and multiple selects. */
@@ -192,7 +194,7 @@ export function Select(props: SelectProps) {
                                     {intl.formatList(chosenLabels, { type: 'conjunction' })}
                                 </span>
                             ) : !isPlaceholder && selected !== undefined ? (
-                                <span className={styles.valueText}>
+                                <span className={styles.valueText} lang={selected.lang}>
                                     {selected.prefix !== undefined ? (
                                         <span className={styles.prefix} aria-hidden="true">
                                             {selected.prefix}
@@ -254,7 +256,11 @@ export function Select(props: SelectProps) {
                                         </span>
                                     ) : null}
                                     <span className={styles.itemText}>
-                                        <Text slot="label" className={styles.itemLabel}>
+                                        <Text
+                                            slot="label"
+                                            lang={item.lang}
+                                            className={styles.itemLabel}
+                                        >
                                             {item.label}
                                         </Text>
                                         {item.description !== undefined ? (

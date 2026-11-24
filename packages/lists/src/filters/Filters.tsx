@@ -64,9 +64,6 @@ export function isFilterActive(
     return values[filter.id] !== undefined;
 }
 
-/** The built-in controls that clear in their own box, in place of their arrow. */
-const CLEARS_INSIDE: ReadonlySet<unknown> = new Set([builtInFilters.select]);
-
 /**
  * A control for each filter of the list. A filter with a value is marked as active, in the tones
  * of what is selected (`--panneau-selected-*`), with a button that clears it.
@@ -103,18 +100,20 @@ export function FilterControls({
                 }
                 const label = getFilterLabel(filter, columns, fields);
                 const clear = () => onChange(filter.id, undefined);
+                const clearLabel = intl.formatMessage(messages.clearFilter, { filter: label });
                 return (
                     <FilterItem
                         key={filter.id}
-                        label={label}
-                        // A switch says itself whether it is on, and a select clears in its box
-                        clearable={filter.type !== 'toggle' && !CLEARS_INSIDE.has(Control)}
+                        clearLabel={clearLabel}
+                        // A switch says itself whether it is on, and the built-in select clears
+                        // in its box, in place of its arrow
+                        clearable={filter.type !== 'toggle' && Control !== builtInFilters.select}
                         isActive={isFilterActive(values, filter)}
                         onClear={clear}
                     >
                         <Control
                             onClear={clear}
-                            clearLabel={intl.formatMessage(messages.clearFilter, { filter: label })}
+                            clearLabel={clearLabel}
                             filter={filter}
                             label={label}
                             options={getFilterOptions(filter, columns, fields)}
@@ -131,7 +130,8 @@ export function FilterControls({
 }
 
 interface FilterItemProps {
-    label: string;
+    /** The name of the button that clears the filter. */
+    clearLabel: string;
     isActive: boolean;
     clearable: boolean;
     onClear: () => void;
@@ -139,8 +139,7 @@ interface FilterItemProps {
 }
 
 /** A filter control, marked when it has a value, with a button that clears it. */
-function FilterItem({ label, isActive, clearable, onClear, children }: FilterItemProps) {
-    const intl = usePanneauIntl();
+function FilterItem({ clearLabel, isActive, clearable, onClear, children }: FilterItemProps) {
     const item = useRef<HTMLDivElement>(null);
     return (
         <div
@@ -152,7 +151,7 @@ function FilterItem({ label, isActive, clearable, onClear, children }: FilterIte
             {isActive && clearable ? (
                 <IconButton
                     icon={X}
-                    label={intl.formatMessage(messages.clearFilter, { filter: label })}
+                    label={clearLabel}
                     className={styles.clear}
                     onPress={() => {
                         onClear();

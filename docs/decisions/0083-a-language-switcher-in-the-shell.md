@@ -1,6 +1,6 @@
 # 0083: A language switcher in the shell
 
-- Status: accepted, amended by [0086](0086-one-user-menu.md): the language switcher is in the user's menu
+- Status: accepted, amended by [0086](0086-one-user-menu.md): the language switcher is in the user's menu, a select among its preferences since [#487](https://github.com/folkloreinc/panneau-js/issues/487)
 - Date: 2026-11-17
 - Builds on: [0052](0052-oauth-providers.md) (a backend's URL, a full navigation with `next`), [0076](0076-a-dock-in-place-of-the-sidebar.md) (the dock)
 - Issue: [#305](https://github.com/folkloreinc/panneau-js/issues/305)
