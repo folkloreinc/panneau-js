@@ -42,6 +42,11 @@ export const uiFr: Record<string, string> = {
     'panneau.ui.reorderAfter': 'Après {item}',
     'panneau.ui.reorderMoved':
         '{item}, maintenant en position {position, number} sur {count, number}',
+    'panneau.ui.reorderMenu': 'Réordonner {item}',
+    'panneau.ui.reorderToStart': 'Déplacer au début',
+    'panneau.ui.reorderMoveBefore': 'Déplacer avant {item}',
+    'panneau.ui.reorderMoveAfter': 'Déplacer après {item}',
+    'panneau.ui.reorderToEnd': 'Déplacer à la fin',
     'panneau.ui.shortcutsTitle': 'Raccourcis clavier',
     'panneau.ui.shortcutsHelp': 'Afficher les raccourcis clavier',
     'panneau.ui.shortcutsGeneral': 'Général',

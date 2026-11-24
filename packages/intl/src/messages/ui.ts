@@ -100,6 +100,27 @@ export const uiMessages = {
         id: 'panneau.ui.reorderMoved',
         defaultMessage: '{item} moved to position {position, number} of {count, number}',
     }),
+    /** The menu that moves an item of a reorderable list without dragging it (decision 0111). */
+    reorderMenu: defineMessage<{ item: string }>({
+        id: 'panneau.ui.reorderMenu',
+        defaultMessage: 'Reorder {item}',
+    }),
+    reorderToStart: defineMessage({
+        id: 'panneau.ui.reorderToStart',
+        defaultMessage: 'Move to the start',
+    }),
+    reorderMoveBefore: defineMessage<{ item: string }>({
+        id: 'panneau.ui.reorderMoveBefore',
+        defaultMessage: 'Move before {item}',
+    }),
+    reorderMoveAfter: defineMessage<{ item: string }>({
+        id: 'panneau.ui.reorderMoveAfter',
+        defaultMessage: 'Move after {item}',
+    }),
+    reorderToEnd: defineMessage({
+        id: 'panneau.ui.reorderToEnd',
+        defaultMessage: 'Move to the end',
+    }),
     /** The help of keyboard shortcuts (decision 0112): its title, and what opens it. */
     shortcutsTitle: defineMessage({
         id: 'panneau.ui.shortcutsTitle',

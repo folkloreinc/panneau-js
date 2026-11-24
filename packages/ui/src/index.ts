@@ -141,6 +141,8 @@ export {
     type ReorderItemProps,
     ReorderList,
     type ReorderListProps,
+    ReorderMenu,
+    type ReorderMenuProps,
 } from './reorder/ReorderList';
 export { LoadingRegion, type LoadingRegionProps } from './skeleton/LoadingRegion';
 export { Skeleton, type SkeletonProps } from './skeleton/Skeleton';

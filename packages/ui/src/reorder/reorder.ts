@@ -22,6 +22,33 @@ export function gapAt(middles: readonly number[], position: number): number {
     return index === -1 ? middles.length : index;
 }
 
+/** The box of an item, in the coordinates of its list. */
+export interface ItemBox {
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+}
+
+/**
+ * The gap at a point of a grid, from the boxes of its items in their order: before the first item
+ * on a row below the point, or on its row with its middle past the point (to its left in a list
+ * that reads from right to left); after the last one otherwise.
+ */
+export function gapAtPoint(boxes: readonly ItemBox[], x: number, y: number, isRtl = false): number {
+    const index = boxes.findIndex((box) => {
+        if (y < box.top) {
+            return true;
+        }
+        if (y >= box.top + box.height) {
+            return false;
+        }
+        const middle = box.left + box.width / 2;
+        return isRtl ? x > middle : x < middle;
+    });
+    return index === -1 ? boxes.length : index;
+}
+
 /** A duration of CSS (`200ms`, `0.2s`) in milliseconds, or 0. */
 export function parseDuration(value: string): number {
     const duration = Number.parseFloat(value);

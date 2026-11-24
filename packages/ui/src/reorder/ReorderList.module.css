@@ -74,6 +74,24 @@
     transform: translateY(50%);
 }
 
+/* In a grid, the line is on the side of the item, before it or after the last one. */
+.gap[data-layout='grid'] {
+    inset-block: 0;
+    inset-inline: 0 auto;
+    inline-size: 0.1875rem;
+    block-size: auto;
+    margin-inline-start: -0.09375rem;
+    transform: none;
+}
+
+.gap[data-layout='grid'][data-position='after'] {
+    top: 0;
+    bottom: 0;
+    inset-inline: auto 0;
+    margin-inline: 0 -0.09375rem;
+    transform: none;
+}
+
 .gap[data-active] {
     background: var(--panneau-color-focus);
 }

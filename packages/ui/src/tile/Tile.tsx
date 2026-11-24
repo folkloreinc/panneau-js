@@ -1,7 +1,8 @@
-import { type ReactNode, createContext, use } from 'react';
+import { Children, type ReactNode, createContext, isValidElement, use } from 'react';
 import { Link } from 'react-aria-components';
 
 import { Icon, type IconComponent } from '../icon/Icon';
+import { ReorderHandle, ReorderItem, ReorderList } from '../reorder/ReorderList';
 import { cx } from '../utils/cx';
 import styles from './Tile.module.css';
 
@@ -32,6 +33,10 @@ export interface TileProps {
 }
 
 const TileGroupContext = createContext(false);
+/** The place of a tile in a group that reorders its tiles, and whether it shows its handle. */
+const TileReorderContext = createContext<{ index: number; id: string; hasHandle: boolean } | null>(
+    null,
+);
 
 /** A row that shows one thing: a media, a title, a description, and actions. */
 export function Tile({
@@ -48,18 +53,19 @@ export function Tile({
     className,
 }: TileProps) {
     const inGroup = use(TileGroupContext);
+    const reorder = use(TileReorderContext);
     const Element = inGroup ? 'li' : 'div';
-    return (
-        <Element
-            className={cx(
-                'panneau-tile',
-                styles.tile,
-                styles[appearance],
-                size === 'sm' && styles.sm,
-                href !== undefined && styles.linked,
-                className,
-            )}
-        >
+    const classes = cx(
+        'panneau-tile',
+        styles.tile,
+        styles[appearance],
+        size === 'sm' && styles.sm,
+        href !== undefined && styles.linked,
+        className,
+    );
+    const content = (
+        <>
+            {reorder?.hasHandle === true ? <ReorderHandle className={styles.handle} /> : null}
             {media !== undefined && media !== null ? (
                 <span className={styles.media}>{media}</span>
             ) : icon !== undefined ? (
@@ -89,7 +95,14 @@ export function Tile({
             {actions !== undefined && actions !== null ? (
                 <div className={styles.actions}>{actions}</div>
             ) : null}
-        </Element>
+        </>
+    );
+    return reorder !== null ? (
+        <ReorderItem id={reorder.id} index={reorder.index} className={classes}>
+            {content}
+        </ReorderItem>
+    ) : (
+        <Element className={classes}>{content}</Element>
     );
 }
 
@@ -100,22 +113,67 @@ export interface TileGroupProps {
     appearance?: 'plain' | 'outline';
     /** Names the list. */
     label?: string | undefined;
+    /**
+     * Makes the tiles reorderable (decision 0111): each one has a handle before its media, which
+     * drags it, and `onMove` is called with its index and the index it takes. The tiles keep their
+     * keys, which stay when they move. A `ReorderMenu` in the actions of a tile moves it too.
+     */
+    onMove?: ((from: number, to: number) => void) | undefined;
+    /** The name of a tile, in the labels of its handle and in announcements. */
+    itemLabel?: ((index: number) => string) | undefined;
+    /** The tiles can't be reordered: they have no handle. */
+    isReorderDisabled?: boolean | undefined;
     className?: string | undefined;
 }
 
 /** A list of tiles, with a line between them. */
-export function TileGroup({ children, appearance = 'plain', label, className }: TileGroupProps) {
+export function TileGroup({
+    children,
+    appearance = 'plain',
+    label,
+    onMove,
+    itemLabel,
+    isReorderDisabled = false,
+    className,
+}: TileGroupProps) {
+    const classes = cx(
+        'panneau-tile-group',
+        styles.group,
+        appearance === 'outline' && styles.groupOutline,
+        className,
+    );
+    if (onMove === undefined) {
+        return (
+            <ul aria-label={label} className={classes}>
+                <TileGroupContext value>{children}</TileGroupContext>
+            </ul>
+        );
+    }
+    // Each tile knows its place, and its key is the key of the item that moves
+    const tiles = Children.toArray(children);
     return (
-        <ul
+        <ReorderList
+            elementType="ul"
             aria-label={label}
-            className={cx(
-                'panneau-tile-group',
-                styles.group,
-                appearance === 'outline' && styles.groupOutline,
-                className,
-            )}
+            className={classes}
+            itemCount={tiles.length}
+            onMove={onMove}
+            {...(itemLabel !== undefined ? { itemLabel } : {})}
+            isDisabled={isReorderDisabled}
         >
-            <TileGroupContext value>{children}</TileGroupContext>
-        </ul>
+            <TileGroupContext value>
+                {tiles.map((tile, index) => {
+                    const key = isValidElement(tile) && tile.key !== null ? tile.key : index;
+                    return (
+                        <TileReorderContext
+                            key={key}
+                            value={{ index, id: String(key), hasHandle: !isReorderDisabled }}
+                        >
+                            {tile}
+                        </TileReorderContext>
+                    );
+                })}
+            </TileGroupContext>
+        </ReorderList>
     );
 }
