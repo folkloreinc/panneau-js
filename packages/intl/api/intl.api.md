@@ -328,6 +328,12 @@ export const appMessages: {
     itemForbidden: PanneauMessage<    {
     resource: string;
     }>;
+    itemUpdateForbidden: PanneauMessage<    {
+    resource: string;
+    }>;
+    itemGone: PanneauMessage<    {
+    resource: string;
+    }>;
     backHome: PanneauMessage<Record<never, never>>;
     forbidden: PanneauMessage<Record<never, never>>;
     forbiddenText: PanneauMessage<Record<never, never>>;
@@ -556,6 +562,13 @@ export const fieldsMessages: {
     }>;
     change: PanneauMessage<Record<never, never>>;
     changeRelation: PanneauMessage<    {
+    item: string;
+    }>;
+    edit: PanneauMessage<Record<never, never>>;
+    editRelation: PanneauMessage<    {
+    item: string;
+    }>;
+    editRelationFailed: PanneauMessage<    {
     item: string;
     }>;
     cancelChange: PanneauMessage<Record<never, never>>;

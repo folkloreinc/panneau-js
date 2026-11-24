@@ -551,6 +551,142 @@ describe('RelationField', () => {
         expect(onChange).toHaveBeenCalledTimes(1);
     });
 
+    it('edits the item of a card where the source does, and shows it as saved', async () => {
+        const { source } = createFullSource();
+        // A panel over the page: the field waits until it is saved or closed
+        let settle: (reference: RelationReference | null) => void = () => undefined;
+        const edit = vi.fn(
+            (_resource: string, _id: string) =>
+                new Promise<RelationReference | null>((resolve) => {
+                    settle = resolve;
+                }),
+        );
+        const onChange = vi.fn();
+        renderField(
+            <RelationField
+                multiple
+                label="Authors"
+                resource="authors"
+                value={[
+                    { id: '1', label: 'Ada Lovelace' },
+                    { id: '2', label: 'Grace Hopper' },
+                ]}
+                onChange={onChange}
+            />,
+            {
+                relationSource: {
+                    ...source,
+                    edit,
+                    // The user can't update Grace Hopper
+                    canEdit: (_resource, id) => id !== '2',
+                },
+            },
+        );
+        expect(screen.queryByRole('button', { name: 'Edit Grace Hopper' })).not.toBeInTheDocument();
+        const button = screen.getByRole('button', { name: 'Edit Ada Lovelace' });
+        expect(button).toHaveTextContent('Edit');
+        await userEvent.click(button);
+        expect(edit).toHaveBeenCalledWith('authors', '1');
+        // The panel took the focus
+        button.blur();
+        act(() => settle({ id: '1', label: 'Ada King', description: 'Countess of Lovelace' }));
+
+        // The card shows the saved item at once, with the focus back on its "Edit"
+        const edited = await screen.findByRole('button', { name: 'Edit Ada King' });
+        await waitFor(() => expect(edited).toHaveFocus());
+        expect(screen.getByText('Countess of Lovelace')).toBeInTheDocument();
+        // Its value doesn't change: the item did
+        expect(onChange).not.toHaveBeenCalled();
+
+        // Closed without saving: the card stays, and has the focus
+        await userEvent.click(edited);
+        edited.blur();
+        act(() => settle(null));
+        await waitFor(() =>
+            expect(screen.getByRole('button', { name: 'Edit Ada King' })).toHaveFocus(),
+        );
+        expect(onChange).not.toHaveBeenCalled();
+    });
+
+    it('edits the item of a single field, and says when editing failed', async () => {
+        const { source } = createFullSource();
+        const edit = vi.fn(async () => {
+            throw new Error('Nope.');
+        });
+        renderField(
+            <RelationField
+                label="Author"
+                resource="authors"
+                value={{ id: '1', label: 'Ada Lovelace' }}
+            />,
+            { relationSource: { ...source, edit } },
+        );
+        const card = screen.getByRole('listitem');
+        // After "Change", before "Remove"
+        expect(
+            within(card)
+                .getAllByRole('button')
+                .map((button) => button.textContent || button.getAttribute('aria-label')),
+        ).toEqual(['Change', 'Edit', 'Remove Ada Lovelace']);
+        await userEvent.click(screen.getByRole('button', { name: 'Edit Ada Lovelace' }));
+        expect(await screen.findByText('“Ada Lovelace” couldn’t be edited.')).toBeInTheDocument();
+    });
+
+    it('offers no "Edit" without the source’s edit(), nor in a field that can’t change', () => {
+        const { source } = createFullSource();
+        const { unmount } = renderField(
+            <RelationField
+                label="Author"
+                resource="authors"
+                value={{ id: '1', label: 'Ada Lovelace' }}
+            />,
+            { relationSource: source },
+        );
+        expect(screen.queryByRole('button', { name: /^Edit/ })).not.toBeInTheDocument();
+        unmount();
+
+        renderField(
+            <RelationField
+                readOnly
+                label="Author"
+                resource="authors"
+                value={{ id: '1', label: 'Ada Lovelace' }}
+            />,
+            { relationSource: { ...source, edit: async () => null } },
+        );
+        expect(screen.queryByRole('button', { name: /^Edit/ })).not.toBeInTheDocument();
+    });
+
+    it('asks the source for the items of its cards when it edits, for their abilities', async () => {
+        const list = vi.fn(async () => ({
+            data: [{ id: '1', version: null, abilities: { update: true }, name: 'Ada' }],
+        }));
+        const source = createRelationSource(
+            { list },
+            {
+                definition: {
+                    resources: [
+                        {
+                            id: 'authors',
+                            label: { singular: 'author', plural: 'authors' },
+                            fields: [{ name: 'name', type: 'text' }],
+                            itemTitle: 'name',
+                        },
+                    ],
+                },
+                editItem: async () => null,
+            },
+        );
+        renderField(
+            <RelationField label="Author" resource="authors" value={{ id: '1', label: 'Ada' }} />,
+            { relationSource: source },
+        );
+        // Without the item, the source doesn't know whether the user can update it
+        expect(screen.queryByRole('button', { name: 'Edit Ada' })).not.toBeInTheDocument();
+        expect(await screen.findByRole('button', { name: 'Edit Ada' })).toBeInTheDocument();
+        expect(list).toHaveBeenCalledTimes(1);
+    });
+
     it('opens the links of its cards in a new tab when the source says so', () => {
         const source: RelationSource = {
             search: async () => [],

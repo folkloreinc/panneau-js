@@ -1,5 +1,6 @@
 /**
- * The panel where a relation field creates its item, over the form of the page (decision 0110):
+ * The panel where a relation field creates its item, or a card edits its own, over the form of the
+ * page (decision 0110):
  * the form of an article, whose authors are people, saved through the REST adapter of
  * `@panneau/data` to the mock backend of `@panneau/protocol`.
  */
@@ -76,12 +77,12 @@ function createSetup() {
         adapter,
         client,
         requests,
-        source: createAppRelationSource(adapter, definition, client, '/admin', requests.open),
+        source: createAppRelationSource(adapter, definition, client, '/admin', requests),
     };
 }
 
 /** The form of an article, as its page shows it, with the panel of the shell. */
-function ArticleForm() {
+function ArticleForm({ values }: { values?: Record<string, unknown> }) {
     const [{ definition, adapter, client, requests, source }] = useState(createSetup);
     const articles = definition.resources[0];
     if (articles === undefined) {
@@ -98,6 +99,7 @@ function ArticleForm() {
                                     aria-label="New article"
                                     fields={articles.fields}
                                     mode="create"
+                                    {...(values !== undefined ? { values } : {})}
                                     onSubmit={async (values) => values}
                                 />
                             </div>
@@ -148,5 +150,34 @@ export const Default: Story = {
         await waitFor(() => expect(picker).toHaveFocus());
         await userEvent.keyboard('{Escape}');
         await waitFor(() => expect(page.queryByRole('listbox')).toBeNull());
+    },
+};
+
+/**
+ * "Edit" on the card of an author opens her form in the panel, as the server has it; saving shows
+ * her card as saved, with the focus back on its "Edit", and the article keeps what was typed.
+ */
+export const Edit: Story = {
+    args: { values: { authors: [{ id: '1', label: 'Ada Lovelace' }] } },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const page = within(document.body);
+        await userEvent.type(canvas.getByRole('textbox', { name: 'Title' }), 'Notes on computing');
+        await userEvent.click(await canvas.findByRole('button', { name: 'Edit Ada Lovelace' }));
+
+        const panel = within(await page.findByRole('dialog', { name: 'Edit the person' }));
+        const role = await panel.findByRole('textbox', { name: 'Role' });
+        await expect(role).toHaveValue('Editor');
+        await expect(panel.getByRole('heading', { name: 'Ada Lovelace' })).toBeInTheDocument();
+        await userEvent.clear(role);
+        await userEvent.type(role, 'Editor in chief');
+        await userEvent.click(panel.getByRole('button', { name: 'Save' }));
+
+        await waitFor(() => expect(page.queryByRole('dialog')).toBeNull());
+        await expect(await canvas.findByText('Editor in chief')).toBeInTheDocument();
+        await waitFor(() =>
+            expect(canvas.getByRole('button', { name: 'Edit Ada Lovelace' })).toHaveFocus(),
+        );
+        await expect(canvas.getByLabelText(/^Title/)).toHaveValue('Notes on computing');
     },
 };

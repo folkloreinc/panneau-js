@@ -500,7 +500,7 @@ function Content({
                                     definition,
                                     queryClient,
                                     url.basePath,
-                                    relatedItems.open,
+                                    relatedItems,
                                 )}
                                 maps={maps}
                             >

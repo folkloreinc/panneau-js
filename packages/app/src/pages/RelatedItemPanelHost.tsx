@@ -13,8 +13,9 @@ export interface RelatedItemPanelHostProps {
 }
 
 /**
- * The panel over the page where a relation field creates its item (decision 0110), while a field
- * asks for one: on the right, modal, with the focus in it until it closes.
+ * The panel over the page where a relation field creates its item, or a card edits its own
+ * (decision 0110), while a field asks for one: on the right, modal, with the focus in it until it
+ * closes.
  *
  * It isn't loaded with `import()`: what it needs (the form, the aside, the modal) is already in the
  * first page's JavaScript, and a chunk of its own would split the modules it shares with that page
@@ -27,7 +28,7 @@ export function RelatedItemPanelHost({
 }: RelatedItemPanelHostProps) {
     const request = useSyncExternalStore(requests.subscribe, requests.get, requests.get);
     const resource = request !== null ? findResource(definition, request.resource) : undefined;
-    // A resource that the definition doesn't have creates nothing
+    // A resource that the definition doesn't have creates and edits nothing
     useEffect(() => {
         if (request !== null && resource === undefined) {
             request.settle(null);
@@ -41,7 +42,7 @@ export function RelatedItemPanelHost({
             // A new request starts the panel over
             key={request.id}
             resolved={resolveResource(resource)}
-            values={request.values}
+            {...(request.mode === 'edit' ? { id: request.item } : { values: request.values })}
             definition={definition}
             basePath={basePath}
             onClose={request.settle}

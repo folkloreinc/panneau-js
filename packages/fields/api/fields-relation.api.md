@@ -90,6 +90,11 @@ export interface RelationReference {
     status?: RelationStatus;
 }
 
+// @public (undocumented)
+export interface RelationReferencesOptions {
+    resolveAll?: boolean;
+}
+
 // @public
 export interface RelationResourceInfo {
     description?: boolean;
@@ -109,8 +114,11 @@ export interface RelationSearchPage {
 // @public
 export interface RelationSource {
     canCreate?(resource: string): boolean;
+    canEdit?(resource: string, id: string): boolean;
     create?(resource: string, text: string): Promise<RelationReference | null>;
     describe?(resource: string): RelationResourceInfo | null;
+    edit?(resource: string, id: string): Promise<RelationReference | null>;
+    edited?(resource: string, id: string): RelationReference | undefined;
     getItemHref?(resource: string, id: string): string | null;
     linksInNewTab?: boolean;
     peek?(resource: string, id: string): RelationReference | null | undefined;
@@ -131,9 +139,11 @@ export interface RelationSourceOptions {
     create?: boolean | ((text: string, resource: string) => Record<string, unknown> | null);
     createItem?: (resource: string, values: Record<string, unknown>) => Promise<Item | null>;
     definition?: (Pick<Definition, 'resources'> & Partial<Pick<Definition, 'locales'>>) | null;
+    editItem?: (resource: string, id: string) => Promise<Item | null>;
     getItemHref?: (resource: string, id: string) => string | null;
     getLabel?: (item: Item, resource: string) => string;
     items?: RelationItemCache;
+    linksInNewTab?: boolean;
     perPage?: number;
 }
 
@@ -155,7 +165,7 @@ export interface SingleRelationFieldProps extends RelationFieldBaseProps {
 }
 
 // @public
-export function useRelationReferences(source: RelationSource | null, resource: string, references: readonly RelationReference[]): RelationReference[];
+export function useRelationReferences(source: RelationSource | null, resource: string, references: readonly RelationReference[], input?: RelationReferencesOptions): RelationReference[];
 
 // Warning: (ae-forgotten-export) The symbol "RelationSearchResults" needs to be exported by the entry point index.d.ts
 //

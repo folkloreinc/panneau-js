@@ -113,6 +113,23 @@ export interface RelationSource {
      * leave (decision 0110).
      */
     linksInNewTab?: boolean;
+    /**
+     * Edits an item, such as in a panel with the form of its resource (decision 0110): its card
+     * offers "Edit" when this method exists and `canEdit()` allows it. It resolves with the
+     * reference of the item once it is saved, which the card shows at once, or with `null` when
+     * nothing was saved.
+     */
+    edit?(resource: string, id: string): Promise<RelationReference | null>;
+    /**
+     * Whether the user can edit an item with `edit()`. Defaults to true. Fields ask `resolve()` for
+     * the items they show, so that it knows them.
+     */
+    canEdit?(resource: string, id: string): boolean;
+    /**
+     * The reference of an item that `edit()` saved, newer than the one a value carries: fields show
+     * it in its place. `undefined` for an item that wasn't edited.
+     */
+    edited?(resource: string, id: string): RelationReference | undefined;
 }
 
 /** What `createRelationSource()` needs from an adapter: the `list()` and `create()` of `@panneau/data`. */
@@ -169,6 +186,14 @@ export interface RelationSourceOptions {
      * new item, or `null` when nothing was created. It needs the `create` option.
      */
     createItem?: (resource: string, values: Record<string, unknown>) => Promise<Item | null>;
+    /**
+     * Edits an item somewhere, such as in a panel with the form of its resource (decision 0110):
+     * it resolves with the item once it is saved, or `null` when nothing was saved. The cards of
+     * the items that the user can update (`abilities.update`) then offer "Edit".
+     */
+    editItem?: (resource: string, id: string) => Promise<Item | null>;
+    /** The links of cards open in a new tab (`linksInNewTab` of the source). */
+    linksInNewTab?: boolean;
     /**
      * Where the items that `resolve()` gets are kept, such as the item queries of the app's query
      * client. Defaults to a cache of the source's own.
@@ -288,6 +313,8 @@ export function createRelationSource(
         create,
         getItemHref,
         createItem: openCreate,
+        editItem: openEdit,
+        linksInNewTab = false,
         items = createItemCache(),
     }: RelationSourceOptions = {},
 ): RelationSource {
@@ -366,6 +393,9 @@ export function createRelationSource(
     };
     if (getItemHref !== undefined) {
         source.getItemHref = getItemHref;
+    }
+    if (linksInNewTab) {
+        source.linksInNewTab = true;
     }
 
     // Ids that a list query on ids didn't return: the source doesn't ask for them again.
@@ -472,6 +502,25 @@ export function createRelationSource(
             return toReference(created, resource);
         };
     }
+    if (openEdit !== undefined) {
+        // The items saved by `edit()`: their cards show them as saved, rather than as values say
+        const edited = new Set<string>();
+        // As the rest of the app decides it: an item the user can update says so (decision 0046)
+        source.canEdit = (resource, id) => items.get(resource, id)?.abilities.update === true;
+        source.edit = async (resource, id) => {
+            const saved = await openEdit(resource, id);
+            if (saved === null) {
+                return null;
+            }
+            items.set(resource, saved);
+            edited.add(keyOf(resource, id));
+            return toReference(saved, resource);
+        };
+        source.edited = (resource, id) => {
+            const item = edited.has(keyOf(resource, id)) ? items.get(resource, id) : undefined;
+            return item !== undefined ? toReference(item, resource) : undefined;
+        };
+    }
     return source;
 }
 
@@ -536,6 +585,15 @@ function needsResolving(reference: RelationReference, detailed: boolean): boolea
     );
 }
 
+export interface RelationReferencesOptions {
+    /**
+     * Asks `resolve()` for every item that the source doesn't know yet, not only for plain ids and
+     * incomplete references: for what only items say, such as whether they can be edited
+     * (`canEdit()`).
+     */
+    resolveAll?: boolean;
+}
+
 /**
  * Relation references with what the source knows of them: plain ids (`"12"`) get their labels, and
  * references of a resource whose items have a description, an image or a status (`describe()`)
@@ -547,6 +605,7 @@ export function useRelationReferences(
     source: RelationSource | null,
     resource: string,
     references: readonly RelationReference[],
+    { resolveAll = false }: RelationReferencesOptions = {},
 ): RelationReference[] {
     // What `resolve()` answered for this source: `null` for ids it didn't find.
     const [resolved, setResolved] = useState<{
@@ -563,7 +622,7 @@ export function useRelationReferences(
     const missing =
         source?.resolve !== undefined
             ? references
-                  .filter((reference) => needsResolving(reference, detailed))
+                  .filter((reference) => resolveAll || needsResolving(reference, detailed))
                   .map((reference) => reference.id)
                   .filter((id, index, ids) => ids.indexOf(id) === index)
                   .filter((id) => knownOf(id) === undefined)

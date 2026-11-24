@@ -276,3 +276,243 @@ describe('RelatedItemPanel', () => {
         expect(await screen.findByLabelText('Remove Grace')).toBeInTheDocument();
     });
 });
+
+/**
+ * The app on the edit form of an article, whose authors are people: Ada, whom the user can edit,
+ * Bo, whom they can't, and two whose item fails to load once the panel asks for it. The requests
+ * that write are kept.
+ */
+function renderEditForm() {
+    const backend = createMockBackend({
+        definition,
+        items: {
+            articles: [
+                {
+                    id: '1',
+                    title: 'Notes',
+                    authors: [
+                        { id: '1', label: 'Ada' },
+                        { id: '2', label: 'Bo' },
+                        { id: '3', label: 'Gone' },
+                        { id: '4', label: 'Broken' },
+                        { id: '5', label: 'Locked' },
+                    ],
+                },
+            ],
+            people: [
+                { id: '1', name: 'Ada Lovelace', mentor: { id: '2', label: 'Bo' } },
+                {
+                    id: '2',
+                    name: 'Bo',
+                    abilities: { view: true, update: false, delete: false, duplicate: false },
+                },
+                { id: '3', name: 'Gone' },
+                { id: '4', name: 'Broken' },
+                { id: '5', name: 'Locked' },
+            ],
+        },
+    });
+    const writes: { method: string; path: string; body: Record<string, unknown> }[] = [];
+    let broken = true;
+    const result = validateBootConfig(createBootConfig({ definition }));
+    if (!result.success) {
+        throw new Error(JSON.stringify(result.issues));
+    }
+    const problem = (status: number) =>
+        Response.json(
+            { type: 'about:blank', title: 'Nope.', status },
+            { status, headers: { 'Content-Type': 'application/problem+json' } },
+        );
+    render(
+        <Panneau
+            config={result.data}
+            adapter={createRestAdapter({
+                baseUrl: '/panneau/api',
+                fetch: async (input, init) => {
+                    const url = new URL(String(input), 'http://localhost');
+                    const method = init?.method ?? 'GET';
+                    // Removed since the form loaded, and a server that fails once
+                    if (method === 'GET' && url.pathname === '/panneau/api/resources/people/3') {
+                        return problem(404);
+                    }
+                    if (method === 'GET' && url.pathname === '/panneau/api/resources/people/4') {
+                        if (broken) {
+                            broken = false;
+                            return problem(500);
+                        }
+                    }
+                    // Locked since the form loaded: the user can't update it anymore
+                    if (method === 'GET' && url.pathname === '/panneau/api/resources/people/5') {
+                        const response = await backend.fetch(input, init);
+                        const body = (await response.json()) as { data: Record<string, unknown> };
+                        return Response.json({
+                            ...body,
+                            data: { ...body.data, abilities: { view: true, update: false } },
+                        });
+                    }
+                    if (method !== 'GET') {
+                        const body = JSON.parse(String(init?.body ?? '{}')) as Record<
+                            string,
+                            unknown
+                        >;
+                        writes.push({ method, path: url.pathname, body });
+                        if (body.name === 'Taken') {
+                            return Response.json(
+                                {
+                                    type: 'about:blank',
+                                    title: 'The given data was invalid.',
+                                    status: 422,
+                                    errors: { name: ['This name is taken.'] },
+                                },
+                                {
+                                    status: 422,
+                                    headers: { 'Content-Type': 'application/problem+json' },
+                                },
+                            );
+                        }
+                    }
+                    return backend.fetch(input, init);
+                },
+            })}
+            queryClient={new QueryClient({ defaultOptions: { queries: { retry: false } } })}
+            iconLoader={null}
+            onUnauthorized={vi.fn()}
+        />,
+    );
+    return { writes };
+}
+
+/** Opens the panel that edits an author, from the "Edit" of its card. */
+async function editFrom(user: ReturnType<typeof userEvent.setup>, author: string) {
+    await user.click(await screen.findByRole('button', { name: `Edit ${author}` }));
+    return within(await screen.findByRole('dialog', { name: 'Edit the person' }));
+}
+
+describe('RelatedItemPanel: editing', () => {
+    beforeEach(() => {
+        window.history.replaceState(null, '', '/panneau/resources/articles/1/edit');
+    });
+
+    it('edits the item of a card in a panel, and keeps the unsaved values of the page', async () => {
+        const user = userEvent.setup();
+        const { writes } = renderEditForm();
+        const title = await screen.findByRole('textbox', { name: 'Title' });
+        await user.type(title, ' (draft)');
+
+        const panel = await editFrom(user, 'Ada');
+        // The item as the server has it now, not as the card says it
+        const name = await panel.findByRole('textbox', { name: 'Name' });
+        expect(name).toHaveValue('Ada Lovelace');
+        expect(panel.getByRole('heading', { name: 'Ada Lovelace' })).toBeInTheDocument();
+        await user.clear(name);
+        await user.type(name, 'Ada King');
+        await user.click(panel.getByRole('button', { name: 'Save' }));
+
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+        expect(writes).toEqual([
+            {
+                method: 'PATCH',
+                path: '/panneau/api/resources/people/1',
+                body: { name: 'Ada King' },
+            },
+        ]);
+        // The card shows the saved item, with the focus back on its "Edit"
+        const edit = await screen.findByRole('button', { name: 'Edit Ada King' });
+        await waitFor(() => expect(edit).toHaveFocus());
+        // The page keeps its values, unsaved, and didn't save
+        expect(screen.getByRole('textbox', { name: 'Title' })).toHaveValue('Notes (draft)');
+        expect(document.title).toMatch(/^• Notes/);
+    });
+
+    it('offers "Edit" on the items the user can update only', async () => {
+        renderEditForm();
+        expect(await screen.findByRole('button', { name: 'Edit Ada' })).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Edit Bo' })).not.toBeInTheDocument();
+    });
+
+    it('opens the links of the cards of a form in a new tab', async () => {
+        renderEditForm();
+        const link = await screen.findByRole('link', { name: 'Ada' });
+        expect(link).toHaveAttribute('href', '/panneau/resources/people/1');
+        expect(link).toHaveAttribute('target', '_blank');
+    });
+
+    it('shows the errors of a refused save in the panel, and asks before closing', async () => {
+        const user = userEvent.setup();
+        renderEditForm();
+        const panel = await editFrom(user, 'Ada');
+        const name = await panel.findByRole('textbox', { name: 'Name' });
+        await user.clear(name);
+        await user.type(name, 'Taken');
+        await user.click(panel.getByRole('button', { name: 'Save' }));
+        expect(await panel.findByRole('textbox', { name: 'Name' })).toHaveAccessibleDescription(
+            'This name is taken.',
+        );
+
+        await user.keyboard('{Escape}');
+        const confirm = within(
+            await screen.findByRole('alertdialog', { name: 'Leave without saving?' }),
+        );
+        await user.click(confirm.getByRole('button', { name: 'Leave' }));
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+        expect(screen.getByRole('button', { name: 'Edit Ada' })).toBeInTheDocument();
+    });
+
+    it('closes at once without changes', async () => {
+        const user = userEvent.setup();
+        const { writes } = renderEditForm();
+        const panel = await editFrom(user, 'Ada');
+        await panel.findByRole('textbox', { name: 'Name' });
+        await user.click(panel.getByRole('button', { name: 'Cancel' }));
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+        expect(writes).toEqual([]);
+    });
+
+    it('says in the panel when the item is gone, can’t be edited, or failed to load', async () => {
+        const user = userEvent.setup();
+        renderEditForm();
+        let panel = await editFrom(user, 'Gone');
+        expect(
+            await panel.findByText('This person doesn’t exist anymore, or you can’t see it.'),
+        ).toBeInTheDocument();
+        expect(panel.queryByRole('textbox')).not.toBeInTheDocument();
+        await user.click(panel.getByRole('button', { name: 'Close' }));
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+
+        panel = await editFrom(user, 'Locked');
+        expect(await panel.findByText('You can’t edit this person.')).toBeInTheDocument();
+        expect(panel.queryByRole('textbox')).not.toBeInTheDocument();
+        await user.keyboard('{Escape}');
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+
+        panel = await editFrom(user, 'Broken');
+        expect(await panel.findByText('The person could not be loaded.')).toBeInTheDocument();
+        await user.click(panel.getByRole('button', { name: 'Try again' }));
+        expect(await panel.findByRole('textbox', { name: 'Name' })).toHaveValue('Broken');
+    });
+
+    it('goes one level deep: no "Edit" in the panel, and its cards open in a new tab', async () => {
+        const user = userEvent.setup();
+        renderEditForm();
+        const panel = await editFrom(user, 'Ada');
+        const link = await panel.findByRole('link', { name: 'Bo' });
+        expect(link).toHaveAttribute('target', '_blank');
+        expect(panel.queryByRole('button', { name: /^Edit/ })).not.toBeInTheDocument();
+    });
+
+    it('saves the form of the panel with ⌘ S, not the form of the page', async () => {
+        const user = userEvent.setup();
+        const { writes } = renderEditForm();
+        await user.type(await screen.findByRole('textbox', { name: 'Title' }), '!');
+        const panel = await editFrom(user, 'Ada');
+        await user.type(await panel.findByRole('textbox', { name: 'Name' }), '!');
+        await user.keyboard('{Control>}s{/Control}');
+
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+        expect(writes.map((write) => write.path)).toEqual(['/panneau/api/resources/people/1']);
+        expect(
+            await screen.findByRole('button', { name: 'Edit Ada Lovelace!' }),
+        ).toBeInTheDocument();
+        expect(screen.getByRole('textbox', { name: 'Title' })).toHaveValue('Notes!');
+    });
+});
