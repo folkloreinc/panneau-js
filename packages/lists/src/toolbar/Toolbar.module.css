@@ -23,6 +23,34 @@
     width: 6rem;
 }
 
+.pageButtons {
+    display: flex;
+    align-items: center;
+    gap: var(--panneau-space-1);
+}
+
+/* The current page: a quiet button, which opens "Go to page" in its place. */
+.currentPage {
+    display: inline-flex;
+    align-items: center;
+}
+
+.pageButton.pageButton {
+    font-size: inherit;
+    font-weight: var(--panneau-font-weight-normal);
+    color: inherit;
+    font-variant-numeric: tabular-nums;
+}
+
+.goToPage {
+    width: 8rem;
+}
+
+.lastPage {
+    color: var(--panneau-color-text-muted);
+    white-space: nowrap;
+}
+
 /* A button of the toolbar with only its icon, as an icon button is (#424). Doubled: more specific
  * than the button's own padding, whatever the CSS order. */
 .iconOnly.iconOnly {

@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useLayoutEffect, useRef, useState } from 'react';
 import { ToggleButton, ToggleButtonGroup } from 'react-aria-components';
 
 import { Icon, type IconComponent } from '../icon/Icon';
@@ -40,9 +40,60 @@ export interface SegmentedControlProps {
 }
 
 /**
+ * Places the indicator of the selected segment over it, and keeps it there as the segments change
+ * size. Its first place is set without a transition: later ones slide (`--panneau-duration-slow`,
+ * which is `0ms` when the user prefers reduced motion). Without it (before the first layout, or
+ * without a selected segment), the selected segment has its own background.
+ */
+function useIndicator(group: { current: HTMLDivElement | null }, selected: string | undefined) {
+    useLayoutEffect(() => {
+        const element = group.current;
+        if (element === null) {
+            return undefined;
+        }
+        let frame = 0;
+        const place = () => {
+            const segment = element.querySelector<HTMLElement>(
+                `.${styles.segment}[data-selected]`,
+            );
+            if (segment === null || segment.offsetWidth === 0) {
+                delete element.dataset.indicator;
+                return;
+            }
+            element.style.setProperty('--segmented-control-indicator-x', `${segment.offsetLeft}px`);
+            element.style.setProperty('--segmented-control-indicator-y', `${segment.offsetTop}px`);
+            element.style.setProperty(
+                '--segmented-control-indicator-width',
+                `${segment.offsetWidth}px`,
+            );
+            element.style.setProperty(
+                '--segmented-control-indicator-height',
+                `${segment.offsetHeight}px`,
+            );
+            // Placed first without moving, then free to slide
+            element.dataset.indicator ??= 'placed';
+        };
+        place();
+        if (element.dataset.indicator === 'placed') {
+            frame = requestAnimationFrame(() => {
+                element.dataset.indicator = 'ready';
+            });
+        }
+        const observer =
+            typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => place()) : null;
+        observer?.observe(element);
+        return () => {
+            cancelAnimationFrame(frame);
+            observer?.disconnect();
+        };
+    }, [group, selected]);
+}
+
+/**
  * A row of a few choices, one of which is always selected: a view, a mode, a library. For more
  * than four or five choices, or long labels, use a `Select`. It is a radio group for assistive
- * technologies, moved through with the arrow keys.
+ * technologies, moved through with the arrow keys. The highlight of the selected segment slides to
+ * the next one.
  */
 export function SegmentedControl({
     options,
@@ -61,9 +112,12 @@ export function SegmentedControl({
         () => defaultValue ?? options.find((option) => option.isDisabled !== true)?.value,
     );
     const selected = value ?? uncontrolled;
+    const group = useRef<HTMLDivElement>(null);
+    useIndicator(group, selected);
     return (
         <ToggleButtonGroup
             {...props}
+            ref={group}
             selectionMode="single"
             disallowEmptySelection
             isDisabled={isDisabled}
@@ -86,6 +140,7 @@ export function SegmentedControl({
                 className,
             )}
         >
+            <span aria-hidden="true" className={styles.indicator} />
             {options.map((option) => {
                 const name =
                     option.textValue ??

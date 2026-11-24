@@ -1,6 +1,8 @@
 .group {
     --segmented-control-height: var(--panneau-control-height);
 
+    position: relative;
+    isolation: isolate;
     display: inline-flex;
     gap: 2px;
     max-width: 100%;
@@ -69,16 +71,65 @@
     background-color: var(--panneau-segmented-control-segment-bg-hover, transparent);
 }
 
+/* The highlight of the selected segment. In a dark scheme, the raised surface is too close to the
+ * sunken track: the highlight takes some of the text color, to stand 3:1 apart from the track. */
+.segment[data-selected],
+.indicator {
+    background-color: var(
+        --panneau-segmented-control-segment-bg-selected,
+        light-dark(
+            var(--panneau-color-surface-raised),
+            color-mix(in srgb, var(--panneau-color-text) 30%, var(--panneau-color-surface-raised))
+        )
+    );
+    box-shadow: var(--panneau-segmented-control-segment-shadow-selected, var(--panneau-shadow-sm));
+}
+
 .segment[data-selected] {
     color: var(--panneau-segmented-control-segment-color-selected, var(--panneau-color-text));
 }
 
-.segment[data-selected] {
-    background-color: var(
-        --panneau-segmented-control-segment-bg-selected,
-        var(--panneau-color-surface-raised)
+/* One highlight under the segments, which slides from one to the other (useIndicator()). Until it
+ * is placed, the selected segment has its own. */
+.indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    display: none;
+    width: var(--segmented-control-indicator-width);
+    height: var(--segmented-control-indicator-height);
+    border-radius: calc(
+        var(--panneau-segmented-control-radius, var(--panneau-radius-md)) -
+            var(--panneau-segmented-control-padding, 2px)
     );
-    box-shadow: var(--panneau-segmented-control-segment-shadow-selected, var(--panneau-shadow-sm));
+    transform: translate(
+        var(--segmented-control-indicator-x),
+        var(--segmented-control-indicator-y)
+    );
+    pointer-events: none;
+}
+
+.group[data-indicator] > .indicator {
+    display: block;
+}
+
+.group[data-indicator='ready'] > .indicator {
+    transition:
+        transform var(--panneau-duration-slow) var(--panneau-ease-out),
+        width var(--panneau-duration-slow) var(--panneau-ease-out),
+        height var(--panneau-duration-slow) var(--panneau-ease-out);
+}
+
+.group[data-indicator] .segment[data-selected] {
+    background-color: transparent;
+    box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .group[data-indicator='ready'] > .indicator {
+        transition: none;
+    }
 }
 
 .segment[data-focus-visible] {

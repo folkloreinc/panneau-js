@@ -22,8 +22,12 @@ export const segmentedControlTokens = defineComponentTokens('segmented-control',
     'segment-bg-hover': 'transparent',
     /** Text color of the selected segment. */
     'segment-color-selected': 'var(--panneau-color-text)',
-    /** Background of the selected segment. */
-    'segment-bg-selected': 'var(--panneau-color-surface-raised)',
+    /**
+     * Background of the selected segment: the raised surface, and in a dark scheme, the raised
+     * surface with some of the text color, which stands apart from the sunken track.
+     */
+    'segment-bg-selected':
+        'light-dark(var(--panneau-color-surface-raised), color-mix(in srgb, var(--panneau-color-text) 30%, var(--panneau-color-surface-raised)))',
     /** Shadow of the selected segment. */
     'segment-shadow-selected': 'var(--panneau-shadow-sm)',
 });

@@ -1,8 +1,9 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 import type { ListResponse } from '@panneau/protocol';
 import { isCursorPage } from '@panneau/protocol/runtime';
-import { IconButton, Select, usePanneauIntl } from '@panneau/ui';
+import { Button, IconButton, Select, TextInput, Tooltip, usePanneauIntl } from '@panneau/ui';
 
 import { messages } from '../messages';
 import styles from './Toolbar.module.css';
@@ -18,7 +19,106 @@ export interface PaginationProps {
     onPerPageChange?: (perPage: number) => void;
 }
 
-/** The range of items shown, the page, and buttons to the previous and next pages. */
+/** The page typed in "Go to page", within the pages, or `null` when it isn't a number. */
+export function toPage(text: string, lastPage: number): number | null {
+    const page = Number.parseInt(text.replace(/\D/g, ''), 10);
+    return Number.isNaN(page) ? null : Math.min(lastPage, Math.max(1, page));
+}
+
+/**
+ * The current page, as a button that opens a small "Go to page" input in its place: Enter goes to
+ * the page typed (within the pages), Escape or leaving the input closes it. The focus comes back
+ * to the button.
+ */
+function CurrentPage({
+    page,
+    lastPage,
+    onPageChange,
+}: {
+    page: number;
+    lastPage: number;
+    onPageChange: (page: number) => void;
+}) {
+    const intl = usePanneauIntl();
+    const [isEditing, setEditing] = useState(false);
+    const [draft, setDraft] = useState('');
+    const wrapper = useRef<HTMLSpanElement>(null);
+    const returnFocus = useRef(false);
+    useEffect(() => {
+        if (!isEditing && returnFocus.current) {
+            returnFocus.current = false;
+            wrapper.current?.querySelector('button')?.focus();
+        }
+    }, [isEditing]);
+    const label = intl.formatMessage(messages.pageOf, { page, lastPage });
+    const close = (focus: boolean) => {
+        returnFocus.current = focus;
+        setEditing(false);
+    };
+    if (lastPage <= 1) {
+        return <span aria-current="page">{label}</span>;
+    }
+    return (
+        <span ref={wrapper} aria-current="page" className={styles.currentPage}>
+            {isEditing ? (
+                <TextInput
+                    aria-label={intl.formatMessage(messages.goToPage)}
+                    inputMode="numeric"
+                    autoComplete="off"
+                    // The user just asked for it: the page shown, selected, to type over
+                    autoFocus
+                    onFocus={(event) => {
+                        if (event.target instanceof HTMLInputElement) {
+                            event.target.select();
+                        }
+                    }}
+                    value={draft}
+                    onChange={setDraft}
+                    onKeyDown={(event) => {
+                        if (event.key === 'Enter') {
+                            event.preventDefault();
+                            const next = toPage(draft, lastPage);
+                            if (next !== null && next !== page) {
+                                onPageChange(next);
+                            }
+                            close(true);
+                        } else if (event.key === 'Escape') {
+                            // Closes the input, not a dialog or a panel around the list
+                            event.stopPropagation();
+                            close(true);
+                        }
+                    }}
+                    onBlur={() => close(false)}
+                    suffix={
+                        <span className={styles.lastPage}>
+                            {intl.formatMessage(messages.ofLastPage, { lastPage })}
+                        </span>
+                    }
+                    className={styles.goToPage}
+                />
+            ) : (
+                <Tooltip content={intl.formatMessage(messages.goToPage)}>
+                    <Button
+                        appearance="ghost"
+                        size="sm"
+                        className={styles.pageButton}
+                        onPress={() => {
+                            setDraft(String(page));
+                            setEditing(true);
+                        }}
+                    >
+                        {label}
+                    </Button>
+                </Tooltip>
+            )}
+        </span>
+    );
+}
+
+/**
+ * The range of items shown, the page, and buttons to the first, previous, next and last pages.
+ * The current page opens a "Go to page" input, to jump far.
+ */
 export function Pagination({
     page,
     perPage,
@@ -49,21 +149,33 @@ export function Pagination({
                         className={styles.perPage}
                     />
                 ) : null}
-                <IconButton
-                    icon={ChevronLeft}
-                    label={intl.formatMessage(messages.previousPage)}
-                    isDisabled={page <= 1}
-                    onPress={() => onPageChange(page - 1)}
-                />
-                <span aria-current="page">
-                    {intl.formatMessage(messages.pageOf, { page, lastPage })}
+                <span className={styles.pageButtons}>
+                    <IconButton
+                        icon={ChevronsLeft}
+                        label={intl.formatMessage(messages.firstPage)}
+                        isDisabled={page <= 1}
+                        onPress={() => onPageChange(1)}
+                    />
+                    <IconButton
+                        icon={ChevronLeft}
+                        label={intl.formatMessage(messages.previousPage)}
+                        isDisabled={page <= 1}
+                        onPress={() => onPageChange(page - 1)}
+                    />
+                    <CurrentPage page={page} lastPage={lastPage} onPageChange={onPageChange} />
+                    <IconButton
+                        icon={ChevronRight}
+                        label={intl.formatMessage(messages.nextPage)}
+                        isDisabled={page >= lastPage}
+                        onPress={() => onPageChange(page + 1)}
+                    />
+                    <IconButton
+                        icon={ChevronsRight}
+                        label={intl.formatMessage(messages.lastPage)}
+                        isDisabled={page >= lastPage}
+                        onPress={() => onPageChange(lastPage)}
+                    />
                 </span>
-                <IconButton
-                    icon={ChevronRight}
-                    label={intl.formatMessage(messages.nextPage)}
-                    isDisabled={page >= lastPage}
-                    onPress={() => onPageChange(page + 1)}
-                />
             </div>
         </nav>
     );
