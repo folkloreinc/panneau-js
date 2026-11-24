@@ -33,11 +33,6 @@
     margin-inline-start: auto;
 }
 
-/* With the table layout, the column headers sort, until the list is too narrow to show them. */
-.tableSort {
-    display: none;
-}
-
 /* The bar of a selection, and its actions, stay in view while the list scrolls under the top of the
  * window. */
 .selection {
@@ -92,11 +87,6 @@
 
     .toolbarEnd {
         margin-inline-start: 0;
-    }
-
-    .tableSort {
-        display: block;
-        width: 100%;
     }
 
     .selectionActions {
