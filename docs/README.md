@@ -43,6 +43,7 @@ It must also serve two kinds of projects:
 | [extending.md](extending.md)         | Plugins: every kind, its props, what can be replaced, and what can't        |
 | [roadmap.md](roadmap.md)             | Phases, what ships in 5.0 and what comes in 5.x, open questions             |
 | [migration.md](migration.md)         | Migration strategy and order for current projects                           |
+| [ci.md](ci.md)                       | What CI runs and when, and how to turn on the merge queue                   |
 | [decisions/](decisions/)             | Architecture decision records                                               |
 
 The Laravel side of the architecture is documented in [`laravel-panneau/docs`](https://github.com/folkloreinc/laravel-panneau/tree/v5.x/docs).

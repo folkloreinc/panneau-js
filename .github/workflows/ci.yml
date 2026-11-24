@@ -1,16 +1,24 @@
 name: CI
 
-# Every check runs on every pull request, in parallel jobs, so that the wait is the longest job
-# rather than the sum of them. `npm run verify` runs the same checks locally.
+# The checks run in parallel jobs, so that the wait is the longest job rather than the sum of them.
+# `npm run verify` runs the same checks locally. See docs/ci.md.
+#
+# Pushes to v5.x and the merge queue (`merge_group`) run everything. Pull requests run the unit
+# tests and the stories of the packages they change and of the packages that depend on them
+# (scripts/affected.js), or everything when they change something shared.
 on:
     push:
         branches: [v5.x]
     pull_request:
         branches: [v5.x]
+    merge_group:
+        types: [checks_requested]
 
+# A new push to a pull request cancels its run. Runs of v5.x and of the merge queue always finish:
+# each commit of v5.x keeps its result, and the queue waits for every group it tests.
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
-    cancel-in-progress: true
+    cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
     contents: read
@@ -20,9 +28,10 @@ jobs:
         name: Format, lint and changeset
         runs-on: ubuntu-24.04
         steps:
+            # The changeset check needs the history of the base branch, on pull requests only.
             - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
               with:
-                  fetch-depth: 0
+                  fetch-depth: ${{ github.event_name == 'pull_request' && '0' || '1' }}
 
             - uses: ./.github/actions/setup
 
@@ -37,7 +46,9 @@ jobs:
 
             # "Version packages" pull requests consume the changesets instead of adding one: the
             # Release workflow opens them from changeset-release/* branches, and a maintainer may
-            # open one by hand with that title.
+            # open one by hand with that title. Only on pull requests: v5.x and the merge queue
+            # (`merge_group`) have no pull request to read, and each pull request they contain
+            # passed this check already.
             - name: Check for a changeset
               if: >-
                   github.event_name == 'pull_request' &&
@@ -62,15 +73,32 @@ jobs:
         name: Test
         runs-on: ubuntu-24.04
         steps:
+            # On pull requests, the checkout is the merge commit, whose first parent is v5.x.
             - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+              with:
+                  fetch-depth: 2
+
+            # With the Node of the runner, before the setup, so that a pull request that changes
+            # no package skips the rest.
+            - name: Select the packages to test
+              id: affected
+              if: github.event_name == 'pull_request'
+              run: node scripts/affected.js --base HEAD^1 --target test --github
 
             - uses: ./.github/actions/setup
+              if: steps.affected.outputs.run != 'false'
 
             - name: Test
-              run: npm test
+              if: steps.affected.outputs.run != 'false'
+              env:
+                  FILTERS: ${{ steps.affected.outputs.filters }}
+              run: |
+                  read -ra filters <<< "$FILTERS"
+                  npm test -- --passWithNoTests "${filters[@]}"
 
+    # Storybook's build is here rather than in the Storybook job, which is the longest.
     build:
-        name: Build and API reports
+        name: Build, API reports and Storybook build
         runs-on: ubuntu-24.04
         steps:
             - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -84,6 +112,9 @@ jobs:
             # them again.
             - name: Check the API reports
               run: node scripts/api-report.js --workspaces --check
+
+            - name: Build Storybook
+              run: npm run build-storybook -- --quiet
 
     template:
         name: Package template
@@ -101,16 +132,26 @@ jobs:
         runs-on: ubuntu-24.04
         steps:
             - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+              with:
+                  fetch-depth: 2
+
+            - name: Select the packages to test
+              id: affected
+              if: github.event_name == 'pull_request'
+              run: node scripts/affected.js --base HEAD^1 --target storybook --github
 
             - uses: ./.github/actions/setup
+              if: steps.affected.outputs.run != 'false'
               with:
                   chromium: true
 
             - name: Run the stories as tests, with axe checks
-              run: npm run test:storybook -- --project storybook
-
-            - name: Build Storybook
-              run: npm run build-storybook -- --quiet
+              if: steps.affected.outputs.run != 'false'
+              env:
+                  FILTERS: ${{ steps.affected.outputs.filters }}
+              run: |
+                  read -ra filters <<< "$FILTERS"
+                  npm run test:storybook -- --project storybook --passWithNoTests "${filters[@]}"
 
     # The same stories in the dark scheme and the touch density, in their own job so that the wait
     # stays the longest job.
@@ -119,13 +160,26 @@ jobs:
         runs-on: ubuntu-24.04
         steps:
             - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+              with:
+                  fetch-depth: 2
+
+            - name: Select the packages to test
+              id: affected
+              if: github.event_name == 'pull_request'
+              run: node scripts/affected.js --base HEAD^1 --target storybook --github
 
             - uses: ./.github/actions/setup
+              if: steps.affected.outputs.run != 'false'
               with:
                   chromium: true
 
             - name: Run the stories as tests in the dark scheme and the touch density, with axe checks
-              run: npm run test:storybook -- --project storybook-dark-touch
+              if: steps.affected.outputs.run != 'false'
+              env:
+                  FILTERS: ${{ steps.affected.outputs.filters }}
+              run: |
+                  read -ra filters <<< "$FILTERS"
+                  npm run test:storybook -- --project storybook-dark-touch --passWithNoTests "${filters[@]}"
 
     smoke-webpack:
         name: Smoke tests (webpack app, types under NodeNext, icons and size of Vite bundles)

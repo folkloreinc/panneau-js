@@ -482,6 +482,7 @@ export interface CommandPaletteGroup {
 
 // @public
 export interface CommandPaletteItem {
+    badge?: ReactNode;
     description?: string;
     href?: string;
     // (undocumented)
@@ -492,6 +493,7 @@ export interface CommandPaletteItem {
     keywords?: readonly string[];
     // (undocumented)
     label: string;
+    media?: ReactNode;
     onAction?: () => void;
     shortcut?: ShortcutKeys;
 }
