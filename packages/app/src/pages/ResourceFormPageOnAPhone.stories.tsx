@@ -213,6 +213,10 @@ export const Default: Story = {
             await expect(fields.queryByRole('button', { name: 'Status' })).toBeNull();
             await userEvent.click(toggle);
             await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+            // The panel it opens doesn't repeat its title, nor collapse a second time (#503)
+            await expect(fields.getAllByRole('button', { name: 'Publication' })).toHaveLength(1);
+            await expect(fields.getAllByRole('heading', { name: 'Publication' })).toHaveLength(1);
+            await expect(await fields.findByRole('button', { name: /Status/ })).toBeVisible();
         });
 
         await step('One level of box: the fields are as wide as the main column', async () => {
