@@ -31,6 +31,7 @@ export function SearchField({ value, onChange }: SearchFieldProps) {
                 }
             }}
             className={styles.search}
+            data-toolbar-search=""
         />
     );
 }

@@ -55,8 +55,13 @@ export interface DateRangePickerProps extends FieldChromeProps {
     autoFocus?: boolean;
     /** Accessible label, without a visible one. */
     'aria-label'?: string;
-    /** Content at the end of the control, before the calendar: an "All day" switch, a time zone. */
+    /** Content at the end of the control, before the calendar: an "All day" switch. */
     end?: ReactNode;
+    /**
+     * A line under the control, styled as its description and before it, which describes both
+     * bounds: the time zone of their date-times. It keeps the control on one line.
+     */
+    hint?: ReactNode;
     controlClassName?: string;
     popoverClassName?: string;
 }
@@ -99,6 +104,7 @@ export function DateRangePicker({
     isReadOnly,
     autoFocus,
     end: endContent,
+    hint,
     className,
     labelClassName,
     descriptionClassName,
@@ -114,7 +120,9 @@ export function DateRangePicker({
     const start = value?.start ?? null;
     const end = value?.end ?? null;
     const hasLabel = label !== undefined && label !== null;
+    const hasHint = hint !== undefined && hint !== null;
     const describedBy = [
+        hasHint ? `${id}-hint` : null,
         description !== undefined && description !== null ? `${id}-description` : null,
         invalid ? `${id}-errors` : null,
     ]
@@ -294,6 +302,11 @@ export function DateRangePicker({
                     </DialogTrigger>
                 ) : null}
             </div>
+            {hasHint ? (
+                <div id={`${id}-hint`} className={fieldStyles.description}>
+                    {hint}
+                </div>
+            ) : null}
             {description !== undefined && description !== null ? (
                 <div
                     id={`${id}-description`}

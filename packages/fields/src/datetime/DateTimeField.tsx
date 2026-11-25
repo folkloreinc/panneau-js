@@ -1,5 +1,4 @@
 import { getLocalTimeZone, now } from '@internationalized/date';
-import { useId } from 'react';
 
 import { DatePicker } from '@panneau/ui';
 
@@ -37,7 +36,6 @@ export function DateTimeField({
     required,
     ...props
 }: DateTimeFieldProps) {
-    const zoneId = useId();
     const current = toDateTime(value, timeZone);
     // A value without an offset is a wall time, in no zone
     const zoned = current === null || 'timeZone' in current;
@@ -49,9 +47,8 @@ export function DateTimeField({
             value={current}
             {...(zoned
                 ? {
-                      end: (
+                      hint: (
                           <TimeZoneLabel
-                              id={zoneId}
                               zone={timeZone}
                               date={
                                   current !== null && 'timeZone' in current
@@ -60,7 +57,6 @@ export function DateTimeField({
                               }
                           />
                       ),
-                      'aria-describedby': zoneId,
                   }
                 : {})}
             onChange={(next) => {

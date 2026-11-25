@@ -607,6 +607,7 @@ export interface DatePickerProps extends Omit<DatePickerProps_2<DateValue>, 'cla
     // (undocumented)
     controlClassName?: string;
     end?: ReactNode;
+    hint?: ReactNode;
     // (undocumented)
     popoverClassName?: string;
     shortcuts?: readonly DatePickerShortcut[];
@@ -633,6 +634,7 @@ export interface DateRangePickerProps extends FieldChromeProps {
     granularity?: 'day' | 'hour' | 'minute' | 'second';
     // (undocumented)
     hideTimeZone?: boolean;
+    hint?: ReactNode;
     // (undocumented)
     hourCycle?: 12 | 24;
     // (undocumented)
@@ -1296,6 +1298,22 @@ export interface ReorderMenuProps {
 }
 
 // @public
+export interface ReorderMove {
+    // (undocumented)
+    id: 'start' | 'before' | 'after' | 'end';
+    // (undocumented)
+    label: string;
+    to: number;
+}
+
+// @public
+export interface ReorderMoves {
+    itemLabel: string;
+    move: (to: number) => void;
+    moves: readonly ReorderMove[];
+}
+
+// @public
 export type Responsive<T> = T | Partial<Record<'base' | Breakpoint, T>>;
 
 // @public
@@ -1908,6 +1926,9 @@ export function usePreference<T extends string>(key: string | null, allowed: rea
 
 // @public
 export function useRegisteredShortcuts(): readonly RegisteredShortcut[];
+
+// @public
+export function useReorderMoves(): ReorderMoves;
 
 // @public
 export function useShortcut(input: ShortcutOptions): void;

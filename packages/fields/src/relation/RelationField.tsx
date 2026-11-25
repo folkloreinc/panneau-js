@@ -1,4 +1,4 @@
-import { File, ImageOff, X } from 'lucide-react';
+import { Ellipsis, File, ImageOff, Pencil, Replace, X } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 
 import {
@@ -8,6 +8,11 @@ import {
     Fieldset,
     Icon,
     IconButton,
+    Menu,
+    MenuItem,
+    MenuSection,
+    MenuSeparator,
+    MenuTrigger,
     ReorderMenu,
     Tile,
     TileGroup,
@@ -15,6 +20,7 @@ import {
     getNamedIcon,
     moveItem,
     usePanneauIntl,
+    useReorderMoves,
     useUndoToast,
 } from '@panneau/ui';
 
@@ -34,6 +40,21 @@ import styles from './RelationField.module.css';
 
 /** The first button of a card that the focus goes to: not its handle or its menu of moves. */
 const FIRST_BUTTON = 'button:not(.panneau-reorder-menu)';
+
+/** Whether an element shows: the tools of a card or their menu, by the width of the field. */
+function isShown(element: HTMLElement): boolean {
+    return typeof element.checkVisibility === 'function' ? element.checkVisibility() : true;
+}
+
+/** The first of the elements that shows. */
+function firstShown(elements: Iterable<HTMLElement>): HTMLElement | undefined {
+    for (const element of elements) {
+        if (isShown(element)) {
+            return element;
+        }
+    }
+    return undefined;
+}
 
 /** The id of the "Create “…”" option of the picker. */
 const CREATE_ID = '\u0000create';
@@ -315,18 +336,157 @@ interface CardsProps {
     removeLabel: (reference: RelationReference) => string;
     changeLabel: (reference: RelationReference) => string;
     editLabel: (reference: RelationReference) => string;
-    /** The visible text of the button that changes the item. */
+    /** The text of the menu item that changes the item. */
     changeText: string;
-    /** The visible text of the button that edits the item. */
+    /** The text of the menu item that edits the item. */
     editText: string;
+    /** The text of the menu item that removes the item. */
+    removeText: string;
+    /** Names the menu of a card's actions, in a narrow field. */
+    actionsLabel: (reference: RelationReference) => string;
     /** Names the list, for screen readers. */
     'aria-label'?: string | undefined;
+}
+
+interface CardActionsProps {
+    reference: RelationReference;
+    onChange?: (() => void) | undefined;
+    onEdit?: (() => void) | undefined;
+    onRemove?: (() => void) | undefined;
+    reorders: boolean;
+    labels: Pick<
+        CardsProps,
+        | 'removeLabel'
+        | 'changeLabel'
+        | 'editLabel'
+        | 'changeText'
+        | 'editText'
+        | 'removeText'
+        | 'actionsLabel'
+    >;
+}
+
+/**
+ * The buttons of a card, as icon buttons with tooltips, so that its title keeps the room of the
+ * row (#518). In a narrow field, where even they would cut the title, they are one "⋯" menu, with
+ * the moves of the item: one menu per card (see the CSS).
+ */
+function CardActions({
+    reference,
+    onChange,
+    onEdit,
+    onRemove,
+    reorders,
+    labels,
+}: CardActionsProps) {
+    const { moves, move } = useReorderMoves();
+    const movable = reorders && moves.length > 0;
+    const count =
+        (onChange !== undefined ? 1 : 0) +
+        (onEdit !== undefined ? 1 : 0) +
+        (onRemove !== undefined ? 1 : 0) +
+        (movable ? 1 : 0);
+    // One button stays a button: a menu of one action would only hide it
+    const collapses = count > 1;
+    return (
+        <>
+            <StatusBadge reference={reference} />
+            {count > 0 ? (
+                <span className={cx(styles.tools, collapses && styles.collapses)}>
+                    {onChange !== undefined ? (
+                        <IconButton
+                            icon={Replace}
+                            size="sm"
+                            label={labels.changeLabel(reference)}
+                            onPress={onChange}
+                        />
+                    ) : null}
+                    {onEdit !== undefined ? (
+                        <IconButton
+                            icon={Pencil}
+                            size="sm"
+                            label={labels.editLabel(reference)}
+                            data-relation-action="edit"
+                            onPress={onEdit}
+                        />
+                    ) : null}
+                    {reorders ? <ReorderMenu /> : null}
+                    {onRemove !== undefined ? (
+                        <IconButton
+                            icon={X}
+                            size="sm"
+                            label={labels.removeLabel(reference)}
+                            onPress={onRemove}
+                        />
+                    ) : null}
+                </span>
+            ) : null}
+            {collapses ? (
+                <MenuTrigger>
+                    <IconButton
+                        icon={Ellipsis}
+                        size="sm"
+                        label={labels.actionsLabel(reference)}
+                        data-relation-action="menu"
+                        className={styles.toolsMenu}
+                    />
+                    <Menu
+                        placement="bottom end"
+                        onAction={(key) => {
+                            const id = String(key);
+                            if (id === 'change') {
+                                onChange?.();
+                            } else if (id === 'edit') {
+                                onEdit?.();
+                            } else if (id === 'remove') {
+                                onRemove?.();
+                            } else {
+                                const target = moves.find(
+                                    (candidate) => `move-${candidate.id}` === id,
+                                );
+                                if (target !== undefined) {
+                                    move(target.to);
+                                }
+                            }
+                        }}
+                    >
+                        {onChange !== undefined ? (
+                            <MenuItem id="change" icon={Replace}>
+                                {labels.changeText}
+                            </MenuItem>
+                        ) : null}
+                        {onEdit !== undefined ? (
+                            <MenuItem id="edit" icon={Pencil}>
+                                {labels.editText}
+                            </MenuItem>
+                        ) : null}
+                        {movable ? (
+                            <MenuSection aria-label={labels.actionsLabel(reference)}>
+                                {moves.map((candidate) => (
+                                    <MenuItem key={candidate.id} id={`move-${candidate.id}`}>
+                                        {candidate.label}
+                                    </MenuItem>
+                                ))}
+                            </MenuSection>
+                        ) : null}
+                        {onRemove !== undefined ? <MenuSeparator /> : null}
+                        {onRemove !== undefined ? (
+                            <MenuItem id="remove" icon={X} isDanger>
+                                {labels.removeText}
+                            </MenuItem>
+                        ) : null}
+                    </Menu>
+                </MenuTrigger>
+            ) : null}
+        </>
+    );
 }
 
 /**
  * The chosen items, as tiles (decisions 0067 and 0092): the image of each one, or its resource's
  * icon, its label, linked to the item when the source says where it opens, its description, its
- * status (decision 0103), and the buttons that change, edit (decision 0110) or remove it.
+ * status (decision 0103), and the buttons that change, edit (decision 0110) or remove it. The
+ * label has the room first: it is cut only as a last resort, whole in its tooltip.
  */
 function RelationCards({
     references,
@@ -338,12 +498,8 @@ function RelationCards({
     canEdit,
     onRemove,
     onMove,
-    removeLabel,
-    changeLabel,
-    editLabel,
-    changeText,
-    editText,
     'aria-label': ariaLabel,
+    ...labels
 }: CardsProps) {
     return (
         <TileGroup
@@ -357,11 +513,12 @@ function RelationCards({
                 return (
                     <Tile
                         key={reference.id}
-                        title={reference.label}
+                        title={<span title={reference.label}>{reference.label}</span>}
                         description={reference.description}
                         // Through React Aria: an app's `RouterProvider` opens it with its router
                         href={getHref(reference) ?? undefined}
                         external={external}
+                        className={styles.card}
                         {...(reference.imageUrl !== undefined
                             ? { media: <img src={reference.imageUrl} alt="" loading="lazy" /> }
                             : { icon: placeholderIcon(info) })}
@@ -371,39 +528,22 @@ function RelationCards({
                             onRemove !== undefined ||
                             onMove !== undefined ||
                             reference.status !== undefined ? (
-                                <>
-                                    <StatusBadge reference={reference} />
-                                    {onChange !== undefined ? (
-                                        <Button
-                                            size="sm"
-                                            appearance="ghost"
-                                            aria-label={changeLabel(reference)}
-                                            onPress={() => onChange(reference)}
-                                        >
-                                            {changeText}
-                                        </Button>
-                                    ) : null}
-                                    {editable ? (
-                                        <Button
-                                            size="sm"
-                                            appearance="ghost"
-                                            aria-label={editLabel(reference)}
-                                            data-relation-action="edit"
-                                            onPress={() => onEdit(reference, index)}
-                                        >
-                                            {editText}
-                                        </Button>
-                                    ) : null}
-                                    {onMove !== undefined ? <ReorderMenu /> : null}
-                                    {onRemove !== undefined ? (
-                                        <IconButton
-                                            icon={X}
-                                            size="sm"
-                                            label={removeLabel(reference)}
-                                            onPress={() => onRemove(reference)}
-                                        />
-                                    ) : null}
-                                </>
+                                <CardActions
+                                    reference={reference}
+                                    onChange={
+                                        onChange !== undefined
+                                            ? () => onChange(reference)
+                                            : undefined
+                                    }
+                                    onEdit={editable ? () => onEdit(reference, index) : undefined}
+                                    onRemove={
+                                        onRemove !== undefined
+                                            ? () => onRemove(reference)
+                                            : undefined
+                                    }
+                                    reorders={onMove !== undefined}
+                                    labels={labels}
+                                />
                             ) : undefined
                         }
                     />
@@ -483,12 +623,18 @@ export function RelationField(props: RelationFieldProps) {
         const cards = container.current?.querySelectorAll('.panneau-tile') ?? [];
         const index = typeof target === 'object' ? target.edit : target;
         const card = index !== 'picker' ? cards[Math.min(index, cards.length - 1)] : undefined;
+        // The buttons of a card that show: its tools, or their menu in a narrow field
+        const first = (selector: string) =>
+            card !== undefined
+                ? firstShown(card.querySelectorAll<HTMLElement>(selector))
+                : undefined;
         const element =
             card !== undefined
                 ? typeof target === 'object'
-                    ? (card.querySelector<HTMLElement>('[data-relation-action="edit"]') ??
-                      card.querySelector<HTMLElement>(FIRST_BUTTON))
-                    : card.querySelector<HTMLElement>(FIRST_BUTTON)
+                    ? (first('[data-relation-action="edit"]') ??
+                      first('[data-relation-action="menu"]') ??
+                      first(FIRST_BUTTON))
+                    : first(FIRST_BUTTON)
                 : container.current?.querySelector<HTMLElement>('input');
         element?.focus();
     });
@@ -624,6 +770,9 @@ export function RelationField(props: RelationFieldProps) {
             intl.formatMessage(messages.editRelation, { item: reference.label }),
         changeText: intl.formatMessage(messages.change),
         editText: intl.formatMessage(messages.edit),
+        removeText: intl.formatMessage(messages.remove),
+        actionsLabel: (reference: RelationReference) =>
+            intl.formatMessage(messages.relationActions, { item: reference.label }),
         ...(sourceEdit !== undefined
             ? {
                   onEdit: edit,

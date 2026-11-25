@@ -52,6 +52,122 @@
     max-width: 100%;
 }
 
+/* In the toolbar (#519): each filter a chip as high as the other controls, sized to its content,
+ * with its label inside (`Status: Any`) and the button that clears it. The chip draws the box, in
+ * the tones of the input (and of what is selected, for an active filter); the control inside it
+ * draws none. The label stays the control's label, for assistive technologies; its colon is
+ * decoration only. */
+.inline {
+    align-items: center;
+    gap: var(--panneau-space-2);
+}
+
+.inline > .item {
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0;
+    min-height: var(--panneau-control-height);
+    padding-inline: var(--panneau-space-3) var(--panneau-space-2);
+    background-color: var(--panneau-input-bg, var(--panneau-color-surface));
+    border: var(--panneau-input-border-width, var(--panneau-border-width)) solid
+        var(--panneau-input-border-color, var(--panneau-color-border-control));
+    border-radius: var(--panneau-radius-full);
+    transition:
+        border-color var(--panneau-duration),
+        box-shadow var(--panneau-duration);
+}
+
+.inline > .item:hover {
+    border-color: var(--panneau-input-border-color-hover, var(--panneau-color-text-muted));
+}
+
+.inline > .item:focus-within {
+    border-color: var(--panneau-input-border-color-focus, var(--panneau-color-focus));
+    box-shadow: var(--panneau-input-focus-ring, 0 0 0 1px var(--panneau-color-focus));
+}
+
+.inline > .item :global(.panneau-field-control) {
+    --panneau-input-bg: transparent;
+    --panneau-input-border-color: transparent;
+    --panneau-input-border-color-hover: transparent;
+    --panneau-input-border-color-focus: transparent;
+    --panneau-input-focus-ring: none;
+    --panneau-input-border-width: 0;
+    --panneau-input-padding-x: var(--panneau-space-1);
+
+    min-height: calc(var(--panneau-control-height) - 2 * var(--panneau-border-width));
+}
+
+/* The calendar button of a day: no line between it and the day, in a chip. */
+.inline > .item :global(.panneau-date-picker-button) {
+    border-inline-start: 0;
+}
+
+.inline > .item :global(.panneau-field) {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--panneau-space-1);
+}
+
+.inline > .item :global(.panneau-field-label) {
+    font-size: var(--panneau-font-size-control);
+    font-weight: var(--panneau-font-weight-normal);
+    color: var(--panneau-color-text-muted);
+    white-space: nowrap;
+}
+
+.inline > .item :global(.panneau-field-label)::after {
+    content: ':' / '';
+}
+
+/* A switch: its label fills the chip, which it turns on and off wherever it is pressed. */
+.inline > .item:has(> .toggle) {
+    padding-inline: 0;
+}
+
+.inline > .item .toggle {
+    align-self: stretch;
+    min-height: 0;
+}
+
+.inline > .item .toggle :global(.panneau-switch-control) {
+    min-height: calc(var(--panneau-control-height) - 2 * var(--panneau-border-width));
+    padding-inline: var(--panneau-space-2) var(--panneau-space-3);
+}
+
+.inline .control {
+    width: auto;
+    max-width: 16rem;
+}
+
+/* A text sized to what it holds, between a few letters and the width of a select. */
+.inline .control input {
+    field-sizing: content;
+    min-width: 6ch;
+    max-width: 12rem;
+}
+
+/* A range: its legend inline, before its two days. */
+.inline .range {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--panneau-space-1);
+}
+
+.inline .range > legend {
+    float: inline-start;
+    width: auto;
+    margin: 0;
+}
+
+.inline .rangeInputs {
+    gap: var(--panneau-space-1);
+}
+
+.inline .rangeInputs > :not(.rangeDash) {
+    width: auto;
+}
+
 /* One control under the other: in the popover of "More filters", and in the sheet. */
 .stacked {
     flex-direction: column;

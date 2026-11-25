@@ -1,5 +1,5 @@
 import { CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
-import { type ReactNode, use } from 'react';
+import { type ReactNode, use, useId } from 'react';
 import {
     DatePicker as AriaDatePicker,
     type DatePickerProps as AriaDatePickerProps,
@@ -126,8 +126,13 @@ export interface DatePickerProps
      * other values of the form.
      */
     shortcuts?: readonly DatePickerShortcut[];
-    /** Content at the end of the control, before the calendar button: a time zone. */
+    /** Content at the end of the control, before the calendar button. */
     end?: ReactNode;
+    /**
+     * A line under the control, styled as its description and before it, which describes the
+     * control: the time zone of its date-times. It keeps the control on one line.
+     */
+    hint?: ReactNode;
 }
 
 /**
@@ -149,8 +154,14 @@ export function DatePicker({
     popoverClassName,
     shortcuts = [],
     end,
+    hint,
     ...props
 }: DatePickerProps) {
+    const hintId = useId();
+    const hasHint = hint !== undefined && hint !== null;
+    const describedBy = [props['aria-describedby'], hasHint ? hintId : undefined]
+        .filter((part) => part !== undefined && part !== '')
+        .join(' ');
     const invalid = errors.length > 0;
     const hasTime =
         props.granularity === 'hour' ||
@@ -160,6 +171,7 @@ export function DatePicker({
         <AriaDatePicker
             shouldCloseOnSelect={!hasTime}
             {...props}
+            {...(describedBy !== '' ? { 'aria-describedby': describedBy } : {})}
             isRequired={isRequired}
             isReadOnly={isReadOnly}
             isInvalid={invalid}
@@ -188,6 +200,11 @@ export function DatePicker({
                     </Button>
                 ) : null}
             </Group>
+            {hasHint ? (
+                <div id={hintId} className={fieldStyles.description}>
+                    {hint}
+                </div>
+            ) : null}
             <DatePickerShortcuts
                 shortcuts={shortcuts}
                 isDisabled={props.isDisabled === true || isReadOnly === true}

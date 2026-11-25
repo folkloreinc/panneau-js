@@ -18,6 +18,25 @@ describe('DatePicker', () => {
         expect(segments.map((segment) => segment.textContent)).toEqual(['2026', '10', '15']);
     });
 
+    it('shows its hint under the control, which it describes', () => {
+        render(
+            <PanneauRoot locale="en-US">
+                <DatePicker
+                    label="Opens at"
+                    granularity="minute"
+                    value={new CalendarDateTime(2026, 10, 15, 9, 30)}
+                    hint="UTC−4"
+                    description="When the doors open."
+                />
+            </PanneauRoot>,
+        );
+        const group = screen.getByRole('group', { name: 'Opens at' });
+        expect(within(group).queryByText('UTC−4')).toBeNull();
+        const [month] = within(group).getAllByRole('spinbutton');
+        expect(month).toHaveAccessibleDescription(/UTC−4/);
+        expect(month).toHaveAccessibleDescription(/When the doors open\./);
+    });
+
     it('fills the date with a shortcut, without opening the calendar', async () => {
         const onChange = vi.fn();
         render(

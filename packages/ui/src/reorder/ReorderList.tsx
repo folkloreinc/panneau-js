@@ -637,34 +637,51 @@ export function ReorderHandle({ label, className, style }: ReorderHandleProps) {
     );
 }
 
-export interface ReorderMenuProps {
-    /** Defaults to `sm`, as the other tools of an item. */
-    size?: 'sm' | 'md';
-    className?: string;
+/** A move of an item without dragging it: where it goes, and its label in a menu. */
+export interface ReorderMove {
+    id: 'start' | 'before' | 'after' | 'end';
+    /** The place the item goes to. */
+    to: number;
+    label: string;
+}
+
+/** The moves of the item of a `ReorderItem`, and what moves it. */
+export interface ReorderMoves {
+    /** To the start, before the item before it, after the item after it, to the end. */
+    moves: readonly ReorderMove[];
+    /** Moves the item, announced as a drop is. */
+    move: (to: number) => void;
+    /** The label of the item, from the list's `itemLabel`. */
+    itemLabel: string;
 }
 
 /**
- * The buttons that move an item, without dragging it, in a menu: to the start, before the item
- * before it, after the item after it, or to the end. They are the path on phones, where a long press
- * isn't obvious. Put it with the tools of a `ReorderItem`: the move is announced as a drop is. A
- * list of one item, or a disabled list, has none.
+ * The moves of the item of the `ReorderItem` it is in, for a menu that has them with the other
+ * actions of the item: one menu per item, rather than a `ReorderMenu` beside another menu. None
+ * outside a `ReorderItem`, in a disabled list, or in a list of one item.
  */
-export function ReorderMenu({ size = 'sm', className }: ReorderMenuProps) {
-    const context = useReorder();
-    const { index } = useReorderItem();
+export function useReorderMoves(): ReorderMoves {
+    const context = use(ReorderContext);
+    const item = use(ReorderItemContext);
     const intl = usePanneauIntl();
-    const { count } = context;
-    if (context.isDisabled || count < 2) {
-        return null;
+    if (context === null || item === null) {
+        return { moves: [], move: () => undefined, itemLabel: '' };
     }
-    const actions = [
+    const { index } = item;
+    const { count } = context;
+    const itemLabel = context.labelOf(index);
+    const move = (to: number) => context.move(index, to);
+    if (context.isDisabled || count < 2) {
+        return { moves: [], move, itemLabel };
+    }
+    const moves: ReorderMove[] = [
         ...(index > 1
-            ? [{ id: 'start', to: 0, label: intl.formatMessage(messages.reorderToStart) }]
+            ? [{ id: 'start' as const, to: 0, label: intl.formatMessage(messages.reorderToStart) }]
             : []),
         ...(index > 0
             ? [
                   {
-                      id: 'before',
+                      id: 'before' as const,
                       to: index - 1,
                       label: intl.formatMessage(messages.reorderMoveBefore, {
                           item: context.labelOf(index - 1),
@@ -675,7 +692,7 @@ export function ReorderMenu({ size = 'sm', className }: ReorderMenuProps) {
         ...(index < count - 1
             ? [
                   {
-                      id: 'after',
+                      id: 'after' as const,
                       to: index + 1,
                       label: intl.formatMessage(messages.reorderMoveAfter, {
                           item: context.labelOf(index + 1),
@@ -684,17 +701,45 @@ export function ReorderMenu({ size = 'sm', className }: ReorderMenuProps) {
               ]
             : []),
         ...(index < count - 2
-            ? [{ id: 'end', to: count - 1, label: intl.formatMessage(messages.reorderToEnd) }]
+            ? [
+                  {
+                      id: 'end' as const,
+                      to: count - 1,
+                      label: intl.formatMessage(messages.reorderToEnd),
+                  },
+              ]
             : []),
     ];
+    return { moves, move, itemLabel };
+}
+
+export interface ReorderMenuProps {
+    /** Defaults to `sm`, as the other tools of an item. */
+    size?: 'sm' | 'md';
+    className?: string;
+}
+
+/**
+ * The buttons that move an item, without dragging it, in a menu: to the start, before the item
+ * before it, after the item after it, or to the end. They are the path on phones, where a long press
+ * isn't obvious. Put it with the tools of a `ReorderItem`: the move is announced as a drop is. A
+ * list of one item, or a disabled list, has none. A menu with other actions of the item has its
+ * moves with `useReorderMoves()` instead.
+ */
+export function ReorderMenu({ size = 'sm', className }: ReorderMenuProps) {
+    useReorder();
+    useReorderItem();
+    const intl = usePanneauIntl();
+    const { moves: actions, move, itemLabel } = useReorderMoves();
+    if (actions.length === 0) {
+        return null;
+    }
     return (
         <MenuTrigger>
             <IconButton
                 icon={ArrowUpDown}
                 size={size}
-                label={intl.formatMessage(messages.reorderMenu, {
-                    item: context.labelOf(index),
-                })}
+                label={intl.formatMessage(messages.reorderMenu, { item: itemLabel })}
                 className={cx('panneau-reorder-menu', className)}
             />
             <Menu
@@ -702,7 +747,7 @@ export function ReorderMenu({ size = 'sm', className }: ReorderMenuProps) {
                 onAction={(key) => {
                     const action = actions.find((candidate) => candidate.id === key);
                     if (action !== undefined) {
-                        context.move(index, action.to);
+                        move(action.to);
                     }
                 }}
             >

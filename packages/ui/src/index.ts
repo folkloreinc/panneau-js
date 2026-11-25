@@ -143,6 +143,9 @@ export {
     type ReorderListProps,
     ReorderMenu,
     type ReorderMenuProps,
+    type ReorderMove,
+    type ReorderMoves,
+    useReorderMoves,
 } from './reorder/ReorderList';
 export { REORDER_DRAG_TYPE, isReorderDrag, moveItem } from './reorder/reorder';
 export { LoadingRegion, type LoadingRegionProps } from './skeleton/LoadingRegion';

@@ -607,7 +607,8 @@ describe('RelationField', () => {
         );
         expect(screen.queryByRole('button', { name: 'Edit Grace Hopper' })).not.toBeInTheDocument();
         const button = screen.getByRole('button', { name: 'Edit Ada Lovelace' });
-        expect(button).toHaveTextContent('Edit');
+        // An icon button: its name is its tooltip, so that the title keeps the room of the card
+        expect(button).toHaveTextContent('');
         await userEvent.click(button);
         expect(edit).toHaveBeenCalledWith('authors', '1');
         // The panel took the focus
@@ -645,12 +646,18 @@ describe('RelationField', () => {
             { relationSource: { ...source, edit } },
         );
         const card = screen.getByRole('listitem');
-        // After "Change", before "Remove"
+        // After "Change", before "Remove", as icon buttons; then the menu that has them in a
+        // narrow field, which only its CSS shows
         expect(
             within(card)
                 .getAllByRole('button')
                 .map((button) => button.textContent || button.getAttribute('aria-label')),
-        ).toEqual(['Change', 'Edit', 'Remove Ada Lovelace']);
+        ).toEqual([
+            'Change Ada Lovelace',
+            'Edit Ada Lovelace',
+            'Remove Ada Lovelace',
+            'Actions for Ada Lovelace',
+        ]);
         await userEvent.click(screen.getByRole('button', { name: 'Edit Ada Lovelace' }));
         expect(await screen.findByText('“Ada Lovelace” couldn’t be edited.')).toBeInTheDocument();
     });

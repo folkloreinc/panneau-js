@@ -20,7 +20,7 @@
     color: var(--panneau-color-text-muted);
 }
 
-/* An "All day" switch, a time zone: between the bounds and the calendar. */
+/* An "All day" switch: between the bounds and the calendar. */
 .end {
     display: flex;
     flex: 0 0 auto;

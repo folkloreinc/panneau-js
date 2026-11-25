@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { createMemoryRouter } from '@panneau/core';
+import { FieldsProvider, type RelationSource } from '@panneau/fields';
 import type { Filter } from '@panneau/protocol';
 
 import { List } from '../List';
@@ -52,7 +53,7 @@ const filters: Filter[] = [
 ];
 
 /**
- * The filters of a list's toolbar. Those with `primary` show first (or the first 3), the others
+ * The filters of a list's toolbar, as chips. Those with `primary` show first (or the first 3), the others
  * behind "More filters", with the count of the active ones. A filter with a value is marked, and
  * keeps its chip under the toolbar. In a narrow list, every filter is behind one "Filters" button.
  */
@@ -73,6 +74,37 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+const rect = (element: Element) => element.getBoundingClientRect();
+
+/** Whether a box is inside another, to the pixel. */
+function isInside(inner: Element, outer: Element): boolean {
+    const [a, b] = [rect(inner), rect(outer)];
+    return (
+        a.left >= b.left - 1 &&
+        a.right <= b.right + 1 &&
+        a.top >= b.top - 1 &&
+        a.bottom <= b.bottom + 1
+    );
+}
+
+/** The parts of the toolbar of a list. */
+function toolbarParts(canvasElement: HTMLElement) {
+    const search = canvasElement.querySelector('[data-toolbar-search]');
+    const end = canvasElement.querySelector('[data-toolbar-end]');
+    const toolbar = end?.parentElement;
+    const chips = [...canvasElement.querySelectorAll('[data-toolbar-filter]')];
+    if (search === null || end === null || toolbar === null || toolbar === undefined) {
+        throw new Error('The toolbar has no search or no controls');
+    }
+    return {
+        toolbar,
+        search,
+        control: search.querySelector('.panneau-field-control') ?? search,
+        end,
+        chips,
+    };
+}
 
 /** The other filters are behind "More filters", which counts the active ones. */
 export const MoreFilters: Story = {
@@ -96,6 +128,84 @@ export const MoreFilters: Story = {
     },
 };
 
+/**
+ * When everything fits, one line (#519): the search, the filters as chips, and the controls of the
+ * list at its end. Each chip holds its label (`Status: Any`), is as high as the search, and sized to
+ * its content.
+ */
+export const OnOneLine: Story = {
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const { toolbar, search, control, end, chips } = toolbarParts(canvasElement);
+        await waitFor(() => expect(toolbar).not.toHaveAttribute('data-rows'));
+        const middle = (element: Element) => rect(element).top + rect(element).height / 2;
+        for (const element of [...chips, end]) {
+            await expect(Math.abs(middle(element) - middle(search))).toBeLessThan(2);
+        }
+        await expect(Math.abs(rect(end).right - rect(toolbar).right)).toBeLessThan(1);
+        // The label inside its chip, which is the label of the control for assistive technologies
+        const status = canvas.getByRole('button', { name: /Status/ });
+        const city = canvas.getByRole('textbox', { name: 'City' });
+        for (const [element, name] of [
+            [status, 'Status'],
+            [city, 'City'],
+        ] as const) {
+            const item = element.closest('[data-toolbar-filter]');
+            await expect(item).not.toBeNull();
+            const label = within(item as HTMLElement).getByText(name);
+            await expect(isInside(label, item as HTMLElement)).toBe(true);
+            await expect(rect(label).right).toBeLessThanOrEqual(rect(element).left + 1);
+            await expect(Math.round(rect(item as HTMLElement).height)).toBe(
+                Math.round(rect(control).height),
+            );
+        }
+        // Sized to its content: no chip is as wide as the controls of the filters were (12rem)
+        await expect(rect(chips[0] as Element).width).toBeLessThan(160);
+    },
+};
+
+/**
+ * When they don't fit, two rows that stay put (#519): the search, which grows, and the controls of
+ * the list at the end of its row; the filters under them, from the start, wrapping. A filter that
+ * grows with its value moves none of the first row.
+ */
+export const OnTwoRows: Story = {
+    args: { filters: filters.map((filter) => ({ ...filter, primary: true })) },
+    decorators: [
+        (Story) => (
+            <div style={{ maxWidth: '46rem' }}>
+                <Story />
+            </div>
+        ),
+    ],
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const { toolbar, search, end, chips } = toolbarParts(canvasElement);
+        await waitFor(() => expect(toolbar).toHaveAttribute('data-rows', '2'));
+        const first = rect(search);
+        // The first row: the search up to the controls, which are at its end
+        await expect(Math.abs(rect(end).top - first.top)).toBeLessThan(first.height);
+        await expect(Math.abs(rect(end).right - rect(toolbar).right)).toBeLessThan(1);
+        await expect(first.width).toBeGreaterThan(16 * 16);
+        await expect(rect(end).left - first.right).toBeLessThan(20);
+        // The second row: every filter under it, the first at its start
+        for (const chip of chips) {
+            await expect(rect(chip).top).toBeGreaterThanOrEqual(first.bottom);
+        }
+        await expect(Math.abs(rect(chips[0] as Element).left - first.left)).toBeLessThan(1);
+        // A value that makes a chip wider leaves the first row as it is
+        await userEvent.type(
+            canvas.getByRole('textbox', { name: 'City' }),
+            'Saint-Jean-sur-Richelieu{Enter}',
+        );
+        await expect(
+            await canvas.findByRole('button', { name: 'Clear the filter City' }),
+        ).toBeVisible();
+        await expect(rect(search)).toEqual(first);
+        await expect(toolbar).toHaveAttribute('data-rows', '2');
+    },
+};
+
 /** The filters a definition shows first (`primary: true`), whatever their place. */
 export const PrimaryFilters: Story = {
     args: {
@@ -112,7 +222,7 @@ export const PrimaryFilters: Story = {
 };
 
 /**
- * A filter with a value is marked: its input in the tones of what is selected
+ * A filter with a value is marked: its chip in the tones of what is selected
  * (`--panneau-selected-*`), and a button that clears it.
  */
 export const ActiveFilter: Story = {
@@ -121,6 +231,8 @@ export const ActiveFilter: Story = {
         const canvas = within(canvasElement);
         const shown = within(canvas.getByRole('group', { name: 'Filters' }));
         const status = () => shown.getByRole('button', { name: /^(?!Clear).*Status/ });
+        // The chips of the filters draw their box (#519)
+        const chip = (element: Element) => element.closest('[data-toolbar-filter]') ?? element;
         const active = status();
         const empty = canvas.getByRole('textbox', { name: 'City' });
         // The color of the token, as the browser resolves it
@@ -129,8 +241,8 @@ export const ActiveFilter: Story = {
         active.parentElement?.append(probe);
         const selected = getComputedStyle(probe).color;
         probe.remove();
-        await expect(getComputedStyle(active).borderTopColor).toBe(selected);
-        await expect(getComputedStyle(empty).borderTopColor).not.toBe(selected);
+        await expect(getComputedStyle(chip(active)).borderTopColor).toBe(selected);
+        await expect(getComputedStyle(chip(empty)).borderTopColor).not.toBe(selected);
         // Not only by color: a button clears it, inside the select, in place of its arrow (#487)
         const clear = canvas.getByRole('button', { name: 'Clear the filter Status' });
         const box = active.getBoundingClientRect();
@@ -230,5 +342,87 @@ export const OnAPhone: Story = {
         await expect(canvas.getByRole('list', { name: 'Active filters' })).toHaveTextContent(
             'Featured',
         );
+    },
+};
+
+const authors = [
+    { id: '7', label: 'Ada Lovelace' },
+    { id: '8', label: 'Grace Hopper' },
+];
+
+/** A relation source without a backend: it finds the authors whose name has the text. */
+const relationSource: RelationSource = {
+    search: (_resource, query) =>
+        Promise.resolve(
+            authors.filter((author) => author.label.toLowerCase().includes(query.toLowerCase())),
+        ),
+    resolve: (_resource, ids) =>
+        Promise.resolve(authors.filter((author) => ids.includes(author.id))),
+};
+
+/** A filter of each type, all shown first. */
+const everyType: Filter[] = [
+    { id: 'status', type: 'select', label: 'Status', options: statuses, primary: true },
+    { id: 'author', type: 'relation', resource: 'authors', label: 'Author', primary: true },
+    { id: 'day', type: 'date', label: 'Day', primary: true },
+    { id: 'published', type: 'date-range', label: 'Published', primary: true },
+    { id: 'city', type: 'text', label: 'City', primary: true },
+    { id: 'featured', type: 'toggle', label: 'Featured', primary: true },
+];
+
+/**
+ * A filter of each type, as a chip: a select, a relation, a day, a range of days, a text and a
+ * switch. Each one holds its label, is as high as the other controls of the toolbar, and has its
+ * clear button inside when it has a value.
+ */
+export const EveryFilterType: Story = {
+    args: {
+        filters: everyType,
+        router: createMemoryRouter(
+            'filter[status]=draft&filter[author]=7&filter[day]=2026-10-15&filter[published][from]=2026-01-01&filter[published][to]=2026-03-31&filter[city]=Montr%C3%A9al&filter[featured]=true',
+        ),
+    },
+    decorators: [
+        (Story) => (
+            <FieldsProvider relationSource={relationSource}>
+                <Story />
+            </FieldsProvider>
+        ),
+    ],
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const { control, chips } = toolbarParts(canvasElement);
+        await waitFor(() =>
+            expect(canvas.getByRole('combobox', { name: 'Author' })).toHaveValue('Ada Lovelace'),
+        );
+        // Each control keeps its name, from the label inside its chip
+        const shown = within(canvas.getByRole('group', { name: 'Filters' }));
+        const controls = [
+            shown.getByRole('button', { name: /^(?!Clear).*Status/ }),
+            shown.getByRole('combobox', { name: 'Author' }),
+            shown.getAllByRole('group', { name: 'Day' })[0],
+            shown.getByRole('group', { name: 'Published' }),
+            shown.getByRole('textbox', { name: 'City' }),
+            shown.getByRole('switch', { name: 'Featured' }),
+        ];
+        await expect(chips).toHaveLength(controls.length);
+        for (const [index, element] of controls.entries()) {
+            const chip = chips[index] as Element;
+            await expect(chip).toContainElement(element as HTMLElement);
+            await expect(chip).toHaveAttribute('data-active', 'true');
+            // As high as the search
+            await expect(Math.round(rect(chip).height)).toBe(Math.round(rect(control).height));
+        }
+        // The clear button of each one inside its chip (a switch says itself that it is on)
+        for (const name of ['Status', 'Author', 'Day', 'Published', 'City']) {
+            const clear = canvas.getByRole('button', { name: `Clear the filter ${name}` });
+            const chip = clear.closest('[data-toolbar-filter]');
+            await expect(chip).not.toBeNull();
+            await expect(isInside(clear, chip as Element)).toBe(true);
+        }
+        const city = canvas.getByRole('textbox', { name: 'City' });
+        await userEvent.click(canvas.getByRole('button', { name: 'Clear the filter City' }));
+        await waitFor(() => expect(city).toHaveFocus());
+        await expect(city.closest('[data-toolbar-filter]')).not.toHaveAttribute('data-active');
     },
 };

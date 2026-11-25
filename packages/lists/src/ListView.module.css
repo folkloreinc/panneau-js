@@ -79,6 +79,28 @@
     border-radius: var(--panneau-radius-lg);
 }
 
+/* A wide list (#519): the search, the filters and the controls on one line while they fit
+ * (`useToolbarRows`). When they don't, two rows that don't move: the search, which grows, and the
+ * controls at its end; the filters under them, from the start of the row, wrapping. */
+@container panneau-list (width > 40rem) {
+    .toolbarStart {
+        display: contents;
+    }
+
+    .toolbar[data-rows='2'] [data-toolbar-search] {
+        flex-grow: 1;
+    }
+
+    .toolbar[data-rows='2'] .toolbarEnd {
+        order: 1;
+    }
+
+    .toolbar[data-rows='2'] [data-toolbar-filters] {
+        order: 2;
+        flex-basis: 100%;
+    }
+}
+
 @container panneau-list (max-width: 40rem) {
     .toolbarStart,
     .toolbarEnd {

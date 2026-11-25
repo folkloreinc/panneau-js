@@ -86,7 +86,7 @@ export function FilterControls({
         <div
             role="group"
             aria-label={ariaLabel ?? intl.formatMessage(messages.filters)}
-            className={cx(styles.filters, stacked && styles.stacked)}
+            className={cx(styles.filters, stacked ? styles.stacked : styles.inline)}
         >
             {filters.map((filter) => {
                 // A type that nothing gives is a text filter, with a warning in development
@@ -109,6 +109,7 @@ export function FilterControls({
                         // in its box, in place of its arrow
                         clearable={filter.type !== 'toggle' && Control !== builtInFilters.select}
                         isActive={isFilterActive(values, filter)}
+                        isChip={!stacked}
                         onClear={clear}
                     >
                         <Control
@@ -133,25 +134,36 @@ interface FilterItemProps {
     /** The name of the button that clears the filter. */
     clearLabel: string;
     isActive: boolean;
+    /** In the toolbar: a chip, with the label and the clear button inside (#519). */
+    isChip: boolean;
     clearable: boolean;
     onClear: () => void;
     children: ReactNode;
 }
 
 /** A filter control, marked when it has a value, with a button that clears it. */
-function FilterItem({ clearLabel, isActive, clearable, onClear, children }: FilterItemProps) {
+function FilterItem({
+    clearLabel,
+    isActive,
+    isChip,
+    clearable,
+    onClear,
+    children,
+}: FilterItemProps) {
     const item = useRef<HTMLDivElement>(null);
     return (
         <div
             ref={item}
             className={cx(styles.item, isActive && styles.active)}
             data-active={isActive ? 'true' : undefined}
+            data-toolbar-filter={isChip ? '' : undefined}
         >
             {children}
             {isActive && clearable ? (
                 <IconButton
                     icon={X}
                     label={clearLabel}
+                    size={isChip ? 'sm' : 'md'}
                     className={styles.clear}
                     onPress={() => {
                         onClear();

@@ -47,7 +47,7 @@
     container: panneau-date-picker / inline-size;
 }
 
-/* Content after the date: a time zone. */
+/* Content after the date. */
 .end {
     display: flex;
     flex: 0 0 auto;

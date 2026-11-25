@@ -4,6 +4,7 @@
 - Date: 2026-11-23
 - Amends: [0067](0067-relation-cards.md) (the cards of a relation field have "Edit", and their links open in a new tab in the app's forms)
 - Issue: [#471](https://github.com/folkloreinc/panneau-js/issues/471)
+- Updated: 2026-11-25: "Edit" is an icon button, in the menu of the card in a narrow field ([#518](https://github.com/folkloreinc/panneau-js/issues/518))
 
 ## Context
 
@@ -19,7 +20,7 @@ A relation field picks existing items. To link an author that doesn't exist yet,
     - **⌘ S and ⌘ Enter** save the form of the panel while it is open, never the form of the page: the panel is a dialog, which the save shortcut keeps apart.
 - **One level.** Inside the panel, relation fields pick existing items: they offer no "Create …" nor "Edit", and the links of their cards open in a new tab, which leaves neither the panel nor the form under it. A panel never opens over a panel.
 - **"Edit" on a card edits its item in the same panel**, under the title of the item (the label of the panel is "Edit the person"), with the form of its edit page: its fields, its layout, its type, its validation, its `422` errors and its version conflicts. The panel loads the item again when it opens, and draws the skeleton of its form until then: the item that a list or a field cached may be older, or a lighter version of it. An item that is gone, or that the user can't view, says so in the panel; one that failed to load says so with "Try again".
-    - **Saving** updates the item and closes the panel. The item's query and the lists of its resource show it at once, as its edit page does. Its card shows it as saved (its label, its description, its image), and the focus comes back to its "Edit". The value of the field doesn't change, since it is the same item: the form underneath keeps its values and its unsaved changes, and gets none.
+    - **Saving** updates the item and closes the panel. The item's query and the lists of its resource show it at once, as its edit page does. Its card shows it as saved (its label, its description, its image), and the focus comes back to its "Edit" (an icon button, named "Edit" and the item, with its name as its tooltip), or to the menu of the card that has it, in a narrow field. The value of the field doesn't change, since it is the same item: the form underneath keeps its values and its unsaved changes, and gets none.
     - **Closing** it with unsaved changes asks first, and ⌘ S saves the form of the panel, as when creating.
     - **"Edit" follows the abilities**, as the rest of the app decides it: it shows on the items whose `abilities.update` is `true` ([0046](0046-abilities-in-the-ui.md)). Those are in the items of the source: a field whose source edits asks `resolve()` for the items of its cards that it doesn't have yet, in the request that every field of the form shares. An item the source doesn't know has no "Edit" until then.
     - **No actions of the item in the panel**, such as "Delete" or "Duplicate": the `actions` panel of its sidebar is empty there. Deleting the item from the panel would leave the field with the card of an item that is gone; its page has them.

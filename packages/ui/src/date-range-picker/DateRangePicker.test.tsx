@@ -68,6 +68,26 @@ describe('DateRangePicker', () => {
         });
     });
 
+    it('shows its hint under the control, which describes both bounds', () => {
+        render(
+            <PanneauRoot locale="en-US">
+                <DateRangePicker
+                    label="Dates"
+                    granularity="minute"
+                    value={{
+                        start: new CalendarDateTime(2026, 11, 4, 19, 30),
+                        end: new CalendarDateTime(2026, 11, 4, 21, 0),
+                    }}
+                    hint="UTC−5"
+                />
+            </PanneauRoot>,
+        );
+        for (const name of ['Start', 'End']) {
+            const [first] = within(screen.getByRole('group', { name })).getAllByRole('spinbutton');
+            expect(first).toHaveAccessibleDescription(/UTC−5/);
+        }
+    });
+
     it('leaves a bound empty while the other is typed', async () => {
         const onChange = vi.fn();
         render(

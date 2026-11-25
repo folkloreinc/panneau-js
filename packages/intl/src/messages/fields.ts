@@ -179,6 +179,11 @@ export const fieldsMessages = {
         id: 'panneau.fields.editRelation',
         defaultMessage: 'Edit {item}',
     }),
+    /** The menu of the actions of a chosen item, in a narrow field: change, edit, move, remove. */
+    relationActions: defineMessage<{ item: string }>({
+        id: 'panneau.fields.relationActions',
+        defaultMessage: 'Actions for {item}',
+    }),
     editRelationFailed: defineMessage<{ item: string }>({
         id: 'panneau.fields.editRelationFailed',
         defaultMessage: '“{item}” couldn’t be edited.',

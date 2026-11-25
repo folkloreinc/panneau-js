@@ -615,6 +615,9 @@ export const fieldsMessages: {
     editRelation: PanneauMessage<    {
     item: string;
     }>;
+    relationActions: PanneauMessage<    {
+    item: string;
+    }>;
     editRelationFailed: PanneauMessage<    {
     item: string;
     }>;

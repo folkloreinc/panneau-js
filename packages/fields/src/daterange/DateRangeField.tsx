@@ -162,8 +162,8 @@ export function DateRangeField({
             </Switch>
         ) : undefined;
 
-    // The zone the date-times are in, named with its offset at the start (`Eastern Time
-    // (UTC−4)`). Bounds without an offset are wall times, in no zone.
+    // The zone the date-times are in, under the control, with its offset at the start
+    // (`UTC−4 · America/Toronto`). Bounds without an offset are wall times, in no zone.
     const shownBounds = current !== null ? [toBound(current.start), toBound(current.end)] : [];
     const firstBound = shownBounds.find((bound) => bound !== null) ?? null;
     const zoneLabel =
@@ -172,13 +172,6 @@ export function DateRangeField({
                 zone={zone}
                 date={firstBound !== null && 'timeZone' in firstBound ? firstBound.toDate() : null}
             />
-        ) : undefined;
-    const endContent =
-        allDaySwitch !== undefined || zoneLabel !== undefined ? (
-            <>
-                {zoneLabel}
-                {allDaySwitch}
-            </>
         ) : undefined;
 
     return (
@@ -208,7 +201,8 @@ export function DateRangeField({
                     : {})}
                 {...(hourCycle !== undefined ? { hourCycle } : {})}
                 hideTimeZone
-                {...(endContent !== undefined ? { end: endContent } : {})}
+                {...(allDaySwitch !== undefined ? { end: allDaySwitch } : {})}
+                {...(zoneLabel !== undefined ? { hint: zoneLabel } : {})}
                 isRequired={required}
                 isDisabled={disabled}
                 isReadOnly={readOnly}
