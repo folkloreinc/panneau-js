@@ -1238,6 +1238,7 @@ export type AgentRunActionResult = z.infer<typeof AgentRunActionResult>;
 export const Agents: z.ZodObject<{
     mcp: z.ZodOptional<z.ZodObject<{
         url: z.ZodString;
+        tokens: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>>;
     assistant: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$loose>;
@@ -2111,6 +2112,71 @@ export const Condition: z.ZodObject<{
 
 // @public (undocumented)
 export type Condition = z.infer<typeof Condition>;
+
+// @public (undocumented)
+export const Connection: z.ZodObject<{
+    id: z.ZodString;
+    type: z.ZodEnum<{
+        client: "client";
+        token: "token";
+    }>;
+    name: z.ZodString;
+    write: z.ZodBoolean;
+    createdAt: z.ZodString;
+    lastUsedAt: z.ZodNullable<z.ZodString>;
+    expiresAt: z.ZodNullable<z.ZodString>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type Connection = z.infer<typeof Connection>;
+
+// @public (undocumented)
+export const ConnectionsResponse: z.ZodObject<{
+    data: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        type: z.ZodEnum<{
+            client: "client";
+            token: "token";
+        }>;
+        name: z.ZodString;
+        write: z.ZodBoolean;
+        createdAt: z.ZodString;
+        lastUsedAt: z.ZodNullable<z.ZodString>;
+        expiresAt: z.ZodNullable<z.ZodString>;
+    }, z.core.$loose>>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type ConnectionsResponse = z.infer<typeof ConnectionsResponse>;
+
+// @public (undocumented)
+export const ConnectionTokenRequest: z.ZodObject<{
+    name: z.ZodString;
+    write: z.ZodOptional<z.ZodBoolean>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type ConnectionTokenRequest = z.infer<typeof ConnectionTokenRequest>;
+
+// @public (undocumented)
+export const ConnectionTokenResponse: z.ZodObject<{
+    token: z.ZodString;
+    connection: z.ZodObject<{
+        id: z.ZodString;
+        type: z.ZodEnum<{
+            client: "client";
+            token: "token";
+        }>;
+        name: z.ZodString;
+        write: z.ZodBoolean;
+        createdAt: z.ZodString;
+        lastUsedAt: z.ZodNullable<z.ZodString>;
+        expiresAt: z.ZodNullable<z.ZodString>;
+    }, z.core.$loose>;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type ConnectionTokenResponse = z.infer<typeof ConnectionTokenResponse>;
 
 // @public
 export const CONTEXT_HEADER = "Panneau-Context";
@@ -3832,6 +3898,7 @@ export const Definition: z.ZodObject<{
     agents: z.ZodOptional<z.ZodObject<{
         mcp: z.ZodOptional<z.ZodObject<{
             url: z.ZodString;
+            tokens: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>>;
         assistant: z.ZodOptional<z.ZodBoolean>;
     }, z.core.$loose>>;
@@ -10162,6 +10229,7 @@ export const namedSchemas: {
         agents: z.ZodOptional<z.ZodObject<{
             mcp: z.ZodOptional<z.ZodObject<{
                 url: z.ZodString;
+                tokens: z.ZodOptional<z.ZodBoolean>;
             }, z.core.$loose>>;
             assistant: z.ZodOptional<z.ZodBoolean>;
         }, z.core.$loose>>;
@@ -10686,6 +10754,51 @@ export const namedSchemas: {
         authenticator: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         createdAt: z.ZodString;
         lastUsedAt: z.ZodNullable<z.ZodString>;
+    }, z.core.$loose>;
+    Connection: z.ZodObject<{
+        id: z.ZodString;
+        type: z.ZodEnum<{
+            client: "client";
+            token: "token";
+        }>;
+        name: z.ZodString;
+        write: z.ZodBoolean;
+        createdAt: z.ZodString;
+        lastUsedAt: z.ZodNullable<z.ZodString>;
+        expiresAt: z.ZodNullable<z.ZodString>;
+    }, z.core.$loose>;
+    ConnectionsResponse: z.ZodObject<{
+        data: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            type: z.ZodEnum<{
+                client: "client";
+                token: "token";
+            }>;
+            name: z.ZodString;
+            write: z.ZodBoolean;
+            createdAt: z.ZodString;
+            lastUsedAt: z.ZodNullable<z.ZodString>;
+            expiresAt: z.ZodNullable<z.ZodString>;
+        }, z.core.$loose>>;
+    }, z.core.$loose>;
+    ConnectionTokenRequest: z.ZodObject<{
+        name: z.ZodString;
+        write: z.ZodOptional<z.ZodBoolean>;
+    }, z.core.$loose>;
+    ConnectionTokenResponse: z.ZodObject<{
+        token: z.ZodString;
+        connection: z.ZodObject<{
+            id: z.ZodString;
+            type: z.ZodEnum<{
+                client: "client";
+                token: "token";
+            }>;
+            name: z.ZodString;
+            write: z.ZodBoolean;
+            createdAt: z.ZodString;
+            lastUsedAt: z.ZodNullable<z.ZodString>;
+            expiresAt: z.ZodNullable<z.ZodString>;
+        }, z.core.$loose>;
     }, z.core.$loose>;
     SearchResponse: z.ZodObject<{
         data: z.ZodArray<z.ZodObject<{

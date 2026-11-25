@@ -72,6 +72,11 @@ export interface MockMail {
 
 // @public
 export interface MockUser {
+    connections?: {
+        name: string;
+        type?: Connection['type'];
+        write?: boolean;
+    }[];
     // (undocumented)
     email: string;
     emailVerified?: boolean;
@@ -102,6 +107,10 @@ export interface MockWidgetContext {
     query: WidgetListQuery;
     resource: string | null;
 }
+
+// Warnings were encountered during analysis:
+//
+// src/mock/auth.ts:40:35 - (ae-forgotten-export) The symbol "Connection" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

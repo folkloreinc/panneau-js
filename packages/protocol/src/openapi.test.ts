@@ -122,6 +122,54 @@ describe('OpenAPI document', () => {
         expect(document.components.schemas).toHaveProperty('SummaryPeriod');
     });
 
+    it('describes the connections of the account (decision 0113)', () => {
+        const paths = document.paths as Record<
+            string,
+            Record<string, { operationId: string; responses: Record<string, unknown> }>
+        >;
+        const statuses = (path: string, method: string) =>
+            Object.keys(paths[path]?.[method]?.responses ?? {});
+        expect(statuses('/account/connections', 'get')).toEqual(['200', '401', '403']);
+        expect(statuses('/account/connections/tokens', 'post')).toEqual([
+            '201',
+            '401',
+            '403',
+            '409',
+            '422',
+            '423',
+        ]);
+        expect(statuses('/account/connections/{connection}', 'delete')).toEqual([
+            '204',
+            '401',
+            '403',
+            '404',
+            '423',
+        ]);
+        // What laravel-panneau answers: ISO 8601 with an offset, and null for unknown dates
+        const connection = {
+            id: 'token:12',
+            type: 'token',
+            name: 'Claude',
+            write: true,
+            createdAt: '2026-11-24T10:00:00+00:00',
+            lastUsedAt: null,
+            expiresAt: null,
+        };
+        const validate = new Ajv2020({ strict: false })
+            .addSchema({ $id: 'openapi', components: document.components })
+            .compile({ $ref: 'openapi#/components/schemas/ConnectionTokenResponse' });
+        expect(validate({ token: '1|abc', connection })).toBe(true);
+        expect(validate({ token: '1|abc', connection: { ...connection, type: 'key' } })).toBe(
+            false,
+        );
+        expect(
+            Definition.parse({
+                ...createDefinition(),
+                agents: { mcp: { url: '/mcp', tokens: true } },
+            }).agents?.mcp?.tokens,
+        ).toBe(true);
+    });
+
     it('only references schemas and parameters it defines', () => {
         const missing = [...collectRefs(document)].filter((ref) => {
             const [, , kind = '', name = ''] = ref.split('/');

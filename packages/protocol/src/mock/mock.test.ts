@@ -6,7 +6,7 @@ import {
     MAX_PER_PAGE,
     TWO_FACTOR_REQUIRED_PROBLEM_TYPE,
 } from '../constants';
-import { ListResponse } from '../schemas';
+import { ConnectionTokenResponse, ConnectionsResponse, ListResponse } from '../schemas';
 import { type MockMail, type MockUser, createExampleDefinition, createMockBackend } from './index';
 
 function createBackend() {
@@ -1244,6 +1244,72 @@ describe('passkeys in the mock backend', () => {
         );
         expect((await api('account/passkeys/1', { method: 'DELETE' })).status).toBe(204);
         expect(await (await api('account/passkeys')).json()).toEqual({ data: [] });
+    });
+});
+
+describe('connections in the mock backend', () => {
+    function createConnectionsBackend(tokens?: boolean) {
+        const definition = createDefinition();
+        definition.auth = { mode: 'panneau' };
+        definition.agents = {
+            mcp: { url: '/panneau/mcp', ...(tokens !== undefined ? { tokens } : {}) },
+        };
+        const backend = createMockBackend({
+            definition,
+            auth: {
+                users: [
+                    {
+                        email: 'ada@example.com',
+                        password: 'secret',
+                        connections: [{ name: 'Claude', type: 'client', write: true }],
+                    },
+                ],
+            },
+        });
+        const api = (path: string, init?: RequestInit) =>
+            backend.fetch(`/panneau/api/account/connections${path}`, init);
+        return { api, post: (body: unknown) => api('/tokens', json(body, { method: 'POST' })) };
+    }
+
+    it('lists, makes and revokes the connections of the user', async () => {
+        const { api, post } = createConnectionsBackend(true);
+        expect(ConnectionsResponse.parse(await (await api('')).json()).data).toMatchObject([
+            { id: 'client:1', type: 'client', name: 'Claude', write: true, lastUsedAt: null },
+        ]);
+
+        expect((await post({})).status).toBe(422);
+        expect((await post({ name: 'Laptop', write: 'yes' })).status).toBe(422);
+        const made = await post({ name: 'Laptop', write: true });
+        expect(made.status).toBe(201);
+        const { token, connection } = ConnectionTokenResponse.parse(await made.json());
+        expect(token).not.toBe('');
+        expect(connection).toMatchObject({ type: 'token', name: 'Laptop', write: true });
+
+        const listed = ConnectionsResponse.parse(await (await api('')).json());
+        expect(listed.data.map(({ id }) => id)).toEqual([connection.id, 'client:1']);
+
+        expect((await api('/client:1', { method: 'DELETE' })).status).toBe(204);
+        expect((await api('/client:1', { method: 'DELETE' })).status).toBe(404);
+        expect(ConnectionsResponse.parse(await (await api('')).json()).data).toHaveLength(1);
+    });
+
+    it("refuses a token when the account can't make one", async () => {
+        for (const tokens of [false, undefined]) {
+            const { post } = createConnectionsBackend(tokens);
+            const refused = await post({ name: 'Laptop' });
+            expect(refused.status).toBe(409);
+            expect(await refused.json()).toMatchObject({ status: 409, detail: expect.any(String) });
+        }
+    });
+
+    it('has no connections without agents.mcp', async () => {
+        const definition = createDefinition();
+        definition.auth = { mode: 'panneau', account: true };
+        const backend = createMockBackend({
+            definition,
+            auth: { users: [{ email: 'ada@example.com', password: 'secret' }] },
+        });
+        expect((await backend.fetch('/panneau/api/account/connections')).status).toBe(404);
     });
 });
 

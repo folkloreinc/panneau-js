@@ -36,7 +36,10 @@ export interface MockState {
 
 export function createMockState(options: MockBackendOptions): MockState {
     const { definition, items = {} } = options;
-    const auth = options.auth !== undefined ? createMockAuth(options.auth, definition.auth) : null;
+    const auth =
+        options.auth !== undefined
+            ? createMockAuth(options.auth, definition.auth, definition.agents)
+            : null;
     const store = new Map<string, Item[]>();
     // The deleted items of the resources whose `delete` is undoable: their trash (decision 0063).
     const trash = new Map<string, Item[]>();

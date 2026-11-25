@@ -91,6 +91,8 @@ function createBackend() {
             { id: 'google', label: 'Google', url: '/panneau/api/auth/providers/google/redirect' },
         ],
     };
+    // The MCP server, whose connections the account lists (decision 0113).
+    definition.agents = { mcp: { url: '/panneau/mcp', tokens: true } };
     // A dashboard (decision 0064): widgets on a resource, and widgets with data of their own.
     definition.dashboard = {
         widgets: [
@@ -636,6 +638,7 @@ describe('runConformance', () => {
             'auth.passkeys': 'passed',
             'auth.providers': 'passed',
             'account.passkeys': 'passed',
+            'account.connections': 'passed',
             'auth.two-factor-challenge': 'passed',
         });
 
