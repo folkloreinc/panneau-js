@@ -492,7 +492,10 @@ export const Reorder: Story = {
     },
 };
 
-/** In a narrow column, as the sidebar of a form: the cards keep their tools, and cut their titles. */
+/**
+ * In a narrow column, as the sidebar of a form: the cards keep their handles, and their tools are
+ * in one menu, so that nothing overflows.
+ */
 export const ReorderInANarrowColumn: Story = {
     render: () => (
         <div style={{ maxWidth: '18rem' }}>
@@ -503,5 +506,173 @@ export const ReorderInANarrowColumn: Story = {
         for (const card of canvasElement.querySelectorAll<HTMLElement>('.panneau-tile')) {
             await expect(card.scrollWidth).toBeLessThanOrEqual(card.clientWidth);
         }
+    },
+};
+
+const EDITIONS: RelationReference[] = [
+    { id: '2023', label: '2023' },
+    { id: '2024', label: '2024' },
+];
+
+/** People and editions that the user can edit, where the source says. */
+const editableSource: RelationSource = {
+    async search(_resource, query) {
+        const all = [...PEOPLE, ...EDITIONS];
+        return all.filter((item) => item.label.toLowerCase().includes(query.toLowerCase()));
+    },
+    async resolve(_resource, ids) {
+        return [...PEOPLE, ...EDITIONS].filter((item) => ids.includes(item.id));
+    },
+    describe: () => ({ icon: 'users', image: true, description: true }),
+    async edit(_resource, id) {
+        return [...PEOPLE, ...EDITIONS].find((item) => item.id === id) ?? null;
+    },
+};
+
+/** Whether an element shows, and isn't cut with an ellipsis. */
+async function expectWhole(element: Element | null) {
+    await expect(element).not.toBeNull();
+    if (element !== null) {
+        await expect(element.scrollWidth).toBeLessThanOrEqual(element.clientWidth);
+    }
+}
+
+/** The visible buttons of a card that open a menu: one at most (#518). */
+const visibleMenus = (card: HTMLElement) =>
+    [...card.querySelectorAll<HTMLElement>('button[aria-haspopup]')].filter((button) =>
+        button.checkVisibility(),
+    );
+
+/**
+ * In a sidebar (18rem): the title of each card has the room first (#518). "Change", "Edit" and
+ * "Remove" are icon buttons with tooltips, and in a field this narrow they are one "⋯" menu, which
+ * also has the moves of a card that reorders: one menu per card, beside the drag handle.
+ */
+export const InANarrowSidebar: Story = {
+    render: function Render() {
+        const [edition, setEdition] = useState<RelationReference | null>(EDITIONS[0] ?? null);
+        const [people, setPeople] = useState<RelationReference[] | null>(PEOPLE);
+        return (
+            <div style={{ display: 'grid', gap: '1.5rem', width: '18rem' }}>
+                <RelationField
+                    resource="editions"
+                    source={editableSource}
+                    label="Edition"
+                    value={edition}
+                    onChange={setEdition}
+                />
+                <RelationField
+                    multiple
+                    resource="people"
+                    source={editableSource}
+                    label="People"
+                    value={people}
+                    onChange={setPeople}
+                />
+            </div>
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        const cards = () => canvas.getAllByRole('listitem');
+        await waitFor(() => expect(cards()).toHaveLength(4));
+
+        for (const card of cards()) {
+            // The title has the room of the card: whole when it is short (`2023`, `Ada
+            // Lovelace`), at least 6rem of it when it is cut, with the full title as its tooltip
+            const title = card.querySelector<HTMLElement>('.panneau-tile-title');
+            if (['2023', 'Ada Lovelace'].includes(title?.textContent ?? '')) {
+                await expectWhole(title);
+            }
+            await expect(title?.getBoundingClientRect().width).toBeGreaterThanOrEqual(
+                6 * parseFloat(getComputedStyle(document.documentElement).fontSize),
+            );
+            await expect(card.querySelector('.panneau-tile-title [title]')).toHaveAttribute(
+                'title',
+                card.querySelector('.panneau-tile-title')?.textContent ?? '',
+            );
+            await expect(card.scrollWidth).toBeLessThanOrEqual(card.clientWidth);
+            // One menu, the "⋯": the menu of moves is in it
+            const menus = visibleMenus(card);
+            await expect(menus).toHaveLength(1);
+            await expect(menus[0]?.getAttribute('aria-label')).toMatch(/^Actions for /);
+        }
+
+        // The single field: change, edit and remove, in the menu
+        const edition = canvas.getByRole('group', { name: 'Edition' });
+        // Its buttons are hidden, out of the accessibility tree too
+        await expect(within(edition).queryByRole('button', { name: 'Change 2023' })).toBeNull();
+        await userEvent.click(within(edition).getByRole('button', { name: 'Actions for 2023' }));
+        const editionMenu = await body.findByRole('menu');
+        await expect(
+            within(editionMenu)
+                .getAllByRole('menuitem')
+                .map((item) => item.textContent),
+        ).toEqual(['Change', 'Edit', 'Remove']);
+        await userEvent.click(within(editionMenu).getByRole('menuitem', { name: 'Change' }));
+        await expect(within(edition).getByRole('combobox', { name: 'Edition' })).toHaveFocus();
+        await userEvent.keyboard('{Escape}');
+        // Back on the card, the focus is on its menu, the first of its buttons that shows
+        await waitFor(() =>
+            expect(within(edition).getByRole('button', { name: 'Actions for 2023' })).toHaveFocus(),
+        );
+
+        // The multiple field: the handle stays, and the moves are in the same menu
+        const people = canvas.getByRole('group', { name: 'People' });
+        await expect(
+            within(people).getByRole('button', { name: 'Move Ada Lovelace' }),
+        ).toBeVisible();
+        await expect(
+            within(people).queryByRole('button', { name: 'Reorder Ada Lovelace' }),
+        ).toBeNull();
+        await userEvent.click(
+            within(people).getByRole('button', { name: 'Actions for Ada Lovelace' }),
+        );
+        const peopleMenu = await body.findByRole('menu');
+        await expect(
+            within(peopleMenu)
+                .getAllByRole('menuitem')
+                .map((item) => item.textContent),
+        ).toEqual(['Edit', 'Move after Grace Hopper', 'Move to the end', 'Remove']);
+        await userEvent.click(
+            within(peopleMenu).getByRole('menuitem', { name: 'Move to the end' }),
+        );
+        await waitFor(() =>
+            expect(cardNames(canvasElement)).toEqual([
+                'Move Grace Hopper',
+                'Move Katherine Johnson',
+                'Move Ada Lovelace',
+            ]),
+        );
+    },
+};
+
+/** Wide enough, the actions of a card are icon buttons, with their names as tooltips. */
+export const IconActions: Story = {
+    render: () => (
+        <div style={{ width: '32rem' }}>
+            <RelationField
+                resource="editions"
+                source={editableSource}
+                label="Edition"
+                value={EDITIONS[0] ?? null}
+            />
+        </div>
+    ),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const card = await canvas.findByRole('listitem');
+        await expect(visibleMenus(card)).toHaveLength(0);
+        for (const name of ['Change 2023', 'Edit 2023', 'Remove 2023']) {
+            const button = canvas.getByRole('button', { name });
+            await expect(button).toBeVisible();
+            await expect(button).toHaveTextContent('');
+        }
+        await expect(canvas.queryByRole('button', { name: 'Actions for 2023' })).toBeNull();
+        await userEvent.hover(canvas.getByRole('button', { name: 'Edit 2023' }));
+        await expect(
+            await within(canvasElement.ownerDocument.body).findByRole('tooltip'),
+        ).toHaveTextContent('Edit 2023');
     },
 };

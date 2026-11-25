@@ -65,6 +65,7 @@ export const fieldsFr: Record<string, string> = {
     'panneau.fields.cancelChange': 'Annuler',
     'panneau.fields.edit': 'Modifier',
     'panneau.fields.editRelation': 'Modifier « {item} »',
+    'panneau.fields.relationActions': 'Actions pour « {item} »',
     'panneau.fields.editRelationFailed': '« {item} » n’a pas pu être modifié.',
     'panneau.fields.relationUnavailable': 'Impossible de chercher des éléments ici.',
     'panneau.fields.chooseFile': 'Choisir un fichier',
