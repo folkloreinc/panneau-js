@@ -33,6 +33,18 @@ function injectStyles(document: Document) {
     }
 }
 
+/**
+ * Cancels the zoom that Leaflet's wheel handler waits to make (it waits for the wheel to stop, 40ms
+ * by default). `remove()` leaves that timer running, and the zoom then reads the panes of the
+ * removed map, and throws. The timer is private to Leaflet (1.9).
+ */
+function stopWheelZoom(instance: LeafletMap) {
+    const handler = instance.scrollWheelZoom as unknown as {
+        _timer?: ReturnType<typeof setTimeout>;
+    };
+    clearTimeout(handler._timer);
+}
+
 export interface Point {
     lat: number;
     lng: number;
@@ -158,7 +170,10 @@ export function LocationMap({
         });
         return () => {
             cancelled = true;
-            map.current?.map.remove();
+            if (map.current !== null) {
+                stopWheelZoom(map.current.map);
+                map.current.map.remove();
+            }
             map.current = null;
         };
     }, [url]);

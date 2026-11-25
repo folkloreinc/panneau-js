@@ -1,6 +1,6 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Controlled, renderField } from '../__fixtures__/render';
 import { DefinitionField } from '../shared/DefinitionField';
@@ -19,7 +19,7 @@ function renderLocation(
     onChange: (value: unknown) => void,
     options: { initial?: unknown; geocoding?: GeocodingSource } = {},
 ) {
-    renderField(
+    return renderField(
         <Controlled<unknown> initial={options.initial ?? null} onChange={onChange}>
             {(value, setValue) => (
                 <DefinitionField
@@ -35,6 +35,10 @@ function renderLocation(
 }
 
 describe('LocationField', () => {
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
     it('takes a point typed in latitude and longitude', async () => {
         const onChange = vi.fn();
         renderLocation(onChange);
@@ -108,5 +112,16 @@ describe('LocationField', () => {
         fireEvent.blur(map);
         fireEvent.wheel(inside, { deltaY: 100 });
         expect(leaflet).toHaveBeenCalledTimes(3);
+    });
+
+    it('drops a zoom of the wheel still waiting when the map goes away', async () => {
+        const { unmount } = renderLocation(vi.fn(), { initial: { lat: 1, lng: 2 } });
+        const map = await screen.findByRole('application', { name: /Map: Place/ });
+        vi.useFakeTimers();
+        // Leaflet waits for the wheel to stop before it zooms
+        fireEvent.wheel(map.firstElementChild ?? map, { deltaY: 100, ctrlKey: true });
+        unmount();
+        // That zoom would read the panes of the removed map, and throw
+        expect(() => vi.runAllTimers()).not.toThrow();
     });
 });

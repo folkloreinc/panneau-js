@@ -31,17 +31,19 @@ Pushes to `v5.x` and the merge queue run everything, so a dependency that the sc
 
 ## The merge queue
 
-The workflow is ready for GitHub's merge queue: it runs on `merge_group`, and the changeset check, the only step that reads the pull request, only runs on `pull_request` events. The Release workflow only runs on pushes to `v5.x` (and by hand). The queue's temporary branches (`gh-readonly-queue/v5.x/…`) don't start it, and the push to `v5.x` at the end of a queued merge starts it as any merge does today.
+Pull requests to `v5.x` merge through GitHub's merge queue. The workflow runs on `merge_group`, and the changeset check, the only step that reads the pull request, only runs on `pull_request` events. The Release workflow only runs on pushes to `v5.x` (and by hand). The queue's temporary branches (`gh-readonly-queue/v5.x/…`) don't start it, and the push to `v5.x` at the end of a queued merge starts it as any merge does.
 
-Turning the queue on is a change to the repository's settings, done by a maintainer.
+### Merging a pull request
 
-### Turning it on
+- `gh pr merge <number>`, or **Merge when ready** on the pull request, adds it to the queue instead of merging it. The queue tests it on top of `v5.x` and of the pull requests ahead of it, and merges it when that run is green.
+- The bot's "Version packages" pull request has no CI run until a maintainer approves its workflows ("Approve and run workflows" on the pull request). A maintainer either approves them and, once its checks are green, adds it to the queue, or merges it with the admin bypass: `gh pr merge <number> --merge --admin`.
 
-1. **Settings → Rules → Rulesets → New ruleset → New branch ruleset.**
-    - Name: `v5.x merge queue`. Enforcement status: **Active**.
-    - Bypass list: leave it empty, or add the organization admins as today's rulesets do. A bypass lets them merge without the queue.
-    - Target branches: **Add target → Include by pattern** → `v5.x`.
-2. **Require status checks to pass**, with these checks, by the exact names of the jobs (source: GitHub Actions):
+### How the queue is configured
+
+The ruleset `v5.x` merge queue (**Settings → Rules → Rulesets**) is active. Changing it is a change to the repository's settings, done by a maintainer.
+
+- Target branch: `v5.x`. Bypass list: the organization admins, who can merge without the queue.
+- **Require status checks to pass**, with these checks, by the exact names of the jobs (source: GitHub Actions):
     - `Format, lint and changeset`
     - `Typecheck`
     - `Test`
@@ -51,19 +53,17 @@ Turning the queue on is a change to the repository's settings, done by a maintai
     - `Storybook (dark scheme, touch density)`
     - `Smoke tests (webpack app, types under NodeNext, icons and size of Vite bundles)`
 
-    Leave **Require branches to be up to date before merging** off: the queue tests each pull request on top of the ones before it, which is what that option was for.
+    **Require branches to be up to date before merging** is off: the queue tests each pull request on top of the ones before it, which is what that option was for.
 
-3. **Require merge queue:**
-    - Merge method: **Merge commit** (as today).
+- **Require merge queue:**
+    - Merge method: **Merge commit**.
     - Build concurrency: **5**.
     - Minimum group size: **1**. Maximum group size: **5**. Wait time to meet minimum group size: the default; with a minimum of 1, a pull request never waits for others.
     - Require all queue entries to pass required checks: **on** (_all green_). A group that fails is split and its pull requests are tested again without the one that broke it.
     - Status check timeout: **30 minutes** (a full run takes about 4 minutes, more while runners are queued).
-4. Save. The other rulesets (deletion, force pushes, pull requests) stay as they are.
+- The other rulesets (deletion, force pushes, pull requests) are unchanged.
 
-The bot's "Version packages" pull request needs the same green checks before it can join the queue. GitHub holds the CI runs of that pull request until a maintainer approves them ("Approve and run workflows" on the pull request): approve them, then add it to the queue.
-
-### Checking the first queued merge
+### What to expect from a queued merge
 
 - The pull request shows **Merge when ready** instead of **Merge pull request**. Once added, it shows its place in the queue.
 - In Actions, a CI run starts with the event `merge_group`, on a branch `gh-readonly-queue/v5.x/pr-<number>-<sha>`. All eight jobs run in full: "Select the packages to test" is skipped, the stories run for every package, and "Check for a changeset" is skipped.
