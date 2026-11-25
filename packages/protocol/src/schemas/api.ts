@@ -456,6 +456,54 @@ export const Passkey = z
     })
     .meta({ description: 'A passkey of the current user.' });
 
+export const Connection = z
+    .looseObject({
+        id: z.string().min(1).meta({
+            description:
+                'Opaque: clients send it back to revoke the connection, and never parse it.',
+        }),
+        type: z.enum(['token', 'client']).meta({
+            description:
+                '`token`: a personal token of the user. `client`: an OAuth client the user authorized, which stands for all its tokens.',
+        }),
+        name: z.string(),
+        write: z.boolean().meta({
+            description: 'Whether its agents can use the tools that write.',
+        }),
+        createdAt: z.string().meta({ description: 'ISO 8601.' }),
+        lastUsedAt: z.string().nullable().meta({
+            description:
+                "ISO 8601, or null when it wasn't used yet or the backend doesn't record it.",
+        }),
+        expiresAt: z.string().nullable().meta({ description: 'ISO 8601, or null for never.' }),
+    })
+    .meta({
+        description:
+            'A connection of the current user to the MCP server (decision 0113): a personal token, or an OAuth client they authorized.',
+    });
+
+export const ConnectionsResponse = z
+    .looseObject({ data: z.array(Connection) })
+    .meta({ description: 'The connections of the current user, the newest first.' });
+
+export const ConnectionTokenRequest = z
+    .looseObject({
+        name: z.string().min(1).meta({ description: 'What the user calls the token.' }),
+        write: z.boolean().optional().meta({
+            description: 'Whether its agents can use the tools that write. Defaults to false.',
+        }),
+    })
+    .meta({ description: 'A new personal token of the current user.' });
+
+export const ConnectionTokenResponse = z
+    .looseObject({
+        token: z.string().min(1).meta({
+            description: 'The token, in plain text: answered once, never again.',
+        }),
+        connection: Connection,
+    })
+    .meta({ description: 'A new personal token, and its connection.' });
+
 export const RecoveryCodes = z.looseObject({ recoveryCodes: z.array(z.string()) }).meta({
     description: 'Codes that each log in once in place of a code of the authenticator app.',
 });
@@ -655,6 +703,10 @@ export type TwoFactorSetup = z.infer<typeof TwoFactorSetup>;
 export type RecoveryCodes = z.infer<typeof RecoveryCodes>;
 export type WebAuthnOptions = z.infer<typeof WebAuthnOptions>;
 export type Passkey = z.infer<typeof Passkey>;
+export type Connection = z.infer<typeof Connection>;
+export type ConnectionsResponse = z.infer<typeof ConnectionsResponse>;
+export type ConnectionTokenRequest = z.infer<typeof ConnectionTokenRequest>;
+export type ConnectionTokenResponse = z.infer<typeof ConnectionTokenResponse>;
 export type SearchResponse = z.infer<typeof SearchResponse>;
 export type PreviewResponse = z.infer<typeof PreviewResponse>;
 export type EmbedValue = z.infer<typeof EmbedValue>;
