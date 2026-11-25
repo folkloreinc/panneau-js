@@ -11,6 +11,8 @@ import {
 } from '@panneau/protocol';
 import type {
     ActionRun,
+    Connection,
+    ConnectionTokenResponse,
     ContextOption,
     EmbedResponse,
     FieldCheckResponse,
@@ -372,6 +374,21 @@ export function createRestAdapter(options: RestAdapterOptions): DataAdapter {
         },
         async deletePasskey(id, { signal } = {}) {
             await send({ method: 'DELETE', path: `/account/passkeys/${encode(id)}`, signal });
+        },
+        async listConnections({ signal } = {}) {
+            return (await json<{ data: Connection[] }>({ path: '/account/connections', signal }))
+                .data;
+        },
+        createConnectionToken(request, { signal } = {}) {
+            return json<ConnectionTokenResponse>({
+                method: 'POST',
+                path: '/account/connections/tokens',
+                body: request,
+                signal,
+            });
+        },
+        async revokeConnection(id, { signal } = {}) {
+            await send({ method: 'DELETE', path: `/account/connections/${encode(id)}`, signal });
         },
         getTwoFactor({ signal } = {}) {
             return json<TwoFactorStatus>({ path: '/account/two-factor', signal });

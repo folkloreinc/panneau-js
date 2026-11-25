@@ -8,6 +8,9 @@ import type { ActionRequest } from '@panneau/protocol';
 import type { ActionResult } from '@panneau/protocol';
 import type { ActionRun } from '@panneau/protocol';
 import { AggregateRequest } from '@panneau/protocol';
+import type { Connection } from '@panneau/protocol';
+import type { ConnectionTokenRequest } from '@panneau/protocol';
+import type { ConnectionTokenResponse } from '@panneau/protocol';
 import type { ContextOption } from '@panneau/protocol';
 import type { ContextValues } from '@panneau/protocol';
 import { DataTag } from '@tanstack/react-query';
@@ -91,6 +94,7 @@ export const queryKeys: {
     account: () => readonly ["panneau", "account"];
     twoFactor: () => readonly ["panneau", "account", "two-factor"];
     passkeys: () => readonly ["panneau", "account", "passkeys"];
+    connections: () => readonly ["panneau", "account", "connections"];
     widget: (widget: string, input?: WidgetKeyOptions) => readonly ["panneau", "dashboard", "widgets", string, {
         readonly period?: WidgetPeriod | undefined;
         readonly resource: string;

@@ -199,6 +199,27 @@
     color: var(--panneau-color-text-muted);
 }
 
+/* A value to copy, with its button at the end of the input (the connections of the account). */
+.copyField {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--panneau-space-2);
+}
+
+.copyFieldInput {
+    flex: 1;
+    min-width: 0;
+}
+
+.copyFieldValue {
+    font-family: var(--panneau-font-family-mono);
+}
+
+/* The list of connections, which takes the focus when one of them is revoked. */
+.connections:focus {
+    outline: none;
+}
+
 /* The actions of an item in the sidebar of its form (decision 0075). */
 .panelActions {
     display: flex;

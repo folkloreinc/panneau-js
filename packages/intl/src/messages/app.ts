@@ -183,6 +183,128 @@ export const appMessages = {
         id: 'panneau.app.removePasskeyNamed',
         defaultMessage: 'Remove the passkey {name}',
     }),
+    connections: defineMessage({
+        id: 'panneau.app.connections',
+        defaultMessage: 'Connections',
+    }),
+    connectionsHelp: defineMessage({
+        id: 'panneau.app.connectionsHelp',
+        defaultMessage:
+            'AI agents connect to this admin through its MCP server, and work in it as you, with your permissions. Each connection below lets one in.',
+    }),
+    mcpServerUrl: defineMessage({
+        id: 'panneau.app.mcpServerUrl',
+        defaultMessage: 'Address of the MCP server',
+    }),
+    copy: defineMessage({
+        id: 'panneau.app.copy',
+        defaultMessage: 'Copy',
+    }),
+    copied: defineMessage({
+        id: 'panneau.app.copied',
+        defaultMessage: 'Copied',
+    }),
+    copyMcpServerUrl: defineMessage({
+        id: 'panneau.app.copyMcpServerUrl',
+        defaultMessage: 'Copy the address of the MCP server',
+    }),
+    noConnections: defineMessage({
+        id: 'panneau.app.noConnections',
+        defaultMessage: 'You have no connections yet.',
+    }),
+    connectionToken: defineMessage({
+        id: 'panneau.app.connectionToken',
+        defaultMessage: 'personal token',
+    }),
+    connectionClient: defineMessage({
+        id: 'panneau.app.connectionClient',
+        defaultMessage: 'app',
+    }),
+    connectionRead: defineMessage({
+        id: 'panneau.app.connectionRead',
+        defaultMessage: 'read',
+    }),
+    connectionWrite: defineMessage({
+        id: 'panneau.app.connectionWrite',
+        defaultMessage: 'read and change',
+    }),
+    connectionCreated: defineMessage<{ date: string }>({
+        id: 'panneau.app.connectionCreated',
+        defaultMessage: 'made on {date}',
+    }),
+    connectionUsed: defineMessage<{ date: string }>({
+        id: 'panneau.app.connectionUsed',
+        defaultMessage: 'last used on {date}',
+    }),
+    connectionExpires: defineMessage<{ date: string }>({
+        id: 'panneau.app.connectionExpires',
+        defaultMessage: 'expires on {date}',
+    }),
+    connectionNeverExpires: defineMessage({
+        id: 'panneau.app.connectionNeverExpires',
+        defaultMessage: 'never expires',
+    }),
+    revokeConnection: defineMessage({
+        id: 'panneau.app.revokeConnection',
+        defaultMessage: 'Revoke',
+    }),
+    revokeConnectionNamed: defineMessage<{ name: string }>({
+        id: 'panneau.app.revokeConnectionNamed',
+        defaultMessage: 'Revoke the connection {name}',
+    }),
+    revokeConnectionTitle: defineMessage<{ name: string }>({
+        id: 'panneau.app.revokeConnectionTitle',
+        defaultMessage: 'Revoke {name}?',
+    }),
+    revokeTokenMessage: defineMessage({
+        id: 'panneau.app.revokeTokenMessage',
+        defaultMessage: 'The agents that use this token will no longer get in.',
+    }),
+    revokeClientMessage: defineMessage({
+        id: 'panneau.app.revokeClientMessage',
+        defaultMessage:
+            'This app will no longer get in. To use it again, you will have to authorize it again.',
+    }),
+    revokeConnectionError: defineMessage({
+        id: 'panneau.app.revokeConnectionError',
+        defaultMessage: 'The connection could not be revoked. Try again.',
+    }),
+    newToken: defineMessage({
+        id: 'panneau.app.newToken',
+        defaultMessage: 'New personal token',
+    }),
+    tokenName: defineMessage({
+        id: 'panneau.app.tokenName',
+        defaultMessage: 'Name of the token',
+    }),
+    tokenWrite: defineMessage({
+        id: 'panneau.app.tokenWrite',
+        defaultMessage: 'Can change content',
+    }),
+    tokenWriteHelp: defineMessage({
+        id: 'panneau.app.tokenWriteHelp',
+        defaultMessage: 'Without it, the agents that use the token can only read.',
+    }),
+    makeToken: defineMessage({
+        id: 'panneau.app.makeToken',
+        defaultMessage: 'Make the token',
+    }),
+    tokenError: defineMessage({
+        id: 'panneau.app.tokenError',
+        defaultMessage: 'The token could not be made. Try again.',
+    }),
+    tokensUnavailable: defineMessage({
+        id: 'panneau.app.tokensUnavailable',
+        defaultMessage: 'Your account can’t make personal tokens.',
+    }),
+    tokenMadeHelp: defineMessage({
+        id: 'panneau.app.tokenMadeHelp',
+        defaultMessage: 'Copy this token now and paste it in your agent: it won’t be shown again.',
+    }),
+    copyToken: defineMessage({
+        id: 'panneau.app.copyToken',
+        defaultMessage: 'Copy the token',
+    }),
     account: defineMessage({ id: 'panneau.app.account', defaultMessage: 'Your account' }),
     userMenu: defineMessage<{ name: string }>({
         id: 'panneau.app.userMenu',
