@@ -1,12 +1,14 @@
 import { Check, ChevronDown } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { type ReactNode, use, useRef } from 'react';
 import {
     ComboBox as AriaComboBox,
     type ComboBoxProps as AriaComboBoxProps,
     Button,
     Collection,
+    ComboBoxStateContext,
     Group,
     Input,
+    type InputProps,
     ListBox,
     ListBoxItem,
     ListBoxLoadMoreItem,
@@ -92,6 +94,44 @@ export interface ComboBoxProps
 }
 
 /**
+ * The input of a combo box that opens on focus (`menuTrigger="focus"`), as a select does: a press
+ * on it shows the options even when it already has the focus (after a choice, or Escape), where
+ * React Aria opens them only when the focus comes. The press also selects its text, wherever it
+ * lands, so that typing searches from scratch; a press while the options show places the caret, as
+ * in any text.
+ */
+function PressToOpenInput({ isReadOnly, ...props }: InputProps & { isReadOnly?: boolean }) {
+    const state = use(ComboBoxStateContext);
+    const press = useRef<{ focused: boolean; open: boolean } | null>(null);
+    return (
+        <Input
+            {...props}
+            onPointerDown={(event) => {
+                press.current = {
+                    focused:
+                        event.currentTarget.ownerDocument.activeElement === event.currentTarget,
+                    open: state?.isOpen ?? false,
+                };
+            }}
+            onClick={(event) => {
+                const before = press.current;
+                press.current = null;
+                if (state === null || isReadOnly === true || before === null) {
+                    return;
+                }
+                if (before.focused && before.open) {
+                    return;
+                }
+                if (!state.isOpen) {
+                    state.open(null, 'manual');
+                }
+                event.currentTarget.select();
+            }}
+        />
+    );
+}
+
+/**
  * A text input with a list of suggestions, to pick one item. Items can be filtered locally or come
  * from a search (`inputValue`, `onInputChange` and `isLoading`).
  */
@@ -156,7 +196,18 @@ export function ComboBox({
                         {prefix}
                     </span>
                 ) : null}
-                <Input placeholder={placeholder} className={cx(fieldStyles.bare, inputClassName)} />
+                {menuTrigger === 'focus' ? (
+                    <PressToOpenInput
+                        placeholder={placeholder}
+                        className={cx(fieldStyles.bare, inputClassName)}
+                        isReadOnly={isReadOnly}
+                    />
+                ) : (
+                    <Input
+                        placeholder={placeholder}
+                        className={cx(fieldStyles.bare, inputClassName)}
+                    />
+                )}
                 {isLoading ? (
                     <span className={styles.status}>
                         <Spinner size="sm" />
