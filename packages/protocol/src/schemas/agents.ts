@@ -1,4 +1,4 @@
-// The tools that agents work through, as their user (decisions 0090 and 0106).
+// The tools that agents work through, as their user (decisions 0090, 0106 and 0115).
 import { z } from 'zod';
 
 import { SEARCH_MAX_LIMIT } from '../search';
@@ -8,13 +8,14 @@ import { Abilities, Id, Option } from './common';
 import { DefinitionContext } from './definition';
 import { Filter } from './list';
 
-/** The tools of an MCP server of Panneau, and whether each one writes (decision 0106). */
+/** The tools of an MCP server of Panneau, and whether each one writes (decisions 0106 and 0115). */
 export const AGENT_TOOLS = {
     describe: { writes: false },
     find_items: { writes: false },
     get_item: { writes: false },
     save_item: { writes: true },
     run_action: { writes: true },
+    upload_file: { writes: true },
 } as const;
 export type AgentToolName = keyof typeof AGENT_TOOLS;
 
@@ -295,6 +296,44 @@ export const AgentRunActionResult = z.union([
     }),
 ]);
 
+export const AgentUploadFileArguments = z
+    .strictObject({
+        resource: z.string().min(1).optional().meta({
+            description:
+                'The id of the media library, a resource of kind `media`. Not needed when the user can add files to one library only.',
+        }),
+        name: z.string().min(1).max(255).meta({
+            description: 'The name of the file, with its extension: `cover.png`.',
+        }),
+        values: values.optional().meta({
+            description:
+                'The other fields of the media, by field, as in `save_item`. Not its `file`: it is the body of the `PUT`.',
+        }),
+    })
+    .superRefine((args, context) => {
+        if (args.values !== undefined && Object.hasOwn(args.values, 'file')) {
+            issue(context, 'values', 'The file is the body of the `PUT`, not a value.');
+        }
+    });
+
+export const AgentUploadFileResult = z
+    .looseObject({
+        resource: z.string().min(1).meta({ description: 'The media library the file goes to.' }),
+        name: z.string().min(1),
+        method: z.literal('PUT'),
+        url: z.string().min(1).meta({
+            description:
+                'A temporary signed URL of the backend, which needs no token. Each `PUT` to it makes a media, until it expires.',
+        }),
+        expiresIn: z.number().int().positive().meta({
+            description: 'How long the `url` is valid, in seconds.',
+        }),
+    })
+    .meta({
+        description:
+            'Where to send the file (decision 0115): the agent sends it as the body of one `PUT` to `url`, which answers `201` with the new media as `get_item` gives it, or a `Problem`. The `id` of the media is the value of a `media` field in `save_item`.',
+    });
+
 /** The schemas of each tool, which `createAgentsJsonSchema` writes to `agents.schema.json`. */
 export const agentToolSchemas = {
     describe: { arguments: AgentDescribeArguments, result: AgentDescribeResult },
@@ -302,6 +341,7 @@ export const agentToolSchemas = {
     get_item: { arguments: AgentGetItemArguments, result: Item },
     save_item: { arguments: AgentSaveItemArguments, result: Item },
     run_action: { arguments: AgentRunActionArguments, result: AgentRunActionResult },
+    upload_file: { arguments: AgentUploadFileArguments, result: AgentUploadFileResult },
 } satisfies Record<AgentToolName, { arguments: z.ZodType; result: z.ZodType }>;
 
 export type AgentDescribePart = z.infer<typeof AgentDescribePart>;
@@ -321,3 +361,5 @@ export type AgentSaveItemArguments = z.infer<typeof AgentSaveItemArguments>;
 export type AgentRunActionArguments = z.infer<typeof AgentRunActionArguments>;
 export type AgentConfirmationRequired = z.infer<typeof AgentConfirmationRequired>;
 export type AgentRunActionResult = z.infer<typeof AgentRunActionResult>;
+export type AgentUploadFileArguments = z.infer<typeof AgentUploadFileArguments>;
+export type AgentUploadFileResult = z.infer<typeof AgentUploadFileResult>;

@@ -39,7 +39,7 @@ The protocol is the only contract between a Panneau frontend and its backend. It
     "search": { "enabled": true },
     "theme": { "colorScheme": "auto", "density": "auto", "navigation": "sidebar" }, // density: "compact", "comfortable", "touch" or "auto" (touch on touch screens), the default of the user's choice; lockDensity: true hides that choice (decision 0104); navigation: "sidebar" or "dock" (decision 0076)
     "user": { "id": "usr_123", "name": "Ada", "abilities": { "panneau.view": true } },
-    "agents": { "mcp": { "url": "/panneau/mcp", "tokens": true }, "assistant": false }, // decisions 0090, 0106 and 0113
+    "agents": { "mcp": { "url": "/panneau/mcp", "tokens": true }, "assistant": false }, // decisions 0090, 0106, 0113 and 0115
 }
 ```
 
@@ -1172,15 +1172,16 @@ Global search ([decisions/0029](decisions/0029-go-to-palette.md)):
 
 ## Agents
 
-Agents work in a Panneau through five tools, served by the backend's MCP server at `agents.mcp.url` ([0090](decisions/0090-agents-work-through-tools-as-their-user.md), amended by [0106](decisions/0106-five-tools-for-agents.md)). Every call runs as the user who connected, with the definition built for them: an agent can't do anything its user can't do in the app. `agents.schema.json` holds the arguments and the result of each tool; `AGENT_TOOLS` names them.
+Agents work in a Panneau through six tools, served by the backend's MCP server at `agents.mcp.url` ([0090](decisions/0090-agents-work-through-tools-as-their-user.md), amended by [0106](decisions/0106-five-tools-for-agents.md) and [0115](decisions/0115-a-sixth-tool-upload-file.md)). Every call runs as the user who connected, with the definition built for them: an agent can't do anything its user can't do in the app. `agents.schema.json` holds the arguments and the result of each tool; `AGENT_TOOLS` names them.
 
-| Tool         | Arguments                                                                                   | Answers                                             | Writes |
-| ------------ | ------------------------------------------------------------------------------------------- | --------------------------------------------------- | ------ |
-| `describe`   | `resource`, `parts` (`fields`, `list`, `actions`)                                           | the resources the user can list, or one resource    | no     |
-| `find_items` | `q`, `limit`; or `resource`, `filter`, `q`, `sort`, `page` or `cursor`, `perPage`, `fields` | the results of `GET /search`, or a page of the list | no     |
-| `get_item`   | `resource`, `id`, `fields`                                                                  | the item, with its `version` and its `abilities`    | no     |
-| `save_item`  | `resource`, `values`, `type`; or `resource`, `id`, `version`, `values`                      | the item, with its new `version`                    | yes    |
-| `run_action` | `resource`, `action`, `selection`, `values`, `dryRun`, `confirmation`                       | the action result, or a confirmation to ask for     | yes    |
+| Tool          | Arguments                                                                                   | Answers                                             | Writes |
+| ------------- | ------------------------------------------------------------------------------------------- | --------------------------------------------------- | ------ |
+| `describe`    | `resource`, `parts` (`fields`, `list`, `actions`)                                           | the resources the user can list, or one resource    | no     |
+| `find_items`  | `q`, `limit`; or `resource`, `filter`, `q`, `sort`, `page` or `cursor`, `perPage`, `fields` | the results of `GET /search`, or a page of the list | no     |
+| `get_item`    | `resource`, `id`, `fields`                                                                  | the item, with its `version` and its `abilities`    | no     |
+| `save_item`   | `resource`, `values`, `type`; or `resource`, `id`, `version`, `values`                      | the item, with its new `version`                    | yes    |
+| `run_action`  | `resource`, `action`, `selection`, `values`, `dryRun`, `confirmation`                       | the action result, or a confirmation to ask for     | yes    |
+| `upload_file` | `resource`, `name`, `values`                                                                | a URL to send the file to                           | yes    |
 
 - **`describe` without `resource`** answers `{ "resources", "context" }`: each resource's `id`, `label`, `description` and `abilities` (`viewAny`, `create`), and the context the connection was made for. **With `resource`,** it answers the resource for an agent (`AgentResourceDescription`): its `fields` (name, type, label, help, localized, required, read-only, options, the resource of a relation, and the fields inside groups and repeaters), its `types`, its `list` (filters and sorts) and its `actions`, built-in ones included (`delete`, `restore`, `duplicate`), with their fields, scope, and whether they destroy, can be undone or ask for a confirmation. A field whose value isn't a plain scalar (a `money`, a `daterange`, an `address`, a `link`) gives an `example` of the value `save_item` takes. No layout, columns, icons or placements. `parts` asks for some of it only.
 - **`find_items` without `resource`** is the global search: `q`, and `limit`. **With `resource`,** it answers `{ "data", "meta" }` as the list, at most 50 items a page, with the fields of the list's columns unless `fields` names others. Its items leave out `abilities` (`AgentListItem`), in both modes, to keep lists light: `get_item` gives them.
@@ -1188,8 +1189,16 @@ Agents work in a Panneau through five tools, served by the backend's MCP server 
 - **`save_item` with an `id` requires `version`,** the one the agent read (`null` when the backend has no versions). A conflict is the `412` problem, with the current item. It saves one item at a time.
 - **`save_item` replaces the whole value of each field it sends.** Fields it doesn't send keep their value. A group or a repeater is never partial: changing one block sends every block of the field.
 - **`run_action` asks first when the app would.** When the action has a `confirm`, or destroys and can't be undone, or its selection is a query, or holds more than `UNDO_LIMIT` (100) items, a first call doesn't run it and answers `{ "status": "confirmation_required", "message", "preview", "confirmation" }`: `preview` is the result of its dry run, or the `count` of its selection. The agent shows it to its user; a second call with the same arguments and `confirmation` runs exactly what was previewed, within 5 minutes. Undoable actions run at once and answer their `undo`. The built-in `duplicate` answers the copy, in `item`. A selection above the backend's synchronous limit is refused.
+- **`upload_file` takes no file: it answers where to send it** ([0115](decisions/0115-a-sixth-tool-upload-file.md)). A file never goes through the model, in base64 or otherwise.
+    - **Arguments:** `name`, the name of the file with its extension (255 characters at most); `resource`, the id of a media library ([Media](#media)), not needed when the user can create in one library only; `values`, the other fields of the media, as in `save_item`, never its `file`.
+    - **It answers** `{ "resource", "name", "method": "PUT", "url", "expiresIn" }` (`AgentUploadFileResult`): `url` is a temporary signed URL of the backend, valid for `expiresIn` seconds.
+    - **The agent sends the file itself,** as the whole body of one `PUT` to `url`: `curl -T cover.png "$url"`. The signature is the authentication: the request takes no token. It answers `201` with the new media, as `get_item` gives it, or a problem: `400` for an empty body, `403` for a signature that is invalid or expired, `413` for a body that is too large, `422` when the library refuses the file or the values.
+    - **The `id` of the media** is then the value of a `media` field in `save_item`.
+    - **The URL isn't used up:** each `PUT` creates a media until it expires, so the agent sends the file once.
+    - **This request is not an endpoint of the API,** and is not in `openapi.json`, like the MCP server itself: its URL is whatever the tool answers, never built by a client.
+    - **A `file` or `image` field outside a library** can't be set by an agent: its value is an upload of the browser ([Uploads](#uploads)).
 - **Errors are problems,** as in the HTTP API ([Errors](#errors)): a `422` keyed by the path of the argument or the value, `403`, `404`, `412`, `429` with `retryAfter`.
-- **A read connection** lists `describe`, `find_items` and `get_item` only, and the backend refuses the others.
+- **A read connection** lists `describe`, `find_items` and `get_item` only, and the backend refuses the others: `upload_file` writes nothing itself, but its URL does.
 
 ### Connections
 

@@ -553,6 +553,9 @@ export const AGENT_TOOLS: {
     readonly run_action: {
         readonly writes: true;
     };
+    readonly upload_file: {
+        readonly writes: true;
+    };
 };
 
 // @public (undocumented)
@@ -1600,7 +1603,43 @@ export const agentToolSchemas: {
             }, z.core.$loose>>;
         }, z.core.$loose>]>;
     };
+    upload_file: {
+        arguments: z.ZodObject<{
+            resource: z.ZodOptional<z.ZodString>;
+            name: z.ZodString;
+            values: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+        }, z.core.$strict>;
+        result: z.ZodObject<{
+            resource: z.ZodString;
+            name: z.ZodString;
+            method: z.ZodLiteral<"PUT">;
+            url: z.ZodString;
+            expiresIn: z.ZodNumber;
+        }, z.core.$loose>;
+    };
 };
+
+// @public (undocumented)
+export const AgentUploadFileArguments: z.ZodObject<{
+    resource: z.ZodOptional<z.ZodString>;
+    name: z.ZodString;
+    values: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+}, z.core.$strict>;
+
+// @public (undocumented)
+export type AgentUploadFileArguments = z.infer<typeof AgentUploadFileArguments>;
+
+// @public (undocumented)
+export const AgentUploadFileResult: z.ZodObject<{
+    resource: z.ZodString;
+    name: z.ZodString;
+    method: z.ZodLiteral<"PUT">;
+    url: z.ZodString;
+    expiresIn: z.ZodNumber;
+}, z.core.$loose>;
+
+// @public (undocumented)
+export type AgentUploadFileResult = z.infer<typeof AgentUploadFileResult>;
 
 // @public
 export const AGGREGATE_COUNT = "count";
