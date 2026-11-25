@@ -28,7 +28,6 @@
     margin: 0;
     padding: 0;
     list-style: none;
-    container: panneau-repeater / inline-size;
     /* What floats over the items (the "+" between two of them, the place of a dragged item) stays
      * under what sticks in the frame of the app, such as its top bar, as the page scrolls (#503). */
     isolation: isolate;
@@ -168,25 +167,17 @@
     gap: var(--panneau-space-1);
 }
 
-/* In a narrow repeater (a phone, a sidebar), the tools of an item are in a menu, and its header
- * is tighter: its title keeps the room of the header (#501). */
-.toolsMenu.toolsMenu {
-    display: none;
+/* The title of an item that doesn't collapse: the whole width before the tools. */
+.heading {
+    display: flex;
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
-@container panneau-repeater (width < 30rem) {
-    .tools {
-        display: none;
-    }
-
-    .toolsMenu.toolsMenu {
-        display: inline-flex;
-        flex: none;
-    }
-
-    .header {
-        gap: var(--panneau-space-1);
-    }
+/* The title has the room first: the tools of an item are buttons while they fit next to it at
+ * this width, and a menu when they don't (decision 0114). */
+.header > [data-actions-title] {
+    min-width: 6rem;
 }
 
 .body {

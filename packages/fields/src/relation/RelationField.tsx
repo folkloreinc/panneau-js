@@ -19,6 +19,7 @@ import {
     type Tone,
     getNamedIcon,
     moveItem,
+    useActionsFit,
     usePanneauIntl,
     useReorderMoves,
     useUndoToast,
@@ -43,7 +44,9 @@ const FIRST_BUTTON = 'button:not(.panneau-reorder-menu)';
 
 /** Whether an element shows: the tools of a card or their menu, by the width of the field. */
 function isShown(element: HTMLElement): boolean {
-    return typeof element.checkVisibility === 'function' ? element.checkVisibility() : true;
+    return typeof element.checkVisibility === 'function'
+        ? element.checkVisibility({ visibilityProperty: true })
+        : true;
 }
 
 /** The first of the elements that shows. */
@@ -368,8 +371,8 @@ interface CardActionsProps {
 
 /**
  * The buttons of a card, as icon buttons with tooltips, so that its title keeps the room of the
- * row (#518). In a narrow field, where even they would cut the title, they are one "⋯" menu, with
- * the moves of the item: one menu per card (see the CSS).
+ * row (#518). Where they don't fit next to the title at its minimum width, they are one "⋯" menu,
+ * with the moves of the item: one menu per card (`useActionsFit`, decision 0114).
  */
 function CardActions({
     reference,
@@ -386,13 +389,18 @@ function CardActions({
         (onEdit !== undefined ? 1 : 0) +
         (onRemove !== undefined ? 1 : 0) +
         (movable ? 1 : 0);
+    const fit = useActionsFit();
     // One button stays a button: a menu of one action would only hide it
-    const collapses = count > 1;
+    const collapses = count > 1 && !fit.inline;
     return (
         <>
             <StatusBadge reference={reference} />
             {count > 0 ? (
-                <span className={cx(styles.tools, collapses && styles.collapses)}>
+                <span
+                    ref={count > 1 ? fit.ref : undefined}
+                    data-actions-inline
+                    className={cx(styles.tools, collapses && fit.className)}
+                >
                     {onChange !== undefined ? (
                         <IconButton
                             icon={Replace}
@@ -428,7 +436,7 @@ function CardActions({
                         size="sm"
                         label={labels.actionsLabel(reference)}
                         data-relation-action="menu"
-                        className={styles.toolsMenu}
+                        data-actions-menu
                     />
                     <Menu
                         placement="bottom end"

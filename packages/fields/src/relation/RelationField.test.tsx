@@ -652,12 +652,7 @@ describe('RelationField', () => {
             within(card)
                 .getAllByRole('button')
                 .map((button) => button.textContent || button.getAttribute('aria-label')),
-        ).toEqual([
-            'Change Ada Lovelace',
-            'Edit Ada Lovelace',
-            'Remove Ada Lovelace',
-            'Actions for Ada Lovelace',
-        ]);
+        ).toEqual(['Change Ada Lovelace', 'Edit Ada Lovelace', 'Remove Ada Lovelace']);
         await userEvent.click(screen.getByRole('button', { name: 'Edit Ada Lovelace' }));
         expect(await screen.findByText('“Ada Lovelace” couldn’t be edited.')).toBeInTheDocument();
     });

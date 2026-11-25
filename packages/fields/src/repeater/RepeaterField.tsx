@@ -26,6 +26,7 @@ import {
     ReorderList,
     getNamedIcon,
     moveItem,
+    useActionsFit,
     usePanneauIntl,
     useUndoToast,
 } from '@panneau/ui';
@@ -250,6 +251,113 @@ export function updateItemKeys(previous: ItemKeys, items: readonly RepeaterItem[
         return next - 1;
     });
     return { items, keys, next };
+}
+
+interface ItemToolsProps {
+    index: number;
+    count: number;
+    canAdd: boolean;
+    canRemove: boolean;
+    onMove: (to: number) => void;
+    onDuplicate: () => void;
+    onRemove: () => void;
+}
+
+/**
+ * The tools of an item, in its header: move it up or down, duplicate it, remove it. Buttons while
+ * they fit next to its title, a "⋯" menu when they don't (`useActionsFit`, decision 0114).
+ */
+function ItemTools({
+    index,
+    count,
+    canAdd,
+    canRemove,
+    onMove,
+    onDuplicate,
+    onRemove,
+}: ItemToolsProps) {
+    const intl = usePanneauIntl();
+    const { inline, ref: holdButtons, className: measured } = useActionsFit();
+    const number = index + 1;
+    const tools = [
+        {
+            id: 'up',
+            icon: ArrowUp,
+            label: intl.formatMessage(messages.moveUp, { index: number }),
+            isDisabled: index === 0,
+            onPress: () => onMove(index - 1),
+        },
+        {
+            id: 'down',
+            icon: ArrowDown,
+            label: intl.formatMessage(messages.moveDown, { index: number }),
+            isDisabled: index === count - 1,
+            onPress: () => onMove(index + 1),
+        },
+        {
+            id: 'duplicate',
+            icon: Copy,
+            label: intl.formatMessage(messages.duplicateItem, { index: number }),
+            isDisabled: !canAdd,
+            onPress: onDuplicate,
+        },
+        {
+            id: 'remove',
+            icon: Trash2,
+            label: intl.formatMessage(messages.removeItem, { index: number }),
+            isDisabled: !canRemove,
+            onPress: onRemove,
+        },
+    ];
+    return (
+        <>
+            <span
+                ref={holdButtons}
+                className={cx(styles.tools, measured)}
+                data-tools
+                data-actions-inline
+            >
+                {tools.map((tool) => (
+                    <IconButton
+                        key={tool.id}
+                        icon={tool.icon}
+                        size="sm"
+                        label={tool.label}
+                        isDisabled={tool.isDisabled}
+                        onPress={tool.onPress}
+                    />
+                ))}
+            </span>
+            {inline ? null : (
+                <MenuTrigger>
+                    <IconButton
+                        icon={Ellipsis}
+                        size="sm"
+                        label={intl.formatMessage(messages.itemActions, { index: number })}
+                        data-actions-menu
+                    />
+                    <Menu
+                        placement="bottom end"
+                        disabledKeys={tools
+                            .filter((tool) => tool.isDisabled)
+                            .map((tool) => tool.id)}
+                        onAction={(key) => tools.find((tool) => tool.id === key)?.onPress()}
+                    >
+                        {tools.map((tool) => (
+                            <MenuItem
+                                key={tool.id}
+                                id={tool.id}
+                                icon={tool.icon}
+                                isDanger={tool.id === 'remove'}
+                            >
+                                {tool.label}
+                            </MenuItem>
+                        ))}
+                    </Menu>
+                </MenuTrigger>
+            )}
+        </>
+    );
 }
 
 /**
@@ -658,6 +766,7 @@ export function RepeaterField({
                                         <button
                                             type="button"
                                             className={styles.toggle}
+                                            data-actions-title
                                             aria-expanded={open}
                                             aria-controls={bodyId}
                                             onClick={() => toggle(index)}
@@ -683,103 +792,20 @@ export function RepeaterField({
                                             ) : null}
                                         </button>
                                     ) : (
-                                        title
+                                        <span className={styles.heading} data-actions-title>
+                                            {title}
+                                        </span>
                                     )}
                                     {editable ? (
-                                        <span className={styles.tools} data-tools>
-                                            <IconButton
-                                                icon={ArrowUp}
-                                                size="sm"
-                                                label={intl.formatMessage(messages.moveUp, {
-                                                    index: number,
-                                                })}
-                                                isDisabled={index === 0}
-                                                onPress={() => move(index, index - 1)}
-                                            />
-                                            <IconButton
-                                                icon={ArrowDown}
-                                                size="sm"
-                                                label={intl.formatMessage(messages.moveDown, {
-                                                    index: number,
-                                                })}
-                                                isDisabled={index === items.length - 1}
-                                                onPress={() => move(index, index + 1)}
-                                            />
-                                            <IconButton
-                                                icon={Copy}
-                                                size="sm"
-                                                label={intl.formatMessage(messages.duplicateItem, {
-                                                    index: number,
-                                                })}
-                                                isDisabled={!canAdd}
-                                                onPress={() => duplicate(index)}
-                                            />
-                                            <IconButton
-                                                icon={Trash2}
-                                                size="sm"
-                                                label={intl.formatMessage(messages.removeItem, {
-                                                    index: number,
-                                                })}
-                                                isDisabled={!canRemove}
-                                                onPress={() => remove(index)}
-                                            />
-                                        </span>
-                                    ) : null}
-                                    {/* In a narrow repeater (a phone), the same tools in a menu,
-                                        so that the title keeps the room of the header (see the
-                                        CSS). */}
-                                    {editable ? (
-                                        <MenuTrigger>
-                                            <IconButton
-                                                icon={Ellipsis}
-                                                size="sm"
-                                                label={intl.formatMessage(messages.itemActions, {
-                                                    index: number,
-                                                })}
-                                                className={styles.toolsMenu}
-                                            />
-                                            <Menu
-                                                placement="bottom end"
-                                                disabledKeys={[
-                                                    ...(index === 0 ? ['up'] : []),
-                                                    ...(index === items.length - 1 ? ['down'] : []),
-                                                    ...(canAdd ? [] : ['duplicate']),
-                                                    ...(canRemove ? [] : ['remove']),
-                                                ]}
-                                                onAction={(key) => {
-                                                    if (key === 'up') {
-                                                        move(index, index - 1);
-                                                    } else if (key === 'down') {
-                                                        move(index, index + 1);
-                                                    } else if (key === 'duplicate') {
-                                                        duplicate(index);
-                                                    } else if (key === 'remove') {
-                                                        remove(index);
-                                                    }
-                                                }}
-                                            >
-                                                <MenuItem id="up" icon={ArrowUp}>
-                                                    {intl.formatMessage(messages.moveUp, {
-                                                        index: number,
-                                                    })}
-                                                </MenuItem>
-                                                <MenuItem id="down" icon={ArrowDown}>
-                                                    {intl.formatMessage(messages.moveDown, {
-                                                        index: number,
-                                                    })}
-                                                </MenuItem>
-                                                <MenuItem id="duplicate" icon={Copy}>
-                                                    {intl.formatMessage(messages.duplicateItem, {
-                                                        index: number,
-                                                    })}
-                                                </MenuItem>
-                                                <MenuItem id="remove" icon={Trash2} isDanger>
-                                                    {intl.formatMessage(messages.removeItem, {
-                                                        index: number,
-                                                    })}
-                                                </MenuItem>
-                                            </Menu>
-                                        </MenuTrigger>
+                                        <ItemTools
+                                            index={index}
+                                            count={items.length}
+                                            canAdd={canAdd}
+                                            canRemove={canRemove}
+                                            onMove={(to) => move(index, to)}
+                                            onDuplicate={() => duplicate(index)}
+                                            onRemove={() => remove(index)}
+                                        />
                                     ) : null}
                                 </div>
                                 {/* Hidden, not removed: the fields keep their state, such as an

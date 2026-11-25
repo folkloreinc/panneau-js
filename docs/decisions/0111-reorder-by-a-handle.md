@@ -3,7 +3,7 @@
 - Status: accepted
 - Date: 2026-11-23
 - Issue: [#473](https://github.com/folkloreinc/panneau-js/issues/473)
-- Updated: 2026-11-24: lists inside items, a grid, a menu of moves, tiles, and the fields that use it; 2026-11-25: in a narrow relation field, the moves are in the one menu of each card ([#518](https://github.com/folkloreinc/panneau-js/issues/518))
+- Updated: 2026-11-24: lists inside items, a grid, a menu of moves, tiles, and the fields that use it; 2026-11-25: in a narrow relation field, the moves are in the one menu of each card ([#518](https://github.com/folkloreinc/panneau-js/issues/518)), which shows when its buttons don't fit ([0114](0114-inline-actions-first-a-menu-as-fallback.md))
 - Uses: [0068](0068-collapsed-items-and-lighter-controls.md) (the tools of an item), [0072](0072-touch-targets-follow-the-density.md) (targets), [0081](0081-motion-tokens-and-leaving-items.md) (motion), [0095](0095-focus-and-announcements-in-lists.md) (focus and status messages)
 
 ## Context
@@ -41,7 +41,7 @@ A prototype with a text input and the rich text editor in each item showed that 
 ## Consequences
 
 - The repeater and blocks use it first, with the handle at the start of the item's header and the tools unchanged ([0109](0109-duplicate-add-in-between-and-titled-blocks.md)).
-- Multiple relations: the cards are a `TileGroup` with `onMove`, and `ReorderMenu` before "Remove". In a narrow field (under 24rem), where the tools of a card are one "⋯" menu so that its title stays readable, the moves are in that menu (`useReorderMoves()`), not in a second one: a card never has two menus. The handle stays. The compact chips of a relation field don't reorder.
+- Multiple relations: the cards are a `TileGroup` with `onMove`, and `ReorderMenu` before "Remove". Where the tools of a card don't fit next to its title, they are one "⋯" menu ([0114](0114-inline-actions-first-a-menu-as-fallback.md)), and the moves are in that menu (`useReorderMoves()`), not in a second one: a card never has two menus. The handle stays. The compact chips of a relation field don't reorder.
 - Multiple media: a gallery of images is a grid, with the handle at the start of each image's name and `ReorderMenu` at its end, under the image, so the tools over it (Edit, Remove) stay as they are. Other media are tiles, as relations are. A file of a multiple `file` field has its handle at its start and `ReorderMenu` before its button to remove it.
 - A field that is read-only or disabled has no handle and no menu. Its value follows the order of the items, and "Undo" after a removal puts the item back by its key, at its new place.
 - Moving an item to another list is out of scope.

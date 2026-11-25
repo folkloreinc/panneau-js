@@ -41,6 +41,13 @@ import { TimeValue } from 'react-aria-components';
 import { TooltipProps as TooltipProps_2 } from 'react-aria-components';
 
 // @public
+export interface ActionsFit {
+    className: string | undefined;
+    inline: boolean;
+    ref: (buttons: HTMLElement | null) => void;
+}
+
+// @public
 export function Alert(input: AlertProps): JSX.Element;
 
 // @public
@@ -1382,6 +1389,7 @@ export interface SelectBaseProps extends FieldChromeProps {
     isDisabled?: boolean;
     // (undocumented)
     isRequired?: boolean;
+    labelInside?: boolean | undefined;
     // (undocumented)
     name?: string;
     // (undocumented)
@@ -1904,6 +1912,9 @@ export interface UndoToastContent {
     title: string;
     undoneTitle: string;
 }
+
+// @public
+export function useActionsFit(): ActionsFit;
 
 // @public
 export function useCommandShortcut(onToggle: () => void, input?: {
