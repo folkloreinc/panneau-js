@@ -75,6 +75,11 @@ describe('the messages of the Panneau packages', () => {
         expect({ missing, unknown }).toEqual({ missing: [], unknown: [] });
     });
 
+    it('words the dates of a connection without agreement, as it is a token or an app', () => {
+        expect(fr['panneau.app.connectionCreated']).toBe('création le {date}');
+        expect(fr['panneau.app.connectionUsed']).toBe('dernière utilisation le {date}');
+    });
+
     it('keeps the arguments of the English messages in French', () => {
         const mismatches = Object.entries(en).flatMap(([id, message]) => {
             const translation = fr[id];
