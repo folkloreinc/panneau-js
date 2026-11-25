@@ -179,7 +179,7 @@ export function createBootConfigJsonSchema(): JsonObject {
     };
 }
 
-/** The JSON Schema of the arguments and the result of each tool of agents (decision 0106). */
+/** The JSON Schema of the arguments and the result of each tool of agents (decisions 0106 and 0115). */
 export function createAgentsJsonSchema(): JsonObject {
     const registry = createSchemaRegistry();
     Object.entries(agents).forEach(([id, schema]) => {

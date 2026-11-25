@@ -1,6 +1,6 @@
 # 0106: Five tools for agents
 
-- Status: proposed
+- Status: proposed, amended by [0115](0115-a-sixth-tool-upload-file.md): a sixth tool, `upload_file`
 - Date: 2026-11-23
 - Amends: [0090](0090-agents-work-through-tools-as-their-user.md) (the tools, what describes a resource, and the order of delivery)
 - Part of: [#6](https://github.com/folkloreinc/panneau-js/issues/6), 5.x (AI agents (MCP))

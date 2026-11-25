@@ -13,6 +13,8 @@ import {
     AgentRunActionArguments,
     AgentRunActionResult,
     AgentSaveItemArguments,
+    AgentUploadFileArguments,
+    AgentUploadFileResult,
     Item,
     ListResponse,
     agentToolSchemas,
@@ -57,13 +59,14 @@ const accepts =
         schema.safeParse(value).success;
 
 describe('the tools of agents', () => {
-    it('lists five tools, two of which write', () => {
+    it('lists six tools, three of which write', () => {
         expect(Object.keys(AGENT_TOOLS)).toEqual(Object.keys(agentToolSchemas));
         expect(
             Object.entries(AGENT_TOOLS)
                 .filter(([, tool]) => tool.writes)
                 .map(([name]) => name),
-        ).toEqual(['save_item', 'run_action']);
+        ).toEqual(['save_item', 'run_action', 'upload_file']);
+        expect(Object.keys(AGENT_TOOLS)).toHaveLength(6);
     });
 
     it('describes the resources, or one resource', () => {
@@ -185,6 +188,32 @@ describe('the tools of agents', () => {
         expect(result({ item })).toBe(true);
     });
 
+    it('asks where to send a file, which is never an argument', () => {
+        const args = accepts(AgentUploadFileArguments);
+        expect(args({ name: 'cover.png' })).toBe(true);
+        expect(args({ resource: 'images', name: 'cover.png', values: { alt: 'A cover' } })).toBe(
+            true,
+        );
+        expect(args({ resource: 'images' })).toBe(false);
+        expect(args({ name: '' })).toBe(false);
+        expect(args({ name: `${'a'.repeat(252)}.png` })).toBe(false);
+        expect(args({ name: 'cover.png', values: { file: 'iVBORw0KGgo=' } })).toBe(false);
+        expect(args({ name: 'cover.png', content: 'iVBORw0KGgo=' })).toBe(false);
+
+        const result = accepts(AgentUploadFileResult);
+        const upload = {
+            resource: 'images',
+            name: 'cover.png',
+            method: 'PUT',
+            url: 'https://example.com/panneau/mcp/upload?expires=1795000000&upload=abc&signature=def',
+            expiresIn: 900,
+        };
+        expect(result(upload)).toBe(true);
+        expect(result({ ...upload, method: 'POST' })).toBe(false);
+        expect(result({ ...upload, url: undefined })).toBe(false);
+        expect(result({ ...upload, expiresIn: 0 })).toBe(false);
+    });
+
     it('writes a JSON Schema of each tool that accepts the same examples', () => {
         const schema = createAgentsJsonSchema();
         const ajv = new Ajv2020({ strict: false });
@@ -201,6 +230,16 @@ describe('the tools of agents', () => {
                 arguments: { resource: 'articles', action: 'publish' },
                 result: { message: 'Published.' },
             },
+            upload_file: {
+                arguments: { name: 'cover.png' },
+                result: {
+                    resource: 'images',
+                    name: 'cover.png',
+                    method: 'PUT',
+                    url: 'https://example.com/panneau/mcp/upload?signature=def',
+                    expiresIn: 900,
+                },
+            },
         };
         expect(validate(calls)).toBe(true);
         const unknownArgument = {
@@ -210,6 +249,8 @@ describe('the tools of agents', () => {
         expect(validate({ ...calls, get_item: unknownArgument })).toBe(false);
         const bigPage = { ...calls.find_items, arguments: { resource: 'a', perPage: 51 } };
         expect(validate({ ...calls, find_items: bigPage })).toBe(false);
+        const longName = { ...calls.upload_file, arguments: { name: 'a'.repeat(256) } };
+        expect(validate({ ...calls, upload_file: longName })).toBe(false);
     });
 });
 
