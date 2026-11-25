@@ -53,7 +53,8 @@ const filters: Filter[] = [
 ];
 
 /**
- * The filters of a list's toolbar, as chips. Those with `primary` show first (or the first 3), the others
+ * The filters of a list's toolbar, each one a control with its label inside. Those with `primary`
+ * show first (or the first 3), the others
  * behind "More filters", with the count of the active ones. A filter with a value is marked, and
  * keeps its chip under the toolbar. In a narrow list, every filter is behind one "Filters" button.
  */
@@ -129,9 +130,9 @@ export const MoreFilters: Story = {
 };
 
 /**
- * When everything fits, one line (#519): the search, the filters as chips, and the controls of the
- * list at its end. Each chip holds its label (`Status: Any`), is as high as the search, and sized to
- * its content.
+ * When everything fits, one line (#519): the search, the filters, and the controls of the list at its
+ * end. Each filter holds its label (`Status: Any`), is as high as the search, and sized to its
+ * content.
  */
 export const OnOneLine: Story = {
     play: async ({ canvasElement }) => {
@@ -143,21 +144,22 @@ export const OnOneLine: Story = {
             await expect(Math.abs(middle(element) - middle(search))).toBeLessThan(2);
         }
         await expect(Math.abs(rect(end).right - rect(toolbar).right)).toBeLessThan(1);
-        // The label inside its chip, which is the label of the control for assistive technologies
+        // The label inside its box, which is the label of the control for assistive technologies.
+        // A select has it in its button: the whole box opens it.
         const status = canvas.getByRole('button', { name: /Status/ });
         const city = canvas.getByRole('textbox', { name: 'City' });
-        for (const [element, name] of [
-            [status, 'Status'],
-            [city, 'City'],
-        ] as const) {
-            const item = element.closest('[data-toolbar-filter]');
-            await expect(item).not.toBeNull();
-            const label = within(item as HTMLElement).getByText(name);
-            await expect(isInside(label, item as HTMLElement)).toBe(true);
-            await expect(rect(label).right).toBeLessThanOrEqual(rect(element).left + 1);
-            await expect(Math.round(rect(item as HTMLElement).height)).toBe(
-                Math.round(rect(control).height),
-            );
+        const inside = status.querySelector('.panneau-list-box-inside-label');
+        await expect(inside).toHaveTextContent('Status');
+        await expect(isInside(inside as Element, status)).toBe(true);
+        const box = status.closest('[data-toolbar-filter]') as HTMLElement;
+        await expect(Math.abs(rect(status).left - rect(box).left)).toBeLessThan(2);
+        await expect(Math.abs(rect(status).right - rect(box).right)).toBeLessThan(2);
+        const item = city.closest('[data-toolbar-filter]') as HTMLElement;
+        const label = within(item).getByText('City');
+        await expect(isInside(label, item)).toBe(true);
+        await expect(rect(label).right).toBeLessThanOrEqual(rect(city).left + 1);
+        for (const element of [box, item]) {
+            await expect(Math.round(rect(element).height)).toBe(Math.round(rect(control).height));
         }
         // Sized to its content: no chip is as wide as the controls of the filters were (12rem)
         await expect(rect(chips[0] as Element).width).toBeLessThan(160);
@@ -371,9 +373,11 @@ const everyType: Filter[] = [
 ];
 
 /**
- * A filter of each type, as a chip: a select, a relation, a day, a range of days, a text and a
- * switch. Each one holds its label, is as high as the other controls of the toolbar, and has its
- * clear button inside when it has a value.
+ * A filter of each type: a select, a relation, a day, a range of days, a text and a switch. Each one
+ * is a control like the others of the toolbar: as high as the search, with its radius and its
+ * border, not a tag. It holds its label, which is part of the control: a press on it opens the
+ * select, or focuses the other controls. With a value, its clear button is inside, at its end,
+ * next to the value without covering it.
  */
 export const EveryFilterType: Story = {
     args: {
@@ -413,16 +417,95 @@ export const EveryFilterType: Story = {
             // As high as the search
             await expect(Math.round(rect(chip).height)).toBe(Math.round(rect(control).height));
         }
-        // The clear button of each one inside its chip (a switch says itself that it is on)
+        // A control, as the search is: its radius and its border, not those of a tag
+        const field = getComputedStyle(control);
+        for (const chip of chips) {
+            await expect(getComputedStyle(chip).borderTopLeftRadius).toBe(
+                field.borderTopLeftRadius,
+            );
+            await expect(getComputedStyle(chip).borderTopWidth).toBe(field.borderTopWidth);
+        }
+        // The clear button of each one inside its box, at its end, after the value (a switch says
+        // itself that it is on)
         for (const name of ['Status', 'Author', 'Day', 'Published', 'City']) {
             const clear = canvas.getByRole('button', { name: `Clear the filter ${name}` });
             const chip = clear.closest('[data-toolbar-filter]');
             await expect(chip).not.toBeNull();
             await expect(isInside(clear, chip as Element)).toBe(true);
+            await expect(rect(chip as Element).right - rect(clear).right).toBeLessThan(8);
+            const value =
+                name === 'Status'
+                    ? (chip as Element).querySelector('.panneau-list-box-value')
+                    : clear.previousElementSibling;
+            await expect(value).not.toBeNull();
+            await expect(rect(clear).left).toBeGreaterThanOrEqual(rect(value as Element).right - 1);
         }
+        // The label is part of the control: a press on it opens the select, or focuses the control
+        const pressLabel = async (name: string) => {
+            const shownLabel = (element: Element) =>
+                element.querySelector('.panneau-list-box-inside-label') ??
+                element.querySelector('.panneau-field-label, legend');
+            const chip = [...chips].find((element) =>
+                shownLabel(element)?.textContent?.startsWith(name),
+            );
+            const label = chip !== undefined ? shownLabel(chip) : null;
+            await expect(label).toBeDefined();
+            await userEvent.click(label as Element);
+        };
+        await pressLabel('Status');
+        await expect(
+            await within(canvasElement.ownerDocument.body).findByRole('listbox'),
+        ).toBeInTheDocument();
+        await userEvent.keyboard('{Escape}');
+        await pressLabel('Author');
+        await expect(canvas.getByRole('combobox', { name: 'Author' })).toHaveFocus();
+        await pressLabel('Day');
+        await expect(
+            within(shown.getAllByRole('group', { name: 'Day' })[0] as HTMLElement).getAllByRole(
+                'spinbutton',
+            )[0],
+        ).toHaveFocus();
+        await pressLabel('Published');
+        await expect(
+            within(shown.getByRole('group', { name: 'Published' })).getAllByRole('spinbutton')[0],
+        ).toHaveFocus();
         const city = canvas.getByRole('textbox', { name: 'City' });
         await userEvent.click(canvas.getByRole('button', { name: 'Clear the filter City' }));
         await waitFor(() => expect(city).toHaveFocus());
         await expect(city.closest('[data-toolbar-filter]')).not.toHaveAttribute('data-active');
+    },
+};
+
+/**
+ * A list far down a page: the first press on a filter opens it, on its select or on its label, and
+ * the page doesn't move.
+ */
+export const InAScrolledPage: Story = {
+    decorators: [
+        (Story) => (
+            <div>
+                <div style={{ height: '150vh' }} />
+                <Story />
+                <div style={{ height: '150vh' }} />
+            </div>
+        ),
+    ],
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        const view = canvasElement.ownerDocument.defaultView ?? window;
+        const status = canvas.getByRole('button', { name: /Status/ });
+        status.scrollIntoView({ block: 'center' });
+        const scrolled = view.scrollY;
+        await expect(scrolled).toBeGreaterThan(0);
+        const label = status.querySelector('.panneau-list-box-inside-label');
+        for (const target of [status, label]) {
+            await userEvent.click(target as Element);
+            const listBox = await body.findByRole('listbox');
+            await waitFor(() => expect(listBox).toBeVisible());
+            await expect(view.scrollY).toBe(scrolled);
+            await userEvent.keyboard('{Escape}');
+            await waitFor(() => expect(body.queryByRole('listbox')).toBeNull());
+        }
     },
 };

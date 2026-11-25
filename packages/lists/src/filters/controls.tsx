@@ -53,6 +53,7 @@ export function SelectFilter({
     onChange,
     onClear,
     clearLabel,
+    inline = false,
 }: FilterControlProps) {
     const intl = usePanneauIntl();
     const selected = asStrings(value);
@@ -73,6 +74,7 @@ export function SelectFilter({
                 onChange={(next) => onChange(next.length > 0 ? next : undefined)}
                 onClear={onClear}
                 clearLabel={clearLabel}
+                labelInside={inline}
                 className={styles.control}
             />
         );
@@ -86,6 +88,7 @@ export function SelectFilter({
             onChange={(next) => onChange(next ?? undefined)}
             onClear={onClear}
             clearLabel={clearLabel}
+            labelInside={inline}
             className={styles.control}
         />
     );

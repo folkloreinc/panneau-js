@@ -107,17 +107,49 @@
     visibility: hidden;
 }
 
-/* Centered on the arrow it replaces. */
+/* The value ends before the clear button, however narrow the padding of the control. */
+.trigger[data-clearable] {
+    padding-inline-end: max(
+        var(--panneau-input-padding-x, var(--panneau-control-padding-x)),
+        var(--panneau-control-height-sm) - 1rem - var(--panneau-space-2) + 2px
+    );
+}
+
+/* Centered on the arrow it replaces, and never out of the box of the select: with little room at
+   the end of the control (a theme's narrow padding), it keeps to its edge. */
 .clear.clear {
     position: absolute;
     inset-block: 0;
-    inset-inline-end: calc(
+    inset-inline-end: max(
+        var(--panneau-input-border-width, var(--panneau-border-width)),
         var(--panneau-input-padding-x, var(--panneau-control-padding-x)) + 0.5rem -
             var(--panneau-control-height-sm) / 2
     );
     height: var(--panneau-control-height-sm);
     min-height: 0;
     margin-block: auto;
+}
+
+/* The label of a select with `labelInside`: hidden where it was, shown in the button, before the
+   value, as a quieter text with a colon (decoration only). */
+.hiddenLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.insideLabel {
+    flex: none;
+    margin-inline-end: calc(var(--panneau-space-1) - var(--panneau-space-2));
+    color: var(--panneau-color-text-muted);
+    white-space: nowrap;
+}
+
+.insideLabel::after {
+    content: ':' / '';
 }
 
 .trigger {

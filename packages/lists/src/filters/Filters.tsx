@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-import { type ReactNode, useRef, useState } from 'react';
+import { type MouseEvent, type ReactNode, useRef, useState } from 'react';
 
 import { resolveEntry, usePlugins } from '@panneau/core';
 import type { Field, Filter, FilterValue } from '@panneau/protocol';
@@ -115,6 +115,7 @@ export function FilterControls({
                         <Control
                             onClear={clear}
                             clearLabel={clearLabel}
+                            inline={!stacked}
                             filter={filter}
                             label={label}
                             options={getFilterOptions(filter, columns, fields)}
@@ -134,11 +135,44 @@ interface FilterItemProps {
     /** The name of the button that clears the filter. */
     clearLabel: string;
     isActive: boolean;
-    /** In the toolbar: a chip, with the label and the clear button inside (#519). */
+    /** In the toolbar: one box, with the label and the clear button inside (#519). */
     isChip: boolean;
     clearable: boolean;
     onClear: () => void;
     children: ReactNode;
+}
+
+/** What a press on the box of a filter goes to: its first control. */
+const CONTROLS = 'input:not([type="hidden"]), button, [role="spinbutton"], [tabindex="0"]';
+
+/** Whether an element takes presses itself: a press on it stays its own. */
+function isInteractive(element: Element, item: HTMLElement): boolean {
+    const control = element.closest(`${CONTROLS}, a, [role="switch"], label:has(input)`);
+    return control !== null && item.contains(control);
+}
+
+/**
+ * A press on the box of a filter in the toolbar, outside its controls (its label, its edges): the
+ * box is one control, so the press goes to the first one. A choice opens, as its button would;
+ * another control takes the focus. Mouse and touch only: the keyboard reaches the controls
+ * themselves.
+ */
+function pressBox(event: MouseEvent<HTMLDivElement>) {
+    const item = event.currentTarget;
+    const target = event.target;
+    // A press in a popover of the filter bubbles here through React's tree, not the document's
+    if (!(target instanceof Element) || !item.contains(target) || isInteractive(target, item)) {
+        return;
+    }
+    const control = item.querySelector<HTMLElement>(CONTROLS);
+    if (control === null) {
+        return;
+    }
+    if (control instanceof HTMLButtonElement && control.getAttribute('aria-haspopup') !== null) {
+        control.click();
+    } else {
+        control.focus();
+    }
 }
 
 /** A filter control, marked when it has a value, with a button that clears it. */
@@ -157,6 +191,7 @@ function FilterItem({
             className={cx(styles.item, isActive && styles.active)}
             data-active={isActive ? 'true' : undefined}
             data-toolbar-filter={isChip ? '' : undefined}
+            onClick={isChip ? pressBox : undefined}
         >
             {children}
             {isActive && clearable ? (

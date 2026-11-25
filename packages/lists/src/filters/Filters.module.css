@@ -52,11 +52,12 @@
     max-width: 100%;
 }
 
-/* In the toolbar (#519): each filter a chip as high as the other controls, sized to its content,
- * with its label inside (`Status: Any`) and the button that clears it. The chip draws the box, in
- * the tones of the input (and of what is selected, for an active filter); the control inside it
- * draws none. The label stays the control's label, for assistive technologies; its colon is
- * decoration only. */
+/* In the toolbar (#519): each filter is a control as high as the others, sized to its content,
+ * with its label inside (`Status: Any`). The item draws the box, with the radius, the border and the
+ * tones of an input (and of what is selected, for an active filter), so a filter reads as a field,
+ * not as a tag; the control inside it draws none. The label stays the control's label, for
+ * assistive technologies; its colon is decoration only. The whole box is the control: the label
+ * and the edges focus it, or open it (`FilterItem`). */
 .inline {
     align-items: center;
     gap: var(--panneau-space-2);
@@ -64,17 +65,23 @@
 
 .inline > .item {
     flex: 0 0 auto;
-    align-items: center;
+    align-items: stretch;
     gap: 0;
     min-height: var(--panneau-control-height);
-    padding-inline: var(--panneau-space-3) var(--panneau-space-2);
+    cursor: text;
     background-color: var(--panneau-input-bg, var(--panneau-color-surface));
     border: var(--panneau-input-border-width, var(--panneau-border-width)) solid
         var(--panneau-input-border-color, var(--panneau-color-border-control));
-    border-radius: var(--panneau-radius-full);
+    border-radius: var(--panneau-input-radius, var(--panneau-radius-md));
     transition:
         border-color var(--panneau-duration),
         box-shadow var(--panneau-duration);
+}
+
+/* A choice opens from anywhere in its box. */
+.inline > .item:has(:global(.panneau-select)),
+.inline > .item:has(> .toggle) {
+    cursor: pointer;
 }
 
 .inline > .item:hover {
@@ -93,36 +100,70 @@
     --panneau-input-border-color-focus: transparent;
     --panneau-input-focus-ring: none;
     --panneau-input-border-width: 0;
-    --panneau-input-padding-x: var(--panneau-space-1);
 
     min-height: calc(var(--panneau-control-height) - 2 * var(--panneau-border-width));
 }
 
-/* The calendar button of a day: no line between it and the day, in a chip. */
+/* The label is the start of the control: the value follows it with no gap. A select has its label
+ * in its button, which fills the box. */
+.inline > .item :global(.panneau-field-control):not(:global(.panneau-list-box-trigger)) {
+    padding-inline-start: 0;
+}
+
+.inline > .item :global(.panneau-select) {
+    flex: 1 1 auto;
+}
+
+/* The button that clears the filter takes the end of the control. */
+.inline > .item:has(> .clear) :global(.panneau-field-control) {
+    padding-inline-end: var(--panneau-space-1);
+}
+
+.inline > .item > .clear {
+    align-self: center;
+    margin-inline-end: var(--panneau-space-1);
+}
+
+/* The calendar button of a day: no line between it and the day, in the box of a filter. */
 .inline > .item :global(.panneau-date-picker-button) {
     border-inline-start: 0;
 }
 
 .inline > .item :global(.panneau-field) {
     flex-direction: row;
-    align-items: center;
-    gap: var(--panneau-space-1);
+    align-items: stretch;
+    gap: 0;
 }
 
-.inline > .item :global(.panneau-field-label) {
+/* The label fills the height of the box, and the room before the value: no dead zone. */
+.inline > .item :global(.panneau-field-label),
+.inline .range > legend {
+    display: flex;
+    flex: none;
+    align-items: center;
+    padding-inline: var(--panneau-input-padding-x, var(--panneau-control-padding-x))
+        var(--panneau-space-1);
     font-size: var(--panneau-font-size-control);
     font-weight: var(--panneau-font-weight-normal);
     color: var(--panneau-color-text-muted);
     white-space: nowrap;
+    cursor: inherit;
 }
 
-.inline > .item :global(.panneau-field-label)::after {
+.inline > .item :global(.panneau-field-label)::after,
+.inline .range > legend::after {
     content: ':' / '';
 }
 
-/* A switch: its label fills the chip, which it turns on and off wherever it is pressed. */
-.inline > .item:has(> .toggle) {
-    padding-inline: 0;
+/* A switch is a control of its own, which says itself whether it is on: no box around it, nor the
+ * tones of an active filter. Its label fills the height of the others, and turns it on and off
+ * wherever it is pressed; the switch shows its own focus. */
+.inline > .item:has(> .toggle),
+.inline > .item:has(> .toggle):hover,
+.inline > .item:has(> .toggle):focus-within {
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
 }
 
 .inline > .item .toggle {
@@ -132,7 +173,7 @@
 
 .inline > .item .toggle :global(.panneau-switch-control) {
     min-height: calc(var(--panneau-control-height) - 2 * var(--panneau-border-width));
-    padding-inline: var(--panneau-space-2) var(--panneau-space-3);
+    padding-inline: 0 var(--panneau-space-1);
 }
 
 .inline .control {
@@ -150,8 +191,8 @@
 /* A range: its legend inline, before its two days. */
 .inline .range {
     flex-direction: row;
-    align-items: center;
-    gap: var(--panneau-space-1);
+    align-items: stretch;
+    gap: 0;
 }
 
 .inline .range > legend {
@@ -166,6 +207,11 @@
 
 .inline .rangeInputs > :not(.rangeDash) {
     width: auto;
+}
+
+/* The second day is the end of the range: the first one ends at the dash. */
+.inline .rangeInputs > :first-child :global(.panneau-field-control) {
+    padding-inline-end: 0;
 }
 
 /* One control under the other: in the popover of "More filters", and in the sheet. */

@@ -142,6 +142,11 @@ export interface FilterControlProps {
     onClear?: () => void;
     /** The name of that button: "Clear the filter Role". */
     clearLabel?: string;
+    /**
+     * In the toolbar (#519): the control is one box with its label inside (`Status: Any`), not a
+     * label above a field. A select puts its label in its button.
+     */
+    inline?: boolean;
 }
 
 /** A filter control, by filter type (`select`, `date`). */
