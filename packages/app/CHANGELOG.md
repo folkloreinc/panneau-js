@@ -1,5 +1,22 @@
 # @panneau/app
 
+## 5.0.0-alpha.51
+
+### Patch Changes
+
+- 441351f: The connections of the account (#507, decision 0113). The data adapter has `listConnections()`, `createConnectionToken()` and `revokeConnection()` (`GET /account/connections`, `POST /account/connections/tokens`, `DELETE /account/connections/{connection}`), and `queryKeys.connections()`. With `agents.mcp` in the definition, the account page has a "Connections" section: the address of the MCP server to copy, the personal tokens and the apps that let agents in as the user (read, or read and change; made, last used, expires), revoking one after a confirmation that names it, and, when `agents.mcp.tokens` is true, a dialog that makes a personal token, shown once with a button that copies it and forgotten when the dialog closes. Creating and revoking ask for the password when the backend needs a recent one (`423`), as passkeys do.
+- 691f6ef: After the login, the app goes to a same-origin `next` (#508). In `panneau` auth mode, when the app is opened with `?next=` holding a path of its origin (such as the authorization page of the backend's OAuth server), a guest who logs in, with a password, a second factor, a passkey or a provider (whose callback brings the user back to the app with its `next`), goes there with a full page load, and a user who is already logged in goes there right away. A `next` that isn't a same-origin path is ignored. A target that sends a logged-in user straight back with the same `next` isn't followed again.
+- Updated dependencies [441351f]
+  - @panneau/data@5.0.0-alpha.51
+  - @panneau/intl@5.0.0-alpha.51
+  - @panneau/actions@5.0.0-alpha.51
+  - @panneau/forms@5.0.0-alpha.51
+  - @panneau/lists@5.0.0-alpha.51
+  - @panneau/fields@5.0.0-alpha.51
+  - @panneau/ui@5.0.0-alpha.51
+  - @panneau/core@5.0.0-alpha.51
+  - @panneau/protocol@5.0.0-alpha.51
+
 ## 5.0.0-alpha.50
 
 ### Patch Changes
