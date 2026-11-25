@@ -269,16 +269,25 @@ export const Default: Story = {
             await expect(box(expandAll).bottom).toBeGreaterThan(box(legend).top);
             const toggle = blocks.getByRole('button', { name: /^1\s*Text/, expanded: false });
             const header = toggle.parentElement ?? toggle;
-            // Their tools are in a menu: the title has most of the header
-            await expect(blocks.queryByRole('button', { name: 'Move item 1 down' })).toBeNull();
-            await expect(box(toggle).width).toBeGreaterThanOrEqual(box(header).width * 0.6);
-            await userEvent.click(blocks.getByRole('button', { name: 'Actions for item 1' }));
-            const menu = within(await canvas.findByRole('menu'));
-            await expect(menu.getByRole('menuitem', { name: 'Move item 1 up' })).toHaveAttribute(
-                'aria-disabled',
-                'true',
+            // Its tools are buttons where they fit next to the title, and a menu where they don't
+            // (decision 0114): one or the other, and the title keeps its minimum width
+            await expect(box(toggle).width).toBeGreaterThanOrEqual(
+                Number.parseFloat(getComputedStyle(toggle).minWidth) - 0.5,
             );
-            await userEvent.keyboard('{Escape}');
+            await expect(box(toggle).right).toBeLessThanOrEqual(box(header).right);
+            const menuButton = blocks.queryByRole('button', { name: 'Actions for item 1' });
+            const moveUp = blocks.queryByRole('button', { name: 'Move item 1 up' });
+            await expect(menuButton === null).not.toBe(moveUp === null);
+            if (moveUp !== null) {
+                await expect(moveUp).toBeDisabled();
+            } else if (menuButton !== null) {
+                await userEvent.click(menuButton);
+                const menu = within(await canvas.findByRole('menu'));
+                await expect(
+                    menu.getByRole('menuitem', { name: 'Move item 1 up' }),
+                ).toHaveAttribute('aria-disabled', 'true');
+                await userEvent.keyboard('{Escape}');
+            }
         });
 
         await step('What floats over the blocks passes under the top bar (#503)', async () => {

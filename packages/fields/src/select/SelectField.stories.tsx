@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { type OptionValue, SelectField } from './SelectField';
 
@@ -104,7 +104,9 @@ export const Searchable: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         const body = within(canvasElement.ownerDocument.body);
-        const input = await canvas.findByRole('combobox', { name: 'Language' });
+        const input = (await canvas.findByRole('combobox', {
+            name: 'Language',
+        })) as HTMLInputElement;
         const dropdown = canvas.getByRole('button', { name: /Format/ });
         // Closed, it reads as the dropdown next to it
         await expect(input).toHaveAttribute('placeholder', 'Select…');
@@ -121,5 +123,18 @@ export const Searchable: Story = {
         await expect(input).toHaveValue('Japanese');
         // The value of the option, a number
         await expect(canvas.getByText('8')).toBeInTheDocument();
+
+        // After a choice, the input keeps the focus: a press on it opens the options again, as on
+        // a select, and selects its text, wherever it lands, so that typing searches anew
+        await expect(input).toHaveFocus();
+        await waitFor(() => expect(body.queryByRole('listbox')).toBeNull());
+        await userEvent.click(input);
+        await expect(await body.findByRole('listbox')).toBeInTheDocument();
+        await expect([input.selectionStart, input.selectionEnd]).toEqual([0, 'Japanese'.length]);
+        // While the options show, a press places the caret, as in any text
+        await userEvent.pointer({ keys: '[MouseLeft]', target: input, offset: 2 });
+        await expect(body.getByRole('listbox')).toBeInTheDocument();
+        await expect(input.selectionStart).toBe(input.selectionEnd);
+        await userEvent.keyboard('{Escape}');
     },
 };

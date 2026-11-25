@@ -186,6 +186,7 @@ export interface FilterControlProps {
     // (undocumented)
     filter: Filter;
     getValueLabel: (value: string) => string | null;
+    inline?: boolean;
     label: string;
     onChange: (value: FilterValue | undefined) => void;
     onClear?: () => void;

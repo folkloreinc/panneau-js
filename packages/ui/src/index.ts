@@ -147,6 +147,7 @@ export {
     type ReorderMoves,
     useReorderMoves,
 } from './reorder/ReorderList';
+export { type ActionsFit, useActionsFit } from './actions-fit/useActionsFit';
 export { REORDER_DRAG_TYPE, isReorderDrag, moveItem } from './reorder/reorder';
 export { LoadingRegion, type LoadingRegionProps } from './skeleton/LoadingRegion';
 export { Skeleton, type SkeletonProps } from './skeleton/Skeleton';

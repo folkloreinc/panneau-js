@@ -68,6 +68,12 @@ export interface SelectBaseProps extends FieldChromeProps {
     onClear?: (() => void) | undefined;
     /** The name of the button that empties the select. Defaults to "Clear". */
     clearLabel?: string | undefined;
+    /**
+     * The label inside the button, before the value (`Status: Draft`), in a bar of controls: the
+     * whole control, label included, opens the options, which line up with it. The label stays
+     * the name of the select.
+     */
+    labelInside?: boolean | undefined;
 }
 
 export interface SingleSelectProps extends SelectBaseProps {
@@ -131,6 +137,7 @@ export function Select(props: SelectProps) {
         popoverClassName,
         onClear,
         clearLabel,
+        labelInside = false,
     } = props;
     const box = useRef<HTMLDivElement>(null);
     const hasValue =
@@ -177,7 +184,10 @@ export function Select(props: SelectProps) {
 
     const content = (
         <>
-            <FieldLabel isRequired={isRequired} className={labelClassName}>
+            <FieldLabel
+                isRequired={isRequired}
+                className={cx(labelClassName, labelInside && styles.hiddenLabel)}
+            >
                 {label}
             </FieldLabel>
             <div ref={box} className={styles.triggerBox}>
@@ -191,6 +201,12 @@ export function Select(props: SelectProps) {
                         triggerClassName,
                     )}
                 >
+                    {labelInside ? (
+                        // Seen here, named by the label above
+                        <span className={styles.insideLabel} aria-hidden="true">
+                            {label}
+                        </span>
+                    ) : null}
                     <SelectValue className={styles.value}>
                         {({ defaultChildren, isPlaceholder }) =>
                             !isPlaceholder && chosenLabels.length > 0 ? (

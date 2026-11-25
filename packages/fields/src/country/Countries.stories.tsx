@@ -57,9 +57,12 @@ export const Empty: Story = {
         await waitFor(() =>
             expect(canvas.getByRole('status', { name: 'Values' })).toHaveTextContent('["BE","FR"]'),
         );
+        // A press on the input opens the suggestions again, without the countries chosen
         await userEvent.click(input);
+        await expect(await body.findByRole('option', { name: 'Canada' })).toBeInTheDocument();
         await expect(body.queryByRole('option', { name: 'France' })).not.toBeInTheDocument();
         await userEvent.keyboard('{Escape}');
+        await waitFor(() => expect(body.queryByRole('listbox')).toBeNull());
         await userEvent.click(canvas.getByRole('button', { name: 'Remove Belgium' }));
         await waitFor(() =>
             expect(canvas.getByRole('status', { name: 'Values' })).toHaveTextContent('["FR"]'),

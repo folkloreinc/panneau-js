@@ -3,14 +3,13 @@
     display: flex;
     flex-direction: column;
     gap: var(--panneau-space-2);
-    /* The width of the field decides whether the actions of a card are buttons or a menu */
-    container: panneau-relation / inline-size;
 }
 
-/* The title of a card has the room first (#518): the actions never shrink it below this, and it
- * is cut with an ellipsis only past it, whole in its tooltip. */
+/* The title of a card has the room first (#518): its buttons show while they fit next to it at
+ * this width, and are a menu when they don't (decision 0114). It is cut with an ellipsis only past
+ * it, whole in its tooltip. */
 .card > :global(.panneau-tile-content) {
-    min-width: min(5rem, 30%);
+    min-width: 6rem;
 }
 
 /* The buttons of a card: change, edit, reorder, remove. */
@@ -19,22 +18,6 @@
     flex: none;
     align-items: center;
     gap: var(--panneau-space-1);
-}
-
-/* In a narrow field (a sidebar, a phone), they are one menu, so that the title stays readable. */
-.toolsMenu.toolsMenu {
-    display: none;
-}
-
-@container panneau-relation (width < 24rem) {
-    .tools.collapses {
-        display: none;
-    }
-
-    .toolsMenu.toolsMenu {
-        display: inline-flex;
-        flex: none;
-    }
 }
 
 /* The picker of the single field, with "Cancel" while it changes the item. */

@@ -73,7 +73,8 @@ export function Tile({
                     <Icon icon={icon} size={size === 'sm' ? 'sm' : 'md'} />
                 </span>
             ) : null}
-            <div className={styles.content}>
+            {/* The title of the row, next to which its actions fit (`useActionsFit`) */}
+            <div className={styles.content} data-actions-title>
                 {href !== undefined ? (
                     <Link
                         href={href}

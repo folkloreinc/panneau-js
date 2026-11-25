@@ -1,0 +1,9 @@
+/* The buttons of a row while its menu shows: still laid out, at their own width, to be measured,
+ * but out of the row, out of sight, and out of reach of the pointer, the keyboard and assistive
+ * technologies. At the end of the nearest positioned box, so they never widen a page. */
+.measured {
+    position: absolute;
+    inset-inline-end: 0;
+    visibility: hidden;
+    pointer-events: none;
+}

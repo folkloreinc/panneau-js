@@ -577,8 +577,8 @@ describe('RepeaterField: duplicate and add in between', () => {
 
     it('reaches the control between items with the keyboard', async () => {
         renderField(<Links onChange={() => undefined} />);
-        // The last tool of the header: the menu of its tools, which the CSS shows when narrow
-        screen.getByRole('button', { name: 'Actions for item 1' }).focus();
+        // The last tool of the header (its buttons, where they fit)
+        screen.getByRole('button', { name: 'Remove item 1' }).focus();
         await userEvent.tab();
         expect(
             screen.getByRole('button', { name: 'Add an item between items 1 and 2' }),

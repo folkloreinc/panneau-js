@@ -628,3 +628,43 @@ export const InANarrowColumn: Story = {
         await expect(box(expandAll).left).toBeGreaterThan(box(legend).left);
     },
 };
+
+/**
+ * The tools of an item are buttons wherever they fit next to its title (decision 0114): in the
+ * main column of a form, each header has them; in a narrow place (a repeater in the sidebar, or in
+ * another one), where they would leave the title too little room, they are one "⋯" menu. Never
+ * both, and nothing sticks out.
+ */
+export const ToolsWhereTheyFit: Story = {
+    render: (args) => (
+        <div style={{ display: 'grid', gap: '2rem' }}>
+            <div style={{ width: '40rem' }} data-width="wide">
+                <Blocks {...args} />
+            </div>
+            <div style={{ width: '14rem' }} data-width="narrow">
+                <Blocks {...args} />
+            </div>
+        </div>
+    ),
+    play: async ({ canvasElement }) => {
+        const shown = (element: Element) => element.checkVisibility({ visibilityProperty: true });
+        for (const header of canvasElement.querySelectorAll<HTMLElement>('[data-header]')) {
+            await expect(header.scrollWidth).toBeLessThanOrEqual(header.clientWidth);
+            const menu = within(header).queryByRole('button', { name: /^Actions for item/ });
+            // Out of the accessibility tree when hidden: found by its label
+            const remove = header.querySelector('button[aria-label^="Remove item"]');
+            const wide = header.closest('[data-width]')?.getAttribute('data-width') === 'wide';
+            await expect(menu !== null).toBe(!wide);
+            await expect(remove).not.toBeNull();
+            await expect(shown(remove as Element)).toBe(wide);
+        }
+        // From the menu, the same tools
+        const narrow = canvasElement.querySelector<HTMLElement>('[data-width="narrow"]');
+        await userEvent.click(
+            within(narrow as HTMLElement).getByRole('button', { name: 'Actions for item 1' }),
+        );
+        const menu = await within(canvasElement.ownerDocument.body).findByRole('menu');
+        await expect(within(menu).getAllByRole('menuitem')).toHaveLength(4);
+        await userEvent.keyboard('{Escape}');
+    },
+};

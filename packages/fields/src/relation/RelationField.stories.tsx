@@ -537,16 +537,36 @@ async function expectWhole(element: Element | null) {
     }
 }
 
+/**
+ * A card that fits: its title has the room first, whole when it is short (`2023`, `Ada Lovelace`),
+ * at least 6rem of it when it is cut, with the full title as its tooltip; nothing sticks out.
+ */
+async function expectFits(card: HTMLElement) {
+    const title = card.querySelector<HTMLElement>('.panneau-tile-title');
+    if (['2023', 'Ada Lovelace'].includes(title?.textContent ?? '')) {
+        await expectWhole(title);
+    }
+    await expect(title?.getBoundingClientRect().width).toBeGreaterThanOrEqual(
+        6 * parseFloat(getComputedStyle(document.documentElement).fontSize) - 0.5,
+    );
+    await expect(card.querySelector('.panneau-tile-title [title]')).toHaveAttribute(
+        'title',
+        card.querySelector('.panneau-tile-title')?.textContent ?? '',
+    );
+    await expect(card.scrollWidth).toBeLessThanOrEqual(card.clientWidth);
+}
+
 /** The visible buttons of a card that open a menu: one at most (#518). */
 const visibleMenus = (card: HTMLElement) =>
     [...card.querySelectorAll<HTMLElement>('button[aria-haspopup]')].filter((button) =>
-        button.checkVisibility(),
+        button.checkVisibility({ visibilityProperty: true }),
     );
 
 /**
  * In a sidebar (18rem): the title of each card has the room first (#518). "Change", "Edit" and
- * "Remove" are icon buttons with tooltips, and in a field this narrow they are one "⋯" menu, which
- * also has the moves of a card that reorders: one menu per card, beside the drag handle.
+ * "Remove" are icon buttons with tooltips while they fit next to the title at its minimum width (6rem);
+ * when they don't, they are one "⋯" menu, which also has the moves of a card that reorders: one
+ * menu per card, beside the drag handle (decision 0114).
  */
 export const InANarrowSidebar: Story = {
     render: function Render() {
@@ -554,13 +574,15 @@ export const InANarrowSidebar: Story = {
         const [people, setPeople] = useState<RelationReference[] | null>(PEOPLE);
         return (
             <div style={{ display: 'grid', gap: '1.5rem', width: '18rem' }}>
-                <RelationField
-                    resource="editions"
-                    source={editableSource}
-                    label="Edition"
-                    value={edition}
-                    onChange={setEdition}
-                />
+                <div style={{ width: '16rem' }}>
+                    <RelationField
+                        resource="editions"
+                        source={editableSource}
+                        label="Edition"
+                        value={edition}
+                        onChange={setEdition}
+                    />
+                </div>
                 <RelationField
                     multiple
                     resource="people"
@@ -579,20 +601,7 @@ export const InANarrowSidebar: Story = {
         await waitFor(() => expect(cards()).toHaveLength(4));
 
         for (const card of cards()) {
-            // The title has the room of the card: whole when it is short (`2023`, `Ada
-            // Lovelace`), at least 6rem of it when it is cut, with the full title as its tooltip
-            const title = card.querySelector<HTMLElement>('.panneau-tile-title');
-            if (['2023', 'Ada Lovelace'].includes(title?.textContent ?? '')) {
-                await expectWhole(title);
-            }
-            await expect(title?.getBoundingClientRect().width).toBeGreaterThanOrEqual(
-                6 * parseFloat(getComputedStyle(document.documentElement).fontSize),
-            );
-            await expect(card.querySelector('.panneau-tile-title [title]')).toHaveAttribute(
-                'title',
-                card.querySelector('.panneau-tile-title')?.textContent ?? '',
-            );
-            await expect(card.scrollWidth).toBeLessThanOrEqual(card.clientWidth);
+            await expectFits(card);
             // One menu, the "⋯": the menu of moves is in it
             const menus = visibleMenus(card);
             await expect(menus).toHaveLength(1);
@@ -645,6 +654,57 @@ export const InANarrowSidebar: Story = {
                 'Move Ada Lovelace',
             ]),
         );
+    },
+};
+
+/**
+ * Where a card lives: the main column of a form (40rem), a panel (24rem), a phone (20rem), a
+ * sidebar (18rem). Its buttons show
+ * wherever they fit next to its title (decision 0114), measured, not from a width set in advance:
+ * the card with fewer buttons keeps them in narrower places than the card with more. Each card
+ * has its buttons or one menu, never both, and nothing sticks out.
+ */
+export const AtEveryWidth: Story = {
+    render: () => (
+        <div style={{ display: 'grid', gap: '1.5rem' }}>
+            {(['40rem', '24rem', '20rem', '18rem'] as const).map((width) => (
+                <div key={width} style={{ width }} data-width={width}>
+                    <RelationField
+                        resource="editions"
+                        source={editableSource}
+                        label={`Edition (${width})`}
+                        value={EDITIONS[0] ?? null}
+                    />
+                    <RelationField
+                        multiple
+                        resource="people"
+                        source={editableSource}
+                        label={`People (${width})`}
+                        value={PEOPLE}
+                    />
+                </div>
+            ))}
+        </div>
+    ),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await waitFor(() => expect(canvas.getAllByRole('listitem')).toHaveLength(16));
+        const modes: Record<string, string[]> = {};
+        for (const card of canvas.getAllByRole('listitem')) {
+            await expectFits(card);
+            const menus = visibleMenus(card).filter((menu) =>
+                menu.getAttribute('aria-label')?.startsWith('Actions for '),
+            );
+            const remove = within(card).queryByRole('button', { name: /^Remove / });
+            // The buttons or the menu: never both, never neither
+            await expect(menus.length + (remove !== null ? 1 : 0)).toBe(1);
+            const width = card.closest('[data-width]')?.getAttribute('data-width') ?? '';
+            (modes[width] ??= []).push(menus.length === 0 ? 'buttons' : 'menu');
+        }
+        // In the main column, every card has its buttons
+        await expect(modes['40rem']).toEqual(['buttons', 'buttons', 'buttons', 'buttons']);
+        // In a sidebar, the cards that reorder have more buttons than room: a menu
+        await expect(modes['18rem']?.slice(1)).toEqual(['menu', 'menu', 'menu']);
     },
 };
 

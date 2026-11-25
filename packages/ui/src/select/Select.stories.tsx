@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { TextInput } from '../text-input/TextInput';
 import { type OptionValue, Select, type SelectOption } from './Select';
@@ -117,5 +117,99 @@ export const WithErrors: Story = {
         const valid = canvas.getByRole('button', { name: /Category/ });
         await expect(border(trigger)).toBe(border(input.closest('[data-invalid]') ?? input));
         await expect(border(trigger)).not.toBe(border(valid));
+    },
+};
+
+/**
+ * `labelInside`: the label in the button, before the value (`Status: Draft`), as the filters of a
+ * list's toolbar have it. The whole control opens the options, which line up with it; the label
+ * stays the name of the select.
+ */
+export const LabelInside: Story = {
+    render: function Render(args) {
+        const [value, setValue] = useState<OptionValue | null>('draft');
+        return (
+            <div style={{ width: '14rem' }}>
+                <Select
+                    {...args}
+                    multiple={false}
+                    labelInside
+                    value={value}
+                    onChange={setValue}
+                    onClear={() => setValue(null)}
+                />
+            </div>
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        const trigger = canvas.getByRole('button', { name: /Status/ });
+        const label = trigger.querySelector('.panneau-list-box-inside-label');
+        await expect(label).toHaveTextContent('Status');
+        // Before the value, on its line
+        const value = within(trigger).getByText('Draft');
+        await expect(label?.getBoundingClientRect().right).toBeLessThanOrEqual(
+            value.getBoundingClientRect().left,
+        );
+        await userEvent.click(label as Element);
+        const listBox = await body.findByRole('listbox');
+        await waitFor(() => expect(listBox).toBeVisible());
+        const popover = listBox.closest('[data-trigger]') ?? listBox;
+        await expect(
+            Math.abs(popover.getBoundingClientRect().left - trigger.getBoundingClientRect().left),
+        ).toBeLessThan(2);
+        await userEvent.keyboard('{Escape}');
+    },
+};
+
+/**
+ * In a page scrolled down (a long form, a list's last filters): the first press opens the options,
+ * with a mouse and with a finger, and pressing elsewhere closes them. The page doesn't move.
+ */
+export const InAScrolledPage: Story = {
+    render: function Render(args) {
+        const [value, setValue] = useState<OptionValue | null>('draft');
+        return (
+            <div>
+                <div style={{ height: '150vh' }} />
+                <Select
+                    {...args}
+                    multiple={false}
+                    value={value}
+                    onChange={setValue}
+                    onClear={() => setValue(null)}
+                />
+                <div style={{ height: '150vh' }} />
+            </div>
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const body = within(canvasElement.ownerDocument.body);
+        const view = canvasElement.ownerDocument.defaultView ?? window;
+        const trigger = canvas.getByRole('button', { name: /Status/ });
+        trigger.scrollIntoView({ block: 'center' });
+        const scrolled = view.scrollY;
+        await expect(scrolled).toBeGreaterThan(0);
+
+        // The options open, and stay open once their animation is over
+        const isOpen = async () => {
+            const listBox = await body.findByRole('listbox');
+            await waitFor(() => expect(listBox).toBeVisible());
+            await new Promise((resolve) => setTimeout(resolve, 300));
+            await expect(listBox).toBeInTheDocument();
+            await expect(view.scrollY).toBe(scrolled);
+        };
+
+        await userEvent.click(trigger);
+        await isOpen();
+        await userEvent.keyboard('{Escape}');
+        await waitFor(() => expect(body.queryByRole('listbox')).toBeNull());
+
+        // A finger: the options open when it lifts, on the first tap
+        await userEvent.pointer([{ keys: '[TouchA>]', target: trigger }, { keys: '[/TouchA]' }]);
+        await isOpen();
+        await userEvent.keyboard('{Escape}');
     },
 };
