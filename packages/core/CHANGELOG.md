@@ -1,5 +1,13 @@
 # @panneau/core
 
+## 5.0.0-alpha.50
+
+### Patch Changes
+
+- Updated dependencies [24c9683]
+- Updated dependencies [627a778]
+  - @panneau/protocol@5.0.0-alpha.50
+
 ## 5.0.0-alpha.49
 
 ### Patch Changes

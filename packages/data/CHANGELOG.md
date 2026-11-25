@@ -1,5 +1,14 @@
 # @panneau/data
 
+## 5.0.0-alpha.50
+
+### Patch Changes
+
+- 31ce5c6: Replacing a file without direct uploads works on PHP 8.3 and Symfony below 7.4 (#167). `createRestAdapter()` takes `multipartMethodOverride`, the name of a form field: a `multipart/form-data` request whose method is not `POST` is then sent as `POST`, with its method in that field, and keeps its headers (`If-Match` included). Off by default. `createLaravelAdapter()` turns it on with `_method`, which Laravel's method spoofing routes to the `PATCH` route; pass `false` to send the method as is. JSON bodies keep their method.
+- Updated dependencies [24c9683]
+- Updated dependencies [627a778]
+  - @panneau/protocol@5.0.0-alpha.50
+
 ## 5.0.0-alpha.49
 
 ### Patch Changes
