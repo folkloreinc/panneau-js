@@ -38,6 +38,7 @@ import { type NamedIconLoader, PanneauRoot, usePanneauIntl, usePreference } from
 import styles from './Panneau.module.css';
 import { Shell } from './Shell';
 import type { LoginNotice } from './auth/LoginPage';
+import { NEXT_PARAM, cameBackFrom, rememberNext, safeNext } from './auth/next';
 import type { getPasskey as getPasskeyNow } from './auth/webauthn';
 import {
     CurrentContextProvider,
@@ -312,9 +313,51 @@ function Content({
         setInlined(undefined);
         queryClient.removeQueries({ queryKey: queryKeys.all });
     };
+    // Where to go once logged in, in `panneau` mode: a same-origin path of the backend, such as
+    // the authorization page of its OAuth server (#508). The browser goes there once, with a full
+    // load: it may be outside the app.
+    const [next] = useState(() =>
+        safeNext(
+            new URLSearchParams(window.location.search).get(NEXT_PARAM),
+            window.location.origin,
+        ),
+    );
+    // The app sent the browser to `next` a moment ago, and the target sent it back with the same
+    // `next`: a user who is still logged in would go round in a loop.
+    const [cameBack] = useState(() => next !== null && cameBackFrom(next));
+    const [loggedInHere, setLoggedInHere] = useState(false);
+    const [going, setGoing] = useState(false);
+    // Logged in: the session is active and the definition answered, past its second factor and
+    // the verification of the email.
+    const goesToNext =
+        next !== null &&
+        !going &&
+        !(cameBack && !loggedInHere) &&
+        auth?.mode === 'panneau' &&
+        authPage === null &&
+        status === 'active' &&
+        definition !== undefined;
+    if (goesToNext) {
+        setGoing(true);
+    }
+    useEffect(() => {
+        if (going && next !== null) {
+            rememberNext(next);
+            loadPage(next);
+        }
+    }, [going, next]);
+    // In a loop, the app stays, without `next` in its address.
+    useEffect(() => {
+        if (cameBack) {
+            const url = new URL(window.location.href);
+            url.searchParams.delete(NEXT_PARAM);
+            navigate(`${url.pathname}${url.search}${url.hash}`, { replace: true });
+        }
+    }, [cameBack]);
     const loggedIn = () => {
         forgetUser();
         setNotice(null);
+        setLoggedInHere(true);
         session.logIn();
     };
     const logIn = async (credentials: LoginCredentials) => {
@@ -413,6 +456,8 @@ function Content({
                     {...(notice?.notice !== undefined ? { notice: notice.notice } : {})}
                     {...(notice?.email !== undefined ? { email: notice.email } : {})}
                     {...(providerError !== undefined ? { providerError } : {})}
+                    // A provider comes back to the current page, with the `next` of the app in its
+                    // query: a backend only follows a `next` under the base path (decision 0052).
                     next={`${window.location.pathname}${window.location.search}`}
                     onLogIn={logIn}
                     {...(adapter.passkeyLoginOptions !== undefined &&
@@ -478,7 +523,7 @@ function Content({
                 />
             ) : status !== 'active' ? (
                 <SessionEnded loginUrl={loginUrl} />
-            ) : switched || refusedPath !== null ? (
+            ) : switched || refusedPath !== null || going ? (
                 <ShellSkeleton navigation={definition?.theme?.navigation} />
             ) : definition === undefined ? (
                 <Loading
