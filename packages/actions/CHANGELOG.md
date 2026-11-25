@@ -1,5 +1,18 @@
 # @panneau/actions
 
+## 5.0.0-alpha.52
+
+### Patch Changes
+
+- Updated dependencies [8f02df8]
+- Updated dependencies [fb3f8d8]
+  - @panneau/intl@5.0.0-alpha.52
+  - @panneau/ui@5.0.0-alpha.52
+  - @panneau/forms@5.0.0-alpha.52
+  - @panneau/core@5.0.0-alpha.52
+  - @panneau/data@5.0.0-alpha.52
+  - @panneau/protocol@5.0.0-alpha.52
+
 ## 5.0.0-alpha.51
 
 ### Patch Changes
