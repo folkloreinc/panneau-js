@@ -66,17 +66,37 @@ describe('DateTimeField', () => {
                 />
             </>,
         );
+        // In short under the control, out of it: the control stays on one line
         const published = screen.getByRole('group', { name: 'Published at' });
-        expect(within(published).getByText('Eastern Time (UTC−4)')).toHaveAttribute(
-            'title',
-            'America/Toronto',
+        expect(within(published).queryByText(/UTC/)).toBeNull();
+        const zone = screen.getByTitle('Eastern Time (UTC−4)');
+        expect(zone).toHaveTextContent('UTC−4 · America/Toronto');
+        expect(screen.getByTitle('Eastern Time (UTC−5)')).toHaveTextContent(
+            'UTC−5 · America/Toronto',
         );
-        const unpublished = screen.getByRole('group', { name: 'Unpublished at' });
-        expect(within(unpublished).getByText('Eastern Time (UTC−5)')).toBeInTheDocument();
-        // The zone describes the segments, which are the date and the time only
-        expect(segments('Published at')).not.toContain('EDT');
+        // It describes the segments by its long name, not its short one
         const month = within(published).getAllByRole('spinbutton')[0] as HTMLElement;
+        expect(month).toHaveAccessibleDescription(/Eastern Time \(UTC−4\)$/);
+        expect(month).not.toHaveAccessibleDescription(/America\/Toronto/);
+    });
+
+    it('keeps the help text after the time zone', () => {
+        renderField(
+            <DateTimeField
+                label="Published at"
+                timeZone="America/Toronto"
+                value="2026-10-15T13:30:00Z"
+                description="When the article goes live."
+            />,
+        );
+        const month = within(screen.getByRole('group', { name: 'Published at' })).getAllByRole(
+            'spinbutton',
+        )[0] as HTMLElement;
+        expect(month).toHaveAccessibleDescription(/When the article goes live\./);
         expect(month).toHaveAccessibleDescription(/Eastern Time \(UTC−4\)/);
+        const zone = screen.getByTitle('Eastern Time (UTC−4)');
+        const help = screen.getByText('When the article goes live.');
+        expect(zone.compareDocumentPosition(help) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     });
 
     it('has no time zone for values without an offset', () => {

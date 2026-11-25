@@ -47,11 +47,15 @@ describe('DateRangeField', () => {
         );
         expect(segments('Start')).toEqual(['11', '4', '2026', '19', '30']);
         expect(segments('End')).toEqual(['11', '4', '2026', '21', '00']);
-        // The zone, by its name and its offset on that day, out of the segments
-        expect(screen.getByText('Eastern Time (UTC−5)')).toHaveAttribute(
-            'title',
-            'America/Toronto',
+        // The zone, under the control: in short, with its name and its offset on that day as
+        // its tooltip and its description
+        expect(screen.getByTitle('Eastern Time (UTC−5)')).toHaveTextContent(
+            'UTC−5 · America/Toronto',
         );
+        const day = within(screen.getByRole('group', { name: 'Start' })).getAllByRole(
+            'spinbutton',
+        )[0] as HTMLElement;
+        expect(day).toHaveAccessibleDescription(/Eastern Time \(UTC−5\)/);
         const minute = within(screen.getByRole('group', { name: 'End' })).getAllByRole(
             'spinbutton',
         )[4] as HTMLElement;

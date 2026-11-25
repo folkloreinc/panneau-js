@@ -44,11 +44,14 @@ export const DateTimes: Story = {
     },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        // The zone of the place, by its name and its offset on that day
-        await expect(canvas.getByText('Eastern Time (UTC−5)')).toBeVisible();
+        // The zone of the place, under the control, with its offset on that day; its name is
+        // its tooltip
+        const zone = canvas.getByText('UTC−5 · America/Toronto');
+        await expect(zone).toBeVisible();
+        await expect(zone.parentElement).toHaveAttribute('title', 'Eastern Time (UTC−5)');
         await userEvent.click(canvas.getByRole('switch', { name: 'All day' }));
         // Days have no zone
-        await expect(canvas.queryByText('Eastern Time (UTC−5)')).toBeNull();
+        await expect(canvas.queryByText('UTC−5 · America/Toronto')).toBeNull();
         await expect(canvas.getByText(/"allDay":true/)).toBeVisible();
         await expect(
             within(canvas.getByRole('group', { name: 'Start' })).getAllByRole('spinbutton'),

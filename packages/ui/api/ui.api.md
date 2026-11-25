@@ -607,6 +607,7 @@ export interface DatePickerProps extends Omit<DatePickerProps_2<DateValue>, 'cla
     // (undocumented)
     controlClassName?: string;
     end?: ReactNode;
+    hint?: ReactNode;
     // (undocumented)
     popoverClassName?: string;
     shortcuts?: readonly DatePickerShortcut[];
@@ -633,6 +634,7 @@ export interface DateRangePickerProps extends FieldChromeProps {
     granularity?: 'day' | 'hour' | 'minute' | 'second';
     // (undocumented)
     hideTimeZone?: boolean;
+    hint?: ReactNode;
     // (undocumented)
     hourCycle?: 12 | 24;
     // (undocumented)

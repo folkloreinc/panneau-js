@@ -1,6 +1,13 @@
-/* The time zone at the end of a control of date-times. */
+/* The time zone under a control of date-times, in the style of its description. */
 .zone {
-    color: var(--panneau-color-text-muted);
-    font-size: var(--panneau-font-size-sm);
+    overflow-wrap: anywhere;
+}
+
+.visuallyHidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
     white-space: nowrap;
 }

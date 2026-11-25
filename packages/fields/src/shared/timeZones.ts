@@ -64,3 +64,12 @@ export function formatTimeZone(zone: string, locale: string, date: Date = new Da
     const offset = formatTimeZoneOffset(zone, date);
     return name !== null ? `${name} (${offset})` : offset;
 }
+
+/**
+ * A time zone in short, for a line under a control: its offset at that date and its IANA id,
+ * `UTC−4 · America/Toronto`, or the offset alone for a zone that is only an offset (`UTC`).
+ */
+export function formatTimeZoneShort(zone: string, date: Date = new Date()): string {
+    const offset = formatTimeZoneOffset(zone, date);
+    return zone.includes('/') && !zone.startsWith('Etc/') ? `${offset} · ${zone}` : offset;
+}

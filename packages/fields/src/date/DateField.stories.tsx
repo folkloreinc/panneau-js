@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { expect, userEvent, within } from 'storybook/test';
 
 import { DateTimeField } from '../datetime/DateTimeField';
+import { TextField } from '../text/TextField';
 import { TimeField } from '../time/TimeField';
 import { DateField, DateFieldEntry } from './DateField';
 
@@ -75,9 +76,26 @@ export const WithShortcuts: Story = {
     },
 };
 
+/** The control of a date-time, as high as a text input's: its zone is under it, not in it. */
+async function expectOneLine(canvasElement: HTMLElement, name: string) {
+    const canvas = within(canvasElement);
+    const control = canvas.getByRole('group', { name });
+    const text = canvas.getByRole('textbox', { name: 'Title' });
+    await expect(
+        Math.abs(control.getBoundingClientRect().height - text.getBoundingClientRect().height),
+    ).toBeLessThanOrEqual(0.5);
+    const segments = within(control).getAllByRole('spinbutton');
+    const top = segments[0]?.getBoundingClientRect().top ?? 0;
+    for (const segment of segments) {
+        await expect(Math.abs(segment.getBoundingClientRect().top - top)).toBeLessThanOrEqual(1);
+    }
+    await expect(within(control).queryByText(/UTC/)).toBeNull();
+}
+
 /**
- * Date-times name the zone they are typed in, with its offset on that day: the same zone is
- * UTC−4 in October and UTC−5 in November.
+ * Date-times name the zone they are typed in, under their control, with its offset on that day:
+ * the same zone is UTC−4 in October and UTC−5 in November. Its name in the locale is its tooltip,
+ * and what screen readers read.
  */
 export const TimeZones: Story = {
     render: function Render() {
@@ -85,11 +103,13 @@ export const TimeZones: Story = {
         const [november, setNovember] = useState<string | null>('2026-11-15T13:30:00Z');
         return (
             <div style={{ display: 'grid', gap: '1rem', maxWidth: '28rem' }}>
+                <TextField label="Title" value="Opening night" />
                 <DateTimeField
                     label="Opens at"
                     timeZone="America/Toronto"
                     value={october}
                     onChange={setOctober}
+                    description="When the doors open."
                 />
                 <DateTimeField
                     label="Closes at"
@@ -103,13 +123,58 @@ export const TimeZones: Story = {
     },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
+        await expectOneLine(canvasElement, 'Opens at');
+        await expectOneLine(canvasElement, 'Closes at');
+        const october = canvas.getByTitle('Eastern Time (UTC−4)');
+        await expect(october).toBeVisible();
+        await expect(canvas.getByText('UTC−4 · America/Toronto')).toBeVisible();
+        await expect(canvas.getByText('UTC−5 · America/Toronto')).toBeVisible();
+        // Under the control, where help text is, and before it
         const opens = canvas.getByRole('group', { name: 'Opens at' });
-        await expect(within(opens).getByText('Eastern Time (UTC−4)')).toBeVisible();
-        const closes = canvas.getByRole('group', { name: 'Closes at' });
-        await expect(within(closes).getByText('Eastern Time (UTC−5)')).toBeVisible();
-        // A value without an offset is in no zone
-        const wall = canvas.getByRole('group', { name: 'Starts at (wall time)' });
-        await expect(within(wall).queryByText(/UTC/)).toBeNull();
+        await expect(october.getBoundingClientRect().top).toBeGreaterThanOrEqual(
+            opens.getBoundingClientRect().bottom,
+        );
+        await expect(
+            canvas.getByText('When the doors open.').getBoundingClientRect().top,
+        ).toBeGreaterThan(october.getBoundingClientRect().top);
+        const [month] = within(opens).getAllByRole('spinbutton');
+        await expect(month).toHaveAccessibleDescription(/Eastern Time \(UTC−4\)/);
+        // A value without an offset is in no zone: two zones for three date-times
+        await expect(canvas.getAllByText(/^UTC−\d · America\/Toronto$/)).toHaveLength(2);
+    },
+};
+
+/**
+ * In French, in a column as narrow as a form's sidebar: the long name of the zone ("heure de l'Est
+ * nord-américain") never makes the control taller, and the date and the time stay whole.
+ */
+export const TimeZoneInFrench: Story = {
+    globals: { locale: 'fr' },
+    render: function Render() {
+        const [value, setValue] = useState<string | null>('2026-10-15T13:30:00Z');
+        return (
+            <div style={{ display: 'grid', gap: '1rem', width: '16rem' }}>
+                <TextField label="Title" value="Soirée d’ouverture" />
+                <DateTimeField
+                    label="Opens at"
+                    timeZone="America/Toronto"
+                    value={value}
+                    onChange={setValue}
+                />
+            </div>
+        );
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expectOneLine(canvasElement, 'Opens at');
+        const zone = canvas.getByText('UTC−4 · America/Toronto');
+        await expect(zone).toBeVisible();
+        await expect(zone.parentElement).toHaveAttribute(
+            'title',
+            expect.stringMatching(/^heure de l’Est.*\(UTC−4\)$/),
+        );
+        const control = canvas.getByRole('group', { name: 'Opens at' });
+        await expect(control.scrollWidth).toBeLessThanOrEqual(control.clientWidth + 1);
     },
 };
 

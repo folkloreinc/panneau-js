@@ -203,9 +203,9 @@ export const WithoutButton: Story = {
 };
 
 /**
- * A narrow sidebar (`--panneau-aside-width: 18rem`): the date-time puts its time zone under the date and,
- * narrower, its time under its date; the start of the address of a slug gives up its room to the
- * slug, cut at its start. Nothing is cut at the edge of the panel.
+ * A narrow sidebar (`--panneau-aside-width: 18rem`): the date-time stays on one line, with its
+ * time zone under it where help text goes; the start of the address of a slug gives up its room
+ * to the slug, cut at its start. Nothing is cut at the edge of the panel.
  */
 export const NarrowSidebar: Story = {
     args: {
@@ -249,28 +249,43 @@ export const NarrowSidebar: Story = {
         const fits = (element: Element) =>
             expect(element.getBoundingClientRect().right).toBeLessThanOrEqual(edge + 0.5);
 
-        // The date and the time are whole, inside the panel, with the zone under them
+        // The date and the time are whole, inside the panel, on one line, as high as the other
+        // controls, with the zone under the control
         const date = panel.getByRole('group', { name: 'Publication date' });
         await fits(date);
         await expect(date.scrollWidth).toBeLessThanOrEqual(date.clientWidth + 1);
         const segments = within(date).getAllByRole('spinbutton');
         for (const segment of segments) {
             await fits(segment);
+            await expect(
+                Math.abs(
+                    segment.getBoundingClientRect().top -
+                        (segments[0]?.getBoundingClientRect().top ?? 0),
+                ),
+            ).toBeLessThanOrEqual(1);
         }
-        // The text of the date and of the zone under it start on the same edge
+        // As high as every control: the height of a control, its least height
+        await expect(
+            Math.abs(
+                date.getBoundingClientRect().height - parseFloat(getComputedStyle(date).minHeight),
+            ),
+        ).toBeLessThanOrEqual(0.5);
         const textStart = (element: Element) => {
             const range = element.ownerDocument.createRange();
             range.selectNodeContents(element);
             return range.getBoundingClientRect().left;
         };
-        // The zone's IANA id is its title: its name depends on the zone of the browser
-        const zone = within(date).getByTitle(/.+/);
-        await expect(zone.getBoundingClientRect().top).toBeGreaterThan(
-            segments[0]?.getBoundingClientRect().bottom ?? Infinity,
+        // The zone's name is its title: it depends on the zone of the browser
+        const zone = panel.getByTitle(/UTC/);
+        await expect(within(date).queryByTitle(/UTC/)).toBeNull();
+        await fits(zone);
+        await expect(zone.getBoundingClientRect().top).toBeGreaterThanOrEqual(
+            date.getBoundingClientRect().bottom,
         );
-        await expect(
-            Math.abs(textStart(zone) - textStart(segments[0] ?? zone)),
-        ).toBeLessThanOrEqual(0.5);
+        // Like help text, it starts on the edge of the label
+        const labelId = date.getAttribute('aria-labelledby')?.split(' ')[0] ?? '';
+        const label = date.ownerDocument.getElementById(labelId) ?? date;
+        await expect(Math.abs(textStart(zone) - textStart(label))).toBeLessThanOrEqual(0.5);
 
         // The slug keeps room to be read and typed: the prefix is cut, not the input
         const slug = panel.getByRole('textbox', { name: 'Slug' });

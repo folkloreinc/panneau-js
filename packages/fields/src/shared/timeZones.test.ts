@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatTimeZone, formatTimeZoneOffset, getTimeZoneName } from './timeZones';
+import {
+    formatTimeZone,
+    formatTimeZoneOffset,
+    formatTimeZoneShort,
+    getTimeZoneName,
+} from './timeZones';
 
 const OCTOBER = new Date('2026-10-15T12:00:00Z');
 const NOVEMBER = new Date('2026-11-15T12:00:00Z');
@@ -20,6 +25,13 @@ describe('time zones', () => {
         expect(formatTimeZone('Europe/Paris', 'fr', OCTOBER)).toBe(
             'heure d’Europe centrale (UTC+2)',
         );
+    });
+
+    it('gives the zone in short: its offset and its id', () => {
+        expect(formatTimeZoneShort('America/Toronto', OCTOBER)).toBe('UTC−4 · America/Toronto');
+        expect(formatTimeZoneShort('America/Toronto', NOVEMBER)).toBe('UTC−5 · America/Toronto');
+        expect(formatTimeZoneShort('UTC', OCTOBER)).toBe('UTC');
+        expect(formatTimeZoneShort('Etc/GMT+5', OCTOBER)).toBe('UTC−5');
     });
 
     it('falls back on the city of the zone, or the offset alone', () => {
