@@ -1,5 +1,9 @@
 # @panneau/codemods
 
+## 5.0.0-alpha.53
+
+No changes in this release.
+
 ## 5.0.0-alpha.52
 
 No changes in this release.

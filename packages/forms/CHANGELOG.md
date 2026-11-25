@@ -1,5 +1,16 @@
 # @panneau/forms
 
+## 5.0.0-alpha.53
+
+### Patch Changes
+
+- Updated dependencies [efb2142]
+  - @panneau/ui@5.0.0-alpha.53
+  - @panneau/fields@5.0.0-alpha.53
+  - @panneau/core@5.0.0-alpha.53
+  - @panneau/intl@5.0.0-alpha.53
+  - @panneau/protocol@5.0.0-alpha.53
+
 ## 5.0.0-alpha.52
 
 ### Patch Changes
