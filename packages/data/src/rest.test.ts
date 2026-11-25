@@ -643,6 +643,42 @@ describe('createRestAdapter', () => {
         expect(await requests[1]?.json()).toEqual({ credential: { id: 'c1' }, remember: true });
     });
 
+    it('lists the connections of the account, makes a personal token and revokes one', async () => {
+        const connection = {
+            id: 'token:1',
+            type: 'token',
+            name: 'Claude',
+            write: false,
+            createdAt: '2026-11-24T10:00:00Z',
+            lastUsedAt: null,
+            expiresAt: null,
+        };
+        const { fetch, requests } = createStubFetch((request) => {
+            if (request.method === 'DELETE') {
+                return new Response(null, { status: 204 });
+            }
+            return request.method === 'POST'
+                ? jsonResponse(201, { token: 'mcp_secret', connection })
+                : jsonResponse(200, { data: [connection] });
+        });
+        const adapter = createRestAdapter({ baseUrl: BASE_URL, fetch });
+
+        expect(await adapter.listConnections?.()).toEqual([connection]);
+        expect(await adapter.createConnectionToken?.({ name: 'Claude', write: true })).toEqual({
+            token: 'mcp_secret',
+            connection,
+        });
+        await adapter.revokeConnection?.('client:9/a');
+        expect(
+            requests.map((request) => `${request.method} ${new URL(request.url).pathname}`),
+        ).toEqual([
+            'GET /panneau/api/account/connections',
+            'POST /panneau/api/account/connections/tokens',
+            'DELETE /panneau/api/account/connections/client%3A9%2Fa',
+        ]);
+        expect(await requests[1]?.json()).toEqual({ name: 'Claude', write: true });
+    });
+
     it('rejects with a PasswordConfirmationError on a 423', async () => {
         const { fetch } = createStubFetch(
             () =>

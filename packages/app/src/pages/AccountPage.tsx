@@ -33,6 +33,7 @@ import {
     supportsPasskeys,
 } from '../auth/webauthn';
 import { useDocumentTitle } from '../documentTitle';
+import { ConnectionsSection } from './AccountConnections';
 import { PageHeader, PageLayout } from './PageHeader';
 import styles from './pages.module.css';
 
@@ -505,14 +506,15 @@ function PasskeysSection() {
 
 /**
  * The account page of the user (`{basePath}/account`, decision 0050), with `auth.account`: their
- * name and email, their password, their two-factor authentication and their passkeys (decision
- * 0051), each in its own section
- * with its own save. A section shows only when the adapter and the definition offer it.
+ * name and email, their password, their two-factor authentication, their passkeys (decision 0051)
+ * and, with `agents.mcp`, their connections to the MCP server (decision 0113), each in its own
+ * section with its own save. A section shows only when the adapter and the definition offer it.
  */
 export function AccountPage({ definition }: { definition: Definition }) {
     const intl = usePanneauIntl();
     const adapter = useDataAdapter();
     const auth = definition.auth;
+    const mcp = definition.agents?.mcp;
     const title = intl.formatMessage(appMessages.account);
     useDocumentTitle([title]);
     const password =
@@ -532,6 +534,9 @@ export function AccountPage({ definition }: { definition: Definition }) {
             {twoFactor ? <TwoFactorSection /> : null}
             {auth?.passkeys === true && adapter.listPasskeys !== undefined ? (
                 <PasskeysSection />
+            ) : null}
+            {mcp !== undefined && adapter.listConnections !== undefined ? (
+                <ConnectionsSection url={mcp.url} tokens={mcp.tokens === true} />
             ) : null}
         </PageLayout>
     );

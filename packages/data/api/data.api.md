@@ -8,6 +8,9 @@ import type { ActionRequest } from '@panneau/protocol';
 import type { ActionResult } from '@panneau/protocol';
 import type { ActionRun } from '@panneau/protocol';
 import type { AggregateRequest } from '@panneau/protocol';
+import type { Connection } from '@panneau/protocol';
+import type { ConnectionTokenRequest } from '@panneau/protocol';
+import type { ConnectionTokenResponse } from '@panneau/protocol';
 import type { ContextOption } from '@panneau/protocol';
 import type { ContextValues } from '@panneau/protocol';
 import type { Definition } from '@panneau/protocol';
@@ -86,6 +89,7 @@ export interface DataAdapter {
     confirmPassword?(password: string, options?: RequestOptions): Promise<void>;
     confirmTwoFactor?(code: string, options?: RequestOptions): Promise<RecoveryCodes>;
     create(resource: string, values: Values, options?: RequestOptions): Promise<Item>;
+    createConnectionToken?(request: ConnectionTokenRequest, options?: RequestOptions): Promise<ConnectionTokenResponse>;
     delete(resource: string, id: string, options?: RequestOptions): Promise<void>;
     deletePasskey?(id: string, options?: RequestOptions): Promise<void>;
     disableTwoFactor?(options?: RequestOptions): Promise<void>;
@@ -105,6 +109,7 @@ export interface DataAdapter {
     getWidgetData(widget: string, options?: WidgetDataOptions): Promise<unknown>;
     list(resource: string, query?: ListQuery, options?: RequestOptions): Promise<ListResponse>;
     listActionRuns(options?: RequestOptions): Promise<ActionRun[]>;
+    listConnections?(options?: RequestOptions): Promise<Connection[]>;
     listPasskeys?(options?: RequestOptions): Promise<Passkey[]>;
     login(credentials: LoginCredentials, options?: RequestOptions): Promise<LoginResult>;
     logout(options?: RequestOptions): Promise<void>;
@@ -118,6 +123,7 @@ export interface DataAdapter {
     regenerateRecoveryCodes?(options?: RequestOptions): Promise<RecoveryCodes>;
     resetPassword?(reset: PasswordReset, options?: RequestOptions): Promise<void>;
     resolveEmbed?(url: string, options?: RequestOptions): Promise<EmbedValue>;
+    revokeConnection?(id: string, options?: RequestOptions): Promise<void>;
     runAction(resource: string, action: string, request: ActionRequest, options?: RequestOptions): Promise<ActionResponse>;
     search(q: string, options?: SearchOptions): Promise<SearchResponse>;
     sendEmailVerification?(options?: RequestOptions): Promise<void>;

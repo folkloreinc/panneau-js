@@ -35,7 +35,9 @@ const work = resolve(root, '.tmp/bundle-size');
 // page, now carry the handle and the menu of moves of ReorderList, and React Aria's drag and drop.
 // 1450 / 472 KB: forms on phones (#501) measure 1445 / 470 KB, just over: the aside measures its
 // width to put a form's sidebar first, and the item menu of a narrow repeater.
-const BUDGET = { minified: 1450 * 1024, gzip: 472 * 1024 };
+// 1460 / 476 KB: the connections of the account page (#507) measure 1451 / 471 KB with v5.x after
+// #509: their messages and the three methods of the REST adapter are on the first page.
+const BUDGET = { minified: 1460 * 1024, gzip: 476 * 1024 };
 
 const report = process.argv.includes('--report');
 

@@ -44,6 +44,8 @@ export const queryKeys = {
     account: () => ['panneau', 'account'] as const,
     twoFactor: () => ['panneau', 'account', 'two-factor'] as const,
     passkeys: () => ['panneau', 'account', 'passkeys'] as const,
+    /** The connections of the user to the MCP server (decision 0113). */
+    connections: () => ['panneau', 'account', 'connections'] as const,
     /**
      * Under `['panneau', 'dashboard']`: invalidating it refreshes every widget, of every page and
      * summary. Without a page, the widget of the home page. In a summary, keyed by its resource

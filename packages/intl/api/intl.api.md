@@ -175,6 +175,46 @@ export const appMessages: {
     removePasskeyNamed: PanneauMessage<    {
     name: string;
     }>;
+    connections: PanneauMessage<Record<never, never>>;
+    connectionsHelp: PanneauMessage<Record<never, never>>;
+    mcpServerUrl: PanneauMessage<Record<never, never>>;
+    copy: PanneauMessage<Record<never, never>>;
+    copied: PanneauMessage<Record<never, never>>;
+    copyMcpServerUrl: PanneauMessage<Record<never, never>>;
+    noConnections: PanneauMessage<Record<never, never>>;
+    connectionToken: PanneauMessage<Record<never, never>>;
+    connectionClient: PanneauMessage<Record<never, never>>;
+    connectionRead: PanneauMessage<Record<never, never>>;
+    connectionWrite: PanneauMessage<Record<never, never>>;
+    connectionCreated: PanneauMessage<    {
+    date: string;
+    }>;
+    connectionUsed: PanneauMessage<    {
+    date: string;
+    }>;
+    connectionExpires: PanneauMessage<    {
+    date: string;
+    }>;
+    connectionNeverExpires: PanneauMessage<Record<never, never>>;
+    revokeConnection: PanneauMessage<Record<never, never>>;
+    revokeConnectionNamed: PanneauMessage<    {
+    name: string;
+    }>;
+    revokeConnectionTitle: PanneauMessage<    {
+    name: string;
+    }>;
+    revokeTokenMessage: PanneauMessage<Record<never, never>>;
+    revokeClientMessage: PanneauMessage<Record<never, never>>;
+    revokeConnectionError: PanneauMessage<Record<never, never>>;
+    newToken: PanneauMessage<Record<never, never>>;
+    tokenName: PanneauMessage<Record<never, never>>;
+    tokenWrite: PanneauMessage<Record<never, never>>;
+    tokenWriteHelp: PanneauMessage<Record<never, never>>;
+    makeToken: PanneauMessage<Record<never, never>>;
+    tokenError: PanneauMessage<Record<never, never>>;
+    tokensUnavailable: PanneauMessage<Record<never, never>>;
+    tokenMadeHelp: PanneauMessage<Record<never, never>>;
+    copyToken: PanneauMessage<Record<never, never>>;
     account: PanneauMessage<Record<never, never>>;
     userMenu: PanneauMessage<    {
     name: string;

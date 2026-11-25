@@ -3,6 +3,9 @@ import type {
     ActionResult,
     ActionRun,
     AggregateRequest,
+    Connection,
+    ConnectionTokenRequest,
+    ConnectionTokenResponse,
     ContextOption,
     ContextValues,
     Definition,
@@ -223,6 +226,28 @@ export interface DataAdapter {
     addPasskey?(passkey: NewPasskey, options?: RequestOptions): Promise<Passkey>;
     /** Removes a passkey of the current user. Optional. */
     deletePasskey?(id: string, options?: RequestOptions): Promise<void>;
+    /**
+     * The connections of the current user to the MCP server (`GET /account/connections`, decision
+     * 0113), the newest first: their personal tokens and the OAuth clients they authorized.
+     * Optional: the endpoints exist only when the definition has `agents.mcp`.
+     */
+    listConnections?(options?: RequestOptions): Promise<Connection[]>;
+    /**
+     * Makes a personal token (`POST /account/connections/tokens`), and gives its plain text, once,
+     * with its connection. Rejects with an `ApiError` of status `409` when the account can't make
+     * one, a `ValidationError` for a name the backend refuses, and a `PasswordConfirmationError`
+     * when it needs a recent password. Optional.
+     */
+    createConnectionToken?(
+        request: ConnectionTokenRequest,
+        options?: RequestOptions,
+    ): Promise<ConnectionTokenResponse>;
+    /**
+     * Revokes a connection of the current user (`DELETE /account/connections/{connection}`): a
+     * token, or every token of a client for the user. Rejects with a `PasswordConfirmationError`
+     * when it needs a recent password. Optional.
+     */
+    revokeConnection?(id: string, options?: RequestOptions): Promise<void>;
     /** The two-factor authentication of the current user (`GET /account/two-factor`). Optional. */
     getTwoFactor?(options?: RequestOptions): Promise<TwoFactorStatus>;
     /** Starts setting it up: a new secret, to confirm with `confirmTwoFactor()`. Optional. */
