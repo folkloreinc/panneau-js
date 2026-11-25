@@ -1,5 +1,31 @@
 # @panneau/ui
 
+## 5.0.0-alpha.50
+
+### Minor Changes
+
+- 85067b3: Forms on phones (#501). Below 56rem, the sidebar of a form comes before its fields, collapsed to one line that names its panels (`Publication · Files`), with the error badge of its fields; it opens on a revealed field or an error, and has no box of its own, so its fields are as wide as the form's (decision 0075, amended). `AsideLayout` takes `narrow="before"` and `onBeforeChange`, and `Aside` takes `summary`, `summaryEnd`, `isExpanded` and `onExpandedChange`. The switch of a localized field stays on the line of its label: the label wraps first, and "Copy from …" is only its icon in a narrow field. A narrow repeater puts the tools of an item in a menu ("Actions for item 1"), so that its title keeps the room of its header. On a phone, the save bar of the app's form page is fixed at the bottom of the screen, from edge to edge, on the background of the page's card.
+
+### Patch Changes
+
+- 955586a: `CommandPalette`: an item takes `media`, an app's own glyph in place of its icon or image (such as the icon of a tool in its colour, or an emoji), and `badge`, shown right after its label (such as "Draft"). The badge is part of the item's accessible name, and neither matched by the query nor highlighted.
+- 489d353: Follow-ups of forms on phones (#503). Before a form on a narrow screen, a sidebar whose button names a single panel (`Publication`) no longer repeats the title of that panel, nor collapses it a second time. The legend of a repeater keeps one line: "Expand all" and "Collapse all" are at its end, only an icon in a narrow field (the class `panneau-repeater-field-bar` is gone). What floats in fields (the "+" between two items of a repeater, the toolbar of the rich text editor, the overlay of a file drop zone) stays under the top bar of the app as the page scrolls, and the toolbar of the rich text editor sticks under that bar. The footer of the form in the related item panel goes from edge to edge of the panel, down to its bottom, on its background.
+- febe9ba: Fields reorder their items by dragging a handle (#473, decisions 0109 and 0111), with the pointer, touch, or the keyboard, and announce each move:
+  
+  - Repeaters and blocks: a handle at the start of each item's header. "Move up" and "Move down" stay in the tools. Values, errors, open state and focus follow each item by its key, and "Undo" after a removal still works after a move.
+  - Multiple relations: a handle on each card, and a menu of moves ("Move to the start", "Move before…", "Move after…", "Move to the end") before "Remove".
+  - Multiple media: a gallery of images reorders as a grid, with the handle and the menu on each image's name; other media reorder as cards. The files of a multiple `file` field reorder too.
+  - Read-only and disabled fields have no handle.
+  
+  `@panneau/ui` adds what they use: `ReorderList` takes `layout="grid"`, lists inside items let the drags of other lists through, `ReorderMenu` is the menu of moves, `TileGroup` reorders its tiles with `onMove` and `itemLabel`, `moveItem()` moves a value of a list, and `isReorderDrag()` lets a drop zone refuse the drags of reorderable items, as the drop zones of files of `@panneau/fields` now do. `@panneau/intl` has the messages of the menu, and `namedItem` for the names of repeater items.
+- e310777: The selection as text has its own token (#476, amends decision 0073): `--panneau-selected-strong`, for text and icons of a selection on the page's backgrounds and on `--panneau-selected-subtle`. It defaults to the accent as text (`--panneau-color-accent-strong`), and `checkTheme()` checks it at 4.5:1 on the surface and on `selected-subtle`. The selected ratio of `ImageEditor` reads it instead of the fill `--panneau-selected-bg`, so a light accent or a light selection keeps its label readable.
+  
+  Two edges of the React Compiler rewrites of #132 behave as before them again (#133): `Select` and `RelationField` use their default placeholder only when `placeholder` is left out, not when it is `null`; and `ListView` ends the pending state of an action even when the toast of its failure throws.
+- Updated dependencies [85067b3]
+- Updated dependencies [687391c]
+- Updated dependencies [febe9ba]
+  - @panneau/intl@5.0.0-alpha.50
+
 ## 5.0.0-alpha.49
 
 ### Patch Changes
