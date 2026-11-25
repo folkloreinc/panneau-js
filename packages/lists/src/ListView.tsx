@@ -57,6 +57,7 @@ import { getItemStatus } from './status';
 import { CursorPagination, Pagination } from './toolbar/Pagination';
 import { SearchField } from './toolbar/SearchField';
 import { ToolbarControls } from './toolbar/ToolbarControls';
+import { useToolbarRows } from './toolbar/useToolbarRows';
 import type {
     DisplayEntry,
     FilterEntry,
@@ -370,6 +371,7 @@ export function ListView({
     const confirmation = useRef(0);
     const root = useRef<HTMLDivElement>(null);
     const narrow = useNarrow(root);
+    const toolbarRef = useRef<HTMLDivElement>(null);
     const [pending, setPending] = useState<string | null>(null);
     // Checkboxes show once the user asks for them ("Select"), or while items are selected: until
     // then, rows read without a column of empty space before them.
@@ -693,6 +695,8 @@ export function ListView({
         shownResourceActions.length > 0 ||
         selects ||
         toolbar !== undefined;
+    // One row while everything fits, two when it doesn't (#519); a narrow list has its own layout
+    const toolbarRows = useToolbarRows(toolbarRef, narrow || !showToolbar);
 
     function clearFilters() {
         Object.keys(filterValues).forEach((id) => list.setFilter(id, undefined));
@@ -849,7 +853,11 @@ export function ListView({
             }
         >
             {showToolbar ? (
-                <div className={styles.toolbar}>
+                <div
+                    ref={toolbarRef}
+                    className={styles.toolbar}
+                    data-rows={toolbarRows === 2 ? '2' : undefined}
+                >
                     <div className={styles.toolbarStart}>
                         {search ? (
                             <SearchField
@@ -870,7 +878,7 @@ export function ListView({
                             />
                         ) : null}
                     </div>
-                    <div className={styles.toolbarEnd}>
+                    <div className={styles.toolbarEnd} data-toolbar-end="">
                         <ToolbarControls
                             narrow={narrow}
                             sort={

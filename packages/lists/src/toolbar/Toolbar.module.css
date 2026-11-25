@@ -1,4 +1,6 @@
+/* The basis of the search is the width the toolbar counts for it (`useToolbarRows`). */
 .search {
+    flex: 0 1 16rem;
     width: 16rem;
     max-width: 100%;
 }

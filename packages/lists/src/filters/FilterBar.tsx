@@ -60,8 +60,8 @@ function CountedLabel({ label, count }: { label: string; count: number }) {
 export type FilterBarProps = Omit<FilterControlsProps, 'stacked' | 'aria-label'>;
 
 /**
- * The filters of a list's toolbar: those shown first, and the others behind "More filters", with
- * the count of those that are active. In a narrow list (a phone), every filter is behind one
+ * The filters of a list's toolbar: those shown first, as chips with their label inside (#519), and
+ * the others behind "More filters", with the count of those that are active. In a narrow list (a phone), every filter is behind one
  * "Filters" button, with the count of the active ones, which opens them in a sheet. The values of
  * every active filter stay visible as chips, under the toolbar.
  */
@@ -75,11 +75,11 @@ export function FilterBar(props: FilterBarProps) {
     const filtersLabel = intl.formatMessage(messages.filters);
     return (
         <>
-            <div className={styles.bar}>
+            <div className={styles.bar} data-toolbar-filters="">
                 {primary.length > 0 ? <FilterControls {...props} filters={primary} /> : null}
                 {secondary.length > 0 ? (
                     <PopoverTrigger>
-                        <Button icon={ListFilter}>
+                        <Button icon={ListFilter} data-toolbar-filter="">
                             <CountedLabel label={moreLabel} count={secondaryCount} />
                         </Button>
                         <Popover placement="bottom start" aria-label={moreLabel}>
