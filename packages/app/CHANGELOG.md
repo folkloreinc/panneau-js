@@ -1,5 +1,23 @@
 # @panneau/app
 
+## 5.0.0-alpha.52
+
+### Patch Changes
+
+- 8f02df8: The details of a connection in the account page (#513) wrap instead of being cut with an ellipsis, so access, dates and expiry stay readable on a phone. In French, "créée le" and "utilisée le" become "création le" and "dernière utilisation le", which agree with a personal token as with an app.
+- Updated dependencies [fae7983]
+- Updated dependencies [8f02df8]
+- Updated dependencies [fb3f8d8]
+  - @panneau/fields@5.0.0-alpha.52
+  - @panneau/intl@5.0.0-alpha.52
+  - @panneau/ui@5.0.0-alpha.52
+  - @panneau/lists@5.0.0-alpha.52
+  - @panneau/forms@5.0.0-alpha.52
+  - @panneau/actions@5.0.0-alpha.52
+  - @panneau/core@5.0.0-alpha.52
+  - @panneau/data@5.0.0-alpha.52
+  - @panneau/protocol@5.0.0-alpha.52
+
 ## 5.0.0-alpha.51
 
 ### Patch Changes
