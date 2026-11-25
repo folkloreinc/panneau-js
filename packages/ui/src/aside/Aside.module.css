@@ -315,3 +315,9 @@ section.panel > .panelTitle {
 .panelHeading + .panelContent {
     padding-top: var(--panneau-space-3);
 }
+
+/* Before the content of a narrow layout, the title of a panel that the button of the aside already
+   names (`hidden`): not repeated, nor read twice. The content still has it for its name (#503). */
+.panelTitleShown + .panelContent {
+    padding-top: 0;
+}
