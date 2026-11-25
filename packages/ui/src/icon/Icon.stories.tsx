@@ -5,7 +5,8 @@ import { expect, waitFor } from 'storybook/test';
 import { ThemeScope } from '../root/ThemeScope';
 import { defineTheme } from '../theme/defineTheme';
 import { Icon } from './Icon';
-import { getNamedIcon } from './namedIcons';
+import { lucideIconLoader } from './lucideIconLoader';
+import { getNamedIcon, loadNamedIcon } from './namedIcons';
 
 const meta = {
     title: 'UI/Icon',
@@ -82,10 +83,15 @@ export const ByName: Story = {
         </div>
     ),
     play: async ({ canvasElement }) => {
-        // The first named icon loads Lucide's list of names: give it time on a busy machine.
-        await waitFor(
-            () => expect(canvasElement.querySelectorAll('svg[data-loading]')).toHaveLength(0),
-            { timeout: 5000 },
+        // The first named icon loads Lucide's list of names, which can take longer than `waitFor`
+        // waits on a busy machine: wait for the icons themselves, as the story's icons do.
+        await Promise.all(
+            ['send', 'calendar-days', 'archive'].map((name) =>
+                loadNamedIcon(name, lucideIconLoader),
+            ),
+        );
+        await waitFor(() =>
+            expect(canvasElement.querySelectorAll('svg[data-loading]')).toHaveLength(0),
         );
         await expect(canvasElement.querySelector('svg.lucide-send')).not.toBeNull();
     },
