@@ -220,6 +220,15 @@
     outline: none;
 }
 
+/* The details of a connection: a line that wraps, so none of them is cut at a narrow width. */
+.connectionDetails {
+    margin: 0;
+    font-size: var(--panneau-font-size-xs);
+    line-height: var(--panneau-line-height-tight);
+    color: var(--panneau-color-text-muted);
+    overflow-wrap: anywhere;
+}
+
 /* The actions of an item in the sidebar of its form (decision 0075). */
 .panelActions {
     display: flex;

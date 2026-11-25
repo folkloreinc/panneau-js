@@ -86,36 +86,36 @@ function ConnectionTile({
 }) {
     const intl = usePanneauIntl();
     const date = (value: string) => intl.formatDate(value, { dateStyle: 'medium' });
+    const details = [
+        intl.formatMessage(
+            connection.type === 'client'
+                ? appMessages.connectionClient
+                : appMessages.connectionToken,
+        ),
+        intl.formatMessage(
+            connection.write ? appMessages.connectionWrite : appMessages.connectionRead,
+        ),
+        intl.formatMessage(appMessages.connectionCreated, {
+            date: date(connection.createdAt),
+        }),
+        // Null when unused, or when the backend doesn't record use: say nothing (0113)
+        connection.lastUsedAt !== null
+            ? intl.formatMessage(appMessages.connectionUsed, {
+                  date: date(connection.lastUsedAt),
+              })
+            : null,
+        connection.expiresAt !== null
+            ? intl.formatMessage(appMessages.connectionExpires, {
+                  date: date(connection.expiresAt),
+              })
+            : intl.formatMessage(appMessages.connectionNeverExpires),
+    ]
+        .filter((part) => part !== null)
+        .join(' · ');
     return (
         <Tile
             icon={connection.type === 'client' ? AppWindow : KeyRound}
             title={connection.name}
-            description={[
-                intl.formatMessage(
-                    connection.type === 'client'
-                        ? appMessages.connectionClient
-                        : appMessages.connectionToken,
-                ),
-                intl.formatMessage(
-                    connection.write ? appMessages.connectionWrite : appMessages.connectionRead,
-                ),
-                intl.formatMessage(appMessages.connectionCreated, {
-                    date: date(connection.createdAt),
-                }),
-                // Null when unused, or when the backend doesn't record use: say nothing (0113)
-                connection.lastUsedAt !== null
-                    ? intl.formatMessage(appMessages.connectionUsed, {
-                          date: date(connection.lastUsedAt),
-                      })
-                    : null,
-                connection.expiresAt !== null
-                    ? intl.formatMessage(appMessages.connectionExpires, {
-                          date: date(connection.expiresAt),
-                      })
-                    : intl.formatMessage(appMessages.connectionNeverExpires),
-            ]
-                .filter((part) => part !== null)
-                .join(' · ')}
             actions={
                 onRevoke !== undefined ? (
                     <Button
@@ -132,7 +132,10 @@ function ConnectionTile({
                     </Button>
                 ) : null
             }
-        />
+        >
+            {/* In the content of the tile, not its description: the details wrap, they don't cut */}
+            <p className={styles.connectionDetails}>{details}</p>
+        </Tile>
     );
 }
 

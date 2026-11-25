@@ -160,6 +160,13 @@ describe('AccountPage', () => {
             expect(client).not.toHaveTextContent('last used');
         });
 
+        it('shows the details of a connection in a line that wraps, not in the one-line description', async () => {
+            renderAccount({ agents: { mcp }, connections: [{ name: 'Claude', write: true }] });
+            const list = await screen.findByRole('list', { name: 'Connections' });
+            const details = within(list).getByText(/personal token · read and change/);
+            expect(details.tagName).toBe('P');
+        });
+
         it('says when there are none, and offers no token without agents.mcp.tokens', async () => {
             renderAccount({ agents: { mcp } });
             expect(await screen.findByText('You have no connections yet.')).toBeVisible();
