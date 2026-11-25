@@ -1,7 +1,10 @@
 /* The frame of the app with a dock (decision 0076): a bar at the top, the page on a panel inset from
- * the edges, and the dock stuck to the bottom of the window. The root is a size container, so the
- * dock sticks rather than being fixed: a fixed element would be placed in the root, not in the
- * window. Below Panneau's `lg` breakpoint (64rem of the root), the dock is a bar of tabs. */
+ * the edges, and the dock stuck to the bottom of the window. The dock sticks rather than being
+ * fixed so that it keeps its row of the grid: the page ends above it without saving its room. The
+ * root being an inline-size container doesn't prevent `fixed`: a container query container no
+ * longer applies layout containment, so a fixed element is placed in the window, as the save bar of
+ * the form page on a phone (#501). Below Panneau's `lg` breakpoint (64rem of the root), the dock is
+ * a bar of tabs. */
 
 .layout {
     /* The sizes of the dock, which `Dock` reads, and the space it takes at the bottom of the window,

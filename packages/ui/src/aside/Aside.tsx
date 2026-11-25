@@ -42,6 +42,12 @@ const StorageKeyContext = createContext<string | null>(null);
  */
 const BeforeContext = createContext(false);
 
+/**
+ * Before the content of a narrow layout, the text of the aside's button: a panel with that title
+ * doesn't repeat it (#503).
+ */
+const ShownTitleContext = createContext<string | null>(null);
+
 /** The width from which the aside goes beside the content, as in `Aside.module.css`. */
 const BESIDE_WIDTH_REM = 56;
 
@@ -237,6 +243,7 @@ export function Aside({
     const wide = isWidenable && size === 'wide';
     const hasTitle = title !== undefined && title !== null;
     const hasHeader = hasTitle || isLoading || isWidenable || onClose !== undefined;
+    const toggleText = summary ?? (hasTitle ? title : label);
 
     const onKeyDown = (event: KeyboardEvent) => {
         if (onClose !== undefined && event.key === 'Escape' && !event.defaultPrevented) {
@@ -263,9 +270,7 @@ export function Aside({
                         aria-controls={bodyId}
                         onPress={() => setExpanded(!expanded)}
                     >
-                        <span className={styles.toggleText}>
-                            {summary ?? (hasTitle ? title : label)}
-                        </span>
+                        <span className={styles.toggleText}>{toggleText}</span>
                         {summaryEnd}
                         <Icon icon={ChevronRight} className={styles.chevron} />
                     </AriaButton>
@@ -314,7 +319,11 @@ export function Aside({
                 className={cx(styles.body, bodyClassName)}
                 hidden={isBefore && !expanded}
             >
-                <StorageKeyContext value={storageKey ?? null}>{children}</StorageKeyContext>
+                <ShownTitleContext
+                    value={isBefore && typeof toggleText === 'string' ? toggleText : null}
+                >
+                    <StorageKeyContext value={storageKey ?? null}>{children}</StorageKeyContext>
+                </ShownTitleContext>
             </div>
         </section>
     );
@@ -370,6 +379,10 @@ export function AsidePanel({
         PANEL_STATES,
     );
     const hasTitle = title !== undefined && title !== null;
+    // Before the content of a narrow layout, the button of the aside already names a panel that is
+    // alone there: it doesn't repeat its title, nor collapse a second time. Its heading stays, hidden,
+    // to name its content, and its elements stay the same, so its fields keep their state (#503).
+    const isTitleShown = title === use(ShownTitleContext);
     if (!hasTitle) {
         return (
             <div
@@ -386,7 +399,11 @@ export function AsidePanel({
                 className={cx('panneau-aside-panel', styles.panel, className)}
                 data-beside-only={isBesideOnly || undefined}
             >
-                <Heading level={headingLevel} className={styles.panelTitle}>
+                <Heading
+                    level={headingLevel}
+                    className={cx(styles.panelTitle, isTitleShown && styles.panelTitleShown)}
+                    hidden={isTitleShown}
+                >
                     {title}
                     {titleEnd !== undefined ? <> {titleEnd}</> : null}
                 </Heading>
@@ -394,7 +411,8 @@ export function AsidePanel({
             </section>
         );
     }
-    const expanded = isExpanded ?? (state !== null ? state === 'expanded' : !defaultCollapsed);
+    const expanded =
+        isTitleShown || (isExpanded ?? (state !== null ? state === 'expanded' : !defaultCollapsed));
     return (
         <AriaDisclosure
             {...(id !== undefined ? { id } : {})}
@@ -406,7 +424,11 @@ export function AsidePanel({
             className={cx('panneau-aside-panel', styles.panel, className)}
             data-beside-only={isBesideOnly || undefined}
         >
-            <AriaHeading level={headingLevel} className={styles.panelHeading}>
+            <AriaHeading
+                level={headingLevel}
+                className={cx(styles.panelHeading, isTitleShown && styles.panelTitleShown)}
+                hidden={isTitleShown}
+            >
                 <AriaButton slot="trigger" className={styles.panelTrigger}>
                     <span className={styles.panelTitle}>{title}</span>
                     {titleEnd}

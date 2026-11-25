@@ -40,6 +40,18 @@ describe('the playground definition', () => {
         expect(labels.filter((label) => label === 'Attachment')).toHaveLength(1);
     });
 
+    it('shows the localized slug of a page in its Publication panel', () => {
+        const pages = definition.resources.find((resource) => resource.id === 'pages');
+        expect(pages?.fields.find((field) => field.name === 'slug')).toMatchObject({
+            type: 'slug',
+            localized: true,
+        });
+        const publication = pages?.form?.layout?.find((node) => node.panel === 'publication');
+        expect(publication?.children).toContainEqual({ type: 'field', name: 'slug' });
+        const [page] = createPlaygroundItems().pages ?? [];
+        expect(page?.slug).toEqual({ en: 'about-us', fr: 'a-propos' });
+    });
+
     it('has a media library for the Image blocks of pages and the photos of authors', () => {
         expect(getMediaLibraries(definition, {})).toEqual(['media']);
     });

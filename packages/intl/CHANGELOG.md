@@ -1,5 +1,20 @@
 # @panneau/intl
 
+## 5.0.0-alpha.50
+
+### Patch Changes
+
+- 85067b3: Forms on phones (#501). Below 56rem, the sidebar of a form comes before its fields, collapsed to one line that names its panels (`Publication · Files`), with the error badge of its fields; it opens on a revealed field or an error, and has no box of its own, so its fields are as wide as the form's (decision 0075, amended). `AsideLayout` takes `narrow="before"` and `onBeforeChange`, and `Aside` takes `summary`, `summaryEnd`, `isExpanded` and `onExpandedChange`. The switch of a localized field stays on the line of its label: the label wraps first, and "Copy from …" is only its icon in a narrow field. A narrow repeater puts the tools of an item in a menu ("Actions for item 1"), so that its title keeps the room of its header. On a phone, the save bar of the app's form page is fixed at the bottom of the screen, from edge to edge, on the background of the page's card.
+- 687391c: Edit a related item in a panel, without leaving the form (#471, decision 0110): the card of a relation field has "Edit" on the items the user can update, which opens the item's form in the panel over the page that creates related items. Saving updates the item and its card at once, closes the panel and brings the focus back to the card; the form underneath keeps its values and its unsaved changes. In the app's forms, the link of a card opens the item's page in a new tab. `createRelationSource()` takes `editItem` and `linksInNewTab`; `RelationSource` has `edit()`, `canEdit()` and `edited()`; `useRelationReferences()` takes `resolveAll`. New messages: `panneau.fields.edit`, `panneau.fields.editRelation`, `panneau.fields.editRelationFailed`, `panneau.app.itemUpdateForbidden` and `panneau.app.itemGone`, in English and French.
+- febe9ba: Fields reorder their items by dragging a handle (#473, decisions 0109 and 0111), with the pointer, touch, or the keyboard, and announce each move:
+  
+  - Repeaters and blocks: a handle at the start of each item's header. "Move up" and "Move down" stay in the tools. Values, errors, open state and focus follow each item by its key, and "Undo" after a removal still works after a move.
+  - Multiple relations: a handle on each card, and a menu of moves ("Move to the start", "Move before…", "Move after…", "Move to the end") before "Remove".
+  - Multiple media: a gallery of images reorders as a grid, with the handle and the menu on each image's name; other media reorder as cards. The files of a multiple `file` field reorder too.
+  - Read-only and disabled fields have no handle.
+  
+  `@panneau/ui` adds what they use: `ReorderList` takes `layout="grid"`, lists inside items let the drags of other lists through, `ReorderMenu` is the menu of moves, `TileGroup` reorders its tiles with `onMove` and `itemLabel`, `moveItem()` moves a value of a list, and `isReorderDrag()` lets a drop zone refuse the drags of reorderable items, as the drop zones of files of `@panneau/fields` now do. `@panneau/intl` has the messages of the menu, and `namedItem` for the names of repeater items.
+
 ## 5.0.0-alpha.49
 
 ### Patch Changes

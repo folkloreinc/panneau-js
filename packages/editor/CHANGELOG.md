@@ -1,5 +1,23 @@
 # @panneau/editor
 
+## 5.0.0-alpha.50
+
+### Patch Changes
+
+- 489d353: Follow-ups of forms on phones (#503). Before a form on a narrow screen, a sidebar whose button names a single panel (`Publication`) no longer repeats the title of that panel, nor collapses it a second time. The legend of a repeater keeps one line: "Expand all" and "Collapse all" are at its end, only an icon in a narrow field (the class `panneau-repeater-field-bar` is gone). What floats in fields (the "+" between two items of a repeater, the toolbar of the rich text editor, the overlay of a file drop zone) stays under the top bar of the app as the page scrolls, and the toolbar of the rich text editor sticks under that bar. The footer of the form in the related item panel goes from edge to edge of the panel, down to its bottom, on its background.
+- Updated dependencies [24c9683]
+- Updated dependencies [955586a]
+- Updated dependencies [85067b3]
+- Updated dependencies [489d353]
+- Updated dependencies [627a778]
+- Updated dependencies [687391c]
+- Updated dependencies [febe9ba]
+- Updated dependencies [e310777]
+  - @panneau/protocol@5.0.0-alpha.50
+  - @panneau/ui@5.0.0-alpha.50
+  - @panneau/fields@5.0.0-alpha.50
+  - @panneau/intl@5.0.0-alpha.50
+
 ## 5.0.0-alpha.49
 
 ### Patch Changes

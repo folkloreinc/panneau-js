@@ -104,13 +104,17 @@ const widgetOf = (canvasElement: HTMLElement, id: string) => {
 
 /**
  * Finds in a widget, looked up again on each try: the grid of the summary loads its code first
- * (#346), and its skeletons give way to the widgets.
+ * (#346), and its skeletons give way to the widgets. The code is waited for itself: the first
+ * time, on a busy machine, it can take longer than `waitFor` waits.
  */
-const findInWidget = <T,>(
+const findInWidget = async <T,>(
     canvasElement: HTMLElement,
     id: string,
     query: (widget: ReturnType<typeof within>) => T,
-) => waitFor(() => query(widgetOf(canvasElement, id)), { timeout: 5000 });
+) => {
+    await import('../dashboard/Dashboard');
+    return waitFor(() => query(widgetOf(canvasElement, id)), { timeout: 5000 });
+};
 
 /** The summary of the entries above their list: counts, a sum, a breakdown, and a widget of its own. */
 export const Summary: Story = {

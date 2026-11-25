@@ -2,8 +2,10 @@
     min-width: 0;
 }
 
-/* The box of the field, as the other controls draw it: the toolbar over the text. */
+/* The box of the field, as the other controls draw it: the toolbar over the text. What sticks in it
+ * (the toolbar) stays under what sticks in the frame of the app, such as its top bar (#503). */
 .editor {
+    isolation: isolate;
     min-width: 0;
     color: var(--panneau-color-text);
     background-color: var(--panneau-input-bg, var(--panneau-color-surface));
@@ -42,9 +44,11 @@
     background-color: var(--panneau-color-surface-sunken);
 }
 
+/* Stuck under the top of the window, below the top bar of the app on a small screen
+ * (`--panneau-frame-top`), as the header of a table. */
 .toolbar {
     position: sticky;
-    top: 0;
+    top: var(--panneau-frame-top, 0px);
     z-index: 1;
     display: flex;
     flex-wrap: wrap;

@@ -1,5 +1,31 @@
 # @panneau/app
 
+## 5.0.0-alpha.50
+
+### Patch Changes
+
+- 85067b3: Forms on phones (#501). Below 56rem, the sidebar of a form comes before its fields, collapsed to one line that names its panels (`Publication · Files`), with the error badge of its fields; it opens on a revealed field or an error, and has no box of its own, so its fields are as wide as the form's (decision 0075, amended). `AsideLayout` takes `narrow="before"` and `onBeforeChange`, and `Aside` takes `summary`, `summaryEnd`, `isExpanded` and `onExpandedChange`. The switch of a localized field stays on the line of its label: the label wraps first, and "Copy from …" is only its icon in a narrow field. A narrow repeater puts the tools of an item in a menu ("Actions for item 1"), so that its title keeps the room of its header. On a phone, the save bar of the app's form page is fixed at the bottom of the screen, from edge to edge, on the background of the page's card.
+- 489d353: Follow-ups of forms on phones (#503). Before a form on a narrow screen, a sidebar whose button names a single panel (`Publication`) no longer repeats the title of that panel, nor collapses it a second time. The legend of a repeater keeps one line: "Expand all" and "Collapse all" are at its end, only an icon in a narrow field (the class `panneau-repeater-field-bar` is gone). What floats in fields (the "+" between two items of a repeater, the toolbar of the rich text editor, the overlay of a file drop zone) stays under the top bar of the app as the page scrolls, and the toolbar of the rich text editor sticks under that bar. The footer of the form in the related item panel goes from edge to edge of the panel, down to its bottom, on its background.
+- 687391c: Edit a related item in a panel, without leaving the form (#471, decision 0110): the card of a relation field has "Edit" on the items the user can update, which opens the item's form in the panel over the page that creates related items. Saving updates the item and its card at once, closes the panel and brings the focus back to the card; the form underneath keeps its values and its unsaved changes. In the app's forms, the link of a card opens the item's page in a new tab. `createRelationSource()` takes `editItem` and `linksInNewTab`; `RelationSource` has `edit()`, `canEdit()` and `edited()`; `useRelationReferences()` takes `resolveAll`. New messages: `panneau.fields.edit`, `panneau.fields.editRelation`, `panneau.fields.editRelationFailed`, `panneau.app.itemUpdateForbidden` and `panneau.app.itemGone`, in English and French.
+- Updated dependencies [24c9683]
+- Updated dependencies [955586a]
+- Updated dependencies [85067b3]
+- Updated dependencies [489d353]
+- Updated dependencies [627a778]
+- Updated dependencies [31ce5c6]
+- Updated dependencies [687391c]
+- Updated dependencies [febe9ba]
+- Updated dependencies [e310777]
+  - @panneau/protocol@5.0.0-alpha.50
+  - @panneau/ui@5.0.0-alpha.50
+  - @panneau/forms@5.0.0-alpha.50
+  - @panneau/fields@5.0.0-alpha.50
+  - @panneau/intl@5.0.0-alpha.50
+  - @panneau/data@5.0.0-alpha.50
+  - @panneau/lists@5.0.0-alpha.50
+  - @panneau/actions@5.0.0-alpha.50
+  - @panneau/core@5.0.0-alpha.50
+
 ## 5.0.0-alpha.49
 
 ### Patch Changes

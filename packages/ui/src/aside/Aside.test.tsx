@@ -227,6 +227,59 @@ describe('AsideLayout', () => {
             expect(screen.getByRole('textbox', { name: 'Date' })).toBeVisible();
         });
 
+        it('does not repeat the title of a panel that its button names (#503)', async () => {
+            width = 400;
+            render(
+                <AsideLayout
+                    narrow="before"
+                    aside={
+                        <Aside label="Sidebar" summary="Publication">
+                            <AsidePanel id="publication" title="Publication" defaultCollapsed>
+                                <input aria-label="Date" />
+                            </AsidePanel>
+                        </Aside>
+                    }
+                >
+                    <input aria-label="Title" />
+                </AsideLayout>,
+            );
+            await userEvent.click(screen.getByRole('button', { name: 'Publication' }));
+            // One button and one heading named Publication: the aside's, not the panel's
+            expect(screen.getAllByRole('button', { name: 'Publication' })).toHaveLength(1);
+            expect(screen.getAllByRole('heading', { name: 'Publication' })).toHaveLength(1);
+            // Its content shows, under one disclosure only, and keeps its name
+            const date = screen.getByRole('textbox', { name: 'Date' });
+            expect(date).toBeVisible();
+            resize(1000);
+            // Beside the content, the panel has its title again, and its own state (collapsed
+            // here), with the same field
+            expect(screen.getByRole('button', { name: 'Publication' })).toHaveAttribute(
+                'aria-expanded',
+                'false',
+            );
+            expect(date.isConnected).toBe(true);
+        });
+
+        it('keeps the titles of panels that its button names together', async () => {
+            width = 400;
+            render(
+                <AsideLayout
+                    narrow="before"
+                    aside={
+                        <Aside label="Sidebar" summary="Publication · Files">
+                            <AsidePanel title="Publication">Publication</AsidePanel>
+                            <AsidePanel title="Files">Files</AsidePanel>
+                        </Aside>
+                    }
+                >
+                    <input aria-label="Title" />
+                </AsideLayout>,
+            );
+            await userEvent.click(screen.getByRole('button', { name: 'Publication · Files' }));
+            expect(screen.getByRole('button', { name: 'Publication' })).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: 'Files' })).toBeInTheDocument();
+        });
+
         it('moves the aside without losing what it holds', async () => {
             width = 1000;
             renderLayout();

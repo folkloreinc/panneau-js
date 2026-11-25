@@ -213,6 +213,10 @@ export const Default: Story = {
             await expect(fields.queryByRole('button', { name: 'Status' })).toBeNull();
             await userEvent.click(toggle);
             await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+            // The panel it opens doesn't repeat its title, nor collapse a second time (#503)
+            await expect(fields.getAllByRole('button', { name: 'Publication' })).toHaveLength(1);
+            await expect(fields.getAllByRole('heading', { name: 'Publication' })).toHaveLength(1);
+            await expect(await fields.findByRole('button', { name: /Status/ })).toBeVisible();
         });
 
         await step('One level of box: the fields are as wide as the main column', async () => {
@@ -257,6 +261,12 @@ export const Default: Story = {
 
         await step('The blocks keep the room of their header for their title', async () => {
             const blocks = within(fields.getByRole('group', { name: 'Blocks' }));
+            // The legend keeps one line: "Expand all" is an icon at its end (#503)
+            const legend = blocks.getByText('Blocks');
+            const expandAll = blocks.getByRole('button', { name: 'Expand all' });
+            await expect(box(expandAll).width).toBeLessThanOrEqual(box(expandAll).height + 1);
+            await expect(box(expandAll).top).toBeLessThan(box(legend).bottom);
+            await expect(box(expandAll).bottom).toBeGreaterThan(box(legend).top);
             const toggle = blocks.getByRole('button', { name: /^1\s*Text/, expanded: false });
             const header = toggle.parentElement ?? toggle;
             // Their tools are in a menu: the title has most of the header
@@ -269,6 +279,32 @@ export const Default: Story = {
                 'true',
             );
             await userEvent.keyboard('{Escape}');
+        });
+
+        await step('What floats over the blocks passes under the top bar (#503)', async () => {
+            const blocks = fields.getByRole('group', { name: 'Blocks' });
+            // Expanded, the blocks make the page long enough to scroll one under the top bar
+            await userEvent.click(within(blocks).getByRole('button', { name: 'Expand all' }));
+            const insert = blocks.querySelectorAll<HTMLElement>('[data-insert]')[2];
+            // The first banner: the top bar of the app, before the header of the page
+            const [topBar] = canvas.getAllByRole('banner');
+            await expect(insert).toBeDefined();
+            if (insert === undefined || topBar === undefined) {
+                return;
+            }
+            // The "+" between two blocks, scrolled under the top bar
+            const view = canvasElement.ownerDocument.defaultView ?? window;
+            const middle = (box(topBar).top + box(topBar).bottom) / 2;
+            view.scrollBy(0, (box(insert).top + box(insert).bottom) / 2 - middle);
+            await waitFor(() => expect(box(insert).top).toBeLessThan(middle));
+            await expect(box(insert).bottom).toBeGreaterThan(middle);
+            const hit = canvasElement.ownerDocument.elementFromPoint(
+                (box(insert).left + box(insert).right) / 2,
+                middle,
+            );
+            await expect(topBar.contains(hit)).toBe(true);
+            view.scrollTo(0, 0);
+            await userEvent.click(within(blocks).getByRole('button', { name: 'Collapse all' }));
         });
 
         await step('The save bar is at the bottom of the screen, from edge to edge', async () => {

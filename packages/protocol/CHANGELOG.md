@@ -1,5 +1,12 @@
 # @panneau/protocol
 
+## 5.0.0-alpha.50
+
+### Patch Changes
+
+- 24c9683: Agents read lighter lists, and an example of compound values (#489): the items of `find_items` leave out `abilities` (`AgentListItem`, which `AgentFindItemsResult` now holds), and `get_item` still gives them. The HTTP list and search keep `abilities` required. A field described to an agent (`AgentField`) has an optional `example`, the value `save_item` takes, for the fields whose value isn't a plain scalar (a `money`, a `daterange`, an `address`, a `link`).
+- 627a778: The connections of the account (#504, decision 0113): `Connection` (a personal token or an OAuth client of the user, with `write`, `createdAt`, `lastUsedAt` and `expiresAt`), `ConnectionsResponse`, `ConnectionTokenRequest` and `ConnectionTokenResponse`, and their three operations in `openapi.json`, with `agents.mcp`: `GET /account/connections`, `POST /account/connections/tokens` (`201` with the token once; `409` when the account can't make one; `422`; `423`) and `DELETE /account/connections/{connection}` (`204`; `404`; `423`). The definition's `agents.mcp` takes `tokens`, whether the user can make a personal token: without it, clients assume they can't. The mock backend answers the three endpoints when its definition has `agents.mcp` (`MockUser.connections` gives the first ones), and the conformance kit checks the list (`account.connections`).
+
 ## 5.0.0-alpha.49
 
 ### Patch Changes

@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import type { BlockType } from '@panneau/protocol';
+import { loadNamedIcon } from '@panneau/ui';
+import { lucideIconLoader } from '@panneau/ui/named-icons';
 
 import { afterSlides, dragHandle } from '../__fixtures__/reorder';
 import { DefinitionField } from '../shared/DefinitionField';
@@ -344,6 +346,9 @@ export const BlockTypeMenu: Story = {
         await userEvent.keyboard('{Enter}');
         const quote = await body.findByRole('menuitem', { name: 'Quote' });
         await expect(quote).toHaveAccessibleDescription('A quote and who said it');
+        // Its icon shows once its code loads, with Lucide's list of names the first time: on a
+        // busy machine, that takes longer than `waitFor` waits. Wait for the code, then for the icon.
+        await loadNamedIcon('quote', lucideIconLoader);
         await waitFor(() => expect(quote.querySelector('svg.lucide-quote')).not.toBeNull());
         // The type without an icon: its label lines up with the others
         const embed = body.getByRole('menuitem', { name: 'Embed' });
@@ -612,5 +617,14 @@ export const InANarrowColumn: Story = {
             await expect(header.scrollWidth).toBeLessThanOrEqual(header.clientWidth);
         }
         await expect(canvas.getByRole('button', { name: 'Move Quote (item 4)' })).toBeVisible();
+        // "Expand all" is only an icon, at the end of the legend's line, which keeps one line
+        // (#503): its label stays its name
+        const legend = canvas.getByText('Blocks');
+        const expandAll = canvas.getByRole('button', { name: 'Expand all' });
+        const box = (element: Element) => element.getBoundingClientRect();
+        await expect(box(expandAll).width).toBeLessThanOrEqual(box(expandAll).height + 1);
+        await expect(box(expandAll).top).toBeLessThan(box(legend).bottom);
+        await expect(box(expandAll).bottom).toBeGreaterThan(box(legend).top);
+        await expect(box(expandAll).left).toBeGreaterThan(box(legend).left);
     },
 };

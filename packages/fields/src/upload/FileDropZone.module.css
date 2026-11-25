@@ -2,8 +2,11 @@
     min-width: 0;
 }
 
+/* What shows over the zone while files are dragged stays under what sticks in the frame of the app,
+ * such as its top bar (#503). */
 .zone {
     position: relative;
+    isolation: isolate;
     border-radius: var(--panneau-radius-md);
 }
 

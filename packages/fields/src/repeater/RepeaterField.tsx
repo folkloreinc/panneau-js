@@ -517,9 +517,26 @@ export function RepeaterField({
     const anyExpanded = items.some((_, index) => isExpanded(index));
     const showToggleAll = collapsible && disabled !== true && items.length > 1;
 
+    // On the line of the legend, as its end: in a narrow field (a phone), only its icon, whose
+    // label stays its accessible name, so that the legend keeps one line (#503).
+    const toggleAll = showToggleAll ? (
+        <Button
+            size="sm"
+            appearance="ghost"
+            icon={anyExpanded ? ChevronsDownUp : ChevronsUpDown}
+            className={styles.toggleAll}
+            onPress={() => setExpanded(new Set(anyExpanded ? [] : keys))}
+        >
+            <span className={styles.toggleAllLabel}>
+                {intl.formatMessage(anyExpanded ? messages.collapseAll : messages.expandAll)}
+            </span>
+        </Button>
+    ) : undefined;
+
     return (
         <Fieldset
             legend={label}
+            legendEnd={toggleAll}
             description={description}
             errors={errors}
             isRequired={required}
@@ -528,20 +545,6 @@ export function RepeaterField({
             descriptionClassName={descriptionClassName}
             errorsClassName={errorsClassName}
         >
-            {showToggleAll ? (
-                <div className={styles.bar}>
-                    <Button
-                        size="sm"
-                        appearance="ghost"
-                        icon={anyExpanded ? ChevronsDownUp : ChevronsUpDown}
-                        onPress={() => setExpanded(new Set(anyExpanded ? [] : keys))}
-                    >
-                        {intl.formatMessage(
-                            anyExpanded ? messages.collapseAll : messages.expandAll,
-                        )}
-                    </Button>
-                </div>
-            ) : null}
             {items.length > 0 ? (
                 // The handle drags an item, and the keyboard through it (decision 0111): its state
                 // follows it, by its key. The buttons that move it stay in its tools.

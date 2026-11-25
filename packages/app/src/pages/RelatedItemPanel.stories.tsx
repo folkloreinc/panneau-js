@@ -181,3 +181,66 @@ export const Edit: Story = {
         await expect(canvas.getByLabelText(/^Title/)).toHaveValue('Notes on computing');
     },
 };
+
+/**
+ * The footer of the panel's form (#503): from edge to edge of the panel, on its background, not
+ * the page's, and at its bottom when its body scrolls, down to its edge.
+ */
+async function checkFooter() {
+    const page = within(document.body);
+    const dialog = await page.findByRole('dialog', { name: 'New person' });
+    const panel = within(dialog).getByRole('region', { name: 'New person' });
+    const body = within(dialog).getByRole('form', { name: 'New person' }).parentElement;
+    let footer: HTMLElement | null = within(dialog).getByRole('button', { name: 'Save' });
+    while (footer !== null && getComputedStyle(footer).position !== 'sticky') {
+        footer = footer.parentElement;
+    }
+    await expect(footer).not.toBeNull();
+    await expect(body).not.toBeNull();
+    if (footer === null || body === null) {
+        return;
+    }
+    const box = (element: Element) => element.getBoundingClientRect();
+    await expect(getComputedStyle(footer).backgroundColor).toBe(
+        getComputedStyle(panel).backgroundColor,
+    );
+    await expect(box(footer).left).toBeCloseTo(box(body).left, 0);
+    await expect(box(footer).right).toBeCloseTo(box(body).right, 0);
+    if (body.scrollHeight > body.clientHeight) {
+        // Stuck at the bottom of the panel, and still there at the end of the form
+        await expect(box(footer).bottom).toBeCloseTo(box(panel).bottom, 0);
+        body.scrollTop = body.scrollHeight;
+        await waitFor(() => expect(box(footer).bottom).toBeCloseTo(box(panel).bottom, 0));
+    }
+}
+
+/** The footer of the panel's form, on a wide screen. */
+export const Footer: Story = {
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const page = within(document.body);
+        await userEvent.type(canvas.getByRole('combobox', { name: 'Authors' }), 'Grace Hopper');
+        await userEvent.click(await page.findByRole('option', { name: 'Create “Grace Hopper”' }));
+        await checkFooter();
+    },
+};
+
+/**
+ * The footer on a phone, 375px wide, with its keyboard open: the panel takes the whole screen, and
+ * its form scrolls above the footer.
+ */
+export const FooterOnAPhone: Story = {
+    ...Footer,
+    parameters: {
+        viewport: {
+            options: {
+                iphone: {
+                    name: 'iPhone, keyboard open',
+                    styles: { width: '375px', height: '420px' },
+                    type: 'mobile',
+                },
+            },
+        },
+    },
+    globals: { viewport: { value: 'iphone', isRotated: false } },
+};
