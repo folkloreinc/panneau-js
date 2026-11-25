@@ -37,7 +37,9 @@ const work = resolve(root, '.tmp/bundle-size');
 // width to put a form's sidebar first, and the item menu of a narrow repeater.
 // 1460 / 476 KB: the connections of the account page (#507) measure 1451 / 471 KB with v5.x after
 // #509: their messages and the three methods of the REST adapter are on the first page.
-const BUDGET = { minified: 1460 * 1024, gzip: 476 * 1024 };
+// 1465 / 478 KB: the follow-up of #520 (filters as controls, a searchable select that opens on a
+// press, `useActionsFit`) measures 1460 / 475 KB, just over.
+const BUDGET = { minified: 1465 * 1024, gzip: 478 * 1024 };
 
 const report = process.argv.includes('--report');
 
