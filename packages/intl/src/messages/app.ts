@@ -506,12 +506,12 @@ export const appMessages = {
     densityOption: defineMessage<{ density: string }>({
         id: 'panneau.app.densityOption',
         defaultMessage:
-            '{density, select, compact {Compact} comfortable {Comfortable} other {Default}}',
+            '{density, select, compact {Compact} comfortable {Comfortable} other {Large}}',
     }),
     density: defineMessage<{ density: string }>({
         id: 'panneau.app.density',
         defaultMessage:
-            'Density: {density, select, compact {compact} comfortable {comfortable} other {default}}',
+            'Density: {density, select, compact {compact} comfortable {comfortable} other {large}}',
     }),
     language: defineMessage({ id: 'panneau.app.language', defaultMessage: 'Language' }),
     languageButton: defineMessage<{ language: string }>({

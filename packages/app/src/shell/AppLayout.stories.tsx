@@ -373,7 +373,7 @@ export const Density: Story = {
         const dialog = await body.findByRole('dialog');
         await openPreferences(dialog);
         const density = within(within(dialog).getByRole('radiogroup', { name: 'Density' }));
-        await expect(density.getByRole('radio', { name: 'Default' })).toHaveAttribute(
+        await expect(density.getByRole('radio', { name: 'Large' })).toHaveAttribute(
             'aria-checked',
             'true',
         );

@@ -158,13 +158,13 @@ describe('Panneau', () => {
             ).toEqual([
                 ['Compact', 'false'],
                 ['Comfortable', 'false'],
-                ['Default', 'true'],
+                ['Large', 'true'],
             ]);
             await user.click(density.getByRole('radio', { name: 'Compact' }));
             expect(root()).toHaveAttribute('data-density', 'compact');
             expect(window.localStorage.getItem('panneau:density')).toBe('compact');
 
-            // "Default" goes back to the definition's
+            // The choice that matches the definition's density clears the kept one
             await user.keyboard('{Escape}');
             await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
             const reopened = await openUserMenu(user);
@@ -172,18 +172,31 @@ describe('Panneau', () => {
                 'aria-checked',
                 'true',
             );
-            await user.click(reopened.getByRole('radio', { name: 'Default' }));
+            await user.click(reopened.getByRole('radio', { name: 'Large' }));
             expect(root()).toHaveAttribute('data-density', 'touch');
+            expect(window.localStorage.getItem('panneau:density')).toBeNull();
+        });
+
+        it('reads the old "default" choice as no choice, and shows the definition\'s density', async () => {
+            const user = userEvent.setup();
+            window.localStorage.setItem('panneau:density', 'default');
+            renderWithTheme({ density: 'compact' });
+            expect(root()).toHaveAttribute('data-density', 'compact');
+            const menu = await openUserMenu(user);
+            expect(menu.getByRole('radio', { name: 'Compact' })).toHaveAttribute(
+                'aria-checked',
+                'true',
+            );
         });
 
         it('keeps the choice after a reload', async () => {
             const user = userEvent.setup();
             const { unmount } = renderWithTheme({ density: 'auto' });
             const menu = await openUserMenu(user);
-            await user.click(menu.getByRole('radio', { name: 'Comfortable' }));
+            await user.click(menu.getByRole('radio', { name: 'Compact' }));
             unmount();
             renderWithTheme({ density: 'auto' });
-            expect(root()).toHaveAttribute('data-density', 'comfortable');
+            expect(root()).toHaveAttribute('data-density', 'compact');
         });
 
         it('offers the densities the user has not chosen in "Go to…"', async () => {
@@ -194,7 +207,7 @@ describe('Panneau', () => {
             await user.type(palette.getByRole('searchbox'), 'density');
             expect(palette.getAllByRole('menuitem').map((item) => item.textContent)).toEqual([
                 'Density: compact',
-                'Density: comfortable',
+                'Density: large',
             ]);
             await user.click(palette.getByRole('menuitem', { name: 'Density: compact' }));
             expect(root()).toHaveAttribute('data-density', 'compact');
