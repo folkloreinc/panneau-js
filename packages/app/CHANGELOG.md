@@ -1,5 +1,27 @@
 # @panneau/app
 
+## 5.0.0-alpha.54
+
+### Minor Changes
+
+- e65232f: The definition can have a `logo`, the URL of an image of the site's logo. The shell draws it in the square of the logo, in the sidebar, the top bar of the dock and the skeleton at boot, instead of the first letter of the site's name.
+
+### Patch Changes
+
+- 99e124e: From the `lg` width, the sticky footer of a resource form spans the panel of the shell from edge to edge, on the panel's background, instead of a band of the page's background that stops at the panel's padding (visible in dark mode). The shells' panels clip it (`overflow-x: clip`). Below `lg`, the fixed footer doesn't change.
+- Updated dependencies [50f8638]
+- Updated dependencies [e65232f]
+- Updated dependencies [bf0bd9f]
+  - @panneau/protocol@5.0.0-alpha.54
+  - @panneau/lists@5.0.0-alpha.54
+  - @panneau/actions@5.0.0-alpha.54
+  - @panneau/core@5.0.0-alpha.54
+  - @panneau/data@5.0.0-alpha.54
+  - @panneau/fields@5.0.0-alpha.54
+  - @panneau/forms@5.0.0-alpha.54
+  - @panneau/ui@5.0.0-alpha.54
+  - @panneau/intl@5.0.0-alpha.54
+
 ## 5.0.0-alpha.53
 
 ### Patch Changes
