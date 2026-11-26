@@ -50,6 +50,20 @@ describe('createResourceMediaSource', () => {
         expect(source.fields?.map((field) => field.name)).toEqual(['name', 'alt']);
     });
 
+    it('offers the date added both ways, the default sort first', () => {
+        const definition = createExampleDefinition();
+        const library = definition.resources.find((resource) => resource.id === 'media');
+        if (library === undefined) {
+            throw new Error('The example has no media library.');
+        }
+        const adapter = createRestAdapter({ baseUrl: '/panneau/api' });
+        const source = createResourceMediaSource(adapter, {
+            ...library,
+            list: { ...library.list, sorts: ['name', 'createdAt'], defaultSort: '-createdAt' },
+        });
+        expect(source.sorts).toEqual([{ id: '-createdAt' }, { id: 'name' }, { id: 'createdAt' }]);
+    });
+
     it('makes media of uploads, lists them by type, and saves the fields of the details', async () => {
         const { source, upload } = setup();
 

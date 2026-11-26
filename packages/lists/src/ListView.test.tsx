@@ -2,7 +2,7 @@ import { act, fireEvent, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event';
 import { Archive } from 'lucide-react';
 import type { ReactElement } from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { PanneauProvider, createList, createMemoryRouter, definePlugin } from '@panneau/core';
 import { fr } from '@panneau/intl';
@@ -828,6 +828,11 @@ describe('ListView toolbar', () => {
 });
 
 describe('ListView toolbar controls', () => {
+    // Even after a timeout, so that a phone's width doesn't reach the next tests
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
     const calendar = { field: 'published_on', filter: 'published_on' };
     const sortable = columns.map((column) => ({ ...column, sortable: true }));
     // The names of the toolbar's controls, in their order, up to the layout switch
@@ -895,56 +900,50 @@ describe('ListView toolbar controls', () => {
 
     it('keeps the controls in one row on a phone, with the less used ones in a menu', async () => {
         const user = userEvent.setup();
-        const rect = vi
-            .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
-            .mockReturnValue(DOMRect.fromRect({ width: 360, height: 600 }));
+        vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue(
+            DOMRect.fromRect({ width: 360, height: 600 }),
+        );
         const onRun = vi.fn();
         // Cards chosen on a wider screen
         const router = createMemoryRouter('layout=cards');
-        try {
-            renderList(
-                <ListView
-                    list={createList({ router })}
-                    columns={sortable}
-                    items={pages}
-                    layouts={{ available: ['table', 'cards'] }}
-                    actions={{ available: [exportAction, remove], onRun }}
-                />,
-            );
-            // The table shows its rows as cards: the switch has no cards, and here no other layout
-            expect(screen.getByRole('table', { name: 'Items' })).toBeInTheDocument();
-            expect(screen.queryByRole('radiogroup', { name: 'Layout' })).not.toBeInTheDocument();
-            expect(controls()).toEqual(['Select', 'More options']);
-            expect(screen.queryByRole('button', { name: 'Export' })).not.toBeInTheDocument();
+        renderList(
+            <ListView
+                list={createList({ router })}
+                columns={sortable}
+                items={pages}
+                layouts={{ available: ['table', 'cards'] }}
+                actions={{ available: [exportAction, remove], onRun }}
+            />,
+        );
+        // The table shows its rows as cards: the switch has no cards, and here no other layout
+        expect(screen.getByRole('table', { name: 'Items' })).toBeInTheDocument();
+        expect(screen.queryByRole('radiogroup', { name: 'Layout' })).not.toBeInTheDocument();
+        expect(controls()).toEqual(['Select', 'More options']);
+        expect(screen.queryByRole('button', { name: 'Export' })).not.toBeInTheDocument();
 
-            // The menu's code loads on phones only
-            await waitFor(() =>
-                expect(screen.getByRole('button', { name: 'More options' })).toHaveAttribute(
-                    'aria-haspopup',
-                ),
-            );
-            await user.click(screen.getByRole('button', { name: 'More options' }));
-            const menu = await screen.findByRole('menu', { name: 'More options' });
-            await user.click(
-                within(menu).getByRole('menuitemradio', { name: 'Title, descending' }),
-            );
-            expect(router.getSearch()).toBe('sort=-title&layout=cards');
+        // The menu's code loads on phones only
+        await waitFor(() =>
+            expect(screen.getByRole('button', { name: 'More options' })).toHaveAttribute(
+                'aria-haspopup',
+            ),
+        );
+        await user.click(screen.getByRole('button', { name: 'More options' }));
+        const menu = await screen.findByRole('menu', { name: 'More options' });
+        await user.click(within(menu).getByRole('menuitemradio', { name: 'Title, descending' }));
+        expect(router.getSearch()).toBe('sort=-title&layout=cards');
 
-            await user.click(screen.getByRole('button', { name: 'More options' }));
-            await user.click(await screen.findByRole('menuitem', { name: 'Export' }));
-            expect(onRun).toHaveBeenCalledWith(
-                expect.objectContaining({ action: exportAction, scope: 'resource' }),
-            );
+        await user.click(screen.getByRole('button', { name: 'More options' }));
+        await user.click(await screen.findByRole('menuitem', { name: 'Export' }));
+        expect(onRun).toHaveBeenCalledWith(
+            expect.objectContaining({ action: exportAction, scope: 'resource' }),
+        );
 
-            await user.click(screen.getByRole('button', { name: 'More options' }));
-            await user.click(await screen.findByRole('menuitem', { name: 'Columns' }));
-            const dialog = await screen.findByRole('dialog', { name: 'Columns' });
-            await user.click(within(dialog).getByRole('checkbox', { name: 'Status' }));
-            expect(router.getSearch()).toContain('columns=title%2Cpublished_on');
-        } finally {
-            rect.mockRestore();
-        }
-    });
+        await user.click(screen.getByRole('button', { name: 'More options' }));
+        await user.click(await screen.findByRole('menuitem', { name: 'Columns' }));
+        const dialog = await screen.findByRole('dialog', { name: 'Columns' });
+        await user.click(within(dialog).getByRole('checkbox', { name: 'Status' }));
+        expect(router.getSearch()).toContain('columns=title%2Cpublished_on');
+    }, 15_000);
 });
 
 describe('ListView layouts', () => {
