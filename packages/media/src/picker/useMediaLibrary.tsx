@@ -27,7 +27,7 @@ import { MediaGrid } from './MediaGrid';
 import styles from './MediaPicker.module.css';
 import { PickerToolbar } from './PickerToolbar';
 import { UploadPanel } from './UploadPanel';
-import { describeAccept, isProcessingMedia } from './format';
+import { describeAccept, isProcessingMedia, typeOfAccept } from './format';
 import type { MediaLibraryOptions, MediaSort, MediaSource, PickerMedia } from './types';
 import { type BrowseQuery, useMediaBrowser } from './useMediaBrowser';
 
@@ -161,6 +161,7 @@ export function useMediaLibrary({
         source,
         locked,
         defaultSort: (candidate) => openerSort ?? sortsOf(candidate)[0]?.id ?? null,
+        defaultType: typeOfAccept(accept),
         stateKey,
     });
     const { state } = browser;
