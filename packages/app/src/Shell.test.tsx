@@ -114,7 +114,7 @@ describe('the app shell', () => {
         const brand = within(screen.getByRole('complementary')).getByRole('link', {
             name: 'Test site',
         });
-        expect(brand.querySelector('[aria-hidden="true"]')).toHaveTextContent(/^T$/);
+        expect(brand.querySelector('[aria-hidden="true"]')?.textContent).toBe('T');
         expect(brand.querySelector('img')).toBeNull();
         cleanup();
 
