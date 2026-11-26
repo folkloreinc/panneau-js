@@ -2409,6 +2409,7 @@ export const DEFAULT_ADDRESS_REQUIRED_PARTS: readonly AddressPart[];
 export const Definition: z.ZodObject<{
     protocol: z.ZodLiteral<1>;
     name: z.ZodString;
+    logo: z.ZodOptional<z.ZodString>;
     locale: z.ZodString;
     locales: z.ZodArray<z.ZodString>;
     interfaceLocales: z.ZodOptional<z.ZodArray<z.ZodObject<{
@@ -8740,6 +8741,7 @@ export const namedSchemas: {
     Definition: z.ZodObject<{
         protocol: z.ZodLiteral<1>;
         name: z.ZodString;
+        logo: z.ZodOptional<z.ZodString>;
         locale: z.ZodString;
         locales: z.ZodArray<z.ZodString>;
         interfaceLocales: z.ZodOptional<z.ZodArray<z.ZodObject<{

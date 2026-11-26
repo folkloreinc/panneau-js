@@ -109,6 +109,23 @@ describe('the app shell', () => {
         );
     });
 
+    it("draws the first letter of the site's name as its logo, or the image of `logo`", () => {
+        renderApp();
+        const brand = within(screen.getByRole('complementary')).getByRole('link', {
+            name: 'Test site',
+        });
+        expect(brand.querySelector('[aria-hidden="true"]')?.textContent).toBe('T');
+        expect(brand.querySelector('img')).toBeNull();
+        cleanup();
+
+        renderApp({ logo: '/images/logo.svg' });
+        const logo = within(screen.getByRole('complementary'))
+            .getByRole('link', { name: 'Test site' })
+            .querySelector('img');
+        expect(logo).toHaveAttribute('src', '/images/logo.svg');
+        expect(logo).toHaveAttribute('alt', '');
+    });
+
     it('collapses the sidebar to icons, and remembers it', async () => {
         const user = userEvent.setup();
         renderApp();
@@ -833,6 +850,12 @@ describe('the app shell', () => {
 
     describe('with a dock (decision 0076)', () => {
         const dock = { theme: { navigation: 'dock' as const } };
+
+        it('draws the image of `logo` in the top bar', () => {
+            renderApp({ ...dock, logo: '/images/logo.svg' });
+            const logo = screen.getByRole('link', { name: 'Test site' }).querySelector('img');
+            expect(logo).toHaveAttribute('src', '/images/logo.svg');
+        });
 
         it('shows the menu in a dock instead of the sidebar, where nothing collapses', async () => {
             const user = userEvent.setup();
