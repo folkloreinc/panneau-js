@@ -1,5 +1,15 @@
 # @panneau/core
 
+## 5.0.0-alpha.55
+
+### Minor Changes
+
+- bcc61ea: The "Go to…" palette acts on the current page (decision 0116). A new "On this page" group, at the top, offers the actions of the item open in its form or panel, which run as their buttons do (same confirmation, runner and toasts), and the commands of plugins that apply. `CommandContext` gets the current `page` (`route`, `resource`, `item`, `selection`), a `Command` declares when it applies with `when(context)`, and `perform(context)` gets the context. Commands without `when` show in their group as before. `@panneau/core` adds `appliesTo()` and `hasSelection()`.
+
+### Patch Changes
+
+- @panneau/protocol@5.0.0-alpha.55
+
 ## 5.0.0-alpha.54
 
 ### Patch Changes
