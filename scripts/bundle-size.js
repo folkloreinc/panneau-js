@@ -39,9 +39,10 @@ const work = resolve(root, '.tmp/bundle-size');
 // #509: their messages and the three methods of the REST adapter are on the first page.
 // 1465 / 478 KB: the follow-up of #520 (filters as controls, a searchable select that opens on a
 // press, `useActionsFit`) measures 1460 / 475 KB, just over.
-// 1470 / 480 KB: the keyboard of lists (#534) measures 1466 / 477 KB: its shortcuts and their
-// labels in the help are registered by the list, on the first page.
-const BUDGET = { minified: 1470 * 1024, gzip: 480 * 1024 };
+// 1500 / 490 KB: the keyboard of lists (#534) measures 1466 / 477 KB: its shortcuts and their
+// labels in the help are registered by the list, on the first page. With room for the shortcuts of
+// the palette in context (#533) and the density picker (#532), which land next to it.
+const BUDGET = { minified: 1500 * 1024, gzip: 490 * 1024 };
 
 const report = process.argv.includes('--report');
 
