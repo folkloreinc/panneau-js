@@ -312,6 +312,38 @@ export const Cards: Story = {
 };
 
 /**
+ * The keyboard (decision 0112): `j`/`k` and the arrows move between rows, `x` selects the focused
+ * one, Shift extends the selection, Esc clears it, `/` goes to the search. The same in the cards.
+ */
+export const Keyboard: Story = {
+    args: { selectable: true, getItemHref: (item: ListItem) => `#/members/${item.id}` },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const table = canvas.getByRole('table', { name: 'Members' });
+        const rows = within(table).getAllByRole('row').slice(1);
+        await userEvent.keyboard('jj');
+        await expect(rows[1]).toHaveFocus();
+        await expect(rows[1]).toHaveAttribute('tabindex', '0');
+        await userEvent.keyboard('k{ArrowDown}x{Shift>}{ArrowDown}{/Shift}');
+        await expect(rows[2]).toHaveFocus();
+        await expect(canvas.getByText('2 items selected')).toBeVisible();
+        await userEvent.keyboard('{Escape}');
+        await expect(canvas.queryByText('2 items selected')).toBeNull();
+        await userEvent.keyboard('/');
+        await expect(canvas.getByRole('searchbox', { name: 'Search' })).toHaveFocus();
+
+        await userEvent.click(canvas.getByRole('radio', { name: 'Cards' }));
+        await userEvent.click(canvasElement.ownerDocument.body);
+        await userEvent.keyboard('j');
+        const cards = within(canvas.getByRole('list', { name: 'Members' })).getAllByRole(
+            'listitem',
+        );
+        // Back to the row it left, in the other layout
+        await expect(cards[2]).toHaveFocus();
+    },
+};
+
+/**
  * An item that just appeared, such as one just created (decision 0066): it is scrolled into view,
  * and its background shows it for a moment, then fades (without the fade when the system asks for
  * less motion).

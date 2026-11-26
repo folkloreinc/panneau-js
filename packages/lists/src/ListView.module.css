@@ -125,3 +125,9 @@
     clip-path: inset(50%);
     white-space: nowrap;
 }
+
+/* The row that the keyboard moved to (decision 0112) */
+.body [data-item-id]:focus-visible {
+    outline: var(--panneau-focus-width) solid var(--panneau-color-focus);
+    outline-offset: calc(-1 * var(--panneau-focus-width));
+}
