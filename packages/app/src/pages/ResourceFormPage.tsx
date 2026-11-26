@@ -10,6 +10,7 @@ import type { Definition, Item, RouteReference } from '@panneau/protocol';
 import { ITEM_TYPE_KEY, getItemType, getResourceType } from '@panneau/protocol/runtime';
 import { usePanneauIntl } from '@panneau/ui';
 
+import { usePublishPage } from '../currentPage';
 import { useDocumentTitle } from '../documentTitle';
 import { getListPathBack } from '../listLocation';
 import { navigate } from '../location';
@@ -80,6 +81,8 @@ export function ResourceFormPage({
             ? intl.formatMessage(appMessages.create, { resource: type?.label ?? singular })
             : (getItemTitle(item, resource.itemTitle, definition.locale) ??
               intl.formatMessage(appMessages.edit, { resource: singular }));
+    // For the palette: its commands act on the item of the form (decision 0116)
+    usePublishPage({ resource, item });
     useRecordRecentItem(
         basePath,
         id !== null && item !== undefined

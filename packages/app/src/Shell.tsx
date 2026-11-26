@@ -25,6 +25,7 @@ import {
 } from '@panneau/protocol/runtime';
 import { Alert, usePanneauIntl, useToast } from '@panneau/ui';
 
+import { CurrentPageProvider } from './currentPage';
 import { DocumentTitle } from './documentTitle';
 import { getInterfaceLocales, withNext } from './interfaceLocales';
 import { AccountPage, Dashboard } from './lazyPages';
@@ -347,27 +348,33 @@ export function Shell({
                         }
                     }}
                 >
-                    <Layout
-                        definition={definition}
-                        basePath={basePath}
-                        route={route}
-                        colorScheme={colorScheme}
-                        onColorSchemeChange={onColorSchemeChange}
-                        density={density}
-                        onDensityChange={onDensityChange}
-                        onLogOut={logOut}
-                        onLocaleChange={switchLocale}
-                    >
-                        <PluginShortcuts definition={definition} />
-                        <PageErrorBoundary
-                            homeHref={routePath({ name: 'home' }, basePath)}
-                            path={pathname}
+                    <CurrentPageProvider route={route.name}>
+                        <Layout
+                            definition={definition}
+                            basePath={basePath}
+                            route={route}
+                            colorScheme={colorScheme}
+                            onColorSchemeChange={onColorSchemeChange}
+                            density={density}
+                            onDensityChange={onDensityChange}
+                            onLogOut={logOut}
+                            onLocaleChange={switchLocale}
                         >
-                            <PageRouteContext value={{ route, basePath }}>
-                                <Page definition={definition} basePath={basePath} route={route} />
-                            </PageRouteContext>
-                        </PageErrorBoundary>
-                    </Layout>
+                            <PluginShortcuts definition={definition} />
+                            <PageErrorBoundary
+                                homeHref={routePath({ name: 'home' }, basePath)}
+                                path={pathname}
+                            >
+                                <PageRouteContext value={{ route, basePath }}>
+                                    <Page
+                                        definition={definition}
+                                        basePath={basePath}
+                                        route={route}
+                                    />
+                                </PageRouteContext>
+                            </PageErrorBoundary>
+                        </Layout>
+                    </CurrentPageProvider>
                     {relatedItems !== undefined ? (
                         <RelatedItemPanelHost
                             requests={relatedItems}

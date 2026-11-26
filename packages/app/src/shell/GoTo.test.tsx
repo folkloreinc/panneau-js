@@ -245,6 +245,54 @@ describe('the "Go to…" palette', () => {
         expect(screen.getByRole('button', { name: 'Expand the sidebar' })).toBeInTheDocument();
     });
 
+    it('offers the actions of the current item, and the commands that apply (decision 0116)', async () => {
+        const user = userEvent.setup();
+        const perform = vi.fn();
+        renderApp([
+            {
+                id: 'site',
+                commands: [
+                    {
+                        id: 'preview',
+                        label: 'Preview on the site',
+                        when: ({ page }) => page?.item !== undefined,
+                        perform,
+                    },
+                ],
+            },
+        ]);
+        // No item on the home page: neither the actions nor the command
+        await user.click(goToButton());
+        expect(palette().queryByRole('group', { name: 'On this page' })).toBeNull();
+        await user.keyboard('{Escape}');
+
+        window.history.pushState(null, '', '/panneau/resources/pages/1/edit');
+        window.dispatchEvent(new PopStateEvent('popstate'));
+        await screen.findByRole('heading', { name: 'About us' });
+        await user.click(goToButton());
+        const group = within(palette().getByRole('group', { name: 'On this page' }));
+        expect(group.getAllByRole('menuitem').map((item) => item.textContent)).toEqual([
+            'Duplicate',
+            'Delete',
+            'Preview on the site',
+        ]);
+        await user.click(group.getByRole('menuitem', { name: 'Preview on the site' }));
+        expect(perform).toHaveBeenCalledWith(
+            expect.objectContaining({
+                page: expect.objectContaining({
+                    route: 'resource.edit',
+                    resource: expect.objectContaining({ id: 'pages' }),
+                    item: expect.objectContaining({ id: '1' }),
+                }),
+            }),
+        );
+
+        // Delete asks first, as its button does
+        await user.click(goToButton());
+        await user.click(palette().getByRole('menuitem', { name: 'Delete' }));
+        expect(await screen.findByRole('alertdialog')).toHaveTextContent('About us');
+    });
+
     it('links to the list of a resource with more results', async () => {
         const user = userEvent.setup();
         renderApp([], {

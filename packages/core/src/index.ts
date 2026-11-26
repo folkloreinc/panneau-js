@@ -109,8 +109,11 @@ export { type PageProps } from './page';
 export {
     type Command,
     type CommandContext,
+    type CommandPage,
     type CommandSource,
+    appliesTo,
     getCommands,
+    hasSelection,
     getSearchableResources,
     isSearchable,
 } from './commands';

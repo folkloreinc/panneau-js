@@ -7,6 +7,7 @@ import { ActionButton, ConfirmDialog, type ListActionEvent } from '@panneau/list
 import type { Action, Item } from '@panneau/protocol';
 import { usePanneauIntl, useToast } from '@panneau/ui';
 
+import { usePublishItemActions } from '../currentPage';
 import { getItemTitle } from './itemTitle';
 
 export interface ItemActionsProps {
@@ -52,10 +53,6 @@ export function ItemActions({
     const title = getItemTitle(item, itemTitle, locale) ?? '';
     const subject =
         title !== '' ? intl.formatMessage(actionsMessages.subjectItem, { title }) : null;
-    if (actions.length === 0) {
-        return null;
-    }
-
     const execute = async (action: Action) => {
         setConfirming(null);
         setPending(action.id);
@@ -94,6 +91,14 @@ export function ItemActions({
             void execute(action);
         }
     };
+
+    // The palette offers them too, run as their buttons run them (decision 0116)
+    usePublishItemActions(
+        actions.map(({ action, href }) => ({ action, href, run: () => run(action) })),
+    );
+    if (actions.length === 0) {
+        return null;
+    }
 
     return (
         <>

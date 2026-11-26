@@ -201,6 +201,7 @@ export const appFr: Record<string, string> = {
     'panneau.app.contextRequired': 'Choisissez où travailler',
     'panneau.app.contextRequiredText': 'Ce que montre l’administration en dépend.',
     'panneau.app.profile': 'Votre profil ({name})',
+    'panneau.app.groupThisPage': 'Sur cette page',
     'panneau.app.groupRecent': 'Récents',
     'panneau.app.groupNavigation': 'Navigation',
     'panneau.app.groupCreate': 'Créer',
