@@ -125,7 +125,7 @@ export function GoTo({
     onToggleSidebar,
     colorScheme,
     onColorSchemeChange,
-    density = 'default',
+    density,
     onDensityChange,
     onLocaleChange,
 }: GoToProps) {

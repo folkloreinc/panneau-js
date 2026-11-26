@@ -69,6 +69,7 @@ import type {
     ListItem,
     ListLayoutEntry,
 } from './types';
+import { useListKeyboard } from './useListKeyboard';
 import { useListState } from './useListState';
 import { useNarrow } from './useNarrow';
 import { useRenderValue } from './useRenderValue';
@@ -473,6 +474,16 @@ export function ListView({
     const selectedItems = pageItems.filter((item) => isItemSelected(selection, item.id));
     const pageSelection = getPageSelection(selection, pageItems);
     const showsChecks = selectable && (selecting || selectedCount > 0);
+    const keyboard = useListKeyboard({
+        list,
+        content,
+        toolbar: toolbarRef,
+        enabled:
+            items !== undefined && error === null && (layout === 'table' || layout === 'cards'),
+        search,
+        selectable,
+        hasSelection: selectedCount > 0,
+    });
     const endSelection = () => {
         setSelecting(false);
         list.clearSelection();
@@ -1015,7 +1026,10 @@ export function ListView({
                 tabIndex={-1}
                 onFocus={(event) => {
                     lastFocus.current = event.target;
+                    keyboard.onFocus(event);
                 }}
+                onBlur={keyboard.onBlur}
+                onClickCapture={keyboard.onClickCapture}
             >
                 {body}
             </div>

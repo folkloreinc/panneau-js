@@ -264,4 +264,32 @@ export const listsMessages = {
         id: 'panneau.lists.phoneExtension',
         defaultMessage: '{number}, ext. {extension}',
     }),
+    /** The group of the shortcuts of lists, in the help of shortcuts (decision 0112). */
+    shortcutsGroup: defineMessage({ id: 'panneau.lists.shortcutsGroup', defaultMessage: 'Lists' }),
+    nextItem: defineMessage({ id: 'panneau.lists.nextItem', defaultMessage: 'Next item' }),
+    previousItem: defineMessage({
+        id: 'panneau.lists.previousItem',
+        defaultMessage: 'Previous item',
+    }),
+    selectNext: defineMessage({
+        id: 'panneau.lists.selectNext',
+        defaultMessage: 'Extend the selection down',
+    }),
+    selectPrevious: defineMessage({
+        id: 'panneau.lists.selectPrevious',
+        defaultMessage: 'Extend the selection up',
+    }),
+    openItem: defineMessage({ id: 'panneau.lists.openItem', defaultMessage: 'Open the item' }),
+    toggleItem: defineMessage({
+        id: 'panneau.lists.toggleItem',
+        defaultMessage: 'Select or deselect the item',
+    }),
+    leaveItem: defineMessage({
+        id: 'panneau.lists.leaveItem',
+        defaultMessage: 'Clear the selection, or leave the item',
+    }),
+    focusSearch: defineMessage({
+        id: 'panneau.lists.focusSearch',
+        defaultMessage: 'Search the list',
+    }),
 };

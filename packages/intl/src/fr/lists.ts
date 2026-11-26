@@ -99,4 +99,13 @@ export const listsFr: Record<string, string> = {
     'panneau.lists.keepTheirs': 'Garder la sienne',
     'panneau.lists.saveMine': 'Enregistrer la mienne',
     'panneau.lists.phoneExtension': '{number}, poste {extension}',
+    'panneau.lists.shortcutsGroup': 'Listes',
+    'panneau.lists.nextItem': 'Élément suivant',
+    'panneau.lists.previousItem': 'Élément précédent',
+    'panneau.lists.selectNext': 'Étendre la sélection vers le bas',
+    'panneau.lists.selectPrevious': 'Étendre la sélection vers le haut',
+    'panneau.lists.openItem': 'Ouvrir l’élément',
+    'panneau.lists.toggleItem': 'Sélectionner ou désélectionner l’élément',
+    'panneau.lists.leaveItem': 'Effacer la sélection, ou quitter l’élément',
+    'panneau.lists.focusSearch': 'Chercher dans la liste',
 };

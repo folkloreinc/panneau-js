@@ -385,6 +385,16 @@ describe('the app shell', () => {
             await waitFor(() => expect(scrollTop).toBe(0));
         });
 
+        it('opens the form of a new item with c (decision 0112)', async () => {
+            const user = userEvent.setup();
+            renderAuthors();
+            await within(screen.getByRole('main')).findByRole('link', { name: 'Ada' });
+            await user.keyboard('c');
+            await waitFor(() =>
+                expect(window.location.pathname).toBe('/panneau/resources/authors/create'),
+            );
+        });
+
         it('still goes to the list that highlights the new item after a create (decision 0066)', async () => {
             const user = userEvent.setup();
             renderAuthors();
@@ -2281,6 +2291,17 @@ describe('resource types (decision 0077)', () => {
         );
         return { backend, unmount: cleanup };
     }
+
+    it('opens the menu of the types with c, as "New post" does (decision 0112)', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState(null, '', '/panneau/resources/posts');
+        renderTypedApp();
+        await screen.findByRole('table', { name: 'Posts' });
+        await user.keyboard('c');
+        expect(await screen.findByRole('menu', { name: 'New post' })).toBeInTheDocument();
+        // Only the menu of the header: the empty list's button stays closed
+        expect(screen.getAllByRole('menu')).toHaveLength(1);
+    });
 
     it('creates an item of the type chosen in the menu of the list, with its fields', async () => {
         const user = userEvent.setup();

@@ -100,7 +100,7 @@ export function UserMenu({
     basePath,
     colorScheme,
     onColorSchemeChange,
-    density = 'default',
+    density = 'comfortable',
     onDensityChange,
     onLogOut,
     onLocaleChange,

@@ -1039,6 +1039,15 @@ export const listsMessages: {
     number: string;
     extension: string;
     }>;
+    shortcutsGroup: PanneauMessage<Record<never, never>>;
+    nextItem: PanneauMessage<Record<never, never>>;
+    previousItem: PanneauMessage<Record<never, never>>;
+    selectNext: PanneauMessage<Record<never, never>>;
+    selectPrevious: PanneauMessage<Record<never, never>>;
+    openItem: PanneauMessage<Record<never, never>>;
+    toggleItem: PanneauMessage<Record<never, never>>;
+    leaveItem: PanneauMessage<Record<never, never>>;
+    focusSearch: PanneauMessage<Record<never, never>>;
 };
 
 // @public
