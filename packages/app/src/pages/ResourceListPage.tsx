@@ -16,7 +16,7 @@ import {
     useUpdateItem,
 } from '@panneau/data/query';
 import { useFormatRuleFailure } from '@panneau/forms';
-import { appMessages } from '@panneau/intl';
+import { appMessages, listsMessages } from '@panneau/intl';
 import { ListView, getPagingProps, useListFields } from '@panneau/lists';
 import type { RouteReference } from '@panneau/protocol';
 import {
@@ -33,6 +33,7 @@ import {
     MenuTrigger,
     getNamedIcon,
     usePanneauIntl,
+    useShortcut,
     useToast,
 } from '@panneau/ui';
 
@@ -225,6 +226,24 @@ export function ResourceListPage({
             navigate(redirect, { replace: true });
         }
     }, [redirect]);
+    // `c` does what "New …" does: opens the form, or the menu of the types (decision 0112)
+    const createPath = routePath(
+        {
+            name: 'resource.create',
+            resource: resource.id,
+            ...(creatableTypes[0] !== undefined ? { type: creatableTypes[0].id } : {}),
+        },
+        basePath,
+    );
+    const [createMenuOpen, setCreateMenuOpen] = useState(false);
+    useShortcut({
+        id: 'panneau.lists.create',
+        keys: 'c',
+        label: createLabel,
+        group: intl.formatMessage(listsMessages.shortcutsGroup),
+        enabled: abilities.create && listShown,
+        perform: () => (creatableTypes.length > 1 ? setCreateMenuOpen(true) : navigate(createPath)),
+    });
     // The page leaves for the form of the item
     if (redirect !== null) {
         return null;
@@ -241,54 +260,47 @@ export function ResourceListPage({
         );
     }
     // "New …", in the header of the page and in the empty list
-    const createAction = !abilities.create ? undefined : creatableTypes.length > 1 ? (
-        // A resource with types: a menu of the types to create (decision 0077)
-        <MenuTrigger>
-            <Button tone="accent" icon={Plus} iconEnd={ChevronDown}>
+    // The header's is the one `c` opens
+    const renderCreate = (controlled: boolean) =>
+        !abilities.create ? undefined : creatableTypes.length > 1 ? (
+            // A resource with types: a menu of the types to create (decision 0077)
+            <MenuTrigger
+                {...(controlled ? { isOpen: createMenuOpen, onOpenChange: setCreateMenuOpen } : {})}
+            >
+                <Button tone="accent" icon={Plus} iconEnd={ChevronDown}>
+                    {createLabel}
+                </Button>
+                <Menu placement="bottom end">
+                    {creatableTypes.map((type) => (
+                        <MenuItem
+                            key={type.id}
+                            id={type.id}
+                            href={routePath(
+                                {
+                                    name: 'resource.create',
+                                    resource: resource.id,
+                                    type: type.id,
+                                },
+                                basePath,
+                            )}
+                            {...(type.icon !== undefined ? { icon: getNamedIcon(type.icon) } : {})}
+                            {...(type.description !== undefined
+                                ? { description: type.description }
+                                : {})}
+                        >
+                            {type.label}
+                        </MenuItem>
+                    ))}
+                </Menu>
+            </MenuTrigger>
+        ) : (
+            <LinkButton href={createPath} tone="accent" icon={Plus}>
                 {createLabel}
-            </Button>
-            <Menu placement="bottom end">
-                {creatableTypes.map((type) => (
-                    <MenuItem
-                        key={type.id}
-                        id={type.id}
-                        href={routePath(
-                            {
-                                name: 'resource.create',
-                                resource: resource.id,
-                                type: type.id,
-                            },
-                            basePath,
-                        )}
-                        {...(type.icon !== undefined ? { icon: getNamedIcon(type.icon) } : {})}
-                        {...(type.description !== undefined
-                            ? { description: type.description }
-                            : {})}
-                    >
-                        {type.label}
-                    </MenuItem>
-                ))}
-            </Menu>
-        </MenuTrigger>
-    ) : (
-        <LinkButton
-            href={routePath(
-                {
-                    name: 'resource.create',
-                    resource: resource.id,
-                    ...(creatableTypes[0] !== undefined ? { type: creatableTypes[0].id } : {}),
-                },
-                basePath,
-            )}
-            tone="accent"
-            icon={Plus}
-        >
-            {createLabel}
-        </LinkButton>
-    );
+            </LinkButton>
+        );
     return (
         <div className={styles.page}>
-            <PageHeader title={title} actions={createAction} />
+            <PageHeader title={title} actions={renderCreate(true)} />
             {resource.description !== undefined ? (
                 <p className={styles.intro}>{resource.description}</p>
             ) : null}
@@ -350,7 +362,7 @@ export function ResourceListPage({
                             preview: previewAction,
                         }}
                         aria-label={title}
-                        emptyAction={createAction}
+                        emptyAction={renderCreate(false)}
                         list={list}
                         items={data?.data}
                         {...getPagingProps(data?.meta)}
