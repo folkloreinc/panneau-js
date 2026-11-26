@@ -1,5 +1,21 @@
 # @panneau/media
 
+## 5.0.0-alpha.54
+
+### Patch Changes
+
+- 4bfcd2f: The preview of an `image` field draws a thin line around the image itself, inside the margins of its box, so an image with white edges, like a poster, no longer blends into the grey card. It has no background, so transparent images stay as they are. `TransformedImage` takes a `frameClassName` for that line.
+- 405d32e: The media picker starts filtered on the type its opener accepts: a `media` field that accepts `application/pdf` opens on "Documents", an `image` field on "Images", `video/*` on "Videos" and `audio/*` on "Audio". The user can still choose "All types", where the media not accepted stay greyed out. An `accept` of several types, or none, starts on "All types" as before.
+- 1d26c77: The media picker offers the date added both ways when a library sorts by `createdAt`: "Newest first", then "Oldest first" (`createdAt`), unless the field has a label of its own.
+- Updated dependencies [50f8638]
+- Updated dependencies [e65232f]
+  - @panneau/protocol@5.0.0-alpha.54
+  - @panneau/core@5.0.0-alpha.54
+  - @panneau/data@5.0.0-alpha.54
+  - @panneau/fields@5.0.0-alpha.54
+  - @panneau/ui@5.0.0-alpha.54
+  - @panneau/intl@5.0.0-alpha.54
+
 ## 5.0.0-alpha.53
 
 ### Patch Changes

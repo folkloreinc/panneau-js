@@ -1,5 +1,15 @@
 # @panneau/protocol
 
+## 5.0.0-alpha.54
+
+### Minor Changes
+
+- e65232f: The definition can have a `logo`, the URL of an image of the site's logo. The shell draws it in the square of the logo, in the sidebar, the top bar of the dock and the skeleton at boot, instead of the first letter of the site's name.
+
+### Patch Changes
+
+- 50f8638: The protocol describes a sixth tool of agents, `upload_file` (decision 0115, built by folkloreinc/laravel-panneau#304): `AgentUploadFileArguments` (`name`, and optionally `resource`, a media library, and `values`, never the `file`) and `AgentUploadFileResult` (`{ resource, name, method: "PUT", url, expiresIn }`), in `AGENT_TOOLS` (it writes), `agentToolSchemas` and `agents.schema.json`. The tool takes no file: the agent sends it as the body of one `PUT` to the signed `url`, which answers the new media. `AgentToolName` has one more name: code that maps every tool handles it.
+
 ## 5.0.0-alpha.53
 
 No changes in this release.

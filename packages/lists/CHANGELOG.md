@@ -1,5 +1,18 @@
 # @panneau/lists
 
+## 5.0.0-alpha.54
+
+### Patch Changes
+
+- bf0bd9f: The pagination's "per page" select and page buttons wrap on narrow screens instead of overflowing the page on mobile.
+- Updated dependencies [50f8638]
+- Updated dependencies [e65232f]
+  - @panneau/protocol@5.0.0-alpha.54
+  - @panneau/core@5.0.0-alpha.54
+  - @panneau/fields@5.0.0-alpha.54
+  - @panneau/ui@5.0.0-alpha.54
+  - @panneau/intl@5.0.0-alpha.54
+
 ## 5.0.0-alpha.53
 
 ### Patch Changes

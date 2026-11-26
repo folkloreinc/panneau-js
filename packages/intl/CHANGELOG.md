@@ -1,5 +1,9 @@
 # @panneau/intl
 
+## 5.0.0-alpha.54
+
+No changes in this release.
+
 ## 5.0.0-alpha.53
 
 No changes in this release.

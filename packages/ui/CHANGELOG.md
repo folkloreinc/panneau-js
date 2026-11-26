@@ -1,5 +1,11 @@
 # @panneau/ui
 
+## 5.0.0-alpha.54
+
+### Patch Changes
+
+- @panneau/intl@5.0.0-alpha.54
+
 ## 5.0.0-alpha.53
 
 ### Patch Changes
