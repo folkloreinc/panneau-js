@@ -104,7 +104,9 @@ export function useListKeyboard({
         const from = current?.dataset.itemId;
         const to = next?.dataset.itemId;
         if (extend && selectable && from !== undefined && to !== undefined) {
-            anchor.current ??= from;
+            if (anchor.current === null) {
+                anchor.current = from;
+            }
             list.select(getRange(rows, anchor.current, to));
         }
     };
