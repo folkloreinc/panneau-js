@@ -32,3 +32,23 @@
         background-color: var(--panneau-shell-panel-bg, var(--panneau-color-surface));
     }
 }
+
+/* From the `lg` width, in the panel of the shell: the background and the top border of the sticky
+ * footer span the panel from edge to edge (the panel clips them), on the background of the panel,
+ * even when the page is narrower than the panel. */
+@container panneau-root (min-width: 64rem) {
+    .footer.footer {
+        background-color: transparent;
+        border-top: 0 none;
+    }
+
+    .footer.footer::before {
+        position: absolute;
+        inset-block: 0;
+        inset-inline: calc(-1 * var(--_panneau-panel-bleed, 0px));
+        z-index: -1;
+        content: '';
+        background-color: var(--panneau-shell-panel-bg, var(--panneau-color-surface));
+        border-top: var(--panneau-border-width) solid var(--panneau-color-border);
+    }
+}

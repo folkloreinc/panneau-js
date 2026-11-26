@@ -156,8 +156,12 @@
         padding-inline-start: 0;
     }
 
+    /* Clips what spans the panel from edge to edge (the footer of a form). */
     .panel {
+        --_panneau-panel-bleed: 100vmax;
+
         min-height: calc(100dvh - 2 * var(--panneau-shell-inset, var(--panneau-space-2)));
+        overflow-x: clip;
         padding: var(--panneau-space-6) var(--panneau-shell-panel-padding-x, var(--panneau-space-8))
             var(--panneau-space-10);
     }
