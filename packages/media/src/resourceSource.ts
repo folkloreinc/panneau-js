@@ -38,14 +38,18 @@ function toPickerMedia(item: Item, itemTitle: string, fields: readonly Field[]):
     };
 }
 
+/** Sorts also offered the other way: the oldest first, after the newest. */
+const BOTH_WAYS = new Set(['createdAt']);
+
 /** The sorts of a library: those of its list, the default one first. */
 function sortsOf(library: MediaLibrary): MediaSort[] {
-    const sorts = (library.list?.sorts ?? []).map((key): MediaSort => {
+    const sorts = (library.list?.sorts ?? []).flatMap((key): MediaSort[] => {
         const label = library.fields.find((field) => field.name === key)?.label;
-        return {
+        const sort = {
             id: DESCENDING.has(key) ? `-${key}` : key,
             ...(label !== undefined ? { label } : {}),
         };
+        return BOTH_WAYS.has(key) && label === undefined ? [sort, { id: key }] : [sort];
     });
     const preferred = library.list?.defaultSort?.split(',')[0];
     const first = sorts.find(
