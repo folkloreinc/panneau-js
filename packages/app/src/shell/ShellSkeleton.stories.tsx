@@ -38,6 +38,19 @@ export const CollapsedSidebar: Story = {
     },
 };
 
+/** The definition in the boot config has a `logo`: the logo shows in its square while the app loads. */
+export const WithLogo: Story = {
+    args: {
+        logo: `data:image/svg+xml,${encodeURIComponent(
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 20 12 4l8 16z" fill="currentColor"/></svg>',
+        )}`,
+    },
+    play: async ({ canvasElement }) => {
+        await expect(within(canvasElement).getByRole('status')).toHaveTextContent('Loading…');
+        await expect(canvasElement.querySelector('img')).toHaveAttribute('alt', '');
+    },
+};
+
 /** The definition in the boot config sets `navigation: "dock"`: the bar at the top and the dock. */
 export const Dock: Story = {
     args: { navigation: 'dock' },

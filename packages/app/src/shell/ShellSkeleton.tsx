@@ -7,6 +7,7 @@ import layoutStyles from './AppLayout.module.css';
 import dockStyles from './Dock.module.css';
 import dockLayoutStyles from './DockLayout.module.css';
 import styles from './ShellSkeleton.module.css';
+import { LogoImage } from './frame';
 
 /** Widths of the links of the sidebar, varied so they read as labels. */
 const LINKS = ['70%', '55%', '80%', '45%', '60%', '50%'];
@@ -20,6 +21,17 @@ export interface ShellSkeletonProps {
      * (decision 0076). Defaults to the sidebar.
      */
     navigation?: 'sidebar' | 'dock';
+    /** The URL of the site's logo, from the definition when the boot config has it. */
+    logo?: string | undefined;
+}
+
+/** The square of the logo: the site's logo when it is known, else its skeleton. */
+function LogoSkeleton({ logo }: { logo: string | undefined }) {
+    return logo !== undefined ? (
+        <LogoImage src={logo} />
+    ) : (
+        <Skeleton shape="rect" width="1.75rem" height="1.75rem" />
+    );
 }
 
 function PageSkeleton({ className }: { className: string | undefined }) {
@@ -34,12 +46,12 @@ function PageSkeleton({ className }: { className: string | undefined }) {
 }
 
 /** The app at boot with a dock: the bar at the top, a page header and the dock. */
-function DockSkeleton({ label }: { label: string }) {
+function DockSkeleton({ label, logo }: { label: string; logo: string | undefined }) {
     return (
         <LoadingRegion label={label} className={dockLayoutStyles.layout}>
             <div className={dockLayoutStyles.topBar}>
                 <div className={styles.brand}>
-                    <Skeleton shape="rect" width="1.75rem" height="1.75rem" />
+                    <LogoSkeleton logo={logo} />
                     <Skeleton width="8rem" />
                 </div>
             </div>
@@ -65,14 +77,14 @@ function DockSkeleton({ label }: { label: string }) {
 /**
  * The app at boot, before the definition (decision 0034): the frame of the app, with its sidebar,
  * collapsed if the user left it so, and a page header, in the layout of `AppLayout`. With
- * `navigation: "dock"`, the frame of `DockLayout`.
+ * `navigation: "dock"`, the frame of `DockLayout`. The site's logo shows as soon as it is known.
  */
-export function ShellSkeleton({ navigation = 'sidebar' }: ShellSkeletonProps) {
+export function ShellSkeleton({ navigation = 'sidebar', logo }: ShellSkeletonProps) {
     const intl = usePanneauIntl();
     const [sidebar] = usePreference('sidebar', SIDEBAR_STATES);
     const collapsed = sidebar === 'collapsed';
     if (navigation === 'dock') {
-        return <DockSkeleton label={intl.formatMessage(appMessages.loading)} />;
+        return <DockSkeleton label={intl.formatMessage(appMessages.loading)} logo={logo} />;
     }
     return (
         <LoadingRegion
@@ -86,7 +98,7 @@ export function ShellSkeleton({ navigation = 'sidebar' }: ShellSkeletonProps) {
             <div className={layoutStyles.sidebar}>
                 <div className={styles.sidebar}>
                     <div className={styles.brand}>
-                        <Skeleton shape="rect" width="1.75rem" height="1.75rem" />
+                        <LogoSkeleton logo={logo} />
                         {collapsed ? null : <Skeleton width="60%" />}
                     </div>
                     <Skeleton shape="rect" height="var(--panneau-control-height-sm)" />

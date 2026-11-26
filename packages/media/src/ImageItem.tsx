@@ -107,13 +107,14 @@ export function ImageItem({
                 alt=""
                 fit={tile ? 'slice' : 'meet'}
                 className={tile ? styles.tilePreview : styles.preview}
+                frameClassName={tile ? undefined : styles.previewFrame}
             />
         ) : typeof reference.media?.thumbnailUrl === 'string' ? (
             <img
                 src={reference.media.thumbnailUrl}
                 alt=""
                 loading="lazy"
-                className={tile ? styles.tilePreview : styles.preview}
+                className={tile ? styles.tilePreview : `${styles.preview} ${styles.previewImage}`}
             />
         ) : (
             <span className={tile ? styles.tilePreview : styles.preview}>

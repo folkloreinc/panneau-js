@@ -257,6 +257,10 @@ export const Definition = z
     .looseObject({
         protocol: z.literal(PROTOCOL_VERSION),
         name: z.string(),
+        logo: z.string().optional().meta({
+            description:
+                "URL of the image of the site's logo, a path or an absolute URL: the shell draws it in the square of the logo, on the accent color, instead of the first letter of `name`. A square image, such as an SVG, fits best.",
+        }),
         locale: z
             .string()
             .min(2)
