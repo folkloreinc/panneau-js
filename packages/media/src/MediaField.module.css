@@ -81,6 +81,22 @@
     border-radius: var(--panneau-radius-sm);
 }
 
+/*
+ * A line around the image itself, so an image with white edges stands out from the card. Drawn
+ * over its edge, inside the box, and without a background, which would hide transparency.
+ */
+.previewFrame {
+    fill: none;
+    stroke: var(--panneau-color-border);
+    stroke-width: 2px;
+    vector-effect: non-scaling-stroke;
+}
+
+/* A thumbnail without the image editor: an image the size of its box. */
+.previewImage {
+    border: var(--panneau-border-width) solid var(--panneau-color-border);
+}
+
 .badges {
     display: flex;
     flex-wrap: wrap;

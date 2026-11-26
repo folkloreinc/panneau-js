@@ -83,6 +83,8 @@ export interface TransformedImageProps {
     /** `slice` fills its box, as a thumbnail does. */
     fit?: 'meet' | 'slice';
     className?: string;
+    /** The class of a frame drawn around the image itself, inside the margins of `meet`. */
+    frameClassName?: string;
 }
 
 /**
@@ -135,6 +137,7 @@ export function TransformedImage({
     alt,
     fit = 'meet',
     className,
+    frameClassName,
 }: TransformedImageProps) {
     const href = useDrawnUrl(image, previewUrl);
     const { crop, drawing } = renderedImage(image, transform, href);
@@ -146,6 +149,15 @@ export function TransformedImage({
             className={className}
         >
             {drawing}
+            {frameClassName !== undefined ? (
+                <rect
+                    x={crop.x}
+                    y={crop.y}
+                    width={crop.width}
+                    height={crop.height}
+                    className={frameClassName}
+                />
+            ) : null}
         </svg>
     );
 }
