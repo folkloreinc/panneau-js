@@ -113,7 +113,10 @@ describe('commands in context (decision 0116)', () => {
     it('gives the page to function sources', () => {
         const commands = getCommands(
             [({ page: current }) => (current?.item !== undefined ? [publishSelected] : [])],
-            { definition: null, page: { ...page, item: { id: '1', abilities: {} } } },
+            {
+                definition: null,
+                page: { ...page, item: { id: '1', version: null, abilities: {} } },
+            },
         );
         expect(commands.map(({ id }) => id)).toEqual(['publish-selected']);
     });
