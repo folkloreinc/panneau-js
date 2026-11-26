@@ -2,6 +2,7 @@
 
 - Status: accepted, amended by [#487](https://github.com/folkloreinc/panneau-js/issues/487): the density is a row of icons, after the appearance's, in the "Preferences" section of the menu, closed at first, above the actions
 - Date: 2026-11-23
+- Amended: the picker offers Compact, Comfortable and Large instead of "Default" (see the amendment below)
 - Issue: [#440](https://github.com/folkloreinc/panneau-js/issues/440)
 - Amends: who sets the density in [0024](0024-theme-model.md) (section 5) and the user's menu of [0086](0086-one-user-menu.md)
 - Builds on: [0072](0072-touch-targets-follow-the-density.md) (touch targets follow the density)
@@ -30,3 +31,13 @@ The density of the app is the definition's: `theme.density`, `auto` without one 
 - `@panneau/intl` gains `panneau.app.densityTitle`, `panneau.app.densityOption` and `panneau.app.density`.
 - The density lives in the app (`useDensityPreference()`, internal to `@panneau/app`), which gives `PanneauRoot` the density in effect. `@panneau/ui` doesn't change: a density is still one value of the root or a scope.
 - The choice is per browser, not per account, like the appearance: a backend that wants it to follow the user across devices would need a preference in the protocol, which is left for later.
+
+## Amendment: Large instead of Default
+
+The row keeps three icons, like the appearance's, but offers **Compact**, **Comfortable** and **Large**, the `touch` density, which a mouse user can now pick too. There is no "Default" button:
+
+- Without a choice, the button that matches the definition's density is checked (`touch` is Large, `auto` is Comfortable, since a coarse pointer has no choice at all). Choosing that button clears the kept choice instead of storing it, so the app follows the definition again if it changes its density. It is how the user goes back to what the site sets.
+- A value `default` kept by the previous version isn't a choice anymore: it reads as none, so the definition's density applies and the matching button is checked.
+- `lockDensity` and `auto` on a touch screen don't change: the menu and the palette have no density, and the choice kept is ignored (0072 stays true).
+- "Go to…" has a command for each choice but the one in effect, "Density: large".
+- `@panneau/intl`: `densityOption` and `density` say "Large" / "Grande" for the third choice.
