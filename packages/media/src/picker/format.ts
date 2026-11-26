@@ -63,6 +63,34 @@ export function typeLabel(type: MediaType, intl: Intl): string {
     return intl.formatMessage(TYPE_MESSAGES[type]);
 }
 
+/** The type of a MIME type or pattern, as libraries tell them apart (`MediaTypes` of laravel-panneau). */
+function typeOfMime(mime: string): MediaType | null {
+    const type = mime.toLowerCase();
+    const family = type.split('/')[0] ?? '';
+    if (family === 'image' || family === 'video' || family === 'audio') {
+        return family;
+    }
+    if (
+        family === 'text' ||
+        /^application\/(pdf|rtf|msword|vnd\.ms-(excel|powerpoint)|vnd\.openxmlformats-officedocument\.|vnd\.oasis\.opendocument\.(text|spreadsheet|presentation)$)/.test(
+            type,
+        )
+    ) {
+        return 'document';
+    }
+    return null;
+}
+
+/**
+ * The type the picker starts filtered on: the one of every MIME type `accept` allows (`image/*`
+ * is `image`, `application/pdf` a `document`), or `null` when it allows several or any.
+ */
+export function typeOfAccept(accept: readonly string[] | null): MediaType | null {
+    const types = new Set((accept ?? []).map(typeOfMime));
+    const [type = null] = types;
+    return types.size === 1 ? type : null;
+}
+
 /** What `accept` allows, for people: "Images, PDF". */
 export function describeAccept(accept: readonly string[], intl: Intl): string {
     const names = accept.map((pattern) => {

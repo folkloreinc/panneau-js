@@ -97,6 +97,8 @@ export interface UseMediaBrowserOptions {
     locked: Readonly<Record<string, FilterValue>>;
     /** The sort a source starts with, when the opener chose none. */
     defaultSort: (source: MediaSource) => string | null;
+    /** The type a source starts filtered on. */
+    defaultType?: MediaType | null;
     stateKey: string | undefined;
 }
 
@@ -128,6 +130,7 @@ export function useMediaBrowser({
     source,
     locked,
     defaultSort,
+    defaultType = null,
     stateKey,
 }: UseMediaBrowserOptions): MediaBrowser {
     const restored = stateKey !== undefined ? kept.get(stateKey) : undefined;
@@ -147,7 +150,8 @@ export function useMediaBrowser({
 
     const id = source?.id ?? '';
     const stateOf = (candidate: MediaSource): BrowseState =>
-        states.get(candidate.id) ?? initialState({ ...EMPTY_QUERY, sort: defaultSort(candidate) });
+        states.get(candidate.id) ??
+        initialState({ ...EMPTY_QUERY, type: defaultType, sort: defaultSort(candidate) });
     const state = source !== null ? stateOf(source) : initialState(EMPTY_QUERY);
 
     const update = (sourceId: string, change: (current: BrowseState) => BrowseState) =>
@@ -157,6 +161,7 @@ export function useMediaBrowser({
                 current.get(sourceId) ??
                 initialState({
                     ...EMPTY_QUERY,
+                    type: defaultType,
                     sort: candidate !== undefined ? defaultSort(candidate) : null,
                 });
             return new Map(current).set(sourceId, change(previous));

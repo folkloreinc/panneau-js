@@ -106,9 +106,28 @@ describe('MediaPicker', () => {
         ]);
     });
 
+    it('starts filtered on the type the opener accepts, which the user can change', async () => {
+        const media = createMemorySource({ id: 'media', label: 'Media', items: libraryMedia });
+        const list = vi.spyOn(media, 'list');
+        open({ sources: [media], accept: ['application/pdf'] });
+
+        await card('press kit');
+        expect(list).toHaveBeenLastCalledWith(
+            { filter: { type: 'document' }, sort: '-createdAt' },
+            expect.anything(),
+        );
+        expect(within(dialog()).queryByRole('row', { name: 'autumn forest' })).toBeNull();
+
+        await userEvent.click(within(dialog()).getByRole('button', { name: /Type/ }));
+        await userEvent.click(screen.getByRole('option', { name: 'All types' }));
+        expect(await card('autumn forest')).toHaveAttribute('aria-disabled', 'true');
+    });
+
     it('greys out what the opener does not accept, and a media whose processing failed', async () => {
         open({ accept: ['image/*'], maxSize: 5 * 1024 * 1024 });
 
+        await userEvent.click(await within(dialog()).findByRole('button', { name: /Type/ }));
+        await userEvent.click(screen.getByRole('option', { name: 'All types' }));
         expect(await card('press kit')).toHaveAttribute('aria-disabled', 'true');
         expect(within(await card('press kit')).getByText('PDF not accepted here')).toBeVisible();
         expect(await card('mountain lake')).toHaveAttribute('aria-disabled', 'true');
