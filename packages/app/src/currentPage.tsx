@@ -4,6 +4,7 @@ import {
     use,
     useEffect,
     useId,
+    useRef,
     useState,
     useSyncExternalStore,
 } from 'react';
@@ -39,11 +40,33 @@ function createStore() {
                 listeners.delete(listener);
             };
         },
+        /** Changes what is published, and tells the palette only when it changed. */
         update: (change: (current: Published) => Published) => {
-            published = change(published);
-            listeners.forEach((listener) => listener());
+            const next = change(published);
+            if (next !== published) {
+                published = next;
+                listeners.forEach((listener) => listener());
+            }
         },
     };
+}
+
+function samePage(a: PageParts | null, b: PageParts | null): boolean {
+    return (
+        a === b ||
+        (a !== null &&
+            b !== null &&
+            a.resource === b.resource &&
+            a.item === b.item &&
+            a.selection === b.selection)
+    );
+}
+
+function sameActions(a: readonly PageAction[], b: readonly PageAction[]): boolean {
+    return (
+        a.length === b.length &&
+        a.every((entry, index) => entry.action === b[index]?.action && entry.href === b[index].href)
+    );
 }
 
 type Store = ReturnType<typeof createStore>;
@@ -56,33 +79,69 @@ export function CurrentPageProvider({ route, children }: { route: string; childr
     return <CurrentPageContext value={{ store, route }}>{children}</CurrentPageContext>;
 }
 
-/** Publishes the resource, the item and the selection of the page while it is shown. */
+/**
+ * Publishes the resource, the item and the selection of the page while it is shown. A render that
+ * changes none of them changes nothing.
+ */
 export function usePublishPage(page: PageParts | null): void {
     const store = use(CurrentPageContext)?.store;
     useEffect(() => {
-        if (store === undefined) {
-            return undefined;
-        }
-        store.update((current) => ({ ...current, page }));
-        return () => store.update((current) => ({ ...current, page: null }));
+        store?.update((current) => (samePage(current.page, page) ? current : { ...current, page }));
     }, [store, page]);
+    useEffect(
+        () =>
+            store !== undefined
+                ? () => store.update((current) => ({ ...current, page: null }))
+                : undefined,
+        [store],
+    );
 }
 
-/** Publishes the actions of an item while its buttons are shown. */
+/**
+ * Publishes the actions of an item while its buttons are shown. A render with the same actions
+ * changes nothing: the palette runs them through the latest functions of the buttons.
+ */
 export function usePublishItemActions(actions: readonly PageAction[]): void {
     const store = use(CurrentPageContext)?.store;
     const id = useId();
+    const latest = useRef(actions);
     useEffect(() => {
-        if (store === undefined) {
-            return undefined;
-        }
-        const others = (list: Published['actions']) => list.filter((entry) => entry.id !== id);
-        store.update((current) => ({
-            ...current,
-            actions: [...others(current.actions), { id, actions }],
-        }));
-        return () => store.update((current) => ({ ...current, actions: others(current.actions) }));
+        latest.current = actions;
+        store?.update((current) => {
+            const index = current.actions.findIndex((entry) => entry.id === id);
+            const previous = current.actions[index];
+            if (previous !== undefined && sameActions(previous.actions, actions)) {
+                return current;
+            }
+            const entry = {
+                id,
+                actions: actions.map(({ action, href }) => ({
+                    action,
+                    href,
+                    run: () => latest.current.find((other) => other.action === action)?.run(),
+                })),
+            };
+            // In place: the item shown last stays last
+            return {
+                ...current,
+                actions:
+                    previous !== undefined
+                        ? current.actions.map((other) => (other.id === id ? entry : other))
+                        : [...current.actions, entry],
+            };
+        });
     }, [store, id, actions]);
+    useEffect(
+        () =>
+            store !== undefined
+                ? () =>
+                      store.update((current) => ({
+                          ...current,
+                          actions: current.actions.filter((entry) => entry.id !== id),
+                      }))
+                : undefined,
+        [store, id],
+    );
 }
 
 const EMPTY: Published = { page: null, actions: [] };
