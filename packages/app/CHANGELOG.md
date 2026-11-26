@@ -1,5 +1,28 @@
 # @panneau/app
 
+## 5.0.0-alpha.55
+
+### Minor Changes
+
+- d4d906c: The density picker of the user's menu and "Go to…" offers Compact, Comfortable and Large (the `touch` density) instead of "Default". Until the user chooses, the button that matches the definition's density is checked, and choosing it again goes back to the definition's. A value kept by the old "Default" reads as no choice (decision 0104).
+- 62b636f: Lists take the keyboard, on the registry of shortcuts (decision 0112), listed in the "?" help: `j`/`k` and the arrows move between the rows of the table and the cards, Enter opens the focused item, `x` selects it, Shift with a move or a click on a checkbox extends the selection, Esc clears it, `/` goes to the search. On the page of a resource, `c` does what "New …" does.
+- bcc61ea: The "Go to…" palette acts on the current page (decision 0116). A new "On this page" group, at the top, offers the actions of the item open in its form or panel, which run as their buttons do (same confirmation, runner and toasts), and the commands of plugins that apply. `CommandContext` gets the current `page` (`route`, `resource`, `item`, `selection`), a `Command` declares when it applies with `when(context)`, and `perform(context)` gets the context. Commands without `when` show in their group as before. `@panneau/core` adds `appliesTo()` and `hasSelection()`.
+
+### Patch Changes
+
+- Updated dependencies [d4d906c]
+- Updated dependencies [62b636f]
+- Updated dependencies [bcc61ea]
+  - @panneau/intl@5.0.0-alpha.55
+  - @panneau/lists@5.0.0-alpha.55
+  - @panneau/core@5.0.0-alpha.55
+  - @panneau/actions@5.0.0-alpha.55
+  - @panneau/fields@5.0.0-alpha.55
+  - @panneau/forms@5.0.0-alpha.55
+  - @panneau/ui@5.0.0-alpha.55
+  - @panneau/data@5.0.0-alpha.55
+  - @panneau/protocol@5.0.0-alpha.55
+
 ## 5.0.0-alpha.54
 
 ### Minor Changes

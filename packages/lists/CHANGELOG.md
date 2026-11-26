@@ -1,5 +1,22 @@
 # @panneau/lists
 
+## 5.0.0-alpha.55
+
+### Minor Changes
+
+- 62b636f: Lists take the keyboard, on the registry of shortcuts (decision 0112), listed in the "?" help: `j`/`k` and the arrows move between the rows of the table and the cards, Enter opens the focused item, `x` selects it, Shift with a move or a click on a checkbox extends the selection, Esc clears it, `/` goes to the search. On the page of a resource, `c` does what "New …" does.
+
+### Patch Changes
+
+- Updated dependencies [d4d906c]
+- Updated dependencies [62b636f]
+- Updated dependencies [bcc61ea]
+  - @panneau/intl@5.0.0-alpha.55
+  - @panneau/core@5.0.0-alpha.55
+  - @panneau/fields@5.0.0-alpha.55
+  - @panneau/ui@5.0.0-alpha.55
+  - @panneau/protocol@5.0.0-alpha.55
+
 ## 5.0.0-alpha.54
 
 ### Patch Changes
