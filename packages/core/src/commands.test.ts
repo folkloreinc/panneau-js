@@ -2,7 +2,15 @@ import { describe, expect, it } from 'vitest';
 
 import { type DefinitionInput, validateDefinition } from '@panneau/protocol';
 
-import { getCommands, getSearchableResources, isSearchable } from './commands';
+import {
+    type Command,
+    type CommandContext,
+    appliesTo,
+    getCommands,
+    getSearchableResources,
+    hasSelection,
+    isSearchable,
+} from './commands';
 import { createPluginRegistry } from './plugins';
 
 function parse(input: DefinitionInput) {
@@ -67,5 +75,49 @@ describe('searchable resources', () => {
         });
         expect(definition.resources.map(isSearchable)).toEqual([true, false, true, false, true]);
         expect(getSearchableResources(definition).map(({ id }) => id)).toEqual(['pages', 'tags']);
+    });
+});
+
+describe('commands in context (decision 0116)', () => {
+    const page: CommandContext['page'] = {
+        route: 'resource.index',
+        selection: { mode: 'ids', ids: ['1', '2'] },
+    };
+    const publishSelected: Command = {
+        id: 'publish-selected',
+        label: 'Publish selected',
+        when: ({ page: current }) => hasSelection(current?.selection),
+        perform: () => undefined,
+    };
+
+    it('applies a command without `when` everywhere', () => {
+        expect(appliesTo({ id: 'help', label: 'Help' }, { definition: null })).toBe(true);
+    });
+
+    it('applies a command with `when` only to the pages it accepts', () => {
+        expect(appliesTo(publishSelected, { definition: null, page })).toBe(true);
+        expect(appliesTo(publishSelected, { definition: null })).toBe(false);
+        expect(
+            appliesTo(publishSelected, {
+                definition: null,
+                page: { route: 'resource.index', selection: { mode: 'ids', ids: [] } },
+            }),
+        ).toBe(false);
+    });
+
+    it('counts every matching item as a selection', () => {
+        expect(hasSelection({ mode: 'all', except: ['1'] })).toBe(true);
+        expect(hasSelection(undefined)).toBe(false);
+    });
+
+    it('gives the page to function sources', () => {
+        const commands = getCommands(
+            [({ page: current }) => (current?.item !== undefined ? [publishSelected] : [])],
+            {
+                definition: null,
+                page: { ...page, item: { id: '1', version: null, abilities: {} } },
+            },
+        );
+        expect(commands.map(({ id }) => id)).toEqual(['publish-selected']);
     });
 });

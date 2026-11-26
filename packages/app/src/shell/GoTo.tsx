@@ -14,14 +14,22 @@ import {
     Search,
     Sun,
     Terminal,
+    Zap,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { getCommands, getSearchableResources, resolveResource, usePlugins } from '@panneau/core';
+import {
+    type Command,
+    appliesTo,
+    getCommands,
+    getSearchableResources,
+    resolveResource,
+    usePlugins,
+} from '@panneau/core';
 import { isApiError } from '@panneau/data';
 import { useSearch } from '@panneau/data/query';
-import { appMessages, uiMessages } from '@panneau/intl';
-import { getImageUrl, toText } from '@panneau/lists';
+import { appMessages, getActionLabel, uiMessages } from '@panneau/intl';
+import { getActionIcon, getImageUrl, toText } from '@panneau/lists';
 import type { Definition, Item, Resource } from '@panneau/protocol';
 import {
     SEARCH_MAX_LIMIT,
@@ -41,6 +49,7 @@ import {
     useShortcutHelp,
 } from '@panneau/ui';
 
+import { useCurrentPage } from '../currentPage';
 import { getInterfaceLocales } from '../interfaceLocales';
 import { type NavLink, capitalize, getNavigation } from '../navigation';
 import { getItemPath } from '../pages/itemLinks';
@@ -124,6 +133,8 @@ export function GoTo({
     const densityCommands = useDensityCommands(density, onDensityChange);
     const openShortcutHelp = useShortcutHelp();
     const plugins = usePlugins();
+    const current = useCurrentPage();
+    const context = { definition, page: current?.page ?? null };
     const user = useRecentScope();
     const [query, setQuery] = useState('');
     const [debounced, setDebounced] = useState('');
@@ -221,22 +232,36 @@ export function GoTo({
         },
     );
 
-    // The commands of plugins, in their own groups or in "Commands".
+    const toItem = (command: Command): CommandPaletteItem => ({
+        id: command.id,
+        label: command.label,
+        description: command.description,
+        keywords: command.keywords,
+        icon: command.icon !== undefined ? getNamedIcon(command.icon) : Terminal,
+        href: command.href,
+        onAction: command.perform !== undefined ? () => command.perform?.(context) : undefined,
+    });
+    // The actions of the current item, as its buttons run them, then the commands of plugins that
+    // apply to the page (decision 0116)
+    const onThisPage: CommandPaletteItem[] = (current?.actions ?? []).map(
+        ({ action, href, run }) => ({
+            id: `action-${action.id}`,
+            label: getActionLabel(action, intl),
+            icon: getActionIcon(action) ?? Zap,
+            ...(href !== null ? { href } : { onAction: run }),
+        }),
+    );
+    // The other commands of plugins, in their own groups or in "Commands".
     const commandGroups = new Map<string, CommandPaletteItem[]>();
-    getCommands(plugins.commands, { definition }).forEach((command) => {
+    getCommands(plugins.commands, context).forEach((command) => {
+        if (command.when !== undefined) {
+            if (appliesTo(command, context)) {
+                onThisPage.push(toItem(command));
+            }
+            return;
+        }
         const group = command.group ?? intl.formatMessage(appMessages.groupCommands);
-        commandGroups.set(group, [
-            ...(commandGroups.get(group) ?? []),
-            {
-                id: command.id,
-                label: command.label,
-                description: command.description,
-                keywords: command.keywords,
-                icon: command.icon !== undefined ? getNamedIcon(command.icon) : Terminal,
-                href: command.href,
-                onAction: command.perform,
-            },
-        ]);
+        commandGroups.set(group, [...(commandGroups.get(group) ?? []), toItem(command)]);
     });
 
     const actions: CommandPaletteItem[] = [
@@ -362,6 +387,11 @@ export function GoTo({
     const local: CommandPaletteGroup[] =
         scoped === null
             ? [
+                  {
+                      id: 'this-page',
+                      label: intl.formatMessage(appMessages.groupThisPage),
+                      items: onThisPage,
+                  },
                   {
                       id: 'recent',
                       label: intl.formatMessage(appMessages.groupRecent),

@@ -17,7 +17,7 @@ import {
 } from '@panneau/data/query';
 import { useFormatRuleFailure } from '@panneau/forms';
 import { appMessages, listsMessages } from '@panneau/intl';
-import { ListView, getPagingProps, useListFields } from '@panneau/lists';
+import { ListView, getPagingProps, useListFields, useListState } from '@panneau/lists';
 import type { RouteReference } from '@panneau/protocol';
 import {
     getCreatableTypes,
@@ -37,6 +37,7 @@ import {
     useToast,
 } from '@panneau/ui';
 
+import { usePublishPage } from '../currentPage';
 import { useSummaryPeriod } from '../dashboard/period';
 import { useDocumentTitle } from '../documentTitle';
 import { getListKey, rememberListSearch } from '../listLocation';
@@ -202,6 +203,9 @@ export function ResourceListPage({
     }, [createdSettled]);
     // The item of the panel, which the panel fetches too
     const { data: selected } = useResourceItem(resource.id, selectedId);
+    // For the palette: its commands act on the item of the panel or on the selection (decision 0116)
+    const { selection } = useListState(list);
+    usePublishPage({ resource, item: selectedId !== null ? selected : undefined, selection });
     useDocumentTitle([
         selectedId !== null
             ? (getItemTitle(selected, resource.itemTitle, locale) ?? selectedId)

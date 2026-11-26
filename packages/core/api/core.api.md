@@ -38,6 +38,9 @@ export interface ActionItem {
 }
 
 // @public
+export function appliesTo(command: Command, context: CommandContext): boolean;
+
+// @public
 export function asksConfirmation(action: Action, count?: number): boolean;
 
 // @public
@@ -66,12 +69,22 @@ export interface Command {
     keywords?: readonly string[];
     // (undocumented)
     label: string;
-    perform?: () => void;
+    perform?: (context: CommandContext) => void;
+    when?: (context: CommandContext) => boolean;
 }
 
 // @public
 export interface CommandContext {
     definition: Definition | null;
+    page?: CommandPage | null;
+}
+
+// @public
+export interface CommandPage {
+    item?: Item | undefined;
+    resource?: Resource | undefined;
+    route: string;
+    selection?: ListSelection | undefined;
 }
 
 // @public
@@ -255,6 +268,9 @@ export function getVisibleFields<T extends Pick<Field, 'abilities'>>(fields: rea
 
 // @public
 export function groupActions(actions: readonly Action[]): Record<ActionPlacement, Action[]>;
+
+// @public
+export function hasSelection(selection: ListSelection | undefined): boolean;
 
 // @public
 export function isActionAllowedOn(action: Action, item: {

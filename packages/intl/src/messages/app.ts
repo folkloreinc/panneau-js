@@ -613,6 +613,10 @@ export const appMessages = {
         id: 'panneau.app.profile',
         defaultMessage: 'Your profile ({name})',
     }),
+    groupThisPage: defineMessage({
+        id: 'panneau.app.groupThisPage',
+        defaultMessage: 'On this page',
+    }),
     groupRecent: defineMessage({ id: 'panneau.app.groupRecent', defaultMessage: 'Recent' }),
     groupNavigation: defineMessage({
         id: 'panneau.app.groupNavigation',

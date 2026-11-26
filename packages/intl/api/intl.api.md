@@ -347,6 +347,7 @@ export const appMessages: {
     profile: PanneauMessage<    {
     name: string;
     }>;
+    groupThisPage: PanneauMessage<Record<never, never>>;
     groupRecent: PanneauMessage<Record<never, never>>;
     groupNavigation: PanneauMessage<Record<never, never>>;
     groupCreate: PanneauMessage<Record<never, never>>;
